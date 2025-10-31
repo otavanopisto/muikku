@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -101,45 +100,7 @@ public class WorkspaceMaterialFieldAnswerController {
   public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByField(WorkspaceMaterialField field) {
     return workspaceMaterialFieldAnswerDAO.listByField(field);
   }
-
-  public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByReply(WorkspaceMaterialReply reply) {
-    return workspaceMaterialFieldAnswerDAO.listByReply(reply);
-  }
   
-  public void deleteWorkspaceMaterialFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
-    if (answer instanceof WorkspaceMaterialAudioFieldAnswer) {
-      List<WorkspaceMaterialAudioFieldAnswerClip> audioAnswerClips = listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer((WorkspaceMaterialAudioFieldAnswer) answer);
-      for (WorkspaceMaterialAudioFieldAnswerClip audioAnswerClip : audioAnswerClips) {
-        try {
-          deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
-        }
-        catch (Exception e) {
-          // Audio field was removed completely but it's not fatal if its answer files in file system fail to remove
-          logger.log(Level.WARNING, String.format("Problems removing file system files related to audio answer %d", answer.getId()), e);
-        }
-      }
-    }
-    else if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
-      List<WorkspaceMaterialFileFieldAnswerFile> fileAnswerFiles = listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer((WorkspaceMaterialFileFieldAnswer) answer);
-      for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {
-        try {
-          deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
-        }
-        catch (Exception e) {
-          // File field was removed completely but it's not fatal if its answer files in file system fail to remove
-          logger.log(Level.WARNING, String.format("Problems removing file system files related to file answer %d", answer.getId()), e);
-        }
-      }
-    }
-    else if (answer instanceof WorkspaceMaterialMultiSelectFieldAnswer) {
-      List<WorkspaceMaterialMultiSelectFieldAnswerOption> options = listWorkspaceMaterialMultiSelectFieldAnswerOptions((WorkspaceMaterialMultiSelectFieldAnswer) answer); 
-      for (WorkspaceMaterialMultiSelectFieldAnswerOption option : options) {
-        deleteWorkspaceMaterialMultiSelectFieldAnswerOption(option);
-      }
-    }
-    workspaceMaterialFieldAnswerDAO.delete(answer);
-  }
-
   /* TextField */
 
   public WorkspaceMaterialTextFieldAnswer createWorkspaceMaterialTextFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
@@ -254,10 +215,6 @@ public class WorkspaceMaterialFieldAnswerController {
   public List<WorkspaceMaterialMultiSelectFieldAnswerOption> listWorkspaceMaterialMultiSelectFieldAnswerOptions(WorkspaceMaterialMultiSelectFieldAnswer fieldAnsewr) {
     return workspaceMaterialMultiSelectFieldAnswerOptionDAO.listByFieldAnswer(fieldAnsewr);
   }
-
-  public void deleteWorkspaceMaterialMultiSelectFieldAnswerOption(WorkspaceMaterialMultiSelectFieldAnswerOption answerOption) {
-    workspaceMaterialMultiSelectFieldAnswerOptionDAO.delete(answerOption);
-  }
   
   /* FileField */
   
@@ -288,16 +245,6 @@ public class WorkspaceMaterialFieldAnswerController {
   public List<WorkspaceMaterialFileFieldAnswerFile> listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(WorkspaceMaterialFileFieldAnswer fieldAnswer) {
     return workspaceMaterialFileFieldAnswerFileDAO.listByFieldAnswer(fieldAnswer);
   }
-  
-  public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) throws IOException {
-    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.FILE)) {
-      Long userEntityId = fieldAnswerFile.getFieldAnswer().getReply().getUserEntityId();
-      if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, fieldAnswerFile.getFileId())) {
-        fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.FILE, userEntityId, fieldAnswerFile.getFileId());
-      }
-    }
-    workspaceMaterialFileFieldAnswerFileDAO.delete(fieldAnswerFile);
-  }
 
   /* AudioField */
   
@@ -327,16 +274,6 @@ public class WorkspaceMaterialFieldAnswerController {
   
   public List<WorkspaceMaterialAudioFieldAnswerClip> listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer(WorkspaceMaterialAudioFieldAnswer fieldAnswer) {
     return workspaceMaterialAudioFieldAnswerClipDAO.listByFieldAnswer(fieldAnswer);
-  }
-  
-  public void deleteWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio) throws IOException {
-    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.AUDIO)) {
-      Long userEntityId = fieldAnswerAudio.getFieldAnswer().getReply().getUserEntityId();
-      if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, fieldAnswerAudio.getClipId())) {
-        fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.AUDIO, userEntityId, fieldAnswerAudio.getClipId());
-      }
-    }
-    workspaceMaterialAudioFieldAnswerClipDAO.delete(fieldAnswerAudio);
   }
 
   public WorkspaceMaterialAudioFieldAnswerClip updateWorkspaceMaterialAudioFieldAnswerClipContent(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio, byte[] content) {
