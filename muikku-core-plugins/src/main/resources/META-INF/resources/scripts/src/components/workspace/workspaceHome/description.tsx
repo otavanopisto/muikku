@@ -18,15 +18,36 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import { StatusType } from "~/reducers/base/status";
+import {
+  SetWorkspaceMaterialEditorStateTriggerType,
+  setWorkspaceMaterialEditorState,
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  requestWorkspaceMaterialContentNodeAttachments,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+  updateWorkspaceMaterialContentNode,
+} from "~/actions/workspaces/material";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 /**
  * DescriptionPanelProps
  */
 interface DescriptionPanelProps extends WithTranslation {
-  workspace: WorkspaceDataType;
   isInFrontPage?: boolean;
+
+  // Redux state
   workspaceEditMode: WorkspaceEditModeStateType;
+  workspace: WorkspaceDataType;
+  status: StatusType;
+  websocket: WebsocketStateType;
+
+  // Redux actions
   displayNotification: DisplayNotificationTriggerType;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
 }
 
 /**
@@ -59,6 +80,8 @@ class DescriptionPanel extends React.Component<
         <div className="panel__body">
           {this.props.workspace && (
             <MaterialLoader
+              status={this.props.status}
+              websocket={this.props.websocket}
               editable={this.props.workspaceEditMode.active}
               modifiers="workspace-description"
               material={this.props.workspace.contentDescription}
@@ -72,6 +95,15 @@ class DescriptionPanel extends React.Component<
               canAddAttachments
               canEditContent
               canSetTitle={false}
+              onUpdateWorkspaceMaterialContentNode={
+                this.props.updateWorkspaceMaterialContentNode
+              }
+              onSetWorkspaceMaterialEditorState={
+                this.props.setWorkspaceMaterialEditorState
+              }
+              onRequestWorkspaceMaterialContentNodeAttachments={
+                this.props.requestWorkspaceMaterialContentNodeAttachments
+              }
             >
               {(props, state, stateConfiguration) => (
                 <div>
@@ -99,6 +131,8 @@ class DescriptionPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
+    status: state.status,
+    websocket: state.websocket,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };
@@ -106,11 +140,18 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
-  return {
-    displayNotification,
-  };
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      displayNotification,
+      setWorkspaceMaterialEditorState,
+      updateWorkspaceMaterialContentNode,
+      requestWorkspaceMaterialContentNodeAttachments,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["workspace", "common"])(

@@ -1,0 +1,168 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.exams {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  margin: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px;
+  }
+}
+
+.exam {
+  background: $color-default-lighter-generic-background;
+  border-left: 3px solid $color-assignment;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  padding: 20px;
+  position: relative;
+}
+
+.exam--dialog {
+  background: $color-default;
+  border: solid 1px $color-application-panel-box-border;
+
+}
+
+.exam__completed-marker {
+  align-items: center;
+  background: $color-default;
+  border: 2px solid $color-assignment;
+  border-radius: 100%;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  left: -14px;
+  position: absolute;
+  top: 20px;
+  width: 1.5rem;
+
+  &::after {
+    color: $color-assignment;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 1rem;
+  }
+}
+
+.exam__header {
+  display: flex;
+  flex-flow: column nowrap;
+  font-size: 1.125rem;
+  font-weight: 400;
+  gap: 5px;
+  margin: 0;
+}
+
+.exam__labels {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.exam__label {
+  background: lighten($color-info, 50%);
+  border: 1px solid lighten($color-info, 30%);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  line-height:1;
+  padding: 3px 8px;
+}
+
+.exam__label-accent {
+  color: $color-accent;
+  font-weight: 600;
+}
+
+.exam__body {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+}
+
+.exam__content {
+  line-height: 1.25rem;
+
+  p {
+    margin: 10px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: $color-text-link;
+    text-decoration: underline;
+  }
+}
+
+.exam__status {
+  @include text;
+  
+  color: $color-default-contrast;
+  font-weight: 600;
+}
+
+.exam__status--ended {
+  color: $color-success;
+}
+
+.exam__status--ongoing {
+  color: $color-fatal;
+}
+
+.exam__duration {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+}
+
+.exam__duration-accent {
+  color: $color-accent;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.exam__actions {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 15px;
+}
+
+.exam__actions--centered {
+  justify-content: center;
+}
+
+.exam__actions-button {
+  align-items: center;
+  background: $color-info;
+  border: none;
+  border-radius: 20px;
+  color: $color-default;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.8125rem;
+  justify-content: center;
+  line-height: 1;
+  padding: 8px 20px;
+  text-transform: uppercase;
+}
+
+.exam__actions-button--ongoing {
+  background: $color-accent;
+}

@@ -14,8 +14,8 @@ import SlideDrawer from "./slide-drawer";
 import AssignmentEditor from "./editors/assignment-editor";
 import { StateType } from "~/reducers/index";
 import {
-  UpdateOpenedAssignmentEvaluationId,
-  updateOpenedAssignmentEvaluation,
+  UpdateOpenedAssignmentOrExamId,
+  updateOpenedAssignmentOrExamId,
   ToggleLockedAssigment,
   toggleLockedAssignment,
 } from "~/actions/main-function/evaluation/evaluationActions";
@@ -40,7 +40,7 @@ interface EvaluationAssessmentAssignmentProps extends WithTranslation {
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: EvaluationAssessmentRequest;
-  updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
+  updateOpenedAssignmentOrExamId: UpdateOpenedAssignmentOrExamId;
   toggleLockedAssignment: ToggleLockedAssigment;
   showAsHidden: boolean;
   compositeReply?: MaterialCompositeReply;
@@ -135,9 +135,9 @@ class EvaluationAssessmentAssignment extends React.Component<
           id: assigment.materialId,
         });
 
-        const evaluation = await evaluationApi.getWorkspaceMaterialEvaluations({
+        const evaluation = await evaluationApi.getWorkspaceNodeEvaluation({
           workspaceId: workspace.id,
-          workspaceMaterialId: assigment.id,
+          workspaceNodeId: assigment.id,
           userEntityId,
         });
 
@@ -145,7 +145,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           {},
           {
             ...material,
-            evaluation: evaluation[0],
+            evaluation: evaluation,
             assignment: this.props.assigment,
             path: this.props.assigment.path,
             contentHiddenForUser: false,
@@ -239,7 +239,9 @@ class EvaluationAssessmentAssignment extends React.Component<
    * handleCloseSlideDrawer
    */
   handleCloseSlideDrawer = () => {
-    this.props.updateOpenedAssignmentEvaluation({ assignmentId: undefined });
+    this.props.updateOpenedAssignmentOrExamId({
+      assignmentOrExamId: undefined,
+    });
 
     this.setState({
       openDrawer: false,
@@ -265,10 +267,10 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   handleOpenSlideDrawer =
     (assignmentId: number, assignmentType: "EVALUATED" | "EXERCISE") => () => {
-      if (
-        this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
-      ) {
-        this.props.updateOpenedAssignmentEvaluation({ assignmentId });
+      if (this.props.evaluations.openedAssigmentOrExamId !== assignmentId) {
+        this.props.updateOpenedAssignmentOrExamId({
+          assignmentOrExamId: assignmentId,
+        });
       }
 
       if (this.state.materialNode === undefined) {
@@ -289,7 +291,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   handleExecuteScrollToElement = () => {
     window.dispatchEvent(new Event("resize"));
-    if (this.props.evaluations.openedAssignmentEvaluationId) {
+    if (this.props.evaluations.openedAssigmentOrExamId) {
       setTimeout(() => {
         this.myRef.scrollIntoView({ behavior: "smooth" });
       }, 600);
@@ -507,7 +509,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     if (
       this.state.openContent ||
       (this.state.openDrawer &&
-        this.props.evaluations.openedAssignmentEvaluationId ===
+        this.props.evaluations.openedAssigmentOrExamId ===
           this.props.assigment.id)
     ) {
       /**
@@ -523,8 +525,7 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     if (
       this.state.openDrawer &&
-      this.props.evaluations.openedAssignmentEvaluationId ===
-        this.props.assigment.id
+      this.props.evaluations.openedAssigmentOrExamId === this.props.assigment.id
     ) {
       /**
        * Assigning class mod to evaluation material title if corresponding dialog is open
@@ -642,7 +643,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           }
           show={
             this.state.openDrawer &&
-            this.props.evaluations.openedAssignmentEvaluationId ===
+            this.props.evaluations.openedAssigmentOrExamId ===
               this.props.assigment.id
           }
           disableClose={this.state.isRecording}
@@ -719,7 +720,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
-      updateOpenedAssignmentEvaluation,
+      updateOpenedAssignmentOrExamId,
       toggleLockedAssignment,
     },
     dispatch

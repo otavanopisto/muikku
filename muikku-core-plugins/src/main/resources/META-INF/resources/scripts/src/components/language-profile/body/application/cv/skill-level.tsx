@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 /* eslint-disable camelcase */
 import { unstable_batchedUpdates } from "react-dom";
-import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
+import {
+  CVLanguage,
+  LanguageProfileLanguage,
+} from "~/reducers/main-function/language-profile";
 import { languageLevelOptions } from "~/mock/mock-data";
 import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
@@ -36,6 +39,27 @@ const SkillLevel = (props: SkillLevelProps) => {
     () => cv.languages.find((l) => l.code === language.code),
     [cv, language]
   );
+
+  React.useEffect(() => {
+    // Initialize language skill levels if not present
+    if (!languageSkillLevels) {
+      const updatedLanguageSkillLevels: CVLanguage = {
+        code: language.code,
+        interaction: "",
+        vocal: "",
+        writing: "",
+        reading: "",
+        listening: "",
+        general: "A11",
+        description: "",
+        samples: [],
+      };
+      dispatch({
+        type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
+        payload: updatedLanguageSkillLevels,
+      } as ActionType);
+    }
+  }, [languageSkillLevels, dispatch, language]);
 
   /**
    * clearFields Clears the sample fields.
@@ -189,7 +213,10 @@ const SkillLevel = (props: SkillLevelProps) => {
   return (
     <fieldset className="language-profile-container__fieldset">
       <legend className="language-profile-container__subheader">
-        {language.name}
+        {t(`languages.${language.code}`, {
+          defaultValue: language.code,
+          ns: "languageProfile",
+        })}
       </legend>
       <div className="language-profile-container__secondary-header">
         {t("labels.skillLevel", {
@@ -270,7 +297,11 @@ const SkillLevel = (props: SkillLevelProps) => {
                 value={option.value}
                 selected={option.value === languageSkillLevels?.general}
               >
-                {option.label}
+                {t(`levels.${option.value}`, {
+                  ns: "languageProfile",
+                  context: "cv",
+                  defaultValue: option.value,
+                })}
               </option>
             ))}
           </select>

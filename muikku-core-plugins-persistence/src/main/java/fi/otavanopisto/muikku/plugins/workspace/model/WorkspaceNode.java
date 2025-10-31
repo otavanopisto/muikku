@@ -102,6 +102,10 @@ public class WorkspaceNode {
     this.language = language;
   }
 
+  @Transient
+  public boolean getExam() {
+    return false;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)

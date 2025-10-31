@@ -1,7 +1,6 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
@@ -29,12 +28,14 @@ const workspaceApi = MApi.getWorkspaceApi();
  * Custom hook for student study hours
  *
  * @param workspaceId workspaceId
+ * @param userEntityId userEntityId
  * @param tabOpen tabOpen
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useInterimEvaluationAssigments = (
   workspaceId: number,
+  userEntityId: number,
   tabOpen: AssignmentsTabType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
@@ -52,8 +53,12 @@ export const useInterimEvaluationAssigments = (
      * loadExercisenData
      * Loads student activity data
      * @param workspaceId of student
+     * @param userEntityId of student
      */
-    const loadInterimEvaluationData = async (workspaceId: number) => {
+    const loadInterimEvaluationData = async (
+      workspaceId: number,
+      userEntityId: number
+    ) => {
       if (!isCancelled) {
         setInterimEvaluationAssignmentsData(
           (interimEvaluationeAssignmentsData) => ({
@@ -72,6 +77,7 @@ export const useInterimEvaluationAssigments = (
             const assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "INTERIM_EVALUATION",
+              userEntityId: userEntityId,
             });
 
             const [materials] = await Promise.all([
@@ -131,7 +137,7 @@ export const useInterimEvaluationAssigments = (
       interimEvaluationeAssignmentsData.interimEvaluationAssignments.length ===
         0
     ) {
-      loadInterimEvaluationData(workspaceId);
+      loadInterimEvaluationData(workspaceId, userEntityId);
     }
 
     return () => {
@@ -143,6 +149,7 @@ export const useInterimEvaluationAssigments = (
     tabOpen,
     interimEvaluationeAssignmentsData.interimEvaluationAssignments.length,
     t,
+    userEntityId,
   ]);
 
   return {

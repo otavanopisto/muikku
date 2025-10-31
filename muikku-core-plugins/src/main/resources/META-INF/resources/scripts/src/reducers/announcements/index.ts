@@ -24,6 +24,12 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     text: "active",
   },
   {
+    location: "unread",
+    id: "unread",
+    icon: "folder",
+    text: "unread",
+  },
+  {
     location: "expired",
     id: "expired",
     icon: "folder",
@@ -43,7 +49,11 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
   },
 ];
 
-export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
+export type AnnouncementsStateType =
+  | "LOADING"
+  | "ERROR"
+  | "READY"
+  | "LOADING_MORE";
 
 /**
  * AnnouncementsState
@@ -51,6 +61,7 @@ export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 export interface AnnouncementsState {
   state: AnnouncementsStateType;
   announcements: Announcement[];
+  unreadCount: number;
   current: Announcement;
   selected: Announcement[];
   selectedIds: Array<number>;
@@ -58,6 +69,7 @@ export interface AnnouncementsState {
   toolbarLock: boolean;
   navigation: AnnouncerNavigationItemListType;
   workspaceId?: number;
+  hasMore: boolean;
 }
 
 /**
@@ -66,6 +78,7 @@ export interface AnnouncementsState {
 export interface AnnouncementsStatePatch {
   state?: AnnouncementsStateType;
   announcements?: Announcement[];
+  unreadCount?: number;
   current?: Announcement;
   selected?: Announcement[];
   selectedIds?: Array<number>;
@@ -73,6 +86,7 @@ export interface AnnouncementsStatePatch {
   toolbarLock?: boolean;
   navigation?: AnnouncerNavigationItemListType;
   workspaceId?: number;
+  hasMore?: boolean;
 }
 
 /**
@@ -81,6 +95,7 @@ export interface AnnouncementsStatePatch {
 const initialAnnouncementsState: AnnouncementsState = {
   state: "LOADING",
   announcements: [],
+  unreadCount: 0,
   current: null,
   selected: [],
   selectedIds: [],
@@ -88,6 +103,7 @@ const initialAnnouncementsState: AnnouncementsState = {
   toolbarLock: false,
   navigation: defaultNavigation,
   workspaceId: null,
+  hasMore: false,
 };
 
 /**
@@ -104,6 +120,9 @@ export const announcements: Reducer<AnnouncementsState> = (
   switch (action.type) {
     case "UPDATE_ANNOUNCEMENTS":
       return { ...state, announcements: action.payload };
+
+    case "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT":
+      return { ...state, unreadCount: action.payload };
 
     case "UPDATE_ANNOUNCEMENTS_STATE":
       return { ...state, state: action.payload };

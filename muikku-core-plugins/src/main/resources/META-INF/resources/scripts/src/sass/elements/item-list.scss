@@ -104,6 +104,8 @@
     .item-list__icon {
       color: $color-index-item-list-item-panel-latest-messages-unread-icon;
     }
+
+
   }
 }
 
@@ -132,6 +134,13 @@
     .item-list__icon {
       color: $color-index-item-list-item-panel-announcements-unread-icon;
     }
+
+    &.item-list__item--has-workspaces {
+      .item-list__icon {
+        color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
+      }
+    }
+
   }
 }
 

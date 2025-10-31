@@ -63,8 +63,11 @@ class Announcements extends React.Component<
     }
     return (
       <article className="article">
-        <header className="article__header">
+        <header className="article__header article__header--announcement">
           {this.props.announcement.caption}
+          {this.props.announcement.pinned && (
+            <span className="icon icon-pin"></span>
+          )}
         </header>
         {this.props.announcement.workspaces.length ||
         this.props.announcement.userGroupEntityIds.length ? (

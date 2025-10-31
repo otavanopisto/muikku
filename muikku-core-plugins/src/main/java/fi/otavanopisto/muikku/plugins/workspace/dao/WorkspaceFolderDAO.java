@@ -22,7 +22,7 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 
   private static final long serialVersionUID = 9095130166469638314L;
 
-  public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber, Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict, WorkspaceLanguage language) {
+  public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber, Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict, WorkspaceLanguage language, boolean exam) {
     WorkspaceFolder workspaceFolder = new WorkspaceFolder();
     workspaceFolder.setParent(parent);
     workspaceFolder.setUrlName(urlName);
@@ -32,6 +32,7 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     workspaceFolder.setHidden(hidden);
     workspaceFolder.setViewRestrict(viewRestrict);
     workspaceFolder.setLanguage(language);
+    workspaceFolder.setExam(exam);
     return persist(workspaceFolder);
   }
 
@@ -46,6 +47,24 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(WorkspaceFolder_.parent), parent),
             criteriaBuilder.equal(root.get(WorkspaceFolder_.folderType), folderType)
+         )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceFolder> listByParentAndFolderTypeAndExam(WorkspaceNode parent, WorkspaceFolderType folderType, boolean exam) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceFolder> criteria = criteriaBuilder.createQuery(WorkspaceFolder.class);
+    Root<WorkspaceFolder> root = criteria.from(WorkspaceFolder.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceFolder_.parent), parent),
+            criteriaBuilder.equal(root.get(WorkspaceFolder_.folderType), folderType),
+            criteriaBuilder.equal(root.get(WorkspaceFolder_.exam), exam)
          )
     );
 
@@ -90,6 +109,11 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 
   public WorkspaceFolder updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
     workspaceFolder.setDefaultMaterial(defaultMaterial);
+    return persist(workspaceFolder);
+  }
+  
+  public WorkspaceFolder updateExam(WorkspaceFolder workspaceFolder, boolean exam) {
+    workspaceFolder.setExam(exam);
     return persist(workspaceFolder);
   }
 

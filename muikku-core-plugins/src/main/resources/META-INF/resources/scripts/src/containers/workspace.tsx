@@ -64,8 +64,13 @@ import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
 import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
+import WorkspaceExamsBody from "~/components/workspace/workspaceExams";
+import { initializeExams } from "~/actions/workspaces/exams";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+let loadAnnouncementsTimer: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * WorkspaceProps
@@ -120,6 +125,7 @@ export default class Workspace extends React.Component<
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
     this.renderWorkspaceEvaluation = this.renderWorkspaceEvaluation.bind(this);
+    this.renderWorkspaceExams = this.renderWorkspaceExams.bind(this);
     this.loadWorkspaceDiscussionData =
       this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData =
@@ -414,6 +420,7 @@ export default class Workspace extends React.Component<
         this.props.store.dispatch(
           loadAnnouncementsAsAClient({
             hideEnvironmentAnnouncements: true,
+            maxResults: 999,
             workspaceEntityId: state.status.currentWorkspaceId,
           }) as Action
         );
@@ -538,13 +545,21 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
 
+      // Delay loading announcements to let the unread state to settle first
+      // They are usually already loaded on frontpage load
+      // where clicking an announcements sets it as read
+      // but without delay the announcements would load "unread" again
       //Maybe we shouldn't load again, but whatever, maybe it updates
-      this.props.store.dispatch(
-        loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: true,
-          workspaceEntityId: state.status.currentWorkspaceId,
-        }) as Action
-      );
+      loadAnnouncementsTimer = setTimeout(() => {
+        this.props.store.dispatch(
+          loadAnnouncementsAsAClient({
+            hideEnvironmentAnnouncements: true,
+            workspaceEntityId: state.status.currentWorkspaceId,
+            maxResults: 999,
+          }) as Action
+        );
+        loadAnnouncementsTimer = null;
+      }, 500); // 500ms delay
 
       this.loadWorkspaceAnnouncementsData(
         parseInt(window.location.hash.replace("#", ""))
@@ -1110,8 +1125,6 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.websocket && this.props.websocket.restoreEventListeners();
-
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1153,6 +1166,44 @@ export default class Workspace extends React.Component<
       <WorkspaceEvaluationBody
         workspaceUrl={props.match.params["workspaceUrl"]}
       />
+    );
+  }
+
+  /**
+   * renderWorkspaceExams
+   * @param props props
+   * @returns JSX.Element
+   */
+  renderWorkspaceExams(props: RouteComponentProps<any>) {
+    this.updateFirstTime();
+
+    if (this.itsFirstTime) {
+      const state = this.props.store.getState();
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      this.props.store.dispatch(
+        setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          success: (workspace) => {
+            this.props.store.dispatch(
+              initializeExams({
+                workspaceEntityId: workspace.id,
+              }) as Action
+            );
+          },
+        }) as Action
+      );
+    }
+
+    return (
+      <WorkspaceExamsBody workspaceUrl={props.match.params["workspaceUrl"]} />
     );
   }
 
@@ -1291,6 +1342,20 @@ export default class Workspace extends React.Component<
                 routeProps={routeProps}
               >
                 {this.renderWorkspaceEvaluation}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/exams"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_SHOW_EXAMS}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceExams}
               </ProtectedRoute>
             )}
           />

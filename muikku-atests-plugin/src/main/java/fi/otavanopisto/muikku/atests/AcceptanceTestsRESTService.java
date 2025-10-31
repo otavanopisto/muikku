@@ -62,7 +62,8 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
@@ -81,6 +82,7 @@ import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -151,10 +153,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private WorkspaceMaterialController workspaceMaterialController; 
 
   @Inject
+  private MaterialDeleteController materialDeleteController; 
+
+  @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
   
   @Inject
   private EvaluationController evaluationController;
+
+  @Inject
+  private EvaluationDeleteController evaluationDeleteController;
   
   @Inject
   private ForumController forumController;
@@ -579,7 +587,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       }
     }
     
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null, false);
     if (workspaceFolder == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create workspace folder").build(); 
     }
@@ -630,14 +638,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     try {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, true);
+      materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, true);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
-    List<WorkspaceMaterialEvaluation> evaluations = evaluationController.listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(workspaceMaterialId);
-    for (WorkspaceMaterialEvaluation evaluation : evaluations) {
-      evaluationController.deleteWorkspaceMaterialEvaluation(evaluation);
+    List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(workspaceMaterialId);
+    for (WorkspaceNodeEvaluation evaluation : evaluations) {
+      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     
     htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
@@ -764,6 +772,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for(Announcement announcement : announcementController.listAll()) {
       announcementController.deleteAnnouncementWorkspaces(announcement);
       announcementController.deleteAnnouncementTargetGroups(announcement);
+      announcementController.deleteAnnouncementRecipientsByAnnouncement(announcement);
       announcementController.delete(announcement);
     }
 
@@ -778,7 +787,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     SchoolDataIdentifier schoolDataIdentifier = new SchoolDataIdentifier(user.getDefaultIdentifier(), user.getDefaultSchoolDataSource().getIdentifier());
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
-    Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
+    Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible(), false);
        
     if(payload.getWorkspaceEntityIds() != null) {
       List<Long> workspaceEntityIds = payload.getWorkspaceEntityIds();

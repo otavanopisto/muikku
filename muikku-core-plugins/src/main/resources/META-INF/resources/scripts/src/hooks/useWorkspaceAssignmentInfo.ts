@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
-import { createAssignmentInfoArray } from "~/components/general/assignment-info-details/helper";
+import { createAssignmentInfoArray } from "~/components/general/evaluation-assessment-details/helper";
 import { MaterialCompositeReply, WorkspaceMaterial } from "~/generated/client";
 
 /**
@@ -95,6 +95,7 @@ export const useWorkspaceAssignmentInfo = (props: UseWorkspacePointsProps) => {
             const assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "EVALUATED",
+              userEntityId: userEntityId,
             });
 
             return assignments;

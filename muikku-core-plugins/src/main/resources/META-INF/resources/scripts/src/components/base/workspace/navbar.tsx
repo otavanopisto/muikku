@@ -54,6 +54,7 @@ interface WorkspaceNavbarProps extends WithTranslation {
   status: StatusType;
   title?: string;
   workspaceUrl: string;
+  unreadAnnouncementCount: number;
   currentWorkspace: WorkspaceDataType;
   workspaceEditMode: WorkspaceEditModeStateType;
   workspaceIsBeingEvaluated: boolean;
@@ -172,6 +173,15 @@ class WorkspaceNavbar extends React.Component<
         condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE,
       },
       {
+        modifier: "exams",
+        trail: "exams",
+        text: t("labels.exams", { ns: "exams" }),
+        href: "/workspace/" + this.props.workspaceUrl + "/exams",
+        icon: "exams",
+        to: true,
+        condition: this.props.status.permissions.WORKSPACE_SHOW_EXAMS,
+      },
+      {
         modifier: "discussion",
         trail: "workspace-discussions",
         text: t("labels.discussion"),
@@ -208,6 +218,7 @@ class WorkspaceNavbar extends React.Component<
         icon: "paper-plane",
         to: true,
         condition: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
+        badge: this.props.unreadAnnouncementCount,
       },
       {
         modifier: "evaluation",
@@ -232,7 +243,7 @@ class WorkspaceNavbar extends React.Component<
      * !DISCLAIMER!
      * Following by combinationWorkspace changes, there can be multiple assessmentState objects
      * So currently before module specific assessment are implemented, using first item of assessmentState list
-     * is only option.
+     * is only option.        badge: this.props.announcementCount,
      */
     let assessmentState =
       this.props.currentWorkspace &&
@@ -474,6 +485,7 @@ class WorkspaceNavbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
+    unreadAnnouncementCount: state.announcements.unreadCount,
     currentWorkspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
     workspaceIsBeingEvaluated: state.workspaces.workspaceIsBeingEvaluated,

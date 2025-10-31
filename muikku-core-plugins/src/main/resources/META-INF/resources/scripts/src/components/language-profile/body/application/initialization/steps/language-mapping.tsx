@@ -8,10 +8,12 @@ import {
   LanguageLevels,
   SkillLevels,
 } from "~/reducers/main-function/language-profile";
-import { LanguageCode } from "~/@types/shared";
+import { LanguageCode, LanguageData } from "~/@types/shared";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { languageLevelOptions } from "~/mock/mock-data";
+import { IconButton } from "~/components/general/button";
+import { useLanguageProfileContext } from "~/components/language-profile/body/application";
 
 export const levelMap: Record<number, string> = {
   0: "interaction",
@@ -34,6 +36,8 @@ const LanguageMapping = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { data } = useSelector((state: StateType) => state.languageProfile);
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
   const { languages } = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -89,6 +93,9 @@ const LanguageMapping = () => {
         value,
       },
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -111,7 +118,7 @@ const LanguageMapping = () => {
         className="react-select-override react-select-override--language-profile-form"
         classNamePrefix="react-select-override"
         placeholder={t("labels.select")}
-        value={selectedValue}
+        value={selectedValue ?? null}
         onChange={(value) =>
           handleLanguageLevelsSelectChange(value.value, cellId, languageCode)
         }
@@ -140,7 +147,8 @@ const LanguageMapping = () => {
         className="react-select-override react-select-override--language-profile-form"
         classNamePrefix="react-select-override"
         placeholder={t("labels.select")}
-        value={selectedValue}
+        isClearable
+        value={selectedValue ?? null}
         onChange={(option) =>
           handleSkillsSelectChange(option.value, cellId, languageCode)
         }
@@ -168,7 +176,66 @@ const LanguageMapping = () => {
         value,
       },
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
+
+  /**
+   * Handles clearing language levels for a specific language.
+   * @param language the language object for which to clear levels
+   */
+  const handleClearLanguageLevels = (language: LanguageData) => {
+    dispatch({
+      type: "LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS",
+      payload: language.code,
+    } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
+  };
+
+  /**
+   * Renders a button for clearing language levels.
+   * @param language the language object for which to clear levels
+   * @returns a JSX element representing the clear button
+   */
+  const clearLanguageLevels = (language: LanguageData) => (
+    <IconButton
+      buttonModifiers={["clear-skills"]}
+      icon="cross"
+      title={t("labels.clearLanguageLevels", { ns: "languageProfile" })}
+      onClick={() => handleClearLanguageLevels(language)}
+    />
+  );
+
+  /**
+   * Handles clearing skill levels for a specific language.
+   * @param language the language object for which to clear skill levels
+   */
+  const handleClearLanguageSkills = (language: LanguageData) => {
+    dispatch({
+      type: "LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS",
+      payload: language.code,
+    } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
+  };
+
+  /**
+   * Renders a button for clearing skill levels.
+   * @param language the language object for which to clear skill levels
+   * @returns a JSX element representing the clear button
+   */
+  const clearLanguageSkills = (language: LanguageData) => (
+    <IconButton
+      buttonModifiers={["clear-skills"]}
+      icon="cross"
+      title={t("labels.clearLanguageSkills", { ns: "languageProfile" })}
+      onClick={() => handleClearLanguageSkills(language)}
+    />
+  );
 
   return (
     <div className="language-profile-container">
@@ -205,6 +272,7 @@ const LanguageMapping = () => {
           <DisplayLanguages
             rows={languages}
             // Could be created with a for loop
+            modifier="language-levels"
             labels={[
               t("labels.languageSkillLevel", {
                 ns: "languageProfile",
@@ -219,6 +287,7 @@ const LanguageMapping = () => {
                 context: levelMap[2],
               }),
             ]}
+            columnAction={clearLanguageLevels}
             cellAction={languageLevelsSelect}
           />
         </div>
@@ -438,6 +507,7 @@ const LanguageMapping = () => {
         </div>
         <DisplayLanguages
           rows={languages}
+          modifier="language-levels"
           labels={[
             t("labels.skill", {
               ns: "languageProfile",
@@ -456,6 +526,7 @@ const LanguageMapping = () => {
               context: skillMap[3],
             }),
           ]}
+          columnAction={clearLanguageSkills}
           cellAction={skillsSelect}
         />
       </fieldset>

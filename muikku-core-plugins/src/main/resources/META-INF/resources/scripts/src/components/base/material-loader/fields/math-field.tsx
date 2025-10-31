@@ -3,29 +3,20 @@ import MathField from "./better-math-field";
 import "~/sass/elements/mathfield.scss";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
+import { CommonFieldProps } from "../types";
 
 /**
  * MathFieldProps
  */
-interface MathFieldProps extends WithTranslation {
-  type: string;
+interface MathFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
   };
-  userId: number;
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
 }
 
 /**

@@ -282,7 +282,7 @@ export default class SelectableList extends React.Component<
             <GivenElement
               aria-label={child.wcagLabel}
               key={child.key}
-              className={`${child.className || ""} ${
+              className={`${child.className || ""} ${child.modifiers ? child.modifiers : ""} ${
                 child.isSelected ? "selected" : ""
               } ${
                 child.notSelectable && child.notSelectableClassName

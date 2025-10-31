@@ -43,6 +43,15 @@ public class WorkspaceFolder extends WorkspaceNode {
   public void setViewRestrict(MaterialViewRestrict viewRestrict) {
     this.viewRestrict = viewRestrict;
   }
+  
+  @Override
+  public boolean getExam() {
+    return exam;
+  }
+  
+  public void setExam(boolean exam) {
+    this.exam = exam;
+  }
 
   @NotNull
   @Column(nullable = false)
@@ -55,4 +64,8 @@ public class WorkspaceFolder extends WorkspaceNode {
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
   private MaterialViewRestrict viewRestrict;
+  
+  @NotNull
+  @Column(nullable = false)
+  private boolean exam;
 }

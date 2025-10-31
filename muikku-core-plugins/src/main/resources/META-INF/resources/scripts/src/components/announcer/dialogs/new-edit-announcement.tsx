@@ -60,6 +60,7 @@ interface NewEditAnnouncementState {
   locked: boolean;
   startDate: Date;
   endDate: Date;
+  pinned?: boolean;
 }
 
 /**
@@ -83,7 +84,7 @@ class NewEditAnnouncement extends SessionStateComponent<
     this.handleDateChange = this.handleDateChange.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-
+    this.handlePinnedChange = this.handlePinnedChange.bind(this);
     this.baseAnnouncementCurrentTarget = props.announcement
       ? props.announcement.workspaces
           .map(
@@ -113,6 +114,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         currentTarget: this.baseAnnouncementCurrentTarget,
         subject: props.announcement ? props.announcement.caption : "",
         locked: false,
+        pinned: props.announcement ? props.announcement.pinned : false,
         startDate: props.announcement
           ? localize
               .getLocalizedMoment(this.props.announcement.startDate)
@@ -180,6 +182,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             subject: nextProps.announcement.caption,
             text: nextProps.announcement.content,
             currentTarget: this.baseAnnouncementCurrentTarget,
+            pinned: nextProps.announcement.pinned,
             startDate: localize
               .getLocalizedMoment(nextProps.announcement.startDate)
               .toDate(),
@@ -198,6 +201,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           {
             subject: "",
             text: "",
+            pinned: false,
             currentTarget: this.baseAnnouncementCurrentTarget,
             startDate: localize.getLocalizedMoment().toDate(),
             endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
@@ -234,6 +238,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
+          pinned: this.props.announcement.pinned,
           startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
@@ -264,6 +269,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: "",
           text: "",
+          pinned: false,
           currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
           startDate: localize.getLocalizedMoment().toDate(),
           endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
@@ -284,6 +290,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: "",
           text: "",
+          pinned: false,
           startDate: localize.getLocalizedMoment().toDate(),
           endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
           currentTarget: this.baseAnnouncementCurrentTarget,
@@ -305,6 +312,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
+          pinned: this.props.announcement.pinned,
           startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
@@ -412,6 +420,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           archived: false,
           caption: this.state.subject,
           content: this.state.text,
+          pinned: this.props.status.roles.includes("ADMINISTRATOR") // This shouldn't be needed, but I want to make sure normal teachers can't pin announcements
+            ? this.state.pinned
+            : false,
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
@@ -434,6 +445,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             {
               ...this.state,
               locked: false,
+              pinned: false,
             },
             this.props.announcement.id + "-" + (this.props.workspaceId || "")
           );
@@ -451,6 +463,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         announcement: {
           caption: this.state.subject,
           content: this.state.text,
+          pinned: this.state.pinned,
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
@@ -474,6 +487,7 @@ class NewEditAnnouncement extends SessionStateComponent<
               locked: false,
               subject: "",
               text: "",
+              pinned: false,
               startDate: localize.getLocalizedMoment().toDate(),
               endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
               currentTarget: this.getPredefinedWorkspaceByIdToConcat(
@@ -505,6 +519,19 @@ class NewEditAnnouncement extends SessionStateComponent<
     nState[stateLocation] = newDate;
     this.setStateAndStore(
       nState,
+      (this.props.announcement ? this.props.announcement.id + "-" : "") +
+        (this.props.workspaceId || "")
+    );
+  }
+
+  /**
+   * handlePinnedChange
+   * @param e event
+   */
+  handlePinnedChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const pinned = e.target.checked;
+    this.setStateAndStore(
+      { pinned },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
         (this.props.workspaceId || "")
     );
@@ -567,6 +594,23 @@ class NewEditAnnouncement extends SessionStateComponent<
             dateFormat="P"
           />
         </div>
+        {this.props.status.roles.includes("ADMINISTRATOR") && (
+          <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
+            <input
+              id="announcementPinned"
+              type="checkbox"
+              className="env-dialog__input"
+              checked={this.state.pinned}
+              onChange={this.handlePinnedChange}
+            />
+            <label
+              htmlFor="announcementPinned"
+              className="env-dialog__input-label"
+            >
+              {this.props.i18n.t("labels.pinAnnouncement", { ns: "messaging" })}
+            </label>
+          </div>
+        )}
       </div>,
       <InputContactsAutofill
         identifier="announcementRecipients"

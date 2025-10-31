@@ -444,7 +444,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
         
         // ...then create a new section under the help folder and move all pages under it
         
-        WorkspaceFolder helpSection = workspaceMaterialController.createWorkspaceFolder(helpRoot, "Suoritusohjeet", "suoritusohjeet", WorkspaceLanguage.fi);
+        WorkspaceFolder helpSection = workspaceMaterialController.createWorkspaceFolder(helpRoot, "Suoritusohjeet", "suoritusohjeet", WorkspaceLanguage.fi, false);
         for (WorkspaceMaterial helpPage : helpPages) {
           workspaceMaterialController.moveUnderParent(helpPage, helpSection);
         }

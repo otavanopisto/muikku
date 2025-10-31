@@ -12,7 +12,7 @@ import {
   EvaluationSort,
   EvaluationStatus,
   EvaluationStateType,
-  EvaluationBasePriceById,
+  EvaluationPrices,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { WorkspaceDataType } from "~/reducers/workspaces";
@@ -26,13 +26,14 @@ import {
   SaveWorkspaceUserSupplementationRequestRequest,
   UpdateWorkspaceUserSupplementationRequestRequest,
   UpdateWorkspaceUserAssessmentRequest,
-  UpdateWorkspaceAssigmentAssessmentRequest,
+  UpdateWorkspaceNodeAssessmentRequest,
   CreateWorkspaceJournalCommentRequest,
   UpdateWorkspaceJournalCommentRequest,
   WorkspaceJournalEntry,
   MaterialCompositeReply,
   UpdateBilledPriceRequest,
   InterimEvaluationRequest,
+  ExamAttendance,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -88,9 +89,9 @@ export type EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE = SpecificActionType<
   EvaluationStateType
 >;
 
-export type EVALUATION_BASE_PRICE_LOAD = SpecificActionType<
-  "EVALUATION_BASE_PRICE_LOAD",
-  EvaluationBasePriceById
+export type EVALUATION_BASE_PRICES_LOAD = SpecificActionType<
+  "EVALUATION_BASE_PRICES_LOAD",
+  EvaluationPrices
 >;
 
 export type EVALUATION_IMPORTANT_ASSESSMENTS_LOAD = SpecificActionType<
@@ -166,8 +167,8 @@ export type EVALUATION_LOCKED_ASSIGNMENTS_UPDATE = SpecificActionType<
   number[]
 >;
 
-export type EVALUATION_OPENED_ASSIGNMENT_UPDATE = SpecificActionType<
-  "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
+export type EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE = SpecificActionType<
+  "EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE",
   number
 >;
 
@@ -248,6 +249,23 @@ export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
   }
 >;
 
+// EVALUATION EXAMS
+
+export type EVALUATION_EXAMS_STATE_UPDATE = SpecificActionType<
+  "EVALUATION_EXAMS_STATE_UPDATE",
+  EvaluationStateType
+>;
+
+export type EVALUATION_EXAMS_LOAD = SpecificActionType<
+  "EVALUATION_EXAMS_LOAD",
+  ExamAttendance[]
+>;
+
+export type EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO = SpecificActionType<
+  "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
+  ExamAttendance
+>;
+
 // Server events
 /**
  * LoadEvaluationSystem
@@ -295,7 +313,11 @@ export interface LoadEvaluationSortFunction {
  * LoadEvaluationCurrentStudentAssigments
  */
 export interface LoadEvaluationCurrentStudentAssigments {
-  (data: { workspaceId: number; workspaceUserEntityId: number }): AnyActionType;
+  (data: {
+    workspaceId: number;
+    workspaceUserEntityId: number;
+    userEntityId: number;
+  }): AnyActionType;
 }
 
 /**
@@ -392,7 +414,7 @@ export interface UpdateWorkspaceEvaluation {
     type: "new" | "edit";
     workspaceEvaluation:
       | SaveWorkspaceUserAssessmentRequest
-      | UpdateWorkspaceAssigmentAssessmentRequest;
+      | UpdateWorkspaceNodeAssessmentRequest;
     billingPrice?: string;
     onSuccess?: () => void;
     onFail?: () => void;
@@ -524,10 +546,10 @@ export interface UpdateImportance {
 }
 
 /**
- * UpdateOpenedAssignmentEvaluationId
+ * UpdateOpenedAssignmentOrExamId
  */
-export interface UpdateOpenedAssignmentEvaluationId {
-  (data: { assignmentId?: number }): AnyActionType;
+export interface UpdateOpenedAssignmentOrExamId {
+  (data: { assignmentOrExamId?: number }): AnyActionType;
 }
 
 /**
@@ -621,6 +643,35 @@ export interface DeleteEvaluationJournalCommentTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * LoadEvaluationExamsTriggerType
+ */
+export interface LoadEvaluationExamsTriggerType {
+  (data: {
+    workspaceEntityId: number;
+    studentEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateEvaluationExamEvaluationInfoTriggerType
+ */
+export interface UpdateEvaluationExamEvaluationInfoTriggerType {
+  (data: {
+    workspaceNodeId: number;
+    userEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+const evaluationApi = MApi.getEvaluationApi();
+const workspaceApi = MApi.getWorkspaceApi();
+const userApi = MApi.getUserApi();
+const worklistApi = MApi.getWorklistApi();
+
 // Actions
 
 /**
@@ -633,7 +684,6 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
       getState: () => StateType
     ) => {
       const state = getState();
-      const evaluationApi = MApi.getEvaluationApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -689,7 +739,6 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
       getState: () => StateType
     ) => {
       const state = getState();
-      const evaluationApi = MApi.getEvaluationApi();
 
       dispatch({
         type: "EVALUATION_REQUESTS_STATE_UPDATE",
@@ -755,7 +804,6 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
       getState: () => StateType
     ) => {
       const state = getState();
-      const workspaceApi = MApi.getWorkspaceApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -814,7 +862,6 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
       getState: () => StateType
     ) => {
       const state = getState();
-      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -873,7 +920,6 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
       getState: () => StateType
     ) => {
       const state = getState();
-      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -931,7 +977,6 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
       getState: () => StateType
     ) => {
       const state = getState();
-      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -994,8 +1039,6 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const evaluationApi = MApi.getEvaluationApi();
-
       dispatch({
         type: "EVALUATION_ASSESSMENT_EVENTS_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1051,8 +1094,6 @@ const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFrom
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const evaluationApi = MApi.getEvaluationApi();
-
       dispatch({
         type: "EVALUATION_JOURNAL_FEEDBACK_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1108,8 +1149,6 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const evaluationApi = MApi.getEvaluationApi();
-
       try {
         const journalFeedback =
           await evaluationApi.saveWorkspaceStudentJournalFeedback({
@@ -1171,8 +1210,6 @@ const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerTyp
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const evaluationApi = MApi.getEvaluationApi();
-
       try {
         await evaluationApi.deleteWorkspaceStudentJournalFeedback({
           workspaceId: data.workspaceEntityId,
@@ -1230,8 +1267,6 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       dispatch({
         type: "EVALUATION_JOURNAL_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1304,8 +1339,6 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       dispatch({
         type: "EVALUATION_COMPOSITE_REPLIES_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
@@ -1360,7 +1393,6 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
       getState: () => StateType
     ) => {
       const state = getState();
-      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -1431,7 +1463,6 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
       getState: () => StateType
     ) => {
       const state = getState();
-      const evaluationApi = MApi.getEvaluationApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -1567,7 +1598,6 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
       getState: () => StateType
     ) => {
       const state = getState();
-      const evaluationApi = MApi.getEvaluationApi();
 
       if (type === "new") {
         try {
@@ -1674,7 +1704,6 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
       getState: () => StateType
     ) => {
       const state = getState();
-      const evaluationApi = MApi.getEvaluationApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -1816,10 +1845,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { workspaceId, workspaceUserEntityId } = data;
-
-      const workspaceApi = MApi.getWorkspaceApi();
-      const evaluationApi = MApi.getEvaluationApi();
+      const { workspaceId, workspaceUserEntityId, userEntityId } = data;
 
       dispatch({
         type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
@@ -1833,6 +1859,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
               {
                 workspaceEntityId: workspaceId,
                 assignmentType: "INTERIM_EVALUATION",
+                userEntityId: userEntityId,
               }
             );
 
@@ -1840,12 +1867,14 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
               await workspaceApi.getWorkspaceMaterials({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EXERCISE",
+                userEntityId: userEntityId,
               });
 
             const assignmentsEvaluated =
               await workspaceApi.getWorkspaceMaterials({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EVALUATED",
+                userEntityId: userEntityId,
               });
 
             const assignments = [
@@ -1909,7 +1938,6 @@ const toggleLockedAssignment: ToggleLockedAssigment =
       getState: () => StateType
     ) => {
       const state = getState();
-      const evaluationApi = MApi.getEvaluationApi();
 
       // Get current list of locked assignments
       const currentLockedAssignments =
@@ -2015,7 +2043,6 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       getState: () => StateType
     ) => {
       const state = getState();
-      const workspaceApi = MApi.getWorkspaceApi();
 
       // There is reason why update composite replies state is not changed here. Because
       // we don't wan't to change ui to loading states that would re render materials. It should still have
@@ -2113,8 +2140,6 @@ const updateBillingToServer: UpdateEvaluationEvent =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const worklistApi = MApi.getWorklistApi();
-
       const state = getState();
 
       try {
@@ -2200,7 +2225,6 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
     getState: () => StateType
   ) => {
     const state = getState();
-    const userApi = MApi.getUserApi();
 
     if (state.evaluations.status !== "LOADING") {
       dispatch({
@@ -2269,17 +2293,17 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 };
 
 /**
- * updateOpenedAssignmentEvaluation
+ * updateOpenedAssignmentOrExamId
  * @param data data
  */
-const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
-  function updateOpenedAssignmentEvaluation(data) {
+const updateOpenedAssignmentOrExamId: UpdateOpenedAssignmentOrExamId =
+  function updateOpenedAssignmentOrExamId(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
-        type: "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
-        payload: data.assignmentId,
+        type: "EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE",
+        payload: data.assignmentOrExamId,
       });
     };
   };
@@ -2295,8 +2319,6 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const evaluationApi = MApi.getEvaluationApi();
-
       try {
         await evaluationApi
           .archiveWorkspaceUserEvaluationRequest({
@@ -2340,8 +2362,6 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const evaluationApi = MApi.getEvaluationApi();
-
       try {
         await evaluationApi
           .deleteInterimEvaluationRequest({
@@ -2385,8 +2405,6 @@ const deleteSupplementationRequest: DeleteSupplementationRequest =
       getState: () => StateType
     ) => {
       const { workspaceUserEntityId, supplementationRequestId } = data;
-
-      const evaluationApi = MApi.getEvaluationApi();
 
       try {
         await evaluationApi
@@ -2433,8 +2451,6 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const workspaceApi = MApi.getWorkspaceApi();
-
     try {
       const student = await workspaceApi.getWorkspaceStudent({
         workspaceEntityId: workspaceEntityId,
@@ -2480,9 +2496,7 @@ const loadBasePriceFromServer: LoadBasePrice =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
-      const worklistApi = MApi.getWorklistApi();
-
-      let basePrice: EvaluationBasePriceById | undefined = undefined;
+      let basePrice: EvaluationPrices | undefined = undefined;
 
       dispatch({
         type: "EVALUATION_BASE_PRICE_STATE_UPDATE",
@@ -2490,12 +2504,12 @@ const loadBasePriceFromServer: LoadBasePrice =
       });
 
       await worklistApi
-        .getBasePrice({
+        .getWorkspacePrices({
           workspaceEntityId: workspaceEntityId,
         })
         .then(
-          (data) => {
-            basePrice = data as EvaluationBasePriceById;
+          (rValue) => {
+            basePrice = rValue as EvaluationPrices;
           },
           () => {
             basePrice = undefined;
@@ -2503,8 +2517,8 @@ const loadBasePriceFromServer: LoadBasePrice =
         );
 
       dispatch({
-        type: "EVALUATION_BASE_PRICE_LOAD",
-        payload: basePrice,
+        type: "EVALUATION_BASE_PRICES_LOAD",
+        payload: basePrice as EvaluationPrices,
       });
 
       dispatch({
@@ -2544,8 +2558,6 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
     ) => {
       const evaluationJournalComments =
         getState().evaluations.evaluationJournalComments;
-
-      const workspaceApi = MApi.getWorkspaceApi();
 
       if (
         !evaluationJournalComments.commentsLoaded.includes(data.journalEntryId)
@@ -2610,8 +2622,6 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
         fail,
         success,
       } = data;
-
-      const workspaceApi = MApi.getWorkspaceApi();
 
       const evaluationState = getState().evaluations;
 
@@ -2697,8 +2707,6 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
         success,
       } = data;
 
-      const workspaceApi = MApi.getWorkspaceApi();
-
       const evaluationState = getState().evaluations;
 
       try {
@@ -2772,8 +2780,6 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     ) => {
       const { commentId, journalEntryId, workspaceEntityId, fail, success } =
         data;
-
-      const workspaceApi = MApi.getWorkspaceApi();
 
       const evaluationState = getState().evaluations;
 
@@ -2851,6 +2857,101 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     };
   };
 
+/**
+ * LoadEvaluationExamsTriggerType
+ * @param data data
+ */
+const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
+  function loadEvaluationExamsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { workspaceEntityId, studentEntityId, onSuccess, onFail } = data;
+
+      try {
+        const exams = await evaluationApi.listStudentExams({
+          workspaceEntityId: workspaceEntityId,
+          studentEntityId: studentEntityId,
+        });
+
+        dispatch({
+          type: "EVALUATION_EXAMS_LOAD",
+          payload: exams,
+        });
+
+        dispatch({
+          type: "EVALUATION_EXAMS_STATE_UPDATE",
+          payload: "READY",
+        });
+
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "exams",
+              context: "exams",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+
+        onFail && onFail();
+      }
+    };
+  };
+
+/**
+ * updateEvaluationExamEvaluationInfo
+ * @param data data
+ */
+const updateEvaluationExamEvaluationInfo: UpdateEvaluationExamEvaluationInfoTriggerType =
+  function updateEvaluationExamEvaluationInfo(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { workspaceNodeId, userEntityId, onFail, onSuccess } = data;
+
+      const state = getState();
+
+      try {
+        const updatedEvaluationInfo =
+          await evaluationApi.getWorkspaceNodeEvaluationInfo({
+            workspaceNodeId: workspaceNodeId,
+            userEntityId: userEntityId,
+          });
+
+        const updatedExam = state.evaluations.evaluationExams?.data?.find(
+          (exam) => exam.folderId === workspaceNodeId
+        );
+
+        if (updatedExam) {
+          updatedExam.evaluationInfo = updatedEvaluationInfo;
+        }
+
+        dispatch({
+          type: "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
+          payload: updatedExam,
+        });
+
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        onFail && onFail();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2872,7 +2973,7 @@ export {
   updateImportance,
   setSelectedAssessmentAndLoadEvents,
   updateCurrentStudentCompositeRepliesData,
-  updateOpenedAssignmentEvaluation,
+  updateOpenedAssignmentOrExamId,
   loadEvaluationAssessmentEventsFromServer,
   loadEvaluationSelectedAssessmentJournalEventsFromServer,
   loadBasePriceFromServer,
@@ -2888,4 +2989,6 @@ export {
   deleteEvaluationJournalFeedback,
   deleteSupplementationRequest,
   toggleLockedAssignment,
+  loadEvaluationExamsFromServer,
+  updateEvaluationExamEvaluationInfo,
 };

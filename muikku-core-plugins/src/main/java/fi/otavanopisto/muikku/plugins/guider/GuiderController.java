@@ -53,6 +53,13 @@ public class GuiderController {
     
     List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
     for (WorkspaceMaterial evaluatedAssignment : evaluatedAssignments) {
+      
+      // Exam functionality: Ignore exam assignments
+      
+      if (evaluatedAssignment.isExamAssignment()) {
+        continue;
+      }
+
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(evaluatedAssignment, userEntity);
       if (workspaceMaterialReply == null) {
         activity.getEvaluables().addUnanswered();
@@ -86,6 +93,13 @@ public class GuiderController {
     
     List<WorkspaceMaterial> exerciseAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE);
     for (WorkspaceMaterial exerciseAssignment : exerciseAssignments) {
+      
+      // Exam functionality: Ignore exam assignments
+      
+      if (exerciseAssignment.isExamAssignment()) {
+        continue;
+      }
+
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(exerciseAssignment, userEntity);
       if (workspaceMaterialReply == null) {
         activity.getExercises().addUnanswered();

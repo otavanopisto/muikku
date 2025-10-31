@@ -17,16 +17,17 @@ interface EditorButtonSetProps extends MaterialLoaderProps {
  * @param props props
  */
 function toggleVisiblePageStatus(props: EditorButtonSetProps) {
-  props.updateWorkspaceMaterialContentNode({
-    workspace: props.workspace,
-    material: props.material,
-    update: {
-      ...props.material,
-      hidden: !props.material.hidden,
-    },
-    isDraft: false,
-    updateLinked: true,
-  });
+  props.onUpdateWorkspaceMaterialContentNode &&
+    props.onUpdateWorkspaceMaterialContentNode({
+      workspace: props.workspace,
+      material: props.material,
+      update: {
+        ...props.material,
+        hidden: !props.material.hidden,
+      },
+      isDraft: false,
+      updateLinked: true,
+    });
 }
 
 /**
@@ -36,67 +37,70 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
 function startupEditor(props: EditorButtonSetProps) {
   if (
     typeof props.canAddAttachments === "undefined" ||
-    props.canAddAttachments
+    (props.canAddAttachments &&
+      props.onRequestWorkspaceMaterialContentNodeAttachments)
   ) {
-    props.requestWorkspaceMaterialContentNodeAttachments(
+    props.onRequestWorkspaceMaterialContentNodeAttachments(
       props.workspace,
       props.material
     );
   }
-  props.setWorkspaceMaterialEditorState(
-    {
-      currentNodeWorkspace: props.workspace,
-      currentNodeValue: props.material,
-      parentNodeValue: props.folder,
-      section: false,
-      opened: true,
-      canDelete:
-        typeof props.canDelete === "undefined" ? false : props.canDelete,
-      canHide: typeof props.canHide === "undefined" ? false : props.canHide,
-      disablePlugins: !!props.disablePlugins,
-      canPublish:
-        typeof props.canPublish === "undefined" ? false : props.canPublish,
-      canRevert:
-        typeof props.canRevert === "undefined" ? false : props.canRevert,
-      canRestrictView:
-        typeof props.canRestrictView === "undefined"
-          ? false
-          : props.canRestrictView,
-      canCopy: typeof props.canCopy === "undefined" ? false : props.canCopy,
-      canChangePageType:
-        typeof props.canChangePageType === "undefined"
-          ? false
-          : props.canChangePageType,
-      canChangeExerciseType:
-        typeof props.canChangeExerciseType === "undefined"
-          ? false
-          : props.canChangeExerciseType,
-      canSetLicense:
-        typeof props.canSetLicense === "undefined"
-          ? false
-          : props.canSetLicense,
-      canSetProducers:
-        typeof props.canSetProducers === "undefined"
-          ? false
-          : props.canSetProducers,
-      canAddAttachments:
-        typeof props.canAddAttachments === "undefined"
-          ? false
-          : props.canAddAttachments,
-      canEditContent:
-        typeof props.canEditContent === "undefined"
-          ? true
-          : props.canEditContent,
-      canSetTitle:
-        typeof props.canSetTitle === "undefined" ? true : props.canSetTitle,
-      showRemoveAnswersDialogForPublish: false,
-      showRemoveAnswersDialogForDelete: false,
-      showUpdateLinkedMaterialsDialogForPublish: false,
-      showRemoveLinkedAnswersDialogForPublish: false,
-      showUpdateLinkedMaterialsDialogForPublishCount: 0,
-    },
-    true
-  );
+
+  props.onSetWorkspaceMaterialEditorState &&
+    props.onSetWorkspaceMaterialEditorState(
+      {
+        currentNodeWorkspace: props.workspace,
+        currentNodeValue: props.material,
+        parentNodeValue: props.folder,
+        section: false,
+        opened: true,
+        canDelete:
+          typeof props.canDelete === "undefined" ? false : props.canDelete,
+        canHide: typeof props.canHide === "undefined" ? false : props.canHide,
+        disablePlugins: !!props.disablePlugins,
+        canPublish:
+          typeof props.canPublish === "undefined" ? false : props.canPublish,
+        canRevert:
+          typeof props.canRevert === "undefined" ? false : props.canRevert,
+        canRestrictView:
+          typeof props.canRestrictView === "undefined"
+            ? false
+            : props.canRestrictView,
+        canCopy: typeof props.canCopy === "undefined" ? false : props.canCopy,
+        canChangePageType:
+          typeof props.canChangePageType === "undefined"
+            ? false
+            : props.canChangePageType,
+        canChangeExerciseType:
+          typeof props.canChangeExerciseType === "undefined"
+            ? false
+            : props.canChangeExerciseType,
+        canSetLicense:
+          typeof props.canSetLicense === "undefined"
+            ? false
+            : props.canSetLicense,
+        canSetProducers:
+          typeof props.canSetProducers === "undefined"
+            ? false
+            : props.canSetProducers,
+        canAddAttachments:
+          typeof props.canAddAttachments === "undefined"
+            ? false
+            : props.canAddAttachments,
+        canEditContent:
+          typeof props.canEditContent === "undefined"
+            ? true
+            : props.canEditContent,
+        canSetTitle:
+          typeof props.canSetTitle === "undefined" ? true : props.canSetTitle,
+        showRemoveAnswersDialogForPublish: false,
+        showRemoveAnswersDialogForDelete: false,
+        showUpdateLinkedMaterialsDialogForPublish: false,
+        showRemoveLinkedAnswersDialogForPublish: false,
+        showUpdateLinkedMaterialsDialogForPublishCount: 0,
+      },
+      true
+    );
 }
 
 /**
@@ -110,7 +114,7 @@ function copyPage(props: EditorButtonSetProps) {
   );
   localStorage.setItem("workspace-copied-id", props.workspace.id.toString(10));
 
-  props.displayNotification(
+  props.onDisplayNotification(
     i18next.t("notifications.documentCopied", {
       ns: "materials",
       title: props.material.title,

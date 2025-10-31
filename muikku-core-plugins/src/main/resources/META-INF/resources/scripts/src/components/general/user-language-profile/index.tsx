@@ -40,6 +40,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
     skillGoals,
     languages,
     samples,
+    cv,
   }: LanguageProfileData = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -382,6 +383,127 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
               </div>
             </Accordion>
           ))}
+          <Accordion
+            id="language-CV-drawer"
+            title={t("labels.languageCv", { ns: "languageProfile" })}
+          >
+            <div className="user-language-profile-container__row">
+              <div className="user-language-profile-container__subheader">
+                {t("labels.general", {
+                  ns: "languageProfile",
+                })}
+              </div>
+              <div>{cv.general}</div>
+            </div>
+            <div className="user-language-profile-container__row">
+              {cv.languages.length > 0 &&
+                cv.languages.map((language) => (
+                  <div
+                    className="user-language-profile__cv-language"
+                    key={language.code}
+                  >
+                    <fieldset className="user-language-profile__skills-container">
+                      <legend className="user-language-profile-container__subheader">
+                        {t(`languages.${language.code}`, {
+                          ns: "languageProfile",
+                          defaultValue: language.code,
+                        })}
+                      </legend>
+                      <div className="user-language-profile-container__secondary-header">
+                        {t("labels.skillLevel", {
+                          ns: "languageProfile",
+                        })}
+                      </div>
+                      <div className="user-language-profile__skill-row">
+                        <StarDisplayer
+                          label={t("labels.skillInteraction", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.interaction)}
+                        />
+
+                        <StarDisplayer
+                          label={t("labels.skillVocalization", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.vocal)}
+                        />
+                        <StarDisplayer
+                          label={t("labels.skillWriting", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.writing)}
+                        />
+                        <StarDisplayer
+                          label={t("labels.skillReadingComprehension", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.reading)}
+                        />
+                        <StarDisplayer
+                          label={t("labels.skillListeningComprehension", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.listening)}
+                        />
+                      </div>
+                      <div className="user-language-profile__label">
+                        {t("labels.skillEstimate", {
+                          ns: "languageProfile",
+                        })}
+                      </div>
+                      <div className="user-language-profile__skill-row">
+                        {t(`levels.${language.general}`, {
+                          ns: "languageProfile",
+                          context: "cv",
+                          defaultValue: language.general,
+                        })}
+                      </div>
+                      <div className="user-language-profile__label">
+                        {t("labels.descriptionOfCompetence", {
+                          ns: "languageProfile",
+                        })}
+                      </div>
+                      <div className="user-language-profile__skill-row">
+                        {language.description ? (
+                          language.description
+                        ) : (
+                          <i>
+                            {t("content.empty", {
+                              ns: "common",
+                            })}
+                          </i>
+                        )}
+                      </div>
+                      {language.samples?.length > 0 && (
+                        <>
+                          <div className="user-language-profile__label">
+                            {t("labels.samples", {
+                              ns: "languageProfile",
+                            })}
+                          </div>
+                          {language.samples.map((sample, index) => (
+                            <div
+                              key={"sample-link" + index}
+                              className="user-language-profile__skill-row user-language-profile__skill-row--sample"
+                            >
+                              <a
+                                href={sample.url}
+                                rel="noreferrer"
+                                target="_blank"
+                                className="user-language-profile__sample-link"
+                              >
+                                {sample.name}
+                              </a>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </fieldset>
+                  </div>
+                ))}
+            </div>
+          </Accordion>
         </>
       )}
     </div>

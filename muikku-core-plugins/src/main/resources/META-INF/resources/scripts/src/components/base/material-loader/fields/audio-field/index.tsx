@@ -1,7 +1,6 @@
 import * as React from "react";
 import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
-import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import Synchronizer from "../base/synchronizer";
@@ -13,6 +12,7 @@ import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/audiofield.scss";
 import ProgressBar from "@ramonak/react-progress-bar";
 import moment from "moment";
+import { CommonFieldProps } from "../../types";
 
 // so we use the media recorder
 // the media recorder is polyfilled
@@ -28,22 +28,10 @@ if (!(window as any).MediaRecorder) {
 /**
  * AudioFieldProps
  */
-interface AudioFieldProps extends WithTranslation {
-  type: string;
+interface AudioFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
   };
-  status: StatusType;
-
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  invisible?: boolean;
 }
 
 /**

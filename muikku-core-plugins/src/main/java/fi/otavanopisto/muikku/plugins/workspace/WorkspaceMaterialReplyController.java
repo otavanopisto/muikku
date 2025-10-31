@@ -61,6 +61,11 @@ public class WorkspaceMaterialReplyController {
     return reply;
   }
 
+  public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntityId(
+      WorkspaceMaterial workspaceMaterial, Long userEntityId) {
+    return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(workspaceMaterial, userEntityId);
+  }
+
   public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(
       WorkspaceMaterial workspaceMaterial, UserEntity userEntity) {
     return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(workspaceMaterial, userEntity.getId());
@@ -105,10 +110,6 @@ public class WorkspaceMaterialReplyController {
   public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByWorkspaceMaterial(
       WorkspaceMaterial workspaceMaterial) {
     return workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
-  }
-
-  public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
-    workspaceMaterialReplyDAO.delete(workspaceMaterialReply);
   }
 
   public void incWorkspaceMaterialReplyTries(WorkspaceMaterialReply workspaceMaterialReply) {

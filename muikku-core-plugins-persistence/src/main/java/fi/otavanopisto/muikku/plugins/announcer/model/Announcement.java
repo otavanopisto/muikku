@@ -93,6 +93,14 @@ public class Announcement {
     this.organizationEntityId = organizationEntityId;
   }
 
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -134,4 +142,7 @@ public class Announcement {
   
   @Column (nullable=false)
   private Boolean publiclyVisible;
+  
+  @Column (nullable=false)
+  private boolean pinned;
 }

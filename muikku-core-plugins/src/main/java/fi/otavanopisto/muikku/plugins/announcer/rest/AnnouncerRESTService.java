@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestr
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
@@ -57,6 +58,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -82,6 +84,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -140,6 +145,12 @@ public class AnnouncerRESTService extends PluginRESTService {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
     
+    boolean pinned = false;
+    
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      pinned = restModel.isPinned();
+    }
+    
     Announcement announcement = announcementController.createAnnouncement(
         userEntity,
         organizationEntity,
@@ -147,7 +158,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getContent(),
         restModel.getStartDate(),
         restModel.getEndDate(),
-        restModel.getPubliclyVisible());
+        restModel.getPubliclyVisible(),
+        pinned);
     
     for (Long userGroupEntityId : userGroupEntityIds) {
       UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
@@ -171,6 +183,10 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
+    
+    
+    // Mark the announcement as read directly on behalf of the creator
+    announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId());
     
     return Response
         .ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces))
@@ -221,6 +237,12 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
       }
     }
+    
+    boolean pinned = oldAnnouncement.isPinned();
+    
+    if (oldAnnouncement.isPinned() != restModel.isPinned() && sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      pinned = restModel.isPinned();
+    }
 
     Announcement newAnnouncement = announcementController.updateAnnouncement(
         oldAnnouncement,
@@ -229,7 +251,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getStartDate(),
         restModel.getEndDate(),
         restModel.getPubliclyVisible(),
-        restModel.isArchived()
+        restModel.isArchived(),
+        pinned
     );
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
@@ -273,7 +296,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
       @QueryParam("onlyEditable") @DefaultValue("false") boolean onlyEditable,
       @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
-      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
+      @QueryParam("onlyUnread") @DefaultValue("false") boolean onlyUnread,
+      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults
   ) {
     if (!sessionController.isLoggedIn()) {
       return Response.noContent().build();
@@ -313,7 +339,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
       announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
-          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
+          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults);
+
     }
     else {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -326,9 +353,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
       
       announcements = announcementController.listWorkspaceAnnouncements(organizationEntity,
-          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
+          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults);
     }
-
+    int unreadAnnouncements = 0;
+    
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       if (onlyEditable && !canEdit(announcement, loggedUser)) {
@@ -337,12 +365,22 @@ public class AnnouncerRESTService extends PluginRESTService {
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
       List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
-          
+      
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
+      
+      // Count unread announcements
+      AnnouncementRecipient ar = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, currentUserEntity.getId());
+      
+      if (ar == null) {
+        unreadAnnouncements++;
+      }
     }
+    AnnouncementWithUnreadsRESTModel restModel = new AnnouncementWithUnreadsRESTModel();
+    restModel.setAnnouncements(restModels);
+    restModel.setUnreadCount(unreadAnnouncements);
     
-    return Response.ok(restModels).build();
+    return Response.ok(restModel).build();
   }
   
   @GET
@@ -369,7 +407,77 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
   }
+  
+  @POST
+  @Path("/announcements/{ANNOUNCEMENTID}/markAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markAnnouncementAsRead(@PathParam("ANNOUNCEMENTID") Long announcementId) {
+    
+    Announcement announcement = announcementController.findById(announcementId);
+    
+    if (announcement == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid announcementId").build();
+    }
+    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
+    
+    if (announcementRecipient == null) {
 
+      announcementRecipient = announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId());
+    }
+    AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+    
+    if (announcementRecipient != null) {
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+    }
+
+    return Response
+        .ok(restModel)
+        .build();
+  }
+
+  @POST
+  @Path("/announcements/markAllAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markUsersAllAnnouncementAsRead() {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(sessionController.getLoggedUserEntity().getId());
+    
+    Set<SchoolDataIdentifier> announcementsForUser = Set.of(sessionController.getLoggedUser());
+    
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
+    
+    List<Announcement> announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
+        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENTANDEXPIRED, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
+
+    List<AnnouncementRecipientRESTModel> restModels = new ArrayList<AnnouncementRecipientRESTModel>();
+    
+    for (Announcement announcement : announcements) {
+      AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, userEntity.getId());
+      
+      if (announcementRecipient == null) {
+        announcementRecipient = announcementController.createAnnouncementRecipient(announcement, userEntity.getId());
+      }
+      
+      AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+      
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+      
+      restModels.add(restModel);
+    }
+
+    return Response
+        .ok(restModels)
+        .build();
+  }
+  
   private boolean canSeeAnnouncement(Announcement announcement, SchoolDataIdentifier userIdentifier) {
     /**
      * This is not very efficient, but things needed to be checked are
@@ -454,6 +562,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setId(announcement.getId());
     restModel.setPubliclyVisible(announcement.getPubliclyVisible());
     restModel.setArchived(announcement.getArchived());
+    restModel.setPinned(announcement.isPinned());
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {
@@ -488,6 +597,10 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
     }
+    
+    boolean unread = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId()) == null;
+    
+    restModel.setUnread(unread);
 
     return restModel;
   }
@@ -558,6 +671,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
 
     announcementController.archive(announcement);
+    
     return Response.noContent().build();
   }
   
