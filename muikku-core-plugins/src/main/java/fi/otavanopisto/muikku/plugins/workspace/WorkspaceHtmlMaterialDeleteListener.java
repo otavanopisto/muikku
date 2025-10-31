@@ -8,21 +8,25 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 
 @ApplicationScoped
 public class WorkspaceHtmlMaterialDeleteListener {
   
   @Inject
-  private WorkspaceMaterialController workspaceMaterialController;
+  private WorkspaceMaterialDAO workspaceMaterialDAO;
+
+  @Inject
+  private MaterialDeleteController materialDeleteController;
   
   public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent htmlMaterialDeleteEvent) throws WorkspaceMaterialContainsAnswersExeption {
     // TODO: This should not be limited to html materials
     Material material = htmlMaterialDeleteEvent.getMaterial();
     
-    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(material);
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByMaterialId(material.getId());
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
+      materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
     }
     
   }

@@ -34,10 +34,8 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelect
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
-import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
@@ -47,9 +45,9 @@ public class WorkspaceMaterialFieldChangeListener {
   
   @Inject
   private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
-
+  
   @Inject
-  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
+  private MaterialDeleteController materialDeleteController;
   
   @Inject
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
@@ -216,7 +214,7 @@ public class WorkspaceMaterialFieldChangeListener {
       }
       else if (!deprecatedAnswers.isEmpty()) {
         for (WorkspaceMaterialSelectFieldAnswer deprecatedAnswer : deprecatedAnswers) {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFieldAnswer(deprecatedAnswer);
+          materialDeleteController.deleteWorkspaceMaterialFieldAnswer(deprecatedAnswer);
         }
       }
     }
@@ -269,7 +267,7 @@ public class WorkspaceMaterialFieldChangeListener {
       }
       else if (!deprecatedAnswers.isEmpty()) {
         for (WorkspaceMaterialMultiSelectFieldAnswer deprecatedAnswer : deprecatedAnswers) {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFieldAnswer(deprecatedAnswer);
+          materialDeleteController.deleteWorkspaceMaterialFieldAnswer(deprecatedAnswer);
         }
       }
     }
@@ -282,23 +280,6 @@ public class WorkspaceMaterialFieldChangeListener {
       }
     }
     return null;
-  }
-
-  // Delete
-  
-  public void onWorkspaceMaterialFieldDelete(@Observes WorkspaceMaterialFieldDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
-    WorkspaceMaterialField materialField = event.getWorkspaceMaterialField();
-    
-    List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFieldAnswersByField(materialField);
-    if (event.getRemoveAnswers()) {
-      for (WorkspaceMaterialFieldAnswer answer : answers) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFieldAnswer(answer); 
-      }
-    } else {
-      if (!answers.isEmpty()) {
-        throw new WorkspaceMaterialContainsAnswersExeption("Could not remove workspace material field because it contains answers");
-      }
-    }
   }
   
 }

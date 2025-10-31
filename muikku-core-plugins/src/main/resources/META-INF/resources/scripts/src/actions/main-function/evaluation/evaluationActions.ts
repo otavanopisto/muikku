@@ -2923,7 +2923,7 @@ const updateEvaluationExamEvaluationInfo: UpdateEvaluationExamEvaluationInfoTrig
 
       try {
         const updatedEvaluationInfo =
-          await evaluationApi.getWorkspaceNodeEvaluation({
+          await evaluationApi.getWorkspaceNodeEvaluationInfo({
             workspaceNodeId: workspaceNodeId,
             userEntityId: userEntityId,
           });

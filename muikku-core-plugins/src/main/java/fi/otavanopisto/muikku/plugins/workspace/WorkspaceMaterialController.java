@@ -40,7 +40,6 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceFolderCreateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceFolderUpdateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialCreateEvent;
-import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceRootFolderCreateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
@@ -128,13 +127,13 @@ public class WorkspaceMaterialController {
   private Event<WorkspaceMaterialUpdateEvent> workspaceMaterialUpdateEvent;
 
   @Inject
-  private Event<WorkspaceMaterialDeleteEvent> workspaceMaterialDeleteEvent;
-
-  @Inject
   private MaterialController materialController;
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
+  
+  @Inject
+  private MaterialDeleteController materialDeleteController;
 
   private static final int FLATTENING_LEVEL = 1;
 
@@ -359,18 +358,18 @@ public class WorkspaceMaterialController {
     switch (node.getType()) {
     case FRONT_PAGE_FOLDER:
     case FOLDER:
-      deleteWorkspaceFolder((WorkspaceFolder) node);
+      materialDeleteController.deleteWorkspaceFolder((WorkspaceFolder) node);
       break;
     case MATERIAL:
       try {
-        deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
+        materialDeleteController.deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
         // Ignored since removeAnswers flag has been explicitly set to true
       }
       break;
     case ROOT_FOLDER:
-      deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
+      materialDeleteController.deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
       break;
     }
   }
@@ -681,35 +680,6 @@ public class WorkspaceMaterialController {
     return false;
   }
 
-  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers)
-      throws WorkspaceMaterialContainsAnswersExeption {
-    try {
-      workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial, removeAnswers));
-
-      List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceMaterial);
-      for (WorkspaceNode childNode : childNodes) {
-        if (childNode instanceof WorkspaceMaterial) {
-          deleteWorkspaceMaterial((WorkspaceMaterial) childNode, removeAnswers);
-        }
-        else if (childNode instanceof WorkspaceFolder) {
-          deleteWorkspaceFolder((WorkspaceFolder) childNode);
-        }
-      }
-    }
-    catch (Exception e) {
-      Throwable cause = e;
-      while (cause != null) {
-        cause = cause.getCause();
-        if (cause instanceof WorkspaceMaterialContainsAnswersExeption) {
-          throw (WorkspaceMaterialContainsAnswersExeption) cause;
-        }
-      }
-      throw e;
-    }
-
-    workspaceMaterialDAO.delete(workspaceMaterial);
-  }
-
   /**
    * Returns the identifier of the workspace entity the given workspace node
    * belongs to.
@@ -754,10 +724,6 @@ public class WorkspaceMaterialController {
     }
 
     return (WorkspaceRootFolder) node;
-  }
-
-  public void deleteWorkspaceRootFolder(WorkspaceRootFolder workspaceRootFolder) {
-    workspaceRootFolderDAO.delete(workspaceRootFolder);
   }
 
   /* Folder */
@@ -811,10 +777,6 @@ public class WorkspaceMaterialController {
 
   public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
     return workspaceFolderDAO.findById(workspaceFolderId);
-  }
-
-  public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
-    workspaceFolderDAO.delete(workspaceFolder);
   }
 
   public void updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
