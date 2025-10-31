@@ -3,6 +3,7 @@ import Dropdown from "~/components/general/dropdown";
 import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
   compulsoryOrUpperSecondary,
+  getCourseDropdownName,
   getCourseInfo,
 } from "~/helper-functions/study-matrix";
 import OPSCourseList, {
@@ -107,9 +108,6 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
       </SuggestionList>
     );
 
-    const courseDropdownName =
-      subject.subjectCode + course.courseNumber + " - " + course.name;
-
     // By default content is mandatory or option shorthand
     let courseTdContent = course.mandatory
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
@@ -137,9 +135,11 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
             content={
               <div className="hops-container__study-tool-dropdown-container">
                 <div className="hops-container__study-tool-dropdow-title">
-                  {course.mandatory
-                    ? courseDropdownName
-                    : `${courseDropdownName}*`}
+                  {getCourseDropdownName(
+                    subject,
+                    course,
+                    matrix.type === "uppersecondary"
+                  )}
                 </div>
                 {canBeSelected && suggestionList}
               </div>
@@ -158,7 +158,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   return (
     <OPSCourseList
       {...props}
-      matrix={matrix}
+      matrix={matrix.subjectsTable}
       renderCourseItem={renderCourseItem}
     ></OPSCourseList>
   );
