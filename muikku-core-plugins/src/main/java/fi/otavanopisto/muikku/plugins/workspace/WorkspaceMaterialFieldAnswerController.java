@@ -19,7 +19,6 @@ import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerClipDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
-import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
@@ -34,7 +33,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFiel
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
@@ -49,9 +47,6 @@ public class WorkspaceMaterialFieldAnswerController {
   
   @Inject
   private Logger logger;
-
-  @Inject
-  private WorkspaceMaterialFieldAnswerDAO workspaceMaterialFieldAnswerDAO;
 
   @Inject
   private WorkspaceMaterialTextFieldAnswerDAO workspaceMaterialTextFieldAnswerDAO;
@@ -94,12 +89,6 @@ public class WorkspaceMaterialFieldAnswerController {
   
   @Inject
   private FileAnswerUtils fileAnswerUtils;
-  
-  /* Generic */
-
-  public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByField(WorkspaceMaterialField field) {
-    return workspaceMaterialFieldAnswerDAO.listByField(field);
-  }
   
   /* TextField */
 
