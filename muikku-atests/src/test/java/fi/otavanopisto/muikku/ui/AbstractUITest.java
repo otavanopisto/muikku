@@ -2097,7 +2097,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     scrollTo("input#" + workspaceAccess, 300);
     sleep(500);    
     WebElement element = getWebDriver().findElement(By.cssSelector("input#" + workspaceAccess));
-    int i = 0;
+    i = 0;
     while (!element.isSelected()) {
       waitAndClick("input#" + workspaceAccess);
       sleep(500);
