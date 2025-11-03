@@ -6,10 +6,18 @@
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
     <version>1.1.267-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   
   <artifactId>frontend</artifactId>
+  <packaging>jar</packaging>
+  <name>Muikku Frontend</name>
+  <description>Muikku Frontend</description>
 
+  <properties>
+    <frontend.environment>production</frontend.environment>
+  </properties>
+  
   <profiles>
     <profile>
       <id>development</id>
@@ -198,6 +206,15 @@
     </plugins>
 
     <resources>
+      <resource>
+        <directory>scripts</directory>
+        <targetPath>META-INF/resources/scripts</targetPath>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>.gitignore</exclude>
+        </excludes>
+      </resource>
+
       <resource>
         <directory>dist</directory>
         <targetPath>META-INF/resources/scripts/dist</targetPath>
