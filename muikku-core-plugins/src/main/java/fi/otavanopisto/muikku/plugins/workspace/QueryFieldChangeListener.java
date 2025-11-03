@@ -37,6 +37,9 @@ public class QueryFieldChangeListener {
   
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
+  
+  @Inject
+  private MaterialDeleteController materialDeleteController;
 
   @Inject
   private MaterialDAO materialDAO;
@@ -177,10 +180,11 @@ public class QueryFieldChangeListener {
   }
   
   public void onQueryFieldDelete(@Observes QueryFieldDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
+    // TODO Eventually move this to MaterialDeleteController as well
     QueryField queryField = event.getQueryField();
     List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByQueryField(queryField);
     for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
-      workspaceMaterialFieldController.deleteWorkspaceMaterialField(workspaceMaterialField, event.getRemoveAnswers());
+      materialDeleteController.deleteWorkspaceMaterialField(workspaceMaterialField, event.getRemoveAnswers());
     }
   }
   
