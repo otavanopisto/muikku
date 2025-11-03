@@ -11568,7 +11568,6 @@ components:
               - publiclyVisible
               - userGroupEntityIds
               - workspaceEntityIds
-              - categories
             properties:
               caption:
                 type: string
@@ -13763,7 +13762,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
-    
+
     AnnouncementCategory:
       type: object
       description: AnnouncementCategory object
