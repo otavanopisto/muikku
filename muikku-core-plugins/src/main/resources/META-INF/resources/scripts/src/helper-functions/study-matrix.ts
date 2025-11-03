@@ -207,7 +207,7 @@ export const getCourseDropdownName = (
 
   // Add credits to uppersecondary courses
   if (showCredits) {
-    courseDropdownName += ` (${course.length} op`;
+    courseDropdownName += ` (${course.length} op)`;
   }
 
   return courseDropdownName;
