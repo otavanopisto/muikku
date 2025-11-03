@@ -770,6 +770,7 @@ export const availableLanguages: LanguageData[] = [
 
 export const schoolCourseTableCompulsory2018: SchoolCurriculumMatrix = {
   curriculumName: "OPS 2018",
+  type: "compulsory",
   subjectsTable: [
     {
       name: "Äidinkieli ja kirjallisuus",
@@ -1338,6 +1339,7 @@ export const schoolCourseTableCompulsory2018: SchoolCurriculumMatrix = {
 
 export const schoolCourseTableUppersecondary2021: SchoolCurriculumMatrix = {
   curriculumName: "OPS 2021",
+  type: "uppersecondary",
   subjectsTable: [
     {
       name: "Äidinkieli ja kirjallisuus, suomi äidinkielenä",

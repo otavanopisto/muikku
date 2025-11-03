@@ -9,6 +9,7 @@ import {
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import {
   compulsoryOrUpperSecondary,
+  getCourseDropdownName,
   getCourseInfo,
   getHighestCourseNumber,
 } from "~/helper-functions/study-matrix";
@@ -69,9 +70,6 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       needSupplementationList
     );
 
-    const courseDropdownName =
-      subject.subjectCode + course.courseNumber + " - " + course.name;
-
     // By default content is mandatory or option shorthand
     let courseTdContent = course.mandatory
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
@@ -98,9 +96,11 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
           content={
             <div className="hops-container__study-tool-dropdown-container">
               <div className="hops-container__study-tool-dropdow-title">
-                {course.mandatory
-                  ? courseDropdownName
-                  : `${courseDropdownName}*`}
+                {getCourseDropdownName(
+                  subject,
+                  course,
+                  matrix.type === "uppersecondary"
+                )}
               </div>
             </div>
           }

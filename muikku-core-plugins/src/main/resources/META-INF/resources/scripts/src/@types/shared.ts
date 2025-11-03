@@ -296,6 +296,7 @@ export interface LanguageData {
  */
 export interface SchoolCurriculumMatrix {
   curriculumName: string;
+  type: "uppersecondary" | "compulsory";
   subjectsTable: SchoolSubject[];
 }
 
