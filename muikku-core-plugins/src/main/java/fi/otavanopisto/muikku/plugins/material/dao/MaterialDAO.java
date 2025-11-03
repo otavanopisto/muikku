@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.material.model.Material_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.material.model.Material_;
 
 public class MaterialDAO extends CorePluginsDAO<Material> {
 
@@ -38,6 +38,10 @@ public class MaterialDAO extends CorePluginsDAO<Material> {
   public Material updateViewRestrict(Material material, MaterialViewRestrict viewRestrict) {
     material.setViewRestrict(viewRestrict);
     return persist(material);
+  }
+
+  public void delete(Material material) {
+    super.delete(material);
   }
 	
 }
