@@ -879,6 +879,7 @@
       "studyPlannerTooltipPrecentDate": "Present time",
       "studyPlannerTooltipGraduationGoalDate": "Target graduation date",
       "studyPlannerTooltipEstimatedDGraduationDate": "Estimated graduation date",
+      "totalPoints": "Total points: {{points}}",
       "unblockPastPeriod": "Unlock for editing"
     },
     "content": {

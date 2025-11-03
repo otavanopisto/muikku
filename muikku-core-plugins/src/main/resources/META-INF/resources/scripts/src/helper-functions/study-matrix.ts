@@ -187,6 +187,33 @@ export const showSubject = (
 };
 
 /**
+ * Gets the course dropdown name
+ * @param subject subject
+ * @param course course
+ * @param showCredits boolean
+ */
+export const getCourseDropdownName = (
+  subject: SchoolSubject,
+  course: Course,
+  showCredits: boolean
+) => {
+  let courseDropdownName =
+    subject.subjectCode + course.courseNumber + " - " + course.name;
+
+  // Add asterisk to optional courses
+  if (!course.mandatory) {
+    courseDropdownName += "*";
+  }
+
+  // Add credits to uppersecondary courses
+  if (showCredits) {
+    courseDropdownName += ` (${course.length} op)`;
+  }
+
+  return courseDropdownName;
+};
+
+/**
  * Selects the correct school course table based on the study programme name
  *
  * @param studyProgrammeName studyProgrammeName
@@ -215,7 +242,7 @@ export const compulsoryOrUpperSecondary = (
     );
 
     if (matrix) {
-      return matrix.subjectsTable;
+      return matrix;
     }
     return null;
   };
@@ -272,19 +299,19 @@ export const filterMatrix = (
 
 /**
  * gets highest of course number available or if under 9, then default 9
- * @param schoolSubjects list of school sucjests
+ * @param matrix list of school sucjests
  * @returns number of highest course or default 9
  */
 export const getHighestCourseNumber = (
-  schoolSubjects: SchoolSubject[]
+  matrix: SchoolCurriculumMatrix | null
 ): number | null => {
-  if (schoolSubjects === null) {
+  if (matrix === null) {
     return null;
   }
 
   let highestCourseNumber = 1;
 
-  for (const sSubject of schoolSubjects) {
+  for (const sSubject of matrix.subjectsTable) {
     for (const aCourse of sSubject.availableCourses) {
       if (aCourse.courseNumber <= highestCourseNumber) {
         continue;

@@ -13,7 +13,6 @@ import fi.otavanopisto.muikku.plugins.material.MaterialField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldCreateEvent;
-import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOHandler;
@@ -39,9 +38,6 @@ public class WorkspaceMaterialFieldController {
 
   @Inject
   private Event<WorkspaceMaterialFieldUpdateEvent> workspaceMaterialFieldUpdateEvent;
-  
-  @Inject
-  private Event<WorkspaceMaterialFieldDeleteEvent> workspaceMaterialFieldDeleteEvent;
 
   public WorkspaceMaterialField createWorkspaceMaterialField(WorkspaceMaterial workspaceMaterial, QueryField queryField, String embedId) {
     WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.create(queryField, workspaceMaterial, embedId);
@@ -67,17 +63,6 @@ public class WorkspaceMaterialFieldController {
     //
     // -> fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldChangeListener
     workspaceMaterialFieldUpdateEvent.fire(new WorkspaceMaterialFieldUpdateEvent(workspaceMaterialField, materialField, removeAnswers));
-  }
-
-  public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField, boolean removeAnswers)
-      throws WorkspaceMaterialContainsAnswersExeption {
-    
-    // If removeAnswers is true, this event will cause all answers associated with the workspace material field
-    // to be deleted so that the workspace material field itself no longer has associated entities preventing deletion.
-    // Otherwise, the call will fail on WorkspaceMaterialContainsAnswersExeption
-    
-    workspaceMaterialFieldDeleteEvent.fire(new WorkspaceMaterialFieldDeleteEvent(workspaceMaterialField, removeAnswers));
-    workspaceMaterialFieldDAO.delete(workspaceMaterialField);
   }
   
   public String retrieveFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException {
