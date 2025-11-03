@@ -4,7 +4,9 @@
   <sql>alter table Material drop foreign key FK_ni0oofdm6ctau494pkufung9o;</sql>
   <sql>alter table Material drop column originMaterial_id;</sql>
   
-  <sql>create table OrphanMaterials (id bigint);</sql>
-  <sql>insert into OrphanMaterials (select id from Material where id not in (select materialId from WorkspaceMaterial));</sql>
+  <sql>create table OrphanMaterial (id bigint);</sql>
+  <sql>insert into OrphanMaterial (select id from Material where id not in (select materialId from WorkspaceMaterial));</sql>
+  
+  <sql>insert into SystemSetting (settingKey, settingValue) values ('materials.orphanRemoval', '1');</sql>
 
 </update>
