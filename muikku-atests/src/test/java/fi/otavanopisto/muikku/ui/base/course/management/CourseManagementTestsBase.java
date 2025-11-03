@@ -336,15 +336,25 @@ public class CourseManagementTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".hero__workspace-name-extension span", "For test");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForVisible("#wokspaceName");
+        String title = getAttributeValue("#wokspaceName", "value");
+        int i = 0;
+        while (title.isEmpty()) {
+          i++;
+          refresh();
+          sleep(300);
+          title = getAttributeValue("#wokspaceName", "value");
+          if(i > 15)
+            break;
+        }
         waitForPresent(".license-selector select");
         scrollTo(".license-selector select", 150);
         waitForVisible(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        sleep(3000);
+        sleep(1000);
         scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
-        waitForVisible(".notification-queue__items");
-        waitForNotVisible(".loading");        
+        waitForVisible(".notification-queue__item--success");
+        waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".footer--workspace .license__link");
         assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by-nc-sa/3.0");
