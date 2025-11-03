@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
-import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -34,9 +33,6 @@ public class QueryConnectFieldController {
 
   @Inject
   private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
-  
-  @Inject
-  private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
 
   /* Connect Field */
   
@@ -50,20 +46,6 @@ public class QueryConnectFieldController {
 
   public QueryConnectField findQueryConnectFieldByMaterialAndName(Material material, String name) {
     return queryConnectFieldDAO.findByMaterialAndName(material, name);
-  }
-
-  public void deleteQueryConnectField(QueryConnectField queryField, boolean removeAnswers) {
-    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
-    
-    for (QueryConnectFieldTerm term : listConnectFieldTermsByField(queryField)) {
-      queryConnectFieldTermDAO.delete(term);
-    }
-    
-    for (QueryConnectFieldCounterpart counterpart : listQueryConnectFieldCounterpartByField(queryField)) {
-      queryConnectFieldCounterpartDAO.delete(counterpart);
-    }
-    
-    queryConnectFieldDAO.delete(queryField);
   }
 
   public QueryConnectField updateQueryConnectField(Material material, MaterialField field, boolean removeAnswers) throws MaterialFieldMetaParsingExeption {

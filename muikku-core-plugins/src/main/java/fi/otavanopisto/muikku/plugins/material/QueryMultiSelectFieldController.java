@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
-import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
@@ -32,9 +31,6 @@ public class QueryMultiSelectFieldController {
 
   @Inject
   private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
-  
-  @Inject
-  private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
   
   /* QueryMultiSelectField */
 
@@ -96,16 +92,6 @@ public class QueryMultiSelectFieldController {
       }
     }
     return null;
-  }
-
-  public void deleteQueryMultiSelectField(QueryMultiSelectField queryField, boolean removeAnswers) {
-    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
-    
-    for (QueryMultiSelectFieldOption option : listQueryMultiSelectFieldOptionsByField(queryField)) {
-      deleteQueryMultiSelectFieldOption(option);
-    }
-    
-    queryMultiSelectFieldDAO.delete(queryField);
   }
   
   /* QueryMultiSelectFieldOption */

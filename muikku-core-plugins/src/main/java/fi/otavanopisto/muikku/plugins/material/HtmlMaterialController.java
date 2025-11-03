@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialCreateEvent;
-import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
@@ -39,9 +38,6 @@ public class HtmlMaterialController {
   private Event<HtmlMaterialCreateEvent> materialCreateEvent;
 
   @Inject
-  private Event<HtmlMaterialDeleteEvent> materialDeleteEvent;
-
-  @Inject
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
 
   public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, String license) {
@@ -60,12 +56,6 @@ public class HtmlMaterialController {
 
   public HtmlMaterial updateHtmlMaterialTitle(HtmlMaterial htmlMaterial, String title) {
     return htmlMaterialDAO.updateTitle(htmlMaterial, title);
-  }
-
-  public void deleteHtmlMaterial(HtmlMaterial htmlMaterial) {
-    // TODO Logic for remove answers flag
-    materialDeleteEvent.fire(new HtmlMaterialDeleteEvent(htmlMaterial, false));
-    htmlMaterialDAO.delete(htmlMaterial);
   }
 
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) throws WorkspaceMaterialContainsAnswersExeption {

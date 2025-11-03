@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySorterFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -23,9 +22,6 @@ public class QuerySorterFieldController {
 
   @Inject
   private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
-  
-  @Inject
-  private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
 
   public QuerySorterField createQuerySorterField(Material material, String name) {
     return querySorterFieldDAO.create(material, name);
@@ -51,11 +47,6 @@ public class QuerySorterFieldController {
     // -> fi.otavanopisto.muikku.plugins.workspace.QueryFieldChangeListener
     queryFieldUpdateEvent.fire(new QueryFieldUpdateEvent(queryField, field, removeAnswers));
     return queryField;
-  }
-  
-  public void deleteQuerySorterField(QuerySorterField queryField, boolean removeAnswers) {
-    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
-    querySorterFieldDAO.delete(queryField);
   }
 
 }
