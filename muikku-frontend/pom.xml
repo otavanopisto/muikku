@@ -167,7 +167,14 @@
               <followSymlinks>false</followSymlinks>
             </fileset>
             <fileset>
-              <directory>src/main/resources/META-INF/resources/scripts/src/generated</directory>
+              <directory>muikkuV3/generated</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>muikkuV4/generated</directory>
               <includes>
                 <include>**/*</include>
               </includes>
