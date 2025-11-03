@@ -162,7 +162,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   return (
     <OPSCourseList
       {...props}
-      matrix={matrix.subjectsTable}
+      matrix={matrix?.subjectsTable ?? null}
       renderCourseItem={renderCourseItem}
     ></OPSCourseList>
   );
