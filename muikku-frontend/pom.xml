@@ -26,15 +26,10 @@
       
       <!-- Use frontend v3 when frontend v4 is not specifically requested-->
       <activation>
-      
-        <!-- TODO remove this line and uncomment the block below after the v3 frontend is relocated to the same module -->
-        <activeByDefault>false</activeByDefault>
-<!--
         <property>
           <name>usefrontv4</name>
           <value>!true</value>
         </property>
--->
       </activation>
       
       <build>
