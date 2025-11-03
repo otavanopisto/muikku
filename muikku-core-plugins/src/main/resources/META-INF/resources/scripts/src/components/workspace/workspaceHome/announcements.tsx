@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 /**
  *
  * WorkspaceAnnouncements
- * @param props props
  * @returns component
  */
 const WorkspaceAnnouncements: React.FC = () => {

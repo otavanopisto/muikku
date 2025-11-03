@@ -1,6 +1,5 @@
 import * as React from "react";
 import Link from "~/components/general/link";
-import { AnnouncementsState } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -14,7 +13,6 @@ import { useTranslation } from "react-i18next";
 
 /**
  * AnnouncementsAside
- * @param props props
  * @returns component
  */
 const AnnouncementsAside: React.FC = () => {
