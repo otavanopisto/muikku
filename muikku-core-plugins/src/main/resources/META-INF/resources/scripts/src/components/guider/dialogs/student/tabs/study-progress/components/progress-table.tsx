@@ -185,7 +185,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
 
       <OPSCourseTableContent
         {...props}
-        matrix={matrix?.subjectsTable ?? null}
+        matrix={matrix}
         currentMaxCourses={currentMaxCourses}
         renderCourseCell={renderCourseCell}
       />
