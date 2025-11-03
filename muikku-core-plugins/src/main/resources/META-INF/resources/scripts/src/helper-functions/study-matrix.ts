@@ -299,19 +299,19 @@ export const filterMatrix = (
 
 /**
  * gets highest of course number available or if under 9, then default 9
- * @param schoolSubjects list of school sucjests
+ * @param matrix list of school sucjests
  * @returns number of highest course or default 9
  */
 export const getHighestCourseNumber = (
-  schoolSubjects: SchoolSubject[]
+  matrix: SchoolCurriculumMatrix | null
 ): number | null => {
-  if (schoolSubjects === null) {
+  if (matrix === null) {
     return null;
   }
 
   let highestCourseNumber = 1;
 
-  for (const sSubject of schoolSubjects) {
+  for (const sSubject of matrix.subjectsTable) {
     for (const aCourse of sSubject.availableCourses) {
       if (aCourse.courseNumber <= highestCourseNumber) {
         continue;

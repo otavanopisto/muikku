@@ -57,7 +57,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     props.curriculumName
   );
 
-  const currentMaxCourses = getHighestCourseNumber(matrix.subjectsTable);
+  const currentMaxCourses = getHighestCourseNumber(matrix);
 
   /**
    * renderCourseCell
