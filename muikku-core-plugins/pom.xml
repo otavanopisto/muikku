@@ -242,122 +242,8 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-    <profile>
-      <id>development</id>
-      <properties>
-        <frontend.environment />
-      </properties>
-    </profile>
-    
-
-    <!-- Muikku frontend v3 -->    
-
-    <profile>
-      <id>frontv3</id>
-      
-      <!-- Use frontend v3 when frontend v4 is not specifically requested-->
-      <activation>
-        <property>
-          <name>usefrontv4</name>
-          <value>!true</value>
-        </property>
-      </activation>
-      
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.github.eirslett</groupId>
-            <artifactId>frontend-maven-plugin</artifactId>
-            <version>1.15.1</version>
-            <configuration>
-              <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
-              <environmentVariables>
-                <NODE_ENV>${frontend.environment}</NODE_ENV>
-              </environmentVariables>
-            </configuration>
-    
-            <executions>
-              <execution>
-                <id>install node and npm</id>
-                <goals>
-                  <goal>install-node-and-npm</goal>
-                </goals>
-                <phase>generate-resources</phase>
-                <configuration>
-                  <nodeVersion>v20.18.0</nodeVersion>
-                  <npmVersion>10.8.2</npmVersion>
-                </configuration>
-              </execution>
-              <execution>
-                <id>npm ci</id>
-                <goals>
-                  <goal>npm</goal>
-                </goals>
-                <configuration>
-                  <arguments>ci</arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>npm run build</id>
-                <goals>
-                  <goal>npm</goal>
-                </goals>
-                <configuration>
-                  <arguments>run build-full</arguments>
-                </configuration>
-              </execution>
-           </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-   <!-- Muikku frontend v4 -->
-
-    <profile>
-      <id>frontv4</id>
-
-      <!-- Use frontend v4 when specifically requested-->
-      <activation>
-        <property>
-          <name>usefrontv4</name>
-          <value>true</value>
-        </property>
-      </activation>
-
-      <build>
-        <plugins>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>3.3.1</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>src/main/resources/META-INF/resources/scripts/dist</directory>
-              <includes>
-                <include>**/*</include>
-              </includes>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-            <fileset>
-              <directory>src/main/resources/META-INF/resources/scripts/src/generated</directory>
-              <includes>
-                <include>**/*</include>
-              </includes>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
@@ -385,21 +271,6 @@
         </dependencies>
       </plugin>
     </plugins>
-
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>META-INF/resources/scripts/src/**/*</exclude>
-          <exclude>META-INF/resources/scripts/src/*</exclude>
-          <!--
-              <exclude>META-INF/resources/scripts/src/node/**/*</exclude>
-              <exclude>META-INF/resources/scripts/src/node/*</exclude>
-              -->
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
-    </resources>
   </build>
 
 </project>
