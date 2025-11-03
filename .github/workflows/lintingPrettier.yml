@@ -17,11 +17,11 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm ci
-        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+        working-directory: muikku-frontend/muikkuV3
 
       - name: Running Prettier Code Quality Review
         uses: wearerequired/lint-action@v2
         with:
           prettier: true
           prettier_extensions: "ts,tsx"
-          prettier_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+          prettier_dir: muikku-frontend/muikkuV3

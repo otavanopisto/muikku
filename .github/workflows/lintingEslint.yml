@@ -17,7 +17,7 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm ci
-        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+        working-directory: muikku-frontend/muikkuV3
 
       - name: Running ESlint Code Quality Review
         uses: reviewdog/action-eslint@v1
@@ -27,5 +27,5 @@ jobs:
           eslint_flags: '. --ext .ts,.tsx'
           level: error
           fail_level: error
-          workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+          workdir: muikku-frontend/muikkuV3
 
