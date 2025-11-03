@@ -10,15 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -45,14 +44,6 @@ public class Material {
 
   public void setTitle(String title) {
     this.title = title;
-  }
-
-  public Material getOriginMaterial() {
-    return originMaterial;
-  }
-
-  public void setOriginMaterial(Material originMaterial) {
-    this.originMaterial = originMaterial;
   }
   
   public String getLicense() {
@@ -87,9 +78,6 @@ public class Material {
   @NotNull
   @Column (nullable = false)
   private String title;
-
-  @ManyToOne
-  private Material originMaterial;
 
   private String license;
   

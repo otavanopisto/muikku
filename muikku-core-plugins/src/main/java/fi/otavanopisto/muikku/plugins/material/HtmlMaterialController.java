@@ -41,11 +41,11 @@ public class HtmlMaterialController {
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
 
   public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, String license) {
-    return createHtmlMaterial(title, html, contentType, null, license, MaterialViewRestrict.NONE);
+    return createHtmlMaterial(title, html, contentType, license, MaterialViewRestrict.NONE);
   }
 
-  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, HtmlMaterial originMaterial, String license, MaterialViewRestrict visibility) {
-    HtmlMaterial material = htmlMaterialDAO.create(title, html, contentType, originMaterial, license, visibility);
+  public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, String license, MaterialViewRestrict visibility) {
+    HtmlMaterial material = htmlMaterialDAO.create(title, html, contentType, license, visibility);
     materialCreateEvent.fire(new HtmlMaterialCreateEvent(material));
     return material;
   }
