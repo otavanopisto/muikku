@@ -54,8 +54,8 @@ public class OrphanMaterialRemover {
             orphanMaterialDAO.delete(orphan);
           }
           catch (Exception e) {
-            systemSettingsController.setSetting("materials.orphanRemoval", "0");
             logger.log(Level.SEVERE, "Orphan material removal failure", e);
+            systemSettingsController.setSetting("materials.orphanRemoval", "0");
           }
         }
         logger.info(String.format("Deleted %d orphan materials", orphans.size()));
