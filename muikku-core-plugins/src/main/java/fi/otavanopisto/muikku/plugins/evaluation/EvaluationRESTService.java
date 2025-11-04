@@ -229,9 +229,9 @@ public class EvaluationRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/nodes/{WORKSPACENODEID}/evaluations/")
+  @Path("/workspaces/{WORKSPACEENTITYID}/nodes/{WORKSPACENODEID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response listWorkspaceNodeEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @QueryParam("userEntityId") Long userEntityId) {
+  public Response findWorkspaceNodeEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @QueryParam("userEntityId") Long userEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -270,23 +270,11 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    // TODO Why a list when we essentially return just the latest? Tidy up later
-    List<WorkspaceNodeEvaluation> result = new ArrayList<>();
-    
-    WorkspaceNodeEvaluation workspaceNodeEvaluation = evaluationController.findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceNode.getId(), userEntity.getId());
-    if (workspaceNodeEvaluation != null) {
-      result.add(workspaceNodeEvaluation);
+    WorkspaceNodeEvaluation workspaceNodeEvaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceNode.getId(), userEntity.getId());
+    if (workspaceNodeEvaluation == null) {
+      return Response.noContent().build();
     }
-    
-    if (result.isEmpty()) {
-      return Response.ok(Collections.emptyList()).build();
-    }
-    
-    if (!workspaceNodeEvaluation.getWorkspaceNodeId().equals(workspaceNode.getId())) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    return Response.ok(createRestModel(result.toArray(new WorkspaceNodeEvaluation[0]))).build();
+    return Response.ok(createRestModel(workspaceNodeEvaluation)).build();
   }
 
   @DELETE
@@ -516,7 +504,7 @@ public class EvaluationRESTService extends PluginRESTService {
         WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
         BooleanPredicate.IGNORE);
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      WorkspaceNodeEvaluation evaluation = evaluationController.findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceMaterial.getId(), studentEntity.getId());
+      WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceMaterial.getId(), studentEntity.getId());
       if (evaluation != null) {
         UserEntity assessor = userEntityController.findUserEntityById(evaluation.getAssessorEntityId());
         RestEvaluationEvent event = new RestEvaluationEvent();
@@ -1808,17 +1796,6 @@ public class EvaluationRESTService extends PluginRESTService {
 
     return restSupplementationRequest;
   }
-  
-  private List<RestWorkspaceNodeEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation... entries) {
-    List<RestWorkspaceNodeEvaluation> result = new ArrayList<>();
-
-    for (fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation entry : entries) {
-      result.add(createRestModel(entry));
-    }
-
-    return result;
-  }
-  
   
   private RestWorkspaceNodeEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation evaluation) {
     Boolean passingGrade = null;

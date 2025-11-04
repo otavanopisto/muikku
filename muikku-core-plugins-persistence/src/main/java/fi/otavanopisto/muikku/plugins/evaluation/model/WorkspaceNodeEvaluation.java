@@ -104,14 +104,6 @@ public class WorkspaceNodeEvaluation {
     this.verbalAssessment = verbalAssessment;
   }
 
-  public Boolean getArchived() {
-    return archived;
-  }
-
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
-  }
-
   public WorkspaceNodeEvaluationType getEvaluationType() {
     return evaluationType;
   }
@@ -170,8 +162,5 @@ public class WorkspaceNodeEvaluation {
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
   private WorkspaceNodeEvaluationType evaluationType;
-  
-  @NotNull
-  @Column(nullable = false)
-  private Boolean archived;
+
 }

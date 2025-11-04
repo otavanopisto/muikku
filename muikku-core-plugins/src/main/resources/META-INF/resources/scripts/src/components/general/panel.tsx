@@ -8,6 +8,7 @@ interface PanelProps {
   modifier?: string;
   icon?: string;
   header: string;
+  indicator?: string | number;
 }
 
 /**
@@ -18,7 +19,7 @@ export const Panel: React.FC<PanelProps> & {
   BodyTitle?: React.FC<BodyTitleProps>;
   BodyContent?: React.FC<BodyContentProps>;
 } = (props) => {
-  const { modifier, children, header, icon } = props;
+  const { modifier, children, header, icon, indicator } = props;
 
   return (
     <div className={`panel ${modifier ? "panel--" + modifier : ""}`}>
@@ -30,7 +31,15 @@ export const Panel: React.FC<PanelProps> & {
             } ${icon}`}
           ></div>
         ) : null}
-        <h2 className="panel__header-title">{header}</h2>
+
+        <h2 className="panel__header-title">
+          {header}
+          {indicator && (
+            <span className="indicator indicator--panel-header">
+              {indicator}
+            </span>
+          )}
+        </h2>
       </div>
       <div
         className={`panel__body ${modifier ? "panel__body--" + modifier : ""}`}

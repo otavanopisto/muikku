@@ -5,14 +5,6 @@ import java.util.List;
 
 public class MatriculationExamEnrollment {
   
-  public String getNationalStudentNumber() {
-    return nationalStudentNumber;
-  }
-
-  public void setNationalStudentNumber(String nationalStudentNumber) {
-    this.nationalStudentNumber = nationalStudentNumber;
-  }
-
   public String getEnrollAs() {
     return enrollAs;
   }
@@ -135,7 +127,6 @@ public class MatriculationExamEnrollment {
 
   private Long id;
   private Long examId;
-  private String nationalStudentNumber;
   private String enrollAs;
   private String degreeType;
   private int numMandatoryCourses;

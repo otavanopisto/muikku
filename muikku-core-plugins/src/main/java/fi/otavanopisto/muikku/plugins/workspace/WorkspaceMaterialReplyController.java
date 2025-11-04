@@ -112,10 +112,6 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
   }
 
-  public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
-    workspaceMaterialReplyDAO.delete(workspaceMaterialReply);
-  }
-
   public void incWorkspaceMaterialReplyTries(WorkspaceMaterialReply workspaceMaterialReply) {
     workspaceMaterialReplyDAO.update(workspaceMaterialReply, workspaceMaterialReply.getNumberOfTries() + 1, new Date());
   }

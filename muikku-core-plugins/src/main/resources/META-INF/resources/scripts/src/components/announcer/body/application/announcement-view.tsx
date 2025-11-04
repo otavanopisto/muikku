@@ -69,6 +69,9 @@ class AnnouncementView extends React.Component<
                   this.props.announcements.current.endDate
                 )}
               />
+              {this.props.announcements.current.pinned && (
+                <span className="icon icon-pin"></span>
+              )}
             </ApplicationListHeaderPrimary>
             {this.props.announcements.current.workspaces.length ||
             this.props.announcements.current.userGroupEntityIds.length ? (

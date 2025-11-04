@@ -350,12 +350,11 @@ public class CourseManagementTestsBase extends AbstractUITest {
         scrollTo(".license-selector select", 150);
         waitForVisible(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        sleep(3000);
-        scrollTo(".button--primary-function-save", 100);
+        sleep(1000);
+        scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__item--success");
         waitForNotVisible(".loading");
-        
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".footer--workspace .license__link");
         assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by-nc-sa/3.0");
@@ -498,5 +497,44 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  public void changeCourseDescriptionTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+
+      try{
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
+        waitAndClick(".material-admin-panel .icon-pencil");
+        waitForVisible("#materialEditorContainer");
+        addTextToCKEditor("Adding some test text");
+        waitAndClick(".button-pill--material-editor-publish-page");
+        waitForPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
+        waitAndClick(".button-pill__icon.icon-arrow-left");
+        refresh();
+        waitForPresent(".material-page__content.rich-text");
+        assertTextIgnoreCase(".material-page__content.rich-text", "Adding some test text");
+      }finally{
+        deleteWorkspace(workspace.getId());  
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }

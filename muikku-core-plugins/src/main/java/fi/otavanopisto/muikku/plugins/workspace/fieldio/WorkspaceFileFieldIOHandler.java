@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
@@ -24,6 +25,9 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
   
   @Inject
   private Logger logger;
+
+  @Inject
+  private MaterialDeleteController materialDeleteController;
 
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
@@ -81,7 +85,7 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
       if (fieldAnswerFile != null) {
         logger.info(String.format("Removing existing file answer %s (%s)", removedId, fieldAnswerFile.getFileName()));
         try {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+          materialDeleteController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
         }
         catch (Exception e) {
           throw new WorkspaceFieldIOException("Failed to remove file data", e);

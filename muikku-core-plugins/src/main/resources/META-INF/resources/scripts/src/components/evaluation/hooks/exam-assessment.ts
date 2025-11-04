@@ -65,7 +65,7 @@ export const useExamAssessment = (props: UseExamAssessmentProps) => {
     });
 
     try {
-      const nodeEvaluation = await evaluationApi.getWorkspaceNodeEvaluations({
+      const nodeEvaluation = await evaluationApi.getWorkspaceNodeEvaluation({
         workspaceId: workspaceId,
         workspaceNodeId: workspaceNodeId,
         userEntityId: userEntityId,
@@ -74,7 +74,7 @@ export const useExamAssessment = (props: UseExamAssessmentProps) => {
       dataLoaded.current = true;
 
       unstable_batchedUpdates(() => {
-        setExamNodeEvaluation(nodeEvaluation[0]);
+        setExamNodeEvaluation(nodeEvaluation);
         setIsLoading(false);
       });
     } catch (err) {
