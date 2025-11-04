@@ -1910,6 +1910,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected void waitUntilAttributeNotEmpty(String selector, String attribute){
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        String value = StringUtils.lowerCase(getAttributeValue(selector, attribute));
+        if (!value.isBlank()) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
   protected WebElement findElementByTag(String name) {
     return getWebDriver().findElement(By.tagName(name));
   }
@@ -2077,14 +2089,23 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     while (title.isEmpty()) {
       i++;
       refresh();
-      sleep(500);
+      sleep(1500);
       title = getAttributeValue("#wokspaceName", "value");
-      if(i > 15)
+      if(i > 20)
         break;
     }
     scrollTo("input#" + workspaceAccess, 300);
-    sleep(500);
-    waitAndClick("input#" + workspaceAccess);
+    sleep(500);    
+    WebElement element = getWebDriver().findElement(By.cssSelector("input#" + workspaceAccess));
+    i = 0;
+    while (!element.isSelected()) {
+      waitAndClick("input#" + workspaceAccess);
+      sleep(500);
+      if(i > 15)
+        break;
+      i++;
+    }
+    
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
