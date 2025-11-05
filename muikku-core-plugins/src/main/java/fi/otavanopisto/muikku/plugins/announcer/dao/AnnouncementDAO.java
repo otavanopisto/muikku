@@ -200,9 +200,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     if (CollectionUtils.isNotEmpty(categories)) {
       ListJoin<Announcement, AnnouncementCategory> join = root.join(Announcement_.categories);
       predicates.add(join.in(categories));
-      //predicates.add(root.get(Announcement_.categories).join.in(categories));
     }
     
+    predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
     criteria.orderBy(
