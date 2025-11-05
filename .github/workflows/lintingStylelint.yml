@@ -18,7 +18,7 @@ jobs:
       - name: Running Stylelint Code Quality Review
         uses: xt0rted/stylelint-problem-matcher@v1
       - run: npm ci
-        working-directory: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
+        working-directory: "muikku-frontend/muikkuV3"
 
       - run: npm run stylelint
-        working-directory: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
+        working-directory: "muikku-frontend/muikkuV3"

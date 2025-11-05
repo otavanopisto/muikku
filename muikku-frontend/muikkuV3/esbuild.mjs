@@ -1,4 +1,5 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import { build as _build } from "esbuild";
 import { readFileSync } from "fs";
 import { sassPlugin } from "esbuild-sass-plugin";
@@ -51,12 +52,17 @@ const build = _build({
       setup(build) {
         // Redirect all paths css or scss
         build.onResolve({ filter: /.\.s[ac]ss$/ }, (args) => {
-          const path1 = args.resolveDir.split("src");
-
-          const realPath = `${path1[0]}src${path1[1]}src`;
-          const realPath2 = args.path.split("~")[1];
-
-          return { path: path.join(realPath, realPath2) };
+          // If path starts with ~/, resolve it relative to muikkuV3 directory
+          if (args.path.startsWith("~/")) {
+            // Get the directory where esbuild.mjs is located (muikkuV3)
+            const muikkuV3Dir = path.dirname(fileURLToPath(import.meta.url));
+            // Remove the ~/ prefix and resolve the path
+            const relativePath = args.path.replace(/^~\//, "");
+            const resolvedPath = path.join(muikkuV3Dir, relativePath);
+            return { path: resolvedPath };
+          }
+          // If not a ~/ path, let esbuild resolve it normally
+          return undefined;
         });
       },
     },
