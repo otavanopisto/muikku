@@ -648,8 +648,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     
-    materialDeleteController.deleteMaterial(htmlMaterial);
-    
     return Response.noContent().build();
   }
   
