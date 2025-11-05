@@ -8,16 +8,19 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialCreateEvent;
-import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
-import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 
 @ApplicationScoped
 public class HtmlMaterialChangeListener {
+  
+  @Inject
+  private MaterialDeleteController materialDeleteController;
   
   @Inject
   private Event<HtmlMaterialFieldCreateEvent> htmlMaterialFieldCreateEvent;
@@ -25,9 +28,6 @@ public class HtmlMaterialChangeListener {
   @Inject
   private Event<HtmlMaterialFieldUpdateEvent> htmlMaterialFieldUpdateEvent;
 
-  @Inject
-  private Event<HtmlMaterialFieldDeleteEvent> htmlMaterialFieldDeleteEvent;
-  
   @Inject
   private QueryFieldController queryFieldController;
 
@@ -50,7 +50,8 @@ public class HtmlMaterialChangeListener {
   // QueryFieldXXXEvent -> QueryFieldChangeListener
   // WorkspaceMaterialFieldXXXEvent -> WorkspaceMaterialFieldChangeListener
   
-  public void onHtmlMaterialUpdate(@Observes HtmlMaterialUpdateEvent event) {
+  // TODO Maybe one day refactor HTML material updating to not rely on events, too?
+  public void onHtmlMaterialUpdate(@Observes HtmlMaterialUpdateEvent event) throws WorkspaceMaterialContainsAnswersExeption {
     MaterialFieldCollection oldFieldCollection = new MaterialFieldCollection(event.getOldHtml());
     MaterialFieldCollection newFieldCollection = new MaterialFieldCollection(event.getNewHtml());
     
@@ -61,9 +62,7 @@ public class HtmlMaterialChangeListener {
     List<QueryField> oldFieldsInDb = queryFieldController.listQueryFieldsByMaterial(event.getMaterial());
     for (QueryField oldFieldInDb : oldFieldsInDb) {
       if (!oldFieldCollection.hasField(oldFieldInDb.getName())) {
-        MaterialField materialField = new MaterialField(oldFieldInDb.getName(), oldFieldInDb.getType(), null);
-        HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), materialField, event.getRemoveAnswers());
-        htmlMaterialFieldDeleteEvent.fire(deleteEvent);
+        materialDeleteController.deleteQueryField(oldFieldInDb, event.getRemoveAnswers());
       }
     }
 
@@ -71,16 +70,16 @@ public class HtmlMaterialChangeListener {
     
     List<MaterialField> removedFields = newFieldCollection.getRemovedFields(oldFieldCollection);
     for (MaterialField removedField : removedFields) {
-      HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), removedField, event.getRemoveAnswers());
-      htmlMaterialFieldDeleteEvent.fire(deleteEvent);
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), removedField.getName());
+      materialDeleteController.deleteQueryField(queryField, event.getRemoveAnswers());
     }
     
     List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
     for (MaterialField updatedField : updatedFields) {
       // awkward fix for #293; remove when implementing #305
       if (isSelectFieldChangingType(event.getMaterial(), updatedField)) {
-        HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
-        htmlMaterialFieldDeleteEvent.fire(deleteEvent);
+        QueryField field = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), updatedField.getName());
+        materialDeleteController.deleteQueryField(field, event.getRemoveAnswers());
         HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), updatedField);
         htmlMaterialFieldCreateEvent.fire(createEvent);
       }
@@ -98,15 +97,6 @@ public class HtmlMaterialChangeListener {
     
   }
 
-  public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent event) {
-    // TODO removeAnswers flag
-    MaterialFieldCollection fieldCollection = new MaterialFieldCollection(event.getMaterial().getHtml());
-    for (MaterialField deletedField : fieldCollection.getFields()) {
-      HtmlMaterialFieldDeleteEvent deletedEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), deletedField, event.getRemoveAnswers());
-      htmlMaterialFieldDeleteEvent.fire(deletedEvent);
-    }
-  }
-  
   private boolean isSelectFieldChangingType(HtmlMaterial material, MaterialField field) {
     String type = field.getType();
     if ("application/vnd.muikku.field.select".equals(type)) {

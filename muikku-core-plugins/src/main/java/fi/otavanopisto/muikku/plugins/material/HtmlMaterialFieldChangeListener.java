@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
-import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.AudioFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
@@ -27,7 +26,6 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.TextFieldMeta;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
@@ -351,16 +349,6 @@ public class HtmlMaterialFieldChangeListener {
   public void onHtmlMaterialMultiSelectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.multiselect")) {
       queryMultiSelectFieldController.updateQueryMultiSelectField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
-    }
-  }
-  
-  // Delete
-  
-  public void onHtmlMaterialFieldDeleted(@Observes HtmlMaterialFieldDeleteEvent event) {
-    HtmlMaterial material = event.getMaterial();
-    QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, event.getField().getName());
-    if (queryField != null) {
-      queryFieldController.deleteQueryField(queryField, event.getRemoveAnswers());
     }
   }
   

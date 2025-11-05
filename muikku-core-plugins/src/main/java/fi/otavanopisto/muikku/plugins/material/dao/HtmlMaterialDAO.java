@@ -8,12 +8,11 @@ public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
 
   private static final long serialVersionUID = 3344543661453014697L;
 
-  public HtmlMaterial create(String title, String html, String contentType, HtmlMaterial originMaterial, String license, MaterialViewRestrict viewRestrict) {
+  public HtmlMaterial create(String title, String html, String contentType, String license, MaterialViewRestrict viewRestrict) {
     HtmlMaterial htmlMaterial = new HtmlMaterial();
 
     htmlMaterial.setHtml(html);
     htmlMaterial.setTitle(title);
-    htmlMaterial.setOriginMaterial(originMaterial);
     htmlMaterial.setContentType(contentType);
     htmlMaterial.setLicense(license);
     htmlMaterial.setViewRestrict(viewRestrict);
