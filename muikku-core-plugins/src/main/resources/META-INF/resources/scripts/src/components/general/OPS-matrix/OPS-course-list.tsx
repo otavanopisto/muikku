@@ -10,6 +10,7 @@ import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
 import { useTranslation } from "react-i18next";
 import {
   Course,
+  SchoolCurriculumMatrix,
   SchoolSubject,
   StudentActivityByStatus,
 } from "~/@types/shared";
@@ -27,7 +28,7 @@ export interface RenderItemParams {
  * Props for the OPSCourseList component
  */
 export interface OPSCourseListProps extends StudentActivityByStatus {
-  matrix: SchoolSubject[] | null;
+  matrix: SchoolCurriculumMatrix | null;
   studentIdentifier: string;
   studentUserEntityId: number;
   curriculumName: string;
@@ -63,7 +64,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
 
   const filteredMatrix = filterMatrix(
     studyProgrammeName,
-    matrix,
+    matrix.subjectsTable,
     studentOptions
   );
 

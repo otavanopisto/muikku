@@ -879,6 +879,7 @@
       "studyPlannerTooltipPrecentDate": "Nykyhetki",
       "studyPlannerTooltipGraduationGoalDate": "Valmistumisen tavoiteaika",
       "studyPlannerTooltipEstimatedDGraduationDate": "Arvioitu valmistumisaika",
+      "totalPoints": "Yhteispisteet: {{points}}",
       "unblockPastPeriod": "Avaa lukitus muokataksesi"
     },
     "content": {

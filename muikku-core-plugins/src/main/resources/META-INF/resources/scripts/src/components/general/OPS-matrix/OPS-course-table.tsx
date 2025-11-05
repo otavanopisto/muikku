@@ -3,6 +3,7 @@ import { Tbody, Td, Tr } from "~/components/general/table";
 import Dropdown from "~/components/general/dropdown";
 import {
   Course,
+  SchoolCurriculumMatrix,
   SchoolSubject,
   StudentActivityByStatus,
 } from "~/@types/shared";
@@ -22,7 +23,7 @@ export interface RenderItemParams {
  * Props for the Progress Table component
  */
 export interface OPSCourseTableProps extends StudentActivityByStatus {
-  matrix: SchoolSubject[] | null;
+  matrix: SchoolCurriculumMatrix | null;
   studentIdentifier: string;
   studentUserEntityId: number;
   currentMaxCourses: number | null;
@@ -67,7 +68,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
 
   const filteredMatrix = filterMatrix(
     studyProgrammeName,
-    matrix,
+    matrix.subjectsTable,
     studentOptions
   );
 
