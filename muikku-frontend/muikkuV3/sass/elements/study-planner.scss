@@ -616,9 +616,14 @@
 
 .study-planner__course-dates {
   color: $color-default-contrast;
-  display: block;
+  display: flex;
+  flex-direction: column;
   flex-basis: 100%;
   font-size: 0.75rem;
+}
+
+.study-planner__course-dates-item {
+  display: flex;
 }
 
 .study-planner__course-workspace-instance-not-available {

@@ -254,6 +254,34 @@ const BasePlannerPeriodCourse = React.forwardRef<
   };
 
   /**
+   * Renders study activity date
+   * @returns study activity date
+   */
+  const renderStudyActivityDate = () => {
+    if (!studyActivity) {
+      return null;
+    }
+
+    const date = localize.date(new Date(studyActivity.date));
+    let dateString = null;
+
+    switch (studyActivity.status) {
+      case "GRADED":
+        dateString = `${date} (arvioitu)`;
+        break;
+
+      case "ONGOING":
+        dateString = `${date} (kesken)`;
+        break;
+
+      default:
+        break;
+    }
+
+    return <div className="study-planner__course-dates-item">{dateString}</div>;
+  };
+
+  /**
    * Renders workspace instance not available
    * @returns workspace instance not available
    */
@@ -365,42 +393,45 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </div>
 
         <div className="study-planner__course-dates">
-          {calculatedEndDate ? (
-            <>
-              {localize.date(new Date(course.startDate))} -{" "}
-              {localize.date(new Date(calculatedEndDate))}
-            </>
-          ) : (
-            localize.date(new Date(course.startDate))
-          )}
+          <div className="study-planner__course-dates-item">
+            {calculatedEndDate ? (
+              <>
+                {`${localize.date(new Date(course.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}
+              </>
+            ) : (
+              <>
+                {`${localize.date(new Date(course.startDate))} (suunniteltu)`}
+              </>
+            )}
+          </div>
+          {renderStudyActivityDate()}
         </div>
 
         {renderWorkspaceInstanceNotAvailable()}
       </PlannerCardContent>
 
-      {!disabled &&
-        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT") && (
-          <PlannerCardActions>
-            <Link
-              onClick={handleSpecifyOpen}
-              disabled={specifyIsOpen || deleteWarningIsOpen}
-              className="link link--study-planner-specify"
-            >
-              {t("actions.specify", {
-                ns: "common",
-              })}
-            </Link>
-            <Link
-              onClick={handleDeleteOpen}
-              disabled={specifyIsOpen || deleteWarningIsOpen}
-              className="link link--study-planner-delete"
-            >
-              {t("actions.remove", {
-                ns: "common",
-              })}
-            </Link>
-          </PlannerCardActions>
-        )}
+      {!disabled && (
+        <PlannerCardActions>
+          <Link
+            onClick={handleSpecifyOpen}
+            disabled={specifyIsOpen || deleteWarningIsOpen}
+            className="link link--study-planner-specify"
+          >
+            {t("actions.specify", {
+              ns: "common",
+            })}
+          </Link>
+          <Link
+            onClick={handleDeleteOpen}
+            disabled={specifyIsOpen || deleteWarningIsOpen}
+            className="link link--study-planner-delete"
+          >
+            {t("actions.remove", {
+              ns: "common",
+            })}
+          </Link>
+        </PlannerCardActions>
+      )}
     </PlannerCard>
   );
 });

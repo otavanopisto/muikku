@@ -276,13 +276,17 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     subjectCode: subject.subjectCode,
                   });
 
+                  const isGraded =
+                    course.studyActivity &&
+                    course.studyActivity.status === "GRADED";
+
                   return (
                     <PlannerCourseTrayItem
                       key={
                         course.identifier ||
                         `${subject.subjectCode}${course.courseNumber}`
                       }
-                      disabled={disabled}
+                      disabled={disabled || course.planned || isGraded}
                       course={course}
                       subjectCode={subject.subjectCode}
                       isPlannedCourse={course.planned}
@@ -406,11 +410,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         isDragging: monitor.isDragging(),
       }),
       // eslint-disable-next-line jsdoc/require-jsdoc
-      canDrag:
-        !disabled &&
-        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT"),
+      canDrag: !disabled,
     }),
-    [disabled, studyActivity]
+    [disabled]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });
@@ -419,10 +421,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    * Handles course select
    */
   const handleSelectCourse = () => {
-    if (
-      disabled ||
-      (studyActivity && studyActivity.status !== "SUGGESTED_NEXT")
-    ) {
+    if (disabled) {
       return;
     }
 

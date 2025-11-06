@@ -113,12 +113,14 @@ const createPeriods = (
 /**
  * Creates and allocates planned courses to academic periods
  * @param studentDateInfo student date info
+ * @param studyActivities study activities
  * @param plannedCourses List of planned courses to allocate
  * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
   studentDateInfo: StudentDateInfo,
+  studyActivities: StudentStudyActivity[],
   plannedCourses: PlannedCourseWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
@@ -127,8 +129,25 @@ const createAndAllocateCoursesToPeriods = (
 
   // Allocate courses to periods
   plannedCourses.forEach((course) => {
-    const courseStartYear = new Date(course.startDate).getFullYear();
-    const courseStartMonth = new Date(course.startDate).getMonth();
+    // Find possible study activity for the course
+    const studyActivity = studyActivities.find(
+      (sa) =>
+        sa.courseNumber === course.courseNumber &&
+        sa.subject === course.subjectCode
+    );
+
+    // If study activity is found, use the date of the study activity, otherwise use the start date of the planned course.
+    // This is done because plan itself is baseline and study activity is overriding it based on how students actions
+    // affect the plan.
+    const useStudyActivityData =
+      studyActivity && studyActivity.status === "GRADED";
+
+    const courseStartYear = useStudyActivityData
+      ? new Date(studyActivity.date).getFullYear()
+      : new Date(course.startDate).getFullYear();
+    const courseStartMonth = useStudyActivityData
+      ? new Date(studyActivity.date).getMonth()
+      : new Date(course.startDate).getMonth();
 
     const period = periods.find(
       (p) =>

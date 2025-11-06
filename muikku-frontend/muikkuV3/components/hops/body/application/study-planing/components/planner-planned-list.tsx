@@ -60,6 +60,8 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
           ? !_.isEqual(originalInfo, course)
           : true;
 
+        const isGraded = courseActivity && courseActivity.status === "GRADED";
+
         return (
           <li
             key={course.identifier}
@@ -67,11 +69,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
           >
             <PlannerPeriodCourseCard
               key={course.identifier}
-              disabled={
-                disabled ||
-                (courseActivity !== undefined &&
-                  courseActivity.status !== "SUGGESTED_NEXT")
-              }
+              disabled={disabled || isGraded}
               course={course}
               selected={isSelected}
               hasChanges={hasChanges}

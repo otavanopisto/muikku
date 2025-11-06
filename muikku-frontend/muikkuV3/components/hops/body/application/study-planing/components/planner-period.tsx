@@ -77,7 +77,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
       (state: StateType) => state.hopsNew.hopsCurriculumConfig.strategy
     );
 
-    const studyActivity = useSelector(
+    const studyActivities = useSelector(
       (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
     );
     const hopsMode = useSelector((state: StateType) => state.hopsNew.hopsMode);
@@ -89,8 +89,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     // Check if the period has planned courses
     const hasPlannedCourses = React.useMemo(
-      () => PeriodHasPlannedCourses(plannedCourses, studyActivity),
-      [plannedCourses, studyActivity]
+      () => PeriodHasPlannedCourses(plannedCourses, studyActivities),
+      [plannedCourses, studyActivities]
     );
 
     // Lock the period if there are no planned courses
@@ -128,7 +128,18 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
      */
     const getCoursesByMonth = (monthName: string) =>
       plannedCourses.filter((course) => {
-        const startDate = new Date(course.startDate);
+        const studyActivity = studyActivities.find(
+          (sa) =>
+            sa.courseNumber === course.courseNumber &&
+            sa.subject === course.subjectCode
+        );
+
+        const useStudyActivityData =
+          studyActivity && studyActivity.status === "GRADED";
+
+        const startDate = useStudyActivityData
+          ? new Date(studyActivity.date)
+          : new Date(course.startDate);
         const monthIndex = startDate.getMonth();
         return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
       });
