@@ -1,0 +1,1358 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.application-sub-panel {
+  // border-bottom: 1px solid $color-subpanel-border;
+  margin: 0 0 30px;
+  width: 100%;
+
+  &:last-child {
+    border: 0;
+    margin: 0;
+  }
+}
+
+.application-sub-panel--guidance-relation-contact-info {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 400px;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}
+
+.application-sub-panel--guidance-relation-contact-events {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 2;
+    flex-shrink: 1;
+  }
+}
+
+.application-sub-panel--guidance-relation-guidance-events {
+  flex-basis: 100%;
+}
+
+.application-sub-panel--header-main {
+  align-items: flex-start;
+  border-bottom: none;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 0 15px;
+  text-transform: none;
+
+  @include breakpoint($breakpoint-desktop) {
+    align-items: center;
+    flex-flow: row wrap;
+  }
+}
+
+.application-sub-panel--student-data-container {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-wrap: unset;
+  }
+}
+
+.application-sub-panel--student-data-primary {
+  border: 0;
+  flex-basis: 100%;
+  margin: 0 0 30px;
+  width: auto;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-basis: 45%;
+    margin: 0;
+  }
+}
+
+.application-sub-panel--student-data-secondary {
+  border: 0;
+  flex-basis: 100%;
+  margin: 0 0 30px;
+  width: auto;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-basis: auto;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0 0 0 20px;
+  }
+}
+
+.application-sub-panel--studies-journal-entries,
+.application-sub-panel--studies-assignments,
+.application-sub-panel--studies-exercises {
+  padding: 10px;
+}
+
+.application-sub-panel--worklist {
+  border: 0;
+  margin: 0 0 15px;
+}
+
+.application-sub-panel--yo-status-container {
+  border-bottom: 0;
+}
+
+.application-sub-panel--workspace-settings {
+  margin: 0;
+  padding: 10px;
+
+  .cke {
+    border: 2px solid $color-form-element-border;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
+}
+
+.application-sub-panel--workspace-image-settings {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
+    padding: 20px 0;
+  }
+}
+
+.application-sub-panel--workspace-users,
+.application-sub-panel--organization-summary {
+  margin: 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
+}
+
+.application-sub-panel--organization-users {
+  &:first-child {
+    padding-bottom: 12px;
+  }
+}
+
+.application-sub-panel--evaluation-cards {
+  margin: 0 0 15px;
+  padding: 0 0 15px;
+}
+
+.application-sub-panel--matriculation-plan-content,
+.application-sub-panel--matriculation-results-content {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.application-sub-panel--matriculation-plan-data,
+.application-sub-panel--matriculation-results {
+  border-bottom: unset;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+.application-sub-panel--matriculation-plan-info {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+// Subpanel header
+.application-sub-panel__header {
+  @include mainfunction-subpanel-title;
+
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 10px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+  }
+}
+
+.application-sub-panel__header--with-instructions {
+  justify-content: space-between;
+}
+
+.application-sub-panel__header--workspace-settings {
+  padding: 0;
+}
+
+.application-sub-panel__header--workspace-image-settings {
+  margin: 0 20px 10px;
+}
+
+.application-sub-panel__header--workspace-users {
+  padding: 0;
+}
+
+.application-sub-panel__header--worklist-entries {
+  background: $color-subpanel-header-background;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 0;
+  padding: 5px;
+}
+
+.application-sub-panel__header--studies-assignments,
+.application-sub-panel__header--studies-exercises,
+.application-sub-panel__header--studies-journal-entries {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.application-sub-panel__header-action {
+  border: 1px solid $color-subpanel-border;
+  border-radius: 3px;
+  font-size: 1rem;
+  margin: 0 10px 0 0;
+  padding: 4px;
+}
+
+.application-sub-panel__header-main-container {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-transform: none;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    align-items: center;
+    flex-flow: row wrap;
+  }
+}
+
+.application-sub-panel__header-main {
+  flex-basis: 100%;
+  flex-grow: 1;
+  font-size: 1.125rem;
+  font-weight: 400;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: unset;
+    flex-grow: 0;
+    font-size: 1.25rem;
+    margin: 0 10px 0 0;
+    white-space: nowrap;
+  }
+}
+
+.application-sub-panel__header-main-detail {
+  color: $color-default-helper;
+  flex-basis: 100%;
+  font-size: 1rem;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+    font-size: 1.25rem;
+  }
+}
+
+.application-sub-panel__header-aside-container {
+  align-items: center;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: $text-capitalized-mobile-font-size;
+  justify-content: flex-end;
+  text-transform: uppercase;
+
+  a:not(:first-child) {
+    margin-left: 20px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-capitalized-desktop-font-size;
+  }
+}
+
+// Subpanel description
+.application-sub-panel__description {
+  font-weight: 300;
+  line-height: 1.375rem;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+// Multicolumn subpanel
+.application-sub-panel__body--multicolumn {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0 20px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+
+  // Multricolumn subpanel item
+  .application-sub-panel__item--multicolumn {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+// Subpanel body
+.application-sub-panel__body--yo-status-incomplete {
+  border-left: 4px solid $color-sub-panel-status-incomplete-border;
+}
+
+.application-sub-panel__body--yo-status-complete {
+  border-left: 4px solid $color-sub-panel-status-complete-border;
+}
+
+.application-sub-panel__body--studies-summary-info {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.application-sub-panel__body--studies-options {
+  align-items: center;
+  background-color: $color-info;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  text-align: center;
+  width: 50%;
+}
+
+.application-sub-panel__body--studies-summary-cards {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-direction: row;
+  }
+}
+
+.application-sub-panel__body--guidance-relation {
+  display: flex;
+  flex-flow: wrap;
+}
+
+.application-sub-panel__notification-item {
+  flex-basis: 100%;
+}
+
+.application-sub-panel__notification-title {
+  font-weight: 600;
+  padding: 5px 0;
+}
+
+.application-sub-panel__notification-body {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
+
+.application-sub-panel__notification-content {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px;
+}
+
+.application-sub-panel__notification-content-title {
+  font-weight: 600;
+}
+
+.application-sub-panel__notification-content-label {
+  margin: 0 0.5rem 0 0;
+}
+
+.application-sub-panel__notification-content-data {
+  background-color: $color-sub-panel-data-1-background;
+  border-radius: 3px;
+  margin: 0 0.5rem 0 0;
+  padding: 4px;
+}
+
+.application-sub-panel__notification-footer {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 10px 0;
+}
+
+.application-sub-panel__card-item {
+  border-radius: 10px;
+  margin: 10px 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    border-radius: 5px;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 10px;
+
+    &:first-child {
+      margin: 10px 10px 10px 0;
+    }
+
+    &:last-child {
+      margin: 10px 0 10px 10px;
+    }
+  }
+}
+
+.application-sub-panel__card-header {
+  display: flex;
+  font-size: 1.075rem;
+  font-weight: 600;
+  justify-content: center;
+  padding: 10px;
+  text-transform: uppercase;
+}
+
+.application-sub-panel__card-highlight {
+  display: flex;
+  font-size: 2.5rem;
+  justify-content: center;
+  padding: 10px;
+}
+
+.application-sub-panel__card-body {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+}
+
+.application-sub-panel__card-item--summary-evaluated {
+  background-color: $color-sub-panel-card-1-background;
+}
+
+.application-sub-panel__card-header--summary-evaluated,
+.application-sub-panel__card-highlight--summary-evaluated {
+  color: $color-sub-panel-card-1-font;
+}
+
+.application-sub-panel__card-item--summary-activity {
+  background-color: $color-sub-panel-card-2-background;
+}
+
+.application-sub-panel__card-header--summary-activity,
+.application-sub-panel__card-highlight--summary-activity {
+  color: $color-sub-panel-card-2-font;
+}
+
+.application-sub-panel__card-item--summary-returned {
+  background-color: $color-sub-panel-card-3-background;
+}
+
+.application-sub-panel__card-header--summary-returned,
+.application-sub-panel__card-highlight--summary-returned {
+  color: $color-sub-panel-card-3-font;
+}
+
+.application-sub-panel__body--workspace-settings {
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+  }
+}
+
+.application-sub-panel__body--workspace-staff-members {
+  padding: 0;
+}
+
+.application-sub-panel__body--workspace-students {
+  padding: 10px 0 0;
+}
+
+// Subpanel Item Split Container
+
+.application-sub-panel__item-split-container {
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 50%;
+
+    &:first-child {
+      padding: 0 10px 0 0;
+    }
+
+    &:last-child {
+      padding: 0 0 0 10px;
+    }
+  }
+}
+
+// Subpanel Multiple Items - When one row can contain multiple items in the same row
+.application-sub-panel__multiple-items {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0 10px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }
+}
+
+// Subpanel container for single item inside multiple-items wrapper
+.application-sub-panel__multiple-item-container {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 10px 0 0;
+
+  .application-sub-panel__item-title {
+    align-items: center;
+    display: flex;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-weight: 600;
+  }
+
+  .application-sub-panel__item-title-sort-indicator {
+    display: flex;
+    font-size: 0.825rem;
+    height: 0.825rem;
+    justify-content: center;
+    margin: 0 4px;
+    width: 0.825rem;
+  }
+
+  .application-sub-panel__item-data {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.application-sub-panel__multiple-items--item-labels {
+  display: none;
+  padding: 5px 0 5px 12px;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: flex;
+  }
+}
+
+.application-sub-panel__multiple-items--list-mode {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 10px 0 10px 12px;
+
+  .application-sub-panel__multiple-item-container--worklist-description {
+    align-items: flex-start;
+    flex-flow: row nowrap;
+  }
+}
+
+.application-sub-panel__multiple-items--edit-mode {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 5px 12px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container-title {
+  font-weight: 600;
+}
+
+.application-sub-panel__multiple-item-container-description {
+  font-size: 0.8125rem;
+  padding: 5px 0;
+}
+
+.application-sub-panel__multiple-item-container--worklist-template {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
+}
+
+.application-sub-panel__multiple-item-container--worklist-description {
+  align-items: flex-start;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  margin: 0;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--worklist-date {
+  flex-basis: 100px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: flex-start;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 0;
+    justify-content: center;
+  }
+}
+
+.application-sub-panel__multiple-item-container--worklist-price {
+  flex-basis: 80px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--worklist-factor {
+  flex-basis: 60px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+
+  .application-sub-panel__item-title--worklist-list-mode {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--worklist-submit {
+  align-self: flex-end;
+  margin: 0 0 2px;
+}
+
+.application-sub-panel__multiple-item-container--worklist-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: 85px;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  margin: 2px 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+  }
+}
+
+// Profile product
+.application-sub-panel__multiple-item-container--product-details {
+  align-items: flex-start;
+  flex-basis: 100%;
+  flex-flow: column nowrap;
+  margin: 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--product-date {
+  flex-basis: 100px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: flex-start;
+
+  .application-sub-panel__item-title--product {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 0;
+    justify-content: center;
+  }
+}
+
+.application-sub-panel__multiple-item-container--product-id {
+  flex-basis: 100px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+
+  .application-sub-panel__item-title--product {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+}
+
+.application-sub-panel__multiple-item-container--product-actions {
+  flex-basis: 200px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+
+  .application-sub-panel__item-title--product {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+  }
+}
+
+// Subpanel Item
+.application-sub-panel__item {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 10px;
+
+  &.NON-ACTIVE {
+    opacity: 50%;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $color-default-item-separator-border;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-sub-panel__item--counselors {
+  align-items: start;
+  flex-flow: column nowrap;
+}
+
+.application-sub-panel__item--guider-student {
+  border-bottom: unset;
+}
+
+.application-sub-panel__item--organization-previous-bills,
+.application-sub-panel__item--organization-contact-information {
+  align-items: flex-start;
+}
+
+.application-sub-panel__item--worklist-total {
+  border-top: 1px solid $color-default-separator-border;
+  padding: 5px 0 5px 12px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
+}
+
+.application-sub-panel__item--worklist-items-footer {
+  margin: 5px 0 5px 12px;
+  padding: 2px 12px;
+}
+
+.application-sub-panel__item--workspace-management {
+  align-items: flex-start;
+  border: 0;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px 0;
+  padding: 0 10px 0 0;
+
+  &:not(:last-child) {
+    border: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    padding: 0 20px 0 0;
+
+    &:last-child {
+      padding: 0;
+    }
+  }
+}
+
+.application-sub-panel__item--workspace-publicity,
+.application-sub-panel__item--workspace-access {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.application-sub-panel__item--workspace-name-extension {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    min-width: 400px;
+  }
+}
+
+.application-sub-panel__item--workspace-type {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.application-sub-panel__item--workspace-description {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+
+  .cke {
+    flex-basis: 210px;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
+
+.application-sub-panel__item--workspace-start-date {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.application-sub-panel__item--workspace-end-date {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.application-sub-panel__item--workspace-permissions {
+  flex-flow: row nowrap;
+  padding: 10px 0 0;
+
+  &:not(:last-child) {
+    border: 0;
+  }
+}
+
+.application-sub-pane__button-container {
+  display: flex;
+}
+
+.application-sub-panel__image {
+  width: 100%;
+}
+
+// Subpanel item header
+
+.application-sub-panel__item--summarizer {
+  align-items: normal;
+  flex-basis: 50%;
+  flex-flow: column wrap;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: column nowrap;
+  }
+}
+
+.application-sub-panel__summary-highlight {
+  color: $color-sub-panel-summary-highlight-font;
+  font-size: 2.5rem;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.application-sub-panel__summary-highlight--total {
+  color: $color-sub-panel-summary-highlight-total-font;
+}
+
+.application-sub-panel__summary-highlight--done {
+  color: $color-sub-panel-card-1-font;
+}
+
+.application-sub-panel__summary-highlight--undone {
+  color: $color-sub-panel-card-2-font;
+}
+
+.application-sub-panel__summary-definition {
+  margin-left: 5px;
+}
+
+.application-sub-panel__item-body {
+  padding: 10px;
+}
+
+.application-sub-panel__summary-item {
+  display: flex;
+}
+
+.application-sub-panel__summary-item--subject-eligibility {
+  align-items: center;
+  border-bottom: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  margin: 0 0 10px;
+  padding: 0 0 10px;
+
+  &:last-child {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-sub-panel__summary-item-state {
+  align-items: center;
+  border-radius: 5px;
+  display: flex;
+  font-size: 0.75rem;
+  justify-content: center;
+  line-height: 1;
+  margin: 0 10px 0 0;
+  padding: 5px;
+  text-transform: uppercase;
+  width: 45px;
+}
+
+.application-sub-panel__summary-item-label {
+  font-weight: 600;
+  padding: 5px;
+}
+
+.application-sub-panel__summary-item-description {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.8125rem;
+  font-style: italic;
+  padding: 5px 5px 5px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px;
+  }
+}
+
+.application-sub-panel__summary-item-state--eligible {
+  background-color: $color-sub-panel-summarizer-true-background;
+  color: $color-sub-panel-summarizer-true-font;
+}
+
+.application-sub-panel__summary-item-state--not-eligible {
+  background-color: $color-sub-panel-summarizer-false-background;
+  color: $color-sub-panel-summarizer-false-font;
+}
+
+.application-sub-panel__item-header {
+  font-weight: 600;
+  padding: 10px 0;
+}
+
+// Subpanel item title & label
+.application-sub-panel__item-title {
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 250px;
+    margin: 0 10px 5px 0;
+  }
+}
+
+.application-sub-panel__item-title--counselors {
+  flex-basis: auto;
+  font-weight: 600;
+  width: 100%,
+}
+
+.application-sub-panel__item-title--organization-summary,
+.application-sub-panel__item-title--organization-previous-bills,
+.application-sub-panel__item-title--organization-contact-information {
+  font-weight: 600;
+}
+
+.application-sub-panel__item-label {
+  font-weight: 600;
+  margin: 2px 5px 2px 0;
+  padding: 0;
+}
+
+// Subpanel item title for worklist entries total
+.application-sub-panel__item-title--worklist-total {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 10px 0 0;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 10px 0 38px;
+  }
+}
+
+// Subpanel item inline value
+.application-sub-panel__item-inline-value {
+  background-color: $color-hops-readable-inline-background;
+  border-radius: 3px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 2px 5px;
+}
+
+// Subpanel item actions
+.application-sub-panel__item-actions {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+// Subpanel item data
+.application-sub-panel__item-data {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+// Item data for organization summary
+
+.application-sub-panel__item-data--organization-summary {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.application-sub-panel__item-data-container {
+  display: flex;
+}
+
+.application-sub-panel__item-data-container--guider-course-credits {
+  flex-direction: column;
+}
+
+.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
+  margin-left: 10px;
+}
+
+.application-sub-panel__item-data-container--organization-previous-bills {
+  flex-direction: column;
+}
+
+// Sub panel item sub item
+.application-sub-panel__item-sub-item--organization-previous-bills {
+  display: flex;
+
+  &:not(:first-child) {
+    margin-top: 5px;
+  }
+
+  div:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+// Removing single-enty background
+.application-sub-panel__item-data-content--no-bg .application-sub-panel__single-entry {
+  background-color: transparent;
+}
+
+// Subpanel item data for worklist entries total
+.application-sub-panel__item-data--worklist-total {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 80px;
+    justify-content: center;
+    margin: 0 165px 0 0;
+  }
+}
+
+// Subpanel item data for worklist entries submit link
+.application-sub-panel__item-data--worklist-submit-entries {
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
+  background-color: $color-sub-panel-data-1-background;
+}
+
+.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
+  background-color: $color-sub-panel-data-2-background;
+  color: $color-default;
+}
+
+// item-data content
+
+.application-sub-panel__item-data-content--organization-contact-information {
+  font-weight: 400;
+}
+
+.application-sub-panel__item-data-content--primary {
+  background-color: $color-hops-readable-inline-background;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
+}
+
+// item-data label
+
+.application-sub-panel__item-data-label {
+  margin-right: 5px;
+}
+
+.application-sub-panel__single-entry {
+  background-color: $color-hops-readable-inline-background;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
+}
+
+// HOPS in Guider in readable state
+.application-sub-panel__item--hops-readable {
+  flex-flow: row wrap;
+
+  .application-sub-panel__item-title {
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: 60%;
+      margin: 0 10px 0 0;
+    }
+  }
+
+  .application-sub-panel__item-data {
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+  }
+}
+
+// HOPS in Studies in editable state
+.application-sub-panel__item--hops-editable {
+  align-items: flex-start;
+  flex-flow: column wrap;
+
+  .application-sub-panel__item-title {
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+  }
+
+  .application-sub-panel__item-data {
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+  }
+}
+
+// Profile view
+.application-sub-panel__item--profile {
+  align-items: flex-start;
+  flex-flow: column wrap;
+
+  .application-sub-panel__item-title {
+    flex-basis: 100%;
+    font-weight: 600;
+  }
+
+  .application-sub-panel__item-data {
+    flex-basis: 100%;
+  }
+}
+
+// Studies
+.application-sub-panel__header--studies-hops,
+.application-sub-panel__header--studies-vops {
+  font-size: 1.1875rem;
+  padding: 10px;
+  text-transform: uppercase;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.375rem;
+    padding: 0;
+  }
+}
+
+.application-sub-panel__body--studies-detailed-info {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+// Guider
+.application-sub-panel--guider-student-header {
+  border: 0;
+  margin: 0;
+  padding: 10px 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+}
+
+.application-sub-panel__text {
+  padding: 2px 12px;
+}
+
+.application-sub-panel__text--task-evaluation {
+  background: $color-task-evaluation;
+  border-radius: 3px;
+}
+
+.application-sub-panel__text--course-evaluation {
+  &.state-PASSED {
+    border-left: 3px solid $color-grade-passed;
+  }
+
+  &.state-FAILED {
+    border-left: 3px solid $color-grade-failed;
+  }
+
+  &.state-INCOMPLETE {
+    border-left: 3px solid $color-grade-incomplete;
+  }
+}
+
+.application-sub-panel__body--labels {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+.application-sub-panel__item--label {
+  display: flex;
+  flex-basis: auto;
+  flex-shrink: 1;
+  margin: 5px 10px 5px 0;
+}
+
+.application-sub-panel__item--course-activity {
+  padding: 10px 0;
+}
+
+.application-sub-panel__item-data-container--currentstudent-emails-list,
+.application-sub-panel__item-data-container--currentstudent-phonenumbers-list,
+.application-sub-panel__item-data-container--currentstudent-usergroups-list {
+  flex-wrap: wrap;
+}
+
+.application-sub-panel__item-data--currentstudent-email-item,
+.application-sub-panel__item-data--currentstudent-phonenumber-item,
+.application-sub-panel__item-data--currentstudent-usergroup-item {
+  width: 100%;
+}
+
+// This is related to matriculation enrollment and needs to be done different when Studies view gets integrated to devel
+
+.application-sub-panel--matriculation-enrollment {
+  border: 0;
+  margin: 0;
+}

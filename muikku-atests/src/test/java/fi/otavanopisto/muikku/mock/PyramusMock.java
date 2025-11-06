@@ -59,6 +59,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
+import fi.otavanopisto.pyramus.rest.model.Curriculum;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Email;
@@ -543,6 +544,24 @@ public class PyramusMock {
         }
 
         return this;
+      }
+      
+      public Builder mockCurriculums() throws JsonProcessingException {
+        Curriculum ops21 = new Curriculum(1L,"OPS 2021", false);
+        Curriculum ops16 = new Curriculum(2L,"OPS 2016", false);
+        Curriculum ops18 = new Curriculum(3L,"OPS 2018", false);
+        Curriculum ops05 = new Curriculum(4L,"OPS 2005", false);
+        List<Curriculum> curriculums = new ArrayList<Curriculum>();
+        curriculums.add(ops05);
+        curriculums.add(ops16);
+        curriculums.add(ops18);
+        curriculums.add(ops21);
+        stubFor(get(urlPathEqualTo("/1/common/curriculums"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(curriculums))
+              .withStatus(200)));
+        return this;        
       }
       
       public Builder addEducationType(EducationType eduType) {
@@ -1541,6 +1560,7 @@ public class PyramusMock {
         
         mockGradesAndScales();
         mockEducationalTimeUnits();
+        mockCurriculums();
         mockEducationTypes();
         mockSubjects();
 
