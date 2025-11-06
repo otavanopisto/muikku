@@ -54,6 +54,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.Guardian;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
@@ -102,6 +103,8 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudentParent;
 import fi.otavanopisto.pyramus.rest.model.StudentParentChild;
+import fi.otavanopisto.pyramus.rest.model.StudentParentInvitation;
+import fi.otavanopisto.pyramus.rest.model.StudentParentRelation;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel;
@@ -1860,6 +1863,96 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     
     return result;
+  }
+
+  @Override
+  public List<Guardian> listStudentsGuardians(SchoolDataIdentifier studentIdentifier) {
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    List<Guardian> result = new ArrayList<>();
+
+    // Invitations
+    
+    BridgeResponse<StudentParentInvitation[]> studentParentInvitations = pyramusClient.responseGet(String.format("/students/students/%d/studentParentInvitations", pyramusStudentId), StudentParentInvitation[].class);
+
+    if (studentParentInvitations.ok()) {
+      for (StudentParentInvitation studentParentInvitation : studentParentInvitations.getEntity()) {
+        result.add(new Guardian(
+          identifierMapper.getStudentParentInvitationIdentifier(studentParentInvitation.getId()),
+          studentParentInvitation.getFirstName(),
+          studentParentInvitation.getLastName(),
+          studentParentInvitation.isContinuedViewPermission()
+        ));
+      }
+    }
+    
+    // Guardians
+    
+    BridgeResponse<StudentParentRelation[]> studentParents = pyramusClient.responseGet(String.format("/students/students/%d/studentParents", pyramusStudentId), StudentParentRelation[].class);
+
+    if (studentParents.ok()) {
+      for (StudentParentRelation studentParentRelation : studentParents.getEntity()) {
+        result.add(new Guardian(
+          identifierMapper.getStudentParentChildIdentifier(studentParentRelation.getId()),
+          studentParentRelation.getFirstName(), 
+          studentParentRelation.getLastName(),
+          studentParentRelation.isContinuedViewPermission()
+        ));
+      }
+    }
+    
+    return result;
+  }
+  
+  @Override
+  public BridgeResponse<Guardian> updateStudentsGuardianContinuedViewPermission(SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier guardianIdentifier, boolean continuedViewPermission) {
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+
+    if (identifierMapper.isStudentParentInvitationIdentifier(guardianIdentifier)) {
+      Long studentParentInvitationId = identifierMapper.getStudentParentInvitationId(guardianIdentifier);
+
+      BridgeResponse<StudentParentInvitation> response = pyramusClient.responsePut(
+          String.format("/students/students/%d/studentParentInvitations/%d/continuedViewPermission", pyramusStudentId, studentParentInvitationId),
+          Entity.entity(continuedViewPermission, MediaType.APPLICATION_JSON),
+          StudentParentInvitation.class);
+
+      if (response.ok()) {
+        StudentParentInvitation studentParentInvitation = response.getEntity();
+        Guardian guardian = new Guardian(
+          identifierMapper.getStudentParentInvitationIdentifier(studentParentInvitation.getId()),
+          studentParentInvitation.getFirstName(),
+          studentParentInvitation.getLastName(),
+          studentParentInvitation.isContinuedViewPermission()
+        );
+        return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
+      }
+      
+      return new BridgeResponse<Guardian>(response.getStatusCode(), null, response.getMessage());
+    }
+    else if (identifierMapper.isStudentParentChildIdentifier(guardianIdentifier)) {
+      Long studentParentChildId = identifierMapper.getStudentParentChildId(guardianIdentifier);
+
+      BridgeResponse<StudentParentRelation> response = pyramusClient.responsePut(
+          String.format("/students/students/%d/studentParents/%d/continuedViewPermission", pyramusStudentId, studentParentChildId),
+          Entity.entity(continuedViewPermission, MediaType.APPLICATION_JSON),
+          StudentParentRelation.class);
+
+      if (response.ok()) {
+        StudentParentRelation studentParentRelation = response.getEntity();
+        Guardian guardian = new Guardian(
+          identifierMapper.getStudentParentChildIdentifier(studentParentRelation.getId()),
+          studentParentRelation.getFirstName(), 
+          studentParentRelation.getLastName(),
+          studentParentRelation.isContinuedViewPermission()
+        );
+        return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
+      }
+      
+      return new BridgeResponse<Guardian>(response.getStatusCode(), null, response.getMessage());
+    }
+    else {
+      return new BridgeResponse<Guardian>(500, null, "Unknown identifier type");
+    }
   }
 
   @Override

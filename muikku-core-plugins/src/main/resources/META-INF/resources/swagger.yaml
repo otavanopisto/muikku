@@ -9058,6 +9058,72 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/user/students/{studentIdentifier}/guardians:
+    get:
+      operationId: getStudentsGuardians
+      summary: Get Student's Guardians
+      description: Get Student's Guardians
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student's Guardians
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Guardian"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/user/students/{studentIdentifier}/guardians/{guardianIdentifier}/continuedViewPermission:
+    put:
+      operationId: updateGuardiansContinuedViewPermission
+      summary: Updates Student's Guardian's Continued View Permission property
+      description: Updates Student's Guardian's Continued View Permission property
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: guardianIdentifier
+          in: path
+          description: Guardian's' identifier
+          required: true
+          schema:
+            type: string
+        - name: continuedViewPermission
+          in: query
+          description: continuedViewPermission
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Student's Guardians
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guardian"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/user/students/{studentIdentifier}/guidanceCounselors:
     get:
       operationId: getGuidanceCounselors
@@ -14916,6 +14982,24 @@ components:
         contactType:
           type: string
         defaultContact:
+          type: boolean
+
+    Guardian:
+      type: object
+      description: Guardian object
+      required:
+        - id
+        - firstName
+        - lastName
+        - continuedViewPermission
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        continuedViewPermission:
           type: boolean
 
     GuidanceCounselorContact:

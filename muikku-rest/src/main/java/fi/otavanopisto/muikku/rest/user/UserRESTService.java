@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -62,6 +63,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
+import fi.otavanopisto.muikku.rest.model.GuardianRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -79,6 +81,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.Guardian;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -1351,6 +1354,56 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   @GET
+  @Path("/students/{IDENTIFIER}/guardians")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentsGuardians(
+      @PathParam("IDENTIFIER") SchoolDataIdentifier studentIdentifier) {
+
+    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    List<Guardian> studentsGuardians = userSchoolDataController.listStudentsGuardians(studentIdentifier);
+    
+    return Response.ok(createRestModel(studentsGuardians)).build();
+  }
+  
+  @PUT
+  @Path("/students/{IDENTIFIER}/guardians/{GUARDIANIDENTIFIER}/continuedViewPermission")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateStudentsGuardianContinuedViewPermission(
+      @PathParam("IDENTIFIER") SchoolDataIdentifier studentIdentifier,
+      @PathParam("IDENTIFIER") SchoolDataIdentifier guardianIdentifier,
+      Boolean continuedViewPermission) {
+
+    if (continuedViewPermission == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    BridgeResponse<Guardian> response = userSchoolDataController.updateStudentsGuardianContinuedViewPermission(studentIdentifier, guardianIdentifier, continuedViewPermission);
+    if (response.ok()) {
+      return Response.noContent().build();
+    }
+    else {
+      return Response.status(Status.fromStatusCode(response.getStatusCode())).build();
+    }
+  }
+  
+  @GET
   @Path("/staffMembers")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStaffMembers(
@@ -1724,4 +1777,19 @@ public class UserRESTService extends AbstractRESTService {
     return userEntity;
   }
   
+  private List<GuardianRestModel> createRestModel(List<Guardian> studentsGuardians) {
+    return studentsGuardians.stream()
+        .map(guardian -> createRestModel(guardian))
+        .collect(Collectors.toList());
+  }
+
+  private GuardianRestModel createRestModel(Guardian studentsGuardian) {
+    return new GuardianRestModel(
+        studentsGuardian.getIdentifier().toId(),
+        studentsGuardian.getFirstName(), 
+        studentsGuardian.getLastName(),
+        studentsGuardian.isContinuedViewPermission()
+    );
+  }
+
 }
