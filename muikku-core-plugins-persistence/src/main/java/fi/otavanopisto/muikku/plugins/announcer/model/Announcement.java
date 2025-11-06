@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -155,7 +155,7 @@ public class Announcement {
   @Column (nullable=false)
   private Boolean publiclyVisible;
   
-  @OneToMany
+  @ManyToMany
   @JoinTable (name = "AnnouncementCategories", joinColumns = @JoinColumn(name = "announcement_id"), inverseJoinColumns = @JoinColumn(name = "announcementCategory_id"))
   private List<AnnouncementCategory> categories;
 

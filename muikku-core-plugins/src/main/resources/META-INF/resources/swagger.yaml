@@ -507,13 +507,8 @@ paths:
       summary: Create announcement category
       tags:
         - Announcer
-      parameters:
-        - name: categoryName
-          in: query
-          description: Announcement name
-          required: true
-          schema:
-            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/AnnouncementCategoryCreateRequestBody"
       responses:
         "200":
           description: Announcement category created successfully
@@ -11647,6 +11642,18 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/WorkspaceBasicInfo"
+    
+    AnnouncementCategoryCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: AnnouncementCategoryCreateBody object
+            required:
+              - category
+            properties:
+              category:
+                type: string
 
     AssessmentRequestCreateRequestBody:
       content:

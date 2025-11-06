@@ -11,16 +11,14 @@
   <sql>
     create table AnnouncementCategories (
        announcement_id bigint not null,
-       announcementCategory_id bigint not null
+        announcementCategory_id bigint not null
     );
-  </sql>
-  <sql>
-    alter table AnnouncementCategories 
-       add constraint UK_7vqcss13htnovxmmdw5t2lku1 unique (announcementCategory_id);
   </sql>
   <sql>
     alter table AnnouncementCategory 
        add constraint UK_g43ns3gyjj6awjc7eci3fsn9f unique (categoryName);
+  </sql>
+  <sql>
     create index IDXc65jvsmaa72tf80qf72j9s75m on AnnouncementRecipient (userEntityId);
   </sql>
   <sql>

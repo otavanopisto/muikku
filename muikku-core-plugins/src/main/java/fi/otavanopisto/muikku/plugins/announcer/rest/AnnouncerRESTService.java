@@ -262,8 +262,6 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementCategory> categories = new ArrayList<AnnouncementCategory>();
     
     if (CollectionUtils.isNotEmpty(restModel.getCategories())) {
-      categories = Collections.emptyList();
-    } else {
       for (AnnouncementCategoryRESTModel categoryRest : restModel.getCategories()) {
         AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryRest.getId());
         
@@ -526,13 +524,16 @@ public class AnnouncerRESTService extends PluginRESTService {
   @POST
   @Path("/categories/create")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createAnnouncementCategory(@QueryParam("categoryName") String category) {
+  public Response createAnnouncementCategory(AnnouncementCategoryRESTModel restModel) {
     
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create announcement categories").build();
     }
-
-    AnnouncementCategory announcementCategory = announcementController.createCategory(category);
+    
+    if (restModel.getCategory() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing category name").build();
+    }
+    AnnouncementCategory announcementCategory = announcementController.createCategory(restModel.getCategory());
     
     return Response
         .ok(toRestModel(announcementCategory))
