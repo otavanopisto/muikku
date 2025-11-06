@@ -14988,12 +14988,12 @@ components:
       type: object
       description: Guardian object
       required:
-        - id
+        - identifier
         - firstName
         - lastName
         - continuedViewPermission
       properties:
-        id:
+        identifier:
           type: string
         firstName:
           type: string

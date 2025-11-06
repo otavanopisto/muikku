@@ -589,10 +589,4 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
-  @Override
-  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier,
-      Long contactInfoId, boolean allowStudyDiscussions) {
-    throw new SchoolDataBridgeInternalException("Not supported");
-  }
-
 }
