@@ -4,7 +4,7 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>parent</artifactId>
-  <version>1.1.267-SNAPSHOT</version>
+  <version>1.1.268-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku Parent</name>
 
@@ -71,6 +71,7 @@
     <module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
+    <module>muikku-frontend</module>
   </modules>
 
   <properties>
@@ -88,7 +89,7 @@
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>bom</artifactId>
-        <version>1.1.267-SNAPSHOT</version>
+        <version>1.1.268-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.dao.QueryOrganizerFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -23,9 +22,6 @@ public class QueryOrganizerFieldController {
 
   @Inject
   private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
-  
-  @Inject
-  private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
 
   public QueryOrganizerField createQueryOrganizerField(Material material, String name) {
     return queryOrganizerFieldDAO.create(material, name);
@@ -51,11 +47,6 @@ public class QueryOrganizerFieldController {
     // -> fi.otavanopisto.muikku.plugins.workspace.QueryFieldChangeListener
     queryFieldUpdateEvent.fire(new QueryFieldUpdateEvent(queryField, field, removeAnswers));
     return queryField;
-  }
-  
-  public void deleteQueryOrganizerField(QueryOrganizerField queryField, boolean removeAnswers) {
-    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
-    queryOrganizerFieldDAO.delete(queryField);
   }
 
 }

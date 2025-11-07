@@ -19,7 +19,7 @@ public class BinaryMaterialCloneOperation implements MaterialCloneOperation<Bina
 
   @Override
   public BinaryMaterial clone(BinaryMaterial material) {
-    BinaryMaterial clonedMaterial = binaryMaterialController.createBinaryMaterial(material.getTitle(), material.getContentType(), material.getContent(), material, material.getLicense(), material.getViewRestrict());
+    BinaryMaterial clonedMaterial = binaryMaterialController.createBinaryMaterial(material.getTitle(), material.getContentType(), material.getContent(), material.getLicense(), material.getViewRestrict());
     List<MaterialProducer> materialProducers = materialController.listMaterialProducers(material);
     for (MaterialProducer materialProducer : materialProducers) {
       materialController.createMaterialProducer(clonedMaterial, materialProducer.getName());

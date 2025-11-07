@@ -17,7 +17,6 @@ import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
-import fi.otavanopisto.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
@@ -37,9 +36,6 @@ public class QueryFieldChangeListener {
   
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
-  
-  @Inject
-  private MaterialDeleteController materialDeleteController;
 
   @Inject
   private MaterialDAO materialDAO;
@@ -176,15 +172,6 @@ public class QueryFieldChangeListener {
       for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
         workspaceMaterialFieldController.updateWorkspaceMaterialField(workspaceMaterialField, event.getMaterialField(), event.getRemoveAnswers());
       }
-    }
-  }
-  
-  public void onQueryFieldDelete(@Observes QueryFieldDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
-    // TODO Eventually move this to MaterialDeleteController as well
-    QueryField queryField = event.getQueryField();
-    List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByQueryField(queryField);
-    for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
-      materialDeleteController.deleteWorkspaceMaterialField(workspaceMaterialField, event.getRemoveAnswers());
     }
   }
   

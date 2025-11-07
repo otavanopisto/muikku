@@ -10,7 +10,26 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.MaterialProducerDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QueryFieldDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
+import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
+import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
+import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
+import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
+import fi.otavanopisto.muikku.plugins.material.model.QueryField;
+import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
+import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
+import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
+import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerClipDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
@@ -42,6 +61,9 @@ public class MaterialDeleteController {
   private WorkspaceNodeDAO workspaceNodeDAO;
   
   @Inject
+  private WorkspaceMaterialDAO workspaceMaterialDAO;
+  
+  @Inject
   private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
   
   @Inject
@@ -61,6 +83,27 @@ public class MaterialDeleteController {
 
   @Inject
   private WorkspaceNodeEvaluationDAO workspaceNodeEvaluationDAO;
+  
+  @Inject
+  private QueryFieldDAO queryFieldDAO;
+  
+  @Inject
+  private QueryConnectFieldTermDAO queryConnectFieldTermDAO;
+
+  @Inject
+  private QueryConnectFieldCounterpartDAO queryConnectFieldCounterpartDAO;
+  
+  @Inject
+  private QueryMultiSelectFieldOptionDAO queryMultiSelectFieldOptionDAO;
+  
+  @Inject
+  private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
+  
+  @Inject
+  private MaterialDAO materialDAO;
+
+  @Inject
+  private MaterialProducerDAO materialProducerDAO;
   
   @Inject
   private EvaluationDeleteController evaluationDeleteController;
@@ -111,9 +154,18 @@ public class MaterialDeleteController {
       throw e;
     }
 
-    // TODO Stage 2: If the underlying material would be orphaned, delete it as well
+    Material material = materialDAO.findById(workspaceMaterial.getMaterialId());
+    
+    // Delete the workspace node
 
     deleteWorkspaceNode(workspaceMaterial);
+
+    // If the underlying material ended up orphaned, delete it as well
+    
+    long materialCount = workspaceMaterialDAO.countByMaterialId(material.getId());
+    if (materialCount == 0) {
+      deleteMaterial(material);
+    }
   }
   
   /**
@@ -238,6 +290,85 @@ public class MaterialDeleteController {
   
   public void deleteWorkspaceMaterialMultiSelectFieldAnswerOption(WorkspaceMaterialMultiSelectFieldAnswerOption answerOption) {
     workspaceMaterialMultiSelectFieldAnswerOptionDAO.delete(answerOption);
+  }
+
+  public void deleteQueryField(QueryField queryField, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
+    
+    // First get rid of workspace material fields, simultaneously dealing with removeAnswers flag
+    
+    List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldDAO.listByQueryField(queryField);
+    for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
+      deleteWorkspaceMaterialField(workspaceMaterialField, removeAnswers);
+    }
+    
+    // Extra cleanup for some query field types with additional tables
+    
+    if (queryField instanceof QueryConnectField) {
+      List<QueryConnectFieldTerm> terms = queryConnectFieldTermDAO.listByField((QueryConnectField) queryField);
+      for (QueryConnectFieldTerm term : terms) {
+        queryConnectFieldTermDAO.delete(term);
+      }
+      List<QueryConnectFieldCounterpart> counterparts = queryConnectFieldCounterpartDAO.listByField((QueryConnectField) queryField);
+      for (QueryConnectFieldCounterpart counterpart : counterparts) {
+        queryConnectFieldCounterpartDAO.delete(counterpart);
+      }
+      // Entity inheritance ensures previous deletes got rid of QueryConnectFieldOption 
+    }
+    else if (queryField instanceof QueryMultiSelectField) {
+      List<QueryMultiSelectFieldOption> options = queryMultiSelectFieldOptionDAO.listByField((QueryMultiSelectField) queryField);
+      for (QueryMultiSelectFieldOption option : options) {
+        queryMultiSelectFieldOptionDAO.delete(option);
+      }
+    }
+    else if (queryField instanceof QuerySelectField) {
+      List<QuerySelectFieldOption> options = querySelectFieldOptionDAO.listByField((QuerySelectField) queryField);
+      for (QuerySelectFieldOption option : options) {
+        querySelectFieldOptionDAO.delete(option);
+      }
+    }
+    
+    // Query field can now be deleted. Entity inheritance ensures it will also be removed from the
+    // query field table related to the type of the field (e.g. QueryConnectField)
+    
+    queryFieldDAO.delete(queryField);
+  }
+  
+  /**
+   * Deletes the given material. Assumes the material is no longer associated
+   * with any workspace material.
+   * 
+   * @param material Material to be deleted
+   */
+  public void deleteMaterial(Material material) {
+    
+    // For HTML materials, delete query fields and material producers first
+    
+    if (material instanceof HtmlMaterial) {
+      
+      // Delete query fields
+      
+      List<QueryField> fields = queryFieldDAO.listByMaterial(material);
+      try {
+        for (QueryField field : fields) {
+          deleteQueryField(field, true);
+        }
+      }
+      catch (WorkspaceMaterialContainsAnswersExeption e) {
+        // Cannot happen because removeAnswers was explicitly set to true
+      }
+      
+      // Delete material producers
+      
+      List<MaterialProducer> producers = materialProducerDAO.listByMaterial(material);
+      for (MaterialProducer producer : producers) {
+        materialProducerDAO.delete(producer);
+      }
+    }
+    
+    // Material can now be deleted. Thanks to entity inheritance, this will also delete associated
+    // HtmlMaterial or BinaryMaterial
+    
+    materialDAO.delete(material);
   }
 
   /**
