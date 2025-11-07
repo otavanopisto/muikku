@@ -593,23 +593,6 @@ public class AnnouncerRESTService extends PluginRESTService {
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
-    // List announcements by category and remove the category that is being deleted 
-    List<Announcement> announcements = announcementController.listAnnouncementsByCategory(announcementCategoryId);
-    
-    for (Announcement announcement : announcements) {
-      List<AnnouncementCategory> newCategoryList = new ArrayList<AnnouncementCategory>();
-      
-      List<AnnouncementCategory> categories = announcement.getCategories();
-      
-      for (AnnouncementCategory category : categories){
-        if (category.getId() != announcementCategoryId) {
-          newCategoryList.add(category);
-        }
-      }
-      
-      announcementController.updateAnnouncement(announcement, announcement.getCaption(), announcement.getContent(), announcement.getStartDate(), announcement.getEndDate(), announcement.getPubliclyVisible(), announcement.getArchived(), announcement.isPinned(), newCategoryList);
-    }
 
     announcementController.deleteAnnouncementCategory(announcementCategory);
     
