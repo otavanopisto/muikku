@@ -1385,8 +1385,8 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
-    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    UserSchoolDataIdentifier studentUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (studentUSDI == null || !studentUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
@@ -1396,7 +1396,7 @@ public class UserRESTService extends AbstractRESTService {
 
     BridgeResponse<Guardian> response = userSchoolDataController.updateStudentsGuardianContinuedViewPermission(studentIdentifier, guardianIdentifier, continuedViewPermission);
     if (response.ok()) {
-      return Response.noContent().build();
+      return Response.ok().entity(createRestModel(response.getEntity())).build();
     }
     else {
       return Response.status(Status.fromStatusCode(response.getStatusCode())).build();
