@@ -556,6 +556,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
+    
+  /rest/announcer/categories/{categoryId}:
+    put:
+      operationId: updateAnnouncementCategory
+      summary: Update announcement category
+      tags:
+        - Announcer
+      parameters:
+        - name: categoryId
+          in: path
+          description: Category id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/AnnouncementCategoryCreateRequestBody"
+      responses:
+        "200":
+          description: Announcement category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnouncementCategory"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
 
     delete:
         operationId: deleteAnnouncementCategory
