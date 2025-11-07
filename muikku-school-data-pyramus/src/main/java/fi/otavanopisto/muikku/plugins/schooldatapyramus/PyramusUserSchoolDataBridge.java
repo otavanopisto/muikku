@@ -55,6 +55,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Guardian;
+import fi.otavanopisto.muikku.schooldata.entity.GuardianState;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
@@ -1880,6 +1881,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           identifierMapper.getStudentParentInvitationIdentifier(studentParentInvitation.getId()),
           studentParentInvitation.getFirstName(),
           studentParentInvitation.getLastName(),
+          GuardianState.INVITED,
           studentParentInvitation.isContinuedViewPermission()
         ));
       }
@@ -1895,6 +1897,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           identifierMapper.getStudentParentChildIdentifier(studentParentRelation.getId()),
           studentParentRelation.getFirstName(), 
           studentParentRelation.getLastName(),
+          studentParentRelation.isActiveParent() ? GuardianState.ACTIVE : GuardianState.INACTIVE,
           studentParentRelation.isContinuedViewPermission()
         ));
       }
@@ -1922,6 +1925,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           identifierMapper.getStudentParentInvitationIdentifier(studentParentInvitation.getId()),
           studentParentInvitation.getFirstName(),
           studentParentInvitation.getLastName(),
+          GuardianState.INVITED,
           studentParentInvitation.isContinuedViewPermission()
         );
         return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
@@ -1943,6 +1947,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           identifierMapper.getStudentParentChildIdentifier(studentParentRelation.getId()),
           studentParentRelation.getFirstName(), 
           studentParentRelation.getLastName(),
+          studentParentRelation.isActiveParent() ? GuardianState.ACTIVE : GuardianState.INACTIVE,
           studentParentRelation.isContinuedViewPermission()
         );
         return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
