@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.announcer.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -155,7 +156,7 @@ public class Announcement {
   @Column (nullable=false)
   private Boolean publiclyVisible;
   
-  @ManyToMany
+  @ManyToMany (cascade = CascadeType.ALL)
   @JoinTable (name = "AnnouncementCategories", joinColumns = @JoinColumn(name = "announcement_id"), inverseJoinColumns = @JoinColumn(name = "announcementCategory_id"))
   private List<AnnouncementCategory> categories;
 

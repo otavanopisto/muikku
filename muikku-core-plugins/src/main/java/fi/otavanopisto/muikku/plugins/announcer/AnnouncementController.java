@@ -272,6 +272,11 @@ public class AnnouncementController {
     return announcementCategoryDAO.findById(id);
   }
   
+  public AnnouncementCategory updateAnnouncementCategory(AnnouncementCategory announcementCategory, String category) {
+    announcementCategoryDAO.updateCategory(announcementCategory, category);
+    return announcementCategory;
+  }
+  
   public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
     announcementCategoryDAO.delete(announcementCategory);
   }

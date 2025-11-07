@@ -32,6 +32,11 @@ public class AnnouncementCategoryDAO extends CorePluginsDAO<AnnouncementCategory
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  public AnnouncementCategory updateCategory(AnnouncementCategory announcementCategory, String category) {
+    announcementCategory.setCategoryName(category);
+    return persist(announcementCategory);
+  }
+  
   public void delete(AnnouncementCategory announcementCategory){
     super.delete(announcementCategory);
   }

@@ -556,6 +556,30 @@ public class AnnouncerRESTService extends PluginRESTService {
         .build();
   }
   
+  @PUT
+  @Path("/categories/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateAnnouncementCategory(@PathParam("ID") Long announcementCategoryId, AnnouncementCategoryRESTModel restModel) {
+    if (announcementCategoryId == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update announcement categories").build();
+    }
+    
+    AnnouncementCategory announcementCategory = announcementController.findAnnouncementCategoryById(announcementCategoryId);
+    
+    if (announcementCategory == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    return Response
+        .ok(toRestModel(announcementController.updateAnnouncementCategory(announcementCategory, restModel.getCategory())))
+        .build();
+        
+  }
+  
   @DELETE
   @Path("/categories/{ID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -568,6 +592,23 @@ public class AnnouncerRESTService extends PluginRESTService {
 
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // List announcements by category and remove the category that is being deleted 
+    List<Announcement> announcements = announcementController.listAnnouncementsByCategory(announcementCategoryId);
+    
+    for (Announcement announcement : announcements) {
+      List<AnnouncementCategory> newCategoryList = new ArrayList<AnnouncementCategory>();
+      
+      List<AnnouncementCategory> categories = announcement.getCategories();
+      
+      for (AnnouncementCategory category : categories){
+        if (category.getId() != announcementCategoryId) {
+          newCategoryList.add(category);
+        }
+      }
+      
+      announcementController.updateAnnouncement(announcement, announcement.getCaption(), announcement.getContent(), announcement.getStartDate(), announcement.getEndDate(), announcement.getPubliclyVisible(), announcement.getArchived(), announcement.isPinned(), newCategoryList);
     }
 
     announcementController.deleteAnnouncementCategory(announcementCategory);
