@@ -530,10 +530,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create announcement categories").build();
     }
     
-    if (restModel.getCategory() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing category name").build();
+    if (restModel.getCategory() == null || restModel.getColor() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing category name or color").build();
     }
-    AnnouncementCategory announcementCategory = announcementController.createCategory(restModel.getCategory());
+    AnnouncementCategory announcementCategory = announcementController.createCategory(restModel.getCategory(), restModel.getColor());
     
     return Response
         .ok(toRestModel(announcementCategory))
@@ -564,6 +564,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    if (restModel.getCategory() == null || restModel.getColor() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing category name or color").build();
+    }
+    
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update announcement categories").build();
     }
@@ -575,7 +579,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     return Response
-        .ok(toRestModel(announcementController.updateAnnouncementCategory(announcementCategory, restModel.getCategory())))
+        .ok(toRestModel(announcementController.updateAnnouncementCategory(announcementCategory, restModel.getCategory(), restModel.getColor())))
         .build();
         
   }
@@ -604,6 +608,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     restModel.setCategory(category.getCategoryName());
     restModel.setId(category.getId());
+    restModel.setColor(category.getColor());
     
     return restModel;
   }

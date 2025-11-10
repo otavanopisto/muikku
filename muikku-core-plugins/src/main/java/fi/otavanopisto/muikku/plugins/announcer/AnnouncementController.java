@@ -256,10 +256,10 @@ public class AnnouncementController {
     return announcementRecipientDAO.create(announcement, userEntityId);
   }
   
-  public AnnouncementCategory createCategory(String category) {
+  public AnnouncementCategory createCategory(String category, Long color) {
     AnnouncementCategory categoryEntity = announcementCategoryDAO.findByName(category);
     if (categoryEntity == null) {
-      categoryEntity = announcementCategoryDAO.create(category);
+      categoryEntity = announcementCategoryDAO.create(category, color);
     }
     return categoryEntity;
   }
@@ -272,8 +272,8 @@ public class AnnouncementController {
     return announcementCategoryDAO.findById(id);
   }
   
-  public AnnouncementCategory updateAnnouncementCategory(AnnouncementCategory announcementCategory, String category) {
-    announcementCategoryDAO.updateCategory(announcementCategory, category);
+  public AnnouncementCategory updateAnnouncementCategory(AnnouncementCategory announcementCategory, String category, Long color) {
+    announcementCategoryDAO.updateCategory(announcementCategory, category, color);
     return announcementCategory;
   }
   

@@ -5,6 +5,7 @@
     create table AnnouncementCategory (
        id bigint not null auto_increment,
         categoryName varchar(255) not null,
+        color bigint not null,
         primary key (id)
     );
   </sql>

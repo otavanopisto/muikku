@@ -13,9 +13,10 @@ public class AnnouncementCategoryDAO extends CorePluginsDAO<AnnouncementCategory
 	
   private static final long serialVersionUID = -3741200400638046071L;
 
-  public AnnouncementCategory create(String categoryName) {
+  public AnnouncementCategory create(String categoryName, Long color) {
     AnnouncementCategory announcementCategory = new AnnouncementCategory();
     announcementCategory.setCategoryName(categoryName);
+    announcementCategory.setColor(color);
     
     return persist(announcementCategory);
  }
@@ -32,8 +33,9 @@ public class AnnouncementCategoryDAO extends CorePluginsDAO<AnnouncementCategory
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
-  public AnnouncementCategory updateCategory(AnnouncementCategory announcementCategory, String category) {
+  public AnnouncementCategory updateCategory(AnnouncementCategory announcementCategory, String category, Long color) {
     announcementCategory.setCategoryName(category);
+    announcementCategory.setColor(color);
     return persist(announcementCategory);
   }
   

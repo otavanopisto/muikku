@@ -23,6 +23,14 @@ public class AnnouncementCategory {
     this.categoryName = categoryName;
   }
 
+  public Long getColor() {
+    return color;
+  }
+
+  public void setColor(Long color) {
+    this.color = color;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -31,5 +39,9 @@ public class AnnouncementCategory {
   @NotEmpty
   @Column (nullable = false, unique = true)
   private String categoryName;
+  
+  @NotNull
+  @Column(nullable = false)
+  private Long color;
 
 }

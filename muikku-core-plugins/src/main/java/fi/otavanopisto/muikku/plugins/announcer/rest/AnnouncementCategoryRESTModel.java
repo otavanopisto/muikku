@@ -19,6 +19,16 @@ public class AnnouncementCategoryRESTModel {
   }
 
 
+  public Long getColor() {
+    return color;
+  }
+
+  public void setColor(Long color) {
+    this.color = color;
+  }
+
+
   private Long id;
   private String category;
+  private Long color;
 }

@@ -11687,9 +11687,13 @@ components:
             description: AnnouncementCategoryCreateBody object
             required:
               - category
+              - color
             properties:
               category:
                 type: string
+              color:
+                type: integer
+                format: int64
 
     AssessmentRequestCreateRequestBody:
       content:
