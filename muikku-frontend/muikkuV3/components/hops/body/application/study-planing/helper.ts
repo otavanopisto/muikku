@@ -4,6 +4,7 @@ import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import {
   PlannedCourseWithIdentifier,
   PlannedPeriod,
+  PlannerActivityItem,
   StudentDateInfo,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
@@ -127,6 +128,10 @@ const createAndAllocateCoursesToPeriods = (
   // Convert all planned courses to periods to get date ranges
   const periods = createPeriods(studentDateInfo, curriculumStrategy);
 
+  const plannedCourseKeys = new Set(
+    plannedCourses.map((pc) => `${pc.subjectCode}-${pc.courseNumber}`)
+  );
+
   // Allocate courses to periods
   plannedCourses.forEach((course) => {
     // Find possible study activity for the course
@@ -161,28 +166,96 @@ const createAndAllocateCoursesToPeriods = (
     );
 
     if (period) {
-      period.plannedCourses.push(course);
+      period.items.push(course);
     }
   });
+
+  // Allocate graded activities that are NOT in planned courses
+  // Only show in past periods
+  studyActivities
+    .filter(
+      (activity) =>
+        !plannedCourseKeys.has(
+          `${activity.subject}-${activity.courseNumber}`
+        ) && activity.status === "GRADED"
+    )
+    .forEach((activity) => {
+      const activityItem = createActivityOnlyCourseItem(
+        activity,
+        curriculumStrategy
+      );
+
+      if (!activityItem) return;
+
+      const activityDate = new Date(activity.date);
+      const activityYear = activityDate.getFullYear();
+      const activityMonth = activityDate.getMonth();
+
+      const period = periods.find(
+        (p) =>
+          activityYear === p.year &&
+          p.isPastPeriod && // Only in past periods
+          ((p.type === "SPRING" && activityMonth >= 0 && activityMonth <= 6) ||
+            (p.type === "AUTUMN" && activityMonth >= 7 && activityMonth <= 11))
+      );
+
+      if (period) {
+        period.items.push(activityItem);
+      }
+    });
 
   // Only trim empty periods from the start
   const trimmedPeriods = [...periods];
 
   const currentPeriod = curriculumStrategy.getCurrentPeriod();
 
-  // Trim from start
+  // Trim from start if the period is empty
   while (
     trimmedPeriods.length > 0 &&
     !(
       trimmedPeriods[0].year === currentPeriod.year &&
       trimmedPeriods[0].type === currentPeriod.type
     ) &&
-    trimmedPeriods[0].plannedCourses.length === 0
+    trimmedPeriods[0].items.length === 0
   ) {
     trimmedPeriods.shift();
   }
 
   return trimmedPeriods;
+};
+
+/**
+ * Creates an activity-only course item from study activity and matrix
+ * @param studyActivity study activity
+ * @param curriculumStrategy curriculum strategy
+ * @returns activity-only course item
+ */
+const createActivityOnlyCourseItem = (
+  studyActivity: StudentStudyActivity,
+  curriculumStrategy: CurriculumStrategy
+): PlannerActivityItem | null => {
+  const matrix = curriculumStrategy.getCurriculumMatrix();
+  // Find course in matrix
+  const subject = matrix.subjectsTable.find(
+    (s) => s.subjectCode === studyActivity.subject
+  );
+
+  if (!subject) return null;
+
+  const course = subject.availableCourses.find(
+    (c) => c.courseNumber === studyActivity.courseNumber
+  );
+
+  if (!course) return null;
+
+  return {
+    identifier: "activity-course-" + studyActivity.courseId,
+    course: {
+      ...course,
+      subjectCode: subject.subjectCode,
+    },
+    studyActivity,
+  };
 };
 
 /**
