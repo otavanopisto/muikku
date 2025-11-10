@@ -1378,7 +1378,7 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateStudentsGuardianContinuedViewPermission(
       @PathParam("IDENTIFIER") SchoolDataIdentifier studentIdentifier,
-      @PathParam("IDENTIFIER") SchoolDataIdentifier guardianIdentifier,
+      @PathParam("GUARDIANIDENTIFIER") SchoolDataIdentifier guardianIdentifier,
       Boolean continuedViewPermission) {
 
     if (continuedViewPermission == null) {
