@@ -20,9 +20,6 @@
        add constraint UK_g43ns3gyjj6awjc7eci3fsn9f unique (categoryName);
   </sql>
   <sql>
-    create index IDXc65jvsmaa72tf80qf72j9s75m on AnnouncementRecipient (userEntityId);
-  </sql>
-  <sql>
     alter table AnnouncementCategories 
        add constraint FKm0c7c7qiu3o9bjy99x0bynoer 
        foreign key (announcementCategory_id) 

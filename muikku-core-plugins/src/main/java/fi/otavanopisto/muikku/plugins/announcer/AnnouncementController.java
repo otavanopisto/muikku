@@ -273,8 +273,7 @@ public class AnnouncementController {
   }
   
   public AnnouncementCategory updateAnnouncementCategory(AnnouncementCategory announcementCategory, String category, Long color) {
-    announcementCategoryDAO.updateCategory(announcementCategory, category, color);
-    return announcementCategory;
+    return announcementCategoryDAO.updateCategory(announcementCategory, category, color);
   }
   
   public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
