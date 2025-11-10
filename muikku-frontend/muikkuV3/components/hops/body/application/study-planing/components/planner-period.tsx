@@ -95,12 +95,12 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
     const months = getPeriodMonthNames(type, t);
 
     const plannedCourses = React.useMemo(
-      () => items.filter((item) => isPeriodCourseItemPlannedCourse(item)),
+      () => items.filter(isPeriodCourseItemPlannedCourse),
       [items]
     );
 
     const activityCourses = React.useMemo(
-      () => items.filter((item) => isPeriodCourseItemActivityCourse(item)),
+      () => items.filter(isPeriodCourseItemActivityCourse),
       [items]
     );
 
