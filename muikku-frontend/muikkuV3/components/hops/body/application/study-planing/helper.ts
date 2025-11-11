@@ -10,6 +10,17 @@ import {
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
 /**
+ * Gets period type by month number
+ * @param monthNumber month number
+ * @returns period type
+ */
+const getPeriodTypeByMonthNumber = (monthNumber: number) => {
+  if (monthNumber >= 0 && monthNumber <= 6) return "SPRING";
+  if (monthNumber >= 7 && monthNumber <= 11) return "AUTUMN";
+  return null;
+};
+
+/**
  * Gets period month names by type
  * @param type type of period
  * @param t translation function
@@ -437,4 +448,5 @@ export {
   isPlannedCourse,
   selectedIsPlannedCourse,
   getPeriodMonthNames,
+  getPeriodTypeByMonthNumber,
 };

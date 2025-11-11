@@ -169,7 +169,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
         animate={isCollapsed ? "collapsed" : "expanded"}
       >
         {/* Collapsed state header */}
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {isCollapsed && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -201,7 +201,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
         </AnimatePresence>
 
         {/* Expanded state content */}
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {!isCollapsed && (
             <>
               <motion.div
