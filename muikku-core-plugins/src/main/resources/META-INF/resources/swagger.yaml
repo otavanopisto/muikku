@@ -6346,12 +6346,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/StudyPlannerNote"
-
-  /rest/hops/student/{studentIdentifier}/studyPlannerNote:
-    post:
-      operationId: createOrUpdateStudyPlannerNote
-      summary: Creates or updates study planner note
-      description: Creates or updates study planner note. Created when payload id is null, updated otherwise
+    put:
+      operationId: updateStudyPlannerNotes
+      summary: Creates, updates, and deletes student's study planner notes
+      description: Creates, updates, and deletes student's study planner notes
       tags:
         - Hops
       parameters:
@@ -6362,39 +6360,16 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/components/requestBodies/StudyPlannerNoteCreateOrUpdateRequestBody"
+        $ref: "#/components/requestBodies/StudyPlannerNotesUpdateRequestBody"
       responses:
         "200":
-          description: Note created or updated successfully
+          description: Student study planner notes
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StudyPlannerNote"
-
-  /rest/hops/student/{studentIdentifier}/studyPlannerNote/{id}:
-    delete:
-      operationId: deleteStudyPlannerNote
-      summary: Deletes a study planner note
-      description: Deletes a study planner note
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: id
-          in: path
-          description: Note id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "204":
-          description: Note deleted successfully
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyPlannerNote"
 
   /rest/hops/student/{studentIdentifier}/plannedCourses:
     get:
@@ -12746,20 +12721,26 @@ components:
                   type: integer
                   format: int64
 
-    StudyPlannerNoteCreateOrUpdateRequestBody:
-      required: true
+    StudyPlannerNotesUpdateRequestBody:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/StudyPlannerNote"
+            type: object
+            description: Study planner notes update request
+            required:
+              - notes
+            properties:
+              notes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyPlannerNote"
 
     PlannedCoursesUpdateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: PlannedCoursesUpdateRequestBody object
+            description: Planned courses update request
             required:
               - plannedCourses
             properties:
