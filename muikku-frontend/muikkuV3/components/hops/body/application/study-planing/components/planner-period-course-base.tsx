@@ -30,6 +30,7 @@ export interface BasePlannerPeriodCourseProps {
   course: PlannedCourseWithIdentifier;
   selected: boolean;
   isDragging?: boolean;
+  canDrag?: boolean;
   hasChanges: boolean;
   curriculumConfig: CurriculumConfig;
   studyActivity?: StudentStudyActivity;
@@ -86,6 +87,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     course,
     selected,
     isDragging = false,
+    canDrag = false,
     hasChanges,
     studyActivity,
     curriculumConfig,
@@ -280,6 +282,13 @@ const BasePlannerPeriodCourse = React.forwardRef<
         });
         break;
 
+      case "SUPPLEMENTATIONREQUEST":
+        dateString = t("studyPlanCardActivity.supplementationRequest", {
+          ns: "hops_new",
+          date,
+        });
+        break;
+
       default:
         break;
     }
@@ -328,6 +337,9 @@ const BasePlannerPeriodCourse = React.forwardRef<
 
   const cardModifiers = [];
   isDragging && cardModifiers.push("is-dragging");
+  canDrag
+    ? cardModifiers.push("draggable")
+    : cardModifiers.push("not-draggable");
   selected && cardModifiers.push("selected");
   courseState.state && cardModifiers.push(courseState.state);
 

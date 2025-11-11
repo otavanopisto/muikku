@@ -276,9 +276,10 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     subjectCode: subject.subjectCode,
                   });
 
-                  const isGraded =
+                  const isAssessed =
                     course.studyActivity &&
-                    course.studyActivity.status === "GRADED";
+                    (course.studyActivity.status === "GRADED" ||
+                      course.studyActivity.status === "SUPPLEMENTATIONREQUEST");
 
                   return (
                     <PlannerCourseTrayItem
@@ -286,7 +287,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                         course.identifier ||
                         `${subject.subjectCode}${course.courseNumber}`
                       }
-                      disabled={disabled || course.planned || isGraded}
+                      disabled={disabled || course.planned || isAssessed}
                       course={course}
                       subjectCode={subject.subjectCode}
                       isPlannedCourse={course.planned}
@@ -430,6 +431,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
 
   const modifiers = ["course-tray-card"];
 
+  !disabled ? modifiers.push("draggable") : modifiers.push("not-draggable");
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
   courseState.state && modifiers.push(courseState.state);

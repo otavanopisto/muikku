@@ -124,7 +124,9 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
         );
 
         const useStudyActivityData =
-          studyActivity && studyActivity.status === "GRADED";
+          studyActivity &&
+          (studyActivity.status === "GRADED" ||
+            studyActivity.status === "SUPPLEMENTATIONREQUEST");
 
         const startDate = useStudyActivityData
           ? new Date(studyActivity.date)

@@ -473,18 +473,19 @@
   transform: scale(1.05);
 }
 
+.study-planner__card--draggable {
+  cursor: move;
+}
+
+.study-planner__card--not-draggable {
+  cursor: not-allowed;
+}
+
 .study-planner__card--disabled {
   cursor: not-allowed;
   opacity: 50%;
 }
 
-.study-planner__card--completed,
-.study-planner__card--transferred,
-.study-planner__card--failed,
-.study-planner__card--supplementation-request,
-.study-planner__card--inprogress {
-  cursor: default;
-}
 
 .study-planner__card--selected {
   outline: 2px solid lighten($color-study-plan-tool-accent, 20%);

@@ -111,6 +111,13 @@ const PlannerActivityCard = React.forwardRef<
         });
         break;
 
+      case "SUPPLEMENTATIONREQUEST":
+        dateString = t("studyPlanCardActivity.supplementationRequest", {
+          ns: "hops_new",
+          date,
+        });
+        break;
+
       default:
         break;
     }

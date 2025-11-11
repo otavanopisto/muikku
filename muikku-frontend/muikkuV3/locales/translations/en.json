@@ -1057,7 +1057,8 @@
     },
     "studyPlanCardActivity": {
       "graded": "{{date}} (graded)",
-      "ongoing": "{{date}} (ongoing)"
+      "ongoing": "{{date}} (enrolled)",
+      "supplementationRequest": "{{date}} (needs supplementation)"
     }
   },
   "organization": {

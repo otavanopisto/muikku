@@ -63,6 +63,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
       {...props}
       ref={drag}
       isDragging={isDragging}
+      canDrag={!disabled}
       renderSpecifyContent={({
         onClose,
         onConfirm,

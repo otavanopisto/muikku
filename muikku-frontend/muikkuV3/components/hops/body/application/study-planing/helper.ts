@@ -156,7 +156,9 @@ const createAndAllocateCoursesToPeriods = (
     // This is done because plan itself is baseline and study activity is overriding it based on how students actions
     // affect the plan.
     const useStudyActivityData =
-      studyActivity && studyActivity.status === "GRADED";
+      studyActivity &&
+      (studyActivity.status === "GRADED" ||
+        studyActivity.status === "SUPPLEMENTATIONREQUEST");
 
     const courseStartYear = useStudyActivityData
       ? new Date(studyActivity.date).getFullYear()
@@ -188,7 +190,9 @@ const createAndAllocateCoursesToPeriods = (
       (activity) =>
         !plannedCourseKeys.has(
           `${activity.subject}-${activity.courseNumber}`
-        ) && activity.status === "GRADED"
+        ) &&
+        (activity.status === "GRADED" ||
+          activity.status === "SUPPLEMENTATIONREQUEST")
     )
     .forEach((activity) => {
       const activityItem = createActivityOnlyCourseItem(

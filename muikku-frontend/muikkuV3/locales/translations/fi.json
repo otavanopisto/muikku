@@ -1057,7 +1057,8 @@
     },
     "studyPlanCardActivity": {
       "graded": "{{date}} (arvioitu)",
-      "ongoing": "{{date}} (kesken)"
+      "ongoing": "{{date}} (ilmoittauduttu)",
+      "supplementationRequest": "{{date}} (täydennettävä)"
     }
   },
   "organization": {
