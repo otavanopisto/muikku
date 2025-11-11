@@ -1054,6 +1054,10 @@
       "updateError_hopsEntry": "HOPS entry could not be updated. Please refresh the page and try again.",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_hopsHistory": "HOPS history could not be loaded. Please refresh the page and try again."
+    },
+    "studyPlanCardActivity": {
+      "graded": "{{date}} (graded)",
+      "ongoing": "{{date}} (ongoing)"
     }
   },
   "organization": {

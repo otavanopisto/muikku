@@ -263,19 +263,29 @@ const BasePlannerPeriodCourse = React.forwardRef<
     }
 
     const date = localize.date(new Date(studyActivity.date));
-    let dateString = null;
+    let dateString: string | null = null;
 
     switch (studyActivity.status) {
       case "GRADED":
-        dateString = `${date} (arvioitu)`;
+        dateString = t("studyPlanCardActivity.graded", {
+          ns: "hops_new",
+          date,
+        });
         break;
 
       case "ONGOING":
-        dateString = `${date} (kesken)`;
+        dateString = t("studyPlanCardActivity.ongoing", {
+          ns: "hops_new",
+          date,
+        });
         break;
 
       default:
         break;
+    }
+
+    if (!dateString) {
+      return null;
     }
 
     return <div className="study-planner__course-dates-item">{dateString}</div>;
