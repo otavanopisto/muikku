@@ -15034,24 +15034,6 @@ components:
       type: object
       description: Guardian object
       required:
-        - id
-        - firstName
-        - lastName
-        - continuedViewPermission
-      properties:
-        id:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        continuedViewPermission:
-          type: boolean
-
-    Guardian:
-      type: object
-      description: Guardian object
-      required:
         - identifier
         - firstName
         - lastName
