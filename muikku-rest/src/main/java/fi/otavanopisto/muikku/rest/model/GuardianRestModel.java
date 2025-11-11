@@ -5,19 +5,19 @@ public class GuardianRestModel {
   public GuardianRestModel() {
   }
 
-  public GuardianRestModel(String id, String firstName, String lastName, boolean continuedViewPermission) {
-    this.id = id;
+  public GuardianRestModel(String identifier, String firstName, String lastName, boolean continuedViewPermission) {
+    this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
     this.continuedViewPermission = continuedViewPermission;
   }
   
-  public String getId() {
-    return id;
+  public String getIdentifier() {
+    return identifier;
   }
 
-  public void setId(String id) {
-    this.id = id;
+  public void setIdentifier(String id) {
+    this.identifier = id;
   }
 
   public String getFirstName() {
@@ -44,7 +44,7 @@ public class GuardianRestModel {
     this.continuedViewPermission = continuedViewPermission;
   }
 
-  private String id;
+  private String identifier;
   private String firstName;
   private String lastName;
   private boolean continuedViewPermission;

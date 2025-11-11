@@ -7,10 +7,11 @@ public class Guardian {
   public Guardian() {
   }
   
-  public Guardian(SchoolDataIdentifier identifier, String firstName, String lastName, boolean continuedViewPermission) {
+  public Guardian(SchoolDataIdentifier identifier, String firstName, String lastName, GuardianState state, boolean continuedViewPermission) {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.state = state;
     this.continuedViewPermission = continuedViewPermission;
   }
   
@@ -46,8 +47,17 @@ public class Guardian {
     this.continuedViewPermission = continuedViewPermission;
   }
 
+  public GuardianState getState() {
+    return state;
+  }
+
+  public void setState(GuardianState state) {
+    this.state = state;
+  }
+
   private SchoolDataIdentifier identifier;
   private String firstName;
   private String lastName;
+  private GuardianState state;
   private boolean continuedViewPermission;
 }

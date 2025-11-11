@@ -15048,6 +15048,24 @@ components:
         continuedViewPermission:
           type: boolean
 
+    Guardian:
+      type: object
+      description: Guardian object
+      required:
+        - identifier
+        - firstName
+        - lastName
+        - continuedViewPermission
+      properties:
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        continuedViewPermission:
+          type: boolean
+
     GuidanceCounselorContact:
       type: object
       description: GuidanceCounselorContact object
