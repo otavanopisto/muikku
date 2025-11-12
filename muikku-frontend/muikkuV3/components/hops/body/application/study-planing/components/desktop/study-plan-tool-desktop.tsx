@@ -61,7 +61,6 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
   const [isFullScreen, setIsFullScreen] = useState(false);
-  //const [showPlanStatus, setShowPlanStatus] = useState(false);
 
   const memoizedCalculatedPeriods = React.useMemo(
     () => calculatedPeriods,

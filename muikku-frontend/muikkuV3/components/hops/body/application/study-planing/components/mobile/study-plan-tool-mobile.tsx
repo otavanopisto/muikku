@@ -41,8 +41,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
 
   const { t } = useTranslation(["hops_new"]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [view, setView] = useState<"list" | "table">("list");
   const [isOpen, setIsOpen] = useState(false);
   const [showPlanStatus, setShowPlanStatus] = useState(false);
 
