@@ -25,13 +25,6 @@ const PlannerTimelineMobile = React.forwardRef(
     const timelineRef = React.useRef<HTMLDivElement>(null);
     const periodRefs = React.useRef(new Map<string, HTMLDivElement>());
 
-    useEffect(() => {
-      setTimeout(() => {
-        scrollToFirstActivePeriod();
-      }, 500);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     /**
      * Scrolls to next/previous period
      * @param direction direction
@@ -104,6 +97,12 @@ const PlannerTimelineMobile = React.forwardRef(
         });
       }
     }, []);
+
+    useEffect(() => {
+      setTimeout(() => {
+        scrollToFirstActivePeriod();
+      }, 500);
+    }, [scrollToFirstActivePeriod]);
 
     // Expose the scroll method via ref
     useImperativeHandle(

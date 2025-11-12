@@ -60,13 +60,6 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
     timestamp: number;
   } | null>(null);
 
-  useEffect(() => {
-    setTimeout(() => {
-      scrollToFirstActivePeriod();
-    }, 500);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Add effect to update overlay width when content changes
   useEffect(() => {
     if (timelineContentRef.current) {
@@ -262,6 +255,12 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToFirstActivePeriod();
+    }, 500);
+  }, [scrollToFirstActivePeriod]);
 
   // Expose the scroll method via ref
   useImperativeHandle(
