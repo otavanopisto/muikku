@@ -80,7 +80,44 @@ export interface PlannedCourseWithIdentifier extends PlannedCourse {
 }
 
 /**
- * StudyPlannerNoteWithIdentifier
+ * Activity-only course item (graded course not in plan)
+ * This represents a course that exists only in study activity
+ */
+export interface PlannerActivityItem {
+  identifier: string;
+  course: Course & { subjectCode: string };
+  studyActivity: StudentStudyActivity; // Required for activity-only items
+}
+
+/**
+ * Union type for all period items
+ */
+export type PeriodCourseItem =
+  | PlannedCourseWithIdentifier
+  | PlannerActivityItem;
+
+/**
+ * Type guard for planned course item
+ * @param item item
+ * @returns true if the item is a planned course item
+ */
+export const isPeriodCourseItemPlannedCourse = (
+  item: PeriodCourseItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for activity course item
+ * @param item item
+ * @returns true if the item is an activity course item
+ */
+export const isPeriodCourseItemActivityCourse = (
+  item: PeriodCourseItem
+): item is PlannerActivityItem =>
+  "identifier" in item && item.identifier.startsWith("activity-");
+
+/**
+ * CourseChangeAction
  */
 export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
   identifier: string;
@@ -97,7 +134,7 @@ export type StudyPlanChangeAction = "add" | "update" | "delete";
 export interface PlannedPeriod {
   year: number;
   type: "AUTUMN" | "SPRING";
-  plannedCourses: PlannedCourseWithIdentifier[];
+  items: PeriodCourseItem[];
   isPastPeriod: boolean;
 }
 

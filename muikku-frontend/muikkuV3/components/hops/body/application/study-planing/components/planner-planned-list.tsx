@@ -1,10 +1,11 @@
 import * as React from "react";
-import { StudyPlanChangeAction } from "~/reducers/hops";
+import { StudyPlanChangeAction, PlannerActivityItem } from "~/reducers/hops";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { StudentStudyActivity } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import PlannerPeriodCourseCard from "./planner-period-course";
 import _ from "lodash";
+import PlannerActivityCard from "./planner-activity-card";
 
 /**
  * PlannerPlannedList props
@@ -12,6 +13,7 @@ import _ from "lodash";
 interface PlannerPlannedListProps {
   disabled: boolean;
   courses: PlannedCourseWithIdentifier[];
+  activities: PlannerActivityItem[];
   selectedCoursesIds: string[];
   originalPlannedCourses: PlannedCourseWithIdentifier[];
   studyActivity: StudentStudyActivity[];
@@ -31,6 +33,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   const {
     disabled,
     courses,
+    activities,
     selectedCoursesIds,
     originalPlannedCourses,
     studyActivity,
@@ -40,50 +43,67 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   } = props;
 
   return (
-    <ul className="study-planner__planned-list">
-      {courses.map((course) => {
-        const isSelected = selectedCoursesIds.some(
-          (courseIdentifier) => courseIdentifier === course.identifier
-        );
+    <>
+      <ul className="study-planner__planned-list">
+        {courses.map((course) => {
+          const isSelected = selectedCoursesIds.some(
+            (courseIdentifier) => courseIdentifier === course.identifier
+          );
 
-        const courseActivity = studyActivity.find(
-          (sa) =>
-            sa.courseNumber === course.courseNumber &&
-            sa.subject === course.subjectCode
-        );
+          const courseActivity = studyActivity.find(
+            (sa) =>
+              sa.courseNumber === course.courseNumber &&
+              sa.subject === course.subjectCode
+          );
 
-        const originalInfo = originalPlannedCourses.find(
-          (c) => c.identifier === course.identifier
-        );
+          const originalInfo = originalPlannedCourses.find(
+            (c) => c.identifier === course.identifier
+          );
 
-        const hasChanges = originalInfo
-          ? !_.isEqual(originalInfo, course)
-          : true;
+          const hasChanges = originalInfo
+            ? !_.isEqual(originalInfo, course)
+            : true;
 
-        return (
+          const isAssessed =
+            courseActivity &&
+            (courseActivity.status === "GRADED" ||
+              courseActivity.status === "SUPPLEMENTATIONREQUEST");
+
+          return (
+            <li
+              key={course.identifier}
+              className="study-planner__planned-list-item"
+            >
+              <PlannerPeriodCourseCard
+                key={course.identifier}
+                disabled={disabled || isAssessed}
+                course={course}
+                selected={isSelected}
+                hasChanges={hasChanges}
+                curriculumConfig={curriculumConfig}
+                studyActivity={courseActivity}
+                onCourseChange={onCourseChange}
+                onSelectCourse={onSelectCourse}
+              />
+            </li>
+          );
+        })}
+      </ul>
+
+      <ul className="study-planner__planned-list">
+        {activities.map((activity) => (
           <li
-            key={course.identifier}
+            key={activity.identifier}
             className="study-planner__planned-list-item"
           >
-            <PlannerPeriodCourseCard
-              key={course.identifier}
-              disabled={
-                disabled ||
-                (courseActivity !== undefined &&
-                  courseActivity.status !== "SUGGESTED_NEXT")
-              }
-              course={course}
-              selected={isSelected}
-              hasChanges={hasChanges}
+            <PlannerActivityCard
+              item={activity}
               curriculumConfig={curriculumConfig}
-              studyActivity={courseActivity}
-              onCourseChange={onCourseChange}
-              onSelectCourse={onSelectCourse}
             />
           </li>
-        );
-      })}
-    </ul>
+        ))}
+      </ul>
+    </>
   );
 };
 

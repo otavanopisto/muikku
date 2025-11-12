@@ -30,6 +30,7 @@ export interface BasePlannerPeriodCourseProps {
   course: PlannedCourseWithIdentifier;
   selected: boolean;
   isDragging?: boolean;
+  canDrag?: boolean;
   hasChanges: boolean;
   curriculumConfig: CurriculumConfig;
   studyActivity?: StudentStudyActivity;
@@ -86,6 +87,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     course,
     selected,
     isDragging = false,
+    canDrag = false,
     hasChanges,
     studyActivity,
     curriculumConfig,
@@ -254,6 +256,51 @@ const BasePlannerPeriodCourse = React.forwardRef<
   };
 
   /**
+   * Renders study activity date
+   * @returns study activity date
+   */
+  const renderStudyActivityDate = () => {
+    if (!studyActivity) {
+      return null;
+    }
+
+    const date = localize.date(new Date(studyActivity.date));
+    let dateString: string | null = null;
+
+    switch (studyActivity.status) {
+      case "GRADED":
+        dateString = t("studyPlanCardActivity.graded", {
+          ns: "hops_new",
+          date,
+        });
+        break;
+
+      case "ONGOING":
+        dateString = t("studyPlanCardActivity.ongoing", {
+          ns: "hops_new",
+          date,
+        });
+        break;
+
+      case "SUPPLEMENTATIONREQUEST":
+        dateString = t("studyPlanCardActivity.supplementationRequest", {
+          ns: "hops_new",
+          date,
+        });
+        break;
+
+      default:
+        break;
+    }
+
+    if (!dateString) {
+      return null;
+    }
+
+    return <div className="study-planner__course-dates-item">{dateString}</div>;
+  };
+
+  /**
    * Renders workspace instance not available
    * @returns workspace instance not available
    */
@@ -290,6 +337,9 @@ const BasePlannerPeriodCourse = React.forwardRef<
 
   const cardModifiers = [];
   isDragging && cardModifiers.push("is-dragging");
+  canDrag
+    ? cardModifiers.push("draggable")
+    : cardModifiers.push("not-draggable");
   selected && cardModifiers.push("selected");
   courseState.state && cardModifiers.push(courseState.state);
 
@@ -365,42 +415,45 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </div>
 
         <div className="study-planner__course-dates">
-          {calculatedEndDate ? (
-            <>
-              {localize.date(new Date(course.startDate))} -{" "}
-              {localize.date(new Date(calculatedEndDate))}
-            </>
-          ) : (
-            localize.date(new Date(course.startDate))
-          )}
+          <div className="study-planner__course-dates-item">
+            {calculatedEndDate ? (
+              <>
+                {`${localize.date(new Date(course.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}
+              </>
+            ) : (
+              <>
+                {`${localize.date(new Date(course.startDate))} (suunniteltu)`}
+              </>
+            )}
+          </div>
+          {renderStudyActivityDate()}
         </div>
 
         {renderWorkspaceInstanceNotAvailable()}
       </PlannerCardContent>
 
-      {!disabled &&
-        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT") && (
-          <PlannerCardActions>
-            <Link
-              onClick={handleSpecifyOpen}
-              disabled={specifyIsOpen || deleteWarningIsOpen}
-              className="link link--study-planner-specify"
-            >
-              {t("actions.specify", {
-                ns: "common",
-              })}
-            </Link>
-            <Link
-              onClick={handleDeleteOpen}
-              disabled={specifyIsOpen || deleteWarningIsOpen}
-              className="link link--study-planner-delete"
-            >
-              {t("actions.remove", {
-                ns: "common",
-              })}
-            </Link>
-          </PlannerCardActions>
-        )}
+      {!disabled && (
+        <PlannerCardActions>
+          <Link
+            onClick={handleSpecifyOpen}
+            disabled={specifyIsOpen || deleteWarningIsOpen}
+            className="link link--study-planner-specify"
+          >
+            {t("actions.specify", {
+              ns: "common",
+            })}
+          </Link>
+          <Link
+            onClick={handleDeleteOpen}
+            disabled={specifyIsOpen || deleteWarningIsOpen}
+            className="link link--study-planner-delete"
+          >
+            {t("actions.remove", {
+              ns: "common",
+            })}
+          </Link>
+        </PlannerCardActions>
+      )}
     </PlannerCard>
   );
 });
