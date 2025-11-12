@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -22,6 +23,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient_;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
@@ -35,8 +37,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   private static final long serialVersionUID = -8721990589622544635L;
   
   public Announcement create(Long publisherUserEntityId, OrganizationEntity organizationEntity, 
-      String caption, String content, Date created, Date startDate, 
-      Date endDate, Boolean archived, Boolean publiclyVisible, boolean pinned) {
+      String caption, String content, Date created, Date startDate,
+      Date endDate, Boolean archived, Boolean publiclyVisible, List<AnnouncementCategory> categories, boolean pinned) {
+
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setOrganizationEntityId(organizationEntity.getId());
@@ -47,13 +50,14 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setEndDate(endDate);
     announcement.setArchived(archived);
     announcement.setPubliclyVisible(publiclyVisible);
+    announcement.setCategories(categories);
     announcement.setPinned(pinned);
     return persist(announcement);
   }
 
   public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, List<UserGroupEntity> userGroupEntities, 
-      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults) {
-    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults);
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults, List<AnnouncementCategory> categories) {
+    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults, categories);
   }
   
   public List<Announcement> listAnnouncements(
@@ -67,7 +71,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       Long loggedUser,
       boolean archived,
       Integer firstResult, 
-      Integer maxResults) {
+      Integer maxResults,
+      List<AnnouncementCategory> categories) {
     EntityManager entityManager = getEntityManager();
     Date currentDate = onlyDateFields(new Date());
     
@@ -188,8 +193,16 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       predicates.add(criteriaBuilder.not(root.in(subquery)));
     }
     
-    predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
+    /**
+     * Announcement categories:
+     */
     
+    if (CollectionUtils.isNotEmpty(categories)) {
+      ListJoin<Announcement, AnnouncementCategory> join = root.join(Announcement_.categories);
+      predicates.add(join.in(categories));
+    }
+    
+    predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
     criteria.orderBy(
@@ -233,6 +246,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement updateArchived(Announcement announcement, Boolean archived) {
     announcement.setArchived(archived);
+    return persist(announcement);
+  }
+  
+  public Announcement updateCategories(Announcement announcement, List<AnnouncementCategory> categories) {
+    announcement.setCategories(categories);
     return persist(announcement);
   }
   

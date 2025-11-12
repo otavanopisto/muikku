@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table AnnouncementCategory (
+       id bigint not null auto_increment,
+        categoryName varchar(255) not null,
+        color bigint not null,
+        primary key (id)
+    );
+  </sql>
+  <sql>
+    create table AnnouncementCategories (
+       announcement_id bigint not null,
+        announcementCategory_id bigint not null
+    );
+  </sql>
+  <sql>
+    alter table AnnouncementCategory 
+       add constraint UK_g43ns3gyjj6awjc7eci3fsn9f unique (categoryName);
+  </sql>
+  <sql>
+    alter table AnnouncementCategories 
+       add constraint FKm0c7c7qiu3o9bjy99x0bynoer 
+       foreign key (announcementCategory_id) 
+       references AnnouncementCategory (id);
+  </sql>
+  <sql>
+    alter table AnnouncementCategories 
+       add constraint FK6jvc80skrr0f1c6xb70uo8ho3 
+       foreign key (announcement_id) 
+       references Announcement (id);
+  </sql>
+</update> 

@@ -257,6 +257,13 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: categories
+          in: query
+          description: AnnouncementCategories
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/AnnouncementCategory"
       responses:
         "200":
           description: Fetch announcements successfully
@@ -481,6 +488,133 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnnouncementRecipient"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
+  /rest/announcer/categories/create:
+    post:
+      operationId: createAnnouncementCategory
+      summary: Create announcement category
+      tags:
+        - Announcer
+      requestBody:
+        $ref: "#/components/requestBodies/AnnouncementCategoryCreateRequestBody"
+      responses:
+        "200":
+          description: Announcement category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnouncementCategory"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
+  /rest/announcer/categories:
+    get:
+      operationId: listAnnouncementCategories
+      summary: List announcement categories
+      tags:
+        - Announcer
+      responses:
+        "200":
+          description: "List of announcement categories"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnouncementCategory"
+        "400":
+          description: Invalid request was sent to the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
+    delete:
+        operationId: deleteAnnouncementCategory
+        summary: Delete announcement category by id
+        tags:
+          - Announcer
+        parameters:
+          - name: announcementCategoryId
+            in: path
+            description: Announcement category id
+            required: true
+            schema:
+              type: integer
+              format: int64
+        responses:
+          "200":
+            description: "Announcement category deleted successfully"
+          "400":
+            description: Invalid request was sent to the server
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ErrorModel"
+          "403":
+            description: Attempted to make a call with unauthorized client
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ErrorModel"
+          "500":
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ErrorModel"
+  
+  /rest/announcer/categories/{categoryId}:
+    put:
+      operationId: updateAnnouncementCategory
+      summary: Update announcement category
+      tags:
+        - Announcer
+      parameters:
+        - name: categoryId
+          in: path
+          description: Category id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/AnnouncementCategoryCreateRequestBody"
+      responses:
+        "200":
+          description: Announcement category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnouncementCategory"
         "403":
           description: Attempted to make a call with unauthorized client
           content:
@@ -11582,6 +11716,10 @@ components:
             properties:
               caption:
                 type: string
+              categories:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnouncementCategory"
               content:
                 type: string
               endDate:
@@ -11616,6 +11754,10 @@ components:
                 type: boolean
               caption:
                 type: string
+              categories:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnouncementCategory"
               content:
                 type: string
               created:
@@ -11650,6 +11792,22 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/WorkspaceBasicInfo"
+    
+    AnnouncementCategoryCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: AnnouncementCategoryCreateBody object
+            required:
+              - category
+              - color
+            properties:
+              category:
+                type: string
+              color:
+                type: integer
+                format: int64
 
     AssessmentRequestCreateRequestBody:
       content:
@@ -13733,11 +13891,16 @@ components:
         - userGroupEntityIds
         - workspaceEntityIds
         - workspaces
+        - categories
       properties:
         archived:
           type: boolean
         caption:
           type: string
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnnouncementCategory"
         content:
           type: string
         created:
@@ -13775,6 +13938,23 @@ components:
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
 
+    AnnouncementCategory:
+      type: object
+      description: AnnouncementCategory object
+      required:
+        - id
+        - category
+        - color
+      properties:
+        id:
+          type: integer
+          format: int64
+        category:
+          type: string
+        color:
+          type: integer
+          format: int64
+    
     AnnouncementRecipient:
       type: object
       description: AnnouncementRecipient object
