@@ -8,8 +8,8 @@ import classes from "./ErrorBoundaryLayout.module.css";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 import { ErrorBoundary } from "~/src/pages/";
 import { useAppLayout } from "~/src/hooks/useAppLayout";
-import { SecondaryNavSection } from "~/src/layouts/SharedLayout/components/SecondaryNavSection";
-import { PrimaryNavSection } from "~/src/layouts/SharedLayout/components/PrimaryNavSection";
+import { SecondaryNavSection } from "~/src/layouts/RootLayout/components/SecondaryNavSection";
+import { PrimaryNavSection } from "~/src/layouts/RootLayout/components/PrimaryNavSection";
 
 /**
  * Shared layout props

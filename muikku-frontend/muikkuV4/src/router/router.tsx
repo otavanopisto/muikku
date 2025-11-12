@@ -30,7 +30,7 @@ import {
   ErrorBoundary,
 } from "~/src/pages/";
 import { ErrorBoundaryRoot } from "~/src/components";
-import { SharedLayout, ErrorBoundaryLayout } from "~/src/layouts";
+import { RootLayout, ErrorBoundaryLayout } from "~/src/layouts";
 
 // Router
 export const router = createBrowserRouter([
@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
         middleware: [authMiddleware, permissionMiddlewares.homeView],
       },
       {
-        element: <SharedLayout />,
+        element: <RootLayout />,
         errorElement: <ErrorBoundaryLayout />,
         loader: () => null,
         middleware: [authMiddleware],
@@ -204,7 +204,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/workspace/:workspaceUrlName",
-        element: <SharedLayout context="workspace" />,
+        element: <RootLayout context="workspace" />,
         errorElement: <ErrorBoundaryLayout context="workspace" />,
         middleware: [authMiddleware, workspaceMiddleware],
         loader: routeLoaders.workspaceLoader,

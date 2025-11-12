@@ -5,25 +5,25 @@ import {
   getNavigationItems,
   type NavigationContext,
 } from "~/src/layouts/helpers/navigation";
-import classes from "./SharedLayout.module.css";
+import classes from "./RootLayout.module.css";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 import { useAppLayout } from "~/src/hooks/useAppLayout";
 import { PrimaryNavSection } from "./components/PrimaryNavSection";
 import { SecondaryNavSection } from "./components/SecondaryNavSection";
 
 /**
- * Shared layout props
+ * Root layout props
  */
-interface SharedLayoutProps {
+interface RootLayoutProps {
   title?: string;
   context?: NavigationContext;
 }
 
 /**
- * Shared layout for the application
- * @param props - Shared layout props
+ * Root layout for the application
+ * @param props - Root layout props
  */
-export function SharedLayout(props: SharedLayoutProps) {
+export function RootLayout(props: RootLayoutProps) {
   const { title = "Muikku V4" } = props;
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);

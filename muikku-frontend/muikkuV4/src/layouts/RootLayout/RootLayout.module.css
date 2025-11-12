@@ -1,23 +1,27 @@
 .appLayout {
   display: flex;
+  flex-flow: row nowrap;
   height: 100vh;
+  width: 100%;
 }
 
 .navigationContainer {
   display: flex;
-  border-right: 1px solid var(--mantine-color-dark-4);
+  flex-flow: row nowrap;
 }
 
 .primarySection {
-  width: var(--primary-nav-width);
+  display: flex;
+  flex-flow: column nowrap;
   transition: width 0.3s ease;
+  width: var(--primary-nav-width);
 }
 
 .secondarySection {
   background: #e3e3e3;
   border-right: 1px solid var(--mantine-color-dark-4);
-  width: 0;
   transition: width 0.3s ease;
+  width: 0;
 }
 
 .secondarySectionOpen {
@@ -33,7 +37,7 @@
 
 /* CSS Variables for dynamic widths */
 :root {
-  --primary-nav-width: 300px;
+  --primary-nav-width: 270px;
   --secondary-nav-width: 250px;
 }
 
@@ -45,24 +49,24 @@
 /* Alternative slideIn animation for a smoother effect */
 @keyframes slideInSmooth {
   from {
-    transform: translateX(-20px);
     opacity: 0;
+    transform: translateX(-20px);
     width: 0;
   }
   to {
-    transform: translateX(0);
     opacity: 1;
+    transform: translateX(0);
     width: var(--secondary-nav-width);
   }
 }
 
 @keyframes slideIn {
   from {
-    transform: translateX(-100%);
     opacity: 0;
+    transform: translateX(-100%);
   }
   to {
-    transform: translateX(0);
     opacity: 1;
+    transform: translateX(0);
   }
 }
