@@ -4,9 +4,21 @@ import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import {
   PlannedCourseWithIdentifier,
   PlannedPeriod,
+  PlannerActivityItem,
   StudentDateInfo,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
+
+/**
+ * Gets period type by month number
+ * @param monthNumber month number
+ * @returns period type
+ */
+const getPeriodTypeByMonthNumber = (monthNumber: number) => {
+  if (monthNumber >= 0 && monthNumber <= 6) return "SPRING";
+  if (monthNumber >= 7 && monthNumber <= 11) return "AUTUMN";
+  return null;
+};
 
 /**
  * Gets period month names by type
@@ -113,22 +125,47 @@ const createPeriods = (
 /**
  * Creates and allocates planned courses to academic periods
  * @param studentDateInfo student date info
+ * @param studyActivities study activities
  * @param plannedCourses List of planned courses to allocate
  * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
   studentDateInfo: StudentDateInfo,
+  studyActivities: StudentStudyActivity[],
   plannedCourses: PlannedCourseWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
   const periods = createPeriods(studentDateInfo, curriculumStrategy);
 
+  const plannedCourseKeys = new Set(
+    plannedCourses.map((pc) => `${pc.subjectCode}-${pc.courseNumber}`)
+  );
+
   // Allocate courses to periods
   plannedCourses.forEach((course) => {
-    const courseStartYear = new Date(course.startDate).getFullYear();
-    const courseStartMonth = new Date(course.startDate).getMonth();
+    // Find possible study activity for the course
+    const studyActivity = studyActivities.find(
+      (sa) =>
+        sa.courseNumber === course.courseNumber &&
+        sa.subject === course.subjectCode
+    );
+
+    // If study activity is found, use the date of the study activity, otherwise use the start date of the planned course.
+    // This is done because plan itself is baseline and study activity is overriding it based on how students actions
+    // affect the plan.
+    const useStudyActivityData =
+      studyActivity &&
+      (studyActivity.status === "GRADED" ||
+        studyActivity.status === "SUPPLEMENTATIONREQUEST");
+
+    const courseStartYear = useStudyActivityData
+      ? new Date(studyActivity.date).getFullYear()
+      : new Date(course.startDate).getFullYear();
+    const courseStartMonth = useStudyActivityData
+      ? new Date(studyActivity.date).getMonth()
+      : new Date(course.startDate).getMonth();
 
     const period = periods.find(
       (p) =>
@@ -142,28 +179,98 @@ const createAndAllocateCoursesToPeriods = (
     );
 
     if (period) {
-      period.plannedCourses.push(course);
+      period.items.push(course);
     }
   });
+
+  // Allocate graded activities that are NOT in planned courses
+  // Only show in past periods
+  studyActivities
+    .filter(
+      (activity) =>
+        !plannedCourseKeys.has(
+          `${activity.subject}-${activity.courseNumber}`
+        ) &&
+        (activity.status === "GRADED" ||
+          activity.status === "SUPPLEMENTATIONREQUEST")
+    )
+    .forEach((activity) => {
+      const activityItem = createActivityOnlyCourseItem(
+        activity,
+        curriculumStrategy
+      );
+
+      if (!activityItem) return;
+
+      const activityDate = new Date(activity.date);
+      const activityYear = activityDate.getFullYear();
+      const activityMonth = activityDate.getMonth();
+
+      const period = periods.find(
+        (p) =>
+          activityYear === p.year &&
+          p.isPastPeriod && // Only in past periods
+          ((p.type === "SPRING" && activityMonth >= 0 && activityMonth <= 6) ||
+            (p.type === "AUTUMN" && activityMonth >= 7 && activityMonth <= 11))
+      );
+
+      if (period) {
+        period.items.push(activityItem);
+      }
+    });
 
   // Only trim empty periods from the start
   const trimmedPeriods = [...periods];
 
   const currentPeriod = curriculumStrategy.getCurrentPeriod();
 
-  // Trim from start
+  // Trim from start if the period is empty
   while (
     trimmedPeriods.length > 0 &&
     !(
       trimmedPeriods[0].year === currentPeriod.year &&
       trimmedPeriods[0].type === currentPeriod.type
     ) &&
-    trimmedPeriods[0].plannedCourses.length === 0
+    trimmedPeriods[0].items.length === 0
   ) {
     trimmedPeriods.shift();
   }
 
   return trimmedPeriods;
+};
+
+/**
+ * Creates an activity-only course item from study activity and matrix
+ * @param studyActivity study activity
+ * @param curriculumStrategy curriculum strategy
+ * @returns activity-only course item
+ */
+const createActivityOnlyCourseItem = (
+  studyActivity: StudentStudyActivity,
+  curriculumStrategy: CurriculumStrategy
+): PlannerActivityItem | null => {
+  const matrix = curriculumStrategy.getCurriculumMatrix();
+  // Find course in matrix
+  const subject = matrix.subjectsTable.find(
+    (s) => s.subjectCode === studyActivity.subject
+  );
+
+  if (!subject) return null;
+
+  const course = subject.availableCourses.find(
+    (c) => c.courseNumber === studyActivity.courseNumber
+  );
+
+  if (!course) return null;
+
+  return {
+    identifier: "activity-course-" + studyActivity.courseId,
+    course: {
+      ...course,
+      subjectCode: subject.subjectCode,
+    },
+    studyActivity,
+  };
 };
 
 /**
@@ -345,4 +452,5 @@ export {
   isPlannedCourse,
   selectedIsPlannedCourse,
   getPeriodMonthNames,
+  getPeriodTypeByMonthNumber,
 };

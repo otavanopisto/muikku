@@ -473,18 +473,19 @@
   transform: scale(1.05);
 }
 
+.study-planner__card--draggable {
+  cursor: move;
+}
+
+.study-planner__card--not-draggable {
+  cursor: not-allowed;
+}
+
 .study-planner__card--disabled {
   cursor: not-allowed;
   opacity: 50%;
 }
 
-.study-planner__card--completed,
-.study-planner__card--transferred,
-.study-planner__card--failed,
-.study-planner__card--supplementation-request,
-.study-planner__card--inprogress {
-  cursor: default;
-}
 
 .study-planner__card--selected {
   outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
@@ -616,9 +617,14 @@
 
 .study-planner__course-dates {
   color: $color-default-contrast;
-  display: block;
+  display: flex;
   flex-basis: 100%;
+  flex-direction: column;
   font-size: 0.75rem;
+}
+
+.study-planner__course-dates-item {
+  display: flex;
 }
 
 .study-planner__course-workspace-instance-not-available {

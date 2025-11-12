@@ -4,6 +4,7 @@ import {
   CourseChangeAction,
   isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
+  PlannerActivityItem,
   SelectedCourse,
 } from "~/reducers/hops";
 import Droppable from "../react-dnd/droppable";
@@ -30,6 +31,7 @@ interface PlannerPeriodMonthProps {
   monthIndex: number;
   year: number;
   courses: PlannedCourseWithIdentifier[];
+  activities: PlannerActivityItem[];
   disabled: boolean;
   isPast: boolean;
 }
@@ -53,7 +55,8 @@ const dropZoneVariants: Variants = {
  * @param props props
  */
 const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
-  const { monthIndex, title, year, courses, disabled, isPast } = props;
+  const { monthIndex, title, year, courses, activities, disabled, isPast } =
+    props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
@@ -307,10 +310,11 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length > 0 && (
+          {courses.length + activities.length > 0 && (
             <PlannerPlannedList
               disabled={isDisabled}
               courses={courses}
+              activities={activities}
               selectedCoursesIds={selectedCoursesIds}
               originalPlannedCourses={originalPlannedCourses}
               studyActivity={studyActivity}
