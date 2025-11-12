@@ -13816,12 +13816,16 @@ components:
       required:
         - id
         - category
+        - color
       properties:
         id:
           type: integer
           format: int64
         category:
           type: string
+        color:
+          type: integer
+          format: int64
     
     AnnouncementRecipient:
       type: object
