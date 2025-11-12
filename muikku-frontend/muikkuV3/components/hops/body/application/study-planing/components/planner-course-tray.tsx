@@ -276,13 +276,18 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     subjectCode: subject.subjectCode,
                   });
 
+                  const isAssessed =
+                    course.studyActivity &&
+                    (course.studyActivity.status === "GRADED" ||
+                      course.studyActivity.status === "SUPPLEMENTATIONREQUEST");
+
                   return (
                     <PlannerCourseTrayItem
                       key={
                         course.identifier ||
                         `${subject.subjectCode}${course.courseNumber}`
                       }
-                      disabled={disabled}
+                      disabled={disabled || course.planned || isAssessed}
                       course={course}
                       subjectCode={subject.subjectCode}
                       isPlannedCourse={course.planned}
@@ -406,11 +411,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         isDragging: monitor.isDragging(),
       }),
       // eslint-disable-next-line jsdoc/require-jsdoc
-      canDrag:
-        !disabled &&
-        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT"),
+      canDrag: !disabled,
     }),
-    [disabled, studyActivity]
+    [disabled]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });
@@ -419,10 +422,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    * Handles course select
    */
   const handleSelectCourse = () => {
-    if (
-      disabled ||
-      (studyActivity && studyActivity.status !== "SUGGESTED_NEXT")
-    ) {
+    if (disabled) {
       return;
     }
 
@@ -431,6 +431,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
 
   const modifiers = ["course-tray-card"];
 
+  !disabled ? modifiers.push("draggable") : modifiers.push("not-draggable");
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
   courseState.state && modifiers.push(courseState.state);

@@ -106,6 +106,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
       // This is mandatory for the drag to notice the changes when disabled has changed
       key={`${course.identifier}-${disabled}`}
       isDragging={isDragging}
+      canDrag={!disabled}
       renderSpecifyContent={({
         onClose,
         onConfirm,

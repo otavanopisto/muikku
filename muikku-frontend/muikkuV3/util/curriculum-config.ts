@@ -5,7 +5,11 @@ import {
   schoolCourseTableCompulsory2018,
   schoolCourseTableUppersecondary2021,
 } from "~/mock/mock-data";
-import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
+import {
+  PlannedCourseWithIdentifier,
+  PlannedPeriod,
+  PlannerActivityItem,
+} from "~/reducers/hops";
 import { v4 as uuidv4 } from "uuid";
 import {
   filterCompulsorySubjects,
@@ -111,6 +115,7 @@ export interface CurriculumStrategy {
    */
   calculatePeriodWorkload: (
     courses: PlannedCourseWithIdentifier[],
+    activityCourses: PlannerActivityItem[],
     t: TFunction
   ) => PeriodWorkload;
 
@@ -281,17 +286,27 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   /**
    * Calculate workload
    * @param courses courses
+   * @param activityCourses activity courses
    * @param t translation function
    * @returns workload
    */
   calculatePeriodWorkload(
     courses: PlannedCourseWithIdentifier[],
+    activityCourses: PlannerActivityItem[],
     t: TFunction
   ): PeriodWorkload {
-    const credits = courses.reduce(
+    const plannedCredits = courses.reduce(
       (sum, course) => sum + (course.length || 0),
       0
     );
+
+    const activityCredits = activityCourses.reduce(
+      (sum, course) => sum + (course.course.length || 0),
+      0
+    );
+
+    const credits = plannedCredits + activityCredits;
+
     return {
       displayValue: `${credits} ${
         courses.length === 1
@@ -527,7 +542,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     return {
       type,
       year,
-      plannedCourses: [],
+      items: [],
       isPastPeriod: false,
     };
   }
@@ -667,16 +682,18 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   /**
    * Calculate workload
    * @param courses courses
+   * @param activityCourses activity courses
    * @param t translation function
    * @returns workload
    */
   calculatePeriodWorkload(
     courses: PlannedCourseWithIdentifier[],
+    activityCourses: PlannerActivityItem[],
     t: TFunction
   ): PeriodWorkload {
     return {
-      displayValue: `${courses.length} ${
-        courses.length === 1
+      displayValue: `${courses.length + activityCourses.length} ${
+        courses.length + activityCourses.length === 1
           ? t("labels.course", {
               ns: "common",
             }).toLowerCase()
@@ -873,7 +890,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     return {
       type,
       year,
-      plannedCourses: [],
+      items: [],
       isPastPeriod: false,
     };
   }
