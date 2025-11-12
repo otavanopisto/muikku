@@ -89,7 +89,6 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
     );
     const hopsMode = useSelector((state: StateType) => state.hopsNew.hopsMode);
 
-    //const [isUnlocked, setIsUnlocked] = React.useState(false);
     const [isCollapsed, setIsCollapsed] = React.useState(false);
 
     const months = getPeriodMonthNames(type, t);
