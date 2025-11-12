@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   isPeriodCourseItemActivityCourse,
   isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
   PlannedCourseWithIdentifier,
   PlannedPeriod,
 } from "~/reducers/hops";
@@ -98,6 +99,11 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
       [items]
     );
 
+    const planNotes = React.useMemo(
+      () => items.filter(isPeriodCourseItemStudyPlannerNote),
+      [items]
+    );
+
     const activityCourses = React.useMemo(
       () => items.filter(isPeriodCourseItemActivityCourse),
       [items]
@@ -135,14 +141,24 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
       });
 
     /**
+     * Gets plan notes by month
+     * @param monthName month name
+     * @returns plan notes by month
+     */
+    const getPlanNotesByMonth = (monthName: string) =>
+      planNotes.filter((note) => {
+        const monthIndex = new Date(note.startDate).getMonth();
+        return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
+      });
+
+    /**
      * Gets activity courses by month
      * @param monthName month name
      * @returns activity courses by month
      */
     const getActivityCoursesByMonth = (monthName: string) =>
       activityCourses.filter((aCourse) => {
-        const activityDate = new Date(aCourse.studyActivity.date);
-        const monthIndex = activityDate.getMonth();
+        const monthIndex = new Date(aCourse.studyActivity.date).getMonth();
         return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
       });
 
@@ -257,6 +273,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                       getPlannedCoursesByMonth(monthName);
                     const monthActivityCourses =
                       getActivityCoursesByMonth(monthName);
+                    const monthPlanNotes = getPlanNotesByMonth(monthName);
 
                     const monthKey = `${monthName}-${year}-${type}`;
 
@@ -268,6 +285,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                         year={year}
                         courses={monthPlannedCourses}
                         activities={monthActivityCourses}
+                        notes={monthPlanNotes}
                         isPast={isPastPeriod}
                       />
                     ) : (
@@ -278,6 +296,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                         year={year}
                         courses={monthPlannedCourses}
                         activities={monthActivityCourses}
+                        notes={monthPlanNotes}
                         isPast={isPastPeriod}
                         disabled={
                           (isPastPeriod && !hasMovablePlannedCourses) ||

@@ -80,6 +80,17 @@ export interface PlannedCourseWithIdentifier extends PlannedCourse {
 }
 
 /**
+ * StudyPlannerNoteWithIdentifier
+ */
+export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
+  /**
+   * Identifier of the study planner note. Specifically used within frontend
+   * to identify the exiting and newly added study planner note in the planner with drag and drop.
+   */
+  identifier: string;
+}
+
+/**
  * Activity-only course item (graded course not in plan)
  * This represents a course that exists only in study activity
  */
@@ -94,7 +105,8 @@ export interface PlannerActivityItem {
  */
 export type PeriodCourseItem =
   | PlannedCourseWithIdentifier
-  | PlannerActivityItem;
+  | PlannerActivityItem
+  | StudyPlannerNoteWithIdentifier;
 
 /**
  * Type guard for planned course item
@@ -105,6 +117,16 @@ export const isPeriodCourseItemPlannedCourse = (
   item: PeriodCourseItem
 ): item is PlannedCourseWithIdentifier =>
   "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for study planner note item
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+export const isPeriodCourseItemStudyPlannerNote = (
+  item: PeriodCourseItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("note-");
 
 /**
  * Type guard for activity course item

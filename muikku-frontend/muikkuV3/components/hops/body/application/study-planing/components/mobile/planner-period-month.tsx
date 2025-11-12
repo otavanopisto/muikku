@@ -6,6 +6,7 @@ import {
   PlannedCourseWithIdentifier,
   PlannerActivityItem,
   SelectedCourse,
+  StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { StateType } from "~/reducers";
@@ -23,6 +24,8 @@ import { Course } from "~/@types/shared";
 import { isPlannedCourse } from "../../helper";
 import PlannerPlannedList from "../planner-planned-list";
 import { AnimatedDrawer } from "../Animated-drawer";
+import PlannerActivityList from "../planner-activity-list";
+import PlannerNotesList from "../planner-notes-list";
 
 /**
  * PlannerPeriodMonthProps
@@ -33,6 +36,7 @@ interface MobilePlannerPeriodMonthProps {
   year: number;
   courses: PlannedCourseWithIdentifier[];
   activities: PlannerActivityItem[];
+  notes: StudyPlannerNoteWithIdentifier[];
   isPast: boolean;
 }
 
@@ -57,7 +61,7 @@ const dropZoneVariants: Variants = {
 const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   props
 ) => {
-  const { monthIndex, title, year, courses, activities, isPast } = props;
+  const { monthIndex, title, year, courses, activities, isPast, notes } = props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
@@ -367,24 +371,40 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         className="study-planner__month-wrapper"
       >
         <Droppable<
-          PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+          | PlannedCourseWithIdentifier
+          | (Course & { subjectCode: string })
+          | StudyPlannerNoteWithIdentifier
         >
-          accept={!isPast ? ["planned-course-card", "new-course-card"] : []}
+          accept={
+            !isPast
+              ? ["planned-course-card", "new-course-card", "note-card"]
+              : []
+          }
           onDrop={handleDrop}
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length + activities.length > 0 && (
+          {notes.length > 0 && (
+            <PlannerNotesList disabled={hopsMode === "READ"} notes={notes} />
+          )}
+
+          {courses.length > 0 && (
             <PlannerPlannedList
               disabled={hopsMode === "READ"}
               courses={courses}
-              activities={activities}
               selectedCoursesIds={selectedCoursesIds}
               originalPlannedCourses={originalPlannedCourses}
               studyActivity={studyActivity}
               curriculumConfig={curriculumConfig}
               onCourseChange={handleCourseChange}
               onSelectCourse={handleSelectCourse}
+            />
+          )}
+
+          {activities.length > 0 && (
+            <PlannerActivityList
+              activities={activities}
+              curriculumConfig={curriculumConfig}
             />
           )}
 

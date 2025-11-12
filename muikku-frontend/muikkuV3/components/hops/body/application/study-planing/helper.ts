@@ -6,6 +6,7 @@ import {
   PlannedPeriod,
   PlannerActivityItem,
   StudentDateInfo,
+  StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
@@ -127,6 +128,7 @@ const createPeriods = (
  * @param studentDateInfo student date info
  * @param studyActivities study activities
  * @param plannedCourses List of planned courses to allocate
+ * @param planNotes List of plan notes to allocate
  * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
@@ -134,6 +136,7 @@ const createAndAllocateCoursesToPeriods = (
   studentDateInfo: StudentDateInfo,
   studyActivities: StudentStudyActivity[],
   plannedCourses: PlannedCourseWithIdentifier[],
+  planNotes: StudyPlannerNoteWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges

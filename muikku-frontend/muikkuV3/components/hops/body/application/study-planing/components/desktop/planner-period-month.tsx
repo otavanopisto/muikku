@@ -6,6 +6,7 @@ import {
   PlannedCourseWithIdentifier,
   PlannerActivityItem,
   SelectedCourse,
+  StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
 import Droppable from "../react-dnd/droppable";
 import { AnimatePresence, motion, Variants } from "framer-motion";
@@ -22,6 +23,8 @@ import moment from "moment";
 import { AnimatedDrawer } from "../Animated-drawer";
 import PlannerPlannedList from "../planner-planned-list";
 import Button from "~/components/general/button";
+import PlannerActivityList from "../planner-activity-list";
+import PlannerNotesList from "../planner-notes-list";
 
 /**
  * PlannerPeriodMonthProps
@@ -32,6 +35,7 @@ interface PlannerPeriodMonthProps {
   year: number;
   courses: PlannedCourseWithIdentifier[];
   activities: PlannerActivityItem[];
+  notes: StudyPlannerNoteWithIdentifier[];
   disabled: boolean;
   isPast: boolean;
 }
@@ -55,8 +59,16 @@ const dropZoneVariants: Variants = {
  * @param props props
  */
 const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
-  const { monthIndex, title, year, courses, activities, disabled, isPast } =
-    props;
+  const {
+    monthIndex,
+    title,
+    year,
+    courses,
+    activities,
+    notes,
+    disabled,
+    isPast,
+  } = props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
@@ -304,23 +316,41 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
         isOpen={isExpanded}
         className="study-planner__month-wrapper"
       >
-        <Droppable
-          accept={!isPast ? ["planned-course-card", "new-course-card"] : []}
+        <Droppable<
+          | PlannedCourseWithIdentifier
+          | (Course & { subjectCode: string })
+          | StudyPlannerNoteWithIdentifier
+        >
+          accept={
+            !isPast
+              ? ["planned-course-card", "new-course-card", "note-card"]
+              : []
+          }
           onDrop={handleDrop}
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length + activities.length > 0 && (
+          {notes.length > 0 && (
+            <PlannerNotesList disabled={isDisabled} notes={notes} />
+          )}
+
+          {courses.length > 0 && (
             <PlannerPlannedList
               disabled={isDisabled}
               courses={courses}
-              activities={activities}
               selectedCoursesIds={selectedCoursesIds}
               originalPlannedCourses={originalPlannedCourses}
               studyActivity={studyActivity}
               curriculumConfig={curriculumConfig}
               onCourseChange={handleCourseChange}
               onSelectCourse={handleSelectCourse}
+            />
+          )}
+
+          {activities.length > 0 && (
+            <PlannerActivityList
+              activities={activities}
+              curriculumConfig={curriculumConfig}
             />
           )}
 
