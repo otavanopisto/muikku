@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CourseChangeAction } from "~/reducers/hops";
+import { StudyPlanChangeAction } from "~/reducers/hops";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { StudentStudyActivity } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -18,7 +18,7 @@ interface PlannerPlannedListProps {
   curriculumConfig: CurriculumConfig;
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
-    action: CourseChangeAction
+    action: StudyPlanChangeAction
   ) => void;
   onSelectCourse: (course: PlannedCourseWithIdentifier) => void;
 }

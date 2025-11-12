@@ -1,7 +1,7 @@
 import * as React from "react";
 import Button, { IconButton } from "~/components/general/button";
 import {
-  CourseChangeAction,
+  StudyPlanChangeAction,
   isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
   SelectedCourse,
@@ -170,7 +170,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    */
   const handleCourseChange = (
     course: PlannedCourseWithIdentifier,
-    action: CourseChangeAction
+    action: StudyPlanChangeAction
   ) => {
     dispatch(
       updateHopsEditingStudyPlan({
@@ -246,7 +246,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   const handleDrop = (course: SelectedCourse, type: string) => {
     let updatedCourse: PlannedCourseWithIdentifier;
 
-    let action: CourseChangeAction = "add";
+    let action: StudyPlanChangeAction = "add";
 
     if (isPlannedCourseWithIdentifier(course)) {
       // Set start date to the month number and year

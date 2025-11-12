@@ -17,9 +17,10 @@ import {
   PlannedCourse,
   StudentInfo,
   StudentStudyActivity,
+  StudyPlannerNote,
 } from "~/generated/client";
 import {
-  CourseChangeAction,
+  StudyPlanChangeAction,
   HopsEditingState,
   HopsMode,
   MatriculationEligibilityWithAbistatus,
@@ -28,6 +29,7 @@ import {
   ReducerInitializeStatusType,
   ReducerStateType,
   TimeContextSelection,
+  StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
@@ -94,6 +96,11 @@ export type HOPS_STUDYPLAN_UPDATE_STATUS = SpecificActionType<
 export type HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES = SpecificActionType<
   "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
   PlannedCourseWithIdentifier[]
+>;
+
+export type HOPS_STUDYPLAN_UPDATE_PLAN_NOTES = SpecificActionType<
+  "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
+  StudyPlannerNoteWithIdentifier[]
 >;
 
 export type HOPS_STUDYPLAN_UPDATE_GOALS = SpecificActionType<
@@ -284,7 +291,17 @@ export interface UpdateHopsEditingTriggerType {
 export interface UpdateHopsEditingStudyPlanTriggerType {
   (data: {
     updatedCourse: PlannedCourseWithIdentifier;
-    action: CourseChangeAction;
+    action: StudyPlanChangeAction;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateHopsEditingPlanNotesTriggerType
+ */
+export interface UpdateHopsEditingPlanNotesTriggerType {
+  (data: {
+    updatedNote: StudyPlannerNoteWithIdentifier;
+    action: StudyPlanChangeAction;
   }): AnyActionType;
 }
 
@@ -479,6 +496,13 @@ export interface LoadStudyPlanDataTriggerType {
  */
 export interface UpdateHopsStudyPlanPlannedCoursesTriggerType {
   (data: { plannedCourses: PlannedCourseWithIdentifier[] }): AnyActionType;
+}
+
+/**
+ * UpdateHopsStudyPlanPlanNotesTriggerType
+ */
+export interface UpdateHopsStudyPlanPlanNotesTriggerType {
+  (data: { planNotes: StudyPlannerNoteWithIdentifier[] }): AnyActionType;
 }
 
 /**
@@ -1358,6 +1382,11 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
       state.hopsNew.hopsStudyPlanState.plannedCourses
     );
 
+    const studyPlanNotesHasChanges = !_.isEqual(
+      state.hopsNew.hopsEditing.planNotes,
+      state.hopsNew.hopsStudyPlanState.planNotes
+    );
+
     const studyPlanGoalsHasChanges = !_.isEqual(
       state.hopsNew.hopsEditing.goals,
       state.hopsNew.hopsStudyPlanState.goals
@@ -1394,7 +1423,11 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
       );
     }
 
-    if (studyPlanHasChanges || studyPlanGoalsHasChanges) {
+    if (
+      studyPlanHasChanges ||
+      studyPlanGoalsHasChanges ||
+      studyPlanNotesHasChanges
+    ) {
       allPromises.push(dispatch(saveStudyPlanData({})));
     }
 
@@ -1495,6 +1528,40 @@ const updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType =
         type: "HOPS_UPDATE_EDITING",
         payload: {
           plannedCourses: updatedList,
+        },
+      });
+    };
+  };
+
+/**
+ * Update HOPS editing plan notes
+ * @param data Data containing partial updates to apply to editing state
+ */
+const updateHopsEditingPlanNotes: UpdateHopsEditingPlanNotesTriggerType =
+  function updateHopsEditingPlanNotes(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const updatedList = [...state.hopsNew.hopsEditing.planNotes];
+
+      const index = updatedList.findIndex(
+        (c) => c.identifier === data.updatedNote.identifier
+      );
+
+      if (data.action === "add" && index === -1) {
+        updatedList.push(data.updatedNote);
+      } else if (data.action === "delete" && index !== -1) {
+        updatedList.splice(index, 1);
+      } else if (data.action === "update" && index !== -1) {
+        updatedList[index] = data.updatedNote;
+      }
+
+      dispatch({
+        type: "HOPS_UPDATE_EDITING",
+        payload: {
+          planNotes: updatedList,
         },
       });
     };
@@ -1993,10 +2060,23 @@ const saveStudyPlanData: SaveStudyPlanDataTriggerType =
           ({ identifier, ...rest }) => rest
         );
 
-      const updatedList = await hopsApi.updateStudentPlannedCourses({
+      const updatedPlannedCoursesList =
+        await hopsApi.updateStudentPlannedCourses({
+          studentIdentifier: state.hopsNew.currentStudentIdentifier,
+          updateStudentPlannedCoursesRequest: {
+            plannedCourses,
+          },
+        });
+
+      const planNotes: StudyPlannerNote[] =
+        state.hopsNew.hopsEditing.planNotes.map(
+          ({ identifier, ...rest }) => rest
+        );
+
+      const updatedPlanNotesList = await hopsApi.updateStudyPlannerNotes({
         studentIdentifier: state.hopsNew.currentStudentIdentifier,
-        updateStudentPlannedCoursesRequest: {
-          plannedCourses,
+        updateStudyPlannerNotesRequest: {
+          notes: planNotes,
         },
       });
 
@@ -2010,14 +2090,25 @@ const saveStudyPlanData: SaveStudyPlanDataTriggerType =
 
       // Add identifier to planned courses
       const plannedCoursesWithIdentifier: PlannedCourseWithIdentifier[] =
-        updatedList.map((course) => ({
+        updatedPlannedCoursesList.map((course) => ({
           ...course,
           identifier: "planned-course-" + course.id,
+        }));
+
+      const planNotesWithIdentifier: StudyPlannerNoteWithIdentifier[] =
+        updatedPlanNotesList.map((note) => ({
+          ...note,
+          identifier: "plan-note-" + note.id,
         }));
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
         payload: plannedCoursesWithIdentifier,
+      });
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
+        payload: planNotesWithIdentifier,
       });
 
       dispatch({
@@ -2230,6 +2321,10 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
+      const planNotes = await hopsApi.getStudyPlannerNotes({
+        studentIdentifier,
+      });
+
       const studyActivity = await hopsApi.getStudentStudyActivity({
         studentIdentifier,
       });
@@ -2259,9 +2354,20 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
           identifier: "planned-course-" + course.id,
         }));
 
+      const planNotesWithIdentifier: StudyPlannerNoteWithIdentifier[] =
+        planNotes.map((note) => ({
+          ...note,
+          identifier: "plan-note-" + note.id,
+        }));
+
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
         payload: plannedCoursesWithIdentifier,
+      });
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
+        payload: planNotesWithIdentifier,
       });
 
       dispatch({
@@ -2307,6 +2413,23 @@ const updateHopsStudyPlanPlannedCourses: UpdateHopsStudyPlanPlannedCoursesTrigge
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
         payload: data.plannedCourses,
+      });
+    };
+  };
+
+/**
+ * Update study plan plan notes
+ * @param data Data containing plan notes to update
+ */
+const updateHopsStudyPlanPlanNotes: UpdateHopsStudyPlanPlanNotesTriggerType =
+  function updateHopsStudyPlanPlanNotes(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
+        payload: data.planNotes,
       });
     };
   };
@@ -2649,10 +2772,12 @@ export {
   updateHopsHistory,
   updateHopsStudyPlanGoals,
   updateHopsStudyPlanPlannedCourses,
+  updateHopsStudyPlanPlanNotes,
   updateMatriculationExamination,
   updateMatriculationPlan,
   verifyMatriculationExam,
   updateHopsEditingStudyPlan,
+  updateHopsEditingPlanNotes,
   saveStudyPlanData,
   updateTimeContextSelection,
   updateSelectedCourses,

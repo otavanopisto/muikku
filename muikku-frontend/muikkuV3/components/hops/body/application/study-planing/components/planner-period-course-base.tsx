@@ -9,7 +9,7 @@ import {
 } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import {
-  CourseChangeAction,
+  StudyPlanChangeAction,
   PlannedCourseWithIdentifier,
 } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -35,7 +35,7 @@ export interface BasePlannerPeriodCourseProps {
   studyActivity?: StudentStudyActivity;
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
-    action: CourseChangeAction
+    action: StudyPlanChangeAction
   ) => void;
   onSelectCourse: (course: PlannedCourseWithIdentifier) => void;
   renderSpecifyContent: (props: {

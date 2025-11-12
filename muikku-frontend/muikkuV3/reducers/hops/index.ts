@@ -18,6 +18,7 @@ import {
   StudentStudyActivity,
   HopsOpsCourse,
   HopsGoals,
+  StudyPlannerNote,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -46,6 +47,7 @@ export type ReducerInitializeStatusType =
  */
 interface HopsStudyPlanState {
   plannedCourses: PlannedCourseWithIdentifier[];
+  planNotes: StudyPlannerNoteWithIdentifier[];
   availableOPSCourses: HopsOpsCourse[];
   studyActivity: StudentStudyActivity[];
   studyOptions: string[];
@@ -78,9 +80,16 @@ export interface PlannedCourseWithIdentifier extends PlannedCourse {
 }
 
 /**
- * CourseChangeAction
+ * StudyPlannerNoteWithIdentifier
  */
-export type CourseChangeAction = "add" | "update" | "delete";
+export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
+  identifier: string;
+}
+
+/**
+ * StudyPlanChangeAction
+ */
+export type StudyPlanChangeAction = "add" | "update" | "delete";
 
 /**
  * Period
@@ -167,6 +176,7 @@ export interface HopsEditingState {
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
   plannedCourses: PlannedCourseWithIdentifier[];
+  planNotes: StudyPlannerNoteWithIdentifier[];
   goals: HopsGoals;
   selectedCoursesIds: string[];
   timeContextSelection: TimeContextSelection;
@@ -223,6 +233,7 @@ const initialHopsState: HopsState = {
   hopsStudyPlanStatus: "IDLE",
   hopsStudyPlanState: {
     plannedCourses: [],
+    planNotes: [],
     studyActivity: [],
     availableOPSCourses: [],
     studyOptions: [],
@@ -261,6 +272,7 @@ const initialHopsState: HopsState = {
       goalMatriculationExam: false,
     },
     plannedCourses: [],
+    planNotes: [],
     goals: {
       graduationGoal: null,
       studyHours: 0,
@@ -484,6 +496,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsStudyPlanStatus: "IDLE",
         hopsStudyPlanState: {
           plannedCourses: [],
+          planNotes: [],
           studyActivity: [],
           availableOPSCourses: [],
           studyOptions: [],
