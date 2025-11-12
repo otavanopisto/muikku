@@ -29,6 +29,8 @@ import {
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement, Role } from "~/generated/client";
+import Autocomplete from "~/components/base/input-select-autofill";
+import { SelectItem } from "~/actions/workspaces";
 
 /**
  * TargetItemsListType
@@ -382,6 +384,18 @@ class NewEditAnnouncement extends SessionStateComponent<
   }
 
   /**
+   * setTargetItems
+   * @param currentTarget currentTarget
+   */
+  setLabelItem(selectedLabel: SelectItem) {
+    this.setStateAndStore(
+      { selectedLabel, ...this.state.labels },
+      (this.props.announcement ? this.props.announcement.id + "-" : "") +
+        (this.props.workspaceId || "")
+    );
+  }
+
+  /**
    * onSubjectChange
    * @param e e
    */
@@ -637,7 +651,20 @@ class NewEditAnnouncement extends SessionStateComponent<
         label={this.props.i18n.t("labels.target", { ns: "messaging" })}
         required={this.props.status.roles.includes(Role.Teacher)}
       />,
-      <div className="env-dialog__row" key="annnouncement-edit-3">
+      <Autocomplete
+        key="annnouncement-edit-3"
+        identifier="announcementLabels"
+        onSelect={() => console.log("selected label")}
+        onDelete={() => console.log("selected label")}
+        searchItems={[]}
+        selectedItems={[]}
+        placeholder={this.props.i18n.t("labels.search", {
+          ns: "messaging",
+          context: "label",
+        })}
+        modifier="new-announcement-recipients"
+      />,
+      <div className="env-dialog__row" key="annnouncement-edit-4">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
           <label htmlFor="announcementTitle" className="env-dialog__label">
             {this.props.i18n.t("labels.title", {
@@ -657,7 +684,7 @@ class NewEditAnnouncement extends SessionStateComponent<
       </div>,
       <div
         className="env-dialog__row env-dialog__row--ckeditor"
-        key="annnouncement-edit-4"
+        key="announcement-edit-5"
       >
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
@@ -672,7 +699,9 @@ class NewEditAnnouncement extends SessionStateComponent<
 
     /**
      * footer
-     * @param closeDialog closeDialog
+     * @param closeDialog clo
+>kovat rasvat nostavat sydänsairauksien riskiä joillakin ihmisillä
+<korkea testosteroni nostaa sydänsairauksien riskiä kaikilla ihmisilläseDialog
      * @returns JSX.Element
      */
     const footer = (closeDialog: () => any) => (

@@ -6,6 +6,9 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
+import Dropdown from "~/components/general/dropdown";
+import Link from "~/components/general/link";
+import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { AnnouncementsState } from "~/reducers/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
@@ -40,7 +43,9 @@ interface AnnouncerToolbarProps extends WithTranslation {
 /**
  * AnnouncerToolbarState
  */
-interface AnnouncerToolbarState {}
+interface AnnouncerToolbarState {
+  labelFilter: string;
+}
 /**
  * AnnouncerToolbar
  */
@@ -61,6 +66,27 @@ class AnnouncerToolbar extends React.Component<
     this.restoreSelectedAnnouncements =
       this.restoreSelectedAnnouncements.bind(this);
     this.markAllAsRead = this.markAllAsRead.bind(this);
+    this.onUpdateLabelFilter = this.onUpdateLabelFilter.bind(this);
+    this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
+    this.state = {
+      labelFilter: "",
+    };
+  }
+
+  /**
+   * updateLabelFilter
+   * @param e event
+   */
+  onUpdateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
+    const labelFilter = e.target.value;
+    this.setState({ labelFilter });
+  }
+
+  /**
+   * onCreateNewLabel
+   */
+  onCreateNewLabel() {
+    console.log("Creating new label: ", this.state.labelFilter);
   }
 
   /**
@@ -261,6 +287,77 @@ class AnnouncerToolbar extends React.Component<
               disabled={this.props.announcements.unreadCount === 0}
               onClick={this.markAllAsRead}
             />
+            <Dropdown
+              modifier="announcer-labels"
+              items={[
+                <div
+                  key="update-label"
+                  className="form-element form-element--new-label"
+                >
+                  <input
+                    className="form-element__input"
+                    value={this.state.labelFilter}
+                    onChange={this.onUpdateLabelFilter}
+                    type="text"
+                    placeholder={this.props.i18n.t(
+                      "labels.createAndSearchLabels",
+                      { ns: "messaging" }
+                    )}
+                  />
+                </div>,
+                <Link
+                  key="new-link"
+                  tabIndex={0}
+                  className="link link--full link--new"
+                  onClick={this.onCreateNewLabel}
+                >
+                  {this.props.i18n.t("actions.create", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                </Link>,
+              ].concat(
+                this.props.announcements.navigation
+                  .filter(
+                    (item) =>
+                      item.type === "label" &&
+                      filterMatch(item.text, this.state.labelFilter)
+                  )
+                  .map((label) => {
+                    const isSelected = true; //TODO check if label is selected
+                    return (
+                      <Link
+                        key={label.id}
+                        tabIndex={0}
+                        className={`link link--full link--communicator-label-dropdown ${
+                          isSelected ? "selected" : ""
+                        }`}
+                        onClick={
+                          !isSelected
+                            ? this.props.addLabelToCurrentMessageThread.bind(
+                                null,
+                                label
+                              )
+                            : this.props.removeLabelFromCurrentMessageThread.bind(
+                                null,
+                                label
+                              )
+                        }
+                      >
+                        <span
+                          className="link__icon icon-tag"
+                          style={{ color: label.color }}
+                        ></span>
+                        <span className="link__text">
+                          {filterHighlight(label.text, this.state.labelFilter)}
+                        </span>
+                      </Link>
+                    );
+                  })
+              )}
+            >
+              <ButtonPill buttonModifiers="label" icon="tag" />
+            </Dropdown>
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       );

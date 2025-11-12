@@ -8,6 +8,7 @@ import { Announcement } from "~/generated/client";
 export interface AnnouncerNavigationItemType {
   location: string;
   id: string | number;
+  type: "folder" | "label";
   icon: string;
   color?: string;
   text: string;
@@ -20,30 +21,35 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
   {
     location: "active",
     id: "active",
+    type: "folder",
     icon: "folder",
     text: "active",
   },
   {
     location: "unread",
     id: "unread",
+    type: "folder",
     icon: "folder",
     text: "unread",
   },
   {
     location: "expired",
     id: "expired",
+    type: "folder",
     icon: "folder",
     text: "expired",
   },
   {
     location: "own",
     id: "own",
+    type: "folder",
     icon: "folder",
     text: "own",
   },
   {
     location: "archived",
     id: "archived",
+    type: "folder",
     icon: "trash-alt",
     text: "archived",
   },
@@ -55,6 +61,12 @@ export type AnnouncementsStateType =
   | "READY"
   | "LOADING_MORE";
 
+export type AnnouncementLabel = {
+  id: number;
+  name: string;
+  color: number;
+};
+
 /**
  * AnnouncementsState
  */
@@ -65,6 +77,7 @@ export interface AnnouncementsState {
   current: Announcement;
   selected: Announcement[];
   selectedIds: Array<number>;
+  labels: AnnouncementLabel[];
   location: string;
   toolbarLock: boolean;
   navigation: AnnouncerNavigationItemListType;
@@ -101,6 +114,11 @@ const initialAnnouncementsState: AnnouncementsState = {
   selectedIds: [],
   location: "",
   toolbarLock: false,
+  labels: [
+    { id: 0, name: "General", color: 1 },
+    { id: 1, name: "Important", color: 2 },
+    { id: 2, name: "Urgent", color: 3 },
+  ],
   navigation: defaultNavigation,
   workspaceId: null,
   hasMore: false,
