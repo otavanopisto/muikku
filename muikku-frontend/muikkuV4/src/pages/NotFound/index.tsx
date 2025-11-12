@@ -1,10 +1,10 @@
 import { Badge, Button, Code, Paper, Text, Title } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { userAtom } from "~/src/atoms/auth";
-import { workspacePermissionsAtom } from "~/src/atoms/permissions";
-import { workspaceInfoAtom } from "~/src/atoms/workspace";
-import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
+import { userAtom } from "src/atoms/auth";
+import { workspacePermissionsAtom } from "src/atoms/permissions";
+import { workspaceInfoAtom } from "src/atoms/workspace";
+import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 
 /**
  * NotFound page for 404 errors with workspace context detection

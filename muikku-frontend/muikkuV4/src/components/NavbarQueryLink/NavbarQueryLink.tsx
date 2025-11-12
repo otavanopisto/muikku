@@ -1,7 +1,7 @@
 import { Group, Text, ThemeIcon, Tooltip, UnstyledButton } from "@mantine/core";
 import { useLocation, useNavigate } from "react-router";
 import classes from "./NavbarQueryLink.module.css";
-import type { NavigationQueryLink } from "~/src/layouts/helpers/navigation";
+import type { NavigationQueryLink } from "src/layouts/helpers/navigation";
 
 /**
  * NavbarSubQueryLinkProps - Interface for navbar sub-query-link props

@@ -1,9 +1,9 @@
 import { RouterProvider } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { router } from "~/src/router/router";
+import { router } from "src/router/router";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import { DisconnectModal } from "~/src/components";
+import { DisconnectModal } from "src/components";
 import { websocketAtom } from "./atoms/websocket";
 import { useAtomValue } from "jotai";
 

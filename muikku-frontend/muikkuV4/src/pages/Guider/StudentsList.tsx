@@ -18,11 +18,11 @@ import {
   loadMoreGuiderStudentsAtom,
 } from "../../atoms/guider";
 import { Link, useSearchParams } from "react-router";
-import { AsyncState } from "~/src/components/AsyncState/AsyncState";
+import { AsyncState } from "src/components/AsyncState/AsyncState";
 import {
   createAsyncError,
   parseAsyncStateFromQuery,
-} from "~/src/utils/AtomHelpers";
+} from "src/utils/AtomHelpers";
 
 /**
  * StudentsListProps

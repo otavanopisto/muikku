@@ -1,6 +1,6 @@
 import { atom } from "jotai";
-import { AuthService, type User } from "~/src/services/auth";
-import type { UserPermissions } from "~/src/services/permissions";
+import { AuthService, type User } from "src/services/auth";
+import type { UserPermissions } from "src/services/permissions";
 
 // User state
 export const userAtom = atom<User | null>(null);

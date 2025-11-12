@@ -1,10 +1,10 @@
 import { Group, Title, ScrollArea, Box, Button } from "@mantine/core";
 import { IconX } from "@tabler/icons-react";
 import classes from "./SecondaryNavSection.module.css";
-import { type NavigationItem } from "~/src/layouts/helpers/navigation";
+import { type NavigationItem } from "src/layouts/helpers/navigation";
 import React from "react";
-import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
-import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
+import { NavbarQueryLink } from "src/components/NavbarQueryLink/NavbarQueryLink";
+import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 
 /**
  * SecondaryNavSectionProps - Interface for secondary nav section props

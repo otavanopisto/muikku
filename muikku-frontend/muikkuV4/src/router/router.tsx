@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router";
-import { routeLoaders } from "~/src/router/routeLoaders";
+import { routeLoaders } from "src/router/routeLoaders";
 import {
   authMiddleware,
   permissionMiddlewares,
   workspaceMiddleware,
-} from "~/src/router/middleware";
+} from "src/router/middleware";
 import {
   Home,
   Dashboard,
@@ -28,9 +28,9 @@ import {
   NotFound,
   GuiderStudent,
   ErrorBoundary,
-} from "~/src/pages/";
-import { ErrorBoundaryRoot } from "~/src/components";
-import { RootLayout, ErrorBoundaryLayout } from "~/src/layouts";
+} from "src/pages/";
+import { ErrorBoundaryRoot } from "src/components";
+import { RootLayout, ErrorBoundaryLayout } from "src/layouts";
 
 // Router
 export const router = createBrowserRouter([

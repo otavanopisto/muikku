@@ -1,10 +1,10 @@
 import { Group, Title, ScrollArea, Box } from "@mantine/core";
-import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
+import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 import classes from "./PrimaryNavSection.module.css";
-import { type NavigationItem } from "~/src/layouts/helpers/navigation";
-import { UserButton } from "~/src/components/UserButton/UserButton";
-import { useAppLayout } from "~/src/hooks/useAppLayout";
-import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
+import { type NavigationItem } from "src/layouts/helpers/navigation";
+import { UserButton } from "src/components/UserButton/UserButton";
+import { useAppLayout } from "src/hooks/useAppLayout";
+import { NavbarQueryLink } from "src/components/NavbarQueryLink/NavbarQueryLink";
 
 /**
  * PrimaryNavSectionProps - Interface for primary nav section props
@@ -73,24 +73,14 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
         </Group>
       </Box>
 
-      <Box className={classes.links} component={ScrollArea}>
-        <div
-          className={classes.linksInner}
-          style={{
-            padding: collapsed
-              ? "var(--mantine-spacing-sm)"
-              : "var(--mantine-spacing-md)",
-            paddingTop: collapsed
-              ? "var(--mantine-spacing-sm)"
-              : "var(--mantine-spacing-lg)",
-            paddingBottom: collapsed
-              ? "var(--mantine-spacing-sm)"
-              : "var(--mantine-spacing-lg)",
-            minWidth: collapsed ? "60px" : "200px",
-          }}
-        >
-          {links}
-        </div>
+      <Box
+        className={classes.links}
+        component={ScrollArea}
+        style={{
+          minWidth: collapsed ? "60px" : "200px",
+        }}
+      >
+        {links}
       </Box>
 
       <Box className={classes.footer}>

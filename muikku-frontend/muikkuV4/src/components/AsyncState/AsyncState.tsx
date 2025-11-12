@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Loader, Alert, Button, Stack } from "@mantine/core";
-import type { AsyncState, AsyncStateError } from "~/src/types/AsyncState";
+import type { AsyncState, AsyncStateError } from "src/types/AsyncState";
 
 /**
  * AsyncStateProps - Async state props

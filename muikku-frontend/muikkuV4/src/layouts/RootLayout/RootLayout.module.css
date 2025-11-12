@@ -1,3 +1,5 @@
+@import url("/src/css/variables.css");
+
 .appLayout {
   display: flex;
   flex-flow: row nowrap;
@@ -10,21 +12,21 @@
   flex-flow: row nowrap;
 }
 
-.primarySection {
+.primaryNavigation {
   display: flex;
   flex-flow: column nowrap;
   transition: width 0.3s ease;
   width: var(--primary-nav-width);
 }
 
-.secondarySection {
+.secondaryNavigation {
   background: #e3e3e3;
   border-right: 1px solid var(--mantine-color-dark-4);
   transition: width 0.3s ease;
   width: 0;
 }
 
-.secondarySectionOpen {
+.secondaryNavigationOpen {
   opacity: 1;
   width: var(--secondary-nav-width);
 }
@@ -35,12 +37,7 @@
   width: 100%;
 }
 
-/* CSS Variables for dynamic widths */
-:root {
-  --primary-nav-width: 270px;
-  --secondary-nav-width: 250px;
-}
-
+/* Override of navigation panel's variables */
 .collapsed {
   --primary-nav-width: 60px;
   --secondary-nav-width: 0px;

@@ -1,15 +1,15 @@
-import { userAtom } from "~/src/atoms/auth";
+import { userAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import {
   getNavigationItems,
   type NavigationContext,
-} from "~/src/layouts/helpers/navigation";
+} from "src/layouts/helpers/navigation";
 import classes from "./ErrorBoundaryLayout.module.css";
-import { workspacePermissionsAtom } from "~/src/atoms/permissions";
-import { ErrorBoundary } from "~/src/pages/";
-import { useAppLayout } from "~/src/hooks/useAppLayout";
-import { SecondaryNavSection } from "~/src/layouts/RootLayout/components/SecondaryNavSection";
-import { PrimaryNavSection } from "~/src/layouts/RootLayout/components/PrimaryNavSection";
+import { workspacePermissionsAtom } from "src/atoms/permissions";
+import { ErrorBoundary } from "src/pages/";
+import { useAppLayout } from "src/hooks/useAppLayout";
+import { SecondaryNavSection } from "src/layouts/RootLayout/components/SecondaryNavSection";
+import { PrimaryNavSection } from "src/layouts/RootLayout/components/PrimaryNavSection";
 
 /**
  * Shared layout props

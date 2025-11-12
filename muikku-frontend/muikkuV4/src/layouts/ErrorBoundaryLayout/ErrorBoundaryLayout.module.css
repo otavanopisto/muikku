@@ -31,12 +31,6 @@
   width: 100%;
 }
 
-/* CSS Variables for dynamic widths */
-:root {
-  --primary-nav-width: 300px;
-  --secondary-nav-width: 250px;
-}
-
 .collapsed {
   --primary-nav-width: 60px;
   --secondary-nav-width: 0px;

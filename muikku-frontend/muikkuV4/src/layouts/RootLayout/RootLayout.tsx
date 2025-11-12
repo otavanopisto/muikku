@@ -1,13 +1,13 @@
 import { Outlet } from "react-router";
-import { userAtom } from "~/src/atoms/auth";
+import { userAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import {
   getNavigationItems,
   type NavigationContext,
-} from "~/src/layouts/helpers/navigation";
+} from "src/layouts/helpers/navigation";
 import classes from "./RootLayout.module.css";
-import { workspacePermissionsAtom } from "~/src/atoms/permissions";
-import { useAppLayout } from "~/src/hooks/useAppLayout";
+import { workspacePermissionsAtom } from "src/atoms/permissions";
+import { useAppLayout } from "src/hooks/useAppLayout";
 import { PrimaryNavSection } from "./components/PrimaryNavSection";
 import { SecondaryNavSection } from "./components/SecondaryNavSection";
 
@@ -38,9 +38,9 @@ export function RootLayout(props: RootLayoutProps) {
 
   return (
     <div className={classes.appLayout}>
-      <nav className={classes.navigationContainer}>
-        <div
-          className={`${classes.primarySection} ${
+      <div className={classes.navigationContainer}>
+        <nav
+          className={`${classes.primaryNavigation} ${
             !primaryNavOpened ? classes.collapsed : ""
           }`}
         >
@@ -61,10 +61,11 @@ export function RootLayout(props: RootLayoutProps) {
             collapsed={!primaryNavOpened} // Use desktop collapsed state
             onToggleCollapse={togglePrimaryNav} // Toggle desktop collapsed state
           />
-        </div>
-        <div
-          className={`${classes.secondarySection} ${
-            secondaryNavOpened ? classes.secondarySectionOpen : ""
+        </nav>
+        <nav
+          aria-hidden={!secondaryNavOpened} // When user has no access to secondary navigation we hide it also from screen readers
+          className={`${classes.secondaryNavigation} ${
+            secondaryNavOpened ? classes.secondaryNavigationOpen : ""
           }`}
         >
           {secondaryNavOpened && (
@@ -74,8 +75,8 @@ export function RootLayout(props: RootLayoutProps) {
               onToggleCollapse={toggleSecondaryNav} // Toggle desktop collapsed state
             />
           )}
-        </div>
-      </nav>
+        </nav>
+      </div>
       <main className={classes.mainContent}>
         <Outlet />
       </main>

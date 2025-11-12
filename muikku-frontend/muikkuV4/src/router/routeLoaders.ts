@@ -2,8 +2,8 @@ import { type LoaderFunction } from "react-router";
 import {
   currentStudentIdAtom,
   guiderStudentsQueryAtom,
-} from "~/src/atoms/guider";
-import { setAtomValue } from "~/src/jotaiStore";
+} from "src/atoms/guider";
+import { setAtomValue } from "src/jotaiStore";
 
 export const routeLoaders: Record<string, LoaderFunction> = {
   environmentLoader: () => null,

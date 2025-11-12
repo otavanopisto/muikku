@@ -1,4 +1,4 @@
-import { type User } from "~/src/services/auth";
+import { type User } from "src/services/auth";
 import {
   IconHome,
   IconBuilding,
@@ -15,8 +15,8 @@ import {
   IconBook,
 } from "@tabler/icons-react";
 import { type Params, type To } from "react-router";
-import type { WorkspacePermissions } from "~/src/services/permissions";
-import { StudentNavigationContent } from "~/src/router/components/StudentNavigationContent/StudentNavigationContent";
+import type { WorkspacePermissions } from "src/services/permissions";
+import { StudentNavigationContent } from "src/router/components/StudentNavigationContent/StudentNavigationContent";
 
 export type NavigationContext = "environment" | "workspace";
 

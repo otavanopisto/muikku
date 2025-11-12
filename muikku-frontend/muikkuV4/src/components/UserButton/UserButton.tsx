@@ -1,9 +1,9 @@
 import { IconChevronRight, IconUser } from "@tabler/icons-react";
 import { Avatar, Group, Text, UnstyledButton } from "@mantine/core";
 import classes from "./UserButton.module.css";
-import { getUserImageUrl } from "~/src/utils/helpers";
+import { getUserImageUrl } from "src/utils/helpers";
 import { useAtomValue } from "jotai";
-import { userAtom } from "~/src/atoms/auth";
+import { userAtom } from "src/atoms/auth";
 
 /**
  * UserButton - User button component
