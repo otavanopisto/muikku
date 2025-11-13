@@ -43,7 +43,6 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.pyramus.rest.model.Address;
-import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
@@ -612,7 +611,7 @@ public class PyramusSchoolDataEntityFactory {
     }
   }
 
-  public UserAddress createEntity(SchoolDataIdentifier userIdentifier, Address address, ContactType contactType) {
+  public UserAddress createEntity(SchoolDataIdentifier userIdentifier, Address address) {
     return new PyramusUserAddress(
       identifierMapper.getAddressIdentifier(address.getId()),
       userIdentifier, 
@@ -621,26 +620,23 @@ public class PyramusSchoolDataEntityFactory {
       address.getCity(), 
       null, 
       address.getCountry(),
-      contactType != null ? contactType.getName() : null,
       address.getDefaultAddress());
   }
 
-  public UserPhoneNumber createEntity(SchoolDataIdentifier userIdentifier, PhoneNumber phoneNumber, ContactType contactType) {
+  public UserPhoneNumber createEntity(SchoolDataIdentifier userIdentifier, PhoneNumber phoneNumber) {
     if (phoneNumber != null) {
       return new PyramusUserPhoneNumber(userIdentifier, 
         phoneNumber.getNumber(),
-        contactType != null ? contactType.getName() : null,
         phoneNumber.getDefaultNumber());
     }
     
     return null;
   }
 
-  public UserEmail createEntity(SchoolDataIdentifier userIdentifier, Email email, ContactType contactType) {
+  public UserEmail createEntity(SchoolDataIdentifier userIdentifier, Email email) {
     return new PyramusUserEmail(toIdentifier(identifierMapper.getEmailIdentifier(email.getId())), 
         userIdentifier, 
         email.getAddress(), 
-        contactType != null ? contactType.getName() : null,
         email.getDefaultAddress());
   }
 

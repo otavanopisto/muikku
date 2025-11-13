@@ -4,11 +4,10 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractUserPhoneNumber implements UserPhoneNumber {
 
-  public AbstractUserPhoneNumber(SchoolDataIdentifier userIdentifier, String number, String type, Boolean defaultNumber) {
+  public AbstractUserPhoneNumber(SchoolDataIdentifier userIdentifier, String number, Boolean defaultNumber) {
     super();
     this.userIdentifier = userIdentifier;
     this.number = number;
-    this.type = type;
     this.defaultNumber = defaultNumber;
   }
 
@@ -28,11 +27,6 @@ public abstract class AbstractUserPhoneNumber implements UserPhoneNumber {
   }
   
   @Override
-  public String getType() {
-    return type;
-  }
-  
-  @Override
   public Boolean getDefaultNumber() {
     return defaultNumber;
   }
@@ -40,5 +34,4 @@ public abstract class AbstractUserPhoneNumber implements UserPhoneNumber {
   private SchoolDataIdentifier userIdentifier;
   private String number;
   private Boolean defaultNumber;
-  private String type;
 }
