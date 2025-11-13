@@ -385,11 +385,11 @@ class NewEditAnnouncement extends SessionStateComponent<
 
   /**
    * setTargetItems
-   * @param currentTarget currentTarget
+   * @param selectedLabel currentTarget
    */
   setLabelItem(selectedLabel: SelectItem) {
     this.setStateAndStore(
-      { selectedLabel, ...this.state.labels },
+      { selectedLabel, ...this.state.categories },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
         (this.props.workspaceId || "")
     );
@@ -700,8 +700,6 @@ class NewEditAnnouncement extends SessionStateComponent<
     /**
      * footer
      * @param closeDialog clo
->kovat rasvat nostavat sydänsairauksien riskiä joillakin ihmisillä
-<korkea testosteroni nostaa sydänsairauksien riskiä kaikilla ihmisilläseDialog
      * @returns JSX.Element
      */
     const footer = (closeDialog: () => any) => (

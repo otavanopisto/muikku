@@ -12,6 +12,7 @@ import i18n from "~/locales/i18n";
 import {
   Announcement,
   CreateAnnouncementRequest,
+  CreateAnnouncementCategoryRequest,
   GetAnnouncementsRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
@@ -156,6 +157,18 @@ export interface CreateAnnouncementTriggerType {
     announcement: CreateAnnouncementRequest;
     success: () => any;
     fail: () => any;
+  }): AnyActionType;
+}
+
+/**
+ * CreateAnnouncementTriggerType
+ */
+export interface CreateAnnouncementCategoryTriggerType {
+  (data: {
+    category: string;
+    color?: number;
+    success?: () => any;
+    fail?: () => any;
   }): AnyActionType;
 }
 
@@ -603,6 +616,47 @@ const createAnnouncement: CreateAnnouncementTriggerType =
     };
   };
 
+const createAnnouncementCategory: CreateAnnouncementCategoryTriggerType =
+  function createAnnouncementCategory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const color = Math.round(Math.random() * 16777215);
+      const payload = {
+        category: data.category,
+        color,
+      };
+
+      try {
+        const category = await announcerApi.createAnnouncementCategory({
+          createAnnouncementCategoryRequest: payload,
+        });
+
+        dispatch({
+          type: "ADD_ANNOUNCEMENT_CATEGORY",
+          payload: category,
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "announcement category",
+            }),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
 /**
  * loadAnnouncementsAsAClient
  * @param fetchParams fetchParams
@@ -682,6 +736,7 @@ export {
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   createAnnouncement,
+  createAnnouncementCategory,
   loadAnnouncementsAsAClient,
 };
 export default {
@@ -694,5 +749,6 @@ export default {
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   createAnnouncement,
+  createAnnouncementCategory,
   loadAnnouncementsAsAClient,
 };

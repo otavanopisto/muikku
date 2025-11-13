@@ -128,7 +128,7 @@ export async function loadAnnouncementsHelper(
 
   try {
     const newAnnouncements = await announcerApi.getAnnouncements(params);
-
+    const categories = await announcerApi.listAnnouncementCategories();
     const hasMore: boolean =
       newAnnouncements.announcements.length === MAX_LOADED_AT_ONCE + 1;
 
@@ -158,6 +158,7 @@ export async function loadAnnouncementsHelper(
       payload.unreadCount = newAnnouncements.unreadCount;
       payload.selected = [];
       payload.selectedIds = [];
+      payload.categories = categories;
     }
 
     //And there it goes

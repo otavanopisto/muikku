@@ -25,6 +25,8 @@ import {
   UpdateAnnouncementTriggerType,
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
+  createAnnouncementCategory,
+  CreateAnnouncementCategoryTriggerType,
 } from "~/actions/announcements";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -35,6 +37,7 @@ import { Announcement } from "~/generated/client";
  */
 interface AnnouncerToolbarProps extends WithTranslation {
   announcements: AnnouncementsState;
+  createAnnouncementCategory: CreateAnnouncementCategoryTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   markAllAsRead: LoadAnnouncementsTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
@@ -44,7 +47,7 @@ interface AnnouncerToolbarProps extends WithTranslation {
  * AnnouncerToolbarState
  */
 interface AnnouncerToolbarState {
-  labelFilter: string;
+  category: string;
 }
 /**
  * AnnouncerToolbar
@@ -66,27 +69,29 @@ class AnnouncerToolbar extends React.Component<
     this.restoreSelectedAnnouncements =
       this.restoreSelectedAnnouncements.bind(this);
     this.markAllAsRead = this.markAllAsRead.bind(this);
-    this.onUpdateLabelFilter = this.onUpdateLabelFilter.bind(this);
-    this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
+    this.onUpdateCategory = this.onUpdateCategory.bind(this);
+    this.onCreateNewCategory = this.onCreateNewCategory.bind(this);
     this.state = {
-      labelFilter: "",
+      category: "",
     };
   }
 
   /**
-   * updateLabelFilter
+   * onUpdateCategory
    * @param e event
    */
-  onUpdateLabelFilter(e: React.ChangeEvent<HTMLInputElement>) {
-    const labelFilter = e.target.value;
-    this.setState({ labelFilter });
+  onUpdateCategory(e: React.ChangeEvent<HTMLInputElement>) {
+    const category = e.target.value;
+    this.setState({ category });
   }
 
   /**
    * onCreateNewLabel
    */
-  onCreateNewLabel() {
-    console.log("Creating new label: ", this.state.labelFilter);
+  onCreateNewCategory() {
+    this.props.createAnnouncementCategory({
+      category: this.state.category,
+    });
   }
 
   /**
@@ -296,8 +301,8 @@ class AnnouncerToolbar extends React.Component<
                 >
                   <input
                     className="form-element__input"
-                    value={this.state.labelFilter}
-                    onChange={this.onUpdateLabelFilter}
+                    value={this.state.category}
+                    onChange={this.onUpdateCategory}
                     type="text"
                     placeholder={this.props.i18n.t(
                       "labels.createAndSearchLabels",
@@ -309,19 +314,19 @@ class AnnouncerToolbar extends React.Component<
                   key="new-link"
                   tabIndex={0}
                   className="link link--full link--new"
-                  onClick={this.onCreateNewLabel}
+                  onClick={this.onCreateNewCategory}
                 >
                   {this.props.i18n.t("actions.create", {
                     ns: "messaging",
-                    context: "label",
+                    context: "category",
                   })}
                 </Link>,
               ].concat(
                 this.props.announcements.navigation
                   .filter(
                     (item) =>
-                      item.type === "label" &&
-                      filterMatch(item.text, this.state.labelFilter)
+                      item.type === "category" &&
+                      filterMatch(item.text, this.state.category)
                   )
                   .map((label) => {
                     const isSelected = true; //TODO check if label is selected
@@ -349,7 +354,7 @@ class AnnouncerToolbar extends React.Component<
                           style={{ color: label.color }}
                         ></span>
                         <span className="link__text">
-                          {filterHighlight(label.text, this.state.labelFilter)}
+                          {filterHighlight(label.text, this.state.category)}
                         </span>
                       </Link>
                     );
@@ -385,7 +390,12 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { updateAnnouncement, removeFromAnnouncementsSelected, markAllAsRead },
+    {
+      updateAnnouncement,
+      removeFromAnnouncementsSelected,
+      markAllAsRead,
+      createAnnouncementCategory,
+    },
     dispatch
   );
 }

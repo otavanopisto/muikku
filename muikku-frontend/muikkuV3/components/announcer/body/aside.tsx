@@ -12,6 +12,7 @@ import { NavigationTopic } from "../../general/navigation";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
+import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * NavigationAsideProps
@@ -54,10 +55,25 @@ class NavigationAside extends React.Component<
         )
       );
 
+    const categoryElementList: JSX.Element[] =
+      this.props.announcements.categories.map((category) => (
+        <NavigationElement
+          key={category.id}
+          isActive={false}
+          hash={`category-${category.id}`}
+          icon="tag"
+          iconColor={colorIntToHex(category.color)}
+        >
+          {category.category}
+        </NavigationElement>
+      ));
     return (
       <Navigation>
         <NavigationTopic name={this.props.i18n.t("labels.folders")}>
           {navigationElementList}
+        </NavigationTopic>
+        <NavigationTopic name={this.props.i18n.t("labels.categories")}>
+          {categoryElementList}
         </NavigationTopic>
       </Navigation>
     );

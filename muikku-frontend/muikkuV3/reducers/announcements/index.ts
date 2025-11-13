@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { Announcement } from "~/generated/client";
+import { Announcement, AnnouncementCategory } from "~/generated/client";
 
 /**
  * AnnouncerNavigationItemType
@@ -61,12 +61,6 @@ export type AnnouncementsStateType =
   | "READY"
   | "LOADING_MORE";
 
-export type AnnouncementLabel = {
-  id: number;
-  name: string;
-  color: number;
-};
-
 /**
  * AnnouncementsState
  */
@@ -77,7 +71,7 @@ export interface AnnouncementsState {
   current: Announcement;
   selected: Announcement[];
   selectedIds: Array<number>;
-  labels: AnnouncementLabel[];
+  categories: AnnouncementCategory[];
   location: string;
   toolbarLock: boolean;
   navigation: AnnouncerNavigationItemListType;
@@ -89,6 +83,7 @@ export interface AnnouncementsState {
  * AnnouncementsStatePatch
  */
 export interface AnnouncementsStatePatch {
+  categories?: AnnouncementCategory[];
   state?: AnnouncementsStateType;
   announcements?: Announcement[];
   unreadCount?: number;
@@ -114,11 +109,7 @@ const initialAnnouncementsState: AnnouncementsState = {
   selectedIds: [],
   location: "",
   toolbarLock: false,
-  labels: [
-    { id: 0, name: "General", color: 1 },
-    { id: 1, name: "Important", color: 2 },
-    { id: 2, name: "Urgent", color: 3 },
-  ],
+  categories: [],
   navigation: defaultNavigation,
   workspaceId: null,
   hasMore: false,
