@@ -80,6 +80,14 @@ export interface PlannedCourseWithIdentifier extends PlannedCourse {
 }
 
 /**
+ * PlannedCourseNew
+ */
+export interface PlannedCourseNew {
+  type: "planned-course-new";
+  course: Course & { subjectCode: string };
+}
+
+/**
  * StudyPlannerNoteWithIdentifier
  */
 export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
@@ -88,6 +96,13 @@ export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
    * to identify the exiting and newly added study planner note in the planner with drag and drop.
    */
   identifier: string;
+}
+
+/**
+ * StudyPlannerNoteNew
+ */
+export interface StudyPlannerNoteNew {
+  type: "note-new";
 }
 
 /**
@@ -109,41 +124,20 @@ export type PeriodCourseItem =
   | StudyPlannerNoteWithIdentifier;
 
 /**
- * Type guard for planned course item
- * @param item item
- * @returns true if the item is a planned course item
- */
-export const isPeriodCourseItemPlannedCourse = (
-  item: PeriodCourseItem
-): item is PlannedCourseWithIdentifier =>
-  "identifier" in item && item.identifier.startsWith("planned-");
-
-/**
- * Type guard for study planner note item
- * @param item item
- * @returns true if the item is a study planner note item
- */
-export const isPeriodCourseItemStudyPlannerNote = (
-  item: PeriodCourseItem
-): item is StudyPlannerNoteWithIdentifier =>
-  "identifier" in item && item.identifier.startsWith("note-");
-
-/**
- * Type guard for activity course item
- * @param item item
- * @returns true if the item is an activity course item
- */
-export const isPeriodCourseItemActivityCourse = (
-  item: PeriodCourseItem
-): item is PlannerActivityItem =>
-  "identifier" in item && item.identifier.startsWith("activity-");
-
-/**
  * CourseChangeAction
  */
 export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
   identifier: string;
 }
+
+/**
+ * DroppableCardType
+ */
+export type DroppableCardType =
+  | "planned-course-card"
+  | "new-course-card"
+  | "note-card"
+  | "new-note-card";
 
 /**
  * StudyPlanChangeAction
@@ -206,26 +200,11 @@ export type TimeContextSelection =
   | { type: "period-month"; year: number; monthIndex: number }
   | { type: null };
 
-export type SelectedCourse =
+export type SelectedItem =
   | PlannedCourseWithIdentifier
-  | (Course & { subjectCode: string });
-
-/**
- * Type guard for planned course with identifier
- * @param course Course
- */
-export const isPlannedCourseWithIdentifier = (
-  course: SelectedCourse
-): course is PlannedCourseWithIdentifier =>
-  "identifier" in course && course.identifier.startsWith("planned-");
-
-/**
- * Type guard for no selection
- * @param selection Selection
- */
-export const isNoTimeContextSelection = (
-  selection: TimeContextSelection
-): selection is { type: null } => selection.type === null;
+  | StudyPlannerNoteWithIdentifier
+  | PlannedCourseNew
+  | StudyPlannerNoteNew;
 
 /**
  * HopsEditingState
@@ -237,7 +216,7 @@ export interface HopsEditingState {
   plannedCourses: PlannedCourseWithIdentifier[];
   planNotes: StudyPlannerNoteWithIdentifier[];
   goals: HopsGoals;
-  selectedCoursesIds: string[];
+  selectedPlanItemIds: string[];
   timeContextSelection: TimeContextSelection;
   waitingToBeAllocatedCourses: (Course & { subjectCode: string })[] | null;
 }
@@ -336,7 +315,7 @@ const initialHopsState: HopsState = {
       graduationGoal: null,
       studyHours: 0,
     },
-    selectedCoursesIds: [],
+    selectedPlanItemIds: [],
     timeContextSelection: null,
     waitingToBeAllocatedCourses: null,
   },
@@ -670,8 +649,9 @@ export const hopsNew: Reducer<HopsState> = (
           hopsForm: state.hopsForm,
           matriculationPlan: state.hopsMatriculation.plan,
           plannedCourses: state.hopsStudyPlanState.plannedCourses,
+          planNotes: state.hopsStudyPlanState.planNotes,
           goals: state.hopsStudyPlanState.goals,
-          selectedCoursesIds: [],
+          selectedPlanItemIds: [],
           timeContextSelection: null,
         },
       };
@@ -711,6 +691,19 @@ export const hopsNew: Reducer<HopsState> = (
         },
       };
 
+    case "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          planNotes: action.payload,
+        },
+        hopsEditing: {
+          ...state.hopsEditing,
+          planNotes: action.payload,
+        },
+      };
+
     case "HOPS_STUDYPLAN_UPDATE_GOALS":
       return {
         ...state,
@@ -747,7 +740,7 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selectedCoursesIds: action.payload,
+          selectedPlanItemIds: action.payload,
         },
       };
 
@@ -756,7 +749,7 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selectedCoursesIds: [],
+          selectedPlanItemIds: [],
         },
       };
 

@@ -34,7 +34,9 @@ export interface BasePlannerPeriodNoteProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
-    onChange: (startDate: Date) => void;
+    onChange: (title: string, content: string, startDate: Date) => void;
+    title: string;
+    content: string;
     startDate: Date;
   }) => React.ReactNode;
   renderDeleteWarning: (props: {
@@ -48,6 +50,8 @@ export interface BasePlannerPeriodNoteProps {
  * Specify course
  */
 interface SpecifyNote {
+  title: string;
+  content: string;
   startDate: Date;
 }
 
@@ -92,6 +96,8 @@ const BasePlannerPeriodNote = React.forwardRef<
       setSpecifyNote(() => {
         const startDate = new Date(note.startDate);
         return {
+          title: note.title,
+          content: note.content,
           startDate,
         };
       });
@@ -113,10 +119,16 @@ const BasePlannerPeriodNote = React.forwardRef<
 
   /**
    * Handles specify change
+   * @param title title
+   * @param content content
    * @param startDate start date
    */
-  const handleSpecifyChange = (startDate: Date) => {
-    setSpecifyNote({ startDate });
+  const handleSpecifyChange = (
+    title: string,
+    content: string,
+    startDate: Date
+  ) => {
+    setSpecifyNote({ title, content, startDate });
   };
 
   /**
@@ -128,6 +140,8 @@ const BasePlannerPeriodNote = React.forwardRef<
     onNoteChange(
       {
         ...note,
+        title: specifyNote.title,
+        content: specifyNote.content,
         startDate,
       },
       "update"
@@ -178,6 +192,8 @@ const BasePlannerPeriodNote = React.forwardRef<
             onClose: () => setSpecifyIsOpen(false),
             onConfirm: handleConfirmSpecify,
             onChange: handleSpecifyChange,
+            title: specifyNote && specifyNote.title,
+            content: specifyNote && specifyNote.content,
             startDate: specifyNote && specifyNote.startDate,
           })}
 

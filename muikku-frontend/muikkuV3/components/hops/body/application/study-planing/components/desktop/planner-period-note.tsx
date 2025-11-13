@@ -3,10 +3,14 @@ import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import Button from "~/components/general/button";
 import { AnimatedDrawer } from "../Animated-drawer";
+import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import BasePlannerPeriodNote, {
   BasePlannerPeriodNoteProps,
 } from "../planner-period-note-base";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { useActivePeriod } from "../../context/active-period-context";
+import { localize } from "~/locales/i18n";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -26,10 +30,14 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
 ) => {
   const { note, disabled } = props;
 
+  const { activePeriodStartDate } = useActivePeriod();
+
   const [pendingDelete, setPendingDelete] = React.useState(false);
   const [pendingSpecify, setPendingSpecify] = React.useState(false);
 
   const { t } = useTranslation(["hops_new", "common"]);
+
+  const dragRef = React.useRef<ReturnType<typeof useDrag>[1] | null>(null);
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -47,7 +55,7 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
       },
       canDrag: !disabled,
     }),
-    [disabled]
+    [disabled, note.identifier, note.title, note.content, note.startDate]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });
@@ -67,7 +75,7 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
    * handleSpecifyCourse
    * @param callback callback
    */
-  const handleSpecifyCourse = (callback: () => void) => {
+  const handleSpecifyNote = (callback: () => void) => {
     setPendingSpecify(true);
     callback();
   };
@@ -92,18 +100,33 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
     callback();
   };
 
+  dragRef.current = drag;
+
+  // Re-attach drag ref when note properties change
+  const elementRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node && dragRef.current) {
+        dragRef.current(node);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [note.title, note.content, note.startDate, disabled]
+  );
+
   return (
     <BasePlannerPeriodNote
       {...props}
-      ref={drag}
+      ref={elementRef}
       // This is mandatory for the drag to notice the changes when disabled has changed
-      key={`${note.identifier}-${disabled}`}
+      key={`${note.identifier}`}
       isDragging={isDragging}
       canDrag={!disabled}
       renderSpecifyContent={({
         onClose,
         onConfirm,
         onChange,
+        title,
+        content,
         startDate,
         isOpen,
       }) => (
@@ -129,8 +152,10 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
                   type="text"
                   className="study-planner__input"
                   placeholder="Muistiinpanon otsikko"
-                  value={note.title}
-                  //onChange={(e) => onChange(e.target.value)}
+                  value={title}
+                  onChange={(e) => {
+                    onChange(e.target.value, content, startDate);
+                  }}
                 />
               </div>
             </div>
@@ -144,8 +169,10 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
                 <textarea
                   className="study-planner__input"
                   placeholder="Muistiinpanon sisältö"
-                  value={note.content}
-                  //onChange={(e) => onChange(new Date(e.target.value))}
+                  value={content}
+                  onChange={(e) => {
+                    onChange(title, e.target.value, startDate);
+                  }}
                 />
               </div>
             </div>
@@ -156,17 +183,19 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
               </label>
 
               <div className="study-planner__extra-section-date-inputs">
-                {/* <DatePicker
+                <DatePicker
                   className="study-planner__input"
                   placeholderText={t("labels.startDate", {
                     ns: "hops_new",
                   })}
                   selected={startDate}
                   minDate={activePeriodStartDate}
-                  onChange={(date) => onChange(date, endDate)}
+                  onChange={(date, e) => {
+                    onChange(title, content, date);
+                  }}
                   locale={outputCorrectDatePickerLocale(localize.language)}
                   dateFormat="P"
-                /> */}
+                />
               </div>
             </div>
 
@@ -175,7 +204,7 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
                 buttonModifiers={["standard-ok", "execute"]}
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleSpecifyCourse(onClose);
+                  handleSpecifyNote(onClose);
                 }}
               >
                 {t("actions.save", {

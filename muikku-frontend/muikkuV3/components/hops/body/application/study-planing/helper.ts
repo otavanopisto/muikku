@@ -2,11 +2,16 @@ import { TFunction } from "i18next";
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
 import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import {
+  PeriodCourseItem,
+  PlannedCourseNew,
   PlannedCourseWithIdentifier,
   PlannedPeriod,
   PlannerActivityItem,
+  SelectedItem,
   StudentDateInfo,
+  StudyPlannerNoteNew,
   StudyPlannerNoteWithIdentifier,
+  TimeContextSelection,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
@@ -222,6 +227,27 @@ const createAndAllocateCoursesToPeriods = (
       }
     });
 
+  planNotes.forEach((note) => {
+    const noteStartDate = new Date(note.startDate);
+    const noteStartDateYear = noteStartDate.getFullYear();
+    const noteStartDateMonth = noteStartDate.getMonth();
+
+    const period = periods.find(
+      (p) =>
+        noteStartDateYear === p.year &&
+        ((p.type === "SPRING" &&
+          noteStartDateMonth >= 0 &&
+          noteStartDateMonth <= 6) ||
+          (p.type === "AUTUMN" &&
+            noteStartDateMonth >= 7 &&
+            noteStartDateMonth <= 11))
+    );
+
+    if (period) {
+      period.items.push(note);
+    }
+  });
+
   // Only trim empty periods from the start
   const trimmedPeriods = [...periods];
 
@@ -432,13 +458,108 @@ export const getCurrentActivePeriodDateRange = (periods: PlannedPeriod[]) => {
 };
 
 /**
+ * Type guard for planned course item
+ * @param item item
+ * @returns true if the item is a planned course item
+ */
+const isPeriodCourseItemPlannedCourse = (
+  item: PeriodCourseItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for study planner note item
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isPeriodCourseItemStudyPlannerNote = (
+  item: PeriodCourseItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
+
+/**
+ * Type guard for activity course item
+ * @param item item
+ * @returns true if the item is an activity course item
+ */
+const isPeriodCourseItemActivityCourse = (
+  item: PeriodCourseItem
+): item is PlannerActivityItem =>
+  "identifier" in item && item.identifier.startsWith("activity-");
+
+/**
+ * Type guard for planned course with identifier
+ * @param item item
+ */
+const isSelectedItemPlannedCourse = (
+  item: SelectedItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for study planner note with identifier
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isSelectedItemStudyPlannerNote = (
+  item: SelectedItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
+
+/**
+ * Type guard for study planner note new item
+ * @param item item
+ * @returns true if the item is a study planner note new item
+ */
+const isSelectedItemStudyPlannerNoteNew = (
+  item: SelectedItem
+): item is StudyPlannerNoteNew => "type" in item && item.type === "note-new";
+
+/**
+ * Type guard for planned course new item
+ * @param item item
+ * @returns true if the item is a planned course new item
+ */
+const isSelectedItemPlannedCourseNew = (
+  item: SelectedItem
+): item is PlannedCourseNew =>
+  "type" in item && item.type === "planned-course-new";
+
+/**
+ * Type guard for no selection
+ * @param selection Selection
+ */
+const isNoTimeContextSelection = (
+  selection: TimeContextSelection
+): selection is { type: null } => selection.type === null;
+
+/**
  * Checks if the course is a planned course
- * @param course course
+ * @param item item
  * @returns true if the course is a planned course
  */
-const isPlannedCourse = (
-  course: PlannedCourseWithIdentifier | Course
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+const isDragDropItemPlannedCourseOrNote = (
+  item:
+    | PlannedCourseWithIdentifier
+    | StudyPlannerNoteWithIdentifier
+    | PlannedCourseNew
+    | StudyPlannerNoteNew
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for study planner note item
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isDragDropItemStudyPlannerNote = (
+  item:
+    | PlannedCourseWithIdentifier
+    | StudyPlannerNoteWithIdentifier
+    | PlannedCourseNew
+    | StudyPlannerNoteNew
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
 
 /**
  * Checks if the selected course is a planned course
@@ -452,7 +573,16 @@ const selectedIsPlannedCourse = (
 export {
   createAndAllocateCoursesToPeriods,
   filterSubjectsAndCourses,
-  isPlannedCourse,
+  isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
+  isPeriodCourseItemActivityCourse,
+  isDragDropItemPlannedCourseOrNote,
+  isDragDropItemStudyPlannerNote,
+  isSelectedItemPlannedCourse,
+  isSelectedItemStudyPlannerNote,
+  isSelectedItemStudyPlannerNoteNew,
+  isSelectedItemPlannedCourseNew,
+  isNoTimeContextSelection,
   selectedIsPlannedCourse,
   getPeriodMonthNames,
   getPeriodTypeByMonthNumber,

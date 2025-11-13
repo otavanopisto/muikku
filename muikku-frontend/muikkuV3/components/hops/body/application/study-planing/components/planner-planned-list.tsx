@@ -12,7 +12,7 @@ import _ from "lodash";
 interface PlannerPlannedListProps {
   disabled: boolean;
   courses: PlannedCourseWithIdentifier[];
-  selectedCoursesIds: string[];
+  selectedPlanItemIds: string[];
   originalPlannedCourses: PlannedCourseWithIdentifier[];
   studyActivity: StudentStudyActivity[];
   curriculumConfig: CurriculumConfig;
@@ -31,7 +31,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   const {
     disabled,
     courses,
-    selectedCoursesIds,
+    selectedPlanItemIds,
     originalPlannedCourses,
     studyActivity,
     curriculumConfig,
@@ -42,7 +42,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   return (
     <ul className="study-planner__planned-list">
       {courses.map((course) => {
-        const isSelected = selectedCoursesIds.some(
+        const isSelected = selectedPlanItemIds.some(
           (courseIdentifier) => courseIdentifier === course.identifier
         );
 

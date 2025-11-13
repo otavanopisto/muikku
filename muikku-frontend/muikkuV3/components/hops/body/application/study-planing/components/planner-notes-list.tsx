@@ -1,6 +1,10 @@
 import * as React from "react";
-import { StudyPlannerNoteWithIdentifier } from "~/reducers/hops";
+import {
+  StudyPlanChangeAction,
+  StudyPlannerNoteWithIdentifier,
+} from "~/reducers/hops";
 import PlannerPeriodNote from "./planner-period-note";
+import _ from "lodash";
 
 /**
  * PlannerPlannedList props
@@ -8,7 +12,12 @@ import PlannerPeriodNote from "./planner-period-note";
 interface PlannerNotesListProps {
   disabled: boolean;
   notes: StudyPlannerNoteWithIdentifier[];
-  //   selectedCoursesIds: string[];
+  originalNotes: StudyPlannerNoteWithIdentifier[];
+  onNoteChange: (
+    note: StudyPlannerNoteWithIdentifier,
+    action: StudyPlanChangeAction
+  ) => void;
+  //   selectedPlanItemIds: string[];
   //   originalPlannedCourses: PlannedCourseWithIdentifier[];
   //   studyActivity: StudentStudyActivity[];
   //   onCourseChange: (
@@ -23,45 +32,40 @@ interface PlannerNotesListProps {
  * @param props props
  */
 const PlannerNotesList = (props: PlannerNotesListProps) => {
-  const { disabled, notes } = props;
+  const { disabled, notes, originalNotes, onNoteChange } = props;
 
   return (
     <ul className="study-planner__planned-list">
-      {notes.map((note) => (
-        // const isSelected = selectedCoursesIds.some(
+      {notes.map((note) => {
+        // const isSelected = selectedPlanItemIds.some(
         //   (courseIdentifier) => courseIdentifier === course.identifier
         // );
 
-        // const courseActivity = studyActivity.find(
-        //   (sa) =>
-        //     sa.courseNumber === course.courseNumber &&
-        //     sa.subject === course.subjectCode
-        // );
+        const originalInfo = originalNotes.find(
+          (n) => n.identifier === note.identifier
+        );
 
-        // const originalInfo = originalPlannedCourses.find(
-        //   (c) => c.identifier === course.identifier
-        // );
+        const hasChanges = originalInfo ? !_.isEqual(originalInfo, note) : true;
 
-        // const hasChanges = originalInfo
-        //   ? !_.isEqual(originalInfo, course)
-        //   : true;
-
-        <li key={note.identifier} className="study-planner__planned-list-item">
-          <PlannerPeriodNote
+        return (
+          <li
             key={note.identifier}
-            disabled={disabled}
-            note={note}
-            selected={false}
-            hasChanges={false}
-            onNoteChange={(note, action) => {
-              console.log("onNoteChange", note, action);
-            }}
-            onSelectNote={(note) => {
-              console.log("onSelectNote", note);
-            }}
-          />
-        </li>
-      ))}
+            className="study-planner__planned-list-item"
+          >
+            <PlannerPeriodNote
+              key={note.identifier}
+              disabled={disabled}
+              note={note}
+              selected={false}
+              hasChanges={hasChanges}
+              onNoteChange={onNoteChange}
+              onSelectNote={(note) => {
+                console.log("onSelectNote", note);
+              }}
+            />
+          </li>
+        );
+      })}
     </ul>
   );
 };

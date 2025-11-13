@@ -11,6 +11,7 @@ import PlannerTimeline from "./planner-timeline";
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { ActivePeriodProvider } from "../../context/active-period-context";
+import PlannerAddNote from "../planner-add-note";
 
 /**
  * DesktopStudyPlannerProps
@@ -38,6 +39,7 @@ const variants: Variants = {
 // Memoized components
 const MemoizedPlannerControls = React.memo(PlannerControls);
 const MemoizedPlannerCourseTray = React.memo(PlannerCourseTray);
+const MemoizedPlannerAddNote = React.memo(PlannerAddNote);
 const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
 
 /**
@@ -48,7 +50,7 @@ const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
 const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   const { plannedCourses, calculatedPeriods } = props;
 
-  const { selectedCoursesIds } = useSelector(
+  const { selectedPlanItemIds } = useSelector(
     (state: StateType) => state.hopsNew.hopsEditing
   );
 
@@ -99,10 +101,10 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    */
   const isSelected = useCallback(
     (course: Course & { subjectCode: string }) =>
-      selectedCoursesIds.some(
+      selectedPlanItemIds.some(
         (courseIdentifier) => courseIdentifier === course.identifier
       ),
-    [selectedCoursesIds]
+    [selectedPlanItemIds]
   );
 
   /**
@@ -145,6 +147,10 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
         />
         <div className="study-planner__content">
           <div className="study-planner__sidebar">
+            <MemoizedPlannerAddNote
+              disabled={disabled}
+              //onActivateNewNote={handleActivateNewNote}
+            />
             <MemoizedPlannerCourseTray
               plannedCourses={memoizedPlannedCourses}
               onCourseClick={handleCourseSelectClick}

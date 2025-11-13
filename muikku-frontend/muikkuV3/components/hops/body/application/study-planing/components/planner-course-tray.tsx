@@ -403,7 +403,10 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     () => ({
       type: "new-course-card",
       item: {
-        info: { ...course, subjectCode },
+        info: {
+          type: "planned-course-new",
+          course: { ...course, subjectCode },
+        },
         type: "new-course-card",
       },
       // eslint-disable-next-line jsdoc/require-jsdoc

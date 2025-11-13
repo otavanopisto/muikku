@@ -2488,7 +2488,7 @@ const updateSelectedCourses: UpdateSelectedCoursesTriggerType =
       const state = getState();
 
       const updatedCoursesIds = [
-        ...state.hopsNew.hopsEditing.selectedCoursesIds,
+        ...state.hopsNew.hopsEditing.selectedPlanItemIds,
       ];
 
       const index = updatedCoursesIds.findIndex((courseIdentifier) => {

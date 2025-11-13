@@ -1,16 +1,15 @@
 import * as React from "react";
-import {
-  isPeriodCourseItemActivityCourse,
-  isPeriodCourseItemPlannedCourse,
-  isPeriodCourseItemStudyPlannerNote,
-  PlannedCourseWithIdentifier,
-  PlannedPeriod,
-} from "~/reducers/hops";
+import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import PlannerPeriodMonth from "./desktop/planner-period-month";
 import MobilePlannerPeriodMonth from "./mobile/planner-period-month";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { getPeriodMonthNames } from "../helper";
+import {
+  getPeriodMonthNames,
+  isPeriodCourseItemActivityCourse,
+  isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
+} from "../helper";
 import { StudentStudyActivity } from "~/generated/client";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";

@@ -1,9 +1,14 @@
 import * as React from "react";
 import { XYCoord, useDragLayer } from "react-dnd";
 import { Course } from "~/@types/shared";
-import { PlannedCourseWithIdentifier } from "~/reducers/hops";
+import {
+  PlannedCourseWithIdentifier,
+  StudyPlannerNoteWithIdentifier,
+} from "~/reducers/hops";
 import PlannerPeriodCourseCardPreview from "./planner-period-course-preview";
 import PlannerCourseTrayItemPreview from "./planner-course-tray-item-preview";
+import PlannerNoteNewPreview from "./planner-note-new-preview";
+import PlannerNotePreview from "./planner-note-preview";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",
@@ -68,6 +73,15 @@ const renderItem = (type: string, item: any) => {
         />
       );
     }
+
+    case "note-card": {
+      const note = item.info as StudyPlannerNoteWithIdentifier;
+      return <PlannerNotePreview note={note} />;
+    }
+
+    case "new-note-card": {
+      return <PlannerNoteNewPreview />;
+    }
     // Add more cases here for other draggable types
     // case "other-draggable-type":
     //   return (
@@ -79,7 +93,7 @@ const renderItem = (type: string, item: any) => {
 };
 
 /**
- * CourseDragLayer component
+ * StudyPlannerDragLayer component
  */
 const StudyPlannerDragLayer: React.FC<StudyPlannerDragLayerProps> = () => {
   const { type, isDragging, item, initialOffset, currentOffset } = useDragLayer(
