@@ -11,7 +11,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -62,9 +61,7 @@ public class HopsStudyPlannerNote {
   @Column(nullable = false)
   private Long userEntityId;
 
-  @NotNull
-  @NotEmpty
-  @Column(nullable = false)
+  @Column
   private String title;
 
   @Column(columnDefinition = "text")
