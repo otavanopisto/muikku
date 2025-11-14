@@ -81,8 +81,11 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     planNotes: originalPlanNotes,
     studyActivity,
   } = useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
-  const { plannedCourses: editedPlannedCourses, selectedPlanItemIds } =
-    useSelector((state: StateType) => state.hopsNew.hopsEditing);
+  const {
+    plannedCourses: editedPlannedCourses,
+    planNotes: editedPlanNotes,
+    selectedPlanItemIds,
+  } = useSelector((state: StateType) => state.hopsNew.hopsEditing);
 
   // Dispatch
   const dispatch = useDispatch();
@@ -228,39 +231,52 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
 
   /**
    * Handles month edit confirm
-   * @param selectedItems selected items
+   * @param selectedMonthItemIds selected plan item ids
    */
-  const handleMonthEditConfirm = (selectedItems: SelectedItem[]) => {
-    const plannedCourses = selectedItems.map((item) => {
-      if (
-        isSelectedItemStudyPlannerNote(item) ||
-        isSelectedItemStudyPlannerNoteNew(item)
-      ) {
-        return;
-      }
+  const handleMonthEditConfirm = (selectedMonthItemIds: string[]) => {
+    const plannedCourses = selectedMonthItemIds
+      .map((planItemIdentifier) => {
+        if (planItemIdentifier.startsWith("new-note-card")) {
+          return null;
+        }
 
-      if (isSelectedItemPlannedCourse(item)) {
+        const course = editedPlannedCourses.find(
+          (course) => course.identifier === planItemIdentifier
+        );
+
+        if (course) {
+          return {
+            ...course,
+            startDate: moment(new Date(year, monthIndex, 1)).format(
+              "YYYY-MM-DD"
+            ),
+          };
+        }
+
         return {
-          ...item,
-          startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+          ...curriculumConfig.strategy.createPlannedCourse(
+            curriculumConfig.strategy.findCourseByIdentifier(
+              planItemIdentifier
+            ),
+            new Date(year, monthIndex, 1)
+          ),
         };
-      }
+      })
+      .filter((c) => c !== null);
 
-      return {
-        ...curriculumConfig.strategy.createPlannedCourse(
-          item.course,
-          new Date(year, monthIndex, 1)
-        ),
-      };
-    });
+    const updatedPlanNotes = [...editedPlanNotes];
 
-    // Get courses that should be removed (courses in this month that aren't in the new selection)
-    const coursesToRemove = new Set(courses.map((course) => course.identifier));
+    let clearSelectedItemsFlag = false;
 
-    // Remove identifiers of courses that are staying
-    plannedCourses.forEach((course) => {
-      coursesToRemove.delete(course.identifier);
-    });
+    if (selectedMonthItemIds.includes("new-note-card")) {
+      clearSelectedItemsFlag = true;
+      updatedPlanNotes.push({
+        id: null,
+        title: "Muistiinpanon otsikko",
+        identifier: `plan-note-${uuidv4()}`,
+        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+      });
+    }
 
     // Create the updated full course list:
     // 1. Start with all existing courses except those from this month
@@ -279,9 +295,14 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     dispatch(
       updateEditingStudyPlanBatch({
         plannedCourses: updatedFullCourseList,
-        planNotes: [],
+        planNotes: updatedPlanNotes,
       })
     );
+
+    // In case of new note, clear the selected item
+    if (clearSelectedItemsFlag) {
+      dispatch(clearSelectedItems());
+    }
   };
 
   /**
