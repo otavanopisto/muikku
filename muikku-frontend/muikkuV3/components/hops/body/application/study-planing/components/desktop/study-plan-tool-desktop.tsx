@@ -4,7 +4,7 @@ import { PlannerControls } from "../planner-controls";
 import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { motion, Variants } from "framer-motion";
 import PlannerCourseTray from "../planner-course-tray";
-import { updateSelectedCourses } from "~/actions/main-function/hops";
+import { updateSelectedPlanItem } from "~/actions/main-function/hops";
 import { Course } from "~/@types/shared";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerTimeline from "./planner-timeline";
@@ -87,12 +87,21 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     (course: Course & { subjectCode: string }) => {
       if (!disabled) {
         dispatch(
-          updateSelectedCourses({ courseIdentifier: course.identifier })
+          updateSelectedPlanItem({ planItemIdentifier: course.identifier })
         );
       }
     },
     [disabled, dispatch]
   );
+
+  /**
+   * Handles activate add note
+   */
+  const handleActivateAddNote = useCallback(() => {
+    if (!disabled) {
+      dispatch(updateSelectedPlanItem({ planItemIdentifier: "new-note-card" }));
+    }
+  }, [disabled, dispatch]);
 
   /**
    * Checks if a course is selected
@@ -149,7 +158,8 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
           <div className="study-planner__sidebar">
             <MemoizedPlannerAddNote
               disabled={disabled}
-              //onActivateNewNote={handleActivateNewNote}
+              activated={selectedPlanItemIds.includes("new-note-card")}
+              onActivateNewNote={handleActivateAddNote}
             />
             <MemoizedPlannerCourseTray
               plannedCourses={memoizedPlannedCourses}

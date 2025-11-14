@@ -8,7 +8,8 @@ import { PlannerCard, PlannerCardHeader } from "./planner-card";
  */
 interface PlannerAddNoteProps {
   disabled: boolean;
-  onActivateNewNote?: () => void;
+  activated: boolean;
+  onActivateNewNote: () => void;
 }
 
 /**
@@ -16,7 +17,7 @@ interface PlannerAddNoteProps {
  * @param props props
  */
 const PlannerAddNote = (props: PlannerAddNoteProps) => {
-  const { disabled, onActivateNewNote } = props;
+  const { disabled, activated, onActivateNewNote } = props;
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -42,38 +43,32 @@ const PlannerAddNote = (props: PlannerAddNoteProps) => {
   /**
    * Handles activate new note
    */
-  const handleActivateNewNote = () => {
-    if (disabled || !onActivateNewNote) {
+  const handleActivateNewNoteClick = () => {
+    if (disabled) {
       return;
     }
 
     onActivateNewNote();
   };
 
-  const modifiers = [];
+  const modifiers = ["note-new-card"];
   isDragging && modifiers.push("is-dragging");
+  activated && modifiers.push("selected");
   disabled ? modifiers.push("not-draggable") : modifiers.push("draggable");
 
   return (
     <div className="study-planner__add-note">
-      <div className="study-planner__add-note-header">
-        <h3 className="study-planner__add-note-title">
-          Muistiinpanon lisääminen
-        </h3>
-      </div>
-      <div className="study-planner__add-note-content">
-        <PlannerCard
-          modifiers={["note-new-card"]}
-          ref={drag}
-          onClick={handleActivateNewNote}
-        >
-          <PlannerCardHeader modifiers={["course-tray-item"]}>
-            <span className="planner-course-tray-item__name">
-              <b>{`Uusi muistiinpano`}</b>
-            </span>
-          </PlannerCardHeader>
-        </PlannerCard>
-      </div>
+      <PlannerCard
+        modifiers={modifiers}
+        ref={drag}
+        onClick={handleActivateNewNoteClick}
+      >
+        <PlannerCardHeader modifiers={["course-tray-item"]}>
+          <span className="planner-course-tray-item__name">
+            <b>{`Uusi muistiinpano`}</b>
+          </span>
+        </PlannerCardHeader>
+      </PlannerCard>
     </div>
   );
 };

@@ -735,7 +735,7 @@ export const hopsNew: Reducer<HopsState> = (
         },
       };
 
-    case "HOPS_UPDATE_SELECTED_COURSES":
+    case "HOPS_UPDATE_SELECTED_PLANITEMS":
       return {
         ...state,
         hopsEditing: {
@@ -759,6 +759,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           plannedCourses: action.payload.plannedCourses,
+          planNotes: action.payload.planNotes,
         },
       };
 

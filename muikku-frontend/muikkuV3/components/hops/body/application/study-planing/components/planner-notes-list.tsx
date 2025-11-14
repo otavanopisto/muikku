@@ -12,11 +12,13 @@ import _ from "lodash";
 interface PlannerNotesListProps {
   disabled: boolean;
   notes: StudyPlannerNoteWithIdentifier[];
+  selectedPlanItemIds: string[];
   originalNotes: StudyPlannerNoteWithIdentifier[];
   onNoteChange: (
     note: StudyPlannerNoteWithIdentifier,
     action: StudyPlanChangeAction
   ) => void;
+  onSelectNote: (note: StudyPlannerNoteWithIdentifier) => void;
   //   selectedPlanItemIds: string[];
   //   originalPlannedCourses: PlannedCourseWithIdentifier[];
   //   studyActivity: StudentStudyActivity[];
@@ -32,14 +34,21 @@ interface PlannerNotesListProps {
  * @param props props
  */
 const PlannerNotesList = (props: PlannerNotesListProps) => {
-  const { disabled, notes, originalNotes, onNoteChange } = props;
+  const {
+    disabled,
+    notes,
+    originalNotes,
+    selectedPlanItemIds,
+    onNoteChange,
+    onSelectNote,
+  } = props;
 
   return (
     <ul className="study-planner__planned-list">
       {notes.map((note) => {
-        // const isSelected = selectedPlanItemIds.some(
-        //   (courseIdentifier) => courseIdentifier === course.identifier
-        // );
+        const isSelected = selectedPlanItemIds.some(
+          (pItemIdentifier) => pItemIdentifier === note.identifier
+        );
 
         const originalInfo = originalNotes.find(
           (n) => n.identifier === note.identifier
@@ -56,12 +65,10 @@ const PlannerNotesList = (props: PlannerNotesListProps) => {
               key={note.identifier}
               disabled={disabled}
               note={note}
-              selected={false}
+              selected={isSelected}
               hasChanges={hasChanges}
               onNoteChange={onNoteChange}
-              onSelectNote={(note) => {
-                console.log("onSelectNote", note);
-              }}
+              onSelectNote={onSelectNote}
             />
           </li>
         );

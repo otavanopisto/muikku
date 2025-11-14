@@ -21,11 +21,11 @@ import {
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  clearSelectedCourses,
+  clearSelectedItems,
   updateEditingStudyPlanBatch,
   updateHopsEditingPlanNotes,
   updateHopsEditingStudyPlan,
-  updateSelectedCourses,
+  updateSelectedPlanItem,
 } from "~/actions/main-function/hops";
 import moment from "moment";
 import { AnimatedDrawer } from "../Animated-drawer";
@@ -88,8 +88,11 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     planNotes: originalPlanNotes,
     studyActivity,
   } = useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
-  const { plannedCourses: editedPlannedCourses, selectedPlanItemIds } =
-    useSelector((state: StateType) => state.hopsNew.hopsEditing);
+  const {
+    plannedCourses: editedPlannedCourses,
+    planNotes: editedPlanNotes,
+    selectedPlanItemIds,
+  } = useSelector((state: StateType) => state.hopsNew.hopsEditing);
 
   // Dispatch
   const dispatch = useDispatch();
@@ -128,23 +131,42 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       "YYYY-MM-DD"
     );
 
-    const plannedCourses = selectedPlanItemIds
+    const selectedCourseIds: string[] = [];
+    const selectedNoteIds: string[] = [];
+
+    for (const identifier of selectedPlanItemIds) {
+      if (
+        identifier.startsWith("ops-course-") ||
+        identifier.startsWith("planned-course-")
+      ) {
+        selectedCourseIds.push(identifier);
+      } else if (
+        identifier.startsWith("plan-note-") ||
+        identifier === "new-note-card"
+      ) {
+        selectedNoteIds.push(identifier);
+      } else {
+        continue;
+      }
+    }
+
+    // Check if this is an existing planned course
+    // Update the date for existing planned course
+    // If not found in planned courses, it must be a new course from tray
+    // Find the course in curriculum config and create a new planned course
+    const updatedPlannedCourses = selectedCourseIds
       .map((courseIdentifier) => {
-        // Check if this is an existing planned course
         const existingPlannedCourse = editedPlannedCourses.find(
           (course) => course.identifier === courseIdentifier
         );
 
         if (existingPlannedCourse) {
-          // Update the date for existing planned course
           return {
             ...existingPlannedCourse,
             startDate: targetDate,
           };
         }
 
-        // If not found in planned courses, it must be a new course from tray
-        // Find the course in curriculum config and create a new planned course
         const courseFromTray =
           curriculumConfig.strategy.findCourseByIdentifier(courseIdentifier);
 
@@ -161,21 +183,55 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       })
       .filter((c) => c !== null);
 
-    // Create a map of the new/updated courses by identifier for efficient lookup
+    // Same for notes as above
+    const updatedPlanNotes =
+      selectedNoteIds.map<StudyPlannerNoteWithIdentifier>((noteIdentifier) => {
+        const existingPlanNote = editedPlanNotes.find(
+          (note) => note.identifier === noteIdentifier
+        );
+
+        if (existingPlanNote) {
+          return {
+            ...existingPlanNote,
+            startDate: targetDate,
+          };
+        }
+
+        return {
+          id: null,
+          title: "Muistiinpanon otsikko",
+          identifier: `plan-note-${uuidv4()}`,
+          startDate: targetDate,
+        };
+      });
+
+    // Create a map of the new/updated courses/notes separately by identifier for efficient lookup
     const plannedCoursesMap = new Map(
-      plannedCourses.map((course) => [course.identifier, course])
+      updatedPlannedCourses.map((course) => [course.identifier, course])
+    );
+    const planNotesMap = new Map(
+      updatedPlanNotes.map((note) => [note.identifier, note])
     );
 
-    // Update existing courses and keep unchanged ones
+    // Update existing courses and notes and keep unchanged ones
     const updatedList = editedPlannedCourses.map(
       (course) => plannedCoursesMap.get(course.identifier) || course
     );
+    const updatedNotes = editedPlanNotes.map(
+      (note) => planNotesMap.get(note.identifier) || note
+    );
 
-    // Add any new courses that didn't exist in the original list
-    const newCourses = plannedCourses.filter(
+    // Add any new courses/notes that didn't exist in the original lists
+    const newCourses = updatedPlannedCourses.filter(
       (course) =>
         !editedPlannedCourses.some(
           (existing) => existing.identifier === course.identifier
+        )
+    );
+    const newNotes = updatedPlanNotes.filter(
+      (note) =>
+        !editedPlanNotes.some(
+          (existing) => existing.identifier === note.identifier
         )
     );
 
@@ -183,11 +239,12 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     dispatch(
       updateEditingStudyPlanBatch({
         plannedCourses: [...updatedList, ...newCourses],
+        planNotes: [...updatedNotes, ...newNotes],
       })
     );
 
     // Clear the selected course
-    dispatch(clearSelectedCourses());
+    dispatch(clearSelectedItems());
   };
 
   /**
@@ -304,7 +361,15 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    dispatch(updateSelectedCourses({ courseIdentifier: course.identifier }));
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: course.identifier }));
+  };
+
+  /**
+   * Handles note select
+   * @param note note
+   */
+  const handleSelectNote = (note: StudyPlannerNoteWithIdentifier) => {
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: note.identifier }));
   };
 
   /**
@@ -416,8 +481,10 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
             <PlannerNotesList
               disabled={isDisabled}
               notes={notes}
+              selectedPlanItemIds={selectedPlanItemIds}
               originalNotes={originalPlanNotes}
               onNoteChange={handleNoteChange}
+              onSelectNote={handleSelectNote}
             />
           )}
 

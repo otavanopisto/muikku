@@ -14,11 +14,11 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  clearSelectedCourses,
+  clearSelectedItems,
   updateEditingStudyPlanBatch,
   updateHopsEditingPlanNotes,
   updateHopsEditingStudyPlan,
-  updateSelectedCourses,
+  updateSelectedPlanItem,
 } from "~/actions/main-function/hops";
 import moment from "moment";
 import PlannerMonthEditDialog from "./planner-month-edit";
@@ -173,11 +173,12 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     dispatch(
       updateEditingStudyPlanBatch({
         plannedCourses: [...updatedList, ...newCourses],
+        planNotes: [],
       })
     );
 
     // Clear the selected course
-    dispatch(clearSelectedCourses());
+    dispatch(clearSelectedItems());
   };
 
   /**
@@ -214,7 +215,15 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    dispatch(updateSelectedCourses({ courseIdentifier: course.identifier }));
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: course.identifier }));
+  };
+
+  /**
+   * Handles note select
+   * @param note note
+   */
+  const handleSelectNote = (note: StudyPlannerNoteWithIdentifier) => {
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: note.identifier }));
   };
 
   /**
@@ -270,6 +279,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     dispatch(
       updateEditingStudyPlanBatch({
         plannedCourses: updatedFullCourseList,
+        planNotes: [],
       })
     );
   };
@@ -477,8 +487,10 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
             <PlannerNotesList
               disabled={hopsMode === "READ"}
               notes={notes}
+              selectedPlanItemIds={selectedPlanItemIds}
               originalNotes={originalPlanNotes}
               onNoteChange={handleNoteChange}
+              onSelectNote={handleSelectNote}
             />
           )}
 
