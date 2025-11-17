@@ -459,16 +459,20 @@ public class HopsRestService {
   @Path("/student/{STUDENTIDENTIFIER}/courseMatrix")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getCourseMatrix(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    
+    // Payload validatiom
+    
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    // Access check (reusing HOPS_GET_STUDENT_STUDY_ACTIVITY because HOPS matrix is essentially related to that)
+    // Access check
+    
     if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_STUDY_ACTIVITY)) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_COURSE_MATRIX)) {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
           return Response.status(Status.FORBIDDEN).build();
@@ -476,7 +480,7 @@ public class HopsRestService {
       }
     }
     
-    // Pyramus call
+    // Service call
 
     BridgeResponse<CourseMatrixRestModel> response = userSchoolDataController.getCourseMatrix(
         studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
