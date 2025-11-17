@@ -4,6 +4,7 @@ import {
   CourseChangeAction,
   isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
+  PlannerActivityItem,
   SelectedCourse,
 } from "~/reducers/hops";
 import { motion, AnimatePresence, Variants } from "framer-motion";
@@ -31,6 +32,7 @@ interface MobilePlannerPeriodMonthProps {
   monthIndex: number;
   year: number;
   courses: PlannedCourseWithIdentifier[];
+  activities: PlannerActivityItem[];
   isPast: boolean;
 }
 
@@ -55,7 +57,7 @@ const dropZoneVariants: Variants = {
 const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   props
 ) => {
-  const { monthIndex, title, year, courses, isPast } = props;
+  const { monthIndex, title, year, courses, activities, isPast } = props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
@@ -372,10 +374,11 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length > 0 && (
+          {courses.length + activities.length > 0 && (
             <PlannerPlannedList
               disabled={hopsMode === "READ"}
               courses={courses}
+              activities={activities}
               selectedCoursesIds={selectedCoursesIds}
               originalPlannedCourses={originalPlannedCourses}
               studyActivity={studyActivity}

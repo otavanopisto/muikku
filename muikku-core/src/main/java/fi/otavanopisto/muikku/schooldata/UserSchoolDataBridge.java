@@ -11,6 +11,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.Guardian;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
@@ -268,6 +269,8 @@ public interface UserSchoolDataBridge {
   
   public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, Boolean active);
 
+  // Guardian
+  
   /**
    * Lists students for who the given user is a active guardian for.
    * 
@@ -286,7 +289,32 @@ public interface UserSchoolDataBridge {
    */
   public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier);
 
+  /**
+   * Lists student's guardians' information.
+   * 
+   * @param studentIdentifier SchoolDataIdentifier of student
+   * @return list of guardians
+   */
+  public List<Guardian> listStudentsGuardians(SchoolDataIdentifier studentIdentifier);
   
+  /**
+   * Updates Student's Guardian's Continued View Permission
+   * 
+   * @param studentIdentifier
+   * @param guardianIdentifier
+   * @param continuedViewPermission
+   * @return
+   */
+  public BridgeResponse<Guardian> updateStudentsGuardianContinuedViewPermission(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier guardianIdentifier, boolean continuedViewPermission);
+  
+  // Contact Information
+  
+  /**
+   * Lists User's Contact Informations.
+   * 
+   * @param userIdentifier
+   * @return
+   */
   public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier);
 
 }

@@ -650,7 +650,6 @@ public class AnnouncerRESTService extends PluginRESTService {
         .build();
   }
 
-  
   private AnnouncementCategoryRESTModel toRestModel(AnnouncementCategory category) {
     AnnouncementCategoryRESTModel restModel = new AnnouncementCategoryRESTModel();
     

@@ -77,10 +77,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             ? new Date(studentInfo.studyTimeEnd)
             : null,
         },
+        studyActivity,
         usedPlannedCourses,
         curriculumConfig.strategy
       ),
-    [usedPlannedCourses, curriculumConfig, studentInfo]
+    [usedPlannedCourses, curriculumConfig, studentInfo, studyActivity]
   );
 
   // Calculate the statistics

@@ -1054,6 +1054,11 @@
       "updateError_hopsEntry": "HOPS:n historiamerkintää ei voitu päivittää. Päivitä sivu ja yritä uudelleen.",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_hopsHistory": "HOPS:n historiaa ei voitu ladata. Päivitä sivu ja yritä uudelleen."
+    },
+    "studyPlanCardActivity": {
+      "graded": "{{date}} (arvioitu)",
+      "ongoing": "{{date}} (ilmoittauduttu)",
+      "supplementationRequest": "{{date}} (täydennettävä)"
     }
   },
   "organization": {

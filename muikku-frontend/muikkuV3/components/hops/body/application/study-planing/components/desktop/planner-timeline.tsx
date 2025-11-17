@@ -2,6 +2,7 @@ import * as React from "react";
 import { useCallback, useImperativeHandle, useState, useEffect } from "react";
 import { PlannedPeriod } from "~/reducers/hops";
 import PlannerPeriod from "../planner-period";
+import { getPeriodTypeByMonthNumber } from "../../helper";
 
 // Scroll control constants
 const SCROLL_CONTROLS = {
@@ -229,6 +230,37 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       }
     }
   }, []);
+
+  /**
+   * Scrolls to the first active period
+   */
+  const scrollToFirstActivePeriod = useCallback(() => {
+    const container = timelineContentRef.current;
+
+    if (!container) return;
+
+    const activeRefs = periodRefs.current;
+    const date = new Date();
+    const currentYear = date.getFullYear();
+    const currentMonth = date.getMonth();
+    const periodType = getPeriodTypeByMonthNumber(currentMonth);
+    const periodKey = `${periodType}-${currentYear}`;
+
+    const targetPeriodRef = activeRefs.get(periodKey);
+
+    if (targetPeriodRef) {
+      container.scrollTo({
+        left: targetPeriodRef.offsetLeft,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToFirstActivePeriod();
+    }, 500);
+  }, [scrollToFirstActivePeriod]);
 
   // Expose the scroll method via ref
   useImperativeHandle(
