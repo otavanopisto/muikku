@@ -81,6 +81,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
@@ -452,6 +453,39 @@ public class HopsRestService {
     hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:goals-updated", msg);
 
     return Response.ok(payload).build();
+  }
+
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/courseMatrix")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getCourseMatrix(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    // Access check (reusing HOPS_GET_STUDENT_STUDY_ACTIVITY because HOPS matrix is essentially related to that)
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_STUDY_ACTIVITY)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+      }
+    }
+    
+    // Pyramus call
+
+    BridgeResponse<CourseMatrixRestModel> response = userSchoolDataController.getCourseMatrix(
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
   }
 
   @GET
