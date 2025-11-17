@@ -114,11 +114,9 @@ const BasePlannerPeriodNote = React.forwardRef<
           {isContentExpanded
             ? t("actions.showLess", {
                 ns: "common",
-                defaultValue: "Read less",
               })
             : t("actions.showMore", {
                 ns: "common",
-                defaultValue: "Read more",
               })}
         </Link>
       </>
