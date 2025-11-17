@@ -47,6 +47,14 @@ public class AnnouncementRecipient {
     this.readDate = readDate;
   }
 
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -59,8 +67,10 @@ public class AnnouncementRecipient {
   @NotNull
   private Announcement announcement;
   
-  @NotNull
-  @Column (nullable=false)
-  @Temporal (value=TemporalType.DATE)
+  @Column
+  @Temporal (value = TemporalType.TIMESTAMP)
   private Date readDate;
+  
+  @Column (nullable=false)
+  private boolean pinned;
 }

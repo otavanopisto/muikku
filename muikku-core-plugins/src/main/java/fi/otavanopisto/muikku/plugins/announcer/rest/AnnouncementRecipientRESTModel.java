@@ -37,8 +37,27 @@ public class AnnouncementRecipientRESTModel {
   }
 
 
+  public boolean isRead() {
+    return read;
+  }
+
+  public void setRead(boolean read) {
+    this.read = read;
+  }
+
+
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
+
   private Long id;
   private Long announcementId;
   private Long userEntityId;
   private Date readDate;
+  private boolean read;
+  private boolean pinned;
 }
