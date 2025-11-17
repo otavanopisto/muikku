@@ -14,6 +14,10 @@ import {
   PlannerCardHeader,
 } from "./planner-card";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
+
+// Character limit for content truncation
+const CONTENT_TRUNCATE_LIMIT = 150;
 
 /**
  * Base planner period note props
@@ -78,12 +82,57 @@ const BasePlannerPeriodNote = React.forwardRef<
 
   const [specifyIsOpen, setSpecifyIsOpen] = React.useState(false);
   const [deleteWarningIsOpen, setDeleteWarningIsOpen] = React.useState(false);
+  const [isContentExpanded, setIsContentExpanded] = React.useState(false);
 
   const { t } = useTranslation(["hops_new", "common"]);
 
   const [specifyNote, setSpecifyNote] = React.useState<SpecifyNote | null>(
     null
   );
+
+  /**
+   * Checks if content should be truncated
+   */
+  const shouldTruncate =
+    note.content && note.content.length > CONTENT_TRUNCATE_LIMIT;
+
+  /**
+   * Gets truncated content
+   */
+  const getTruncatedContent = () => {
+    if (!note.content) return "";
+    if (!shouldTruncate) return note.content;
+    return (
+      <>
+        {isContentExpanded
+          ? note.content
+          : note.content.substring(0, CONTENT_TRUNCATE_LIMIT) + "..."}
+        <Link
+          onClick={handleToggleContent}
+          className="link link--study-planner-content-toggle"
+        >
+          {isContentExpanded
+            ? t("actions.showLess", {
+                ns: "common",
+                defaultValue: "Read less",
+              })
+            : t("actions.showMore", {
+                ns: "common",
+                defaultValue: "Read more",
+              })}
+        </Link>
+      </>
+    );
+  };
+
+  /**
+   * Handles expand/collapse toggle
+   * @param e event
+   */
+  const handleToggleContent = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsContentExpanded(!isContentExpanded);
+  };
 
   /**
    * Handles specify open
@@ -206,19 +255,18 @@ const BasePlannerPeriodNote = React.forwardRef<
         </>
       }
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
-        <span className="study-planner__course-name">
+      <PlannerCardHeader modifiers={["planned-note-card"]}>
+        <span className="study-planner__note-title">
           <b>{`${note.title}`}</b>{" "}
-          {hasChanges && (
-            <span className="study-planner__course-unsaved">*</span>
-          )}
+          {hasChanges && <span className="study-planner__note-unsaved">*</span>}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <div className="study-planner__course-labels"></div>
-
-        <div className="study-planner__course-dates"></div>
+      <PlannerCardContent modifiers={["planned-note-card"]}>
+        <div className="study-planner__note-dates">
+          {localize.date(new Date(note.startDate))}
+        </div>
+        {getTruncatedContent()}
       </PlannerCardContent>
 
       {!disabled && (
