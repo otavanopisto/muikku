@@ -6382,6 +6382,28 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/student/{studentIdentifier}/courseMatrix:
+    get:
+      operationId: getStudentCourseMatrix
+      summary: Returns the HOPS course matrix for the given student
+      description: Returns the HOPS course matrix for the given student
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student's HOPS course matrix
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseMatrix"
+
   /rest/hops/student/{studentIdentifier}/studyActivity:
     get:
       operationId: getStudentStudyActivity
@@ -17543,6 +17565,56 @@ components:
           type: string
           nullable: true
 
+    CourseMatrix:
+      type: object
+      description: OPS specific course matrix for a given student
+      properties:
+        subjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixSubject"
+        problems:  
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixProblem"
+            
+    CourseMatrixSubject:
+      type: object
+      description: Subject in course matrix
+      properties:
+        name:
+          type: string
+        code:
+          type string
+        modules:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixModule"
+
+    CourseMatrixModule:
+      type: object
+      description: Single course within a course matrix
+      properties:
+        name:
+          type: string
+        courseNumber:
+          type integer
+        length:
+          type: integer
+        mandatory:
+          type: boolean
+
+    CourseMatrixProblem:
+      type: string
+      enum:
+        - INCOMPATIBLE_STUDENT
+        - NO_NATIVE_LANGUAGE
+        - NO_MATH
+        - NO_RELIGION
+        - NO_PRIMARY_FOREIGN_LANGUAGE
+        - NO_SECONDARY_FOREIGN_LANGUAGE
+        - INTERNAL_ERROR
+    
     StudentStudyActivity:
       type: object
       description: StudentStudyActivity object
