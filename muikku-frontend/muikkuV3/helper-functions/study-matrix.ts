@@ -1,10 +1,14 @@
 import {
-  Course,
   SchoolCurriculumMatrix,
   SchoolSubject,
   StudentActivityByStatus,
 } from "~/@types/shared";
-import { StudentStudyActivity } from "~/generated/client";
+import {
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixSubject,
+  StudentStudyActivity,
+} from "~/generated/client";
 import {
   schoolCourseTableUppersecondary2021,
   schoolCourseTableCompulsory2018,
@@ -193,12 +197,12 @@ export const showSubject = (
  * @param showCredits boolean
  */
 export const getCourseDropdownName = (
-  subject: SchoolSubject,
-  course: Course,
+  subject: CourseMatrixSubject,
+  course: CourseMatrixModule,
   showCredits: boolean
 ) => {
   let courseDropdownName =
-    subject.subjectCode + course.courseNumber + " - " + course.name;
+    subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
   if (!course.mandatory) {
@@ -303,7 +307,7 @@ export const filterMatrix = (
  * @returns number of highest course or default 9
  */
 export const getHighestCourseNumber = (
-  matrix: SchoolCurriculumMatrix | null
+  matrix: CourseMatrix | null
 ): number | null => {
   if (matrix === null) {
     return null;
@@ -311,8 +315,8 @@ export const getHighestCourseNumber = (
 
   let highestCourseNumber = 1;
 
-  for (const sSubject of matrix.subjectsTable) {
-    for (const aCourse of sSubject.availableCourses) {
+  for (const sSubject of matrix.subjects) {
+    for (const aCourse of sSubject.modules) {
       if (aCourse.courseNumber <= highestCourseNumber) {
         continue;
       } else {
@@ -394,8 +398,8 @@ export const filterActivityBySubjects = (
  */
 export const getCourseInfo = (
   modifiers: string[],
-  subject: SchoolSubject,
-  course: Course,
+  subject: CourseMatrixSubject,
+  course: CourseMatrixModule,
   suggestedNextList: StudentStudyActivity[],
   transferedList: StudentStudyActivity[],
   gradedList: StudentStudyActivity[],
@@ -412,12 +416,12 @@ export const getCourseInfo = (
   if (
     suggestedNextList.find(
       (sCourse) =>
-        sCourse.subject === subject.subjectCode &&
+        sCourse.subject === subject.code &&
         sCourse.courseNumber === course.courseNumber
     )
   ) {
     const suggestedCourseDataNext = suggestedNextList.filter(
-      (sCourse) => sCourse.subject === subject.subjectCode
+      (sCourse) => sCourse.subject === subject.code
     );
 
     courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
@@ -426,7 +430,7 @@ export const getCourseInfo = (
   } else if (
     transferedList.find(
       (tCourse) =>
-        tCourse.subject === subject.subjectCode &&
+        tCourse.subject === subject.code &&
         tCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -435,7 +439,7 @@ export const getCourseInfo = (
   } else if (
     gradedList.find(
       (gCourse) =>
-        gCourse.subject === subject.subjectCode &&
+        gCourse.subject === subject.code &&
         gCourse.courseNumber === course.courseNumber &&
         gCourse.grade !== "K"
     )
@@ -445,7 +449,7 @@ export const getCourseInfo = (
   } else if (
     needSupplementationList.find(
       (nCourse) =>
-        nCourse.subject === subject.subjectCode &&
+        nCourse.subject === subject.code &&
         nCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -455,7 +459,7 @@ export const getCourseInfo = (
   } else if (
     onGoingList.find(
       (oCourse) =>
-        oCourse.subject === subject.subjectCode &&
+        oCourse.subject === subject.code &&
         oCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -467,7 +471,7 @@ export const getCourseInfo = (
   // and holds grade value
   const evaluatedCourse = [...gradedList, ...transferedList].find(
     (gCourse) =>
-      gCourse.subject === subject.subjectCode &&
+      gCourse.subject === subject.code &&
       gCourse.courseNumber === course.courseNumber
   );
 

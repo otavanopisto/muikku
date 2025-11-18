@@ -6,21 +6,20 @@ import {
   ListItemIndicator,
 } from "~/components/general/list";
 import Dropdown from "~/components/general/dropdown";
-import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
 import { useTranslation } from "react-i18next";
+import { StudentActivityByStatus } from "~/@types/shared";
 import {
-  Course,
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixSubject,
+} from "~/generated/client";
 
 /**
  * Interface for parameters passed to the course item renderer
  */
 export interface RenderItemParams {
-  subject: SchoolSubject;
-  course: Course;
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
   listItemModifiers: string[];
 }
 
@@ -28,7 +27,7 @@ export interface RenderItemParams {
  * Props for the OPSCourseList component
  */
 export interface OPSCourseListProps extends StudentActivityByStatus {
-  matrix: SchoolCurriculumMatrix | null;
+  matrix: CourseMatrix | null;
   studentIdentifier: string;
   studentUserEntityId: number;
   curriculumName: string;
@@ -44,13 +43,7 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
  * @returns Rendered list of courses
  */
 export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
-  const {
-    children,
-    matrix,
-    studyProgrammeName,
-    studentOptions,
-    renderCourseItem,
-  } = props;
+  const { children, matrix, renderCourseItem } = props;
 
   const { t } = useTranslation("studyMatrix");
 
@@ -62,19 +55,17 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     );
   }
 
-  const filteredMatrix = filterMatrix(
-    studyProgrammeName,
-    matrix.subjectsTable,
-    studentOptions
-  );
+  const filteredMatrix = matrix.subjects;
 
   /**
    * renderRows
    */
   const renderRows = filteredMatrix.map((sSubject) => {
-    const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
+    //const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
 
-    const courses = sSubject.availableCourses.map((course) => {
+    const showSubjectRow = true;
+
+    const courses = sSubject.modules.map((course) => {
       const listItemIndicatormodifiers = ["course"];
 
       if (course.mandatory) {
@@ -87,7 +78,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
           })
         ) : (
           <DefaultCourseItem
-            key={`${sSubject.subjectCode}-${course.courseNumber}`}
+            key={`${sSubject.name}-${course.courseNumber}`}
             course={course}
             indicatorModifiers={listItemIndicatormodifiers}
           />
@@ -103,7 +94,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
         })
       ) : (
         <DefaultCourseItem
-          key={`${sSubject.subjectCode}-${course.courseNumber}`}
+          key={`${sSubject.name}-${course.courseNumber}`}
           course={course}
           indicatorModifiers={listItemIndicatormodifiers}
         />
@@ -116,7 +107,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
           <ListContainer modifiers={["row"]}>
             <ListHeader
               modifiers={["subject-name"]}
-            >{`${sSubject.name} (${sSubject.subjectCode})`}</ListHeader>
+            >{`${sSubject.name} (${sSubject.code})`}</ListHeader>
           </ListContainer>
           <ListContainer modifiers={["row"]}>{courses}</ListContainer>
         </ListContainer>
@@ -136,11 +127,11 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
 /**
  * Props for the DefaultCourseItem component
  * @interface DefaultCourseItemProps
- * @property {Course} course - The course to be displayed
+ * @property {CourseMatrixModule} course - The course to be displayed
  * @property {string[]} indicatorModifiers - Array of CSS modifiers for the course indicator
  */
 interface DefaultCourseItemProps {
-  course: Course;
+  course: CourseMatrixModule;
   indicatorModifiers: string[];
 }
 

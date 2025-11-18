@@ -1,21 +1,20 @@
 import * as React from "react";
 import { Tbody, Td, Tr } from "~/components/general/table";
 import Dropdown from "~/components/general/dropdown";
-import {
-  Course,
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
-import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
+import { StudentActivityByStatus } from "~/@types/shared";
 import { useTranslation } from "react-i18next";
+import {
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixSubject,
+} from "~/generated/client";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
  */
 export interface RenderItemParams {
-  subject: SchoolSubject;
-  course: Course;
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
   tdModifiers: string[];
 }
 
@@ -23,7 +22,7 @@ export interface RenderItemParams {
  * Props for the Progress Table component
  */
 export interface OPSCourseTableProps extends StudentActivityByStatus {
-  matrix: SchoolCurriculumMatrix | null;
+  matrix: CourseMatrix | null;
   studentIdentifier: string;
   studentUserEntityId: number;
   currentMaxCourses: number | null;
@@ -47,14 +46,8 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
  * @returns Rendered table content or empty state message
  */
 export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
-  const {
-    matrix,
-    currentMaxCourses,
-    studyProgrammeName,
-    studentOptions,
-    renderCourseCell,
-    renderEmptyCell,
-  } = props;
+  const { matrix, currentMaxCourses, renderCourseCell, renderEmptyCell } =
+    props;
 
   const { t } = useTranslation("studyMatrix");
 
@@ -66,18 +59,15 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     );
   }
 
-  const filteredMatrix = filterMatrix(
-    studyProgrammeName,
-    matrix.subjectsTable,
-    studentOptions
-  );
+  const filteredMatrix = matrix.subjects;
 
   /**
    * renderRows
    * !!--USES list of mock objects currently--!!
    */
   const renderRows = filteredMatrix.map((sSubject, i) => {
-    const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
+    //const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
+    const showSubjectRow = true;
 
     /**
      * Render courses based on possible max number of courses
@@ -88,7 +78,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       .map((c, index) => {
         const modifiers = ["centered", "course"];
 
-        const course = sSubject.availableCourses.find(
+        const course = sSubject.modules.find(
           (aCourse) => aCourse.courseNumber === index + 1
         );
 
@@ -105,7 +95,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         }
 
         const courseDropdownName =
-          sSubject.subjectCode + course.courseNumber + " - " + course.name;
+          sSubject.code + course.courseNumber + " - " + course.name;
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
@@ -117,7 +107,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
             })
           ) : (
             <Td
-              key={`${sSubject.subjectCode}-${course.courseNumber}`}
+              key={`${sSubject.code}-${course.courseNumber}`}
               modifiers={modifiers}
             >
               <Dropdown
@@ -149,7 +139,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
           })
         ) : (
           <Td
-            key={`${sSubject.subjectCode}-${course.courseNumber}`}
+            key={`${sSubject.code}-${course.courseNumber}`}
             modifiers={modifiers}
           >
             <Dropdown
@@ -176,7 +166,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       showSubjectRow && (
         <Tr key={sSubject.name} modifiers={["course"]}>
           <Td modifiers={["subject"]}>
-            <div>{`${sSubject.name} (${sSubject.subjectCode})`}</div>
+            <div>{`${sSubject.name} (${sSubject.code})`}</div>
           </Td>
           {courses}
         </Tr>
