@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Group, Text, ThemeIcon, UnstyledButton, Tooltip } from "@mantine/core";
+import { NavLink, Tooltip } from "@mantine/core";
 import { useParams, useResolvedPath, useMatch, Link } from "react-router";
 import classes from "./NavbarLink.module.css";
 import type { NavigationLink } from "src/layouts/helpers/navigation";
@@ -40,67 +40,22 @@ export function NavbarLink(props: NavbarLinkProps) {
   const resolved = useResolvedPath(linkValue);
   const match = useMatch({ path: resolved.pathname, end: exactMatch });
 
-  /**
-   * Handle click
-   */
-  const handleClick = () => {
-    onSelect?.();
-
-    // if (queryParams && areQueryParamsAllowed) {
-    //   void handleQueryParams();
-    // }
-  };
-
-  // Main content
-  const renderMainLinkContent = ({ isActive }: { isActive: boolean }) => (
-    <Group gap="md" align="center" className={classes.mainContent}>
-      {Icon && (
-        <ThemeIcon
-          variant="light"
-          size={36}
-          className={classes.icon}
-          style={{
-            backgroundColor: isActive ? "#228be6" : "transparent",
-            color: isActive ? "white" : "#228be6",
-          }}
-        >
-          <Icon size={20} />
-          {/* {loading ? <Loader size={16} /> : <Icon size={20} />} */}
-        </ThemeIcon>
-      )}
-      <Text
-        className={classes.text}
-        style={{
-          opacity: collapsed ? 0 : 1,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-        }}
-      >
-        {label}
-      </Text>
-    </Group>
-  );
-
-  // Render the link/button
-  const linkElement = (
-    <UnstyledButton
+  return collapsed ? (
+    <Tooltip label={label} position="right" withArrow>
+      <NavLink
+        component={Link}
+        to={linkValue}
+        leftSection={Icon ? <Icon size={20} /> : null}
+        active={match !== null}
+      />
+    </Tooltip>
+  ) : (
+    <NavLink
       component={Link}
       to={linkValue}
-      onClick={handleClick}
-      p="sm"
-      className={`${classes.link} ${match ? classes.active : ""}`}
-    >
-      {collapsed ? (
-        <Tooltip label={label} position="right" withArrow>
-          {renderMainLinkContent({ isActive: match ? true : false })}
-        </Tooltip>
-      ) : (
-        <Group justify="space-between" gap={0}>
-          {renderMainLinkContent({ isActive: match ? true : false })}
-        </Group>
-      )}
-    </UnstyledButton>
+      label={label}
+      leftSection={Icon ? <Icon size={20} /> : null}
+      active={match !== null}
+    />
   );
-
-  return linkElement;
 }
