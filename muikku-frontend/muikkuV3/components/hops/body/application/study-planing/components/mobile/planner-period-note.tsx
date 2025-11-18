@@ -165,7 +165,7 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
           content={(closePortal) => (
             <div>
               <span>
-                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                {t("labels.studyPlannerRemoveNoteFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>

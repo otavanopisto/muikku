@@ -244,7 +244,7 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-group">
               <span className="study-planner__extra-section-group-label-info">
-                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                {t("labels.studyPlannerRemoveNoteFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>
