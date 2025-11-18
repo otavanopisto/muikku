@@ -17585,7 +17585,7 @@ components:
         name:
           type: string
         code:
-          type string
+          type: string
         modules:
           type: array
           items:
@@ -17598,7 +17598,7 @@ components:
         name:
           type: string
         courseNumber:
-          type integer
+          type: integer
         length:
           type: integer
         mandatory:
@@ -17613,7 +17613,6 @@ components:
         - NO_RELIGION
         - NO_PRIMARY_FOREIGN_LANGUAGE
         - NO_SECONDARY_FOREIGN_LANGUAGE
-        - INTERNAL_ERROR
     
     StudentStudyActivity:
       type: object
