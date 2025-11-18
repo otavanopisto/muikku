@@ -1,17 +1,10 @@
 package fi.otavanopisto.muikku.schooldata.payload;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class CourseMatrixRestModel {
 
-  public CourseMatrixRestModel() {
-    subjects = new ArrayList<>();
-    problems = new HashSet<>();
-  }
-  
   public List<CourseMatrixSubject> getSubjects() {
     return subjects;
   }
@@ -28,6 +21,15 @@ public class CourseMatrixRestModel {
     this.problems = problems;
   }
 
+  public CourseMatrixType getType() {
+    return type;
+  }
+
+  public void setType(CourseMatrixType type) {
+    this.type = type;
+  }
+
+  private CourseMatrixType type;
   private List<CourseMatrixSubject> subjects;
   private Set<CourseMatrixProblem> problems;
 

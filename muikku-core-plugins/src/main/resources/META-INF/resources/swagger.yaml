@@ -17568,7 +17568,14 @@ components:
     CourseMatrix:
       type: object
       description: OPS specific course matrix for a given student
+      required:
+        - type
+        - subjects
+        - problems
       properties:
+        type:
+          $ref: "#/components/schemas/CourseMatrixType"
+          nullable: true
         subjects:
           type: array
           items:
@@ -17581,6 +17588,10 @@ components:
     CourseMatrixSubject:
       type: object
       description: Subject in course matrix
+      required:
+        - name
+        - code
+        - modules
       properties:
         name:
           type: string
@@ -17594,6 +17605,11 @@ components:
     CourseMatrixModule:
       type: object
       description: Single course within a course matrix
+      required:
+        - name
+        - courseNumber
+        - length
+        - mandatory
       properties:
         name:
           type: string
@@ -17613,6 +17629,12 @@ components:
         - NO_RELIGION
         - NO_PRIMARY_FOREIGN_LANGUAGE
         - NO_SECONDARY_FOREIGN_LANGUAGE
+
+    CourseMatrixType:
+      type: string
+      enum:
+        - UPPER_SECONDARY
+        - COMPULSORY
     
     StudentStudyActivity:
       type: object
