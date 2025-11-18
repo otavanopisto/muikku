@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -181,16 +182,14 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     /**
      * User recipients for unread announcements:
      */
-    if (onlyUnread) {
-      Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
-      Root<AnnouncementRecipient> announcementRecipient = subquery.from(AnnouncementRecipient.class);
-      
-      subquery.select(announcementRecipient.get(AnnouncementRecipient_.announcement));
-      subquery.where(
-          criteriaBuilder.equal(announcementRecipient.get(AnnouncementRecipient_.userEntityId), loggedUser)
-          );
-      
-      predicates.add(criteriaBuilder.not(root.in(subquery)));
+
+    ListJoin<Announcement, AnnouncementRecipient> announcementRecipientJoin = root.join(Announcement_.announcementRecipients, JoinType.LEFT);
+    announcementRecipientJoin.on(criteriaBuilder.equal(announcementRecipientJoin.get(AnnouncementRecipient_.userEntityId), loggedUser));
+    
+    if (onlyUnread) { 
+      predicates.add(criteriaBuilder.isNull(
+          announcementRecipientJoin.get(AnnouncementRecipient_.id)
+          ));
     }
     
     /**
@@ -202,21 +201,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       predicates.add(join.in(categories));
     }
     
-    Root<AnnouncementRecipient> recipientRoot = criteria.from(AnnouncementRecipient.class);
-
-    predicates.add(
-        criteriaBuilder.equal(
-            recipientRoot.get(AnnouncementRecipient_.announcement),
-            root.get(Announcement_.id)
-        )
-    );
-    
     predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
     criteria.orderBy(
         criteriaBuilder.desc(root.get(Announcement_.pinned)),
-        criteriaBuilder.desc(recipientRoot.get(AnnouncementRecipient_.pinned)),
+        criteriaBuilder.desc(announcementRecipientJoin.get(AnnouncementRecipient_.pinned)),
         criteriaBuilder.desc(root.get(Announcement_.startDate)),
         criteriaBuilder.desc(root.get(Announcement_.id))
     );

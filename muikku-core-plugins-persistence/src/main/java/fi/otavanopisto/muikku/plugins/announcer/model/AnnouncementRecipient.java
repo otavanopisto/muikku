@@ -12,10 +12,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(indexes = @Index(columnList = "userEntityId"))
+@Table(indexes = @Index(columnList = "userEntityId"), uniqueConstraints = {
+    @UniqueConstraint( columnNames = {"userEntityId", "announcement_id"} )
+  })
 
 public class AnnouncementRecipient {
 

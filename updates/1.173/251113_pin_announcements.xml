@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
-
+  <sql>
+    alter table AnnouncementRecipient 
+       add constraint UKdiblxmboq0kpxfd6nyrla834w unique (userEntityId, announcement_id);
+  </sql>
   <sql>
     alter table AnnouncementRecipient add column pinned bit not null;
+  </sql>
+  <sql>
+    alter table AnnouncementRecipient change readDate readDate datetime;
   </sql>
 </update> 

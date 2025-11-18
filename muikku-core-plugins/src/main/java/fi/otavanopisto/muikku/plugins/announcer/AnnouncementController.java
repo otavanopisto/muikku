@@ -283,29 +283,5 @@ public class AnnouncementController {
   public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
     announcementCategoryDAO.delete(announcementCategory);
   }
-  
-  public AnnouncementCategory createCategory(String category, Long color) {
-    AnnouncementCategory categoryEntity = announcementCategoryDAO.findByName(category);
-    if (categoryEntity == null) {
-      categoryEntity = announcementCategoryDAO.create(category, color);
-    }
-    return categoryEntity;
-  }
-  
-  public List<AnnouncementCategory> listAnnouncementCategories(){
-    return announcementCategoryDAO.listAll();
-  }
-  
-  public AnnouncementCategory findAnnouncementCategoryById(Long id) {
-    return announcementCategoryDAO.findById(id);
-  }
-  
-  public AnnouncementCategory updateAnnouncementCategory(AnnouncementCategory announcementCategory, String category, Long color) {
-    return announcementCategoryDAO.updateCategory(announcementCategory, category, color);
-  }
-  
-  public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
-    announcementCategoryDAO.delete(announcementCategory);
-  }
 }
  
