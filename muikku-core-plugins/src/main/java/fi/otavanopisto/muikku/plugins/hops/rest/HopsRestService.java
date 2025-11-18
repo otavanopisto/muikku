@@ -485,7 +485,7 @@ public class HopsRestService {
     BridgeResponse<CourseMatrixRestModel> response = userSchoolDataController.getCourseMatrix(
         studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
     if (response.ok()) {
-      return Response.status(response.getStatusCode()).entity(response).build();
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
