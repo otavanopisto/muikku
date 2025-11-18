@@ -257,7 +257,7 @@ paths:
           schema:
             type: integer
             default: 10
-        - name: categories
+        - name: categoryIds
           in: query
           description: AnnouncementCategories
           schema:

@@ -151,6 +151,33 @@ export const announcements: Reducer<AnnouncementsState> = (
         ...state,
         categories: [...state.categories, action.payload],
       };
+
+    case "DELETE_ANNOUNCEMENT_CATEGORY": {
+      const categories = [...state.categories];
+      categories.splice(
+        categories.findIndex((category) => category.id === action.payload),
+        1
+      );
+      return {
+        ...state,
+        categories,
+      };
+    }
+
+    case "UPDATE_ANNOUNCEMENT_CATEGORY": {
+      const categories = [...state.categories];
+      const categoryToUpdateIndex = categories.findIndex(
+        (category) => category.id === action.payload.id
+      );
+      if (categoryToUpdateIndex !== -1) {
+        categories[categoryToUpdateIndex] = action.payload;
+      }
+      return {
+        ...state,
+        categories,
+      };
+    }
+
     case "ADD_TO_ANNOUNCEMENTS_SELECTED":
       return {
         ...state,

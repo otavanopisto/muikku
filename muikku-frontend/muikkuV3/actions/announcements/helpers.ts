@@ -7,10 +7,7 @@ import {
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
-import {
-  AnnouncementCategory,
-  GetAnnouncementsRequest,
-} from "~/generated/client";
+import { GetAnnouncementsRequest } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { Action, Dispatch } from "redux";
 
@@ -81,7 +78,7 @@ export async function loadAnnouncementsHelper(
   }
 
   //We get the navigation location item
-  let item: AnnouncerNavigationItemType = navigation.find(
+  const item: AnnouncerNavigationItemType = navigation.find(
     (item) => item.location === actualLocation
   );
   let category = null;
@@ -135,7 +132,8 @@ export async function loadAnnouncementsHelper(
     }
   }
   if (category) {
-    params.categories = [category.id];
+    params.timeFrame = "ALL";
+    params.categoryIds = [category.id];
   }
 
   try {

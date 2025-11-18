@@ -13,6 +13,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { colorIntToHex } from "~/util/modifiers";
+import CategoryUpdateDialog from "../dialogs/category-update";
 
 /**
  * NavigationAsideProps
@@ -64,6 +65,9 @@ class NavigationAside extends React.Component<
           }
           hash={`category-${category.id}`}
           icon="tag"
+          editableWrapper={CategoryUpdateDialog}
+          editableWrapperArgs={{ category }}
+          isEditable={true}
           iconColor={colorIntToHex(category.color)}
         >
           {category.category}

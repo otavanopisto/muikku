@@ -66,6 +66,14 @@ export type ADD_ANNOUNCEMENT_CATEGORY = SpecificActionType<
   "ADD_ANNOUNCEMENT_CATEGORY",
   AnnouncementCategory
 >;
+export type DELETE_ANNOUNCEMENT_CATEGORY = SpecificActionType<
+  "DELETE_ANNOUNCEMENT_CATEGORY",
+  number
+>;
+export type UPDATE_ANNOUNCEMENT_CATEGORY = SpecificActionType<
+  "UPDATE_ANNOUNCEMENT_CATEGORY",
+  AnnouncementCategory
+>;
 
 /**
  * LoadAnnouncementsAsAClientTriggerType
@@ -166,10 +174,30 @@ export interface CreateAnnouncementTriggerType {
 }
 
 /**
+ * DeleteAnnouncementCategoryTriggerType
+ */
+export interface DeleteAnnouncementCategoryTriggerType {
+  (id: number, success?: () => void, fail?: () => void): AnyActionType;
+}
+/**
+ * DeleteAnnouncementCategoryTriggerType
+ */
+export interface UpdateAnnouncementCategoryTriggerType {
+  (data: {
+    id: number;
+    category: string;
+    color: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * CreateAnnouncementTriggerType
  */
 export interface CreateAnnouncementCategoryTriggerType {
   (data: {
+    id: number;
     category: string;
     color?: number;
     success?: () => any;
@@ -668,6 +696,94 @@ const createAnnouncementCategory: CreateAnnouncementCategoryTriggerType =
   };
 
 /**
+ * Create a new announcement category
+ * @param data data
+ * @returns a thunk action creator
+ */
+const updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType =
+  function updateAnnouncementCategory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const payload = {
+        category: data.category,
+        color: data.color,
+      };
+
+      try {
+        const category = await announcerApi.updateAnnouncementCategory({
+          categoryId: data.id,
+          createAnnouncementCategoryRequest: payload,
+        });
+
+        dispatch({
+          type: "UPDATE_ANNOUNCEMENT_CATEGORY",
+          payload: category,
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "announcement category",
+            }),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * Create a new announcement category
+ * @param id data
+ * @param success success callback
+ * @param fail fail callback
+ * @returns a thunk action creator
+ */
+const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
+  function deleteAnnouncementCategory(id, success, fail) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        await announcerApi.deleteAnnouncementCategory({
+          announcementCategoryId: id,
+        });
+
+        dispatch({
+          type: "DELETE_ANNOUNCEMENT_CATEGORY",
+          payload: id,
+        });
+
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "announcement category",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
  * addLabelToAnnouncements
  * @param label label
  */
@@ -752,6 +868,8 @@ export {
   deleteAnnouncement,
   createAnnouncement,
   createAnnouncementCategory,
+  updateAnnouncementCategory,
+  deleteAnnouncementCategory,
   loadAnnouncementsAsAClient,
 };
 export default {
