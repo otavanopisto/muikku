@@ -17568,6 +17568,9 @@ components:
     CourseMatrix:
       type: object
       description: OPS specific course matrix for a given student
+      required:
+        - subjects
+        - problems
       properties:
         subjects:
           type: array
@@ -17581,6 +17584,10 @@ components:
     CourseMatrixSubject:
       type: object
       description: Subject in course matrix
+      required:
+        - name
+        - code
+        - modules
       properties:
         name:
           type: string
@@ -17594,6 +17601,11 @@ components:
     CourseMatrixModule:
       type: object
       description: Single course within a course matrix
+      required:
+        - name
+        - courseNumber
+        - length
+        - mandatory
       properties:
         name:
           type: string
