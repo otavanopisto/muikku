@@ -11,8 +11,8 @@ import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
 import {
   Announcement,
+  AnnouncementCategory,
   CreateAnnouncementRequest,
-  CreateAnnouncementCategoryRequest,
   GetAnnouncementsRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
@@ -60,6 +60,11 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
 export type UPDATE_ANNOUNCEMENTS_UNREAD_COUNT = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
   number
+>;
+
+export type ADD_ANNOUNCEMENT_CATEGORY = SpecificActionType<
+  "ADD_ANNOUNCEMENT_CATEGORY",
+  AnnouncementCategory
 >;
 
 /**
@@ -616,6 +621,11 @@ const createAnnouncement: CreateAnnouncementTriggerType =
     };
   };
 
+/**
+ * Create a new announcement category
+ * @param data data
+ * @returns a thunk action creator
+ */
 const createAnnouncementCategory: CreateAnnouncementCategoryTriggerType =
   function createAnnouncementCategory(data) {
     return async (
@@ -656,6 +666,11 @@ const createAnnouncementCategory: CreateAnnouncementCategoryTriggerType =
       }
     };
   };
+
+/**
+ * addLabelToAnnouncements
+ * @param label label
+ */
 
 /**
  * loadAnnouncementsAsAClient

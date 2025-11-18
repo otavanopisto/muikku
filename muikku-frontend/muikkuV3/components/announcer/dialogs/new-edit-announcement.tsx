@@ -28,7 +28,7 @@ import {
 } from "~/actions/base/notifications";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Announcement, Role } from "~/generated/client";
+import { Announcement, AnnouncementCategory, Role } from "~/generated/client";
 import Autocomplete from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces";
 
@@ -43,6 +43,7 @@ type TargetItemsListType = Array<ContactRecipientType>;
 interface NewEditAnnouncementProps extends WithTranslation {
   children: React.ReactElement<any>;
   announcement?: Announcement;
+  categories: AnnouncementCategory[];
   userIndex: UserIndexState;
   createAnnouncement: CreateAnnouncementTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
@@ -58,6 +59,7 @@ interface NewEditAnnouncementProps extends WithTranslation {
 interface NewEditAnnouncementState {
   text: string;
   currentTarget: TargetItemsListType;
+  selectedCategories: AnnouncementCategory[];
   subject: string;
   locked: boolean;
   startDate: Date;
@@ -87,6 +89,8 @@ class NewEditAnnouncement extends SessionStateComponent<
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     this.handlePinnedChange = this.handlePinnedChange.bind(this);
+    this.setSelectedCategory = this.setSelectedCategory.bind(this);
+    this.removeSelectedCategory = this.removeSelectedCategory.bind(this);
     this.baseAnnouncementCurrentTarget = props.announcement
       ? props.announcement.workspaces
           .map(
@@ -117,6 +121,9 @@ class NewEditAnnouncement extends SessionStateComponent<
         subject: props.announcement ? props.announcement.caption : "",
         locked: false,
         pinned: props.announcement ? props.announcement.pinned : false,
+        selectedCategories: props.announcement
+          ? props.announcement.categories
+          : [],
         startDate: props.announcement
           ? localize
               .getLocalizedMoment(this.props.announcement.startDate)
@@ -241,6 +248,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           pinned: this.props.announcement.pinned,
+
           startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
@@ -296,6 +304,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           startDate: localize.getLocalizedMoment().toDate(),
           endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
           currentTarget: this.baseAnnouncementCurrentTarget,
+          selectedCategories: [],
         },
         this.props.workspaceId || ""
       );
@@ -315,6 +324,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
           pinned: this.props.announcement.pinned,
+          selectedCategories: this.props.announcement.categories || [],
           startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
@@ -384,12 +394,43 @@ class NewEditAnnouncement extends SessionStateComponent<
   }
 
   /**
-   * setTargetItems
-   * @param selectedLabel currentTarget
+   * setSelectedCategory
+   * @param categoryItem currentTarget
    */
-  setLabelItem(selectedLabel: SelectItem) {
+  setSelectedCategory(categoryItem: SelectItem) {
+    const selectedCategory = {
+      id: categoryItem.id,
+      category: categoryItem.label,
+      color:
+        this.props.categories.find((c) => c.id === categoryItem.id)?.color ||
+        null,
+    } as AnnouncementCategory;
+
     this.setStateAndStore(
-      { selectedLabel, ...this.state.categories },
+      {
+        selectedCategories: [
+          selectedCategory,
+          ...this.state.selectedCategories,
+        ],
+      },
+      (this.props.announcement ? this.props.announcement.id + "-" : "") +
+        (this.props.workspaceId || "")
+    );
+  }
+
+  /**
+   * setSelectedCategory
+   * @param categoryItem currentTarget
+   */
+  removeSelectedCategory(categoryItem: SelectItem) {
+    const newSelectedCategories = this.state.selectedCategories.filter(
+      (category) => category.id !== categoryItem.id
+    );
+
+    this.setStateAndStore(
+      {
+        selectedCategories: newSelectedCategories,
+      },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
         (this.props.workspaceId || "")
     );
@@ -434,6 +475,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           archived: false,
           caption: this.state.subject,
           content: this.state.text,
+          categories: this.state.selectedCategories,
           pinned: this.props.status.roles.includes("ADMINISTRATOR") // This shouldn't be needed, but I want to make sure normal teachers can't pin announcements
             ? this.state.pinned
             : false,
@@ -479,6 +521,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           content: this.state.text,
           pinned: this.state.pinned,
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
+          categories: this.state.selectedCategories,
           endDate:
             this.state.endDate &&
             localize.date(this.state.endDate, "YYYY-MM-DD"),
@@ -653,11 +696,19 @@ class NewEditAnnouncement extends SessionStateComponent<
       />,
       <Autocomplete
         key="annnouncement-edit-3"
-        identifier="announcementLabels"
-        onSelect={() => console.log("selected label")}
-        onDelete={() => console.log("selected label")}
-        searchItems={[]}
-        selectedItems={[]}
+        identifier="announcementCategories"
+        onSelect={this.setSelectedCategory}
+        onDelete={this.removeSelectedCategory}
+        searchItems={this.props.categories?.map((category) => ({
+          id: category.id,
+          label: category.category,
+          value: category.id,
+        }))}
+        selectedItems={this.state.selectedCategories?.map((category) => ({
+          id: category.id,
+          label: category.category,
+          value: category.id,
+        }))}
         placeholder={this.props.i18n.t("labels.search", {
           ns: "messaging",
           context: "label",
@@ -761,6 +812,7 @@ function mapStateToProps(state: StateType) {
   return {
     userIndex: state.userIndex,
     status: state.status,
+    categories: state.announcements.categories,
 
     //For use with workspaces when announcement gives a workspace
     //it needs to be fetched from somewhere, this is set by default

@@ -328,11 +328,11 @@ class AnnouncerToolbar extends React.Component<
                       item.type === "category" &&
                       filterMatch(item.text, this.state.category)
                   )
-                  .map((label) => {
+                  .map((category) => {
                     const isSelected = true; //TODO check if label is selected
                     return (
                       <Link
-                        key={label.id}
+                        key={category.id}
                         tabIndex={0}
                         className={`link link--full link--communicator-label-dropdown ${
                           isSelected ? "selected" : ""
@@ -341,20 +341,20 @@ class AnnouncerToolbar extends React.Component<
                           !isSelected
                             ? this.props.addLabelToCurrentMessageThread.bind(
                                 null,
-                                label
+                                category
                               )
                             : this.props.removeLabelFromCurrentMessageThread.bind(
                                 null,
-                                label
+                                category
                               )
                         }
                       >
                         <span
                           className="link__icon icon-tag"
-                          style={{ color: label.color }}
+                          style={{ color: category.color }}
                         ></span>
                         <span className="link__text">
-                          {filterHighlight(label.text, this.state.category)}
+                          {filterHighlight(category.text, this.state.category)}
                         </span>
                       </Link>
                     );

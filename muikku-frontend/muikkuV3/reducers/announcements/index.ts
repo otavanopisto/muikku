@@ -8,7 +8,7 @@ import { Announcement, AnnouncementCategory } from "~/generated/client";
 export interface AnnouncerNavigationItemType {
   location: string;
   id: string | number;
-  type: "folder" | "label";
+  type: "folder" | "label" | "category";
   icon: string;
   color?: string;
   text: string;
@@ -54,7 +54,7 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     text: "archived",
   },
 ];
-
+defaultNavigation;
 export type AnnouncementsStateType =
   | "LOADING"
   | "ERROR"
@@ -140,21 +140,23 @@ export const announcements: Reducer<AnnouncementsState> = (
       const newAllProperties: AnnouncementsStatePatch = action.payload;
       return Object.assign({}, state, newAllProperties);
     }
-
     case "UPDATE_SELECTED_ANNOUNCEMENTS":
       return {
         ...state,
         selected: action.payload,
         selectedIds: action.payload.map((s: Announcement) => s.id),
       };
-
+    case "ADD_ANNOUNCEMENT_CATEGORY":
+      return {
+        ...state,
+        categories: [...state.categories, action.payload],
+      };
     case "ADD_TO_ANNOUNCEMENTS_SELECTED":
       return {
         ...state,
         selected: state.selected.concat([action.payload]),
         selectedIds: state.selectedIds.concat([action.payload.id]),
       };
-
     case "REMOVE_FROM_ANNOUNCEMENTS_SELECTED":
       return {
         ...state,

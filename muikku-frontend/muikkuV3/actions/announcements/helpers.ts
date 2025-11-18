@@ -7,7 +7,10 @@ import {
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
-import { GetAnnouncementsRequest } from "~/generated/client";
+import {
+  AnnouncementCategory,
+  GetAnnouncementsRequest,
+} from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { Action, Dispatch } from "redux";
 
@@ -46,9 +49,9 @@ export async function loadAnnouncementsHelper(
   const state = getState();
   const navigation = state.announcements.navigation;
   const announcements = state.announcements;
+  const categories = state.announcements.categories;
   const status = state.status;
   const actualLocation: string = location || announcements.location;
-
   const isForceDefined = typeof force === "boolean";
   const isForceEnforced = force;
 
@@ -78,16 +81,21 @@ export async function loadAnnouncementsHelper(
   }
 
   //We get the navigation location item
-  const item: AnnouncerNavigationItemType = navigation.find(
+  let item: AnnouncerNavigationItemType = navigation.find(
     (item) => item.location === actualLocation
   );
-  if (!item) {
+  let category = null;
+
+  if (!item && !actualLocation.includes("category-")) {
     return dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
       payload: <AnnouncementsStateType>"ERROR",
     });
+  } else {
+    category = categories.find(
+      (cat) => `category-${cat.id}` === actualLocation
+    );
   }
-
   // Generate the API query parameters
   const firstResult = initial ? 0 : announcements.announcements.length;
   const concat = !initial;
@@ -104,26 +112,30 @@ export async function loadAnnouncementsHelper(
   if (workspaceId) {
     params.workspaceEntityId = workspaceId;
   }
-
-  switch (item.id) {
-    case "expired":
-      params.timeFrame = "EXPIRED";
-      break;
-    case "unread":
-      params.timeFrame = "ALL";
-      params.onlyUnread = true;
-      break;
-    case "archived":
-      params.timeFrame = "ALL";
-      params.onlyArchived = true;
-      break;
-    case "own":
-      params.timeFrame = "ALL";
-      params.onlyMine = true;
-      break;
-    default:
-      params.timeFrame = "CURRENTANDUPCOMING";
-      break;
+  if (item) {
+    switch (item.id) {
+      case "expired":
+        params.timeFrame = "EXPIRED";
+        break;
+      case "unread":
+        params.timeFrame = "ALL";
+        params.onlyUnread = true;
+        break;
+      case "archived":
+        params.timeFrame = "ALL";
+        params.onlyArchived = true;
+        break;
+      case "own":
+        params.timeFrame = "ALL";
+        params.onlyMine = true;
+        break;
+      default:
+        params.timeFrame = "CURRENTANDUPCOMING";
+        break;
+    }
+  }
+  if (category) {
+    params.categories = [category.id];
   }
 
   try {

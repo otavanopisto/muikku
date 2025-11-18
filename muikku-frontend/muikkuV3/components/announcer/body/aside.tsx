@@ -59,7 +59,9 @@ class NavigationAside extends React.Component<
       this.props.announcements.categories.map((category) => (
         <NavigationElement
           key={category.id}
-          isActive={false}
+          isActive={
+            this.props.announcements.location === `category-${category.id}`
+          }
           hash={`category-${category.id}`}
           icon="tag"
           iconColor={colorIntToHex(category.color)}
