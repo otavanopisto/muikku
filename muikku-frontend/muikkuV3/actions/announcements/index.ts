@@ -743,7 +743,7 @@ const updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType =
 
 /**
  * Create a new announcement category
- * @param id data
+ * @param id category id
  * @param success success callback
  * @param fail fail callback
  * @returns a thunk action creator

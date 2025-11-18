@@ -14,6 +14,7 @@ import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
+import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * AnnouncementProps
@@ -69,6 +70,21 @@ class Announcements extends React.Component<
             <span className="icon icon-pin"></span>
           )}
         </header>
+        {this.props.announcement.categories.length !== 0 && (
+          <div className="labels item-list__announcement-categories">
+            {this.props.announcement.categories.map((category) => (
+              <span className="label" key={category.id}>
+                <span
+                  style={{ color: colorIntToHex(category.color) }}
+                  className="label__icon label__icon--announcement-usergroup icon-tag"
+                ></span>
+                <span className="label__text label__text--announcement-usergroup">
+                  {category.category}
+                </span>
+              </span>
+            ))}
+          </div>
+        )}
         {this.props.announcement.workspaces.length ||
         this.props.announcement.userGroupEntityIds.length ? (
           <div className="labels">

@@ -10,6 +10,7 @@ import { Panel } from "~/components/general/panel";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * AnnouncementsPanelProps
@@ -86,6 +87,21 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
             <span className="item-list__announcement-date">
               {localize.date(announcement.startDate)}
             </span>
+            {announcement.categories.length !== 0 && (
+              <div className="labels item-list__announcement-categories">
+                {announcement.categories.map((category) => (
+                  <span className="label" key={category.id}>
+                    <span
+                      style={{ color: colorIntToHex(category.color) }}
+                      className="label__icon label__icon--announcement-usergroup icon-tag"
+                    ></span>
+                    <span className="label__text label__text--announcement-usergroup">
+                      {category.category}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            )}
             {announcement.workspaces && announcement.workspaces.length ? (
               <div className="labels item-list__announcement-workspaces">
                 <span className="label">
