@@ -329,7 +329,7 @@ public class HopsRestService {
 
     // Create, update, and delete notes based on payload
 
-    List<HopsStudyPlannerNote> currentNotes = hopsController.listStudyPlannerNotesByUserEntityId(sessionController.getLoggedUserEntity().getId());
+    List<HopsStudyPlannerNote> currentNotes = hopsController.listStudyPlannerNotesByUserEntityId(userEntity.getId());
     for (HopsStudyPlannerNoteRestModel note : payload.getNotes()) {
       if (note.getId() == null) {
         hopsController.createStudyPlannerNote(userEntity.getId(), note.getTitle(), note.getContent(), note.getStartDate());
