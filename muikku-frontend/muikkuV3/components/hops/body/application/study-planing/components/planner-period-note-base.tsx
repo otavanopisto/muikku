@@ -254,7 +254,7 @@ const BasePlannerPeriodNote = React.forwardRef<
       }
     >
       <PlannerCardHeader>
-        <span className="study-planner__note-title">
+        <span className="study-planner__card-title">
           <b>{`${note.title}`}</b>{" "}
           {hasChanges && <span className="study-planner__note-unsaved">*</span>}
         </span>

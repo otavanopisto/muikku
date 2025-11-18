@@ -297,7 +297,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
       return null;
     }
 
-    return <div className="study-planner__course-dates-item">{dateString}</div>;
+    return <div className="study-planner__card-dates-item">{dateString}</div>;
   };
 
   /**
@@ -384,7 +384,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
       }
     >
       <PlannerCardHeader>
-        <span className="study-planner__course-name">
+        <span className="study-planner__card-title">
           <b>{`${course.subjectCode}${course.courseNumber}`}</b>{" "}
           {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           {hasChanges && (
@@ -394,7 +394,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
       </PlannerCardHeader>
 
       <PlannerCardContent>
-        <div className="study-planner__course-labels">
+        <div className="study-planner__card-labels">
           <PlannerCardLabel
             modifiers={[course.mandatory ? "mandatory" : "optional"]}
           >
@@ -408,14 +408,14 @@ const BasePlannerPeriodCourse = React.forwardRef<
           </PlannerCardLabel>
 
           {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+            <PlannerCardLabel modifiers={[courseState.state]}>
               {courseState.label}
             </PlannerCardLabel>
           )}
         </div>
 
-        <div className="study-planner__course-dates">
-          <div className="study-planner__course-dates-item">
+        <div className="study-planner__card-dates">
+          <div className="study-planner__card-dates-item">
             {calculatedEndDate ? (
               <>
                 {`${localize.date(new Date(course.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}

@@ -610,6 +610,7 @@
   },
   "hops_new": {
     "actions": {
+      "addNote": "Add a node",
       "addSubject": "Add a subject",
       "confirmRegistration": "Confirm registration",
       "openStudyPlanner": "Open Study Planner",

@@ -450,14 +450,14 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         ref={drag}
       >
         <PlannerCardHeader>
-          <span className="planner-course-tray-item__name">
+          <span className="study-planner__card-title">
             <b>{`${subjectCode}${course.courseNumber}`}</b>{" "}
             {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           </span>
         </PlannerCardHeader>
 
         <PlannerCardContent>
-          <div className="study-planner__course-labels">
+          <div className="study-planner__card-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
               {course.mandatory
                 ? t("labels.mandatory", {
@@ -469,7 +469,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             </PlannerCardLabel>
 
             {isPlannedCourse && (
-              <PlannerCardLabel modifiers={["course-state", "planned"]}>
+              <PlannerCardLabel modifiers={["planned"]}>
                 {t("labels.planned", {
                   ns: "common",
                 })}
@@ -477,7 +477,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             )}
 
             {courseState.state && (
-              <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+              <PlannerCardLabel modifiers={[courseState.state]}>
                 {courseState.label}
               </PlannerCardLabel>
             )}

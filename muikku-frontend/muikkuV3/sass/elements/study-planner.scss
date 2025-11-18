@@ -438,6 +438,12 @@
   width: 100%;
 }
 
+.study-planner__card-icon {
+  color: $color-info;
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
 // Planner card
 .study-planner__card {
   background: $color-default;
@@ -538,7 +544,7 @@
   justify-content: flex-end;
 }
 
-.study-planner__course-labels {
+.study-planner__card-labels {
   display: flex;
   flex-flow: row wrap;
   gap: 10px;
@@ -617,7 +623,7 @@
   margin-left: 0.5rem;
 }
 
-.study-planner__course-dates,
+.study-planner__card-dates,
 .study-planner__note-dates {
   color: $color-default-contrast;
   display: flex;
@@ -626,7 +632,7 @@
   font-size: 0.75rem;
 }
 
-.study-planner__course-dates-item {
+.study-planner__card-dates-item {
   display: flex;
 }
 

@@ -2,6 +2,7 @@ import * as React from "react";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { PlannerCard, PlannerCardHeader } from "./planner-card";
+import { useTranslation } from "react-i18next";
 
 /**
  * Planner add note props
@@ -18,6 +19,7 @@ interface PlannerAddNoteProps {
  */
 const PlannerAddNote = (props: PlannerAddNoteProps) => {
   const { disabled, activated, onActivateNewNote } = props;
+  const { t } = useTranslation(["hops_new"]);
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -64,8 +66,11 @@ const PlannerAddNote = (props: PlannerAddNoteProps) => {
         onClick={handleActivateNewNoteClick}
       >
         <PlannerCardHeader>
-          <span className="planner-course-tray-item__name">
-            {`Uusi muistiinpano`}
+          <span className="study-planner__card-icon icon-note-add"></span>
+          <span className="study-planner__card-title">
+            {t("actions.addNote", {
+              ns: "hops_new",
+            })}
           </span>
         </PlannerCardHeader>
       </PlannerCard>
