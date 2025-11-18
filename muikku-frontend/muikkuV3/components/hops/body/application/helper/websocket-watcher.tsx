@@ -217,7 +217,7 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
       const plannedCoursesWithIdentifiers =
         plannedCourses.map<PlannedCourseWithIdentifier>((course) => ({
           ...course,
-          identifier: course.id.toString(),
+          identifier: "planned-course-" + course.id,
         }));
 
       dispatch(
@@ -258,7 +258,7 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
       const planNotesWithIdentifiers =
         notes.map<StudyPlannerNoteWithIdentifier>((note) => ({
           ...note,
-          identifier: note.id.toString(),
+          identifier: "plan-note-" + note.id,
         }));
 
       dispatch(
