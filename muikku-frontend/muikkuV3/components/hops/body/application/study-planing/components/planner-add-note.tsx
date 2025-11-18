@@ -51,21 +51,21 @@ const PlannerAddNote = (props: PlannerAddNoteProps) => {
     onActivateNewNote();
   };
 
-  const modifiers = ["note-new-card"];
+  const modifiers = ["tray-card", "note"];
   isDragging && modifiers.push("is-dragging");
   activated && modifiers.push("selected");
   disabled ? modifiers.push("not-draggable") : modifiers.push("draggable");
 
   return (
-    <div className="study-planner__add-note">
+    <div className="study-planner__action-tray">
       <PlannerCard
         modifiers={modifiers}
         ref={drag}
         onClick={handleActivateNewNoteClick}
       >
-        <PlannerCardHeader modifiers={["course-tray-item"]}>
+        <PlannerCardHeader>
           <span className="planner-course-tray-item__name">
-            <b>{`Uusi muistiinpano`}</b>
+            {`Uusi muistiinpano`}
           </span>
         </PlannerCardHeader>
       </PlannerCard>

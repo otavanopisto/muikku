@@ -141,17 +141,17 @@ const PlannerActivityCard = React.forwardRef<
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned", ...cardModifiers]}
+      modifiers={[...cardModifiers]}
       innerContainerModifiers={innerContainerModifiers}
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
+      <PlannerCardHeader>
         <span className="study-planner__course-name">
           <b>{`${item.course.subjectCode}${item.course.courseNumber}`}</b>{" "}
           {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course)}`}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
+      <PlannerCardContent>
         <div className="study-planner__course-labels">
           <PlannerCardLabel
             modifiers={[item.course.mandatory ? "mandatory" : "optional"]}

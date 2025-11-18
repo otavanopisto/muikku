@@ -72,7 +72,7 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
         <Dialog
           isOpen={isOpen}
           onClose={onClose}
-          title={t("labels.studyPlannerSpecifyPlanTitle", {
+          title={t("labels.studyPlannerSpecifyNoteTitle", {
             ns: "hops_new",
           })}
           modifier="study-planner-specify-course"
@@ -81,14 +81,15 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
               <div className="study-planner__extra-section-content">
                 <div className="study-planner__extra-section-group">
                   <label className="study-planner__extra-section-group-label">
-                    Muistiinpanon otsikko
+                    {t("labels.title", {
+                      ns: "common",
+                    })}
                   </label>
 
                   <div className="study-planner__extra-section-group-inputs">
                     <input
                       type="text"
                       className="study-planner__input"
-                      placeholder="Muistiinpanon otsikko"
                       value={note.title}
                       //onChange={(e) => onChange(e.target.value)}
                     />
@@ -97,13 +98,14 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
 
                 <div className="study-planner__extra-section-group">
                   <label className="study-planner__extra-section-group-label">
-                    Muistiinpanon sisältö
+                    {t("labels.content", {
+                      ns: "common",
+                    })}
                   </label>
 
                   <div className="study-planner__extra-section-group-inputs">
                     <textarea
-                      className="study-planner__input"
-                      placeholder="Muistiinpanon sisältö"
+                      className="study-planner__textarea"
                       value={note.content}
                       //onChange={(e) => onChange(new Date(e.target.value))}
                     />
@@ -112,7 +114,9 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
 
                 <div className="study-planner__extra-section-group">
                   <label className="study-planner__extra-section-group-label">
-                    Muistiinpanon kuukausi
+                    {t("labels.date", {
+                      ns: "common",
+                    })}
                   </label>
 
                   <div className="study-planner__extra-section-date-inputs">

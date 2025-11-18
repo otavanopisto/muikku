@@ -219,7 +219,7 @@ const BasePlannerPeriodNote = React.forwardRef<
     onSelectNote(note);
   };
 
-  const cardModifiers = [];
+  const cardModifiers = ["note"];
   isDragging && cardModifiers.push("is-dragging");
   canDrag
     ? cardModifiers.push("draggable")
@@ -229,7 +229,7 @@ const BasePlannerPeriodNote = React.forwardRef<
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned", ...cardModifiers]}
+      modifiers={[...cardModifiers]}
       onClick={handleSelectCourse}
       externalContent={
         <>
@@ -253,18 +253,18 @@ const BasePlannerPeriodNote = React.forwardRef<
         </>
       }
     >
-      <PlannerCardHeader modifiers={["planned-note-card"]}>
+      <PlannerCardHeader>
         <span className="study-planner__note-title">
           <b>{`${note.title}`}</b>{" "}
           {hasChanges && <span className="study-planner__note-unsaved">*</span>}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-note-card"]}>
+      <PlannerCardContent>
+        {getTruncatedContent()}
         <div className="study-planner__note-dates">
           {localize.date(new Date(note.startDate))}
         </div>
-        {getTruncatedContent()}
       </PlannerCardContent>
 
       {!disabled && (

@@ -319,7 +319,7 @@
   align-items: center;
   border: 2px dashed $color-study-plan-tool-dropzone-border;
   border-radius: 5px;
-  color: $color-study-plan-tool-accent;;
+  color: $color-study-plan-tool-accent;
   display: flex;
   flex-flow: column nowrap;
   height: 50px;
@@ -431,8 +431,7 @@
   margin: 0 5px;
 }
 
-.study-planner__course-tray-item
-.study-planner__planned-list-item {
+.study-planner__course-tray-item .study-planner__planned-list-item {
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
@@ -461,20 +460,24 @@
   }
 }
 
-.study-planner__card--course-tray-card {
+.study-planner__card--tray-card {
   box-shadow: none;
+}
+
+.study-planner__card--note {
+  border: 1px solid $color-info;
 }
 
 .study-planner__card--preview,
 .study-planner__card--is-dragging {
   box-shadow: 0 8px 16px rgba(0 0 0 / 10%);
-  cursor: move;
+  cursor: grabbing;
   opacity: 80%;
   transform: scale(1.05);
 }
 
 .study-planner__card--draggable {
-  cursor: move;
+  cursor: grab;
 }
 
 .study-planner__card--not-draggable {
@@ -485,7 +488,6 @@
   cursor: not-allowed;
   opacity: 50%;
 }
-
 
 .study-planner__card--selected {
   outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
@@ -615,7 +617,8 @@
   margin-left: 0.5rem;
 }
 
-.study-planner__course-dates {
+.study-planner__course-dates,
+.study-planner__note-dates {
   color: $color-default-contrast;
   display: flex;
   flex-basis: 100%;
@@ -708,6 +711,15 @@
   border: 2px solid $color-study-plan-tool-form-element-border;
   border-radius: 3px;
   height: 2.25rem;
+  padding: 4px 8px;
+  width: 100%;
+}
+
+.study-planner__textarea {
+  background: $color-default;
+  border: 2px solid $color-study-plan-tool-form-element-border;
+  border-radius: 3px;
+  height: 4.5rem;
   padding: 4px 8px;
   width: 100%;
 }
@@ -986,7 +998,7 @@
 
   .study-planner__timeline-progress-flag-line {
     background: $color-study-plan-studies-start-color;
-   }
+  }
 }
 
 // Flag that represents end of right to study date
@@ -1005,7 +1017,7 @@
 
   .study-planner__timeline-progress-flag-line {
     background: $color-study-plan-studies-end-color;
-   }
+  }
 }
 
 // Flag that represents graduation goal date
@@ -1065,12 +1077,12 @@
 
   .study-planner__timeline-progress-flag-line {
     margin: 0 0 0 5px;
-   }
+  }
 
-   .study-planner__timeline-progress-flag-label {
+  .study-planner__timeline-progress-flag-label {
     border-radius: 4px 12px 12px 4px;
     padding: 4px 8px 4px 4px;
-   }
+  }
 }
 
 // Flag's that are on the right side of the timeline
@@ -1079,10 +1091,10 @@
 
   .study-planner__timeline-progress-flag-line {
     margin: 0 5px 0 0;
-   }
+  }
 
-   .study-planner__timeline-progress-flag-label {
+  .study-planner__timeline-progress-flag-label {
     border-radius: 12px 4px 4px 12px;
     padding: 4px 4px 4px 8px;
-   }
+  }
 }

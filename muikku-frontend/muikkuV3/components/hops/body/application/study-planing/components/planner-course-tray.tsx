@@ -432,7 +432,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
-  const modifiers = ["course-tray-card"];
+  const modifiers = ["tray-card"];
 
   !disabled ? modifiers.push("draggable") : modifiers.push("not-draggable");
   isDragging && modifiers.push("is-dragging");
@@ -449,14 +449,14 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         onClick={handleSelectCourse}
         ref={drag}
       >
-        <PlannerCardHeader modifiers={["course-tray-item"]}>
+        <PlannerCardHeader>
           <span className="planner-course-tray-item__name">
             <b>{`${subjectCode}${course.courseNumber}`}</b>{" "}
             {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           </span>
         </PlannerCardHeader>
 
-        <PlannerCardContent modifiers={["planned-course-card"]}>
+        <PlannerCardContent>
           <div className="study-planner__course-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
               {course.mandatory

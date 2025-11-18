@@ -350,7 +350,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned", ...cardModifiers]}
+      modifiers={[...cardModifiers]}
       innerContainerModifiers={innerContainerModifiers}
       onClick={handleSelectCourse}
       externalContent={
@@ -383,7 +383,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </>
       }
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
+      <PlannerCardHeader>
         <span className="study-planner__course-name">
           <b>{`${course.subjectCode}${course.courseNumber}`}</b>{" "}
           {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
@@ -393,7 +393,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
+      <PlannerCardContent>
         <div className="study-planner__course-labels">
           <PlannerCardLabel
             modifiers={[course.mandatory ? "mandatory" : "optional"]}

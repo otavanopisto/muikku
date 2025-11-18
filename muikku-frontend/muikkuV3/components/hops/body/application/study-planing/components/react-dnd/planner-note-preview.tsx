@@ -18,14 +18,14 @@ const PlannerNotePreview: React.FC<PlannerNotePreviewProps> = (props) => {
   const { note } = props;
 
   return (
-    <PlannerCard modifiers={["planned-course-card", "preview"]}>
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
+    <PlannerCard modifiers={["preview"]}>
+      <PlannerCardHeader>
         <span className="study-planner__course-name">
           <b>{`${note.title}`}</b>
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
+      <PlannerCardContent>
         {note.content}
       </PlannerCardContent>
     </PlannerCard>

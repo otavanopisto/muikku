@@ -136,7 +136,7 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
           onClose={() => handleSpecifyClose(onConfirm)}
         >
           <div className="study-planner__extra-section-title">
-            {t("labels.studyPlannerSpecifyPlanTitle", {
+            {t("labels.studyPlannerSpecifyNoteTitle", {
               ns: "hops_new",
             })}
           </div>
@@ -144,14 +144,15 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-group">
               <label className="study-planner__extra-section-group-label">
-                Muistiinpanon otsikko
+                {t("labels.title", {
+                  ns: "common",
+                })}
               </label>
 
               <div className="study-planner__extra-section-group-inputs">
                 <input
                   type="text"
                   className="study-planner__input"
-                  placeholder="Muistiinpanon otsikko"
                   value={title}
                   onChange={(e) => {
                     onChange(e.target.value, content, startDate);
@@ -162,13 +163,14 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
 
             <div className="study-planner__extra-section-group">
               <label className="study-planner__extra-section-group-label">
-                Muistiinpanon sisältö
+                {t("labels.content", {
+                  ns: "common",
+                })}
               </label>
 
               <div className="study-planner__extra-section-group-inputs">
                 <textarea
-                  className="study-planner__input"
-                  placeholder="Muistiinpanon sisältö"
+                  className="study-planner__textarea"
                   value={content}
                   onChange={(e) => {
                     onChange(title, e.target.value, startDate);
@@ -179,7 +181,9 @@ const DesktopPlannerPeriodNote: React.FC<DesktopPlannerPeriodNoteProps> = (
 
             <div className="study-planner__extra-section-group">
               <label className="study-planner__extra-section-group-label">
-                Muistiinpanon kuukausi
+                {t("labels.date", {
+                  ns: "common",
+                })}
               </label>
 
               <div className="study-planner__extra-section-date-inputs">
