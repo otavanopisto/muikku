@@ -319,19 +319,24 @@ public class HopsRestService {
       }
     }
 
+    // Target user
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
     // Create, update, and delete notes based on payload
 
     List<HopsStudyPlannerNote> currentNotes = hopsController.listStudyPlannerNotesByUserEntityId(sessionController.getLoggedUserEntity().getId());
     for (HopsStudyPlannerNoteRestModel note : payload.getNotes()) {
       if (note.getId() == null) {
-        hopsController.createStudyPlannerNote(sessionController.getLoggedUserEntity().getId(), note.getTitle(), note.getContent(), note.getStartDate());
+        hopsController.createStudyPlannerNote(userEntity.getId(), note.getTitle(), note.getContent(), note.getStartDate());
       }
       else {
         HopsStudyPlannerNote existingNote = currentNotes.stream().filter(c -> c.getId().equals(note.getId())).findFirst().orElse(null);
         if (existingNote != null) {
-          if (!sessionController.getLoggedUserEntity().getId().equals(existingNote.getUserEntityId())) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
           hopsController.updateStudyPlannerNote(existingNote, note.getTitle(), note.getContent(), note.getStartDate());
           currentNotes.remove(existingNote);
         }
@@ -367,10 +372,18 @@ public class HopsRestService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
+
+    // Target user
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
     
     // Notes
     
-    List<HopsStudyPlannerNote> notes = hopsController.listStudyPlannerNotesByUserEntityId(sessionController.getLoggedUserEntity().getId());
+    List<HopsStudyPlannerNote> notes = hopsController.listStudyPlannerNotesByUserEntityId(userEntity.getId());
     return Response.ok().entity(notes.stream().map(note -> toRestModel(note)).collect(Collectors.toList())).build();
   }
 
