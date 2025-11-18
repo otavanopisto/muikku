@@ -346,7 +346,7 @@ public class HopsRestService {
       hopsController.deleteStudyPlannerNote(deletedNote);
     }
 
-    List<HopsStudyPlannerNote> notes = hopsController.listStudyPlannerNotesByUserEntityId(sessionController.getLoggedUserEntity().getId());
+    List<HopsStudyPlannerNote> notes = hopsController.listStudyPlannerNotesByUserEntityId(userEntity.getId());
     List<HopsStudyPlannerNoteRestModel> restNotes = notes.stream().map(note -> toRestModel(note)).collect(Collectors.toList());
     
     HopsStudyPlannerNotesWSMessage msg = new HopsStudyPlannerNotesWSMessage();
