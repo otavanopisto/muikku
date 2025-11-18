@@ -66,9 +66,6 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
    * !!--USES list of mock objects currently--!!
    */
   const renderRows = filteredMatrix.map((sSubject, i) => {
-    //const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
-    const showSubjectRow = true;
-
     /**
      * Render courses based on possible max number of courses
      * So subject with less courses have their rows same amount of table cells but as empty
@@ -163,14 +160,12 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       });
 
     return (
-      showSubjectRow && (
-        <Tr key={sSubject.name} modifiers={["course"]}>
-          <Td modifiers={["subject"]}>
-            <div>{`${sSubject.name} (${sSubject.code})`}</div>
-          </Td>
-          {courses}
-        </Tr>
-      )
+      <Tr key={sSubject.name} modifiers={["course"]}>
+        <Td modifiers={["subject"]}>
+          <div>{`${sSubject.name} (${sSubject.code})`}</div>
+        </Td>
+        {courses}
+      </Tr>
     );
   });
 

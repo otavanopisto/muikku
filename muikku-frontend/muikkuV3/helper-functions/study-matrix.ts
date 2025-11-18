@@ -1,18 +1,11 @@
-import {
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
+import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
   CourseMatrix,
   CourseMatrixModule,
   CourseMatrixSubject,
   StudentStudyActivity,
 } from "~/generated/client";
-import {
-  schoolCourseTableUppersecondary2021,
-  schoolCourseTableCompulsory2018,
-} from "~/mock/mock-data";
+import {} from "~/mock/mock-data";
 
 export const SKILL_AND_ART_SUBJECTS_CS: string[] = [
   "mu",
@@ -53,42 +46,6 @@ const LANGUAGE_SUBJECTS_B3_US = [
   "ENB3",
   "KIB3",
   "POB3",
-];
-
-const SUBJECTS_NOT_INCLUDED = [
-  "ÄIM",
-  "EAA",
-  "RAA",
-  "RUA",
-  "SAA",
-  "VEA",
-  "RAB2",
-  "SAB2",
-  "ARB3",
-  "ENB3",
-  "IAB3",
-  "KIB3",
-  "KXB3",
-  "KOB3",
-  "LAB3",
-  "POB3",
-  "RAB3",
-  "RUB3",
-  "SMB3",
-  "UK",
-  "UI",
-  "UJ",
-  "UX",
-  "MU",
-  "KT",
-];
-
-export const ALL_LANGUAGE_SUBJECTS = [
-  ...NATIVE_LANGUAGE_SUBJECTS_CS,
-  ...LANGUAGE_SUBJECTS_A1_US,
-  ...LANGUAGE_SUBJECTS_B1_US,
-  ...LANGUAGE_SUBJECTS_B2_US,
-  ...LANGUAGE_SUBJECTS_B3_US,
 ];
 
 /**
@@ -157,40 +114,6 @@ export const filterUpperSecondarySubjects = (
 };
 
 /**
- * Simple method to check if the subject should be shown by default.
- *
- * @param studyProgrammeName studyProgrammeName
- * @param subject subject
- * @returns boolean
- */
-export const showSubject = (
-  studyProgrammeName: string,
-  subject: SchoolSubject
-) => {
-  switch (studyProgrammeName) {
-    // Nettiperuskoulu shows all subjects without exceptions
-    case "Nettiperuskoulu":
-      return true;
-
-    // Nettiperuskoulu shows all subjects that are not in the list (Not teaching in Otavia)
-    case "Nettilukio":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return !SUBJECTS_NOT_INCLUDED.includes(subject.subjectCode);
-
-    // Same as above but also removes OP (Opinto-ohjaus)
-    case "Aineopiskelu/lukio":
-    case "Aineopiskelu/lukio (oppivelvolliset)":
-    case "Kahden tutkinnon opinnot":
-      return ![...SUBJECTS_NOT_INCLUDED, "OP"].includes(subject.subjectCode);
-
-    default:
-      return true;
-  }
-};
-
-/**
  * Gets the course dropdown name
  * @param subject subject
  * @param course course
@@ -215,90 +138,6 @@ export const getCourseDropdownName = (
   }
 
   return courseDropdownName;
-};
-
-/**
- * Selects the correct school course table based on the study programme name
- *
- * @param studyProgrammeName studyProgrammeName
- * @param curriculumName curriculumName
- */
-export const compulsoryOrUpperSecondary = (
-  studyProgrammeName: string,
-  curriculumName: string
-) => {
-  if (!studyProgrammeName || !curriculumName) {
-    return null;
-  }
-
-  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
-  const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
-
-  /**
-   * Finds and returns OPS based matrix
-   *
-   * @param matrices list of matrices
-   * @returns OPS based matrix or null if OPS based matrix is not found
-   */
-  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
-    const matrix = matrices.find(
-      (matrix) => matrix.curriculumName === curriculumName
-    );
-
-    if (matrix) {
-      return matrix;
-    }
-    return null;
-  };
-
-  switch (studyProgrammeName) {
-    case "Nettiperuskoulu":
-    case "Nettiperuskoulu/yksityisopiskelu":
-    case "Aineopiskelu/perusopetus":
-    case "Aineopiskelu/perusopetus (oppilaitos ilmoittaa)":
-    case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
-      return matrixTableBasedOnOPS(compulsoryMatrices);
-
-    case "Nettilukio":
-    case "Aineopiskelu/lukio":
-    case "Aineopiskelu/lukio (oppivelvolliset)":
-    case "Kahden tutkinnon opinnot":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return matrixTableBasedOnOPS(uppersecondaryMatrices);
-
-    default:
-      return null;
-  }
-};
-
-/**
- * Filter matrix based on study programme name and selected course options
- *
- * @param studyProgrammeName studyProgrammeName of the student
- * @param matrix matrix to be filtered
- * @param options options selected by student
- * @returns filtered matrix
- */
-export const filterMatrix = (
-  studyProgrammeName: string,
-  matrix: SchoolSubject[],
-  options: string[]
-) => {
-  switch (studyProgrammeName) {
-    case "Nettiperuskoulu":
-      return filterCompulsorySubjects(matrix, options);
-
-    case "Nettilukio":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return filterUpperSecondarySubjects(matrix, options);
-
-    default:
-      return matrix;
-  }
 };
 
 /**

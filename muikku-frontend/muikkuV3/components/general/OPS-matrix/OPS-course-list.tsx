@@ -61,10 +61,6 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
    * renderRows
    */
   const renderRows = filteredMatrix.map((sSubject) => {
-    //const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
-
-    const showSubjectRow = true;
-
     const courses = sSubject.modules.map((course) => {
       const listItemIndicatormodifiers = ["course"];
 
@@ -102,16 +98,14 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     });
 
     return (
-      showSubjectRow && (
-        <ListContainer key={sSubject.name} modifiers={["subject"]}>
-          <ListContainer modifiers={["row"]}>
-            <ListHeader
-              modifiers={["subject-name"]}
-            >{`${sSubject.name} (${sSubject.code})`}</ListHeader>
-          </ListContainer>
-          <ListContainer modifiers={["row"]}>{courses}</ListContainer>
+      <ListContainer key={sSubject.name} modifiers={["subject"]}>
+        <ListContainer modifiers={["row"]}>
+          <ListHeader
+            modifiers={["subject-name"]}
+          >{`${sSubject.name} (${sSubject.code})`}</ListHeader>
         </ListContainer>
-      )
+        <ListContainer modifiers={["row"]}>{courses}</ListContainer>
+      </ListContainer>
     );
   });
 
