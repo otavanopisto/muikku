@@ -17650,6 +17650,7 @@ components:
         - status
         - date
         - transferCreditMandatory
+        - transferCreditLength
         - id
       properties:
         subjectName:
@@ -17675,6 +17676,9 @@ components:
           type: string
           format: date-time
         transferCreditMandatory:
+          type: boolean
+          nullable: true
+        transferCreditLength:
           type: boolean
           nullable: true
         id:
