@@ -5,6 +5,7 @@ import { WorkspaceSuggestion } from "~/generated/client";
 import { SummaryStudyProgress } from "~/reducers/main-function/records/summary";
 import ProgressList from "./components/progress-list";
 import ProgressTable from "./components/progress-table";
+import OPSMatrixProblems from "~/components/general/OPS-matrix/OPS-matrix-problems";
 /**
  * StudyProgressProps
  */
@@ -45,6 +46,13 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
 
   return (
     <>
+      <div className="hops__form-element-container  swiper-no-swiping">
+        <OPSMatrixProblems
+          matrixType={studyProgress.courseMatrix.type}
+          matrixProblems={studyProgress.courseMatrix.problems}
+        />
+      </div>
+
       <div className="hops-container__study-tool-indicators">
         <div className="hops-container__study-tool-indicator-container--legend-title">
           {t("labels.legendDescriptions", { ns: "studyMatrix" })}

@@ -6,6 +6,7 @@ import SignUpBehalfStudentDialog from "./dialogs/sign-up-behalf-student";
 import ProgressTable from "./components/progress-table";
 import { useState } from "react";
 import { WorkspaceSuggestion } from "~/generated/client";
+import OPSMatrixProblems from "~/components/general/OPS-matrix/OPS-matrix-problems";
 
 /**
  * ProgressHopsPlanningProps
@@ -47,6 +48,13 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
 
   return (
     <>
+      <div className="hops__form-element-container  swiper-no-swiping">
+        <OPSMatrixProblems
+          matrixType={studyProgress.courseMatrix.type}
+          matrixProblems={studyProgress.courseMatrix.problems}
+        />
+      </div>
+
       <div className="hops-container__study-tool-indicators">
         <div className="hops-container__study-tool-indicator-container--legend-title">
           {t("labels.legendDescriptions", { ns: "studyMatrix" })}

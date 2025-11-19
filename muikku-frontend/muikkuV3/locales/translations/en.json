@@ -2789,7 +2789,8 @@
     "content": {
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available",
-      "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites"
+      "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites",
+      "problemsExist": "Following problems have been detected and might have an impact on how matrix presents its content."
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2818,6 +2819,14 @@
     },
     "notifications": {
       "signUpError": "Signing up to course failed"
+    },
+    "problems": {
+      "incompatibleStudent": "The student is incompatible with the OPS matrix",
+      "noMath": "Mathematics subject choice not made for the student",
+      "noNativeLanguage": "Native language subject choice not made for the student",
+      "noPrimaryForeignLanguage": "Primary foreign language subject choice not made for the student",
+      "noSecondaryForeignLanguage": "Secondary foreign language subject choice not made for the student",
+      "noReligion": "Religion subject choice not made for the student"
     }
   },
   "courseCarousel": {

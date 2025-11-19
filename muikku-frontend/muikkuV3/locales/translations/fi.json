@@ -2789,7 +2789,8 @@
     "content": {
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja saatavilla.",
-      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!"
+      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!",
+      "problemsExist": "Matriisin latauksen yhteydessä on havaittu seuraavat ongelmat, jotka voivat vaikuttaa matriisin näyttämään sisältöön."
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2818,6 +2819,14 @@
     },
     "notifications": {
       "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
+    },
+    "problems": {
+      "incompatibleStudent": "Opiskelija ei ole yhteensopiva OPS matriisin kanssa",
+      "noMath": "Opiskelijalle ei ole tehty matematiikan ainevalintaa",
+      "noNativeLanguage": "Opiskelijalle ei ole tehty äidinkielen ainevalintaa",
+      "noPrimaryForeignLanguage": "Opiskelijalle ei ole tehty pitkän vieraan kielen ainevalintaa",
+      "noSecondaryForeignLanguage": "Opiskelijalle ei ole tehty lyhyen vieraan kielen ainevalintaa",
+      "noReligion": "Opiskelijalle ei ole tehty uskonnon ainevalintaa"
     }
   },
   "courseCarousel": {
