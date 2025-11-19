@@ -30,13 +30,14 @@ import {
 } from "~/actions/announcements";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Announcement } from "~/generated/client";
+import { Announcement, Role } from "~/generated/client";
 
 /**
  * AnnouncerToolbarProps
  */
 interface AnnouncerToolbarProps extends WithTranslation {
   announcements: AnnouncementsState;
+  roles: Role[];
   createAnnouncementCategory: CreateAnnouncementCategoryTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   markAllAsRead: LoadAnnouncementsTriggerType;
@@ -292,77 +293,82 @@ class AnnouncerToolbar extends React.Component<
               disabled={this.props.announcements.unreadCount === 0}
               onClick={this.markAllAsRead}
             />
-            <Dropdown
-              modifier="announcer-labels"
-              items={[
-                <div
-                  key="update-label"
-                  className="form-element form-element--new-label"
-                >
-                  <input
-                    className="form-element__input"
-                    value={this.state.category}
-                    onChange={this.onUpdateCategory}
-                    type="text"
-                    placeholder={this.props.i18n.t(
-                      "labels.createAndSearchLabels",
-                      { ns: "messaging" }
-                    )}
-                  />
-                </div>,
-                <Link
-                  key="new-link"
-                  tabIndex={0}
-                  className="link link--full link--new"
-                  onClick={this.onCreateNewCategory}
-                >
-                  {this.props.i18n.t("actions.create", {
-                    ns: "messaging",
-                    context: "category",
-                  })}
-                </Link>,
-              ].concat(
-                this.props.announcements.navigation
-                  .filter(
-                    (item) =>
-                      item.type === "category" &&
-                      filterMatch(item.text, this.state.category)
-                  )
-                  .map((category) => {
-                    const isSelected = true; //TODO check if label is selected
-                    return (
-                      <Link
-                        key={category.id}
-                        tabIndex={0}
-                        className={`link link--full link--communicator-label-dropdown ${
-                          isSelected ? "selected" : ""
-                        }`}
-                        onClick={
-                          !isSelected
-                            ? this.props.addLabelToCurrentMessageThread.bind(
-                                null,
-                                category
-                              )
-                            : this.props.removeLabelFromCurrentMessageThread.bind(
-                                null,
-                                category
-                              )
-                        }
-                      >
-                        <span
-                          className="link__icon icon-tag"
-                          style={{ color: category.color }}
-                        ></span>
-                        <span className="link__text">
-                          {filterHighlight(category.text, this.state.category)}
-                        </span>
-                      </Link>
-                    );
-                  })
-              )}
-            >
-              <ButtonPill buttonModifiers="label" icon="tag" />
-            </Dropdown>
+            {this.props.roles.includes("ADMINISTRATOR") && (
+              <Dropdown
+                modifier="announcer-labels"
+                items={[
+                  <div
+                    key="update-label"
+                    className="form-element form-element--new-label"
+                  >
+                    <input
+                      className="form-element__input"
+                      value={this.state.category}
+                      onChange={this.onUpdateCategory}
+                      type="text"
+                      placeholder={this.props.i18n.t(
+                        "labels.createAndSearchLabels",
+                        { ns: "messaging" }
+                      )}
+                    />
+                  </div>,
+                  <Link
+                    key="new-link"
+                    tabIndex={0}
+                    className="link link--full link--new"
+                    onClick={this.onCreateNewCategory}
+                  >
+                    {this.props.i18n.t("actions.create", {
+                      ns: "messaging",
+                      context: "category",
+                    })}
+                  </Link>,
+                ].concat(
+                  this.props.announcements.navigation
+                    .filter(
+                      (item) =>
+                        item.type === "category" &&
+                        filterMatch(item.text, this.state.category)
+                    )
+                    .map((category) => {
+                      const isSelected = true; //TODO check if label is selected
+                      return (
+                        <Link
+                          key={category.id}
+                          tabIndex={0}
+                          className={`link link--full link--communicator-label-dropdown ${
+                            isSelected ? "selected" : ""
+                          }`}
+                          onClick={
+                            !isSelected
+                              ? this.props.addLabelToCurrentMessageThread.bind(
+                                  null,
+                                  category
+                                )
+                              : this.props.removeLabelFromCurrentMessageThread.bind(
+                                  null,
+                                  category
+                                )
+                          }
+                        >
+                          <span
+                            className="link__icon icon-tag"
+                            style={{ color: category.color }}
+                          ></span>
+                          <span className="link__text">
+                            {filterHighlight(
+                              category.text,
+                              this.state.category
+                            )}
+                          </span>
+                        </Link>
+                      );
+                    })
+                )}
+              >
+                <ButtonPill buttonModifiers="label" icon="tag" />
+              </Dropdown>
+            )}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       );
@@ -380,6 +386,7 @@ class AnnouncerToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     announcements: state.announcements,
+    roles: state.status.roles,
   };
 }
 

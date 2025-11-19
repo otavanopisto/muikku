@@ -197,11 +197,9 @@ export interface UpdateAnnouncementCategoryTriggerType {
  */
 export interface CreateAnnouncementCategoryTriggerType {
   (data: {
-    id: number;
     category: string;
-    color?: number;
-    success?: () => any;
-    fail?: () => any;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -756,7 +754,7 @@ const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
     ) => {
       try {
         await announcerApi.deleteAnnouncementCategory({
-          announcementCategoryId: id,
+          categoryId: id,
         });
 
         dispatch({

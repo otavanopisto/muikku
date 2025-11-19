@@ -14,12 +14,13 @@ import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { colorIntToHex } from "~/util/modifiers";
 import CategoryUpdateDialog from "../dialogs/category-update";
-
+import { Role } from "~/generated/client";
 /**
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
   announcements: AnnouncementsState;
+  roles: Role[];
 }
 
 /**
@@ -67,7 +68,7 @@ class NavigationAside extends React.Component<
           icon="tag"
           editableWrapper={CategoryUpdateDialog}
           editableWrapperArgs={{ category }}
-          isEditable={true}
+          isEditable={this.props.roles.includes("ADMINISTRATOR")}
           iconColor={colorIntToHex(category.color)}
         >
           {category.category}
@@ -94,6 +95,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     announcements: state.announcements,
+    roles: state.status.roles,
   };
 }
 
