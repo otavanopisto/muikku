@@ -19,14 +19,6 @@ interface PlannerNotesListProps {
     action: StudyPlanChangeAction
   ) => void;
   onSelectNote: (note: StudyPlannerNoteWithIdentifier) => void;
-  //   selectedPlanItemIds: string[];
-  //   originalPlannedCourses: PlannedCourseWithIdentifier[];
-  //   studyActivity: StudentStudyActivity[];
-  //   onCourseChange: (
-  //     course: PlannedCourseWithIdentifier,
-  //     action: StudyPlanChangeAction
-  //   ) => void;
-  //   onSelectCourse: (course: PlannedCourseWithIdentifier) => void;
 }
 
 /**

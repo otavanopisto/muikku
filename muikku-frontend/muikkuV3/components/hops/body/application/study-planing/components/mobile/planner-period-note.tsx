@@ -66,6 +66,8 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
         onClose,
         onConfirm,
         onChange,
+        title,
+        content,
         startDate,
         isOpen,
       }) => (
@@ -91,7 +93,9 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
                       type="text"
                       className="study-planner__input"
                       value={note.title}
-                      //onChange={(e) => onChange(e.target.value)}
+                      onChange={(e) =>
+                        onChange(e.target.value, content, startDate)
+                      }
                     />
                   </div>
                 </div>
@@ -107,7 +111,9 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
                     <textarea
                       className="study-planner__textarea"
                       value={note.content}
-                      //onChange={(e) => onChange(new Date(e.target.value))}
+                      onChange={(e) =>
+                        onChange(title, e.target.value, startDate)
+                      }
                     />
                   </div>
                 </div>
@@ -127,7 +133,7 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
                       })}
                       minDate={activePeriodStartDate}
                       selected={startDate}
-                      onChange={(date) => onChange(date)}
+                      onChange={(date) => onChange(title, content, date)}
                       locale={outputCorrectDatePickerLocale(localize.language)}
                       dateFormat="P"
                     />

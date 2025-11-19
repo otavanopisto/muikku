@@ -488,7 +488,7 @@ const isPeriodCourseItemActivityCourse = (
   "identifier" in item && item.identifier.startsWith("activity-");
 
 /**
- * Type guard for planned course with identifier
+ * Type guard for check selected item is planned course
  * @param item item
  */
 const isSelectedItemPlannedCourse = (
@@ -497,7 +497,7 @@ const isSelectedItemPlannedCourse = (
   "identifier" in item && item.identifier.startsWith("planned-");
 
 /**
- * Type guard for study planner note with identifier
+ * Type guard for check selected item is study planner note
  * @param item item
  * @returns true if the item is a study planner note item
  */
@@ -507,7 +507,7 @@ const isSelectedItemStudyPlannerNote = (
   "identifier" in item && item.identifier.startsWith("plan-note-");
 
 /**
- * Type guard for study planner note new item
+ * Type guard for check selected item is study planner note new
  * @param item item
  * @returns true if the item is a study planner note new item
  */
@@ -516,7 +516,7 @@ const isSelectedItemStudyPlannerNoteNew = (
 ): item is StudyPlannerNoteNew => "type" in item && item.type === "note-new";
 
 /**
- * Type guard for planned course new item
+ * Type guard for check selected item is planned course new
  * @param item item
  * @returns true if the item is a planned course new item
  */
@@ -534,7 +534,7 @@ const isNoTimeContextSelection = (
 ): selection is { type: null } => selection.type === null;
 
 /**
- * Checks if the course is a planned course
+ * Checks if the item is a planned course or study planner note
  * @param item item
  * @returns true if the course is a planned course
  */
@@ -548,7 +548,7 @@ const isDragDropItemPlannedCourseOrNote = (
   "identifier" in item && item.identifier.startsWith("planned-");
 
 /**
- * Type guard for study planner note item
+ * Type guard for check drag drop item is study planner note
  * @param item item
  * @returns true if the item is a study planner note item
  */
@@ -560,15 +560,6 @@ const isDragDropItemStudyPlannerNote = (
     | StudyPlannerNoteNew
 ): item is StudyPlannerNoteWithIdentifier =>
   "identifier" in item && item.identifier.startsWith("plan-note-");
-
-/**
- * Checks if the selected course is a planned course
- * @param course selected course
- * @returns true if the selected course is a planned course
- */
-const selectedIsPlannedCourse = (
-  course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
-): course is PlannedCourseWithIdentifier => "identifier" in course;
 
 export {
   createAndAllocateCoursesToPeriods,
@@ -583,7 +574,6 @@ export {
   isSelectedItemStudyPlannerNoteNew,
   isSelectedItemPlannedCourseNew,
   isNoTimeContextSelection,
-  selectedIsPlannedCourse,
   getPeriodMonthNames,
   getPeriodTypeByMonthNumber,
 };
