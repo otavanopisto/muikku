@@ -46,8 +46,13 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
  * @returns Rendered table content or empty state message
  */
 export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
-  const { matrix, currentMaxCourses, renderCourseCell, renderEmptyCell } =
-    props;
+  const {
+    matrix,
+    currentMaxCourses,
+    transferedList,
+    renderCourseCell,
+    renderEmptyCell,
+  } = props;
 
   const { t } = useTranslation("studyMatrix");
 
@@ -169,9 +174,70 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     );
   });
 
+  /**
+   * renderOtherSubjects
+   */
+  const renderOtherSubjects = () => {
+    const otherSubjects = transferedList.filter(
+      (tStudies) => tStudies.subject === "MUU"
+    );
+
+    if (otherSubjects.length === 0) {
+      return null;
+    }
+
+    const renderRows = otherSubjects.map((tStudy) => {
+      let courseName = tStudy.courseName;
+
+      const modifiers = ["centered", "course"];
+
+      if (tStudy.transferCreditMandatory) {
+        modifiers.push("MANDATORY");
+      } else {
+        courseName = `${courseName}*`;
+        modifiers.push("OPTIONAL");
+      }
+
+      modifiers.push("APPROVAL");
+
+      if (tStudy.passing) {
+        modifiers.push("PASSED-GRADE");
+      }
+
+      return (
+        <Tr key={tStudy.id} modifiers={["course"]}>
+          <Td modifiers={["subject"]}>{courseName}</Td>
+          <Td modifiers={modifiers}>
+            <Dropdown
+              content={
+                <div className="hops-container__study-tool-dropdown-container">
+                  <div className="hops-container__study-tool-dropdow-title">
+                    {courseName}
+                  </div>
+                </div>
+              }
+            >
+              <span
+                tabIndex={0}
+                className="table__data-content-wrapper table__data-content-wrapper--course"
+              >
+                {tStudy.grade}
+              </span>
+            </Dropdown>
+          </Td>
+        </Tr>
+      );
+    });
+
+    return (
+      <OPSCourseTableBody title="MUUT opinnot">{renderRows}</OPSCourseTableBody>
+    );
+  };
+
   return (
     <>
       <OPSCourseTableBody>{renderRows}</OPSCourseTableBody>
+      {renderOtherSubjects()}
     </>
   );
 };

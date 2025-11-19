@@ -43,7 +43,7 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
  * @returns Rendered list of courses
  */
 export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
-  const { children, matrix, renderCourseItem } = props;
+  const { children, matrix, transferedList, renderCourseItem } = props;
 
   const { t } = useTranslation("studyMatrix");
 
@@ -109,10 +109,78 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     );
   });
 
+  /**
+   * renderOtherSubjects
+   * @returns Rendered other subjects
+   */
+  const renderOtherSubjects = () => {
+    const otherSubjects = transferedList.filter(
+      (tStudy) => tStudy.subject === "MUU"
+    );
+
+    if (otherSubjects.length === 0) {
+      return null;
+    }
+
+    const renderRows = otherSubjects.map((tStudy) => {
+      const listItemIndicatormodifiers = ["course"];
+
+      if (tStudy.transferCreditMandatory) {
+        listItemIndicatormodifiers.push("MANDATORY");
+      } else {
+        listItemIndicatormodifiers.push("OPTIONAL");
+      }
+
+      listItemIndicatormodifiers.push("APPROVAL");
+
+      if (tStudy.passing) {
+        listItemIndicatormodifiers.push("PASSED-GRADE");
+      }
+
+      return (
+        <ListContainer key={tStudy.id} modifiers={["subject"]}>
+          <ListContainer modifiers={["row"]}>
+            <ListHeader modifiers={["subject-name"]}>
+              {tStudy.courseName}
+            </ListHeader>
+          </ListContainer>
+          <ListContainer modifiers={["row"]}>
+            <ListItem modifiers={["course"]}>
+              <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                <Dropdown
+                  content={
+                    <div className="hops-container__study-tool-dropdown-container">
+                      <div className="hops-container__study-tool-dropdow-title">
+                        {tStudy.courseName}
+                      </div>
+                    </div>
+                  }
+                >
+                  <span tabIndex={0} className="list__indicator-data-wapper">
+                    {tStudy.grade}
+                  </span>
+                </Dropdown>
+              </ListItemIndicator>
+            </ListItem>
+          </ListContainer>
+        </ListContainer>
+      );
+    });
+
+    return (
+      <>
+        <h3>MUUT opinnot</h3>
+
+        {renderRows}
+      </>
+    );
+  };
+
   return (
     <div className="list">
       <ListContainer modifiers={["section"]}>{renderRows}</ListContainer>
 
+      {renderOtherSubjects()}
       {children && children}
     </div>
   );
