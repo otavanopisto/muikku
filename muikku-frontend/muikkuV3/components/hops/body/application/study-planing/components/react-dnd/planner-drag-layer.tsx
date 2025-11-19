@@ -64,7 +64,7 @@ const renderItem = (type: string, item: any) => {
       const course = item.info as PlannedCourseWithIdentifier;
       return <PlannerPeriodCourseCardPreview course={course} />;
     }
-    case "new-course-card": {
+    case "planned-course-new": {
       const course = item.info as Course & { subjectCode: string };
       return (
         <PlannerCourseTrayItemPreview

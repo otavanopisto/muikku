@@ -135,7 +135,7 @@ export interface StudyPlannerNoteWithIdentifier extends StudyPlannerNote {
  */
 export type DroppableCardType =
   | "planned-course-card"
-  | "new-course-card"
+  | "planned-course-new"
   | "note-card"
   | "new-note-card";
 

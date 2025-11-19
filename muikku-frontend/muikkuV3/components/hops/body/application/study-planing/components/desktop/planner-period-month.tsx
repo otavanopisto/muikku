@@ -467,7 +467,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
             !isPast
               ? [
                   "planned-course-card",
-                  "new-course-card",
+                  "planned-course-new",
                   "note-card",
                   "new-note-card",
                 ]

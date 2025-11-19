@@ -494,7 +494,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
             !isPast
               ? [
                   "planned-course-card",
-                  "new-course-card",
+                  "planned-course-new",
                   "note-card",
                   "new-note-card",
                 ]
