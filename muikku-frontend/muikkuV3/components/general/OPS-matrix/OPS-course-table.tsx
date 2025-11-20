@@ -225,6 +225,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
               </span>
             </Dropdown>
           </Td>
+          <Td colSpan={currentMaxCourses - 1}></Td>
         </Tr>
       );
     });
