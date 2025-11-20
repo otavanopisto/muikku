@@ -309,15 +309,15 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(newAnnouncement);
     
     
-    boolean pinnedByLoggedUser = false;
+    boolean pinnedToSelf = false;
     
     AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(newAnnouncement, sessionController.getLoggedUserEntity().getId());
     
     if (announcementRecipient != null) {
-      pinnedByLoggedUser = announcementRecipient.isPinned();
+      pinnedToSelf = announcementRecipient.isPinned();
     }
     return Response
-        .ok(createRESTModel(newAnnouncement, announcementUserGroups, announcementWorkspaces, pinnedByLoggedUser))
+        .ok(createRESTModel(newAnnouncement, announcementUserGroups, announcementWorkspaces, pinnedToSelf))
         .build();
   }
   
@@ -458,14 +458,14 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
     
-    boolean pinnedByLoggedUser = false;
+    boolean pinnedToSelf = false;
     
     AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
     
     if (announcementRecipient != null) {
-      pinnedByLoggedUser = announcementRecipient.isPinned();
+      pinnedToSelf = announcementRecipient.isPinned();
     }
-    return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, pinnedByLoggedUser)).build();
+    return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, pinnedToSelf)).build();
   }
   
   @POST
@@ -737,7 +737,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     return Objects.equals(announcementOrganizationId, userOrganizationId);
   }
 
-  private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces, boolean pinnedByLoggedUser) {
+  private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces, boolean pinnedToSelf) {
     AnnouncementRESTModel restModel = new AnnouncementRESTModel();
     restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
     restModel.setCaption(announcement.getCaption());
@@ -749,7 +749,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setPubliclyVisible(announcement.getPubliclyVisible());
     restModel.setArchived(announcement.getArchived());
     restModel.setPinned(announcement.isPinned());
-    restModel.setPinnedByLoggedUser(pinnedByLoggedUser);
+    restModel.setPinnedToSelf(pinnedToSelf);
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {

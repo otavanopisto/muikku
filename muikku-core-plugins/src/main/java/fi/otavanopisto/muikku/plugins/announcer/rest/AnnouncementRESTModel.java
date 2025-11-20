@@ -119,12 +119,12 @@ public class AnnouncementRESTModel {
     this.pinned = pinned;
   }
 
-  public boolean isPinnedByLoggedUser() {
-    return pinnedByLoggedUser;
+  public boolean isPinnedToSelf() {
+    return pinnedToSelf;
   }
 
-  public void setPinnedByLoggedUser(boolean pinnedByLoggedUser) {
-    this.pinnedByLoggedUser = pinnedByLoggedUser;
+  public void setPinnedToSelf(boolean pinnedToSelf) {
+    this.pinnedToSelf = pinnedToSelf;
   }
 
   public List<WorkspaceBasicInfo> getWorkspaces() {
@@ -157,7 +157,7 @@ public class AnnouncementRESTModel {
   private AnnouncementTemporalStatus temporalStatus;
   private boolean unread;
   private boolean pinned;
-  private boolean pinnedByLoggedUser;
+  private boolean pinnedToSelf;
   private List<WorkspaceBasicInfo> workspaces;
   private List<AnnouncementCategoryRESTModel> categories;
 }
