@@ -2805,6 +2805,7 @@
       "mandatoryShorthand": "P",
       "optional": "$t(common:labels.optional)",
       "optionalShorthand": "V",
+      "otherStudies": "MUUT opinnot",
       "schoolSubject": "Oppiaine",
       "signUpMessage": "Ilmoitusviesti",
       "signUpStudent": "Ilmoita opiskelija kurssille",

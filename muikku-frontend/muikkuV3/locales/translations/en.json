@@ -2805,6 +2805,7 @@
       "mandatoryShorthand": "M",
       "optional": "$t(common:labels.optional)",
       "optionalShorthand": "O",
+      "otherStudies": "Other studies",
       "schoolSubject": "School subject",
       "signUpMessage": "Sign up message",
       "signUpStudent": "Sign up student to course",

@@ -169,7 +169,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
 
     return (
       <>
-        <h3>MUUT opinnot</h3>
+        <h3>{t("labels.otherStudies")}</h3>
 
         {renderRows}
       </>

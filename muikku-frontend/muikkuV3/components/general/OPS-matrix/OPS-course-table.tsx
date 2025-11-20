@@ -231,7 +231,9 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     });
 
     return (
-      <OPSCourseTableBody title="MUUT opinnot">{renderRows}</OPSCourseTableBody>
+      <OPSCourseTableBody title={t("labels.otherStudies")}>
+        {renderRows}
+      </OPSCourseTableBody>
     );
   };
 
