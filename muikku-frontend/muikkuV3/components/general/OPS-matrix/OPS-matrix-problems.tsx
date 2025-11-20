@@ -61,9 +61,11 @@ const OPSMatrixProblems = (props: OPSMatrixProblemsProps) => {
     }
 
     return (
-      <li key={problemType} className="matrix-problems__list-item">
-        {problemContent}
-      </li>
+      <li
+        key={problemType}
+        className="hops-container__matrix-problems-list-item"
+        dangerouslySetInnerHTML={{ __html: problemContent }}
+      ></li>
     );
   };
 
@@ -72,13 +74,13 @@ const OPSMatrixProblems = (props: OPSMatrixProblemsProps) => {
   }
 
   return (
-    <div className="matrix-problems">
-      <div className="matrix-problems__message">
+    <div className="hops-container__matrix-problems">
+      <div className="hops-container__matrix-problems-message">
         {t("content.problemsExist", {
           ns: "studyMatrix",
         })}
       </div>
-      <ul className="matrix-problems__list">
+      <ul className="hops-container__matrix-problems-list">
         {matrixProblems.map(renderProblem)}
       </ul>
     </div>

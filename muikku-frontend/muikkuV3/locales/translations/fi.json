@@ -2822,11 +2822,11 @@
     },
     "problems": {
       "incompatibleStudent": "Opiskelija ei ole yhteensopiva OPS matriisin kanssa",
-      "noMath": "Opiskelijalle ei ole tehty matematiikan ainevalintaa",
-      "noNativeLanguage": "Opiskelijalle ei ole tehty äidinkielen ainevalintaa",
-      "noPrimaryForeignLanguage": "Opiskelijalle ei ole tehty pitkän vieraan kielen ainevalintaa",
-      "noSecondaryForeignLanguage": "Opiskelijalle ei ole tehty lyhyen vieraan kielen ainevalintaa",
-      "noReligion": "Opiskelijalle ei ole tehty uskonnon ainevalintaa"
+      "noMath": "Opiskelijalle ei ole tehty <b>matematiikan ainevalintaa</b>",
+      "noNativeLanguage": "Opiskelijalle ei ole tehty <b>äidinkielen ainevalintaa</b>",
+      "noPrimaryForeignLanguage": "Opiskelijalle ei ole tehty <b>pitkän vieraan kielen ainevalintaa</b>",
+      "noSecondaryForeignLanguage": "Opiskelijalle ei ole tehty <b>lyhyen vieraan kielen ainevalintaa</b>",
+      "noReligion": "Opiskelijalle ei ole tehty <b>uskonnon ainevalintaa</b>"
     }
   },
   "courseCarousel": {

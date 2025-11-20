@@ -46,12 +46,10 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
 
   return (
     <>
-      <div className="hops__form-element-container  swiper-no-swiping">
-        <OPSMatrixProblems
-          matrixType={studyProgress.courseMatrix.type}
-          matrixProblems={studyProgress.courseMatrix.problems}
-        />
-      </div>
+      <OPSMatrixProblems
+        matrixType={studyProgress.courseMatrix.type}
+        matrixProblems={studyProgress.courseMatrix.problems}
+      />
 
       <div className="hops-container__study-tool-indicators">
         <div className="hops-container__study-tool-indicator-container--legend-title">
