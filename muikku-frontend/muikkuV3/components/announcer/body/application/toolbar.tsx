@@ -8,7 +8,7 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
-import { filterMatch, filterHighlight } from "~/util/modifiers";
+import { filterMatch, filterHighlight, colorIntToHex } from "~/util/modifiers";
 import { AnnouncementsState } from "~/reducers/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
@@ -257,6 +257,7 @@ class AnnouncerToolbar extends React.Component<
         </ApplicationPanelToolbar>
       );
     } else {
+      const isAtLeastOneSelected = this.props.announcements.selected.length > 0;
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
@@ -324,40 +325,59 @@ class AnnouncerToolbar extends React.Component<
                     })}
                   </Link>,
                 ].concat(
-                  this.props.announcements.navigation
-                    .filter(
-                      (item) =>
-                        item.type === "category" &&
-                        filterMatch(item.text, this.state.category)
+                  this.props.announcements.categories
+                    .filter((item) =>
+                      filterMatch(item.category, this.state.category)
                     )
                     .map((category) => {
-                      const isSelected = true; //TODO check if label is selected
+                      const categoryInSelectedCount =
+                        this.props.announcements.selected.reduce(
+                          (count, selected) =>
+                            selected.categories.some(
+                              (c) => c.id === category.id
+                            )
+                              ? count + 1
+                              : count,
+                          0
+                        );
+                      const isSelected = this.props.announcements.selected.find(
+                        (selected) =>
+                          selected.categories.some((c) => c.id === category.id)
+                      );
+                      const isPartiallySelected =
+                        this.props.announcements.selected.length >
+                          categoryInSelectedCount &&
+                        categoryInSelectedCount > 0;
+
                       return (
                         <Link
                           key={category.id}
                           tabIndex={0}
                           className={`link link--full link--communicator-label-dropdown ${
                             isSelected ? "selected" : ""
+                          } ${isPartiallySelected ? "semi-selected" : ""} ${
+                            isAtLeastOneSelected ? "" : "disabled"
                           }`}
-                          onClick={
-                            !isSelected
-                              ? this.props.addLabelToCurrentMessageThread.bind(
-                                  null,
-                                  category
-                                )
-                              : this.props.removeLabelFromCurrentMessageThread.bind(
-                                  null,
-                                  category
-                                )
-                          }
+
+                          //onClick={
+                          //  !isSelected
+                          //    ? this.props.addLabelToCurrentMessageThread.bind(
+                          //        null,
+                          //        category
+                          //      )
+                          //    : this.props.removeLabelFromCurrentMessageThread.bind(
+                          //        null,
+                          //        category
+                          //      )
+                          //}
                         >
                           <span
                             className="link__icon icon-tag"
-                            style={{ color: category.color }}
+                            style={{ color: colorIntToHex(category.color) }}
                           ></span>
                           <span className="link__text">
                             {filterHighlight(
-                              category.text,
+                              category.category,
                               this.state.category
                             )}
                           </span>

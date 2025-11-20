@@ -519,6 +519,87 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
   };
 
 /**
+ * updateAnnouncement
+ * @param data data
+ */
+const updateSelectedAnnouncements: UpdateAnnouncementTriggerType =
+  function updateSelectedAnnouncements(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const announcements: AnnouncementsState = state.announcements;
+
+      if (!validateAnnouncement(dispatch, getState, data.announcement)) {
+        return data.fail && data.fail();
+      }
+      await Promise.all(
+        announcements.selected.map(async (announcement) => {
+          try {
+            const nAnnouncement: Announcement = Object.assign(
+              {},
+              data.announcement,
+              data.update
+            );
+
+            await announcerApi.updateAnnouncement({
+              announcementId: data.announcement.id,
+              updateAnnouncementRequest: nAnnouncement,
+            });
+
+            const diff = moment(nAnnouncement.endDate).diff(moment(), "days");
+            if (announcements.location !== "active" && diff >= 0) {
+              if (data.cancelRedirect) {
+                dispatch({
+                  type: "DELETE_ANNOUNCEMENT",
+                  payload: data.announcement,
+                });
+                return;
+              }
+              location.hash = "#active";
+            } else if (announcements.location !== "expired" && diff < 0) {
+              if (data.cancelRedirect) {
+                dispatch({
+                  type: "DELETE_ANNOUNCEMENT",
+                  payload: data.announcement,
+                });
+                return;
+              }
+              location.hash = "#expired";
+            } else {
+              dispatch({
+                type: "UPDATE_ONE_ANNOUNCEMENT",
+                payload: {
+                  update: await announcerApi.getAnnouncement({
+                    announcementId: data.announcement.id,
+                  }),
+                  announcement: data.announcement,
+                },
+              });
+            }
+            data.success && data.success();
+          } catch (err) {
+            if (!isMApiError(err)) {
+              throw err;
+            }
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.updateError", {
+                  ns: "messaging",
+                  context: "announcement",
+                }),
+                "error"
+              )
+            );
+            data.fail && data.fail();
+          }
+        })
+      );
+    };
+  };
+
+/**
  * deleteAnnouncement
  * @param data data
  */

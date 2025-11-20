@@ -161,25 +161,27 @@ class Announcements extends BodyScrollLoader<
                       modifiers={announcement.unread ? "unread" : ""}
                       header={announcement.caption}
                     />
-                    {announcement.categories.length !== 0 && (
-                      <div className="labels item-list__announcement-categories">
-                        {announcement.categories.map((category) => (
-                          <span className="label" key={category.id}>
-                            <span
-                              style={{ color: colorIntToHex(category.color) }}
-                              className="label__icon label__icon--announcement-usergroup icon-tag"
-                            ></span>
-                            <span className="label__text label__text--announcement-usergroup">
-                              {category.category}
-                            </span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
 
                     {announcement.workspaces.length !== 0 ||
                     announcement.userGroupEntityIds.length !== 0 ? (
                       <div className="labels item-list__announcement-workspaces">
+                        {announcement.categories.length !== 0 && (
+                          <>
+                            {announcement.categories.map((category) => (
+                              <span className="label" key={category.id}>
+                                <span
+                                  style={{
+                                    color: colorIntToHex(category.color),
+                                  }}
+                                  className="label__icon label__icon--announcement-usergroup icon-tag"
+                                ></span>
+                                <span className="label__text label__text--announcement-usergroup">
+                                  {category.category}
+                                </span>
+                              </span>
+                            ))}
+                          </>
+                        )}
                         {announcement.workspaces.map((workspace) => {
                           if (announcement.workspaces.length !== 0) {
                             return (

@@ -70,25 +70,24 @@ class Announcements extends React.Component<
             <span className="icon icon-pin"></span>
           )}
         </header>
-        {this.props.announcement.categories.length !== 0 && (
-          <div className="labels item-list__announcement-categories">
-            {this.props.announcement.categories.map((category) => (
-              <span className="label" key={category.id}>
-                <span
-                  style={{ color: colorIntToHex(category.color) }}
-                  className="label__icon label__icon--announcement-usergroup icon-tag"
-                ></span>
-                <span className="label__text label__text--announcement-usergroup">
-                  {category.category}
+        <div className="labels">
+          {this.props.announcement.categories.length !== 0 && (
+            <>
+              {this.props.announcement.categories.map((category) => (
+                <span className="label" key={category.id}>
+                  <span
+                    style={{ color: colorIntToHex(category.color) }}
+                    className="label__icon label__icon--announcement-usergroup icon-tag"
+                  ></span>
+                  <span className="label__text label__text--announcement-usergroup">
+                    {category.category}
+                  </span>
                 </span>
-              </span>
-            ))}
-          </div>
-        )}
-        {this.props.announcement.workspaces.length ||
-        this.props.announcement.userGroupEntityIds.length ? (
-          <div className="labels">
-            {this.props.announcement.workspaces.map((workspace) => (
+              ))}
+            </>
+          )}
+          {this.props.announcement.workspaces.length !== 0 &&
+            this.props.announcement.workspaces.map((workspace) => (
               <span className="label" key={workspace.id}>
                 <span className="label__icon label__icon--workspace icon-books"></span>
                 <span className="label__text label__text--workspace">
@@ -99,7 +98,8 @@ class Announcements extends React.Component<
                 </span>
               </span>
             ))}
-            {this.props.announcement.userGroupEntityIds.map((userGroupId) => {
+          {this.props.announcement.userGroupEntityIds.length !== 0 &&
+            this.props.announcement.userGroupEntityIds.map((userGroupId) => {
               if (!this.props.userIndex.groups[userGroupId]) {
                 return null;
               }
@@ -112,8 +112,7 @@ class Announcements extends React.Component<
                 </span>
               );
             })}
-          </div>
-        ) : null}
+        </div>
         <div className="article__date">{articleDate}</div>
         <section className="article__body rich-text">
           <CkeditorLoaderContent html={this.props.announcement.content} />
