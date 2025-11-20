@@ -22,6 +22,8 @@ import {
   markAllAsRead,
   LoadAnnouncementsTriggerType,
   updateAnnouncement,
+  updateSelectedAnnouncementCategories,
+  UpdateSelectedAnnouncementCategoryTriggerType,
   UpdateAnnouncementTriggerType,
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
@@ -42,6 +44,7 @@ interface AnnouncerToolbarProps extends WithTranslation {
   updateAnnouncement: UpdateAnnouncementTriggerType;
   markAllAsRead: LoadAnnouncementsTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
+  updateSelectedAnnouncementCategories: UpdateSelectedAnnouncementCategoryTriggerType;
 }
 
 /**
@@ -358,18 +361,11 @@ class AnnouncerToolbar extends React.Component<
                           } ${isPartiallySelected ? "semi-selected" : ""} ${
                             isAtLeastOneSelected ? "" : "disabled"
                           }`}
-
-                          //onClick={
-                          //  !isSelected
-                          //    ? this.props.addLabelToCurrentMessageThread.bind(
-                          //        null,
-                          //        category
-                          //      )
-                          //    : this.props.removeLabelFromCurrentMessageThread.bind(
-                          //        null,
-                          //        category
-                          //      )
-                          //}
+                          onClick={() =>
+                            this.props.updateSelectedAnnouncementCategories(
+                              category
+                            )
+                          }
                         >
                           <span
                             className="link__icon icon-tag"
@@ -422,6 +418,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       removeFromAnnouncementsSelected,
       markAllAsRead,
       createAnnouncementCategory,
+      updateSelectedAnnouncementCategories,
     },
     dispatch
   );

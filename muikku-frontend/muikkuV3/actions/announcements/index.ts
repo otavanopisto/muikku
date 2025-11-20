@@ -145,6 +145,17 @@ export interface UpdateAnnouncementTriggerType {
 }
 
 /**
+ * UpdateAnnouncementTriggerType
+ */
+export interface UpdateSelectedAnnouncementCategoryTriggerType {
+  (
+    category: AnnouncementCategory,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+/**
  * DeleteAnnouncementTriggerType
  */
 export interface DeleteAnnouncementTriggerType {
@@ -520,82 +531,75 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
 
 /**
  * updateAnnouncement
- * @param data data
+ * @param category category
+ * @param success success
+ * @param fail fail
  */
-const updateSelectedAnnouncements: UpdateAnnouncementTriggerType =
-  function updateSelectedAnnouncements(data) {
+const updateSelectedAnnouncementCategories: UpdateSelectedAnnouncementCategoryTriggerType =
+  function updateSelectedAnnouncementCategorie(category, success?, fail?) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
-
-      if (!validateAnnouncement(dispatch, getState, data.announcement)) {
-        return data.fail && data.fail();
-      }
-      await Promise.all(
-        announcements.selected.map(async (announcement) => {
-          try {
-            const nAnnouncement: Announcement = Object.assign(
-              {},
-              data.announcement,
-              data.update
-            );
-
-            await announcerApi.updateAnnouncement({
-              announcementId: data.announcement.id,
-              updateAnnouncementRequest: nAnnouncement,
-            });
-
-            const diff = moment(nAnnouncement.endDate).diff(moment(), "days");
-            if (announcements.location !== "active" && diff >= 0) {
-              if (data.cancelRedirect) {
-                dispatch({
-                  type: "DELETE_ANNOUNCEMENT",
-                  payload: data.announcement,
-                });
-                return;
-              }
-              location.hash = "#active";
-            } else if (announcements.location !== "expired" && diff < 0) {
-              if (data.cancelRedirect) {
-                dispatch({
-                  type: "DELETE_ANNOUNCEMENT",
-                  payload: data.announcement,
-                });
-                return;
-              }
-              location.hash = "#expired";
-            } else {
-              dispatch({
-                type: "UPDATE_ONE_ANNOUNCEMENT",
-                payload: {
-                  update: await announcerApi.getAnnouncement({
-                    announcementId: data.announcement.id,
-                  }),
-                  announcement: data.announcement,
-                },
-              });
-            }
-            data.success && data.success();
-          } catch (err) {
-            if (!isMApiError(err)) {
-              throw err;
-            }
-            dispatch(
-              notificationActions.displayNotification(
-                i18n.t("notifications.updateError", {
-                  ns: "messaging",
-                  context: "announcement",
-                }),
-                "error"
-              )
-            );
-            data.fail && data.fail();
-          }
-        })
+      const categoryExistInAll = announcements.selected.every((announcement) =>
+        announcement.categories.find((c) => c.id === category.id)
       );
+
+      // Process announcements sequentially, Promise.all gave errors from backend
+      for (let i = 0; i < announcements.selected.length; i++) {
+        const announcement = announcements.selected[i];
+        try {
+          const announcementUpdate = { ...announcement };
+          const categories: AnnouncementCategory[] = [
+            ...announcement.categories,
+          ];
+          const categoryIndex = categories.findIndex(
+            (c) => c.id === category.id
+          );
+
+          if (categoryIndex !== -1) {
+            if (categoryExistInAll) {
+              //remove category
+              categories.splice(categoryIndex, 1);
+            }
+          } else {
+            categories.push(category);
+          }
+
+          announcementUpdate.categories = categories;
+
+          const updatedAnnouncement = await announcerApi.updateAnnouncement({
+            announcementId: announcement.id,
+            updateAnnouncementRequest: announcementUpdate,
+          });
+
+          dispatch({
+            type: "UPDATE_ONE_ANNOUNCEMENT",
+            payload: {
+              update: updatedAnnouncement,
+              announcement: announcement,
+            },
+          });
+
+          success && success();
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.updateError", {
+                ns: "messaging",
+                context: "announcement",
+              }),
+              "error"
+            )
+          );
+          fail && fail();
+        }
+      }
     };
   };
 
@@ -942,6 +946,7 @@ export {
   addToAnnouncementsSelected,
   removeFromAnnouncementsSelected,
   updateAnnouncement,
+  updateSelectedAnnouncementCategories,
   loadAnnouncement,
   deleteSelectedAnnouncements,
   deleteAnnouncement,

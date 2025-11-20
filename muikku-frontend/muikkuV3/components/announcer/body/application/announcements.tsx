@@ -162,58 +162,66 @@ class Announcements extends BodyScrollLoader<
                       header={announcement.caption}
                     />
 
-                    {announcement.workspaces.length !== 0 ||
-                    announcement.userGroupEntityIds.length !== 0 ? (
-                      <div className="labels item-list__announcement-workspaces">
-                        {announcement.categories.length !== 0 && (
-                          <>
-                            {announcement.categories.map((category) => (
-                              <span className="label" key={category.id}>
-                                <span
-                                  style={{
-                                    color: colorIntToHex(category.color),
-                                  }}
-                                  className="label__icon label__icon--announcement-usergroup icon-tag"
-                                ></span>
-                                <span className="label__text label__text--announcement-usergroup">
-                                  {category.category}
-                                </span>
+                    <div className="labels item-list__announcement-workspaces">
+                      {announcement.categories.length !== 0 && (
+                        <>
+                          {announcement.categories.map((category) => (
+                            <span className="label" key={category.id}>
+                              <span
+                                style={{
+                                  color: colorIntToHex(category.color),
+                                }}
+                                className="label__icon label__icon--announcement-usergroup icon-tag"
+                              ></span>
+                              <span className="label__text label__text--announcement-usergroup">
+                                {category.category}
                               </span>
-                            ))}
-                          </>
-                        )}
-                        {announcement.workspaces.map((workspace) => {
-                          if (announcement.workspaces.length !== 0) {
-                            return (
-                              <span className="label" key={workspace.id}>
-                                <span className="label__icon label__icon--workspace icon-books"></span>
-                                <span className="label__text label__text--workspace">
-                                  {workspace.name}{" "}
-                                  {workspace.nameExtension
-                                    ? "(" + workspace.nameExtension + ")"
-                                    : null}
+                            </span>
+                          ))}
+                        </>
+                      )}
+                      {announcement.workspaces.length !== 0 && (
+                        <>
+                          {announcement.workspaces.map((workspace) => {
+                            if (announcement.workspaces.length !== 0) {
+                              return (
+                                <span className="label" key={workspace.id}>
+                                  <span className="label__icon label__icon--workspace icon-books"></span>
+                                  <span className="label__text label__text--workspace">
+                                    {workspace.name}{" "}
+                                    {workspace.nameExtension
+                                      ? "(" + workspace.nameExtension + ")"
+                                      : null}
+                                  </span>
                                 </span>
-                              </span>
-                            );
-                          }
-                        })}
-                        {announcement.userGroupEntityIds.map((userGroupId) => {
-                          if (this.props.userIndex.groups[userGroupId]) {
-                            return (
-                              <span className="label" key={userGroupId}>
-                                <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
-                                <span className="label__text label__text--announcement-usergroup">
-                                  {
-                                    this.props.userIndex.groups[userGroupId]
-                                      .name
-                                  }
-                                </span>
-                              </span>
-                            );
-                          }
-                        })}
-                      </div>
-                    ) : null}
+                              );
+                            }
+                          })}
+                        </>
+                      )}
+                      {announcement.userGroupEntityIds.length !== 0 && (
+                        <>
+                          {announcement.userGroupEntityIds.map(
+                            (userGroupId) => {
+                              if (this.props.userIndex.groups[userGroupId]) {
+                                return (
+                                  <span className="label" key={userGroupId}>
+                                    <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
+                                    <span className="label__text label__text--announcement-usergroup">
+                                      {
+                                        this.props.userIndex.groups[userGroupId]
+                                          .name
+                                      }
+                                    </span>
+                                  </span>
+                                );
+                              }
+                            }
+                          )}
+                        </>
+                      )}
+                    </div>
+
                     <ApplicationListItemFooter modifiers="announcement-actions">
                       <NewEditAnnouncement announcement={announcement}>
                         <Link
