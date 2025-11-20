@@ -712,18 +712,13 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/contacts/{ID}")
+  @Path("/contacts/{USERIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listUserContacts(@PathParam("ID") String id) {
-    
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
-    if (userIdentifier == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", id)).build();
-    }
+  public Response listUserContacts(@PathParam("USERIDENTIFIER") SchoolDataIdentifier userIdentifier) {
     
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     if (userEntity == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", userIdentifier.toId())).build();
     }
    
     if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
@@ -734,6 +729,34 @@ public class UserRESTService extends AbstractRESTService {
     
     List<UserContact> userContacts = userController.listUserContacts(userIdentifier);
     return Response.ok(createRestModel(userContacts.toArray(new UserContact[0]))).build();
+  }
+  
+  @PUT
+  @Path("/contacts/{USERIDENTIFIER}/contactInfos/{CONTACTINFOID}/allowStudyDiscussions")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateContactInfoAllowStudyDiscussions(@PathParam("USERIDENTIFIER") SchoolDataIdentifier userIdentifier, 
+      @PathParam("CONTACTINFOID") Long contactInfoId, Boolean allowStudyDiscussions) {
+    
+    if (contactInfoId == null || allowStudyDiscussions == null) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", userIdentifier.toId())).build();
+    }
+   
+    if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    BridgeResponse<UserContact> response = userController.updateContactInfoAllowStudyDiscussions(userIdentifier, contactInfoId, allowStudyDiscussions.booleanValue());
+    if (response.ok()) {
+      return Response.noContent().build();
+    }
+    else {
+      return Response.status(Status.fromStatusCode(response.getStatusCode())).build();
+    }
   }
   
   @PUT
@@ -1651,7 +1674,8 @@ public class UserRESTService extends AbstractRESTService {
         userContact.getCity(),
         userContact.getCountry(),
         userContact.getContactType(),
-        userContact.isDefaultContact());
+        userContact.isDefaultContact(),
+        userContact.getAllowStudyDiscussions());
   }
   
   private String toId(SchoolDataIdentifier identifier) {
@@ -1685,7 +1709,7 @@ public class UserRESTService extends AbstractRESTService {
     List<StudentPhoneNumber> result = new ArrayList<>();
     
     for (UserPhoneNumber entity : entities) {
-      result.add(new StudentPhoneNumber(toId(entity.getUserIdentifier()), entity.getType(), entity.getNumber(), entity.getDefaultNumber()));
+      result.add(new StudentPhoneNumber(toId(entity.getUserIdentifier()), entity.getNumber(), entity.getDefaultNumber()));
     }
 
     return result;
@@ -1695,7 +1719,7 @@ public class UserRESTService extends AbstractRESTService {
     List<StudentEmail> result = new ArrayList<>();
     
     for (UserEmail entity : entities) {
-      result.add(new StudentEmail(toId(entity.getUserIdentifier()), entity.getType(), entity.getAddress(), entity.getDefaultAddress()));
+      result.add(new StudentEmail(toId(entity.getUserIdentifier()), entity.getAddress(), entity.getDefaultAddress()));
     }
 
     return result;
@@ -1713,7 +1737,6 @@ public class UserRESTService extends AbstractRESTService {
           entity.getCity(),
           entity.getRegion(),
           entity.getCountry(),
-          entity.getType(),
           entity.getDefaultAddress())
       );
     }
