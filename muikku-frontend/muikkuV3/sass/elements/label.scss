@@ -33,6 +33,19 @@
   padding: 2px 10px;
 }
 
+.label--guider-concent {
+  background-color: lighten($color-info, 40%);
+  width: fit-content;
+}
+
+.label--guider-contact-type {
+  background-color: lighten($color-notice, 20%);
+  position: absolute;
+  right: 5px;
+  top: -13px;
+  width: fit-content;
+}
+
 .label--ENDING {
   background-color: $color-label-background-highlight;
 }
