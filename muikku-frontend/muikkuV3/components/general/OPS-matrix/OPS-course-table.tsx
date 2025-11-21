@@ -231,7 +231,10 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     });
 
     return (
-      <OPSCourseTableBody title={t("labels.otherStudies")}>
+      <OPSCourseTableBody
+        currentMaxCourses={currentMaxCourses}
+        title={t("labels.otherStudies")}
+      >
         {renderRows}
       </OPSCourseTableBody>
     );
