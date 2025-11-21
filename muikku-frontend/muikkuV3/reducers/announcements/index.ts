@@ -154,10 +154,14 @@ export const announcements: Reducer<AnnouncementsState> = (
 
     case "DELETE_ANNOUNCEMENT_CATEGORY": {
       const categories = [...state.categories];
-      categories.splice(
-        categories.findIndex((category) => category.id === action.payload),
-        1
+      const categoryToDeleteIndex = categories.findIndex(
+        (category) => category.id === action.payload
       );
+
+      if (categoryToDeleteIndex !== -1) {
+        categories.splice(categoryToDeleteIndex, 1);
+      }
+
       return {
         ...state,
         categories,

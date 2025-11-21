@@ -81,18 +81,17 @@ export async function loadAnnouncementsHelper(
   const item: AnnouncerNavigationItemType = navigation.find(
     (item) => item.location === actualLocation
   );
-  let category = null;
+  const category = categories.find(
+    (cat) => `category-${cat.id}` === actualLocation
+  );
 
   if (!item && !actualLocation.includes("category-")) {
     return dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
       payload: <AnnouncementsStateType>"ERROR",
     });
-  } else {
-    category = categories.find(
-      (cat) => `category-${cat.id}` === actualLocation
-    );
   }
+
   // Generate the API query parameters
   const firstResult = initial ? 0 : announcements.announcements.length;
   const concat = !initial;
@@ -140,7 +139,7 @@ export async function loadAnnouncementsHelper(
 
   try {
     const newAnnouncements = await announcerApi.getAnnouncements(params);
-    const categories = await announcerApi.listAnnouncementCategories();
+
     const hasMore: boolean =
       newAnnouncements.announcements.length === MAX_LOADED_AT_ONCE + 1;
 
@@ -166,11 +165,10 @@ export async function loadAnnouncementsHelper(
       payload.announcements = announcements.announcements.concat(actualResults);
     } else {
       // Replace announcements for initial load
-      payload.announcements = actualResults;
       payload.unreadCount = newAnnouncements.unreadCount;
       payload.selected = [];
       payload.selectedIds = [];
-      payload.categories = categories;
+      payload.categories = await announcerApi.listAnnouncementCategories();
     }
 
     //And there it goes

@@ -88,21 +88,18 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
               {localize.date(announcement.startDate)}
             </span>
             <div className="labels ">
-              {announcement.categories.length !== 0 && (
-                <>
-                  {announcement.categories.map((category) => (
-                    <span className="label" key={category.id}>
-                      <span
-                        style={{ color: colorIntToHex(category.color) }}
-                        className="label__icon label__icon--announcement-usergroup icon-tag"
-                      ></span>
-                      <span className="label__text label__text--announcement-usergroup">
-                        {category.category}
-                      </span>
+              {announcement.categories.length !== 0 &&
+                announcement.categories.map((category) => (
+                  <span className="label" key={category.id}>
+                    <span
+                      style={{ color: colorIntToHex(category.color) }}
+                      className="label__icon label__icon--announcement-usergroup icon-tag"
+                    ></span>
+                    <span className="label__text label__text--announcement-usergroup">
+                      {category.category}
                     </span>
-                  ))}
-                </>
-              )}
+                  </span>
+                ))}
               {announcement.workspaces &&
                 announcement.workspaces.length !== 0 && (
                   <>

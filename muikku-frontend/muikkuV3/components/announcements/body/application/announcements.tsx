@@ -71,21 +71,18 @@ class Announcements extends React.Component<
           )}
         </header>
         <div className="labels">
-          {this.props.announcement.categories.length !== 0 && (
-            <>
-              {this.props.announcement.categories.map((category) => (
-                <span className="label" key={category.id}>
-                  <span
-                    style={{ color: colorIntToHex(category.color) }}
-                    className="label__icon label__icon--announcement-usergroup icon-tag"
-                  ></span>
-                  <span className="label__text label__text--announcement-usergroup">
-                    {category.category}
-                  </span>
+          {this.props.announcement.categories.length !== 0 &&
+            this.props.announcement.categories.map((category) => (
+              <span className="label" key={category.id}>
+                <span
+                  style={{ color: colorIntToHex(category.color) }}
+                  className="label__icon label__icon--announcement-usergroup icon-tag"
+                ></span>
+                <span className="label__text label__text--announcement-usergroup">
+                  {category.category}
                 </span>
-              ))}
-            </>
-          )}
+              </span>
+            ))}
           {this.props.announcement.workspaces.length !== 0 &&
             this.props.announcement.workspaces.map((workspace) => (
               <span className="label" key={workspace.id}>
