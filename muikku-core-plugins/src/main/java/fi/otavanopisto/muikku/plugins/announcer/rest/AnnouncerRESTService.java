@@ -631,6 +631,12 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid announcementId").build();
     }
     
+    if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.FIND_ANNOUNCEMENT)) {
+      if (!canSeeAnnouncement(announcement, sessionController.getLoggedUser())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
     
     if (announcementRecipient == null) {
