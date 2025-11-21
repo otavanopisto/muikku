@@ -157,7 +157,6 @@
   @include breakpoint($breakpoint-pad) {
     width: 200px;
   }
-
 }
 
 .table__head--evaluate-workspaces {
@@ -168,7 +167,6 @@
     width: 400px;
   }
 }
-
 
 .table__head--right,
 .table__data--right {
@@ -210,6 +208,7 @@
 }
 
 .table__data--subtitle {
+  border-bottom: 2px solid $color-hops-form-element-border;
   font-size: 1rem;
   font-weight: 600;
 }
