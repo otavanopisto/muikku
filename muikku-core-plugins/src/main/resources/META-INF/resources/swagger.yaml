@@ -443,7 +443,7 @@ paths:
   /rest/announcer/announcements/markAllAsRead:
     post:
       operationId: markAllAnnouncementsAsRead
-      summary: Mark all announc%5Bobject%20Objectements as read by logged user
+      summary: Mark all announcements as read by logged user
       tags:
         - Announcer
       responses:
