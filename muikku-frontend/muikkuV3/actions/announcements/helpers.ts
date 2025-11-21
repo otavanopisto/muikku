@@ -109,6 +109,7 @@ export async function loadAnnouncementsHelper(
   if (workspaceId) {
     params.workspaceEntityId = workspaceId;
   }
+
   if (item) {
     switch (item.id) {
       case "expired":
@@ -131,6 +132,7 @@ export async function loadAnnouncementsHelper(
         break;
     }
   }
+
   if (category) {
     params.timeFrame = "ALL";
     params.categoryIds = [category.id];

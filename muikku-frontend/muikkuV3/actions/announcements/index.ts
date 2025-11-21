@@ -543,9 +543,10 @@ const updateSelectedAnnouncementCategories: UpdateSelectedAnnouncementCategoryTr
     ) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
-      const categoryExistInAll = announcements.selected.every((announcement) =>
-        announcement.categories.find((c) => c.id === category.id)
-      );
+      const categoryExistInAllSelectedAnnouncements =
+        announcements.selected.every((announcement) =>
+          announcement.categories.some((c) => c.id === category.id)
+        );
 
       // Process announcements sequentially, Promise.all gave errors from backend
       for (let i = 0; i < announcements.selected.length; i++) {
@@ -560,7 +561,8 @@ const updateSelectedAnnouncementCategories: UpdateSelectedAnnouncementCategoryTr
           );
 
           if (categoryIndex !== -1) {
-            if (categoryExistInAll) {
+            // We only remove the category if it exists in all selected announcements
+            if (categoryExistInAllSelectedAnnouncements) {
               //remove category
               categories.splice(categoryIndex, 1);
             }
@@ -865,11 +867,6 @@ const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
       }
     };
   };
-
-/**
- * addLabelToAnnouncements
- * @param label label
- */
 
 /**
  * loadAnnouncementsAsAClient

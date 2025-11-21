@@ -28,23 +28,6 @@ export interface ContactRecipientType {
 }
 
 /**
- * ContactRecipientType
- */
-export interface ContactRecipientType {
-  type: "workspace" | "user" | "usergroup" | "staff";
-  value: {
-    id: number;
-    name: string;
-    organization?: Organization;
-    email?: string;
-    archived?: boolean;
-    studiesEnded?: boolean;
-    identifier?: string;
-    studyProgrammeName?: string;
-  };
-}
-
-/**
  * UserGroupBaseIndexType
  */
 export interface UserGroupBaseIndexType {

@@ -28,12 +28,10 @@ const KEYCODES = {
  * AnnouncerLabelUpdateDialogProps
  */
 interface AnnouncerLabelUpdateDialogProps extends WithTranslation {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  children: React.ReactElement<any>;
+  children: React.ReactElement;
   category: AnnouncementCategory;
   isOpen?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClose?: () => any;
+  onClose?: () => void;
   announcements: AnnouncementsState;
   updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType;
   deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType;

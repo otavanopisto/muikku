@@ -8,7 +8,7 @@ import { Announcement, AnnouncementCategory } from "~/generated/client";
 export interface AnnouncerNavigationItemType {
   location: string;
   id: string | number;
-  type: "folder" | "label" | "category";
+  type: "folder" | "label";
   icon: string;
   color?: string;
   text: string;
