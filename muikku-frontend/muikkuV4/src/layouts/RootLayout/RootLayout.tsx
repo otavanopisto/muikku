@@ -10,6 +10,8 @@ import { workspacePermissionsAtom } from "src/atoms/permissions";
 import { useAppLayout } from "src/hooks/useAppLayout";
 import { PrimaryNavSection } from "./components/PrimaryNavSection";
 import { SecondaryNavSection } from "./components/SecondaryNavSection";
+import { secondaryNavConfigAtom } from "~/src/atoms/layout";
+import { useEffect } from "react";
 
 /**
  * Root layout props
@@ -28,13 +30,23 @@ export function RootLayout(props: RootLayoutProps) {
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   //const [opened, { toggle }] = useDisclosure(); // Navbar state
+
+  const secondaryNavConfig = useAtomValue(secondaryNavConfigAtom);
   const {
     primaryNavOpened,
     secondaryNavOpened,
     togglePrimaryNav,
     toggleSecondaryNav,
-    selectedNavItem,
+    closePrimaryNav,
+    openSecondaryNav,
   } = useAppLayout();
+
+  useEffect(() => {
+    if (secondaryNavConfig && primaryNavOpened) {
+      openSecondaryNav();
+      closePrimaryNav();
+    }
+  }, [secondaryNavConfig, primaryNavOpened, openSecondaryNav, closePrimaryNav]);
 
   return (
     <div className={classes.appLayout}>
@@ -68,13 +80,10 @@ export function RootLayout(props: RootLayoutProps) {
             secondaryNavOpened ? classes.secondaryNavigationOpen : ""
           }`}
         >
-          {secondaryNavOpened && (
-            <SecondaryNavSection
-              selectedItem={selectedNavItem}
-              collapsed={!secondaryNavOpened} // Use desktop collapsed state
-              onToggleCollapse={toggleSecondaryNav} // Toggle desktop collapsed state
-            />
-          )}
+          <SecondaryNavSection
+            collapsed={!secondaryNavOpened} // Use desktop collapsed state
+            onToggleCollapse={toggleSecondaryNav} // Toggle desktop collapsed state
+          />
         </nav>
       </div>
       <main className={classes.mainContent}>

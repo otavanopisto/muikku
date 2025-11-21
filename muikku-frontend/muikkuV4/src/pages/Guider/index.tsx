@@ -2,11 +2,18 @@ import { Paper, Button } from "@mantine/core";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import StudentsList from "./StudentsList";
+import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
+import { guiderSubItems } from "~/src/layouts/helpers/navigation";
 
 /**
  * Guider - Guider page
  */
 export function Guider() {
+  useRouteContextNav({
+    title: "Ohjaamo",
+    items: guiderSubItems,
+  });
+
   return (
     <PageLayout title="Ohjaamo">
       <ActionBar variant="primary">

@@ -25,12 +25,12 @@ export type NavigationContext = "environment" | "workspace";
  */
 export interface BaseNavigationItem {
   label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: React.FC<any>;
   canAccess?: (
     user: User | null,
     workspacePermissions?: WorkspacePermissions | null
   ) => boolean;
-  contents?: NavigationContent[];
 }
 
 /**
@@ -64,21 +64,56 @@ export interface NavigationDynamicContent {
   component: React.ReactNode;
 }
 
-// Union for content items (nested items)
-export type NavigationContent =
-  | NavigationLink
-  | NavigationQueryLink
-  | NavigationDynamicContent;
-
-// Union for top-level navigation items
-export type TopLevelNavigationItem = NavigationLink | NavigationQueryLink;
-
 // Union for any navigation item
 export type NavigationItem =
   | NavigationLink
   | NavigationQueryLink
-  | NavigationContent;
+  | NavigationDynamicContent;
 
+// Communicator sub-items
+export const communicatorSubItems: NavigationItem[] = [
+  {
+    type: "queryLink",
+    label: "Saapuneet",
+    link: "?tab=Inbox",
+    queryName: "tab",
+    queryValue: "Inbox",
+  },
+  {
+    type: "queryLink",
+    label: "Lukemattomat",
+    link: "?tab=Unread",
+    queryName: "tab",
+    queryValue: "Unread",
+  },
+  {
+    type: "queryLink",
+    label: "Lähetetyt",
+    link: "?tab=Sent",
+    queryName: "tab",
+    queryValue: "Sent",
+  },
+  {
+    type: "queryLink",
+    label: "Roskakori",
+    link: "?tab=Trash",
+    queryName: "tab",
+    queryValue: "Trash",
+  },
+];
+
+// Guider sub-items
+export const guiderSubItems: NavigationItem[] = [
+  { type: "link", label: "Opiskelijalistaus", link: "/guider" },
+  { type: "link", label: "Tehtävät", link: "/guider/tasks" },
+  {
+    type: "component",
+    id: "guider-student_item",
+    component: <StudentNavigationContent />,
+  },
+];
+
+// Environment navigation items
 export const navigationItemsEnviroment: NavigationItem[] = [
   {
     type: "link",
@@ -106,36 +141,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Viestin",
     icon: IconMail,
     link: "/communicator?tab=Inbox",
-    contents: [
-      {
-        type: "queryLink",
-        label: "Saapuneet",
-        link: "?tab=Inbox",
-        queryName: "tab",
-        queryValue: "Inbox",
-      },
-      {
-        type: "queryLink",
-        label: "Lukemattomat",
-        link: "?tab=Unread",
-        queryName: "tab",
-        queryValue: "Unread",
-      },
-      {
-        type: "queryLink",
-        label: "Lähetetyt",
-        link: "?tab=Sent",
-        queryName: "tab",
-        queryValue: "Sent",
-      },
-      {
-        type: "queryLink",
-        label: "Roskakori",
-        link: "?tab=Trash",
-        queryName: "tab",
-        queryValue: "Trash",
-      },
-    ],
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
@@ -143,15 +148,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Ohjaamo",
     icon: IconList,
     link: "/guider",
-    contents: [
-      { type: "link", label: "Opiskelijalistaus", link: "/guider" },
-      { type: "link", label: "Tehtävät", link: "/guider/tasks" },
-      {
-        type: "component",
-        id: "guider-student_item",
-        component: <StudentNavigationContent />,
-      },
-    ],
     canAccess: (user) =>
       (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
   },
@@ -201,6 +197,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   },
 ];
 
+// Workspace navigation items
 const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",

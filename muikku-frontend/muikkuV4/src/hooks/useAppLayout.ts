@@ -1,10 +1,5 @@
 import { useAtom } from "jotai";
-import {
-  secondaryNavOpenedAtom,
-  primaryNavOpenedAtom,
-  selectedNavItemAtom,
-} from "../atoms/layout";
-import type { NavigationItem } from "../layouts/helpers/navigation";
+import { secondaryNavOpenedAtom, primaryNavOpenedAtom } from "../atoms/layout";
 
 /**
  * Hook for managing the app layout
@@ -15,7 +10,6 @@ export const useAppLayout = () => {
   const [secondaryNavOpened, setSecondaryNavOpened] = useAtom(
     secondaryNavOpenedAtom
   );
-  const [selectedNavItem, setSelectedNavItem] = useAtom(selectedNavItemAtom);
 
   /**
    * Open the sidebar
@@ -59,18 +53,6 @@ export const useAppLayout = () => {
     setSecondaryNavOpened(!secondaryNavOpened);
   };
 
-  const selectNavItem = (item: NavigationItem) => {
-    setSelectedNavItem(item);
-
-    if ("contents" in item && item.contents && item.contents.length > 0) {
-      closePrimaryNav();
-      openSecondaryNav();
-    } else {
-      openPrimaryNav();
-      closeSecondaryNav();
-    }
-  };
-
   return {
     primaryNavOpened,
     openPrimaryNav,
@@ -80,7 +62,5 @@ export const useAppLayout = () => {
     openSecondaryNav,
     closeSecondaryNav,
     toggleSecondaryNav,
-    selectedNavItem,
-    selectNavItem,
   };
 };
