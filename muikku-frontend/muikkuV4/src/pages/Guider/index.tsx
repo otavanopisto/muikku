@@ -12,6 +12,7 @@ export function Guider() {
   useRouteContextNav({
     title: "Ohjaamo",
     items: guiderSubItems,
+    customWidth: 500,
   });
 
   return (

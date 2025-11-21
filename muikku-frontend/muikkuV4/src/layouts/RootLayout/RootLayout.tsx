@@ -12,6 +12,25 @@ import { PrimaryNavSection } from "./components/PrimaryNavSection";
 import { SecondaryNavSection } from "./components/SecondaryNavSection";
 import { secondaryNavConfigAtom } from "~/src/atoms/layout";
 import { useEffect } from "react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+
+// Animation variants for primary navigation
+const primaryNavVariants: Variants = {
+  expanded: {
+    width: "270px",
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1], // Custom easing
+    },
+  },
+  collapsed: {
+    width: "60px",
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
 
 /**
  * Root layout props
@@ -48,13 +67,36 @@ export function RootLayout(props: RootLayoutProps) {
     }
   }, [secondaryNavConfig, primaryNavOpened, openSecondaryNav, closePrimaryNav]);
 
+  // Animation variants for secondary navigation
+  const secondaryNavVariants: Variants = {
+    open: {
+      width: secondaryNavConfig?.customWidth
+        ? `${secondaryNavConfig.customWidth}px`
+        : "250px",
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    },
+    closed: {
+      width: "0px",
+      opacity: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+      },
+    },
+  };
+
   return (
     <div className={classes.appLayout}>
       <div className={classes.navigationContainer}>
-        <nav
-          className={`${classes.primaryNavigation} ${
-            !primaryNavOpened ? classes.collapsed : ""
-          }`}
+        <motion.nav
+          className={classes.primaryNavigation}
+          variants={primaryNavVariants}
+          animate={primaryNavOpened ? "expanded" : "collapsed"}
+          initial={primaryNavOpened ? "expanded" : "collapsed"}
         >
           <PrimaryNavSection
             title={title}
@@ -73,18 +115,24 @@ export function RootLayout(props: RootLayoutProps) {
             collapsed={!primaryNavOpened} // Use desktop collapsed state
             onToggleCollapse={togglePrimaryNav} // Toggle desktop collapsed state
           />
-        </nav>
-        <nav
-          aria-hidden={!secondaryNavOpened} // When user has no access to secondary navigation we hide it also from screen readers
-          className={`${classes.secondaryNavigation} ${
-            secondaryNavOpened ? classes.secondaryNavigationOpen : ""
-          }`}
-        >
-          <SecondaryNavSection
-            collapsed={!secondaryNavOpened} // Use desktop collapsed state
-            onToggleCollapse={toggleSecondaryNav} // Toggle desktop collapsed state
-          />
-        </nav>
+        </motion.nav>
+        <AnimatePresence mode="popLayout">
+          {secondaryNavOpened && secondaryNavConfig && (
+            <motion.nav
+              className={classes.secondaryNavigation}
+              variants={secondaryNavVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              aria-hidden={!secondaryNavOpened}
+            >
+              <SecondaryNavSection
+                collapsed={!secondaryNavOpened} // Use desktop collapsed state
+                onToggleCollapse={toggleSecondaryNav} // Toggle desktop collapsed state
+              />
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
       <main className={classes.mainContent}>
         <Outlet />

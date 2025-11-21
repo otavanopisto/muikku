@@ -11,6 +11,7 @@ import { useAppLayout } from "~/src/hooks/useAppLayout";
 export function useRouteContextNav(config: {
   title: string;
   items: NavigationItem[];
+  customWidth?: number;
 }) {
   const setConfig = useSetAtom(secondaryNavConfigAtom);
   const {
@@ -23,6 +24,7 @@ export function useRouteContextNav(config: {
   useEffect(() => {
     setConfig({
       config: { title: config.title, items: config.items },
+      customWidth: config.customWidth,
     });
     openSecondaryNav();
     closePrimaryNav();
@@ -35,6 +37,7 @@ export function useRouteContextNav(config: {
   }, [
     config.title,
     config.items,
+    config.customWidth,
     setConfig,
     openPrimaryNav,
     openSecondaryNav,

@@ -3,7 +3,6 @@ import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 import classes from "./PrimaryNavSection.module.css";
 import { type NavigationItem } from "src/layouts/helpers/navigation";
 import { UserButton } from "src/components/UserButton/UserButton";
-import { useAppLayout } from "src/hooks/useAppLayout";
 import { NavbarQueryLink } from "src/components/NavbarQueryLink/NavbarQueryLink";
 
 /**
@@ -26,7 +25,6 @@ interface PrimaryNavSectionProps {
  */
 export function PrimaryNavSection(props: PrimaryNavSectionProps) {
   const { items, collapsed = false, title } = props;
-  const { selectNavItem } = useAppLayout();
 
   const links = items.environment.map((item) => {
     switch (item.type) {
@@ -36,7 +34,6 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
             key={("label" in item ? item.label : null) ?? null}
             {...item}
             collapsed={collapsed}
-            onSelect={() => selectNavItem(item)}
           />
         );
       case "queryLink":

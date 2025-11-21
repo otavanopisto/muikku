@@ -15,55 +15,15 @@
 .primaryNavigation {
   display: flex;
   flex-flow: column nowrap;
-  transition: width 0.3s ease;
-  width: var(--primary-nav-width);
 }
 
 .secondaryNavigation {
   background: #e3e3e3;
   border-right: 1px solid var(--mantine-color-dark-4);
-  transition: width 0.3s ease;
-  width: 0;
-}
-
-.secondaryNavigationOpen {
-  opacity: 1;
-  width: var(--secondary-nav-width);
 }
 
 .mainContent {
   overflow: auto;
   padding: var(--mantine-spacing-md);
   width: 100%;
-}
-
-/* Override of navigation panel's variables */
-.collapsed {
-  --primary-nav-width: 60px;
-  --secondary-nav-width: 0px;
-}
-
-/* Alternative slideIn animation for a smoother effect */
-@keyframes slideInSmooth {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-    width: 0;
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-    width: var(--secondary-nav-width);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
 }

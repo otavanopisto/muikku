@@ -10,6 +10,7 @@ export const secondaryNavConfigAtom = atom<{
     subTitle?: string;
     items: NavigationItem[];
   };
+  customWidth?: number;
 } | null>(null);
 
 export const selectedNavItemAtom = atom<NavigationItem | null>(null);
