@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -16,7 +15,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(indexes = @Index(columnList = "userEntityId"), uniqueConstraints = {
+@Table(uniqueConstraints = {
     @UniqueConstraint( columnNames = {"userEntityId", "announcement_id"} )
   })
 
