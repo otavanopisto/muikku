@@ -5,6 +5,9 @@
        add constraint UKdiblxmboq0kpxfd6nyrla834w unique (userEntityId, announcement_id);
   </sql>
   <sql>
+    drop index IDXc65jvsmaa72tf80qf72j9s75m on AnnouncementRecipient;
+  </sql>
+  <sql>
     alter table AnnouncementRecipient add column pinned bit not null;
   </sql>
   <sql>
