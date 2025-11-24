@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -529,6 +530,45 @@ public class CourseManagementTestsBase extends AbstractUITest {
         refresh();
         waitForPresent(".material-page__content.rich-text");
         assertTextIgnoreCase(".material-page__content.rich-text", "Adding some test text");
+      }finally{
+        deleteWorkspace(workspace.getId());  
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void changeDescriptionLanguageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").nameExtension("For test").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try{
+        navigate(String.format("/workspace/%s/", workspace.getUrlName()), false);
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
+        waitAndClick(".material-admin-panel .icon-pencil");
+        waitForElementToBeClickable("select.form-element__select--material-editor");
+        selectOption("select.form-element__select--material-editor", "en");
+        waitAndClick(".button-pill--material-editor-publish-page");
+        waitForPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
+        waitAndClick(".button-pill__icon.icon-arrow-left");
+        refresh();
+        waitForPresent(".material-page__content-wrapper");
+        assertEquals("Language not set as expected!" , "en", getAttributeValue(".material-page__content-wrapper", "lang"));
       }finally{
         deleteWorkspace(workspace.getId());  
       }

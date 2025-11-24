@@ -439,26 +439,6 @@ public class WorkspaceMaterialController {
     return newNode;
   }
 
-  public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial) {
-    return revertToOriginMaterial(workspaceMaterial, false);
-  }
-
-  public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial, boolean updateUrlName) {
-    Material originMaterial = getMaterialForWorkspaceMaterial(workspaceMaterial).getOriginMaterial();
-    if (originMaterial == null) {
-      throw new IllegalArgumentException("WorkSpaceMaterial has no origin material");
-    }
-    workspaceMaterialDAO.updateMaterialId(workspaceMaterial, originMaterial.getId());
-    if (updateUrlName) {
-      String urlName = generateUniqueUrlName(workspaceMaterial.getParent(), workspaceMaterial,
-          originMaterial.getTitle());
-      if (!workspaceMaterial.getUrlName().equals(urlName)) {
-        workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
-      }
-    }
-    return workspaceMaterial;
-  }
-
   /* Workspace material */
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {

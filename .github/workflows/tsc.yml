@@ -17,12 +17,12 @@ jobs:
 
       - name: Install Node.js dependencies
         run: npm ci && npm run build-full
-        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+        working-directory: muikku-frontend/muikkuV3
 
       - name: Running Typescript Compiler Check
         # uses: iCrawl/action-tsc@v1
         # with:
         #   project: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
         run: npm run type-check
-        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+        working-directory: muikku-frontend/muikkuV3
 
