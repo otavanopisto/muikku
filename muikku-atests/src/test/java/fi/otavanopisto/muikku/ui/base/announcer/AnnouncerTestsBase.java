@@ -134,7 +134,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         
         waitForPresent(".reading-panel__main-container header.article__header");
         assertTextIgnoreCase(".reading-panel__main-container header.article__header", "Test title");
-        assertTextIgnoreCase(".reading-panel__main-container header.article__header + div", "12.11.2015");
+        assertTextIgnoreCase(".reading-panel__main-container div.article_date", "12.11.2015");
         assertTextIgnoreCase(".reading-panel__main-container .article__body p", "Announcer test announcement");
       }finally{
         archiveUserByEmail(student.getEmail());
