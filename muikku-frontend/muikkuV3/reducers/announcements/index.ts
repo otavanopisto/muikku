@@ -54,7 +54,7 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     text: "archived",
   },
 ];
-defaultNavigation;
+
 export type AnnouncementsStateType =
   | "LOADING"
   | "ERROR"
