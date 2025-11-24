@@ -87,6 +87,8 @@ import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsCategory;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -98,6 +100,7 @@ import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
@@ -106,7 +109,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
-import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceNodeCopyMapper;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
@@ -1986,14 +1989,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       WorkspaceNode createdNode = null;
       WorkspaceMaterial createdMaterial = null;
+      WorkspaceNodeCopyMapper mapper = new WorkspaceNodeCopyMapper();
       if (copyOnlyChildren) {
         List<WorkspaceNode> sourceChildren = workspaceMaterialController.listWorkspaceNodesByParent(sourceNode);
         for (WorkspaceNode sourceChild : sourceChildren) {
-          workspaceMaterialController.cloneWorkspaceNode(sourceChild, targetNode, cloneMaterials);
+          workspaceMaterialController.cloneWorkspaceNode(sourceChild, targetNode, cloneMaterials, mapper);
         }
       }
       else {
-        createdNode = workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials);
+        createdNode = workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials, mapper);
         if (createdNode.getType() == WorkspaceNodeType.MATERIAL) {
           createdMaterial = workspaceMaterialController.findWorkspaceMaterialById(createdNode.getId());
           if (entity != null && entity.getNextSiblingId() != null) {
@@ -2002,6 +2006,31 @@ public class WorkspaceRESTService extends PluginRESTService {
               return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not exist").build();
             }
             workspaceMaterialController.moveAbove(createdNode, nextSibling);
+          }
+        }
+      }
+      
+      // Workspace nodes have now been cloned but if they contained exams and those exams
+      // have categories, the page ids of those categories point to the original pages. Use
+      // accumulated mapper data to update the page ids of the cloned exam settings
+      
+      if (mapper.hasExams()) {
+        Map<Long, Long> idMap = mapper.getIdMap();
+        Set<Long> examIds = mapper.getExamIds();
+        for (Long examId : examIds) {
+          Long copyExamId = idMap.get(examId);
+          if (copyExamId != null) {
+            ExamSettingsRestModel settings = examController.getSettingsJson(copyExamId);
+            if (settings != null && !settings.getCategories().isEmpty()) {
+              List<ExamSettingsCategory> categories = settings.getCategories();
+              for (ExamSettingsCategory category : categories) {
+                List<Long> pageIds = category.getWorkspaceMaterialIds();
+                for (int i = 0; i < pageIds.size(); i++) {
+                  pageIds.set(i, idMap.get(pageIds.get(i)));
+                }
+              }
+            }
+            examController.createOrUpdateSettings(copyExamId, settings);
           }
         }
       }
