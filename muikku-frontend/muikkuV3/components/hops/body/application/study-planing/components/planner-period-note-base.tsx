@@ -1,4 +1,3 @@
-import moment from "moment";
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
@@ -182,14 +181,12 @@ const BasePlannerPeriodNote = React.forwardRef<
    * Handles confirm specify
    */
   const handleConfirmSpecify = () => {
-    const startDate = moment(specifyNote.startDate).format("YYYY-MM-DD");
-
     onNoteChange(
       {
         ...note,
         title: specifyNote.title,
         content: specifyNote.content,
-        startDate,
+        startDate: specifyNote.startDate,
       },
       "update"
     );

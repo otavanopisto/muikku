@@ -27,7 +27,6 @@ import {
   updateHopsEditingStudyPlan,
   updateSelectedPlanItem,
 } from "~/actions/main-function/hops";
-import moment from "moment";
 import { AnimatedDrawer } from "../Animated-drawer";
 import PlannerPlannedList from "../planner-planned-list";
 import Button from "~/components/general/button";
@@ -127,9 +126,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       return;
     }
 
-    const targetDate = moment(new Date(year, monthIndex, 1)).format(
-      "YYYY-MM-DD"
-    );
+    const targetDate = new Date(year, monthIndex, 1);
 
     const selectedCourseIds: string[] = [];
     const selectedNoteIds: string[] = [];
@@ -261,14 +258,14 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       action = "update";
       updatedNote = {
         ...item,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       };
     } else {
       updatedNote = {
         id: null,
         title: "Muistiinpanon otsikko",
         identifier: `plan-note-${uuidv4()}`,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       };
     }
 
@@ -294,7 +291,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       action = "update";
       updatedCourse = {
         ...item,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(

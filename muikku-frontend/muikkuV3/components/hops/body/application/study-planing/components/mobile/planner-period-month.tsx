@@ -117,9 +117,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
       return;
     }
 
-    const targetDate = moment(new Date(year, monthIndex, 1)).format(
-      "YYYY-MM-DD"
-    );
+    const targetDate = new Date(year, monthIndex, 1);
 
     const plannedCourses = selectedPlanItemIds
       .map((courseIdentifier) => {
@@ -247,9 +245,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         if (course) {
           return {
             ...course,
-            startDate: moment(new Date(year, monthIndex, 1)).format(
-              "YYYY-MM-DD"
-            ),
+            startDate: new Date(year, monthIndex, 1),
           };
         }
 
@@ -274,7 +270,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         id: null,
         title: "Muistiinpanon otsikko",
         identifier: `plan-note-${uuidv4()}`,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       });
     }
 
@@ -319,7 +315,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
       action = "update";
       updatedNote = {
         ...item,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       };
     } else {
       action = "add";
@@ -327,7 +323,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         id: null,
         title: "",
         identifier: `plan-note-${uuidv4()}`,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       };
     }
 
@@ -353,7 +349,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
       action = "update";
       updatedCourse = {
         ...item,
-        startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        startDate: new Date(year, monthIndex, 1),
       };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(

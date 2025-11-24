@@ -1,4 +1,3 @@
-import moment from "moment";
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
@@ -216,12 +215,10 @@ const BasePlannerPeriodCourse = React.forwardRef<
    * Handles confirm specify
    */
   const handleConfirmSpecify = () => {
-    const startDate = moment(specifyCourse.startDate).format("YYYY-MM-DD");
-
     onCourseChange(
       {
         ...course,
-        startDate,
+        startDate: specifyCourse.startDate,
         duration: specifyCourse.endDate
           ? specifyCourse.endDate.getTime() - specifyCourse.startDate.getTime()
           : null,
