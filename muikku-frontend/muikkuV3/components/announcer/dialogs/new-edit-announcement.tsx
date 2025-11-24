@@ -542,6 +542,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           this.setStateAndClear(
             {
               locked: false,
+              selectedCategories: [],
               subject: "",
               text: "",
               pinned: false,
@@ -709,11 +710,12 @@ class NewEditAnnouncement extends SessionStateComponent<
           label: category.category,
           value: category.id,
         }))}
+        label={this.props.i18n.t("labels.category", { ns: "messaging" })}
         placeholder={this.props.i18n.t("labels.search", {
           ns: "messaging",
-          context: "label",
+          context: "category",
         })}
-        modifier="new-announcement-recipients"
+        modifier="new-announcement-categories"
       />,
       <div className="env-dialog__row" key="annnouncement-edit-4">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">

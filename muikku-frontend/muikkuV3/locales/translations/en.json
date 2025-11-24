@@ -1269,6 +1269,7 @@
       "replySubject": "Re: {{topic}}",
       "send": "Send message",
       "search": "$t(common:labels.search)",
+      "search_category": "Search category",
       "search_message": "Search messages",
       "search_recipients": "Search recipients",
       "search_target": "Search target",

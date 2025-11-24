@@ -1269,6 +1269,7 @@
       "replySubject": "Vs: {{topic}}",
       "send": "Lähetä viesti",
       "search": "$t(common:labels.search)",
+      "search_category": "Hae kategoria",
       "search_message": "Hae viestejä",
       "search_recipients": "Hae vastaanottajia",
       "search_target": "Hae kohderyhmää",
