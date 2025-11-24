@@ -165,6 +165,7 @@ export async function loadAnnouncementsHelper(
       payload.announcements = announcements.announcements.concat(actualResults);
     } else {
       // Replace announcements for initial load
+      payload.announcements = actualResults;
       payload.unreadCount = newAnnouncements.unreadCount;
       payload.selected = [];
       payload.selectedIds = [];
