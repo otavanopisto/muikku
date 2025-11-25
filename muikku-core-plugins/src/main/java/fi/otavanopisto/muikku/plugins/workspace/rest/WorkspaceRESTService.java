@@ -2029,8 +2029,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                   pageIds.set(i, idMap.get(pageIds.get(i)));
                 }
               }
+              examController.createOrUpdateSettings(copyExamId, settings);
             }
-            examController.createOrUpdateSettings(copyExamId, settings);
           }
         }
       }
