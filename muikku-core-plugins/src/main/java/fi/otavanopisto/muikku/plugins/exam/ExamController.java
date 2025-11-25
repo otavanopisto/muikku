@@ -116,13 +116,8 @@ public class ExamController {
     return settingsEntity;
   }
   
-  public ExamAttendance createAttendance(Long workspaceFolderId, Long userEntityId, boolean randomizeAssignments) {
-    if (randomizeAssignments) {
-      return examAttendanceDAO.create(workspaceFolderId, userEntityId, randomizeAssignments(workspaceFolderId));
-    }
-    else {
-      return examAttendanceDAO.create(workspaceFolderId, userEntityId);
-    }
+  public ExamAttendance createAttendance(Long workspaceFolderId, Long userEntityId) {
+    return examAttendanceDAO.create(workspaceFolderId, userEntityId);
   }
   
   public void removeAttendance(ExamAttendance attendance, boolean permanent) {
@@ -177,18 +172,11 @@ public class ExamController {
   public ExamAttendance startExam(Long workspaceFolderId, Long userEntityId) {
     ExamAttendance attendance = findAttendance(workspaceFolderId, userEntityId);
     if (attendance == null) {
-      attendance = createAttendance(workspaceFolderId, userEntityId, true);
+      attendance = createAttendance(workspaceFolderId, userEntityId);
     }
-    else {
-      if (StringUtils.isBlank(attendance.getWorkspaceMaterialIds())) {
-        String assignments = randomizeAssignments(workspaceFolderId);
-        if (!StringUtils.isBlank(assignments)) {
-          attendance = examAttendanceDAO.updateWorkspaceMaterialIds(attendance, assignments);
-        }
-      }
-      if (attendance.getEnded() != null) {
-        attendance = examAttendanceDAO.updateEnded(attendance, null);
-      }
+    attendance = examAttendanceDAO.updateWorkspaceMaterialIds(attendance, randomizeAssignments(workspaceFolderId));
+    if (attendance.getEnded() != null) {
+      attendance = examAttendanceDAO.updateEnded(attendance, null);
     }
     attendance = examAttendanceDAO.updateStarted(attendance, new Date());
     return attendance;

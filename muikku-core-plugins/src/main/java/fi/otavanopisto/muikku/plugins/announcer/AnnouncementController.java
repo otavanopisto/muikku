@@ -252,8 +252,12 @@ public class AnnouncementController {
     return announcementRecipientDAO.findByAnnouncementAndUserEntityId(announcement, userEntityId);
   }
   
-  public AnnouncementRecipient createAnnouncementRecipient(Announcement announcement, Long userEntityId) {
-    return announcementRecipientDAO.create(announcement, userEntityId);
+  public AnnouncementRecipient createAnnouncementRecipient(Announcement announcement, Long userEntityId, Date readDate, boolean pinned) {
+    return announcementRecipientDAO.create(announcement, userEntityId, readDate, pinned);
+  }
+  
+  public AnnouncementRecipient updateAnnouncementRecipient(AnnouncementRecipient announcementRecipient, Date readDate, boolean pinned) {
+    return announcementRecipientDAO.update(announcementRecipient, pinned, readDate);
   }
   
   public AnnouncementCategory createCategory(String category, Long color) {
