@@ -155,12 +155,7 @@ export const router = createBrowserRouter([
                 //loader: evaluationLoader,
                 middleware: [permissionMiddlewares.evaluationView],
               },
-              {
-                path: "organization",
-                element: <Organization />,
-                //loader: organizationLoader,
-                middleware: [permissionMiddlewares.organizationView],
-              },
+
               {
                 path: "announcements",
                 element: <Announcements />,

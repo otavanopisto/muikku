@@ -1,10 +1,16 @@
 import { Text, Paper } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
+import { coursepickerSubItems } from "~/src/layouts/helpers/navigation";
+import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
 
 /**
  * Coursepicker - Coursepicker page
  */
 export function Coursepicker() {
+  useRouteContextNav({
+    title: "Kurssipoimuri",
+    items: coursepickerSubItems,
+  });
   return (
     <PageLayout title="Kurssipoimuri">
       <Paper p="xl" withBorder>

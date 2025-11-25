@@ -70,6 +70,31 @@ export type NavigationItem =
   | NavigationQueryLink
   | NavigationDynamicContent;
 
+// Coursepicker sub-items
+export const coursepickerSubItems: NavigationItem[] = [
+  {
+    type: "queryLink",
+    label: "Kaikki kurssit",
+    link: "/coursepicker?search=All",
+    queryName: "search",
+    queryValue: "All",
+  },
+  {
+    type: "queryLink",
+    label: "Omat kurssit",
+    link: "/coursepicker?search=MyCourses",
+    queryName: "search",
+    queryValue: "Coursepicker",
+  },
+  {
+    type: "queryLink",
+    label: "Julkaisemattomat kurssit",
+    link: "/coursepicker?search=Unpublished",
+    queryName: "search",
+    queryValue: "Unpublished",
+  },
+];
+
 // Communicator sub-items
 export const communicatorSubItems: NavigationItem[] = [
   {
@@ -110,6 +135,47 @@ export const guiderSubItems: NavigationItem[] = [
     type: "component",
     id: "guider-student_item",
     component: <StudentNavigationContent />,
+  },
+];
+
+// Announcer sub-items
+export const announcerSubItems: NavigationItem[] = [
+  {
+    type: "queryLink",
+    label: "Aktiiviset",
+    link: "/announcements?search=Active",
+    queryName: "search",
+    queryValue: "Active",
+  },
+  {
+    type: "queryLink",
+    label: "Vanhentuneet",
+    link: "/announcements?search=Expired",
+    queryName: "search",
+    queryValue: "Expired",
+  },
+  {
+    type: "queryLink",
+    label: "Omat",
+    link: "/announcements?search=My",
+    queryName: "search",
+    queryValue: "My",
+  },
+  {
+    type: "queryLink",
+    label: "Arkistoidut",
+    link: "/announcements?search=Archived",
+    queryName: "search",
+    queryValue: "Archived",
+  },
+];
+
+// Evaluation sub-items
+export const evaluationSubItems: NavigationItem[] = [
+  {
+    type: "link",
+    label: "Yhteenveto",
+    link: "/evaluation",
   },
 ];
 
@@ -158,14 +224,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconEdit,
     link: "/evaluation",
     canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
-  },
-  {
-    type: "link",
-    label: "Organisaation hallinta",
-    icon: IconBuildingStore,
-    link: "/organization",
-    canAccess: (user) =>
-      (user?.loggedIn && user?.permissions?.ORGANIZATION_VIEW) ?? false,
   },
   {
     type: "link",

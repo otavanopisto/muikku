@@ -1,10 +1,17 @@
 import { Text, Paper } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
+import { announcerSubItems } from "~/src/layouts/helpers/navigation";
+import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
 
 /**
  * Announcer - Announcer page
  */
 export function Announcer() {
+  useRouteContextNav({
+    title: "Announcer",
+    items: announcerSubItems,
+  });
+
   return (
     <PageLayout title="Announcer">
       <Paper p="xl" withBorder>
