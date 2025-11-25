@@ -4,12 +4,13 @@ import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/label.scss";
 import { StateType } from "~/reducers/index";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import AnnouncementOptions from "~/components/announcements/general/announcement-options";
 
 /**
  * AnnouncementsPanelProps
@@ -32,6 +33,7 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
     announcements: state.announcements.announcements,
     unreadCount: state.announcements.unreadCount,
   }));
+
   const pageCount = Math.ceil(announcements.length / itemsPerPage);
 
   /**
@@ -104,6 +106,7 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
             ) : null}
           </span>
           {announcement.pinned ? <span className="icon icon-pin"></span> : null}
+          <AnnouncementOptions announcement={announcement} />
         </Link>
       );
     }

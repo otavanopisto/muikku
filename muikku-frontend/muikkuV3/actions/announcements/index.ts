@@ -159,6 +159,13 @@ export interface CreateAnnouncementTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * MarkAsReadTriggerType
+ */
+export interface MarkAsReadTriggerType {
+  (announcement: Announcement): AnyActionType;
+}
+
 const announcerApi = MApi.getAnnouncerApi();
 
 /**
@@ -239,6 +246,41 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
       true // initial = true
     );
   };
+
+/**
+ * markOneAsRead
+ * @param announcement announcement
+ */
+const markOneAsRead: MarkAsReadTriggerType = function markOneAsRead(
+  announcement
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      await announcerApi.markAnnouncementAsRead({
+        announcementId: announcement.id,
+      });
+      dispatch({
+        type: "UPDATE_ONE_ANNOUNCEMENT",
+        payload: {
+          update: { unread: false },
+          announcement,
+        },
+      });
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.setUnreadError", {
+            ns: "messaging",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
 
 /**
  * markAllAsRead
@@ -673,6 +715,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
 export {
   markAllAsRead,
+  markOneAsRead,
   loadAnnouncements,
   loadMoreAnnouncements,
   addToAnnouncementsSelected,
