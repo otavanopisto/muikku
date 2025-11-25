@@ -2,10 +2,16 @@ import { TFunction } from "i18next";
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
 import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import {
+  PeriodCourseItem,
+  PlannedCourseNew,
   PlannedCourseWithIdentifier,
   PlannedPeriod,
   PlannerActivityItem,
+  SelectedItem,
   StudentDateInfo,
+  StudyPlannerNoteNew,
+  StudyPlannerNoteWithIdentifier,
+  TimeContextSelection,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
@@ -127,6 +133,7 @@ const createPeriods = (
  * @param studentDateInfo student date info
  * @param studyActivities study activities
  * @param plannedCourses List of planned courses to allocate
+ * @param planNotes List of plan notes to allocate
  * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
@@ -134,6 +141,7 @@ const createAndAllocateCoursesToPeriods = (
   studentDateInfo: StudentDateInfo,
   studyActivities: StudentStudyActivity[],
   plannedCourses: PlannedCourseWithIdentifier[],
+  planNotes: StudyPlannerNoteWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
@@ -218,6 +226,27 @@ const createAndAllocateCoursesToPeriods = (
         period.items.push(activityItem);
       }
     });
+
+  planNotes.forEach((note) => {
+    const noteStartDate = new Date(note.startDate);
+    const noteStartDateYear = noteStartDate.getFullYear();
+    const noteStartDateMonth = noteStartDate.getMonth();
+
+    const period = periods.find(
+      (p) =>
+        noteStartDateYear === p.year &&
+        ((p.type === "SPRING" &&
+          noteStartDateMonth >= 0 &&
+          noteStartDateMonth <= 6) ||
+          (p.type === "AUTUMN" &&
+            noteStartDateMonth >= 7 &&
+            noteStartDateMonth <= 11))
+    );
+
+    if (period) {
+      period.items.push(note);
+    }
+  });
 
   // Only trim empty periods from the start
   const trimmedPeriods = [...periods];
@@ -429,28 +458,122 @@ export const getCurrentActivePeriodDateRange = (periods: PlannedPeriod[]) => {
 };
 
 /**
- * Checks if the course is a planned course
- * @param course course
- * @returns true if the course is a planned course
+ * Type guard for planned course item
+ * @param item item
+ * @returns true if the item is a planned course item
  */
-const isPlannedCourse = (
-  course: PlannedCourseWithIdentifier | Course
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+const isPeriodCourseItemPlannedCourse = (
+  item: PeriodCourseItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
 
 /**
- * Checks if the selected course is a planned course
- * @param course selected course
- * @returns true if the selected course is a planned course
+ * Type guard for study planner note item
+ * @param item item
+ * @returns true if the item is a study planner note item
  */
-const selectedIsPlannedCourse = (
-  course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+const isPeriodCourseItemStudyPlannerNote = (
+  item: PeriodCourseItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
+
+/**
+ * Type guard for activity course item
+ * @param item item
+ * @returns true if the item is an activity course item
+ */
+const isPeriodCourseItemActivityCourse = (
+  item: PeriodCourseItem
+): item is PlannerActivityItem =>
+  "identifier" in item && item.identifier.startsWith("activity-");
+
+/**
+ * Type guard for check selected item is planned course
+ * @param item item
+ */
+const isSelectedItemPlannedCourse = (
+  item: SelectedItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for check selected item is study planner note
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isSelectedItemStudyPlannerNote = (
+  item: SelectedItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
+
+/**
+ * Type guard for check selected item is study planner note new
+ * @param item item
+ * @returns true if the item is a study planner note new item
+ */
+const isSelectedItemStudyPlannerNoteNew = (
+  item: SelectedItem
+): item is StudyPlannerNoteNew => "type" in item && item.type === "note-new";
+
+/**
+ * Type guard for check selected item is planned course new
+ * @param item item
+ * @returns true if the item is a planned course new item
+ */
+const isSelectedItemPlannedCourseNew = (
+  item: SelectedItem
+): item is PlannedCourseNew =>
+  "type" in item && item.type === "planned-course-new";
+
+/**
+ * Type guard for no selection
+ * @param selection Selection
+ */
+const isNoTimeContextSelection = (
+  selection: TimeContextSelection
+): selection is { type: null } => selection.type === null;
+
+/**
+ * Checks if the item is a planned course or study planner note
+ * @param item item
+ * @returns true if the course is a planned course
+ */
+const isDragDropItemPlannedCourseOrNote = (
+  item:
+    | PlannedCourseWithIdentifier
+    | StudyPlannerNoteWithIdentifier
+    | PlannedCourseNew
+    | StudyPlannerNoteNew
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for check drag drop item is study planner note
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isDragDropItemStudyPlannerNote = (
+  item:
+    | PlannedCourseWithIdentifier
+    | StudyPlannerNoteWithIdentifier
+    | PlannedCourseNew
+    | StudyPlannerNoteNew
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
 
 export {
   createAndAllocateCoursesToPeriods,
   filterSubjectsAndCourses,
-  isPlannedCourse,
-  selectedIsPlannedCourse,
+  isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
+  isPeriodCourseItemActivityCourse,
+  isDragDropItemPlannedCourseOrNote,
+  isDragDropItemStudyPlannerNote,
+  isSelectedItemPlannedCourse,
+  isSelectedItemStudyPlannerNote,
+  isSelectedItemStudyPlannerNoteNew,
+  isSelectedItemPlannedCourseNew,
+  isNoTimeContextSelection,
   getPeriodMonthNames,
   getPeriodTypeByMonthNumber,
 };

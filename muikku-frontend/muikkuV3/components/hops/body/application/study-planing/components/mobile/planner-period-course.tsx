@@ -211,7 +211,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
           content={(closePortal) => (
             <div>
               <span>
-                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                {t("labels.studyPlannerRemoveCourseFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>

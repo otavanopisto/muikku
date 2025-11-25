@@ -1,28 +1,40 @@
 import * as React from "react";
 import Button, { IconButton } from "~/components/general/button";
 import {
-  CourseChangeAction,
-  isPlannedCourseWithIdentifier,
+  StudyPlanChangeAction,
   PlannedCourseWithIdentifier,
   PlannerActivityItem,
-  SelectedCourse,
+  SelectedItem,
+  StudyPlannerNoteWithIdentifier,
+  DroppableCardType,
+  StudyPlannerNoteNew,
+  PlannedCourseNew,
 } from "~/reducers/hops";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  clearSelectedCourses,
+  clearSelectedItems,
   updateEditingStudyPlanBatch,
+  updateHopsEditingPlanNotes,
   updateHopsEditingStudyPlan,
-  updateSelectedCourses,
+  updateSelectedPlanItem,
 } from "~/actions/main-function/hops";
 import moment from "moment";
 import PlannerMonthEditDialog from "./planner-month-edit";
 import Droppable from "../react-dnd/droppable";
-import { Course } from "~/@types/shared";
-import { isPlannedCourse } from "../../helper";
+import {
+  isDragDropItemStudyPlannerNote,
+  isDragDropItemPlannedCourseOrNote,
+  isSelectedItemPlannedCourse,
+  isSelectedItemStudyPlannerNote,
+  isSelectedItemStudyPlannerNoteNew,
+} from "../../helper";
 import PlannerPlannedList from "../planner-planned-list";
 import { AnimatedDrawer } from "../Animated-drawer";
+import PlannerActivityList from "../planner-activity-list";
+import PlannerNotesList from "../planner-notes-list";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * PlannerPeriodMonthProps
@@ -33,6 +45,7 @@ interface MobilePlannerPeriodMonthProps {
   year: number;
   courses: PlannedCourseWithIdentifier[];
   activities: PlannerActivityItem[];
+  notes: StudyPlannerNoteWithIdentifier[];
   isPast: boolean;
 }
 
@@ -57,17 +70,22 @@ const dropZoneVariants: Variants = {
 const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   props
 ) => {
-  const { monthIndex, title, year, courses, activities, isPast } = props;
+  const { monthIndex, title, year, courses, activities, isPast, notes } = props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
     (state: StateType) => state.hopsNew
   );
-  const { plannedCourses: originalPlannedCourses, studyActivity } = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState
-  );
-  const { plannedCourses: editedPlannedCourses, selectedCoursesIds } =
-    useSelector((state: StateType) => state.hopsNew.hopsEditing);
+  const {
+    plannedCourses: originalPlannedCourses,
+    planNotes: originalPlanNotes,
+    studyActivity,
+  } = useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
+  const {
+    plannedCourses: editedPlannedCourses,
+    planNotes: editedPlanNotes,
+    selectedPlanItemIds,
+  } = useSelector((state: StateType) => state.hopsNew.hopsEditing);
 
   // Dispatch
   const dispatch = useDispatch();
@@ -95,15 +113,13 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    */
   const handleMoveCoursesHereClick = () => {
     // If there is no selected course, do nothing
-    if (!selectedCoursesIds.length || isPast) {
+    if (!selectedPlanItemIds.length || isPast) {
       return;
     }
 
-    const targetDate = moment(new Date(year, monthIndex, 1)).format(
-      "YYYY-MM-DD"
-    );
+    const targetDate = new Date(year, monthIndex, 1);
 
-    const plannedCourses = selectedCoursesIds
+    const plannedCourses = selectedPlanItemIds
       .map((courseIdentifier) => {
         // Check if this is an existing planned course
         const existingPlannedCourse = editedPlannedCourses.find(
@@ -158,11 +174,24 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     dispatch(
       updateEditingStudyPlanBatch({
         plannedCourses: [...updatedList, ...newCourses],
+        planNotes: [],
       })
     );
 
     // Clear the selected course
-    dispatch(clearSelectedCourses());
+    dispatch(clearSelectedItems());
+  };
+
+  /**
+   * Handles note change
+   * @param note note
+   * @param action action
+   */
+  const handleNoteChange = (
+    note: StudyPlannerNoteWithIdentifier,
+    action: StudyPlanChangeAction
+  ) => {
+    dispatch(updateHopsEditingPlanNotes({ updatedNote: note, action }));
   };
 
   /**
@@ -172,7 +201,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    */
   const handleCourseChange = (
     course: PlannedCourseWithIdentifier,
-    action: CourseChangeAction
+    action: StudyPlanChangeAction
   ) => {
     dispatch(
       updateHopsEditingStudyPlan({
@@ -187,37 +216,63 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    dispatch(updateSelectedCourses({ courseIdentifier: course.identifier }));
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: course.identifier }));
+  };
+
+  /**
+   * Handles note select
+   * @param note note
+   */
+  const handleSelectNote = (note: StudyPlannerNoteWithIdentifier) => {
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: note.identifier }));
   };
 
   /**
    * Handles month edit confirm
-   * @param selectedCourses selected courses
+   * @param selectedMonthItemIds selected plan item ids
    */
-  const handleMonthEditConfirm = (selectedCourses: SelectedCourse[]) => {
-    const plannedCourses = selectedCourses.map((course) => {
-      if (isPlannedCourseWithIdentifier(course)) {
+  const handleMonthEditConfirm = (selectedMonthItemIds: string[]) => {
+    const plannedCourses = selectedMonthItemIds
+      .map((planItemIdentifier) => {
+        if (planItemIdentifier.startsWith("new-note-card")) {
+          return null;
+        }
+
+        const course = editedPlannedCourses.find(
+          (course) => course.identifier === planItemIdentifier
+        );
+
+        if (course) {
+          return {
+            ...course,
+            startDate: new Date(year, monthIndex, 1),
+          };
+        }
+
         return {
-          ...course,
-          startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+          ...curriculumConfig.strategy.createPlannedCourse(
+            curriculumConfig.strategy.findCourseByIdentifier(
+              planItemIdentifier
+            ),
+            new Date(year, monthIndex, 1)
+          ),
         };
-      }
+      })
+      .filter((c) => c !== null);
 
-      return {
-        ...curriculumConfig.strategy.createPlannedCourse(
-          course,
-          new Date(year, monthIndex, 1)
-        ),
-      };
-    });
+    const updatedPlanNotes = [...editedPlanNotes];
 
-    // Get courses that should be removed (courses in this month that aren't in the new selection)
-    const coursesToRemove = new Set(courses.map((course) => course.identifier));
+    let clearSelectedItemsFlag = false;
 
-    // Remove identifiers of courses that are staying
-    plannedCourses.forEach((course) => {
-      coursesToRemove.delete(course.identifier);
-    });
+    if (selectedMonthItemIds.includes("new-note-card")) {
+      clearSelectedItemsFlag = true;
+      updatedPlanNotes.push({
+        id: null,
+        title: "Muistiinpanon otsikko",
+        identifier: `plan-note-${uuidv4()}`,
+        startDate: new Date(year, monthIndex, 1),
+      });
+    }
 
     // Create the updated full course list:
     // 1. Start with all existing courses except those from this month
@@ -236,39 +291,71 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     dispatch(
       updateEditingStudyPlanBatch({
         plannedCourses: updatedFullCourseList,
+        planNotes: updatedPlanNotes,
+      })
+    );
+
+    // In case of new note, clear the selected item
+    if (clearSelectedItemsFlag) {
+      dispatch(clearSelectedItems());
+    }
+  };
+
+  /**
+   * Updates or adds a note
+   * @param item item
+   */
+  const updateOrAddNote = (
+    item: StudyPlannerNoteWithIdentifier | StudyPlannerNoteNew
+  ) => {
+    let action: StudyPlanChangeAction = "add";
+    let updatedNote: StudyPlannerNoteWithIdentifier;
+
+    if (isSelectedItemStudyPlannerNote(item)) {
+      action = "update";
+      updatedNote = {
+        ...item,
+        startDate: new Date(year, monthIndex, 1),
+      };
+    } else {
+      action = "add";
+      updatedNote = {
+        id: null,
+        title: "",
+        identifier: `plan-note-${uuidv4()}`,
+        startDate: new Date(year, monthIndex, 1),
+      };
+    }
+
+    dispatch(
+      updateHopsEditingPlanNotes({
+        updatedNote,
+        action,
       })
     );
   };
 
   /**
-   * Handles drop
-   * @param course course
-   * @param type type
+   * Updates or adds a course
+   * @param item item
    */
-  const handleDrop = (course: SelectedCourse, type: string) => {
+  const updateOrAddCourse = (
+    item: PlannedCourseWithIdentifier | PlannedCourseNew
+  ) => {
     let updatedCourse: PlannedCourseWithIdentifier;
+    let action: StudyPlanChangeAction = "add";
 
-    let action: CourseChangeAction = "add";
-
-    if (isPlannedCourseWithIdentifier(course)) {
-      // Set start date to the month number and year
-      const updatedStartDate = new Date(course.startDate);
-      updatedStartDate.setMonth(monthIndex);
-      updatedStartDate.setFullYear(year);
-
-      updatedCourse = {
-        ...course,
-        startDate: moment(updatedStartDate).format("YYYY-MM-DD"),
-      };
-
+    if (isSelectedItemPlannedCourse(item)) {
       action = "update";
+      updatedCourse = {
+        ...item,
+        startDate: new Date(year, monthIndex, 1),
+      };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(
-        course,
+        item.course,
         new Date(year, monthIndex, 1)
       );
-
-      action = "add";
     }
 
     dispatch(
@@ -280,19 +367,41 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   };
 
   /**
+   * Handles drop
+   * @param item item
+   * @param type type
+   */
+  const handleDrop = (item: SelectedItem, type: DroppableCardType) => {
+    if (
+      isSelectedItemStudyPlannerNoteNew(item) ||
+      isSelectedItemStudyPlannerNote(item)
+    ) {
+      updateOrAddNote(item);
+      return;
+    }
+
+    updateOrAddCourse(item);
+  };
+
+  /**
    * Finds if the course is already in the droppable area
    * @param course course
    * @returns true if the course is already in the droppable area
    */
   const isAlreadyInMonth = React.useCallback(
     (
-      course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+      item:
+        | PlannedCourseWithIdentifier
+        | StudyPlannerNoteWithIdentifier
+        | PlannedCourseNew
+        | StudyPlannerNoteNew
     ) => {
       // Use coursesRef.current instead of courses
-      if (isPlannedCourse(course)) {
-        return coursesRef.current.some(
-          (c) => c.identifier === course.identifier
-        );
+      if (
+        isDragDropItemPlannedCourseOrNote(item) ||
+        isDragDropItemStudyPlannerNote(item)
+      ) {
+        return coursesRef.current.some((c) => c.identifier === item.identifier);
       }
       return false;
     },
@@ -307,7 +416,11 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   const handleDropHover = React.useCallback(
     (
       isOver: boolean,
-      course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+      course:
+        | PlannedCourseWithIdentifier
+        | StudyPlannerNoteWithIdentifier
+        | PlannedCourseNew
+        | StudyPlannerNoteNew
     ) => {
       if (isOver && !isAlreadyInMonth(course)) {
         setShowDropIndicator(true);
@@ -320,7 +433,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
 
   // Pulse dropzone if there are selected courses or the drop indicator is shown
   const pulseDropzone =
-    !isPast && (selectedCoursesIds.length > 0 || showDropIndicator);
+    !isPast && (selectedPlanItemIds.length > 0 || showDropIndicator);
 
   return (
     <div className="study-planner__month">
@@ -367,24 +480,54 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         className="study-planner__month-wrapper"
       >
         <Droppable<
-          PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+          | PlannedCourseWithIdentifier
+          | StudyPlannerNoteWithIdentifier
+          | PlannedCourseNew
+          | StudyPlannerNoteNew,
+          DroppableCardType
         >
-          accept={!isPast ? ["planned-course-card", "new-course-card"] : []}
+          accept={
+            !isPast
+              ? [
+                  "planned-course-card",
+                  "planned-course-new",
+                  "note-card",
+                  "new-note-card",
+                ]
+              : []
+          }
           onDrop={handleDrop}
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length + activities.length > 0 && (
+          {notes.length > 0 && (
+            <PlannerNotesList
+              disabled={hopsMode === "READ"}
+              notes={notes}
+              selectedPlanItemIds={selectedPlanItemIds}
+              originalNotes={originalPlanNotes}
+              onNoteChange={handleNoteChange}
+              onSelectNote={handleSelectNote}
+            />
+          )}
+
+          {courses.length > 0 && (
             <PlannerPlannedList
               disabled={hopsMode === "READ"}
               courses={courses}
-              activities={activities}
-              selectedCoursesIds={selectedCoursesIds}
+              selectedPlanItemIds={selectedPlanItemIds}
               originalPlannedCourses={originalPlannedCourses}
               studyActivity={studyActivity}
               curriculumConfig={curriculumConfig}
               onCourseChange={handleCourseChange}
               onSelectCourse={handleSelectCourse}
+            />
+          )}
+
+          {activities.length > 0 && (
+            <PlannerActivityList
+              activities={activities}
+              curriculumConfig={curriculumConfig}
             />
           )}
 

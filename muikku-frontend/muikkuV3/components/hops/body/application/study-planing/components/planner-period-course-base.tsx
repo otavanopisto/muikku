@@ -1,4 +1,3 @@
-import moment from "moment";
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
@@ -9,7 +8,7 @@ import {
 } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import {
-  CourseChangeAction,
+  StudyPlanChangeAction,
   PlannedCourseWithIdentifier,
 } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -36,7 +35,7 @@ export interface BasePlannerPeriodCourseProps {
   studyActivity?: StudentStudyActivity;
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
-    action: CourseChangeAction
+    action: StudyPlanChangeAction
   ) => void;
   onSelectCourse: (course: PlannedCourseWithIdentifier) => void;
   renderSpecifyContent: (props: {
@@ -216,12 +215,10 @@ const BasePlannerPeriodCourse = React.forwardRef<
    * Handles confirm specify
    */
   const handleConfirmSpecify = () => {
-    const startDate = moment(specifyCourse.startDate).format("YYYY-MM-DD");
-
     onCourseChange(
       {
         ...course,
-        startDate,
+        startDate: specifyCourse.startDate,
         duration: specifyCourse.endDate
           ? specifyCourse.endDate.getTime() - specifyCourse.startDate.getTime()
           : null,
@@ -297,7 +294,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
       return null;
     }
 
-    return <div className="study-planner__course-dates-item">{dateString}</div>;
+    return <div className="study-planner__card-dates-item">{dateString}</div>;
   };
 
   /**
@@ -350,7 +347,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned", ...cardModifiers]}
+      modifiers={[...cardModifiers]}
       innerContainerModifiers={innerContainerModifiers}
       onClick={handleSelectCourse}
       externalContent={
@@ -383,8 +380,8 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </>
       }
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
-        <span className="study-planner__course-name">
+      <PlannerCardHeader>
+        <span className="study-planner__card-title">
           <b>{`${course.subjectCode}${course.courseNumber}`}</b>{" "}
           {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           {hasChanges && (
@@ -393,8 +390,8 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <div className="study-planner__course-labels">
+      <PlannerCardContent>
+        <div className="study-planner__card-labels">
           <PlannerCardLabel
             modifiers={[course.mandatory ? "mandatory" : "optional"]}
           >
@@ -408,14 +405,14 @@ const BasePlannerPeriodCourse = React.forwardRef<
           </PlannerCardLabel>
 
           {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+            <PlannerCardLabel modifiers={[courseState.state]}>
               {courseState.label}
             </PlannerCardLabel>
           )}
         </div>
 
-        <div className="study-planner__course-dates">
-          <div className="study-planner__course-dates-item">
+        <div className="study-planner__card-dates">
+          <div className="study-planner__card-dates-item">
             {calculatedEndDate ? (
               <>
                 {`${localize.date(new Date(course.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}

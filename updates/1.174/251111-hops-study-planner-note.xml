@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table HopsStudyPlannerNote (
+       id bigint not null auto_increment,
+        userEntityId bigint not null,
+        title varchar(255),
+        content text,
+        startDate date not null,
+        primary key (id)
+    );
+  </sql>
+
+  <sql>create index IDX7ld0ftidmu4oj3r6voyqxw4pu on HopsStudyPlannerNote (userEntityId);</sql>
+
+</update>

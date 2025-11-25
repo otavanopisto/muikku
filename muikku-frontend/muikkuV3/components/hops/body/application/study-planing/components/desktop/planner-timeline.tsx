@@ -70,6 +70,7 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
   /**
    * Handles mouse leave
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMouseLeave = () => {
     isMouseOverTimelineRef.current = false;
     setIsDraggingTimeline(false);
@@ -78,6 +79,7 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
   /**
    * Handles mouse enter
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMouseEnter = () => {
     isMouseOverTimelineRef.current = true;
   };
@@ -149,6 +151,7 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
    * Handles key down. Start dragging when space is pressed
    * @param event event
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (isMouseOverTimelineRef.current && event.key === " ") {
       event.preventDefault();
@@ -176,6 +179,7 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
    * Handles key up. Clear dragging state when space is released
    * @param event event
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === " ") {
       setIsDraggingTimeline(false);
@@ -283,10 +287,11 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
   return (
     <div
       className="study-planner__timeline-container"
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      // These are disabled for time being because they conflict with note editing
+      // onKeyDown={handleKeyDown}
+      // onKeyUp={handleKeyUp}
+      // onMouseEnter={handleMouseEnter}
+      // onMouseLeave={handleMouseLeave}
       tabIndex={0}
       ref={timelineContentRef}
       onMouseMove={handleMousePositionUpdate}

@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -58,6 +59,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyPlannerNote;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsGoalsWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsHistoryItemWSMessage;
@@ -65,6 +67,7 @@ import fi.otavanopisto.muikku.plugins.hops.ws.HopsLockWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsOptionalSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsPlannedCoursesWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudentChoiceWSMessage;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudyPlannerNotesWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
@@ -299,6 +302,90 @@ public class HopsRestService {
 
     Hops hops = hopsController.findHops(hopsStudent);
     return hops == null ? Response.noContent().build() : Response.ok(hops.getFormData()).build();
+  }
+  
+  @PUT
+  @Path("/student/{STUDENTIDENTIFIER}/studyPlannerNotes")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateStudyPlannerNotes(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, HopsStudyPlannerNotesRestModel payload) {
+
+    // Access check
+
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+
+    // Target user
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    // Create, update, and delete notes based on payload
+
+    List<HopsStudyPlannerNote> currentNotes = hopsController.listStudyPlannerNotesByUserEntityId(userEntity.getId());
+    for (HopsStudyPlannerNoteRestModel note : payload.getNotes()) {
+      if (note.getId() == null) {
+        hopsController.createStudyPlannerNote(userEntity.getId(), note.getTitle(), note.getContent(), note.getStartDate());
+      }
+      else {
+        HopsStudyPlannerNote existingNote = currentNotes.stream().filter(c -> c.getId().equals(note.getId())).findFirst().orElse(null);
+        if (existingNote != null) {
+          hopsController.updateStudyPlannerNote(existingNote, note.getTitle(), note.getContent(), note.getStartDate());
+          currentNotes.remove(existingNote);
+        }
+      }
+    }
+    for (HopsStudyPlannerNote deletedNote : currentNotes) {
+      hopsController.deleteStudyPlannerNote(deletedNote);
+    }
+
+    List<HopsStudyPlannerNote> notes = hopsController.listStudyPlannerNotesByUserEntityId(userEntity.getId());
+    List<HopsStudyPlannerNoteRestModel> restNotes = notes.stream().map(note -> toRestModel(note)).collect(Collectors.toList());
+    
+    HopsStudyPlannerNotesWSMessage msg = new HopsStudyPlannerNotesWSMessage();
+    msg.setNotes(restNotes);
+    msg.setStudentIdentifier(studentIdentifierStr);
+    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:study-planner-notes-updated", msg);
+
+    return Response.ok(restNotes).build();
+  }
+  
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/studyPlannerNotes")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudyPlannerNotes(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    
+    // Access check
+
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+
+    // Target user
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Notes
+    
+    List<HopsStudyPlannerNote> notes = hopsController.listStudyPlannerNotesByUserEntityId(userEntity.getId());
+    return Response.ok().entity(notes.stream().map(note -> toRestModel(note)).collect(Collectors.toList())).build();
   }
 
   @POST
@@ -1749,6 +1836,14 @@ public class HopsRestService {
       return null;
     }
     return new HopsStudent(userEntity.getId(), user.getStudyProgrammeEducationType());
+  }
+  
+  private HopsStudyPlannerNoteRestModel toRestModel(HopsStudyPlannerNote note) {
+    return new HopsStudyPlannerNoteRestModel(
+        note.getId(),
+        note.getTitle(),
+        note.getContent(),
+        new Date(note.getStartDate().getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
   }
   
 }

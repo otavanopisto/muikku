@@ -45,8 +45,8 @@ const PlannerCourseTrayItemPreview: React.FC<
           </span>
         </PlannerCardHeader>
 
-        <PlannerCardContent modifiers={["planned-course-card"]}>
-          <div className="study-planner__course-labels">
+        <PlannerCardContent>
+          <div className="study-planner__card-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
               {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
             </PlannerCardLabel>

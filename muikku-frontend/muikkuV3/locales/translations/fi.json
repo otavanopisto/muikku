@@ -56,6 +56,8 @@
       "share": "Jaa",
       "show": "Näytä",
       "showAll": "Näytä kaikki",
+      "showMore": "Näytä enemmän",
+      "showLess": "Näytä vähemmän",
       "showAssignment": "Näytä tehtävänanto",
       "show_comments": "Näytä kommentit",
       "signIn": "Kirjaudu sisään",
@@ -608,6 +610,7 @@
   },
   "hops_new": {
     "actions": {
+      "addNote": "Lisää muistiinpano",
       "addSubject": "Lisää aine",
       "confirmRegistration": "Vahvista ilmoittautuminen",
       "openStudyPlanner": "Avaa suunnittelutyökalu",
@@ -865,8 +868,10 @@
       "studyPlannerToolTrayTitle_uppersecondary": "Opintojaksot",
       "studyPlannerToolTrayTitle_compulsory": "Kurssit",
       "studyPlannerRemoveFromPlanTitle": "Poista suunnitelmasta?",
-      "studyPlannerRemoveFromPlanDescription": "Oletko varma että haluat poistaa kurssin suunnitelmastasi?",
+      "studyPlannerRemoveCourseFromPlanDescription": "Oletko varma että haluat poistaa kurssin suunnitelmastasi?",
+      "studyPlannerRemoveNoteFromPlanDescription": "Oletko varma että haluat poistaa muistiinpanon suunnitelmastasi?",
       "studyPlannerSpecifyPlanTitle": "Tarkenna suunnitelmaa",
+      "studyPlannerSpecifyNoteTitle": "Tarkenna muistiinpanoa",
       "studyPlannerSpecifySelectCourseInstanceLabel_uppersecondary": "Valitse tarjolla oleva opintojakso",
       "studyPlannerSpecifySelectCourseInstanceLabel_compulsory": "Valitse tarjolla oleva kurssi",
       "studyPlannerSpecifySelectCourseInstanceDescription_uppersecondary": "Valitse Nettilukiossa tarjolla oleva opintojakso",
