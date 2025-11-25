@@ -119,6 +119,14 @@ public class AnnouncementRESTModel {
     this.pinned = pinned;
   }
 
+  public boolean isPinnedToSelf() {
+    return pinnedToSelf;
+  }
+
+  public void setPinnedToSelf(boolean pinnedToSelf) {
+    this.pinnedToSelf = pinnedToSelf;
+  }
+
   public List<WorkspaceBasicInfo> getWorkspaces() {
     return workspaces;
   }
@@ -149,6 +157,7 @@ public class AnnouncementRESTModel {
   private AnnouncementTemporalStatus temporalStatus;
   private boolean unread;
   private boolean pinned;
+  private boolean pinnedToSelf;
   private List<WorkspaceBasicInfo> workspaces;
   private List<AnnouncementCategoryRESTModel> categories;
 }
