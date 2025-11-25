@@ -2,6 +2,9 @@ package fi.otavanopisto.muikku.schooldata.payload;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseMatrixSubject {
 
   public String getName() {
