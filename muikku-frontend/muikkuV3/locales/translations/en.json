@@ -56,6 +56,8 @@
       "share": "Share",
       "show": "Show",
       "showAll": "Show all",
+      "showMore": "Show more",
+      "showLess": "Show less",
       "showAssignment": "Show assignment",
       "show_comments": "Show comments",
       "signIn": "Sign in",
@@ -608,6 +610,7 @@
   },
   "hops_new": {
     "actions": {
+      "addNote": "Add a node",
       "addSubject": "Add a subject",
       "confirmRegistration": "Confirm registration",
       "openStudyPlanner": "Open Study Planner",
@@ -865,8 +868,10 @@
       "studyPlannerToolTrayTitle_uppersecondary": "Courses",
       "studyPlannerToolTrayTitle_compulsory": "Courses",
       "studyPlannerRemoveFromPlanTitle": "Delete from plan?",
-      "studyPlannerRemoveFromPlanDescription": "Are you sure you want to delete the course from your plan?",
+      "studyPlannerRemoveCourseFromPlanDescription": "Are you sure you want to delete the course from your plan?",
+      "studyPlannerRemoveNoteFromPlanDescription": "Are you sure you want to delete the note from your plan?",
       "studyPlannerSpecifyPlanTitle": "Specify the plan",
+      "studyPlannerSpecifyNoteTitle": "Specify the note",
       "studyPlannerSpecifySelectCourseInstanceLabel_uppersecondary": "Select an available course",
       "studyPlannerSpecifySelectCourseInstanceLabel_compulsory": "Select an available course",
       "studyPlannerSpecifySelectCourseInstanceDescription_uppersecondary": "Select a course available at Nettilukio",

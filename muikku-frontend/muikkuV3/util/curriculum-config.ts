@@ -1,4 +1,3 @@
-import moment from "moment";
 import { Course, SchoolCurriculumMatrix } from "~/@types/shared";
 import { StudentInfo, StudentStudyActivity } from "~/generated/client";
 import {
@@ -582,7 +581,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
       lengthSymbol: "op", // Credits for upper secondary
       subjectCode: course.subjectCode,
       mandatory: course.mandatory,
-      startDate: moment(startDate).format("YYYY-MM-DD"),
+      startDate: startDate,
     };
   }
 }
@@ -930,7 +929,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       lengthSymbol: "h",
       subjectCode: course.subjectCode,
       mandatory: course.mandatory,
-      startDate: moment(startDate).format("YYYY-MM-DD"),
+      startDate: startDate,
     };
   }
 }

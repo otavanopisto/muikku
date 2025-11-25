@@ -128,8 +128,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       !_.isEqual(
         hops.hopsStudyPlanState.plannedCourses,
         hops.hopsEditing.plannedCourses
-      ) || !_.isEqual(hops.hopsStudyPlanState.goals, hops.hopsEditing.goals),
-    [hops.hopsStudyPlanState, hops.hopsEditing]
+      ) ||
+      !_.isEqual(hops.hopsStudyPlanState.goals, hops.hopsEditing.goals) ||
+      !_.isEqual(hops.hopsStudyPlanState.planNotes, hops.hopsEditing.planNotes),
+    [
+      hops.hopsStudyPlanState.plannedCourses,
+      hops.hopsEditing.plannedCourses,
+      hops.hopsStudyPlanState.goals,
+      hops.hopsEditing.goals,
+      hops.hopsStudyPlanState.planNotes,
+      hops.hopsEditing.planNotes,
+    ]
   );
 
   // Check if the matriculation plan has changes

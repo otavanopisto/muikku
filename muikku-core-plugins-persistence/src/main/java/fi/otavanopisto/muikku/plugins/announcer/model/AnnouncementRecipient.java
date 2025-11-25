@@ -7,15 +7,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(indexes = @Index(columnList = "userEntityId"))
+@Table(uniqueConstraints = {
+    @UniqueConstraint( columnNames = {"userEntityId", "announcement_id"} )
+  })
 
 public class AnnouncementRecipient {
 
@@ -47,6 +49,14 @@ public class AnnouncementRecipient {
     this.readDate = readDate;
   }
 
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -59,8 +69,10 @@ public class AnnouncementRecipient {
   @NotNull
   private Announcement announcement;
   
-  @NotNull
-  @Column (nullable=false)
-  @Temporal (value=TemporalType.DATE)
+  @Column
+  @Temporal (value = TemporalType.TIMESTAMP)
   private Date readDate;
+  
+  @Column (nullable=false)
+  private boolean pinned;
 }
