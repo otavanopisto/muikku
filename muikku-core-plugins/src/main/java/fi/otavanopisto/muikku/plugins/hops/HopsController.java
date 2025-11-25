@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsOptionalSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsPlannedCourseDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
+import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudyPlannerNoteDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
@@ -30,6 +31,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyPlannerNote;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -58,6 +60,9 @@ public class HopsController {
   
   @Inject
   private HopsPlannedCourseDAO hopsPlannedCourseDAO;
+
+  @Inject
+  private HopsStudyPlannerNoteDAO hopsStudyPlannerNoteDAO;
 
   @Inject
   private HopsSuggestionDAO hopsSuggestionDAO;
@@ -261,6 +266,26 @@ public class HopsController {
         startDate == null ? null : java.sql.Date.valueOf(startDate),
         duration,
         workspaceEntityId);
+  }
+  
+  public HopsStudyPlannerNote createStudyPlannerNote(Long userEntityId, String title, String content, LocalDate startDate) {
+    return hopsStudyPlannerNoteDAO.create(userEntityId, title, content, java.sql.Date.valueOf(startDate));
+  }
+
+  public HopsStudyPlannerNote updateStudyPlannerNote(HopsStudyPlannerNote note, String title, String content, LocalDate startDate) {
+    return hopsStudyPlannerNoteDAO.update(note, title, content, java.sql.Date.valueOf(startDate));
+  }
+  
+  public HopsStudyPlannerNote findStudyPlannerNoteById(Long id) {
+    return hopsStudyPlannerNoteDAO.findById(id);
+  }
+
+  public List<HopsStudyPlannerNote> listStudyPlannerNotesByUserEntityId(Long userEntityId) {
+    return hopsStudyPlannerNoteDAO.listByUserEntityId(userEntityId);
+  }
+  
+  public void deleteStudyPlannerNote(HopsStudyPlannerNote note) {
+    hopsStudyPlannerNoteDAO.delete(note);
   }
   
   public void deletePlannedCourse(HopsPlannedCourse hopsPlannedCourse) {
