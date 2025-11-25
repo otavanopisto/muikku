@@ -13,12 +13,12 @@ createRoot(document.getElementById("app")!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
       <Provider store={jotaiStore}>
-        {process.env.NODE_ENV === "development" && (
+        {/* {process.env.NODE_ENV === "development" && (
           <>
             <DebugAtoms />
             <DevTools store={jotaiStore} />
           </>
-        )}
+        )} */}
         <App />
       </Provider>
     </MantineProvider>

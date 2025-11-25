@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 import { secondaryNavOpenedAtom, primaryNavOpenedAtom } from "../atoms/layout";
+import { useDisclosure } from "@mantine/hooks";
 
 /**
  * Hook for managing the app layout
@@ -10,6 +11,7 @@ export const useAppLayout = () => {
   const [secondaryNavOpened, setSecondaryNavOpened] = useAtom(
     secondaryNavOpenedAtom
   );
+  const [navOpened, { toggle: toggleNav }] = useDisclosure(); // Navbar state
 
   /**
    * Open the sidebar
@@ -55,6 +57,8 @@ export const useAppLayout = () => {
 
   return {
     primaryNavOpened,
+    navOpened,
+    toggleNav,
     openPrimaryNav,
     closePrimaryNav,
     togglePrimaryNav,

@@ -4,6 +4,7 @@ import classes from "./PrimaryNavSection.module.css";
 import { type NavigationItem } from "src/layouts/helpers/navigation";
 import { UserButton } from "src/components/UserButton/UserButton";
 import { NavbarQueryLink } from "src/components/NavbarQueryLink/NavbarQueryLink";
+import { IconHome } from "@tabler/icons-react";
 
 /**
  * PrimaryNavSectionProps - Interface for primary nav section props
@@ -12,10 +13,7 @@ interface PrimaryNavSectionProps {
   title: string;
   items: {
     environment: NavigationItem[];
-    workspace: NavigationItem[];
   };
-  collapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 /**
@@ -24,7 +22,7 @@ interface PrimaryNavSectionProps {
  * @returns Navbar nested component
  */
 export function PrimaryNavSection(props: PrimaryNavSectionProps) {
-  const { items, collapsed = false, title } = props;
+  const { items, title } = props;
 
   const links = items.environment.map((item) => {
     switch (item.type) {
@@ -33,7 +31,6 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
           <NavbarLink
             key={("label" in item ? item.label : null) ?? null}
             {...item}
-            collapsed={collapsed}
           />
         );
       case "queryLink":
@@ -49,23 +46,26 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
   });
 
   return (
-    <>
-      <Box className={classes.header}>
+    <Box component="nav" className={classes.primaryNav}>
+      <Box
+        className={classes.header}
+        style={{
+          height: "60px",
+        }}
+      >
         <Group p="sm" className={classes.headerContent}>
           <Group align="center" className={classes.titleGroup}>
-            {!collapsed && (
-              <Title
-                order={3}
-                className={classes.title}
-                style={{
-                  opacity: collapsed ? 0 : 1,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                }}
-              >
-                {title}
-              </Title>
-            )}
+            <IconHome size={35} />
+            <Title
+              order={3}
+              className={classes.title}
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              }}
+            >
+              {title}
+            </Title>
           </Group>
         </Group>
       </Box>
@@ -74,7 +74,7 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
         className={classes.links}
         component={ScrollArea}
         style={{
-          minWidth: collapsed ? "60px" : "200px",
+          minWidth: "200px",
         }}
       >
         {links}
@@ -83,6 +83,6 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
       <Box className={classes.footer}>
         <UserButton />
       </Box>
-    </>
+    </Box>
   );
 }

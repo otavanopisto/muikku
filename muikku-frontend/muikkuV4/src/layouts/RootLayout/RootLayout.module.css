@@ -7,14 +7,92 @@
   width: 100%;
 }
 
-.navigationContainer {
+.mobileHeader {
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  padding: var(--mantine-spacing-md);
 }
 
-.primaryNavigation {
+.mobileDrawer {
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: column;
+}
+
+.mobileDrawerContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.mobileDrawerHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  right: 0;
+}
+
+.mobileDrawerBody {
+  display: flex;
+  flex: 1;
+  padding: 0;
+  width: 250px;
+}
+
+.desktopNav {
+  width: 250px;
+  position: fixed;
+}
+
+.navWrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 250px;
+  position: relative;
+}
+
+.mainNav {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.mainNavHeader {
+  &[data-collapsed="true"] {
+    width: 50px;
+    overflow: hidden;
+  }
+}
+
+.mainNavLinks {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+
+  &[data-collapsed="true"] {
+    width: 50px;
+    overflow: hidden;
+  }
+}
+
+.mainNavFooter {
+  &[data-collapsed="true"] {
+    width: 50px;
+    overflow: hidden;
+  }
+}
+
+.secondaryNav {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  flex: 1;
 }
 
 .secondaryNavigation {
@@ -26,4 +104,11 @@
   overflow: auto;
   padding: var(--mantine-spacing-md);
   width: 100%;
+  margin-left: 250px;
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    position: fixed;
+    top: 60px;
+    margin-left: 0;
+  }
 }

@@ -5,18 +5,26 @@ import { useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 
 /**
+ * UserButtonProps - Interface for user button props
+ */
+interface UserButtonProps {
+  collapsed?: boolean;
+}
+
+/**
  * UserButton - User button component
  */
-export function UserButton() {
+export function UserButton(props: UserButtonProps) {
+  const { collapsed } = props;
   const user = useAtomValue(userAtom);
 
   return (
     <NavLink
       href="#here-we-shall-place-the-link-to-user-profile"
-      label={user?.displayName}
-      description={user?.profile.emails?.[0]}
+      label={!collapsed ? user?.displayName : null}
+      description={!collapsed ? user?.profile.emails?.[0] : null}
       leftSection={
-        user?.hasImage ? (
+        user?.hasImage && !collapsed ? (
           <Avatar src={getUserImageUrl(user?.id ?? 0)} radius="xl" />
         ) : (
           <Avatar radius="xl">
@@ -25,11 +33,13 @@ export function UserButton() {
         )
       }
       rightSection={
-        <IconChevronRight
-          size={14}
-          stroke={1.5}
-          className="mantine-rotate-rtl"
-        />
+        !collapsed ? (
+          <IconChevronRight
+            size={14}
+            stroke={1.5}
+            className="mantine-rotate-rtl"
+          />
+        ) : null
       }
     />
   );

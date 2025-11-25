@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { NavLink, Tooltip } from "@mantine/core";
 import { useParams, useResolvedPath, useMatch, Link } from "react-router";
-import classes from "./NavbarLink.module.css";
 import type { NavigationLink } from "src/layouts/helpers/navigation";
 
 /**
@@ -24,7 +23,6 @@ export function NavbarLink(props: NavbarLinkProps) {
     label,
     link,
     collapsed = false,
-    onSelect,
     exactMatch = false,
   } = props;
 

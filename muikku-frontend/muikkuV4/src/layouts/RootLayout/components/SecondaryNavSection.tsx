@@ -27,8 +27,13 @@ export function SecondaryNavSection(props: SecondaryNavSectionProps) {
   if (!secondaryNavConfig) return null;
 
   return (
-    <>
-      <Box className={classes.header}>
+    <Box component="nav" className={classes.secondaryNav}>
+      <Box
+        className={classes.header}
+        style={{
+          height: "60px",
+        }}
+      >
         <Group p="sm" className={classes.headerContent}>
           <Group align="center" className={classes.titleGroup}>
             <Title order={3} className={classes.title}>
@@ -61,6 +66,6 @@ export function SecondaryNavSection(props: SecondaryNavSectionProps) {
           })}
         </div>
       </Box>
-    </>
+    </Box>
   );
 }

@@ -29,7 +29,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      {process.env.NODE_ENV === "development" && (
+      {/* {process.env.NODE_ENV === "development" && (
         <TanStackDevtools
           plugins={[
             {
@@ -38,7 +38,7 @@ function App() {
             },
           ]}
         />
-      )}
+      )} */}
       <DisconnectModal />
     </QueryClientProvider>
   );
