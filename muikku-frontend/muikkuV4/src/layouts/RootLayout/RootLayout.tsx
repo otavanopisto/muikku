@@ -3,7 +3,7 @@ import { userAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import {
   getNavigationItems,
-  type NavigationContext,
+  type NavigationItem,
 } from "src/layouts/helpers/navigation";
 import classes from "./RootLayout.module.css";
 import { workspacePermissionsAtom } from "src/atoms/permissions";
@@ -18,6 +18,7 @@ import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { workspaceInfoAtom } from "~/src/atoms/workspace";
 import { ErrorBoundary } from "~/src/pages";
+import { useMemo } from "react";
 
 const navigationVariants: Variants = {
   collapsed: {
@@ -62,7 +63,6 @@ const navigationItemVariants: Variants = {
  */
 interface RootLayoutProps {
   title?: string;
-  context?: NavigationContext;
   isErrorBoundary?: boolean;
 }
 
@@ -74,7 +74,6 @@ export function RootLayout(props: RootLayoutProps) {
   const { title = "Muikku V4", isErrorBoundary = false } = props;
 
   const location = useLocation();
-  const isWorkspaceRoute = location.pathname.startsWith("/workspace");
 
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
@@ -84,28 +83,29 @@ export function RootLayout(props: RootLayoutProps) {
 
   const { navOpened, toggleNav, asideOpened, toggleAside } = useAppLayout();
 
-  const primaryNavItems = getNavigationItems(
-    user,
-    workspacePermissions,
-    "environment"
+  // Memoized primary navigation items
+  const primaryNavItems = useMemo(
+    () => getNavigationItems(user, workspacePermissions, "environment"),
+    [user, workspacePermissions]
   );
 
-  const workspaceNavigationItems = getNavigationItems(
-    user,
-    workspacePermissions,
-    "workspace"
+  // Memoized workspace navigation items
+  const workspaceNavigationItems = useMemo(
+    () => getNavigationItems(user, workspacePermissions, "workspace"),
+    [user, workspacePermissions]
   );
 
-  /**
-   * Render main navigation
-   * @param collapsed - Whether the navigation is collapsed
-   * @returns Main navigation component
-   */
-  const renderMainNav = (collapsed: boolean) => {
-    const updatedItems = [...primaryNavItems];
+  // Memoized is workspace route
+  const isWorkspaceRoute = useMemo(
+    () => location.pathname.startsWith("/workspace"),
+    [location.pathname]
+  );
 
+  // Memoized updated items for main navigation
+  const updatedItems = useMemo(() => {
+    const items = [...primaryNavItems];
     if (workspaceInfo) {
-      updatedItems.push({
+      items.push({
         type: "link",
         label: "Viimeisin työtila",
         description: workspaceInfo.name,
@@ -115,72 +115,112 @@ export function RootLayout(props: RootLayoutProps) {
           workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
       });
     }
+    return items;
+  }, [primaryNavItems, workspaceInfo]);
 
-    return (
-      <Box component="nav" className={classes.mainNav}>
-        <Box
-          className={classes.mainNavHeader}
-          style={{
-            height: "60px",
-          }}
-          data-collapsed={collapsed}
-        >
-          <Group p="sm" className={classes.headerContent}>
-            <Group align="center" className={classes.titleGroup}>
-              <IconHome size={35} />
-
-              {!collapsed && (
-                <Title
-                  order={3}
-                  className={classes.title}
-                  style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                  }}
-                >
-                  {title}
-                </Title>
-              )}
-            </Group>
-          </Group>
-        </Box>
-
-        <Box
-          className={classes.mainNavLinks}
-          component={ScrollArea}
-          data-collapsed={collapsed}
-        >
-          <ul className={classes.linksInner}>
-            {updatedItems.map((item) => {
-              switch (item.type) {
-                case "link":
-                  return (
-                    <li key={item.label}>
-                      <NavbarLink
-                        key={item.label}
-                        {...item}
-                        exactMatch
-                        collapsed={collapsed}
-                      />
-                    </li>
-                  );
-                case "queryLink":
-                  return (
-                    <li key={item.label}>
-                      <NavbarQueryLink key={item.label} {...item} />
-                    </li>
-                  );
-              }
-            })}
-          </ul>
-        </Box>
-
-        <Box className={classes.mainNavFooter} data-collapsed={collapsed}>
-          <UserButton collapsed={collapsed} />
-        </Box>
-      </Box>
-    );
+  /**
+   * Render navigation item
+   * @param item - Navigation item
+   * @returns Navigation item component
+   */
+  const renderNavItem = (
+    item: NavigationItem,
+    secondaryNav: boolean,
+    collapsed = false
+  ) => {
+    switch (item.type) {
+      case "link":
+        return (
+          <motion.li
+            key={item.label}
+            variants={secondaryNav ? navigationItemVariants : undefined}
+            initial="entering"
+            animate="visible"
+          >
+            <NavbarLink
+              key={item.label}
+              {...item}
+              exactMatch
+              collapsed={collapsed}
+            />
+          </motion.li>
+        );
+      case "queryLink":
+        return (
+          <motion.li
+            key={item.label}
+            variants={secondaryNav ? navigationItemVariants : undefined}
+            initial="entering"
+            animate="visible"
+          >
+            <NavbarQueryLink key={item.label} {...item} />
+          </motion.li>
+        );
+      case "component":
+        return (
+          <motion.li
+            key={item.id}
+            variants={secondaryNav ? navigationItemVariants : undefined}
+            initial="entering"
+            animate="visible"
+          >
+            {item.component}
+          </motion.li>
+        );
+      default:
+        return null;
+    }
   };
+
+  /**
+   * Render main navigation
+   * @param collapsed - Whether the navigation is collapsed
+   * @returns Main navigation component
+   */
+  const renderMainNav = (collapsed: boolean) => (
+    <Box component="nav" className={classes.mainNav}>
+      <Box
+        className={classes.mainNavHeader}
+        style={{
+          height: "60px",
+        }}
+        data-collapsed={collapsed}
+      >
+        <Group p="sm" className={classes.headerContent}>
+          <Group align="center" className={classes.titleGroup}>
+            <IconHome size={35} />
+
+            {!collapsed && (
+              <Title
+                order={3}
+                className={classes.title}
+                style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                }}
+              >
+                {title}
+              </Title>
+            )}
+          </Group>
+        </Group>
+      </Box>
+
+      <Box
+        className={classes.mainNavLinks}
+        component={ScrollArea}
+        data-collapsed={collapsed}
+      >
+        <ul className={classes.linksInner}>
+          {updatedItems.map((item) => renderNavItem(item, false, collapsed))}
+        </ul>
+      </Box>
+
+      <Box className={classes.mainNavFooter} data-collapsed={collapsed}>
+        <UserButton collapsed={collapsed} />
+      </Box>
+    </Box>
+  );
 
   /**
    * Render secondary navigation. Content in workspace route is by default
@@ -221,45 +261,7 @@ export function RootLayout(props: RootLayoutProps) {
 
         <Box className={classes.links} component={ScrollArea}>
           <ul className={classes.linksInner}>
-            {(items ?? []).map((item) => {
-              switch (item.type) {
-                case "link":
-                  return (
-                    <motion.li
-                      key={item.label}
-                      variants={navigationItemVariants}
-                      initial="entering"
-                      animate="visible"
-                    >
-                      <NavbarLink key={item.label} {...item} exactMatch />
-                    </motion.li>
-                  );
-                case "queryLink":
-                  return (
-                    <motion.li
-                      key={item.label}
-                      variants={navigationItemVariants}
-                      initial="entering"
-                      animate="visible"
-                    >
-                      <NavbarQueryLink key={item.label} {...item} />
-                    </motion.li>
-                  );
-                case "component":
-                  return (
-                    <motion.li
-                      key={item.id}
-                      variants={navigationItemVariants}
-                      initial="entering"
-                      animate="visible"
-                    >
-                      {item.component}
-                    </motion.li>
-                  );
-                default:
-                  return null;
-              }
-            })}
+            {(items ?? []).map((item) => renderNavItem(item, true))}
           </ul>
         </Box>
       </Box>

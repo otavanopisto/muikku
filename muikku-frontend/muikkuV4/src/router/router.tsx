@@ -198,8 +198,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "/workspace/:workspaceUrlName",
-        element: <RootLayout context="workspace" />,
-        errorElement: <RootLayout context="workspace" isErrorBoundary />,
+        element: <RootLayout />,
+        errorElement: <RootLayout isErrorBoundary />,
         middleware: [authMiddleware, workspaceMiddleware],
         loader: routeLoaders.workspaceLoader,
         children: [
