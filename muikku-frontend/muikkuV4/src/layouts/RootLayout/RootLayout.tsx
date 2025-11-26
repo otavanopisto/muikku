@@ -1,5 +1,4 @@
-import React from "react";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { userAtom } from "src/atoms/auth";
 import { useAtomValue } from "jotai";
 import {
@@ -11,12 +10,14 @@ import { workspacePermissionsAtom } from "src/atoms/permissions";
 import { useAppLayout } from "src/hooks/useAppLayout";
 import { Box, Burger, Group, ScrollArea, Title } from "@mantine/core";
 import { Drawer } from "@mantine/core";
-import { IconHome } from "@tabler/icons-react";
+import { IconBuilding, IconHome } from "@tabler/icons-react";
 import { UserButton } from "~/src/components/UserButton/UserButton";
 import { secondaryNavConfigAtom } from "~/src/atoms/layout";
 import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
 import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { workspaceInfoAtom } from "~/src/atoms/workspace";
+import { ErrorBoundary } from "~/src/pages";
 
 const navigationVariants: Variants = {
   collapsed: {
@@ -37,12 +38,32 @@ const navigationVariants: Variants = {
   },
 };
 
+const navigationItemVariants: Variants = {
+  entering: {
+    y: 20,
+    opacity: 0,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+    },
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+    },
+  },
+};
+
 /**
  * Root layout props
  */
 interface RootLayoutProps {
   title?: string;
   context?: NavigationContext;
+  isErrorBoundary?: boolean;
 }
 
 /**
@@ -50,10 +71,15 @@ interface RootLayoutProps {
  * @param props - Root layout props
  */
 export function RootLayout(props: RootLayoutProps) {
-  const { title = "Muikku V4" } = props;
+  const { title = "Muikku V4", isErrorBoundary = false } = props;
+
+  const location = useLocation();
+  const isWorkspaceRoute = location.pathname.startsWith("/workspace");
+
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   const secondaryNavConfig = useAtomValue(secondaryNavConfigAtom);
+  const workspaceInfo = useAtomValue(workspaceInfoAtom);
 
   const { navOpened, toggleNav } = useAppLayout();
 
@@ -63,116 +89,185 @@ export function RootLayout(props: RootLayoutProps) {
     "environment"
   );
 
+  const workspaceNavigationItems = getNavigationItems(
+    user,
+    workspacePermissions,
+    "workspace"
+  );
+
   /**
    * Render main navigation
    * @param collapsed - Whether the navigation is collapsed
    * @returns Main navigation component
    */
-  const renderMainNav = (collapsed: boolean) => (
-    <Box component="nav" className={classes.mainNav}>
-      <Box
-        className={classes.mainNavHeader}
-        style={{
-          height: "60px",
-        }}
-        data-collapsed={collapsed}
-      >
-        <Group p="sm" className={classes.headerContent}>
-          <Group align="center" className={classes.titleGroup}>
-            <IconHome size={35} />
+  const renderMainNav = (collapsed: boolean) => {
+    const updatedItems = [...primaryNavItems];
 
-            {!collapsed && (
-              <Title
-                order={3}
-                className={classes.title}
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                }}
-              >
-                {title}
-              </Title>
-            )}
+    if (workspaceInfo) {
+      updatedItems.push({
+        type: "link",
+        label: "Viimeisin työtila",
+        icon: IconBuilding,
+        link: `/workspace/${workspaceInfo.urlName}/`,
+        canAccess: (_, workspacePermissions) =>
+          workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
+      });
+    }
+
+    return (
+      <Box component="nav" className={classes.mainNav}>
+        <Box
+          className={classes.mainNavHeader}
+          style={{
+            height: "60px",
+          }}
+          data-collapsed={collapsed}
+        >
+          <Group p="sm" className={classes.headerContent}>
+            <Group align="center" className={classes.titleGroup}>
+              <IconHome size={35} />
+
+              {!collapsed && (
+                <Title
+                  order={3}
+                  className={classes.title}
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                  }}
+                >
+                  {title}
+                </Title>
+              )}
+            </Group>
           </Group>
-        </Group>
-      </Box>
+        </Box>
 
-      <Box
-        className={classes.mainNavLinks}
-        component={ScrollArea}
-        data-collapsed={collapsed}
-      >
-        {primaryNavItems.map((item) => {
-          switch (item.type) {
-            case "link":
-              return (
-                <NavbarLink
-                  key={item.label}
-                  {...item}
-                  exactMatch
-                  collapsed={collapsed}
-                />
-              );
-            case "queryLink":
-              return <NavbarQueryLink key={item.label} {...item} />;
-          }
-        })}
-      </Box>
+        <Box
+          className={classes.mainNavLinks}
+          component={ScrollArea}
+          data-collapsed={collapsed}
+        >
+          <ul className={classes.linksInner}>
+            {updatedItems.map((item) => {
+              switch (item.type) {
+                case "link":
+                  return (
+                    <li key={item.label}>
+                      <NavbarLink
+                        key={item.label}
+                        {...item}
+                        exactMatch
+                        collapsed={collapsed}
+                      />
+                    </li>
+                  );
+                case "queryLink":
+                  return (
+                    <li key={item.label}>
+                      <NavbarQueryLink key={item.label} {...item} />
+                    </li>
+                  );
+              }
+            })}
+          </ul>
+        </Box>
 
-      <Box className={classes.mainNavFooter} data-collapsed={collapsed}>
-        <UserButton collapsed={collapsed} />
+        <Box className={classes.mainNavFooter} data-collapsed={collapsed}>
+          <UserButton collapsed={collapsed} />
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  };
 
   /**
-   * Render secondary navigation
+   * Render secondary navigation. Content in workspace route is by default
+   * workspace navigation items. Otherwise it's secondary nav config.
    * @returns Secondary navigation component
    */
-  const renderSecondaryNav = () => (
-    <Box component="nav" className={classes.secondaryNav}>
-      <Box
-        className={classes.header}
-        style={{
-          height: "60px",
-        }}
-      >
-        <Group p="sm" className={classes.headerContent}>
-          <Group align="center" className={classes.titleGroup}>
-            <Title order={3} className={classes.title}>
-              {secondaryNavConfig?.config.title}
-            </Title>
-          </Group>
-        </Group>
-      </Box>
+  const renderSecondaryNav = () => {
+    const title = isWorkspaceRoute
+      ? workspaceInfo?.name
+      : secondaryNavConfig?.config.title;
+    const items = isWorkspaceRoute
+      ? workspaceNavigationItems
+      : secondaryNavConfig?.config.items;
 
-      <Box className={classes.links} component={ScrollArea}>
-        <div className={classes.linksInner}>
-          {secondaryNavConfig?.config.items.map((item) => {
-            switch (item.type) {
-              case "link":
-                return <NavbarLink key={item.label} {...item} exactMatch />;
-              case "queryLink":
-                return <NavbarQueryLink key={item.label} {...item} />;
-              case "component":
-                return (
-                  <React.Fragment key={item.id}>
-                    {item.component}
-                  </React.Fragment>
-                );
-              default:
-                return null;
-            }
-          })}
-        </div>
+    return (
+      <Box component="nav" className={classes.secondaryNav}>
+        <Box
+          className={classes.header}
+          style={{
+            height: "60px",
+          }}
+        >
+          <Group p="sm" className={classes.headerContent}>
+            <Group align="center" className={classes.titleGroup}>
+              <motion.div
+                key={title}
+                variants={navigationItemVariants}
+                initial="entering"
+                animate="visible"
+              >
+                <Title order={3} className={classes.title}>
+                  {title ?? ""}
+                </Title>
+              </motion.div>
+            </Group>
+          </Group>
+        </Box>
+
+        <Box className={classes.links} component={ScrollArea}>
+          <ul className={classes.linksInner}>
+            {(items ?? []).map((item) => {
+              switch (item.type) {
+                case "link":
+                  return (
+                    <motion.li
+                      key={item.label}
+                      variants={navigationItemVariants}
+                      initial="entering"
+                      animate="visible"
+                    >
+                      <NavbarLink key={item.label} {...item} exactMatch />
+                    </motion.li>
+                  );
+                case "queryLink":
+                  return (
+                    <motion.li
+                      key={item.label}
+                      variants={navigationItemVariants}
+                      initial="entering"
+                      animate="visible"
+                    >
+                      <NavbarQueryLink key={item.label} {...item} />
+                    </motion.li>
+                  );
+                case "component":
+                  return (
+                    <motion.li
+                      key={item.id}
+                      variants={navigationItemVariants}
+                      initial="entering"
+                      animate="visible"
+                    >
+                      {item.component}
+                    </motion.li>
+                  );
+                default:
+                  return null;
+              }
+            })}
+          </ul>
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  };
 
   // Navigation content component (reusable for both mobile drawer and desktop sidebar)
   const navigationContent = (
     <AnimatePresence mode="popLayout">
-      {secondaryNavConfig ? (
+      {secondaryNavConfig || isWorkspaceRoute ? (
         <motion.div
           key="Nav-with-secondary"
           className={classes.navWrapper}
@@ -233,7 +328,7 @@ export function RootLayout(props: RootLayoutProps) {
       </Box>
       {/* Main content */}
       <Box component="main" className={classes.mainContent}>
-        <Outlet />
+        {isErrorBoundary ? <ErrorBoundary /> : <Outlet />}
       </Box>
     </Box>
   );

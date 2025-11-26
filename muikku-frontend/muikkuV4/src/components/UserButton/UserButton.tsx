@@ -24,7 +24,7 @@ export function UserButton(props: UserButtonProps) {
       label={!collapsed ? user?.displayName : null}
       description={!collapsed ? user?.profile.emails?.[0] : null}
       leftSection={
-        user?.hasImage && !collapsed ? (
+        user?.hasImage ? (
           <Avatar src={getUserImageUrl(user?.id ?? 0)} radius="xl" />
         ) : (
           <Avatar radius="xl">

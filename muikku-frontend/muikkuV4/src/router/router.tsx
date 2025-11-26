@@ -14,7 +14,6 @@ import {
   Hops,
   Guider,
   Evaluation,
-  Organization,
   Announcements,
   Announcer,
   Profile,
@@ -30,7 +29,7 @@ import {
   ErrorBoundary,
 } from "src/pages/";
 import { ErrorBoundaryRoot } from "src/components";
-import { RootLayout, ErrorBoundaryLayout } from "src/layouts";
+import { RootLayout } from "src/layouts";
 
 // Router
 export const router = createBrowserRouter([
@@ -46,7 +45,7 @@ export const router = createBrowserRouter([
       },
       {
         element: <RootLayout />,
-        errorElement: <ErrorBoundaryLayout />,
+        errorElement: <RootLayout isErrorBoundary />,
         loader: () => null,
         middleware: [authMiddleware],
         children: [
@@ -200,7 +199,7 @@ export const router = createBrowserRouter([
       {
         path: "/workspace/:workspaceUrlName",
         element: <RootLayout context="workspace" />,
-        errorElement: <ErrorBoundaryLayout context="workspace" />,
+        errorElement: <RootLayout context="workspace" isErrorBoundary />,
         middleware: [authMiddleware, workspaceMiddleware],
         loader: routeLoaders.workspaceLoader,
         children: [

@@ -95,9 +95,15 @@
   flex: 1;
 }
 
-.secondaryNavigation {
-  background: #e3e3e3;
-  border-right: 1px solid var(--mantine-color-dark-4);
+.links {
+  display: flex;
+  flex: 1;
+}
+
+.linksInner {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .mainContent {

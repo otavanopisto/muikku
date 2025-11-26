@@ -5,14 +5,10 @@ import {
   IconMail,
   IconList,
   IconEdit,
-  IconBuildingStore,
   IconUser,
   IconSettings,
   IconLogout,
   IconLogin,
-  IconHelp,
-  IconCalendar,
-  IconBook,
 } from "@tabler/icons-react";
 import { type Params, type To } from "react-router";
 import type { WorkspacePermissions } from "src/services/permissions";
@@ -260,7 +256,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Etusivu",
-    icon: IconHome,
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
       workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
@@ -268,7 +263,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Hallinta",
-    icon: IconBuildingStore,
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceManagement`,
     canAccess: (user, workspacePermissions) =>
@@ -278,7 +272,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Ohjeet",
-    icon: IconHelp,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceHelp`,
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_GUIDES_VISIBLE) ??
@@ -287,7 +280,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Materiaalit",
-    icon: IconBook,
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceMaterials`,
     canAccess: (user, workspacePermissions) =>
@@ -297,7 +289,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Oppimispäiväkirja",
-    icon: IconCalendar,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceJournal`,
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_JOURNAL_VISIBLE) ??
@@ -306,18 +297,10 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Käyttäjät",
-    icon: IconUser,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceUsers`,
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_USERS_VISIBLE) ??
       false, // Always visible
-  },
-  {
-    type: "link",
-    label: "Kirjaudu ulos",
-    icon: IconLogout,
-    link: "/logout",
-    canAccess: (user) => user?.loggedIn ?? false,
   },
 ];
 
