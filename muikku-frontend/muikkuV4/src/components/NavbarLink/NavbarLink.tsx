@@ -21,6 +21,7 @@ export function NavbarLink(props: NavbarLinkProps) {
   const {
     icon: Icon,
     label,
+    description,
     link,
     collapsed = false,
     exactMatch = false,
@@ -52,6 +53,7 @@ export function NavbarLink(props: NavbarLinkProps) {
       component={Link}
       to={linkValue}
       label={label}
+      description={description}
       leftSection={Icon ? <Icon size={20} /> : null}
       active={match !== null}
     />

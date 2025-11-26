@@ -21,6 +21,7 @@ export type NavigationContext = "environment" | "workspace";
  */
 export interface BaseNavigationItem {
   label: string;
+  description?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: React.FC<any>;
   canAccess?: (

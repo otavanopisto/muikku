@@ -108,6 +108,7 @@ export function RootLayout(props: RootLayoutProps) {
       updatedItems.push({
         type: "link",
         label: "Viimeisin työtila",
+        description: workspaceInfo.name,
         icon: IconBuilding,
         link: `/workspace/${workspaceInfo.urlName}/`,
         canAccess: (_, workspacePermissions) =>
