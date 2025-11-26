@@ -272,7 +272,7 @@ const markOneAsRead: MarkAsReadTriggerType = function markOneAsRead(
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.setUnreadError", {
+          i18n.t("notifications.markAsReadError", {
             ns: "messaging",
           }),
           "error"
@@ -310,6 +310,40 @@ const markAllAsRead: LoadAnnouncementsTriggerType = function markAllAsRead(
     }
   };
 };
+
+/**
+ * markOneAsRead
+ * @param announcement announcement
+ */
+const pinAnnouncementForSelf: MarkAsReadTriggerType =
+  function pinAnnouncementForSelf(announcement) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        await announcerApi.pinAnnouncement({
+          announcementId: announcement.id,
+        });
+        dispatch({
+          type: "UPDATE_ONE_ANNOUNCEMENT",
+          payload: {
+            update: { pinnedToSelf: !announcement.pinnedToSelf },
+            announcement,
+          },
+        });
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.pinError", {
+              ns: "messaging",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
 
 /**
  * loadMoreAnnouncements
@@ -716,6 +750,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 export {
   markAllAsRead,
   markOneAsRead,
+  pinAnnouncementForSelf,
   loadAnnouncements,
   loadMoreAnnouncements,
   addToAnnouncementsSelected,

@@ -68,6 +68,9 @@ class Announcements extends React.Component<
           {this.props.announcement.pinned && (
             <span className="icon icon-pin"></span>
           )}
+          {this.props.announcement.pinnedToSelf && (
+            <span className="icon announcement__icon--pinned-to-self icon-pin"></span>
+          )}
         </header>
         {this.props.announcement.workspaces.length ||
         this.props.announcement.userGroupEntityIds.length ? (
@@ -76,7 +79,7 @@ class Announcements extends React.Component<
               <span className="label" key={workspace.id}>
                 <span className="label__icon label__icon--workspace icon-books"></span>
                 <span className="label__text label__text--workspace">
-                  {workspace.name}{" "}
+                  {workspace.name}
                   {workspace.nameExtension
                     ? "(" + workspace.nameExtension + ")"
                     : null}

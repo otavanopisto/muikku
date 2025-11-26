@@ -105,7 +105,18 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
               </div>
             ) : null}
           </span>
-          {announcement.pinned ? <span className="icon icon-pin"></span> : null}
+          {announcement.pinnedToSelf && (
+            <span
+              title={t("labels.pinnedToSelf", { ns: "messaging" })}
+              className="icon announcement__icon--pinned-to-self icon-pin"
+            ></span>
+          )}
+          {announcement.pinned ? (
+            <span
+              title={t("labels.pinned", { ns: "messaging" })}
+              className="icon icon-pin"
+            ></span>
+          ) : null}
           <AnnouncementOptions announcement={announcement} />
         </Link>
       );
