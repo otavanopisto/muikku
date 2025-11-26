@@ -14,6 +14,7 @@ import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
+import AnnouncementOptions from "../../general/announcement-options";
 
 /**
  * AnnouncementProps
@@ -65,12 +66,15 @@ class Announcements extends React.Component<
       <article className="article">
         <header className="article__header article__header--announcement">
           {this.props.announcement.caption}
-          {this.props.announcement.pinned && (
-            <span className="icon icon-pin"></span>
-          )}
-          {this.props.announcement.pinnedToSelf && (
-            <span className="icon announcement__icon--pinned-to-self icon-pin"></span>
-          )}
+          <div>
+            {this.props.announcement.pinned && (
+              <span className="icon icon-pin"></span>
+            )}
+            {this.props.announcement.pinnedToSelf && (
+              <span className="icon announcement__icon--pinned-to-self icon-pin"></span>
+            )}
+            <AnnouncementOptions announcement={this.props.announcement} />
+          </div>
         </header>
         {this.props.announcement.workspaces.length ||
         this.props.announcement.userGroupEntityIds.length ? (

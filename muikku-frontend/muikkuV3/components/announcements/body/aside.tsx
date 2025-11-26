@@ -10,6 +10,7 @@ import { Announcement } from "~/generated/client";
 import { useSelector } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { useTranslation } from "react-i18next";
+import AnnouncementOptions from "../general/announcement-options";
 
 /**
  * AnnouncementsAside
@@ -123,9 +124,16 @@ const AnnouncementsAside: React.FC = () => {
                       </div>
                     ) : null}
                   </span>
+                  {announcement.pinnedToSelf && (
+                    <span
+                      title={t("labels.pinnedToSelf", { ns: "messaging" })}
+                      className="icon announcement__icon--pinned-to-self icon-pin"
+                    ></span>
+                  )}
                   {announcement.pinned && (
                     <span className="icon icon-pin"></span>
                   )}
+                  <AnnouncementOptions announcement={announcement} />
                 </Link>
               );
             })}
