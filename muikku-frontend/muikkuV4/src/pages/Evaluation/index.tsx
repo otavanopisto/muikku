@@ -1,18 +1,33 @@
-import { Text, Paper } from "@mantine/core";
+import { Text, Paper, Box, Burger } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
-import { evaluationSubItems } from "~/src/layouts/helpers/navigation";
-import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
+import { useAppLayout } from "src/hooks/useAppLayout";
+import { evaluationSubItems } from "src/layouts/helpers/navigation";
+import { useRootAside } from "src/layouts/helpers/useRootAside";
+import { useRootNav } from "src/layouts/helpers/useRootNav";
 
 /**
  * Evaluation - Evaluation page
  */
 export function Evaluation() {
-  useRouteContextNav({
+  useRootNav({
     title: "Arviointi",
     items: evaluationSubItems,
   });
+  useRootAside({
+    component: <div>Hello Evaluation</div>,
+  });
+
+  const { asideOpened, toggleAside } = useAppLayout();
   return (
     <PageLayout title="Arviointi">
+      <Box hiddenFrom="md">
+        <Burger
+          opened={asideOpened}
+          onClick={toggleAside}
+          size="sm"
+          aria-label="Toggle navigation"
+        />
+      </Box>
       <Paper p="xl" withBorder>
         <Text size="lg" c="dimmed" mb="lg">
           You are now in the evaluation area of the application.

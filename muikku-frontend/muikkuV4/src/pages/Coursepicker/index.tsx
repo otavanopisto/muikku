@@ -1,13 +1,13 @@
 import { Text, Paper } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { coursepickerSubItems } from "~/src/layouts/helpers/navigation";
-import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
+import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 
 /**
  * Coursepicker - Coursepicker page
  */
 export function Coursepicker() {
-  useRouteContextNav({
+  useRootNav({
     title: "Kurssipoimuri",
     items: coursepickerSubItems,
   });

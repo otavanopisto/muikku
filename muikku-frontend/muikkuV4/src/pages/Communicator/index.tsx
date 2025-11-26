@@ -1,13 +1,13 @@
 import { Text, Paper } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { communicatorSubItems } from "~/src/layouts/helpers/navigation";
-import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
+import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 
 /**
  * Communicator - Communicator page
  */
 export function Communicator() {
-  useRouteContextNav({
+  useRootNav({
     title: "Viestin",
     items: communicatorSubItems,
   });

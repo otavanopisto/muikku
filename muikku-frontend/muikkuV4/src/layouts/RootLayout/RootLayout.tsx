@@ -12,7 +12,7 @@ import { Box, Burger, Group, ScrollArea, Title } from "@mantine/core";
 import { Drawer } from "@mantine/core";
 import { IconBuilding, IconHome } from "@tabler/icons-react";
 import { UserButton } from "~/src/components/UserButton/UserButton";
-import { secondaryNavConfigAtom } from "~/src/atoms/layout";
+import { asideConfigAtom, secondaryNavConfigAtom } from "~/src/atoms/layout";
 import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
 import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
@@ -79,9 +79,10 @@ export function RootLayout(props: RootLayoutProps) {
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   const secondaryNavConfig = useAtomValue(secondaryNavConfigAtom);
+  const asideConfig = useAtomValue(asideConfigAtom);
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
 
-  const { navOpened, toggleNav } = useAppLayout();
+  const { navOpened, toggleNav, asideOpened, toggleAside } = useAppLayout();
 
   const primaryNavItems = getNavigationItems(
     user,
@@ -322,13 +323,62 @@ export function RootLayout(props: RootLayoutProps) {
         {navigationContent}
       </Drawer>
 
+      {/* Mobile: Drawer for Right Aside */}
+      {asideConfig && (
+        <Drawer
+          opened={asideOpened}
+          onClose={toggleAside}
+          size="xs"
+          className={classes.mobileDrawer}
+          hiddenFrom="md"
+          position="right"
+          classNames={{
+            header: classes.mobileDrawerHeader,
+            content: classes.mobileDrawerContent,
+            body: classes.mobileDrawerBody,
+          }}
+        >
+          {asideConfig.config.component}
+        </Drawer>
+      )}
+
       {/* Desktop: Navigation */}
       <Box visibleFrom="md" className={classes.desktopNav}>
         {navigationContent}
       </Box>
       {/* Main content */}
-      <Box component="main" className={classes.mainContent}>
+      <motion.main
+        className={classes.mainContent}
+        animate={{
+          marginRight: asideConfig ? 400 : 0,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+      >
         {isErrorBoundary ? <ErrorBoundary /> : <Outlet />}
+      </motion.main>
+
+      {/* Desktop: Aside with animation */}
+      <Box visibleFrom="md">
+        <AnimatePresence>
+          {asideConfig && (
+            <motion.aside
+              key="aside"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 400, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{
+                duration: 0.3,
+                ease: "easeInOut",
+              }}
+              className={classes.desktopAside}
+            >
+              {asideConfig.config.component}
+            </motion.aside>
+          )}
+        </AnimatePresence>
       </Box>
     </Box>
   );

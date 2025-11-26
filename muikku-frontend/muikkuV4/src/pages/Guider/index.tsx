@@ -2,14 +2,14 @@ import { Paper, Button } from "@mantine/core";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import StudentsList from "./StudentsList";
-import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
+import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 import { guiderSubItems } from "~/src/layouts/helpers/navigation";
 
 /**
  * Guider - Guider page
  */
 export function Guider() {
-  useRouteContextNav({
+  useRootNav({
     title: "Ohjaamo",
     items: guiderSubItems,
     customWidth: 500,

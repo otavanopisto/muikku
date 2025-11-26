@@ -9,7 +9,7 @@ import {
   parseAsyncStateFromQuery,
 } from "src/utils/AtomHelpers";
 import { guiderSubItems } from "~/src/layouts/helpers/navigation";
-import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
+import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 
 /**
  * Guider - Guider page
@@ -17,7 +17,7 @@ import { useRouteContextNav } from "~/src/layouts/helpers/useRouteContextNav";
 export function GuiderStudent() {
   const studentState = useAtomValue(currentStudentAtom);
 
-  useRouteContextNav({
+  useRootNav({
     title: "Ohjaamo",
     items: guiderSubItems,
     customWidth: 500,

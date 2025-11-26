@@ -1,70 +1,21 @@
 import { useAtom } from "jotai";
-import { secondaryNavOpenedAtom, primaryNavOpenedAtom } from "../atoms/layout";
-import { useDisclosure } from "@mantine/hooks";
+import { asideOpenedAtom, navOpenedAtom } from "../atoms/layout";
 
 /**
  * Hook for managing the app layout
  * @returns Object containing sidebar state and control functions
  */
 export const useAppLayout = () => {
-  const [primaryNavOpened, setPrimaryNavOpened] = useAtom(primaryNavOpenedAtom);
-  const [secondaryNavOpened, setSecondaryNavOpened] = useAtom(
-    secondaryNavOpenedAtom
-  );
-  const [navOpened, { toggle: toggleNav }] = useDisclosure(); // Navbar state
+  const [navOpened, setNavOpened] = useAtom(navOpenedAtom);
+  const [asideOpened, setAsideOpened] = useAtom(asideOpenedAtom);
 
-  /**
-   * Open the sidebar
-   */
-  const openPrimaryNav = () => {
-    setPrimaryNavOpened(true);
-  };
-
-  /**
-   * Close the sidebar
-   */
-  const closePrimaryNav = () => {
-    setPrimaryNavOpened(false);
-  };
-
-  /**
-   * Toggle the sidebar
-   */
-  const togglePrimaryNav = () => {
-    setPrimaryNavOpened(!primaryNavOpened);
-  };
-
-  /**
-   * Open the secondary sidebar
-   */
-  const openSecondaryNav = () => {
-    setSecondaryNavOpened(true);
-  };
-
-  /**
-   * Close the secondary sidebar
-   */
-  const closeSecondaryNav = () => {
-    setSecondaryNavOpened(false);
-  };
-
-  /**
-   * Toggle the secondary sidebar
-   */
-  const toggleSecondaryNav = () => {
-    setSecondaryNavOpened(!secondaryNavOpened);
-  };
+  const toggleNav = () => setNavOpened(!navOpened);
+  const toggleAside = () => setAsideOpened(!asideOpened);
 
   return {
-    primaryNavOpened,
     navOpened,
     toggleNav,
-    openPrimaryNav,
-    closePrimaryNav,
-    togglePrimaryNav,
-    secondaryNavOpened,
-    openSecondaryNav,
-    closeSecondaryNav,
-    toggleSecondaryNav,
+    asideOpened,
+    toggleAside,
   };
 };

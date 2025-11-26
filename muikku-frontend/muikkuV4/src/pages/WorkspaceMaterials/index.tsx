@@ -1,7 +1,10 @@
-import { Container, Title, Text, Paper } from "@mantine/core";
+import { Title, Text, Paper, Burger, Box } from "@mantine/core";
 import { useParams } from "react-router";
 import { useAtomValue } from "jotai";
 import { workspaceInfoAtom } from "src/atoms/workspace";
+import { PageLayout } from "src/layouts";
+import { useRootAside } from "~/src/layouts/helpers/useRootAside";
+import { useAppLayout } from "~/src/hooks/useAppLayout";
 
 /**
  * WorkspaceMaterials - Workspace materials page
@@ -9,8 +12,20 @@ import { workspaceInfoAtom } from "src/atoms/workspace";
 export function WorkspaceMaterials() {
   const { workspaceUrlName } = useParams();
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
+  const { asideOpened, toggleAside } = useAppLayout();
+  useRootAside({
+    component: <div>Hello Materials</div>,
+  });
   return (
-    <Container size="lg">
+    <PageLayout title="Workspace Materials">
+      <Box hiddenFrom="md">
+        <Burger
+          opened={asideOpened}
+          onClick={toggleAside}
+          size="sm"
+          aria-label="Toggle navigation"
+        />
+      </Box>
       <Paper p="xl" withBorder>
         <Title order={1} mb="md">
           Workspace Materials
@@ -22,6 +37,6 @@ export function WorkspaceMaterials() {
           <b>Workspace:</b> {workspaceInfo?.name ?? workspaceUrlName}
         </Text>
       </Paper>
-    </Container>
+    </PageLayout>
   );
 }

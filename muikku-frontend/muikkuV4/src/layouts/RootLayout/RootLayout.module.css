@@ -106,6 +106,14 @@
   margin: 0;
 }
 
+.desktopAside {
+  width: 400px;
+  position: fixed;
+  right: 0;
+  height: 100vh;
+  border-left: 1px solid var(--mantine-color-gray-2);
+}
+
 .mainContent {
   overflow: auto;
   padding: var(--mantine-spacing-md);
@@ -116,5 +124,6 @@
     position: fixed;
     top: 60px;
     margin-left: 0;
+    margin-right: 0;
   }
 }

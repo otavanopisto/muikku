@@ -1,8 +1,8 @@
 import { atom } from "jotai";
 import type { NavigationItem } from "../layouts/helpers/navigation";
 
-export const primaryNavOpenedAtom = atom(true);
-export const secondaryNavOpenedAtom = atom(true);
+export const navOpenedAtom = atom<boolean>(false);
+export const asideOpenedAtom = atom<boolean>(false);
 
 export const secondaryNavConfigAtom = atom<{
   config: {
@@ -11,6 +11,13 @@ export const secondaryNavConfigAtom = atom<{
     items: NavigationItem[];
   };
   customWidth?: number;
+} | null>(null);
+
+export const asideConfigAtom = atom<{
+  config: {
+    title?: string;
+    component: React.ReactNode;
+  };
 } | null>(null);
 
 export const selectedNavItemAtom = atom<NavigationItem | null>(null);

@@ -1,7 +1,9 @@
-import { Container, Title, Text, Paper } from "@mantine/core";
+import { Title, Text, Paper } from "@mantine/core";
 import { useParams } from "react-router";
 import { useAtomValue } from "jotai";
 import { workspaceInfoAtom } from "src/atoms/workspace";
+import { useRootAside } from "src/layouts/helpers/useRootAside";
+import { PageLayout } from "~/src/layouts";
 
 /**
  * WorkspaceHelp - Workspace help page
@@ -9,8 +11,11 @@ import { workspaceInfoAtom } from "src/atoms/workspace";
 export function WorkspaceHelp() {
   const { workspaceUrlName } = useParams();
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
+  useRootAside({
+    component: <div>Hello Help</div>,
+  });
   return (
-    <Container size="lg">
+    <PageLayout title="Workspace Help">
       <Paper p="xl" withBorder>
         <Title order={1} mb="md">
           Workspace Help
@@ -22,6 +27,6 @@ export function WorkspaceHelp() {
           <b>Workspace:</b> {workspaceInfo?.name ?? workspaceUrlName}
         </Text>
       </Paper>
-    </Container>
+    </PageLayout>
   );
 }
