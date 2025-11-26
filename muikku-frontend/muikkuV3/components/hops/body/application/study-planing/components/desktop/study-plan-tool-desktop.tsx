@@ -4,13 +4,14 @@ import { PlannerControls } from "../planner-controls";
 import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { motion, Variants } from "framer-motion";
 import PlannerCourseTray from "../planner-course-tray";
-import { updateSelectedCourses } from "~/actions/main-function/hops";
+import { updateSelectedPlanItem } from "~/actions/main-function/hops";
 import { Course } from "~/@types/shared";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerTimeline from "./planner-timeline";
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { ActivePeriodProvider } from "../../context/active-period-context";
+import PlannerAddNote from "../planner-add-note";
 
 /**
  * DesktopStudyPlannerProps
@@ -38,6 +39,7 @@ const variants: Variants = {
 // Memoized components
 const MemoizedPlannerControls = React.memo(PlannerControls);
 const MemoizedPlannerCourseTray = React.memo(PlannerCourseTray);
+const MemoizedPlannerAddNote = React.memo(PlannerAddNote);
 const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
 
 /**
@@ -48,7 +50,7 @@ const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
 const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   const { plannedCourses, calculatedPeriods } = props;
 
-  const { selectedCoursesIds } = useSelector(
+  const { selectedPlanItemIds } = useSelector(
     (state: StateType) => state.hopsNew.hopsEditing
   );
 
@@ -85,12 +87,21 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     (course: Course & { subjectCode: string }) => {
       if (!disabled) {
         dispatch(
-          updateSelectedCourses({ courseIdentifier: course.identifier })
+          updateSelectedPlanItem({ planItemIdentifier: course.identifier })
         );
       }
     },
     [disabled, dispatch]
   );
+
+  /**
+   * Handles activate add note
+   */
+  const handleActivateAddNote = useCallback(() => {
+    if (!disabled) {
+      dispatch(updateSelectedPlanItem({ planItemIdentifier: "new-note-card" }));
+    }
+  }, [disabled, dispatch]);
 
   /**
    * Checks if a course is selected
@@ -99,10 +110,10 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    */
   const isSelected = useCallback(
     (course: Course & { subjectCode: string }) =>
-      selectedCoursesIds.some(
+      selectedPlanItemIds.some(
         (courseIdentifier) => courseIdentifier === course.identifier
       ),
-    [selectedCoursesIds]
+    [selectedPlanItemIds]
   );
 
   /**
@@ -145,6 +156,11 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
         />
         <div className="study-planner__content">
           <div className="study-planner__sidebar">
+            <MemoizedPlannerAddNote
+              disabled={disabled}
+              activated={selectedPlanItemIds.includes("new-note-card")}
+              onActivateNewNote={handleActivateAddNote}
+            />
             <MemoizedPlannerCourseTray
               plannedCourses={memoizedPlannedCourses}
               onCourseClick={handleCourseSelectClick}

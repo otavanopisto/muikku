@@ -139,12 +139,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
       !_.isEqual(
         hops.hopsEditing.plannedCourses,
         hops.hopsStudyPlanState.plannedCourses
-      ) || !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals),
+      ) ||
+      !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals) ||
+      !_.isEqual(hops.hopsEditing.planNotes, hops.hopsStudyPlanState.planNotes),
     [
       hops.hopsEditing.goals,
       hops.hopsEditing.plannedCourses,
       hops.hopsStudyPlanState.goals,
       hops.hopsStudyPlanState.plannedCourses,
+      hops.hopsEditing.planNotes,
+      hops.hopsStudyPlanState.planNotes,
     ]
   );
 

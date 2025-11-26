@@ -276,7 +276,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-group">
               <span className="study-planner__extra-section-group-label-info">
-                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                {t("labels.studyPlannerRemoveCourseFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>

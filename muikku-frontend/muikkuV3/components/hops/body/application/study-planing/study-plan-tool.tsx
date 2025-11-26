@@ -37,13 +37,14 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
   const dispatch = useDispatch();
 
-  const { plannedCourses, studyActivity, studyOptions, goals } = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState
-  );
+  const { plannedCourses, planNotes, studyActivity, studyOptions, goals } =
+    useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
 
-  const { plannedCourses: editingPlan, goals: editingGoals } = useSelector(
-    (state: StateType) => state.hopsNew.hopsEditing
-  );
+  const {
+    plannedCourses: editingPlan,
+    planNotes: editingPlanNotes,
+    goals: editingGoals,
+  } = useSelector((state: StateType) => state.hopsNew.hopsEditing);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { t } = useTranslation(["hops_new"]);
@@ -67,6 +68,14 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     }
   }, [hopsMode, goals, editingGoals]);
 
+  const usedPlanNotes = useMemo(() => {
+    if (hopsMode === "READ") {
+      return planNotes;
+    } else {
+      return editingPlanNotes;
+    }
+  }, [hopsMode, planNotes, editingPlanNotes]);
+
   // Calculate the periods
   const calculatedPeriods = useMemo(
     () =>
@@ -79,9 +88,16 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
         },
         studyActivity,
         usedPlannedCourses,
+        usedPlanNotes,
         curriculumConfig.strategy
       ),
-    [usedPlannedCourses, curriculumConfig, studentInfo, studyActivity]
+    [
+      usedPlannedCourses,
+      usedPlanNotes,
+      curriculumConfig,
+      studentInfo,
+      studyActivity,
+    ]
   );
 
   // Calculate the statistics
