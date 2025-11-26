@@ -8,6 +8,7 @@ import "~/sass/elements/item-list.scss";
 import PagerV2 from "~/components/general/pagerV2";
 import { useTranslation } from "react-i18next";
 
+import AnnouncementOptions from "~/components/announcements/general/announcement-options";
 /**
  *
  * WorkspaceAnnouncements
@@ -114,6 +115,13 @@ const WorkspaceAnnouncements: React.FC = () => {
                     </span>
                   </span>
                   {a.pinned && <span className="icon icon-pin"></span>}
+                  {a.pinnedToSelf && (
+                    <span
+                      title={t("labels.pinnedToSelf", { ns: "messaging" })}
+                      className="icon announcement__icon--pinned-to-self icon-pin"
+                    ></span>
+                  )}
+                  <AnnouncementOptions announcement={a} />
                 </Link>
               ))}
             </div>
