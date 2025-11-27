@@ -4,7 +4,7 @@ import "~/sass/elements/item-list.scss";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/label.scss";
 import { StateType } from "~/reducers/index";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
 import { localize } from "~/locales/i18n";

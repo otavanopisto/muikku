@@ -19,7 +19,6 @@ import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
 import { Action, Dispatch } from "redux";
 import { WithTranslation, withTranslation } from "react-i18next";
-import AnnouncementOptions from "~/components/announcements/general/announcement-options";
 
 /**
  * MessageViewProps
