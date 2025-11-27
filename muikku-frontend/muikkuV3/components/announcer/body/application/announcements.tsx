@@ -149,13 +149,21 @@ class Announcements extends BodyScrollLoader<
                   >
                     <ApplicationListItemHeader>
                       <ApplicationListHeaderPrimary modifiers="announcement-meta">
+                        {announcement.pinnedToSelf && (
+                          <span
+                            title={this.props.i18n.t("labels.pinnedToSelf", {
+                              ns: "messaging",
+                            })}
+                            className="icon announcement__icon--pinned-to-self icon-pin"
+                          ></span>
+                        )}
+                        {announcement.pinned && (
+                          <span className="icon icon-pin"></span>
+                        )}
                         <ApplicationListItemDate
                           startDate={localize.date(announcement.startDate)}
                           endDate={localize.date(announcement.endDate)}
                         />
-                        {announcement.pinned && (
-                          <span className="icon icon-pin"></span>
-                        )}
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>
                     <ApplicationListItemBody

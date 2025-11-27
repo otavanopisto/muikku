@@ -259,6 +259,7 @@ const markOneAsRead: MarkAsReadTriggerType = function markOneAsRead(
     getState: () => StateType
   ) => {
     try {
+      const state = getState();
       await announcerApi.markAnnouncementAsRead({
         announcementId: announcement.id,
       });
@@ -268,6 +269,13 @@ const markOneAsRead: MarkAsReadTriggerType = function markOneAsRead(
           update: { unread: false },
           announcement,
         },
+      });
+
+      const newUnreadCount = state.announcements.unreadCount - 1;
+
+      dispatch({
+        type: "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
+        payload: newUnreadCount,
       });
     } catch (err) {
       dispatch(
