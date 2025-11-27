@@ -108,19 +108,20 @@ const WorkspaceAnnouncements: React.FC = () => {
                   <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                   <span className="item-list__text-body item-list__text-body--multiline">
                     <span className="item-list__announcement-caption">
+                      {a.pinned && <span className="icon icon-pin"></span>}
+                      {a.pinnedToSelf && (
+                        <span
+                          title={t("labels.pinnedToSelf", { ns: "messaging" })}
+                          className="icon announcement__icon--pinned-to-self icon-pin"
+                        ></span>
+                      )}
                       {a.caption}
                     </span>
                     <span className="item-list__announcement-date">
                       {localize.date(a.startDate)}
                     </span>
                   </span>
-                  {a.pinned && <span className="icon icon-pin"></span>}
-                  {a.pinnedToSelf && (
-                    <span
-                      title={t("labels.pinnedToSelf", { ns: "messaging" })}
-                      className="icon announcement__icon--pinned-to-self icon-pin"
-                    ></span>
-                  )}
+
                   <AnnouncementOptions announcement={a} />
                 </Link>
               ))}

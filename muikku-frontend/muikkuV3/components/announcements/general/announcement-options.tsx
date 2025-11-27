@@ -64,6 +64,7 @@ const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = (props) => {
   const items: AnnouncementOptionItem[] = [
     {
       id: "pinAnnouncement",
+      disabled: announcement.pinned,
       /**
        * onClick
        * @param onClose onClose function
