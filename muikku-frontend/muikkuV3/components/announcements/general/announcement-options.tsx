@@ -3,7 +3,10 @@ import * as React from "react";
 import { Announcement } from "~/generated/client";
 import { useDispatch } from "react-redux";
 import Dropdown from "~/components/general/dropdown";
-import { markOneAsRead, pinAnnouncementForSelf } from "~/actions/announcements";
+import {
+  toggleOneAsRead,
+  pinAnnouncementForSelf,
+} from "~/actions/announcements";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "~/components/general/button";
 
@@ -57,7 +60,7 @@ const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = (props) => {
     announcement: Announcement,
     onClose: () => void
   ) => {
-    dispatch(markOneAsRead(announcement));
+    dispatch(toggleOneAsRead(announcement));
     onClose();
   };
 
@@ -83,8 +86,9 @@ const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = (props) => {
       onClick: (onClose: () => void) =>
         handleMarkAnnouncementRead(announcement, onClose),
       icon: "icon-envelope-open",
-      disabled: !announcement.unread,
-      label: t("actions.markAsRead"),
+      label: announcement.unread
+        ? t("actions.markAsRead")
+        : t("actions.markAsUnread"),
     },
   ];
 

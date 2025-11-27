@@ -251,7 +251,7 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
  * markOneAsRead
  * @param announcement announcement
  */
-const markOneAsRead: MarkAsReadTriggerType = function markOneAsRead(
+const toggleOneAsRead: MarkAsReadTriggerType = function toggleOneAsRead(
   announcement
 ) {
   return async (
@@ -260,18 +260,21 @@ const markOneAsRead: MarkAsReadTriggerType = function markOneAsRead(
   ) => {
     try {
       const state = getState();
+
       await announcerApi.markAnnouncementAsRead({
         announcementId: announcement.id,
       });
       dispatch({
         type: "UPDATE_ONE_ANNOUNCEMENT",
         payload: {
-          update: { unread: false },
+          update: { unread: !announcement.unread },
           announcement,
         },
       });
 
-      const newUnreadCount = state.announcements.unreadCount - 1;
+      const newUnreadCount = announcement.unread
+        ? state.announcements.unreadCount - 1
+        : state.announcements.unreadCount + 1;
 
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
@@ -757,7 +760,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
 export {
   markAllAsRead,
-  markOneAsRead,
+  toggleOneAsRead,
   pinAnnouncementForSelf,
   loadAnnouncements,
   loadMoreAnnouncements,
