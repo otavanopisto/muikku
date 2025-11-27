@@ -403,14 +403,16 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     () => ({
       type: "planned-course-new",
       item: {
-        info: { ...course, subjectCode },
+        info: {
+          course: { ...course, subjectCode },
+          type: "planned-course-new",
+        },
         type: "planned-course-new",
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      // eslint-disable-next-line jsdoc/require-jsdoc
       canDrag: !disabled,
     }),
     [disabled]
