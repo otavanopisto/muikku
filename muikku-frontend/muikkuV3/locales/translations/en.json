@@ -1335,6 +1335,7 @@
       "removeError": "$t(common:notifications.removeError)",
       "removeError_message": "Deleting the message failed. Please try again.",
       "removeError_announcement": "Deleting the announcement failed. Please try again.",
+      "removeError_category": "Deleting the category failed. Please try again.",
       "removeError_contactLog": "Deleting the contact event failed. Please try again.",
       "removeError_discussionArea": "Deleting the discussion area failed. Please try again.",
       "removeError_label": "Deleting the label failed. Please try again.",

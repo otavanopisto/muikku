@@ -856,9 +856,9 @@ const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createError", {
+            i18n.t("notifications.removeError", {
               ns: "messaging",
-              context: "announcement category",
+              context: "category",
             }),
             "error"
           )

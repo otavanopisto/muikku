@@ -1337,6 +1337,7 @@
       "removeError_announcement": "Tiedotteen poisto epäonnistui. Yritä uudelleen.",
       "removeError_contactLog": "Yhteydenoton poisto epäonnistui Yritä uudelleen.",
       "removeError_discussionArea": "Keskustelualueen poisto epäonnistui. Yritä uudelleen.",
+      "removeError_category": "Kategorian poisto epäonnistui. Yritä uudelleen.",
       "removeError_label": "Tunnisteen poisto epäonnistui. Yritä uudelleen.",
       "removeError_reply": "Vastauksen poisto epäonnistui. Yritä uudelleen.",
       "removeSuccess": "$t(common:notifications.removeSuccess)",
