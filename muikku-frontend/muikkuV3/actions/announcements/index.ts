@@ -770,7 +770,7 @@ const createAnnouncementCategory: CreateAnnouncementCategoryTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.createError", {
               ns: "messaging",
-              context: "announcement category",
+              context: "category",
             }),
             "error"
           )
@@ -814,9 +814,9 @@ const updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.createError", {
+            i18n.t("notifications.updateError", {
               ns: "messaging",
-              context: "announcement category",
+              context: "category",
             }),
             "error"
           )
