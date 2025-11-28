@@ -126,7 +126,7 @@ const PlannerActivityCard = React.forwardRef<
       return null;
     }
 
-    return <div className="study-planner__course-dates-item">{dateString}</div>;
+    return <div className="study-planner__card-dates-item">{dateString}</div>;
   };
 
   const cardModifiers = [];
@@ -141,18 +141,18 @@ const PlannerActivityCard = React.forwardRef<
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned", ...cardModifiers]}
+      modifiers={[...cardModifiers]}
       innerContainerModifiers={innerContainerModifiers}
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
-        <span className="study-planner__course-name">
+      <PlannerCardHeader>
+        <span className="study-planner__card-title">
           <b>{`${item.course.subjectCode}${item.course.courseNumber}`}</b>{" "}
           {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course)}`}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <div className="study-planner__course-labels">
+      <PlannerCardContent>
+        <div className="study-planner__card-labels">
           <PlannerCardLabel
             modifiers={[item.course.mandatory ? "mandatory" : "optional"]}
           >
@@ -166,14 +166,14 @@ const PlannerActivityCard = React.forwardRef<
           </PlannerCardLabel>
 
           {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+            <PlannerCardLabel modifiers={[courseState.state]}>
               {courseState.label}
             </PlannerCardLabel>
           )}
         </div>
 
         {activityDate && (
-          <div className="study-planner__course-dates">{activityDate}</div>
+          <div className="study-planner__card-dates">{activityDate}</div>
         )}
       </PlannerCardContent>
     </PlannerCard>

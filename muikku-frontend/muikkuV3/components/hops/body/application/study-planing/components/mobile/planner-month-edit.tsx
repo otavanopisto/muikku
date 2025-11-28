@@ -4,10 +4,14 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
-import { PlannedCourseWithIdentifier, SelectedCourse } from "~/reducers/hops";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import PlannerCourseTray from "../planner-course-tray";
 import { Course } from "~/@types/shared";
 import { DndProvider, useDragDropManager } from "react-dnd";
+import PlannerAddNote from "../planner-add-note";
+import { updateSelectedPlanItem } from "~/actions/main-function/hops";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "~/reducers";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -15,7 +19,7 @@ import { DndProvider, useDragDropManager } from "react-dnd";
 interface PlannerMonthEditDialogProps {
   title: string;
   disabled: boolean;
-  onConfirm: (selectedCourses: SelectedCourse[]) => void;
+  onConfirm: (selectedMonthItemIds: string[]) => void;
   children?: React.ReactElement;
   plannedCourses: PlannedCourseWithIdentifier[];
   currentSelection: PlannedCourseWithIdentifier[];
@@ -34,24 +38,36 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
 
   const manager = useDragDropManager();
 
-  const [selectedCourses, setSelectedCourses] =
-    useState<SelectedCourse[]>(currentSelection);
+  const { selectedPlanItemIds } = useSelector(
+    (state: StateType) => state.hopsNew.hopsEditing
+  );
+
+  const [selectedMonthItems, setSelectedMonthItems] = useState<
+    (PlannedCourseWithIdentifier | (Course & { subjectCode: string }))[]
+  >(currentSelection.map((course) => course));
 
   const { t } = useTranslation(["hops_new", "common"]);
 
   const hasChanges = useMemo(
     () =>
-      selectedCourses.length !== currentSelection.length ||
-      selectedCourses.some(
+      selectedMonthItems.length !== currentSelection.length ||
+      selectedMonthItems.some(
         (selected) =>
           !currentSelection.some(
-            (current) =>
-              current.subjectCode === selected.subjectCode &&
-              current.courseNumber === selected.courseNumber
+            (current) => current.identifier === selected.identifier
           )
       ),
-    [selectedCourses, currentSelection]
+    [selectedMonthItems, currentSelection]
   );
+
+  const dispatch = useDispatch();
+
+  /**
+   * Handles activate new note
+   */
+  const handleActivateNewNote = () => {
+    dispatch(updateSelectedPlanItem({ planItemIdentifier: "new-note-card" }));
+  };
 
   /**
    * Handles the save button click
@@ -63,9 +79,16 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       // Only call onConfirm if the selection has actually changed
       if (hasChanges) {
-        onConfirm(selectedCourses);
+        if (selectedPlanItemIds.includes("new-note-card")) {
+          onConfirm([
+            ...selectedMonthItems.map((item) => item.identifier),
+            "new-note-card",
+          ]);
+        } else {
+          onConfirm(selectedMonthItems.map((item) => item.identifier));
+        }
       }
-      setSelectedCourses([]);
+      setSelectedMonthItems([]);
       closePortal();
     };
 
@@ -85,28 +108,28 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
    * @param course course
    */
   const handleCourseClick = (course: Course & { subjectCode: string }) => {
-    const index = selectedCourses.findIndex(
-      (c) =>
-        c.subjectCode === course.subjectCode &&
-        c.courseNumber === course.courseNumber
+    const index = selectedMonthItems.findIndex(
+      (selected) =>
+        selected.subjectCode === course.subjectCode &&
+        selected.courseNumber === course.courseNumber
     );
 
-    const updatedSelectedCourses = [...selectedCourses];
+    const updatedSelectedPlanItemIds = [...selectedMonthItems];
 
     if (index !== -1) {
-      updatedSelectedCourses.splice(index, 1);
+      updatedSelectedPlanItemIds.splice(index, 1);
     } else {
-      updatedSelectedCourses.push(course);
+      updatedSelectedPlanItemIds.push(course);
     }
 
-    setSelectedCourses(updatedSelectedCourses);
+    setSelectedMonthItems(updatedSelectedPlanItemIds);
   };
 
   /**
    * Handles the dialog open
    */
   const handleOnDialogOpen = () => {
-    setSelectedCourses(currentSelection);
+    setSelectedMonthItems(currentSelection);
   };
 
   const currentSelectionIdentifiers = currentSelection.map(
@@ -123,14 +146,19 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
    */
   const dialogContent = () => (
     <DndProvider manager={manager}>
+      <PlannerAddNote
+        disabled={false}
+        activated={selectedPlanItemIds.includes("new-note-card")}
+        onActivateNewNote={handleActivateNewNote}
+      />
       <PlannerCourseTray
         plannedCourses={plannedCoursesWithoutCurrentSelection}
         onCourseClick={handleCourseClick}
         isCourseSelected={(course) =>
-          selectedCourses.some(
-            (c) =>
-              c.subjectCode === course.subjectCode &&
-              c.courseNumber === course.courseNumber
+          selectedMonthItems.some(
+            (selected) =>
+              selected.subjectCode === course.subjectCode &&
+              selected.courseNumber === course.courseNumber
           )
         }
       />
