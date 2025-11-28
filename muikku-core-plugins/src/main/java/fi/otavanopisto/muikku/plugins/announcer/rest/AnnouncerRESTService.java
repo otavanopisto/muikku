@@ -614,6 +614,20 @@ public class AnnouncerRESTService extends PluginRESTService {
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    
+    List<Announcement> announcements = announcementController.listByAnnouncementCategory(announcementCategory);
+    
+    for (Announcement announcement : announcements) {
+      List<AnnouncementCategory> updatedCategories = new ArrayList<AnnouncementCategory>();
+      List<AnnouncementCategory> categories = announcement.getCategories();
+      
+      for (AnnouncementCategory category : categories) {
+        if (!category.getId().equals(announcementCategoryId)) {
+          updatedCategories.add(category);
+        }
+      }
+      announcementController.updateCategories(announcement, updatedCategories);
+    }
 
     announcementController.deleteAnnouncementCategory(announcementCategory);
     

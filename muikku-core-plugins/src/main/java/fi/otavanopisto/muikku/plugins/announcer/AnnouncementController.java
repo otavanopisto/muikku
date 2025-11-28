@@ -97,6 +97,10 @@ public class AnnouncementController {
     return announcement;
   }
   
+  public Announcement updateCategories(Announcement announcement, List<AnnouncementCategory> categories) {
+    return announcementDAO.updateCategories(announcement, categories);
+  }
+  
   public List<Announcement> listAnnouncements(Collection<SchoolDataIdentifier> userIdentifiers, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
       AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyUnread, Long loggedUser,  boolean onlyArchived, Integer firstResult, Integer maxResults, List<AnnouncementCategory> categories) {
 
@@ -142,6 +146,10 @@ public class AnnouncementController {
   
   public List<Announcement> listAll() {
     return announcementDAO.listAll();
+  }
+  
+  public List<Announcement> listByAnnouncementCategory(AnnouncementCategory category) {
+    return announcementDAO.listAnnouncementsByCategory(category);
   }
   
   public Announcement findById(Long id) {

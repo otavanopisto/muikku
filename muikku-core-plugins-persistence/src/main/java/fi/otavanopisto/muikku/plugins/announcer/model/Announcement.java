@@ -158,7 +158,7 @@ public class Announcement {
   @Column (nullable=false)
   private Boolean publiclyVisible;
   
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany
   @JoinTable (name = "AnnouncementCategories", joinColumns = @JoinColumn(name = "announcement_id"), inverseJoinColumns = @JoinColumn(name = "announcementCategory_id"))
   private List<AnnouncementCategory> categories;
   
