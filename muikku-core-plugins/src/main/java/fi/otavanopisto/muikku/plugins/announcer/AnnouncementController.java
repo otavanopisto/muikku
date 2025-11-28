@@ -289,6 +289,15 @@ public class AnnouncementController {
   }
   
   public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
+
+    // Remove the category first from the announcements where it is in use
+    List<Announcement> announcements = listByAnnouncementCategory(announcementCategory);
+    
+    for (Announcement announcement : announcements) {
+      List<AnnouncementCategory> categories = announcement.getCategories();
+      categories.removeIf(c -> c.getId().equals(announcementCategory.getId()));
+      updateCategories(announcement, categories);
+    }
     announcementCategoryDAO.delete(announcementCategory);
   }
 }
