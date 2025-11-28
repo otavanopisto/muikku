@@ -6,6 +6,7 @@ import {
   ExamAttendeesTab,
   ExamCategoriesTab,
   ExamSettingsTab,
+  ExamSmowlIntegrationTab,
   MaterialContentTab,
   MetadataTab,
   SectionContentTab,
@@ -55,6 +56,7 @@ export interface EditorStrategy {
    */
   getTabs(
     examEnabled: boolean,
+    smowlEnabled: boolean,
     permissions: EditorPermissions,
     t: TFunction,
     locationPage?: PageLocation
@@ -67,6 +69,7 @@ export interface EditorStrategy {
 export abstract class BaseEditorStrategy implements EditorStrategy {
   abstract getTabs(
     examEnabled: boolean,
+    smowlEnabled: boolean,
     permissions: EditorPermissions,
     t: TFunction,
     locationPage?: PageLocation
@@ -77,12 +80,14 @@ export abstract class BaseEditorStrategy implements EditorStrategy {
    * @param tabId - Id of the tab
    * @param permissions - Permissions for the editor
    * @param examEnabled - Whether exam is enabled
+   * @param smowlEnabled - Whether smowl is enabled
    * @returns True if the tab should be visible, false otherwise
    */
   protected shouldShowTab(
     tabId: string,
     permissions: EditorPermissions,
-    examEnabled: boolean
+    examEnabled: boolean,
+    smowlEnabled: boolean
   ): boolean {
     // Override in subclasses for specific logic
     return true;
@@ -119,12 +124,14 @@ export class SectionEditorStrategy extends BaseEditorStrategy {
   /**
    * Get tabs for the section editor
    * @param examEnabled - Whether exam is enabled
+   * @param smowlEnabled - Whether smowl is enabled
    * @param permissions - Permissions for the editor
    * @param t - Localization function
    * @returns Tabs for the section editor
    */
   getTabs(
     examEnabled: boolean,
+    smowlEnabled: boolean,
     permissions: EditorPermissions,
     t: TFunction
   ): EditorTab[] {
@@ -157,12 +164,14 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
    * @param tabId - Id of the tab
    * @param permissions - Permissions for the editor
    * @param examEnabled - Whether exam is enabled
+   * @param smowlEnabled - Whether smowl is enabled
    * @returns True if the tab should be visible, false otherwise
    */
   protected shouldShowTab(
     tabId: string,
     permissions: EditorPermissions,
-    examEnabled: boolean
+    examEnabled: boolean,
+    smowlEnabled = false
   ): boolean {
     // Custom logic for sections
     switch (tabId) {
@@ -172,6 +181,10 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
         // Only show exam tabs
         return true;
 
+      case "smowl":
+        // Smowl tab is only visible if smowlEnabled is true
+        return smowlEnabled;
+
       default:
         return true;
     }
@@ -180,12 +193,14 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
   /**
    * Get tabs for the section editor
    * @param examEnabled - Whether exam is enabled
+   * @param smowlEnabled - Whether smowl is enabled
    * @param permissions - Permissions for the editor
    * @param t - Localization function
    * @returns Tabs for the section editor
    */
   getTabs(
     examEnabled: boolean,
+    smowlEnabled: boolean,
     permissions: EditorPermissions,
     t: TFunction
   ): EditorTab[] {
@@ -211,6 +226,23 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
         name: t("labels.examCategories", { ns: "exams" }),
         component: (
           <ExamCategoriesTab
+            editorPermissions={permissions}
+            examEnabled={examEnabled}
+          />
+        ),
+        stateManagement: "redux",
+        visible: true,
+      });
+    }
+
+    if (
+      this.shouldShowTab("exam-smowl", permissions, examEnabled, smowlEnabled)
+    ) {
+      tabs.push({
+        id: "exam-smowl",
+        name: "Smowl Integration",
+        component: (
+          <ExamSmowlIntegrationTab
             editorPermissions={permissions}
             examEnabled={examEnabled}
           />
@@ -273,6 +305,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
   /**
    * Get tabs for the material page editor
    * @param examEnabled - Whether exam is enabled
+   * @param smowlEnabled - Whether smowl is enabled
    * @param permissions - Permissions for the editor
    * @param t - Localization function
    * @param locationPage - Location page
@@ -280,6 +313,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
    */
   getTabs(
     examEnabled: boolean,
+    smowlEnabled: boolean,
     permissions: EditorPermissions,
     t: TFunction,
     locationPage?: PageLocation

@@ -364,7 +364,6 @@ interface ExamSettingsTabProps extends EditorTabProps {}
  * @returns Exam settings tab for the editor
  */
 export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation();
 
   const editorState = useSelector(
@@ -894,6 +893,52 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Exam smowl integration tab props
+ */
+interface ExamSmowlIntegrationTabProps extends EditorTabProps {}
+
+/**
+ * Simple exam smowl integration tab component
+ * @param props - Props for the component
+ * @returns Exam smowl integration tab for the editor
+ */
+export const ExamSmowlIntegrationTab = (
+  props: ExamSmowlIntegrationTabProps
+  // eslint-disable-next-line arrow-body-style
+) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="material-editor__content-wrapper">
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">
+          Smowl Integration
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: t("content.examParticipantsInfo", {
+                    ns: "exams",
+                  }),
+                }}
+              />
+            }
+          />
+        </h3>
+
+        {/* {error && <div className="material-editor__error">{error}</div>} */}
       </div>
     </div>
   );
