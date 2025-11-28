@@ -103,6 +103,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -148,6 +149,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -194,6 +196,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -240,6 +243,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -286,6 +290,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -332,6 +337,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -378,6 +384,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -423,6 +430,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -468,6 +476,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -513,6 +522,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
@@ -558,6 +568,7 @@ export class SmowlApi {
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        Accept: "application/json",
         "Content-Type": "application/json",
         ...this.config.headers,
       },
