@@ -297,14 +297,14 @@ class AnnouncerLabelUpdateDialog extends React.Component<
         </div>
         <div className="dialog__container dialog__container--label-form">
           <div className="form-element form-element--edit-label">
-            <label htmlFor="communicatorLabelName">
+            <label htmlFor="announcementCategoryName">
               {this.props.t("labels.name")}
             </label>
             <input
-              id="communicatorLabelName"
+              id="announcementCategoryName"
               placeholder={this.props.t("labels.name")}
               value={this.state.name}
-              className="form-element__input form-element__input--communicator-label-name"
+              className="form-element__input form-element__input--announcement-category-name"
               disabled={this.state.removed}
               onChange={this.onNameChange}
             />
@@ -319,7 +319,7 @@ class AnnouncerLabelUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="communicator-edit-label"
-        title={this.props.t("labels.edit", { context: "label" })}
+        title={this.props.t("labels.edit", { context: "category" })}
         content={content}
         footer={footer}
       >

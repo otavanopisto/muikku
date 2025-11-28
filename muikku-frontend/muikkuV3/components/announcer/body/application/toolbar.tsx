@@ -311,7 +311,7 @@ class AnnouncerToolbar extends React.Component<
                       onChange={this.onUpdateCategory}
                       type="text"
                       placeholder={this.props.i18n.t(
-                        "labels.createAndSearchLabels",
+                        "labels.createAndSearchCategories",
                         { ns: "messaging" }
                       )}
                     />
