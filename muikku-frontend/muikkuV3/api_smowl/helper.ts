@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as jose from "jose";
+import { SMOWL_JWT_SECRET } from "~/api_smowl/const";
 
 export const MONITORING_ENDPOINT = "https://swl.smowltech.net/monitor/";
 export const REGISTRATION_ENDPOINT = "https://swl.smowltech.net/register/";
 const ISSUER = "smowl_custom_integration";
-const AUDIENCE = "smowl_platform_domain";
-const JWT_SECRET = "smowl_provided_jwt_secret";
+const AUDIENCE = "muikkuverkko.fi";
+const JWT_SECRET = SMOWL_JWT_SECRET;
 
 /**
  * Parameters for the monitoring JWT token

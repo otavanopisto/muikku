@@ -1,3 +1,4 @@
+import { SMOWL_API_KEY, SMOWL_ENTITY_NAME } from "~/api_smowl/const";
 import type {
   AddActivityRequest,
   AddActivityResponse,
@@ -12,14 +13,15 @@ import type {
   FrontCameraAlarmsRequest,
   FrontCameraAlarmsResponse,
   SetFrontCameraAlarmsRequest,
-  SetFrontCameraAlarmsResponse,
   ComputerMonitoringAlarmsRequest,
   ComputerMonitoringAlarmsResponse,
   SetComputerMonitoringAlarmsRequest,
-  SetComputerMonitoringAlarmsResponse,
   ComputerMonitoringAlarms,
   FrontCameraAlarms,
   SmowlErrorResponse,
+  FrontCameraRequest,
+  FrontCameraResponse,
+  AlarmSetResponse,
 } from "./types";
 import { SmowlApiError } from "./types";
 
@@ -31,6 +33,25 @@ export interface SmowlApiConfig {
   baseUrl: string;
   /** Optional headers to include in requests */
   headers?: Record<string, string>;
+}
+
+/**
+ * Converts an object to a form URL encoded string.
+ * @param obj - Object to convert
+ * @returns Form URL encoded string
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function objectToFormUrlEncoded(obj: Record<string, any>): string {
+  const params = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined && value !== null) {
+      // Convert to string - handle different types
+      params.append(key, String(value));
+    }
+  }
+
+  return params.toString();
 }
 
 /**
@@ -104,10 +125,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -197,10 +218,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -244,10 +265,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -291,10 +312,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -321,6 +342,98 @@ export class SmowlApi {
   }
 
   /**
+   * Activates Front Camera Service for one or more activities.
+   * Warning: The list cannot contain more than 500 activities in a single request.
+   *
+   * @param params - Parameters for activating Front Camera Service
+   * @returns Promise resolving to the Front Camera Service activation response
+   * @throws SmowlApiError if the request fails with an API error
+   * @throws Error if the request fails for other reasons
+   */
+  async activateFrontCamera(
+    params: FrontCameraRequest
+  ): Promise<FrontCameraResponse> {
+    const url = `${this.config.baseUrl}/configs/frontCameraService/update/activate`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        ...this.config.headers,
+      },
+      body: objectToFormUrlEncoded(params),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      // Check if the error response matches the SMOWL error format
+      if (
+        responseData &&
+        typeof responseData.status === "number" &&
+        typeof responseData.error === "number" &&
+        responseData.messages &&
+        typeof responseData.messages === "object"
+      ) {
+        throw new SmowlApiError(responseData as SmowlErrorResponse);
+      }
+
+      // Fallback for other error formats
+      throw new Error(
+        `SMOWL API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return responseData as FrontCameraResponse;
+  }
+
+  /**
+   * Activates Front Camera Service for one or more activities.
+   * Warning: The list cannot contain more than 500 activities in a single request.
+   *
+   * @param params - Parameters for activating Front Camera Service
+   * @returns Promise resolving to the Front Camera Service activation response
+   * @throws SmowlApiError if the request fails with an API error
+   * @throws Error if the request fails for other reasons
+   */
+  async deactivateFrontCamera(
+    params: FrontCameraRequest
+  ): Promise<FrontCameraResponse> {
+    const url = `${this.config.baseUrl}/configs/frontCameraService/update/deactivate`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        ...this.config.headers,
+      },
+      body: objectToFormUrlEncoded(params),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      // Check if the error response matches the SMOWL error format
+      if (
+        responseData &&
+        typeof responseData.status === "number" &&
+        typeof responseData.error === "number" &&
+        responseData.messages &&
+        typeof responseData.messages === "object"
+      ) {
+        throw new SmowlApiError(responseData as SmowlErrorResponse);
+      }
+
+      // Fallback for other error formats
+      throw new Error(
+        `SMOWL API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return responseData as FrontCameraResponse;
+  }
+
+  /**
    * Activates Computer Monitoring (CM) service for one or more activities.
    * Warning: The list cannot contain more than 500 activities in a single request.
    *
@@ -338,10 +451,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -385,10 +498,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -470,17 +583,17 @@ export class SmowlApi {
    */
   async setFrontCameraAlarms(
     params: SetFrontCameraAlarmsRequest
-  ): Promise<SetFrontCameraAlarmsResponse> {
+  ): Promise<AlarmSetResponse> {
     const url = `${this.config.baseUrl}/alarms/frontCameraService/activities/set`;
 
     const response = await fetch(url, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -503,7 +616,7 @@ export class SmowlApi {
       );
     }
 
-    return responseData as SetFrontCameraAlarmsResponse;
+    return responseData as AlarmSetResponse;
   }
 
   /**
@@ -562,17 +675,17 @@ export class SmowlApi {
    */
   async setComputerMonitoringAlarms(
     params: SetComputerMonitoringAlarmsRequest
-  ): Promise<SetComputerMonitoringAlarmsResponse> {
+  ): Promise<AlarmSetResponse> {
     const url = `${this.config.baseUrl}/alarms/computerMonitoringService/activities/set`;
 
     const response = await fetch(url, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -595,7 +708,7 @@ export class SmowlApi {
       );
     }
 
-    return responseData as SetComputerMonitoringAlarmsResponse;
+    return responseData as AlarmSetResponse;
   }
 }
 
@@ -605,8 +718,17 @@ export class SmowlApi {
  * @param config - Configuration for the SMOWL API client
  * @returns New SMowlApi instance
  */
-export function createSmowlApi(config: SmowlApiConfig): SmowlApi {
-  return new SmowlApi(config);
+export function getSmowlApi(config: SmowlApiConfig): SmowlApi {
+  const entityName = SMOWL_ENTITY_NAME;
+  const apiKey = SMOWL_API_KEY;
+  const authString = `Basic ${btoa(entityName + ":" + apiKey)}`;
+  return new SmowlApi({
+    ...config,
+    headers: {
+      ...config.headers,
+      Authorization: authString,
+    },
+  });
 }
 
 // Export types
@@ -620,26 +742,20 @@ export type {
   TestExamModeRequest,
   TestExamModeResponse,
   TestExamModeActivityResult,
-  TestExamModeRequestInfo,
   TestExamModeReason,
   ComputerMonitoringRequest,
   ComputerMonitoringResponse,
   ComputerMonitoringActivityResult,
-  ComputerMonitoringRequestInfo,
   ComputerMonitoringReason,
   FrontCameraAlarmsRequest,
   FrontCameraAlarmsResponse,
   SetFrontCameraAlarmsRequest,
-  SetFrontCameraAlarmsResponse,
   FrontCameraAlarmsActivityResult,
-  FrontCameraAlarmsRequestInfo,
   FrontCameraAlarms,
   ComputerMonitoringAlarmsRequest,
   ComputerMonitoringAlarmsResponse,
   SetComputerMonitoringAlarmsRequest,
-  SetComputerMonitoringAlarmsResponse,
   ComputerMonitoringAlarmsActivityResult,
-  ComputerMonitoringAlarmsRequestInfo,
   ComputerMonitoringAlarms,
   ComputerMonitoringAllowedActions,
   ComputerMonitoringAllowedPrograms,

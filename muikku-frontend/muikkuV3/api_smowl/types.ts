@@ -1,4 +1,14 @@
 /**
+ * Response from setting alarms
+ */
+export interface AlarmSetResponse {
+  /** True indicates that the alarms were saved successfully, or false if not */
+  set: boolean;
+  /** Object containing information about the current request */
+  request_info: RequestInfo;
+}
+
+/**
  * Request parameters for adding a new activity
  */
 export interface AddActivityRequest {
@@ -13,9 +23,9 @@ export interface AddActivityRequest {
   /** The number of users per activity */
   numberUsers: string;
   /** Start Date with hours, example '2023-02-01 12:00:00' */
-  startDate: string;
+  startDate: Date;
   /** End Date with hours, example '2023-02-01 13:00:00' */
-  endDate: string;
+  endDate: Date;
   /** Course Name */
   displayName: string;
 }
@@ -33,9 +43,9 @@ export interface ModifyActivityRequest {
   /** The number of users per activity */
   numberUsers?: string;
   /** Start Date with hours, example '2023-02-01 12:00:00' */
-  startDate?: string;
+  startDate?: Date;
   /** End Date with hours, example '2023-02-01 13:00:00' */
-  endDate?: string;
+  endDate?: Date;
   /** Course Name */
   displayName?: string;
 }
@@ -48,6 +58,20 @@ export interface GetActiveServicesRequest {
   activityType: string;
   /** The activity unique identifier from client platforms */
   activityId: string;
+}
+
+/**
+ * Request information in response
+ */
+export interface RequestInfo {
+  /** Status of the response, e.g. "OK" */
+  status: string;
+  /** Indicates if any errors occurred during data processing, analysis and generation of the response */
+  error: boolean;
+  /** The Date and Time the current API request was made (UTC). Format: YYYY-MM-DD hh:mm:ss */
+  requestDateTime: string;
+  /** The time taken (in seconds) for servers to process, analyse and generate data for the response */
+  speed: number;
 }
 
 /**
@@ -96,27 +120,46 @@ export interface TestExamModeActivityResult {
 }
 
 /**
- * Request information in TestExam mode response
- */
-export interface TestExamModeRequestInfo {
-  /** Status of the response, e.g. "OK" */
-  status: string;
-  /** Indicates if any errors occurred during data processing, analysis and generation of the response */
-  error: boolean;
-  /** The Date and Time the current API request was made (UTC). Format: YYYY-MM-DD hh:mm:ss */
-  requestDateTime: string;
-  /** The time taken (in seconds) for servers to process, analyse and generate data for the response */
-  speed: number;
-}
-
-/**
  * Response from activating or deactivating TestExam mode
  */
 export interface TestExamModeResponse {
   /** Collection (array) of activity objects */
   ActivityConfigList_TestExams: TestExamModeActivityResult[];
   /** Object containing information about the current request */
-  request_info: TestExamModeRequestInfo;
+  request_info: RequestInfo;
+}
+
+/**
+ * Request parameters for activating or deactivating Front Camera Service
+ */
+export interface FrontCameraRequest {
+  /**
+   * A JSON encoded object (not array) of activity names.
+   * Must be an object with string numeric keys (e.g., "0", "1", "2") and activity name values.
+   * Example: {"0":"quiz1","1":"quiz2","2":"quiz3"}
+   * Use the createActivityListJson helper function to generate this correctly.
+   */
+  activityList_json: string;
+}
+
+/**
+ * Activity result in Front Camera Service activation/deactivation response
+ */
+export interface FrontCameraActivityResult {
+  /** The name of an activity that was sent in the request */
+  activityName: string;
+  /** Status of the current 'activate' or 'deactivate' request for an activity. */
+  status: boolean;
+}
+
+/**
+ * Response from activating or deactivating Front Camera Service
+ */
+export interface FrontCameraResponse {
+  /** Collection (array) of activity objects */
+  ActivityConfigList_FrontCamera: FrontCameraActivityResult[];
+  /** Object containing information about the current request */
+  request_info: RequestInfo;
 }
 
 /**
@@ -165,27 +208,13 @@ export interface ComputerMonitoringActivityResult {
 }
 
 /**
- * Request information in Computer Monitoring Service response
- */
-export interface ComputerMonitoringRequestInfo {
-  /** Status of the response, e.g. "OK" */
-  status: string;
-  /** Indicates if any errors occurred during data processing, analysis and generation of the response */
-  error: boolean;
-  /** The Date and Time the current API request was made (UTC). Format: YYYY-MM-DD hh:mm:ss */
-  requestDateTime: string;
-  /** The time taken (in seconds) for servers to process, analyse and generate data for the response */
-  speed: number;
-}
-
-/**
  * Response from activating or deactivating Computer Monitoring Service
  */
 export interface ComputerMonitoringResponse {
   /** Collection (array) of activity objects */
   ActivityConfigList_CM: ComputerMonitoringActivityResult[];
   /** Object containing information about the current request */
-  request_info: ComputerMonitoringRequestInfo;
+  request_info: RequestInfo;
 }
 
 /**
@@ -259,27 +288,13 @@ export interface FrontCameraAlarmsActivityResult {
 }
 
 /**
- * Request information in Front Camera Service alarms response
- */
-export interface FrontCameraAlarmsRequestInfo {
-  /** Status of the response, e.g. "OK" */
-  status: string;
-  /** Indicates if any errors occurred during data processing, analysis and generation of the response */
-  error: boolean;
-  /** The Date and Time the current API request was made (UTC). Format: YYYY-MM-DD hh:mm:ss */
-  requestDateTime: string;
-  /** The time taken (in seconds) for servers to process, analyse and generate data for the response */
-  speed: number;
-}
-
-/**
  * Response from getting Front Camera Service alarms
  */
 export interface FrontCameraAlarmsResponse {
   /** Collection (array) of activity objects */
   ActivityList_alarms: FrontCameraAlarmsActivityResult[];
   /** Object containing information about the current request */
-  request_info: FrontCameraAlarmsRequestInfo;
+  request_info: RequestInfo;
 }
 
 /**
@@ -375,6 +390,20 @@ export class SmowlApiError extends Error {
 }
 
 /**
+ * Checks if the given error is a SMOWL error response
+ * @param error - The error to check
+ * @returns True if the error is a SMOWL error response, false otherwise
+ */
+export const isSmowlErrorResponse = (
+  error: unknown
+): error is SmowlErrorResponse =>
+  typeof error === "object" &&
+  error !== null &&
+  "status" in error &&
+  "error" in error &&
+  "messages" in error;
+
+/**
  * Request parameters for setting Front Camera Service alarms
  */
 export interface SetFrontCameraAlarmsRequest {
@@ -390,17 +419,7 @@ export interface SetFrontCameraAlarmsRequest {
    * Must contain all alarm keys with their values (can be int or string).
    * Use the createAlarmsJson helper function to generate this correctly.
    */
-  alarms_json: FrontCameraAlarms;
-}
-
-/**
- * Response from setting Front Camera Service alarms
- */
-export interface SetFrontCameraAlarmsResponse {
-  /** True indicates that the alarms were saved successfully, or false if not */
-  set: boolean;
-  /** Object containing information about the current request */
-  request_info: FrontCameraAlarmsRequestInfo;
+  alarms_json: string;
 }
 
 /**
@@ -502,27 +521,13 @@ export interface ComputerMonitoringAlarmsActivityResult {
 }
 
 /**
- * Request information in Computer Monitoring Service alarms response
- */
-export interface ComputerMonitoringAlarmsRequestInfo {
-  /** Status of the response, e.g. "OK" */
-  status: string;
-  /** Indicates if any errors occurred during data processing, analysis and generation of the response */
-  error: boolean;
-  /** The Date and Time the current API request was made (UTC). Format: YYYY-MM-DD hh:mm:ss */
-  requestDateTime: string;
-  /** The time taken (in seconds) for servers to process, analyse and generate data for the response */
-  speed: number;
-}
-
-/**
  * Response from getting Computer Monitoring Service alarms
  */
 export interface ComputerMonitoringAlarmsResponse {
   /** Collection (array) of activity objects */
   ActivityList_alarms: ComputerMonitoringAlarmsActivityResult[];
   /** Object containing information about the current request */
-  request_info: ComputerMonitoringAlarmsRequestInfo;
+  request_info: RequestInfo;
 }
 
 /**
@@ -542,16 +547,6 @@ export interface SetComputerMonitoringAlarmsRequest {
    * Use the createComputerMonitoringAlarmsJson helper function to generate this correctly.
    */
   alarms_json: string;
-}
-
-/**
- * Response from setting Computer Monitoring Service alarms
- */
-export interface SetComputerMonitoringAlarmsResponse {
-  /** True indicates that the alarms were saved successfully, or false if not */
-  set: boolean;
-  /** Object containing information about the current request */
-  request_info: ComputerMonitoringAlarmsRequestInfo;
 }
 
 /**
