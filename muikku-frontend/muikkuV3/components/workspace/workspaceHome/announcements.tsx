@@ -7,6 +7,7 @@ import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import PagerV2 from "~/components/general/pagerV2";
 import { useTranslation } from "react-i18next";
+import { colorIntToHex } from "~/util/modifiers";
 
 import AnnouncementOptions from "~/components/announcements/general/announcement-options";
 /**
@@ -120,6 +121,21 @@ const WorkspaceAnnouncements: React.FC = () => {
                     <span className="item-list__announcement-date">
                       {localize.date(a.startDate)}
                     </span>
+                    {a.categories.length !== 0 && (
+                      <div className="labels item-list__announcement-categories">
+                        {a.categories.map((category) => (
+                          <span className="label" key={category.id}>
+                            <span
+                              style={{ color: colorIntToHex(category.color) }}
+                              className="label__icon label__icon--announcement-usergroup icon-tag"
+                            ></span>
+                            <span className="label__text label__text--announcement-usergroup">
+                              {category.category}
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </span>
 
                   <AnnouncementOptions announcement={a} />

@@ -24,7 +24,7 @@
   position: absolute;
   top: 100%;
   width: 100%;
-  z-index: 10;
+  z-index: 99;
 }
 
 .autocomplete__list-item {
@@ -54,8 +54,14 @@
   margin-bottom: 10px;
 }
 
-.autocomplete--new-announcement-recipients {
+.autocomplete--new-announcement-recipients, 
+.autocomplete--new-announcement-categories {
   margin-bottom: 10px;
+  z-index: auto;
+
+  .autocomplete__list {
+    top: 64px;
+  }
 }
 
 .autocomplete__recipient {

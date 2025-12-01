@@ -14,6 +14,7 @@ import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
+import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * AnnouncementProps
@@ -72,10 +73,21 @@ class Announcements extends React.Component<
           )}
           {this.props.announcement.caption}
         </header>
-        {this.props.announcement.workspaces.length ||
-        this.props.announcement.userGroupEntityIds.length ? (
-          <div className="labels">
-            {this.props.announcement.workspaces.map((workspace) => (
+        <div className="labels">
+          {this.props.announcement.categories.length !== 0 &&
+            this.props.announcement.categories.map((category) => (
+              <span className="label" key={category.id}>
+                <span
+                  style={{ color: colorIntToHex(category.color) }}
+                  className="label__icon label__icon--announcement-usergroup icon-tag"
+                ></span>
+                <span className="label__text label__text--announcement-usergroup">
+                  {category.category}
+                </span>
+              </span>
+            ))}
+          {this.props.announcement.workspaces.length !== 0 &&
+            this.props.announcement.workspaces.map((workspace) => (
               <span className="label" key={workspace.id}>
                 <span className="label__icon label__icon--workspace icon-books"></span>
                 <span className="label__text label__text--workspace">
@@ -86,7 +98,8 @@ class Announcements extends React.Component<
                 </span>
               </span>
             ))}
-            {this.props.announcement.userGroupEntityIds.map((userGroupId) => {
+          {this.props.announcement.userGroupEntityIds.length !== 0 &&
+            this.props.announcement.userGroupEntityIds.map((userGroupId) => {
               if (!this.props.userIndex.groups[userGroupId]) {
                 return null;
               }
@@ -99,8 +112,7 @@ class Announcements extends React.Component<
                 </span>
               );
             })}
-          </div>
-        ) : null}
+        </div>
         <div className="article__date">{articleDate}</div>
         <section className="article__body rich-text">
           <CkeditorLoaderContent html={this.props.announcement.content} />
