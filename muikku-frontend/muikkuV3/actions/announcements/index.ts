@@ -11,6 +11,7 @@ import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
 import {
   Announcement,
+  AnnouncementCategory,
   CreateAnnouncementRequest,
   GetAnnouncementsRequest,
 } from "~/generated/client";
@@ -59,6 +60,19 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
 export type UPDATE_ANNOUNCEMENTS_UNREAD_COUNT = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
   number
+>;
+
+export type ADD_ANNOUNCEMENT_CATEGORY = SpecificActionType<
+  "ADD_ANNOUNCEMENT_CATEGORY",
+  AnnouncementCategory
+>;
+export type DELETE_ANNOUNCEMENT_CATEGORY = SpecificActionType<
+  "DELETE_ANNOUNCEMENT_CATEGORY",
+  number
+>;
+export type UPDATE_ANNOUNCEMENT_CATEGORY = SpecificActionType<
+  "UPDATE_ANNOUNCEMENT_CATEGORY",
+  AnnouncementCategory
 >;
 
 /**
@@ -131,6 +145,17 @@ export interface UpdateAnnouncementTriggerType {
 }
 
 /**
+ * UpdateAnnouncementTriggerType
+ */
+export interface UpdateSelectedAnnouncementCategoryTriggerType {
+  (
+    category: AnnouncementCategory,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+/**
  * DeleteAnnouncementTriggerType
  */
 export interface DeleteAnnouncementTriggerType {
@@ -156,6 +181,36 @@ export interface CreateAnnouncementTriggerType {
     announcement: CreateAnnouncementRequest;
     success: () => any;
     fail: () => any;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteAnnouncementCategoryTriggerType
+ */
+export interface DeleteAnnouncementCategoryTriggerType {
+  (id: number, success?: () => void, fail?: () => void): AnyActionType;
+}
+/**
+ * DeleteAnnouncementCategoryTriggerType
+ */
+export interface UpdateAnnouncementCategoryTriggerType {
+  (data: {
+    id: number;
+    category: string;
+    color: number;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * CreateAnnouncementTriggerType
+ */
+export interface CreateAnnouncementCategoryTriggerType {
+  (data: {
+    category: string;
+    success?: () => void;
+    fail?: () => void;
   }): AnyActionType;
 }
 
@@ -475,6 +530,82 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
   };
 
 /**
+ * updateAnnouncement
+ * @param category category
+ * @param success success
+ * @param fail fail
+ */
+const updateSelectedAnnouncementCategories: UpdateSelectedAnnouncementCategoryTriggerType =
+  function updateSelectedAnnouncementCategorie(category, success?, fail?) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const announcements: AnnouncementsState = state.announcements;
+      const categoryExistInAllSelectedAnnouncements =
+        announcements.selected.every((announcement) =>
+          announcement.categories.some((c) => c.id === category.id)
+        );
+
+      // Process announcements sequentially, Promise.all gave errors from backend
+      for (let i = 0; i < announcements.selected.length; i++) {
+        const announcement = announcements.selected[i];
+        try {
+          const announcementUpdate = { ...announcement };
+          const categories: AnnouncementCategory[] = [
+            ...announcement.categories,
+          ];
+          const categoryIndex = categories.findIndex(
+            (c) => c.id === category.id
+          );
+
+          if (categoryIndex !== -1) {
+            // We only remove the category if it exists in all selected announcements
+            if (categoryExistInAllSelectedAnnouncements) {
+              //remove category
+              categories.splice(categoryIndex, 1);
+            }
+          } else {
+            categories.push(category);
+          }
+
+          announcementUpdate.categories = categories;
+
+          const updatedAnnouncement = await announcerApi.updateAnnouncement({
+            announcementId: announcement.id,
+            updateAnnouncementRequest: announcementUpdate,
+          });
+
+          dispatch({
+            type: "UPDATE_ONE_ANNOUNCEMENT",
+            payload: {
+              update: updatedAnnouncement,
+              announcement: announcement,
+            },
+          });
+
+          success && success();
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.updateError", {
+                ns: "messaging",
+                context: "announcement",
+              }),
+              "error"
+            )
+          );
+          fail && fail();
+        }
+      }
+    };
+  };
+
+/**
  * deleteAnnouncement
  * @param data data
  */
@@ -604,6 +735,140 @@ const createAnnouncement: CreateAnnouncementTriggerType =
   };
 
 /**
+ * Create a new announcement category
+ * @param data data
+ * @returns a thunk action creator
+ */
+const createAnnouncementCategory: CreateAnnouncementCategoryTriggerType =
+  function createAnnouncementCategory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const color = Math.round(Math.random() * 16777215);
+      const payload = {
+        category: data.category,
+        color,
+      };
+
+      try {
+        const category = await announcerApi.createAnnouncementCategory({
+          createAnnouncementCategoryRequest: payload,
+        });
+
+        dispatch({
+          type: "ADD_ANNOUNCEMENT_CATEGORY",
+          payload: category,
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "category",
+            }),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * Create a new announcement category
+ * @param data data
+ * @returns a thunk action creator
+ */
+const updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType =
+  function updateAnnouncementCategory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const payload = {
+        category: data.category,
+        color: data.color,
+      };
+
+      try {
+        const category = await announcerApi.updateAnnouncementCategory({
+          categoryId: data.id,
+          createAnnouncementCategoryRequest: payload,
+        });
+
+        dispatch({
+          type: "UPDATE_ANNOUNCEMENT_CATEGORY",
+          payload: category,
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "messaging",
+              context: "category",
+            }),
+            "error"
+          )
+        );
+        data.fail && data.fail();
+      }
+    };
+  };
+
+/**
+ * Create a new announcement category
+ * @param id category id
+ * @param success success callback
+ * @param fail fail callback
+ * @returns a thunk action creator
+ */
+const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
+  function deleteAnnouncementCategory(id, success, fail) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        await announcerApi.deleteAnnouncementCategory({
+          categoryId: id,
+        });
+
+        dispatch({
+          type: "DELETE_ANNOUNCEMENT_CATEGORY",
+          payload: id,
+        });
+
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "category",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
  * loadAnnouncementsAsAClient
  * @param fetchParams fetchParams
  * @param options options
@@ -678,10 +943,14 @@ export {
   addToAnnouncementsSelected,
   removeFromAnnouncementsSelected,
   updateAnnouncement,
+  updateSelectedAnnouncementCategories,
   loadAnnouncement,
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   createAnnouncement,
+  createAnnouncementCategory,
+  updateAnnouncementCategory,
+  deleteAnnouncementCategory,
   loadAnnouncementsAsAClient,
 };
 export default {
@@ -694,5 +963,6 @@ export default {
   deleteSelectedAnnouncements,
   deleteAnnouncement,
   createAnnouncement,
+  createAnnouncementCategory,
   loadAnnouncementsAsAClient,
 };
