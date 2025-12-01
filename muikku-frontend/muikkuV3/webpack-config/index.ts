@@ -7,7 +7,7 @@ import plugins from "./plugins";
 import devServer from "./dev_server";
 import path from "path";
 
-const SRC_DIR = path.resolve(__dirname, "../../src");
+const SRC_DIR = path.resolve(__dirname, "..");
 
 /**
  * Webpack configuration interface
