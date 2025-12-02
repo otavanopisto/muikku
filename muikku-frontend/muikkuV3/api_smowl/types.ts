@@ -1,14 +1,4 @@
 /**
- * Response from setting alarms
- */
-export interface AlarmSetResponse {
-  /** True indicates that the alarms were saved successfully, or false if not */
-  set: boolean;
-  /** Object containing information about the current request */
-  request_info: RequestInfo;
-}
-
-/**
  * Request parameters for adding a new activity
  */
 export interface AddActivityRequest {
@@ -91,40 +81,11 @@ export interface TestExamModeRequest {
 }
 
 /**
- * Possible reason values for TestExam mode activation/deactivation
- */
-export type TestExamModeReason =
-  | "QUIZ_NOT_EXIST"
-  | "QUIZ_HAS_DATA"
-  | "ALREADY_SET"
-  | "UPDATED"
-  | "UPDATE_FAILED";
-
-/**
- * Activity result in TestExam mode activation/deactivation response
- */
-export interface TestExamModeActivityResult {
-  /** The name of an activity that was sent in the request */
-  activityName: string;
-  /**
-   * Status of the current 'activate' or 'deactivate' request for an activity.
-   * true: If the activity was updatable, and the update action was successful.
-   * false: If the activity was not updatable, or the update action was unsuccessful, or was unnecessary because the service was already active or inactive.
-   */
-  status: boolean;
-  /**
-   * Explains why the 'status' attribute is in a certain boolean state.
-   * Possible values: "QUIZ_NOT_EXIST", "QUIZ_HAS_DATA", "ALREADY_SET", "UPDATED", "UPDATE_FAILED"
-   */
-  reason: TestExamModeReason;
-}
-
-/**
  * Response from activating or deactivating TestExam mode
  */
 export interface TestExamModeResponse {
   /** Collection (array) of activity objects */
-  ActivityConfigList_TestExams: TestExamModeActivityResult[];
+  ActivityConfigList_TestExams: ActivityConfigResult[];
   /** Object containing information about the current request */
   request_info: RequestInfo;
 }
@@ -132,7 +93,7 @@ export interface TestExamModeResponse {
 /**
  * Request parameters for activating or deactivating Front Camera Service
  */
-export interface FrontCameraRequest {
+export interface ExternalCameraRequest {
   /**
    * A JSON encoded object (not array) of activity names.
    * Must be an object with string numeric keys (e.g., "0", "1", "2") and activity name values.
@@ -143,21 +104,11 @@ export interface FrontCameraRequest {
 }
 
 /**
- * Activity result in Front Camera Service activation/deactivation response
- */
-export interface FrontCameraActivityResult {
-  /** The name of an activity that was sent in the request */
-  activityName: string;
-  /** Status of the current 'activate' or 'deactivate' request for an activity. */
-  status: boolean;
-}
-
-/**
  * Response from activating or deactivating Front Camera Service
  */
-export interface FrontCameraResponse {
+export interface ExternalCameraResponse {
   /** Collection (array) of activity objects */
-  ActivityConfigList_FrontCamera: FrontCameraActivityResult[];
+  ActivityConfigList_Ext: ActivityConfigResult[];
   /** Object containing information about the current request */
   request_info: RequestInfo;
 }
@@ -181,7 +132,7 @@ export interface ComputerMonitoringRequest {
 /**
  * Possible reason values for Computer Monitoring Service activation/deactivation
  */
-export type ComputerMonitoringReason =
+export type ActivityConfigReason =
   | "QUIZ_NOT_EXIST"
   | "QUIZ_HAS_DATA"
   | "ALREADY_SET"
@@ -191,7 +142,7 @@ export type ComputerMonitoringReason =
 /**
  * Activity result in Computer Monitoring Service activation/deactivation response
  */
-export interface ComputerMonitoringActivityResult {
+export interface ActivityConfigResult {
   /** The name of an activity that was sent in the request */
   activityName: string;
   /**
@@ -204,7 +155,7 @@ export interface ComputerMonitoringActivityResult {
    * Explains why the 'status' attribute is in a certain boolean state.
    * Possible values: "QUIZ_NOT_EXIST", "QUIZ_HAS_DATA", "ALREADY_SET", "UPDATED", "UPDATE_FAILED"
    */
-  reason: ComputerMonitoringReason;
+  reason: ActivityConfigReason;
 }
 
 /**
@@ -212,87 +163,7 @@ export interface ComputerMonitoringActivityResult {
  */
 export interface ComputerMonitoringResponse {
   /** Collection (array) of activity objects */
-  ActivityConfigList_CM: ComputerMonitoringActivityResult[];
-  /** Object containing information about the current request */
-  request_info: RequestInfo;
-}
-
-/**
- * Request parameters for getting Front Camera Service alarms
- */
-export interface FrontCameraAlarmsRequest {
-  /**
-   * A JSON encoded object (not array) of activity names.
-   * Must be an object with string numeric keys (e.g., "0", "1", "2") and activity name values.
-   * Example: {"0":"quiz1","1":"quiz2","2":"quiz3"}
-   * Use the createActivityListJson helper function to generate this correctly.
-   */
-  activityList_json: string;
-}
-
-/**
- * Source of alarm configuration
- */
-export type AlarmSource = "activity" | "entity" | "default";
-
-/**
- * Front Camera Service alarm configuration
- * Each property represents the number of allowed occurrences for that alarm type
- */
-export interface FrontCameraAlarms {
-  /** Number of allowed occurrences of 'incorrect' user */
-  INCORRECT_USER: number | string;
-  /** Number of allowed occurrences of more than 1 person */
-  MORE_THAN_ONE: number | string;
-  /** Number of allowed occurrences of nobody in front of camera */
-  NOBODY: number | string;
-  /** Number of allowed occurrences of web camera being covered */
-  WEBCAM_COVERED: number | string;
-  /** Number of allowed occurrences of another browser tab being open */
-  OTHER_TAB: number | string;
-  /** Number of allowed occurrences of insufficient lighting for camera to capture detail of the student surroundings, or student badly positioned in front of camera */
-  WRONG_LIGHT_POSING: number | string;
-  /** Number of allowed occurrences of banned or not permitted elements during exam (E.g. mobile phones, calculators, notes) */
-  BANNED_ELEMENTS: number | string;
-  /** Number of allowed occurrences of student having a suspicious behaviour */
-  SUSPICIOUS_BEHAVIOUR: number | string;
-  /** A minimum number of images required to be captured during the exam */
-  MIN_IMAGES_REQUIRED: number | string;
-  /** Number of allowed occurrences of the webcam permissions being rejected by the user */
-  WEBCAM_REJECTED: number | string;
-  /** Number of allowed occurrences of configuration related problems */
-  CONFIGURATION_PROBLEM: number | string;
-  /** Number of allowed occurrences of no webcam being detected or available */
-  NO_WEBCAM: number | string;
-  /** Number of allowed occurrences of the webcam being blocked by the user or other software */
-  WEBCAM_BLOCKED: number | string;
-  /** Number of allowed occurrences of the browser being unsupported */
-  UNSUPPORTED_BROWSER: number | string;
-}
-
-/**
- * Activity alarm result in Front Camera Service alarms response
- */
-export interface FrontCameraAlarmsActivityResult {
-  /** The name of an activity that was sent in the request */
-  activity: string;
-  /** This represents the alarms for an activity */
-  alarms: FrontCameraAlarms;
-  /**
-   * This explains the 'source' the alarms configurations that were applied.
-   * - "activity": The alarms were retrieved from the activity config settings.
-   * - "entity": The alarms were retrieved from the client config settings.
-   * - "default": A default alarm configuration was applied, because neither 'entity' or 'activity' alarms were available for the activity.
-   */
-  source: AlarmSource;
-}
-
-/**
- * Response from getting Front Camera Service alarms
- */
-export interface FrontCameraAlarmsResponse {
-  /** Collection (array) of activity objects */
-  ActivityList_alarms: FrontCameraAlarmsActivityResult[];
+  ActivityConfigList_CM: ActivityConfigResult[];
   /** Object containing information about the current request */
   request_info: RequestInfo;
 }
@@ -406,7 +277,7 @@ export const isSmowlErrorResponse = (
 /**
  * Request parameters for setting Front Camera Service alarms
  */
-export interface SetFrontCameraAlarmsRequest {
+export interface SetMonitoringDeviceAlarmsRequest {
   /**
    * A JSON encoded object (not array) of activity names.
    * Must be an object with string numeric keys (e.g., "0", "1", "2") and activity name values.
@@ -425,7 +296,7 @@ export interface SetFrontCameraAlarmsRequest {
 /**
  * Request parameters for getting Computer Monitoring Service alarms
  */
-export interface ComputerMonitoringAlarmsRequest {
+export interface GetMonitoringDeviceAlarmsRequest {
   /**
    * A JSON encoded object (not array) of activity names.
    * Must be an object with string numeric keys (e.g., "0", "1", "2") and activity name values.
@@ -433,6 +304,48 @@ export interface ComputerMonitoringAlarmsRequest {
    * Use the createActivityListJson helper function to generate this correctly.
    */
   activityList_json: string;
+}
+
+/**
+ * Response from setting alarms
+ */
+export interface MonitoringAlarmsSetResponse {
+  /** True indicates that the alarms were saved successfully, or false if not */
+  set: boolean;
+  /** Object containing information about the current request */
+  request_info: RequestInfo;
+}
+
+/**
+ * Source of alarm configuration
+ */
+export type MonitoringAlarmsSource = "activity" | "entity" | "default";
+
+/**
+ * Activity alarm result in alarms response
+ */
+export interface MonitoringAlarmsActivityResult<T> {
+  /** The name of an activity that was sent in the request */
+  activity: string;
+  /** This represents the alarms for an activity */
+  alarms: T;
+  /**
+   * This explains the 'source' the alarms configurations that were applied.
+   * - "activity": The alarms were retrieved from the activity config settings.
+   * - "entity": The alarms were retrieved from the client config settings.
+   * - "default": A default alarm configuration was applied, because neither 'entity' or 'activity' alarms were available for the activity.
+   */
+  source: MonitoringAlarmsSource;
+}
+
+/**
+ * Response from getting Computer Monitoring Service alarms
+ */
+export interface MonitoringAlarmsResponse<T> {
+  /** Collection (array) of activity objects */
+  ActivityList_alarms: MonitoringAlarmsActivityResult<T>[];
+  /** Object containing information about the current request */
+  request_info: RequestInfo;
 }
 
 /**
@@ -504,49 +417,38 @@ export interface ComputerMonitoringAlarms {
 }
 
 /**
- * Activity alarm result in Computer Monitoring Service alarms response
+ * Front Camera Service alarm configuration
+ * Each property represents the number of allowed occurrences for that alarm type
  */
-export interface ComputerMonitoringAlarmsActivityResult {
-  /** The name of an activity that was sent in the request */
-  activity: string;
-  /** This represents the alarms for an activity */
-  alarms: ComputerMonitoringAlarms;
-  /**
-   * This explains the 'source' the alarms configurations that were applied.
-   * - "activity": The alarms were retrieved from the activity config settings.
-   * - "entity": The alarms were retrieved from the client config settings.
-   * - "default": A default alarm configuration was applied, because neither 'entity' or 'activity' alarms were available for the activity.
-   */
-  source: AlarmSource;
-}
-
-/**
- * Response from getting Computer Monitoring Service alarms
- */
-export interface ComputerMonitoringAlarmsResponse {
-  /** Collection (array) of activity objects */
-  ActivityList_alarms: ComputerMonitoringAlarmsActivityResult[];
-  /** Object containing information about the current request */
-  request_info: RequestInfo;
-}
-
-/**
- * Request parameters for setting Computer Monitoring Service alarms
- */
-export interface SetComputerMonitoringAlarmsRequest {
-  /**
-   * A JSON encoded object (not array) of activity names.
-   * Must be an object with string numeric keys (e.g., "0", "1", "2") and activity name values.
-   * Example: {"0":"quiz1","1":"quiz2","2":"quiz3"}
-   * Use the createActivityListJson helper function to generate this correctly.
-   */
-  activityList_json: string;
-  /**
-   * A JSON encoded object of alarm keys and desired settings.
-   * Must contain all alarm keys with their values.
-   * Use the createComputerMonitoringAlarmsJson helper function to generate this correctly.
-   */
-  alarms_json: string;
+export interface FrontCameraAlarms {
+  /** Number of allowed occurrences of 'incorrect' user */
+  INCORRECT_USER: number | string;
+  /** Number of allowed occurrences of more than 1 person */
+  MORE_THAN_ONE: number | string;
+  /** Number of allowed occurrences of nobody in front of camera */
+  NOBODY: number | string;
+  /** Number of allowed occurrences of web camera being covered */
+  WEBCAM_COVERED: number | string;
+  /** Number of allowed occurrences of another browser tab being open */
+  OTHER_TAB: number | string;
+  /** Number of allowed occurrences of insufficient lighting for camera to capture detail of the student surroundings, or student badly positioned in front of camera */
+  WRONG_LIGHT_POSING: number | string;
+  /** Number of allowed occurrences of banned or not permitted elements during exam (E.g. mobile phones, calculators, notes) */
+  BANNED_ELEMENTS: number | string;
+  /** Number of allowed occurrences of student having a suspicious behaviour */
+  SUSPICIOUS_BEHAVIOUR: number | string;
+  /** A minimum number of images required to be captured during the exam */
+  MIN_IMAGES_REQUIRED: number | string;
+  /** Number of allowed occurrences of the webcam permissions being rejected by the user */
+  WEBCAM_REJECTED: number | string;
+  /** Number of allowed occurrences of configuration related problems */
+  CONFIGURATION_PROBLEM: number | string;
+  /** Number of allowed occurrences of no webcam being detected or available */
+  NO_WEBCAM: number | string;
+  /** Number of allowed occurrences of the webcam being blocked by the user or other software */
+  WEBCAM_BLOCKED: number | string;
+  /** Number of allowed occurrences of the browser being unsupported */
+  UNSUPPORTED_BROWSER: number | string;
 }
 
 /**

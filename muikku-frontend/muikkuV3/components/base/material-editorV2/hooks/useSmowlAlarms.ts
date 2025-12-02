@@ -4,7 +4,7 @@ import {
   createAlarmsJson,
   createComputerMonitoringAlarmsJson,
   getSmowlApi,
-} from "~/api_smowl";
+} from "~/api_smowl/index";
 import {
   ActivityConfig,
   ComputerMonitoringAlarms,
@@ -21,7 +21,8 @@ const smowlApi = getSmowlApi({
  * Custom hook for smowl alarms
  */
 interface UseSmowlAlarmsProps {
-  activityConfig: ActivityConfig;
+  activityConfig: ActivityConfig | null;
+  activityType: "exam";
 }
 
 /**
@@ -29,7 +30,7 @@ interface UseSmowlAlarmsProps {
  * @param props - The properties for the hook
  */
 export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
-  const { activityConfig } = props;
+  const { activityConfig, activityType } = props;
   const [frontCameraAlarms, setFrontCameraAlarms] = React.useState<{
     alarms: FrontCameraAlarms;
     loading: boolean;
@@ -54,12 +55,16 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
    * Loads the Front Camera Service alarms for the activity
    */
   const loadFrontCameraAlarms = React.useCallback(async () => {
+    if (!activityConfig) {
+      return;
+    }
     try {
       const response = await smowlApi.getFrontCameraAlarms({
         // eslint-disable-next-line camelcase
-        activityList_json: createActivityListJson([
-          props.activityConfig.activityId,
-        ]),
+        activityList_json: createActivityListJson(
+          [activityConfig.activityId],
+          activityType
+        ),
       });
       setFrontCameraAlarms((prev) => ({
         ...prev,
@@ -77,18 +82,22 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
         error: error,
       }));
     }
-  }, [props.activityConfig]);
+  }, [activityConfig, activityType]);
 
   /**
    * Loads the Computer Monitoring Service alarms for the activity
    */
   const loadComputerMonitoringAlarms = React.useCallback(async () => {
+    if (!activityConfig) {
+      return;
+    }
     try {
       const response = await smowlApi.getComputerMonitoringAlarms({
         // eslint-disable-next-line camelcase
-        activityList_json: createActivityListJson([
-          props.activityConfig.activityId,
-        ]),
+        activityList_json: createActivityListJson(
+          [activityConfig.activityId],
+          activityType
+        ),
       });
       setComputerMonitoringAlarms((prev) => ({
         ...prev,
@@ -106,7 +115,7 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
         error: error,
       }));
     }
-  }, [props.activityConfig]);
+  }, [activityConfig, activityType]);
 
   /**
    * Updates the Front Camera Service alarms for the activity
@@ -114,12 +123,16 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
    */
   const updateFrontCameraAlarms = React.useCallback(
     async (alarms: FrontCameraAlarms) => {
+      if (!activityConfig) {
+        return;
+      }
       try {
         const response = await smowlApi.setFrontCameraAlarms({
           // eslint-disable-next-line camelcase
-          activityList_json: createActivityListJson([
-            activityConfig.activityId,
-          ]),
+          activityList_json: createActivityListJson(
+            [activityConfig.activityId],
+            activityType
+          ),
           // eslint-disable-next-line camelcase
           alarms_json: createAlarmsJson(alarms),
         });
@@ -138,7 +151,7 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
         }
       }
     },
-    [activityConfig]
+    [activityConfig, activityType]
   );
 
   /**
@@ -147,12 +160,16 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
    */
   const updateComputerMonitoringAlarms = React.useCallback(
     async (alarms: ComputerMonitoringAlarms) => {
+      if (!activityConfig) {
+        return;
+      }
       try {
         const response = await smowlApi.setComputerMonitoringAlarms({
           // eslint-disable-next-line camelcase
-          activityList_json: createActivityListJson([
-            activityConfig.activityId,
-          ]),
+          activityList_json: createActivityListJson(
+            [activityConfig.activityId],
+            activityType
+          ),
           // eslint-disable-next-line camelcase
           alarms_json: createComputerMonitoringAlarmsJson(alarms),
         });
@@ -171,18 +188,16 @@ export const useSmowlAlarms = (props: UseSmowlAlarmsProps) => {
         }
       }
     },
-    [activityConfig]
+    [activityConfig, activityType]
   );
 
   React.useEffect(() => {
-    activityConfig.FrontCamera && loadFrontCameraAlarms();
-    activityConfig.ComputerMonitoring && loadComputerMonitoringAlarms();
-  }, [
-    activityConfig.FrontCamera,
-    activityConfig.ComputerMonitoring,
-    loadFrontCameraAlarms,
-    loadComputerMonitoringAlarms,
-  ]);
+    loadFrontCameraAlarms();
+  }, [loadFrontCameraAlarms]);
+
+  React.useEffect(() => {
+    loadComputerMonitoringAlarms();
+  }, [loadComputerMonitoringAlarms]);
 
   return {
     frontCameraAlarms,

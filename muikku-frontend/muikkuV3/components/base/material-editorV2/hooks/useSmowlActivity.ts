@@ -126,84 +126,100 @@ export const useSmowlActivity = (props: UseSmowlActivityProps) => {
 
   /**
    * Toggles the Front Camera setting for the activity
-   * @param enabled - Whether to enable or disable Front Camera
    */
-  const toggleFrontCamera = React.useCallback(
-    async (enabled: boolean) => {
-      try {
-        const activityListJson = createActivityListJson([activityId]);
-        if (enabled) {
-          await smowlApi.activateFrontCamera({
-            // eslint-disable-next-line camelcase
-            activityList_json: activityListJson,
-          });
-
-          setActivity((prev) => ({
-            ...prev,
-            activity: {
-              ...prev.activity,
-              FrontCamera: enabled,
-            },
-            error: null,
-            loading: false,
-            noDataAvailable: false,
-          }));
-        }
-      } catch (error) {
-        if (!isSmowlErrorResponse(error)) {
-          throw error;
-        }
-        setActivity((prev) => ({
-          ...prev,
-          error: error,
-        }));
+  const toggleExternalCamera = React.useCallback(async () => {
+    if (!activity.activity) {
+      return;
+    }
+    try {
+      const activityListJson = createActivityListJson(
+        [activity.activity.activityId],
+        activityType
+      );
+      if (activity.activity?.ExternalCamera) {
+        await smowlApi.deactivateExternalCamera({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
+      } else {
+        await smowlApi.activateExternalCamera({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
       }
-    },
-    [activityId]
-  );
+
+      setActivity((prev) => ({
+        ...prev,
+        activity: {
+          ...prev.activity,
+          ExternalCamera: !activity.activity.ExternalCamera,
+        },
+        error: null,
+        loading: false,
+        noDataAvailable: false,
+      }));
+    } catch (error) {
+      if (!isSmowlErrorResponse(error)) {
+        throw error;
+      }
+      setActivity((prev) => ({
+        ...prev,
+        error: error,
+        loading: false,
+      }));
+    }
+  }, [activity, activityType]);
 
   /**
    * Toggles the Computer Monitoring setting for the activity
-   * @param enabled - Whether to enable or disable Computer Monitoring
    */
-  const toggleComputerMonitoring = React.useCallback(
-    async (enabled: boolean) => {
-      try {
-        const activityListJson = createActivityListJson([activityId]);
-        if (enabled) {
-          await smowlApi.activateComputerMonitoring({
-            // eslint-disable-next-line camelcase
-            activityList_json: activityListJson,
-          });
-
-          setActivity((prev) => ({
-            ...prev,
-            activity: {
-              ...prev.activity,
-              ComputerMonitoring: enabled,
-            },
-            error: null,
-            loading: false,
-            noDataAvailable: false,
-          }));
-        }
-      } catch (error) {
-        if (!isSmowlErrorResponse(error)) {
-          throw error;
-        }
-        setActivity((prev) => ({
-          ...prev,
-          error: error,
-        }));
+  const toggleComputerMonitoring = React.useCallback(async () => {
+    if (!activity.activity) {
+      return;
+    }
+    try {
+      const activityListJson = createActivityListJson(
+        [activity.activity.activityId],
+        activityType
+      );
+      if (activity.activity?.ComputerMonitoring) {
+        await smowlApi.deactivateComputerMonitoring({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
+      } else {
+        await smowlApi.activateComputerMonitoring({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
       }
-    },
-    [activityId]
-  );
+
+      setActivity((prev) => ({
+        ...prev,
+        activity: {
+          ...prev.activity,
+          ComputerMonitoring: !activity.activity.ComputerMonitoring,
+        },
+        error: null,
+        loading: false,
+        noDataAvailable: false,
+      }));
+    } catch (error) {
+      if (!isSmowlErrorResponse(error)) {
+        throw error;
+      }
+      setActivity((prev) => ({
+        ...prev,
+        error: error,
+        loading: false,
+      }));
+    }
+  }, [activity, activityType]);
 
   return {
     activity,
     createExamActivity,
-    toggleFrontCamera,
+    toggleExternalCamera,
     toggleComputerMonitoring,
   };
 };
