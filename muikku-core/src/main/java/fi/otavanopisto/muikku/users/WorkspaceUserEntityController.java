@@ -257,9 +257,8 @@ public class WorkspaceUserEntityController {
                 new TypeReference<ArrayList<LastWorkspace>>() {
                 });
 
-            int lastWorkspaceListSize = lastWorkspaceList.size();
-
             if (lastWorkspaceList != null) {
+              int lastWorkspaceListSize = lastWorkspaceList.size();
               Long workspaceEntityId = workspaceUserEntity.getWorkspaceEntity().getId();
               lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
 
