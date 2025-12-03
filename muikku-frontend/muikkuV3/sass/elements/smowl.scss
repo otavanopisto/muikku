@@ -1,0 +1,222 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.smowl-activity {  
+    &__card {
+      background-color: $color-default;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+  
+    &__title {
+      font-weight: 600;
+      margin: 0 0 20px 0;
+      padding: 0;
+    }
+  
+    &_basic-info {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid $color-default-separator-border;
+    }
+  
+    &_monitoring-services {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+
+      &--disabled {
+        opacity: 0.5;
+        pointer-events: none;
+
+        .smowl-activity__icon {
+          color: lighten($color-info, 30%);
+        }
+
+        .smowl-activity__label {
+          color: lighten($color-default-contrast, 30%);
+        }
+
+        .button-pill--switch-horizontal {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+      }
+    }
+
+    &__option-container {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    &__option {
+      align-items: center;
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 12px;
+      justify-content: space-between;
+    }
+  
+    &__icon {
+      color: $color-info;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      width: 24px;
+      text-align: center;
+    }
+  
+    &__label {
+      flex: 1;
+      font-size: $text-desktop-font-size;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+
+    &__expand-button {
+      background: none;
+      border: none;
+      color: $color-info;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 1rem;
+      padding: 5px;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        color: darken($color-info, 10%);
+      }
+
+      &:focus {
+        outline: 2px solid $color-info;
+        outline-offset: 2px;
+      }
+    }
+
+    &__option-content {
+      margin-top: 10px;
+      padding: 15px;
+      background-color: lighten($color-default-separator-border, 5%);
+      border-radius: 4px;
+
+      &--disabled {
+        opacity: 0.5;
+        pointer-events: none;
+
+        .smowl-activity__alarm-label {
+          color: lighten($color-default-contrast, 30%);
+          cursor: not-allowed;
+        }
+
+        .smowl-activity__alarms-section-title {
+          color: lighten($color-default-contrast, 30%);
+        }
+
+        .smowl-activity__alarm-item {
+          opacity: 0.6;
+        }
+
+        .button-pill--switch-horizontal {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        .smowl-activity__option-placeholder {
+          color: lighten($color-default-contrast, 30%);
+        }
+
+        // Allow loader to be visible even when disabled
+        .loader-empty {
+          opacity: 1;
+        }
+      }
+    }
+
+    &__alarms-list {
+      display: flex;
+      flex-flow: row wrap;
+      gap: 12px;
+    }
+
+    &__alarms-section {
+      margin-bottom: 20px;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+
+    &__alarms-section-title {
+      font-size: $text-desktop-font-size;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+      padding: 0;
+      color: $color-default-contrast;
+    }
+
+    &__alarm-item {
+      align-items: center;
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 12px;
+      justify-content: space-between;
+      background: $color-default;
+      padding: 10px;
+      border-radius: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    &__alarm-label {
+      flex: 1;
+      font-size: $text-desktop-font-size;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    &__alarms-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid $color-default-separator-border;
+    }
+
+    &__option-placeholder {
+      color: lighten($color-default-contrast, 20%);
+      font-size: $text-mobile-font-size;
+      line-height: 1.5;
+
+      p {
+        margin: 0 0 8px 0;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      @include breakpoint($breakpoint-pad) {
+        font-size: $text-desktop-font-size;
+      }
+    }
+  
+    .button-pill--switch-horizontal {
+      flex-shrink: 0;
+      margin-left: auto;
+
+      &[disabled] {
+        cursor: not-allowed;
+      }
+    }
+
+    &__option-separator {
+      height: 1px;
+      background-color: $color-default-separator-border;
+      margin: 10px 0;
+    }
+  }

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Instructions } from "~/components/general/instructions";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
-import Button, { ButtonPill } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import Dropdown from "~/components/general/dropdown";
 import LicenseSelector from "~/components/general/license-selector";
@@ -53,8 +53,7 @@ import useExamAttendees from "./hooks/useExamAttendees";
 import { ExamCategories } from "./exam-categories";
 import ExamAttendeeCard from "./exam-attendee-card";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { useSmowlActivity } from "./hooks/useSmowlActivity";
-import { useSmowlAlarms } from "./hooks/useSmowlAlarms";
+import SmowlActivity from "./smowl-activity";
 
 /**
  * Editor tab props
@@ -914,133 +913,7 @@ export const ExamSmowlIntegrationTab = (
   props: ExamSmowlIntegrationTabProps
   // eslint-disable-next-line arrow-body-style
 ) => {
-  const editorState = useSelector(
-    (state: StateType) => state.workspaces.materialEditor
-  );
-  const currentWorkspace = useSelector(
-    (state: StateType) => state.workspaces.currentWorkspace
-  );
-  const { currentNodeValue } = editorState;
   const { t } = useTranslation();
-
-  // Smowl activity hook
-  const { activity, createExamActivity, toggleComputerMonitoring } =
-    useSmowlActivity({
-      activityId: `${currentNodeValue?.workspaceMaterialId}`,
-      activityType: "exam",
-    });
-  // Smowl alarms hook
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { frontCameraAlarms, computerMonitoringAlarms } = useSmowlAlarms({
-    activityConfig: activity.activity,
-    activityType: "exam",
-  });
-
-  /**
-   * Handles toggling Computer Monitoring setting
-   */
-  const handleComputerMonitoringToggle = () => {
-    console.log("handleComputerMonitoringToggle");
-    toggleComputerMonitoring();
-  };
-
-  /**
-   * Renders the content of the smowl integration tab
-   * @returns The content of the smowl integration tab
-   */
-  const renderContent = () => {
-    if (activity.loading) {
-      return <div className="loader-empty" />;
-    }
-    if (activity.noDataAvailable) {
-      return (
-        <div className="material-editor__sub-section">
-          <Button
-            buttonModifiers="primary"
-            onClick={() =>
-              createExamActivity({
-                activityType: "exam",
-                activityId: `${currentNodeValue.workspaceMaterialId}`,
-                displayName: currentNodeValue.title,
-                courseId: `${currentWorkspace.id}`,
-                numberUsers: `999`,
-                startDate: new Date(),
-                endDate: new Date(new Date().getDay() + 7),
-              })
-            }
-          >
-            Create exam activity
-          </Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">SMOWL activity settings</h3>
-
-        {/* Display Name */}
-        <div className="form__row">
-          <div className="form-element">
-            <label className="form-element__label">
-              {t("labels.displayName", {
-                ns: "common",
-                defaultValue: "Display Name",
-              })}
-            </label>
-            <input
-              type="text"
-              className="form-element__input form-element__input--material-editor"
-              value={activity.activity?.displayName || ""}
-              readOnly
-              disabled
-            />
-          </div>
-        </div>
-
-        {/* Computer Monitoring Setting */}
-        <div className="form__row">
-          <div className="form-element form-element--checkbox-radiobutton">
-            <input
-              type="checkbox"
-              id="computer-monitoring-checkbox"
-              checked={activity.activity?.ComputerMonitoring || false}
-              onChange={handleComputerMonitoringToggle}
-              disabled={computerMonitoringAlarms.loading || !activity.activity}
-            />
-            <label
-              htmlFor="computer-monitoring-checkbox"
-              className="form-element__label"
-            >
-              {t("labels.computerMonitoring", {
-                ns: "exams",
-                defaultValue: "Computer Monitoring",
-              })}
-            </label>
-          </div>
-        </div>
-
-        {/* Enabled Status (Read-only) */}
-        <div className="form__row">
-          <div className="form-element form-element--checkbox-radiobutton">
-            <input
-              type="checkbox"
-              id="enabled-checkbox"
-              checked={activity.activity?.enabled || false}
-              readOnly
-              disabled
-            />
-            <label htmlFor="enabled-checkbox" className="form-element__label">
-              {t("labels.enabled", {
-                ns: "common",
-                defaultValue: "Enabled",
-              })}
-            </label>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="material-editor__content-wrapper">
@@ -1065,11 +938,11 @@ export const ExamSmowlIntegrationTab = (
             }
           />
         </h2>
-
-        {/* {error && <div className="material-editor__error">{error}</div>} */}
       </div>
 
-      {renderContent()}
+      <div className="material-editor__sub-section">
+        <SmowlActivity />
+      </div>
     </div>
   );
 };

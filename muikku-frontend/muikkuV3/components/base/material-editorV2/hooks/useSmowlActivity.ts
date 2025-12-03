@@ -125,6 +125,41 @@ export const useSmowlActivity = (props: UseSmowlActivityProps) => {
   };
 
   /**
+   * Enables the activity
+   */
+  const toggleActivityEnabled = React.useCallback(async () => {
+    if (!activity.activity) {
+      return;
+    }
+    try {
+      await smowlApi.modifyActivity({
+        activityId: activityId,
+        activityType: activityType,
+        enable: activity.activity.enabled ? "false" : "true",
+      });
+      setActivity((prev) => ({
+        ...prev,
+        activity: {
+          ...prev.activity,
+          enabled: !prev.activity.enabled,
+        },
+        error: null,
+        loading: false,
+        noDataAvailable: false,
+      }));
+    } catch (error) {
+      if (!isSmowlErrorResponse(error)) {
+        throw error;
+      }
+      setActivity((prev) => ({
+        ...prev,
+        error: error,
+        loading: false,
+      }));
+    }
+  }, [activity, activityId, activityType]);
+
+  /**
    * Toggles the Front Camera setting for the activity
    */
   const toggleExternalCamera = React.useCallback(async () => {
@@ -216,10 +251,56 @@ export const useSmowlActivity = (props: UseSmowlActivityProps) => {
     }
   }, [activity, activityType]);
 
+  /**
+   * Toggles the Test Exam Mode setting for the activity
+   */
+  const toggleTestExamMode = React.useCallback(async () => {
+    if (!activity.activity) {
+      return;
+    }
+    try {
+      const activityListJson = createActivityListJson(
+        [activity.activity.activityId],
+        activityType
+      );
+
+      if (activity.activity.TestExamMode) {
+        await smowlApi.deactivateTestExamMode({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
+      } else {
+        await smowlApi.activateTestExamMode({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
+      }
+
+      setActivity((prev) => ({
+        ...prev,
+        activity: {
+          ...prev.activity,
+          TestExamMode: !activity.activity.TestExamMode,
+        },
+      }));
+    } catch (error) {
+      if (!isSmowlErrorResponse(error)) {
+        throw error;
+      }
+      setActivity((prev) => ({
+        ...prev,
+        error: error,
+        loading: false,
+      }));
+    }
+  }, [activity, activityType]);
+
   return {
     activity,
     createExamActivity,
+    toggleActivityEnabled,
     toggleExternalCamera,
     toggleComputerMonitoring,
+    toggleTestExamMode,
   };
 };

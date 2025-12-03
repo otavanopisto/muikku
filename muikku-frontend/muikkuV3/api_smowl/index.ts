@@ -12,8 +12,8 @@ import type {
   ComputerMonitoringResponse,
   MonitoringAlarmsResponse,
   MonitoringAlarmsSetResponse,
-  ComputerMonitoringAlarms,
-  FrontCameraAlarms,
+  ComputerMonitoringAlarmsConfig,
+  FrontCameraAlarmsConfig,
   SmowlErrorResponse,
   ExternalCameraRequest,
   ExternalCameraResponse,
@@ -79,7 +79,7 @@ export function createActivityListJson(
  * @param alarms - Object containing alarm configurations
  * @returns JSON string in the required format
  */
-export function createAlarmsJson(alarms: FrontCameraAlarms): string {
+export function createAlarmsJson(alarms: FrontCameraAlarmsConfig): string {
   return JSON.stringify(alarms);
 }
 
@@ -92,7 +92,7 @@ export function createAlarmsJson(alarms: FrontCameraAlarms): string {
  * @returns JSON string in the required format
  */
 export function createComputerMonitoringAlarmsJson(
-  alarms: ComputerMonitoringAlarms
+  alarms: ComputerMonitoringAlarmsConfig
 ): string {
   return JSON.stringify(alarms);
 }
@@ -538,7 +538,7 @@ export class SmowlApi {
    */
   async getFrontCameraAlarms(
     params: GetMonitoringDeviceAlarmsRequest
-  ): Promise<MonitoringAlarmsResponse<FrontCameraAlarms>> {
+  ): Promise<MonitoringAlarmsResponse<FrontCameraAlarmsConfig>> {
     const url = `${this.config.baseUrl}/alarms/frontCameraService/activities/get`;
 
     const response = await fetch(url, {
@@ -571,7 +571,7 @@ export class SmowlApi {
       );
     }
 
-    return responseData as MonitoringAlarmsResponse<FrontCameraAlarms>;
+    return responseData as MonitoringAlarmsResponse<FrontCameraAlarmsConfig>;
   }
 
   /**
@@ -630,7 +630,7 @@ export class SmowlApi {
    */
   async getComputerMonitoringAlarms(
     params: GetMonitoringDeviceAlarmsRequest
-  ): Promise<MonitoringAlarmsResponse<ComputerMonitoringAlarms>> {
+  ): Promise<MonitoringAlarmsResponse<ComputerMonitoringAlarmsConfig>> {
     const url = `${this.config.baseUrl}/alarms/computerMonitoringService/activities/get`;
 
     const response = await fetch(url, {
@@ -663,7 +663,7 @@ export class SmowlApi {
       );
     }
 
-    return responseData as MonitoringAlarmsResponse<ComputerMonitoringAlarms>;
+    return responseData as MonitoringAlarmsResponse<ComputerMonitoringAlarmsConfig>;
   }
 
   /**
@@ -746,14 +746,14 @@ export type {
   ComputerMonitoringResponse,
   ActivityConfigResult,
   ActivityConfigReason,
-  FrontCameraAlarms,
+  FrontCameraAlarmsConfig,
   MonitoringAlarmsResponse,
   GetMonitoringDeviceAlarmsRequest,
   SetMonitoringDeviceAlarmsRequest,
   MonitoringAlarmsActivityResult,
-  ComputerMonitoringAlarms,
-  ComputerMonitoringAllowedActions,
-  ComputerMonitoringAllowedPrograms,
+  ComputerMonitoringAlarmsConfig,
+  ComputerMonitoringAllowedActionsConfig,
+  ComputerMonitoringAllowedProgramsConfig,
   MonitoringAlarmsSource,
   ActivityConfig,
   SmowlErrorResponse,

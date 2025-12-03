@@ -351,7 +351,7 @@ export interface MonitoringAlarmsResponse<T> {
 /**
  * Computer Monitoring Service allowed actions configuration
  */
-export interface ComputerMonitoringAllowedActions {
+export interface ComputerMonitoringAllowedActionsConfig {
   /** true if web navigation is allowed, false if not */
   WEB_NAVIGATION: boolean;
   /** true if running the activity in a virtual machine is allowed, false if not */
@@ -368,10 +368,13 @@ export interface ComputerMonitoringAllowedActions {
   EARLY_CLOSE: boolean;
 }
 
+export type ComputerMonitoringAllowedActions =
+  keyof ComputerMonitoringAllowedActionsConfig;
+
 /**
  * Computer Monitoring Service allowed programs configuration
  */
-export interface ComputerMonitoringAllowedPrograms {
+export interface ComputerMonitoringAllowedProgramsConfig {
   /** true if a text editor program is allowed, false if not */
   TEXT_EDITOR: boolean;
   /** true if a pdf program is allowed, false if not */
@@ -406,21 +409,24 @@ export interface ComputerMonitoringAllowedPrograms {
   OPEN_SOURCE_OFFICE_SUITE: boolean;
 }
 
+export type ComputerMonitoringAllowedPrograms =
+  keyof ComputerMonitoringAllowedProgramsConfig;
+
 /**
  * Computer Monitoring Service alarm configuration
  */
-export interface ComputerMonitoringAlarms {
+export interface ComputerMonitoringAlarmsConfig {
   /** Allowed actions configuration */
-  allowed_actions: ComputerMonitoringAllowedActions;
+  allowed_actions: ComputerMonitoringAllowedActionsConfig;
   /** Allowed programs configuration */
-  allowed_programs: ComputerMonitoringAllowedPrograms;
+  allowed_programs: ComputerMonitoringAllowedProgramsConfig;
 }
 
 /**
  * Front Camera Service alarm configuration
  * Each property represents the number of allowed occurrences for that alarm type
  */
-export interface FrontCameraAlarms {
+export interface FrontCameraAlarmsConfig {
   /** Number of allowed occurrences of 'incorrect' user */
   INCORRECT_USER: number | string;
   /** Number of allowed occurrences of more than 1 person */
@@ -451,6 +457,8 @@ export interface FrontCameraAlarms {
   UNSUPPORTED_BROWSER: number | string;
 }
 
+export type FrontCameraAlarms = keyof FrontCameraAlarmsConfig;
+
 /**
  * Creates the alarms_json string in the required format for Computer Monitoring Service.
  * The API requires a JSON object with alarm keys and their values.
@@ -460,7 +468,7 @@ export interface FrontCameraAlarms {
  * @returns JSON string in the required format
  */
 export function createComputerMonitoringAlarmsJson(
-  alarms: ComputerMonitoringAlarms
+  alarms: ComputerMonitoringAlarmsConfig
 ): string {
   return JSON.stringify(alarms);
 }
