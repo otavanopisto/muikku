@@ -11600,8 +11600,12 @@ paths:
             type: integer
             format: int64
       responses:
-        "204":
-          description: Workspace deleted from last workspaces successfully
+        "200":
+          description: Updated user entity property
+          content:
+            application/json:
+              schema:
+                $ref: "#compoments/schemas/UserEntityPropertyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -18298,6 +18302,21 @@ components:
           type: string
           format: date-time
           nullable: true
+    
+    UserEntityPropertyValue:
+      type: object
+      description: SetUserPropertyValueRequestBody object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+        value:
+          $ref: "#/components/schemas/AnyValue"
+        userEntityId:
+          type: integer
+          format: int64
 
     UserWithSchoolData:
       type: object

@@ -3960,12 +3960,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController
-        .findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
 
     if (lastWorkspaces != null) {
@@ -3995,9 +3990,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
     }
-    return Response
-        .noContent()
-        .build();
+    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty("last-workspaces", lastWorkspaces == null ? null : lastWorkspaces.getValue(), lastWorkspaces == null ? null : lastWorkspaces.getUserEntity().getId())).build();
   }
   
   private WorkspaceSettingsRestModel getWorkspaceSettingsRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
