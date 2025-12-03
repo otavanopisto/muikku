@@ -24,9 +24,19 @@ import { Provider, ReactReduxContext } from "react-redux";
 import { __RouterContext as RouterContext } from "react-router";
 
 /**
- * itemType2
+ * ItemType2
  */
-type itemType2 = (closeDropdown: () => any) => any;
+export type ItemType2 = (closeDropdown: () => any) => any;
+
+/**
+ * DropdownItem
+ */
+interface DropdownItem {
+  id: string;
+  icon: string;
+  text: string;
+  onClick?: () => void;
+}
 
 /**
  * DropdownProps
@@ -37,7 +47,7 @@ export interface DropdownProps {
   /**
    * Using item list as content
    */
-  items?: Array<React.ReactNode | itemType2>;
+  items?: Array<React.ReactNode | ItemType2>;
   /**
    * Content to show
    */
@@ -111,10 +121,7 @@ interface DropdownState {
 /**
  * Dropdown
  */
-export default class Dropdown extends React.Component<
-  DropdownProps,
-  DropdownState
-> {
+class Dropdown extends React.Component<DropdownProps, DropdownState> {
   private id: string;
   private isUnmounted = false;
   private originalPositionTop: number;
@@ -766,3 +773,5 @@ export default class Dropdown extends React.Component<
     );
   }
 }
+
+export default Dropdown;

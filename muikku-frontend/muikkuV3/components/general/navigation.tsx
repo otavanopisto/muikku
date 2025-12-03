@@ -8,7 +8,6 @@ import Link from "~/components/general/link";
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
-
 /**
  * Navigation
  */
@@ -113,8 +112,7 @@ export class NavigationElement extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let editableComponent = null;
-
+    let editableComponent: JSX.Element | null = null;
     const modifiers: Array<string> =
       typeof this.props.modifiers === "string"
         ? [this.props.modifiers]
@@ -175,8 +173,8 @@ export class NavigationElement extends React.Component<
               style={{ color: this.props.iconAfterColor }}
             ></span>
           ) : null}
-          {editableComponent}
         </Link>
+        {editableComponent}
       </li>
     );
   }

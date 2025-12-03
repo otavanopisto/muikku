@@ -13,8 +13,23 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { colorIntToHex } from "~/util/modifiers";
-import CategoryUpdateDialog from "../dialogs/category-update";
 import { Role } from "~/generated/client";
+import DropdownComponent, {
+  ItemType2,
+  DropdownProps,
+} from "~/components/general/dropdown";
+import Link from "~/components/general/link";
+
+/**
+ * DropdownItem
+ */
+interface DropdownItem {
+  id: string;
+  icon: string;
+  text: string;
+  onClick?: () => void;
+}
+
 /**
  * NavigationAsideProps
  */
@@ -35,6 +50,38 @@ class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
+  private items: DropdownItem[] = [
+    {
+      id: "edit-category",
+      icon: "pencil",
+      text: this.props.t("labels.edit"),
+      onClick: () => console.log("Edit"),
+    },
+    {
+      id: "remove-category",
+      icon: "trash",
+      text: this.props.t("labels.remove"),
+      onClick: () => console.log("remove"),
+    },
+  ];
+
+  createDropdownItems = (items: DropdownItem[]): ItemType2[] =>
+    // eslint-disable-next-line react/display-name
+    items.map((item) => (onClose) => (
+      <Link
+        key={item.id}
+        className="link link--full link--announcer-navigation link--profile-dropdown"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onClick={() => {
+          onClose();
+          item.onClick && item.onClick();
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    ));
+
   /**
    * render
    * @returns JSX.Element
@@ -66,8 +113,12 @@ class NavigationAside extends React.Component<
           }
           hash={`category-${category.id}`}
           icon="tag"
-          editableWrapper={CategoryUpdateDialog}
-          editableWrapperArgs={{ category }}
+          editableWrapper={DropdownComponent}
+          editableWrapperArgs={
+            {
+              items: this.createDropdownItems(this.items),
+            } as Partial<DropdownProps>
+          }
           isEditable={this.props.roles.includes("ADMINISTRATOR")}
           iconColor={colorIntToHex(category.color)}
         >
