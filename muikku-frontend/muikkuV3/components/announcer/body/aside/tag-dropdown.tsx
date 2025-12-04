@@ -11,7 +11,7 @@ import "~/sass/elements/tag-dropdown.scss";
 interface DropdownMenuDemoProps {
   children?: React.ReactNode;
   category: AnnouncementCategory;
-  handleDelete: () => void;
+  onDelete: (tag: AnnouncementCategory) => void;
   deleteDialogTitle: string;
   deleteDialogContent: string;
 }
@@ -22,7 +22,13 @@ interface DropdownMenuDemoProps {
  * @returns JSX.Element
  */
 const TagDropdown: React.FC<DropdownMenuDemoProps> = (props) => {
-  const { children, category } = props;
+  const {
+    children,
+    category,
+    onDelete,
+    deleteDialogTitle,
+    deleteDialogContent,
+  } = props;
   const [open, setOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
@@ -76,8 +82,13 @@ const TagDropdown: React.FC<DropdownMenuDemoProps> = (props) => {
     setOpen(!open);
   };
 
-  const handleDelete = () => {
-    console.log("delete");
+  /**
+   * handleDelete
+   * @param tag tag to be deleted
+   */
+  const handleDelete = (tag: AnnouncementCategory) => {
+    onDelete(tag);
+    setDeleteDialogOpen(false);
   };
 
   // Clone the children and add our click handler
@@ -105,6 +116,7 @@ const TagDropdown: React.FC<DropdownMenuDemoProps> = (props) => {
               <li
                 className="tag-dropdown__item"
                 onClick={() => {
+                  // Todo handler
                   setEditDialogOpen(true);
                   setOpen(false);
                 }}
@@ -115,6 +127,7 @@ const TagDropdown: React.FC<DropdownMenuDemoProps> = (props) => {
               <li
                 className="tag-dropdown__item"
                 onClick={() => {
+                  // Todo handler
                   setDeleteDialogOpen(true);
                   setOpen(false);
                 }}
@@ -136,9 +149,9 @@ const TagDropdown: React.FC<DropdownMenuDemoProps> = (props) => {
       </CategoryUpdateDialog>
 
       <PromptDialog
-        title={props.deleteDialogTitle}
-        content={props.deleteDialogContent}
-        onExecute={handleDelete}
+        title={deleteDialogTitle}
+        content={deleteDialogContent}
+        onExecute={() => handleDelete(category)}
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
       >
