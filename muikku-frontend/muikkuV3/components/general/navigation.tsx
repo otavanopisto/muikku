@@ -3,11 +3,11 @@
 /**
  * Depcrecated refs should be refactored
  */
-
 import Link from "~/components/general/link";
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
+
 /**
  * Navigation
  */
@@ -89,6 +89,7 @@ interface NavigationElementProps {
   isEditable?: boolean;
   editableWrapper?: any;
   editableWrapperArgs?: any;
+  editableIcon?: string;
   editableAction?: () => any;
   onScrollToSection?: () => any;
   scrollPadding?: number;
@@ -127,7 +128,7 @@ export class NavigationElement extends React.Component<
             disablePropagation
             as="span"
             buttonModifiers="navigation-edit-label"
-            icon="pencil"
+            icon={this.props.editableIcon ? this.props.editableIcon : "pencil"}
           />
         </EditableWrapper>
       );
@@ -138,7 +139,7 @@ export class NavigationElement extends React.Component<
           disablePropagation
           as="span"
           buttonModifiers="navigation-edit-label"
-          icon="pencil"
+          icon={this.props.editableIcon ? this.props.editableIcon : "pencil"}
           onClick={this.props.editableAction}
         />
       );
@@ -173,8 +174,8 @@ export class NavigationElement extends React.Component<
               style={{ color: this.props.iconAfterColor }}
             ></span>
           ) : null}
+          {editableComponent}
         </Link>
-        {editableComponent}
       </li>
     );
   }

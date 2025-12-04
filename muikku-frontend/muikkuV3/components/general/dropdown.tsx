@@ -31,7 +31,7 @@ export type ItemType2 = (closeDropdown: () => any) => any;
 /**
  * DropdownItem
  */
-interface DropdownItem {
+export interface DropdownItem {
   id: string;
   icon: string;
   text: string;
@@ -175,12 +175,20 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
    * @param event event
    */
   handleOutsideClick = (event: MouseEvent) => {
-    if (
-      this.dropdownRef.current &&
-      !this.dropdownRef.current.contains(event.target as Node)
-    ) {
-      this.close();
+    const target = event.target as Node;
+
+    // Check if click is inside dropdown
+    if (this.dropdownRef.current && this.dropdownRef.current.contains(target)) {
+      return;
     }
+
+    // Check if click is inside a dialog (which renders via Portal outside dropdown)
+    const dialogElement = (target as Element).closest?.(".dialog");
+    if (dialogElement) {
+      return;
+    }
+
+    this.close();
   };
 
   /**

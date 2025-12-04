@@ -26,6 +26,7 @@
     "@fullcalendar/resource-timeline": "5.10.1",
     "@fullcalendar/timegrid": "5.10.1",
     "@openapitools/openapi-generator-cli": "2.25.0",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@ramonak/react-progress-bar": "5.3.0",
     "@react-pdf/renderer": "3.1.6",
     "@redux-devtools/extension": "3.2.3",

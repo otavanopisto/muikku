@@ -19,6 +19,9 @@ import DropdownComponent, {
   DropdownProps,
 } from "~/components/general/dropdown";
 import Link from "~/components/general/link";
+import CategoryUpdateDialog from "../dialogs/category-update";
+import PromptDialog from "~/components/general/prompt-dialog";
+import Dropdown from "./aside/tag-dropdown";
 
 /**
  * DropdownItem
@@ -27,6 +30,7 @@ interface DropdownItem {
   id: string;
   icon: string;
   text: string;
+  wrapper?: React.ComponentType<{ children: React.ReactNode }>;
   onClick?: () => void;
 }
 
@@ -50,38 +54,6 @@ class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
-  private items: DropdownItem[] = [
-    {
-      id: "edit-category",
-      icon: "pencil",
-      text: this.props.t("labels.edit"),
-      onClick: () => console.log("Edit"),
-    },
-    {
-      id: "remove-category",
-      icon: "trash",
-      text: this.props.t("labels.remove"),
-      onClick: () => console.log("remove"),
-    },
-  ];
-
-  createDropdownItems = (items: DropdownItem[]): ItemType2[] =>
-    // eslint-disable-next-line react/display-name
-    items.map((item) => (onClose) => (
-      <Link
-        key={item.id}
-        className="link link--full link--announcer-navigation link--profile-dropdown"
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onClick={() => {
-          onClose();
-          item.onClick && item.onClick();
-        }}
-      >
-        <span className={`link__icon icon-${item.icon}`}></span>
-        <span>{item.text}</span>
-      </Link>
-    ));
-
   /**
    * render
    * @returns JSX.Element
@@ -105,26 +77,59 @@ class NavigationAside extends React.Component<
       );
 
     const categoryElementList: JSX.Element[] =
-      this.props.announcements.categories.map((category) => (
-        <NavigationElement
-          key={category.id}
-          isActive={
-            this.props.announcements.location === `category-${category.id}`
-          }
-          hash={`category-${category.id}`}
-          icon="tag"
-          editableWrapper={DropdownComponent}
-          editableWrapperArgs={
-            {
-              items: this.createDropdownItems(this.items),
-            } as Partial<DropdownProps>
-          }
-          isEditable={this.props.roles.includes("ADMINISTRATOR")}
-          iconColor={colorIntToHex(category.color)}
-        >
-          {category.category}
-        </NavigationElement>
-      ));
+      this.props.announcements.categories.map((category) => {
+        const dropdownItems: ItemType2[] = [
+          (closeDropdown) => (
+            <CategoryUpdateDialog category={category} onClose={closeDropdown}>
+              <Link
+                key="edit-category"
+                className="link link--full link--announcement-category-dropdown"
+              >
+                <span className="link__icon icon-pencil"></span>
+                <span>{this.props.t("labels.edit", { ns: "messaging" })}</span>
+              </Link>
+            </CategoryUpdateDialog>
+          ),
+          (closeDropdown) => (
+            <PromptDialog
+              key="remove-category-dialog"
+              title="ASDASDASD"
+              content="ASDASDASD"
+              onExecute={() => console.log("Delete")}
+            >
+              <Link
+                key="remove-category"
+                className="link link--full link--announcement-category-dropdown"
+              >
+                <span className="link__icon icon-trash"></span>
+                <span>
+                  {this.props.t("labels.remove", { ns: "messaging" })}
+                </span>
+              </Link>
+            </PromptDialog>
+          ),
+        ];
+
+        return (
+          <NavigationElement
+            key={category.id}
+            isActive={
+              this.props.announcements.location === `category-${category.id}`
+            }
+            hash={`category-${category.id}`}
+            icon="tag"
+            editableIcon="more_vert"
+            editableWrapper={Dropdown}
+            editableWrapperArgs={{
+              category: category,
+            }}
+            isEditable={this.props.roles.includes("ADMINISTRATOR")}
+            iconColor={colorIntToHex(category.color)}
+          >
+            {category.category}
+          </NavigationElement>
+        );
+      });
     return (
       <Navigation>
         <NavigationTopic name={this.props.i18n.t("labels.folders")}>
