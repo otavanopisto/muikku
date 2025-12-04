@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
@@ -217,6 +218,20 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     query.setMaxResults(maxResults);
     
     return query.getResultList();
+  }
+  
+  public List<Announcement> listAnnouncementsByCategory(AnnouncementCategory category){
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<Announcement> root = criteria.from(Announcement.class);
+    
+    Join<Announcement, AnnouncementCategory> categories = root.join(Announcement_.categories);
+
+    criteria.select(root).where(criteriaBuilder.equal(categories, category)).distinct(true);
+
+    return entityManager.createQuery(criteria).getResultList();
   }
   
   public Announcement updateCaption(Announcement announcement, String caption) {

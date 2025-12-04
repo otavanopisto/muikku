@@ -25,7 +25,7 @@ import PlannerMonthEditDialog from "./planner-month-edit";
 import Droppable from "../react-dnd/droppable";
 import {
   isDragDropItemStudyPlannerNote,
-  isDragDropItemPlannedCourseOrNote,
+  isDragDropItemPlannedCourse,
   isSelectedItemPlannedCourse,
   isSelectedItemStudyPlannerNote,
   isSelectedItemStudyPlannerNoteNew,
@@ -398,7 +398,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     ) => {
       // Use coursesRef.current instead of courses
       if (
-        isDragDropItemPlannedCourseOrNote(item) ||
+        isDragDropItemPlannedCourse(item) ||
         isDragDropItemStudyPlannerNote(item)
       ) {
         return coursesRef.current.some((c) => c.identifier === item.identifier);

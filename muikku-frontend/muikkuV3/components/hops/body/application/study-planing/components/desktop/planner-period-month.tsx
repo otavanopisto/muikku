@@ -13,7 +13,7 @@ import Droppable from "../react-dnd/droppable";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import {
   isDragDropItemStudyPlannerNote,
-  isDragDropItemPlannedCourseOrNote,
+  isDragDropItemPlannedCourse,
   isSelectedItemPlannedCourse,
   isSelectedItemStudyPlannerNote,
   isSelectedItemStudyPlannerNoteNew,
@@ -384,7 +384,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     ) => {
       // Use coursesRef.current instead of courses
       if (
-        isDragDropItemPlannedCourseOrNote(item) ||
+        isDragDropItemPlannedCourse(item) ||
         isDragDropItemStudyPlannerNote(item)
       ) {
         return itemsRef.current.some((c) => c.identifier === item.identifier);

@@ -538,7 +538,7 @@ const isNoTimeContextSelection = (
  * @param item item
  * @returns true if the course is a planned course
  */
-const isDragDropItemPlannedCourseOrNote = (
+const isDragDropItemPlannedCourse = (
   item:
     | PlannedCourseWithIdentifier
     | StudyPlannerNoteWithIdentifier
@@ -567,7 +567,7 @@ export {
   isPeriodCourseItemPlannedCourse,
   isPeriodCourseItemStudyPlannerNote,
   isPeriodCourseItemActivityCourse,
-  isDragDropItemPlannedCourseOrNote,
+  isDragDropItemPlannedCourse,
   isDragDropItemStudyPlannerNote,
   isSelectedItemPlannedCourse,
   isSelectedItemStudyPlannerNote,
