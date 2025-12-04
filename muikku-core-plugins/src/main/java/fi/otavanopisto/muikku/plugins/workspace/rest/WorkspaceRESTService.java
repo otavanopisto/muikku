@@ -3963,34 +3963,33 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
 
-    if (lastWorkspaces != null) {
-      if (StringUtils.isNotEmpty(lastWorkspaces.getValue())) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<LastWorkspace> lastWorkspaceList = null;
-        String lastWorkspaceJson = lastWorkspaces.getValue();
+    String lastWorkspaceJson = lastWorkspaces == null ? null : lastWorkspaces.getValue();
+    if (StringUtils.isNotEmpty(lastWorkspaceJson)) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      List<LastWorkspace> lastWorkspaceList = null;
 
-        try {
-          lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {
-          });
+      try {
+        lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {
+        });
 
-          int lastWorkspaceListSize = lastWorkspaceList.size();
+        int lastWorkspaceListSize = lastWorkspaceList.size();
 
-          if (lastWorkspaceList != null) {
-            lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
+        if (lastWorkspaceList != null) {
+          lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
 
-            if (lastWorkspaceListSize != lastWorkspaceList.size()) {
-              userEntityController.setUserEntityProperty(userEntity, "last-workspaces",
-                  objectMapper.writeValueAsString(lastWorkspaceList));
-            }
+          if (lastWorkspaceListSize != lastWorkspaceList.size()) {
+            lastWorkspaceJson = objectMapper.writeValueAsString(lastWorkspaceList);
+            userEntityController.setUserEntityProperty(userEntity, "last-workspaces", lastWorkspaceJson);
           }
         }
-        catch (JsonProcessingException e) {
-          logger.log(Level.WARNING,
-              String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
-        }
+      }
+      catch (JsonProcessingException e) {
+        logger.log(Level.WARNING,
+            String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
       }
     }
-    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty("last-workspaces", lastWorkspaces == null ? null : lastWorkspaces.getValue(), lastWorkspaces == null ? null : lastWorkspaces.getUserEntity().getId())).build();
+
+    return Response.ok(lastWorkspaceJson).build();
   }
   
   private WorkspaceSettingsRestModel getWorkspaceSettingsRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
