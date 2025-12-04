@@ -37,9 +37,18 @@ public class CourseMatrixModule {
     this.mandatory = mandatory;
   }
 
+  public boolean isAvailable() {
+    return available;
+  }
+
+  public void setAvailable(boolean available) {
+    this.available = available;
+  }
+
   private String name;
   private int courseNumber;
   private int length;
   private boolean mandatory;
+  private boolean available;
 
 }
