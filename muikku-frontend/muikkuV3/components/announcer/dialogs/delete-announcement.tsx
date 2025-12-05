@@ -134,7 +134,7 @@ class DeleteAnnouncementDialog extends React.Component<
         modifier="delete-announcement"
         title={this.props.i18n.t("labels.remove", {
           ns: "messaging",
-          context: "announcement",
+          context: "category",
         })}
         content={content}
         footer={footer}
