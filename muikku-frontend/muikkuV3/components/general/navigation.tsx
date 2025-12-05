@@ -5,9 +5,12 @@
  */
 import Link from "~/components/general/link";
 import * as React from "react";
+import { createPortal, unstable_batchedUpdates } from "react-dom";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
-
+import { AnnouncementCategory } from "~/generated/client";
+import UpdateDialog from "~/components/general/tag-update";
+import PromptDialog from "~/components/general/prompt-dialog";
 /**
  * Navigation
  */
@@ -188,3 +191,188 @@ export class NavigationElement extends React.Component<
     return (this.refs["element"] as any).getElement();
   }
 }
+
+/**
+ * NavigationDropdownProps
+ */
+export interface NavigationDropdownProps {
+  children: React.ReactNode;
+  // So far this only works for announcement categories,
+  // generalizing this is a different issue
+  category: AnnouncementCategory;
+  onDelete: (tag: AnnouncementCategory) => void;
+  onUpdate: (tag: AnnouncementCategory) => void;
+  deleteDialogTitle: string;
+  deleteDialogContent: string;
+  editLabel: string;
+  deleteLabel: string;
+}
+
+type NavigationDropdownAction = "edit" | "delete";
+
+/**
+ * TagDropdown component
+ * @param props component props
+ * @returns JSX.Element
+ */
+export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
+  props
+) => {
+  const {
+    children,
+    category,
+    onDelete,
+    onUpdate,
+    deleteDialogTitle,
+    deleteDialogContent,
+    editLabel,
+    deleteLabel,
+  } = props;
+  const [open, setOpen] = React.useState(false);
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [position, setPosition] = React.useState({ top: 0, left: 0 });
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+
+    /**
+     * handles click outside of dropdown
+     * @param e mouse event
+     */
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+
+      // Check if click is outside both trigger and dropdown
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  /**
+   * H
+   * @param e mouse event
+   */
+  const handleToggleOpen = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + window.scrollY + 5,
+        left: rect.left + window.scrollX,
+      });
+    }
+
+    setOpen(!open);
+  };
+
+  /**
+   * handleDelete
+   * @param tag tag to be deleted
+   */
+  const handleDelete = (tag: AnnouncementCategory) => {
+    onDelete(tag);
+    setDeleteDialogOpen(false);
+  };
+
+  /**
+   * handleDelete
+   * @param tag tag to be deleted
+   */
+  const handleUpdate = (tag: AnnouncementCategory) => {
+    onUpdate(tag);
+    setDeleteDialogOpen(false);
+  };
+
+  /**
+   * handleOptions
+   * @param action option action
+   */
+  const handleOptions = (action: NavigationDropdownAction) => {
+    unstable_batchedUpdates(() => {
+      if (action === "edit") {
+        setEditDialogOpen(true);
+      } else if (action === "delete") {
+        setDeleteDialogOpen(true);
+      }
+      setOpen(false);
+    });
+  };
+
+  // Clone the children and add our click handler
+  const trigger = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement, {
+        onClick: handleToggleOpen,
+      })
+    : children;
+
+  return (
+    <>
+      <div ref={triggerRef}>{trigger}</div>
+      {open &&
+        createPortal(
+          <nav
+            ref={dropdownRef}
+            className="menu__item-dropdown"
+            style={{
+              position: "absolute",
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+            }}
+          >
+            <ul className="menu__item-dropdown-list">
+              <li
+                className="menu__item-dropdown-list-item"
+                onClick={() => handleOptions("edit")}
+              >
+                <span className="menu__item-dropdown-icon icon-pencil"></span>
+                <span>{editLabel}</span>
+              </li>
+              <li
+                className="menu__item-dropdown-list-item"
+                onClick={() => handleOptions("delete")}
+              >
+                <span className="menu__item-dropdown-icon icon-trash"></span>
+                <span>{deleteLabel}</span>
+              </li>
+            </ul>
+          </nav>,
+          document.body
+        )}
+
+      <UpdateDialog
+        category={category}
+        isOpen={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        onUpdate={handleUpdate}
+      >
+        <span style={{ display: "none" }} />
+      </UpdateDialog>
+
+      <PromptDialog
+        title={deleteDialogTitle}
+        content={deleteDialogContent}
+        onExecute={() => handleDelete(category)}
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <span style={{ display: "none" }} />
+      </PromptDialog>
+    </>
+  );
+};

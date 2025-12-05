@@ -7,38 +7,32 @@ import {
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
-import Navigation, { NavigationElement } from "../../general/navigation";
-import { NavigationTopic } from "../../general/navigation";
+import Navigation, {
+  NavigationTopic,
+  NavigationElement,
+  NavigationDropdown,
+  NavigationDropdownProps,
+} from "../../general/navigation";
+
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
+import { Action, Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { colorIntToHex } from "~/util/modifiers";
-import { Role } from "~/generated/client";
-import DropdownComponent, {
-  ItemType2,
-  DropdownProps,
-} from "~/components/general/dropdown";
-import Link from "~/components/general/link";
-import CategoryUpdateDialog from "../dialogs/category-update";
-import PromptDialog from "~/components/general/prompt-dialog";
-import Dropdown from "./aside/tag-dropdown";
-
-/**
- * DropdownItem
- */
-interface DropdownItem {
-  id: string;
-  icon: string;
-  text: string;
-  wrapper?: React.ComponentType<{ children: React.ReactNode }>;
-  onClick?: () => void;
-}
+import { Role, AnnouncementCategory } from "~/generated/client";
+import {
+  deleteAnnouncementCategory,
+  DeleteAnnouncementCategoryTriggerType,
+  updateAnnouncementCategory,
+  UpdateAnnouncementCategoryTriggerType,
+} from "~/actions/announcements";
 
 /**
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
   announcements: AnnouncementsState;
+  updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType;
+  deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType;
   roles: Role[];
 }
 
@@ -54,6 +48,21 @@ class NavigationAside extends React.Component<
   NavigationAsideProps,
   NavigationAsideState
 > {
+  /**
+   * Handles delete category
+   * @param category category to be deleted
+   */
+  handleDelete = (category: AnnouncementCategory) => {
+    this.props.deleteAnnouncementCategory(category.id);
+  };
+
+  /**
+   * Handles update category
+   * @param category category to be updated
+   */
+  handleUpdate = (category: AnnouncementCategory) => {
+    this.props.updateAnnouncementCategory(category);
+  };
   /**
    * render
    * @returns JSX.Element
@@ -77,59 +86,34 @@ class NavigationAside extends React.Component<
       );
 
     const categoryElementList: JSX.Element[] =
-      this.props.announcements.categories.map((category) => {
-        const dropdownItems: ItemType2[] = [
-          (closeDropdown) => (
-            <CategoryUpdateDialog category={category} onClose={closeDropdown}>
-              <Link
-                key="edit-category"
-                className="link link--full link--announcement-category-dropdown"
-              >
-                <span className="link__icon icon-pencil"></span>
-                <span>{this.props.t("labels.edit", { ns: "messaging" })}</span>
-              </Link>
-            </CategoryUpdateDialog>
-          ),
-          (closeDropdown) => (
-            <PromptDialog
-              key="remove-category-dialog"
-              title="ASDASDASD"
-              content="ASDASDASD"
-              onExecute={() => console.log("Delete")}
-            >
-              <Link
-                key="remove-category"
-                className="link link--full link--announcement-category-dropdown"
-              >
-                <span className="link__icon icon-trash"></span>
-                <span>
-                  {this.props.t("labels.remove", { ns: "messaging" })}
-                </span>
-              </Link>
-            </PromptDialog>
-          ),
-        ];
-
-        return (
-          <NavigationElement
-            key={category.id}
-            isActive={
-              this.props.announcements.location === `category-${category.id}`
-            }
-            hash={`category-${category.id}`}
-            icon="tag"
-            editableIcon="more_vert"
-            editableWrapper={Dropdown}
-            editableWrapperArgs={{
+      this.props.announcements.categories.map((category) => (
+        <NavigationElement
+          key={category.id}
+          isActive={
+            this.props.announcements.location === `category-${category.id}`
+          }
+          hash={`category-${category.id}`}
+          icon="tag"
+          editableIcon="more_vert"
+          editableWrapper={NavigationDropdown}
+          editableWrapperArgs={
+            {
               category: category,
-            }}
-            isEditable={this.props.roles.includes("ADMINISTRATOR")}
-            iconColor={colorIntToHex(category.color)}
-          >
-            {category.category}
-          </NavigationElement>
-        );
-      });
+              onDelete: this.handleDelete,
+              onUpdate: this.handleUpdate,
+              deleteDialogTitle: "Poista",
+              deleteDialogContent: "Haluatko varmasti poistaa kategorian?",
+              editLabel: "Muokkaa ",
+              deleteLabel: "Poista",
+            } as Omit<NavigationDropdownProps, "children">
+          }
+          isEditable={this.props.roles.includes("ADMINISTRATOR")}
+          iconColor={colorIntToHex(category.color)}
+        >
+          {category.category}
+        </NavigationElement>
+      ));
+
     return (
       <Navigation>
         <NavigationTopic name={this.props.i18n.t("labels.folders")}>
@@ -161,7 +145,13 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
+  return bindActionCreators(
+    {
+      updateAnnouncementCategory,
+      deleteAnnouncementCategory,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation("messaging")(
