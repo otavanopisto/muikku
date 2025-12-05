@@ -101,8 +101,14 @@ class NavigationAside extends React.Component<
               category: category,
               onDelete: this.handleDelete,
               onUpdate: this.handleUpdate,
-              deleteDialogTitle: "Poista",
-              deleteDialogContent: "Haluatko varmasti poistaa kategorian?",
+              deleteDialogTitle: this.props.t("labels.remove", {
+                ns: "messaging",
+                context: "category",
+              }),
+              deleteDialogContent: this.props.t("content.removing", {
+                ns: "messaging",
+                context: "category",
+              }),
               editLabel: "Muokkaa ",
               deleteLabel: "Poista",
             } as Omit<NavigationDropdownProps, "children">
