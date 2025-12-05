@@ -5,11 +5,12 @@
  */
 import Link from "~/components/general/link";
 import * as React from "react";
+// eslint-disable-next-line camelcase
 import { createPortal, unstable_batchedUpdates } from "react-dom";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 import { AnnouncementCategory } from "~/generated/client";
-import UpdateDialog from "~/components/general/tag-update";
+import UpdateDialog from "~/components/general/tag-update-dialog";
 import PromptDialog from "~/components/general/prompt-dialog";
 /**
  * Navigation
