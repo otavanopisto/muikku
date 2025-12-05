@@ -28,7 +28,7 @@ interface TagUpdateDialogProps {
 /**
  * TagUpdateDialog component
  * @param props component props
- * @return TagUpdateDialog component
+ * @returns JSX.Element
  */
 const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
   const { category, isOpen, onClose, onOpen, onUpdate, children } = props;
@@ -81,7 +81,7 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
 
   /**
    * handleUpdate handler for update action
-   * @param closeDialog
+   * @param closeDialog closeDialog function
    */
   const handleUpdate = (closeDialog: () => void) => {
     if (locked) {
