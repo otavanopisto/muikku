@@ -359,15 +359,7 @@ public class UserEntityController implements Serializable {
       }
     }
     
-    EnvironmentRoleArchetype[] staffRoles = {
-        EnvironmentRoleArchetype.ADMINISTRATOR, 
-        EnvironmentRoleArchetype.MANAGER, 
-        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-        EnvironmentRoleArchetype.STUDY_GUIDER,
-        EnvironmentRoleArchetype.TEACHER
-    };
-    
-    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
+    if (!userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.STAFF_ROLES)) {
       SearchProvider searchProvider = getProvider("elastic-search");
       if (searchProvider != null) {
         SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
