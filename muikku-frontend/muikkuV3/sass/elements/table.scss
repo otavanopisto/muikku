@@ -260,6 +260,21 @@
   }
 }
 
+.table__data--MANDATORY.table__data--NOT-AVAILABLE {
+  .table__data-content-wrapper--course {
+    background: transparent;
+    border: 3px solid $color-disabled;
+  }
+}
+
+.table__data--OPTIONAL.table__data--NOT-AVAILABLE {
+  .table__data-content-wrapper--course {
+    background: transparent;
+    border: 3px solid $color-optional;
+  }
+}
+
+
 .table__data--COMPLETED {
   &::after {
     color: $color-great-success;

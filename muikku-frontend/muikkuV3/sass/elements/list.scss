@@ -101,8 +101,18 @@
   background-color: $color-mandatory;
 }
 
+.list__indicator--MANDATORY.list__indicator--NOT-AVAILABLE {
+  background: transparent;
+  border: 3px solid $color-mandatory;
+}
+
 .list__indicator--OPTIONAL {
   background-color: $color-optional;
+}
+
+.list__indicator--OPTIONAL.list__indicator--NOT-AVAILABLE {
+  background: transparent;
+  border: 3px solid $color-optional;
 }
 
 .list__indicator--COMPLETED {

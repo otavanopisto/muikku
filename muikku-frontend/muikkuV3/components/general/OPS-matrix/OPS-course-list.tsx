@@ -13,6 +13,7 @@ import {
   CourseMatrixModule,
   CourseMatrixSubject,
 } from "~/generated/client";
+import { getNonOPSTransferedActivities } from "~/helper-functions/study-matrix";
 
 /**
  * Interface for parameters passed to the course item renderer
@@ -55,12 +56,15 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     );
   }
 
-  const filteredMatrix = matrix.subjects;
+  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
+  );
 
   /**
    * renderRows
    */
-  const renderRows = filteredMatrix.map((sSubject) => {
+  const renderRows = matrix.subjects.map((sSubject) => {
     const courses = sSubject.modules.map((course) => {
       const listItemIndicatormodifiers = ["course"];
 
@@ -82,6 +86,11 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
       }
 
       listItemIndicatormodifiers.push("OPTIONAL");
+
+      if (!course.available) {
+        listItemIndicatormodifiers.push("NOT-AVAILABLE");
+      }
+
       return renderCourseItem ? (
         renderCourseItem({
           subject: sSubject,
@@ -114,15 +123,11 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
    * @returns Rendered other subjects
    */
   const renderOtherSubjects = () => {
-    const otherSubjects = transferedList.filter(
-      (tStudy) => tStudy.subject === "MUU"
-    );
-
-    if (otherSubjects.length === 0) {
+    if (nonOPSTransferedActivities.length === 0) {
       return null;
     }
 
-    const renderRows = otherSubjects.map((tStudy) => {
+    const renderRows = nonOPSTransferedActivities.map((tStudy) => {
       const listItemIndicatormodifiers = ["course"];
 
       if (tStudy.transferCreditMandatory) {

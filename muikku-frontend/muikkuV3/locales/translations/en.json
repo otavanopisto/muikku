@@ -2801,8 +2801,8 @@
     "content": {
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available",
-      "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites",
-      "problemsExist": "Following problems have been detected and might have an impact on how matrix presents its content."
+      "noSuggestionAvailable_staff": "No courses available. Check scheduled studies as well",
+      "problemsExist": "Subjects may be missing from the table because no selections have been made for them. Missing subject selections:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2814,15 +2814,17 @@
       "inProgress": "$t(common:labels.inProgress)",
       "legendDescriptions": "Marking's descriptions",
       "mandatory": "$t(common:labels.mandatory)",
+      "mandatoryNotAvailable": "$t(common:labels.mandatory), not available",
       "mandatoryShorthand": "M",
       "optional": "$t(common:labels.optional)",
+      "optionalNotAvailable": "$t(common:labels.optional), not available",
       "optionalShorthand": "O",
       "otherStudies": "Other studies",
       "schoolSubject": "School subject",
       "signUpMessage": "Sign up message",
       "signUpStudent": "Sign up student to course",
       "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
-      "suggestedNext": "Suggested next",
+      "suggestedNext": "Suggested",
       "supplementationRequest": "$t(common:labels.incomplete)",
       "supplementationRequestShorthand": "I",
       "transferred": "$t(common:labels.transferredCredit)",
@@ -2834,12 +2836,12 @@
       "signUpError": "Signing up to course failed"
     },
     "problems": {
-      "incompatibleStudent": "The student is incompatible with the OPS matrix",
-      "noMath": "Mathematics subject choice not made for the student",
-      "noNativeLanguage": "Native language subject choice not made for the student",
-      "noPrimaryForeignLanguage": "Primary foreign language subject choice not made for the student",
-      "noSecondaryForeignLanguage": "Secondary foreign language subject choice not made for the student",
-      "noReligion": "Religion subject choice not made for the student"
+      "incompatibleStudent": "<b>The student is incompatible with the OPS matrix</b>",
+      "noMath": "<b>Mathematics</b>",
+      "noNativeLanguage": "<b>Mother tongue and literature</b>",
+      "noPrimaryForeignLanguage": "<b>Foreign language, A syllabus</b>",
+      "noSecondaryForeignLanguage": "<b>Second national language, B1 syllabus</b>",
+      "noReligion": "<b>Religion or ethics</b>"
     }
   },
   "courseCarousel": {

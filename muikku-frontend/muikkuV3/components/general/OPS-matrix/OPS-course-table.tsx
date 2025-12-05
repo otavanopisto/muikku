@@ -8,6 +8,7 @@ import {
   CourseMatrixModule,
   CourseMatrixSubject,
 } from "~/generated/client";
+import { getNonOPSTransferedActivities } from "~/helper-functions/study-matrix";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
@@ -64,13 +65,16 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     );
   }
 
-  const filteredMatrix = matrix.subjects;
+  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
+  );
 
   /**
    * renderRows
    * !!--USES list of mock objects currently--!!
    */
-  const renderRows = filteredMatrix.map((sSubject, i) => {
+  const renderRows = matrix.subjects.map((sSubject, i) => {
     /**
      * Render courses based on possible max number of courses
      * So subject with less courses have their rows same amount of table cells but as empty
@@ -133,6 +137,11 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         }
 
         modifiers.push("OPTIONAL");
+
+        if (!course.available) {
+          modifiers.push("NOT-AVAILABLE");
+        }
+
         return renderCourseCell ? (
           renderCourseCell({
             subject: sSubject,
@@ -178,15 +187,11 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
    * renderOtherSubjects
    */
   const renderOtherSubjects = () => {
-    const otherSubjects = transferedList.filter(
-      (tStudies) => tStudies.subject === "MUU"
-    );
-
-    if (otherSubjects.length === 0) {
+    if (nonOPSTransferedActivities.length === 0) {
       return null;
     }
 
-    const renderRows = otherSubjects.map((tStudy) => {
+    const renderRows = nonOPSTransferedActivities.map((tStudy) => {
       let courseName = tStudy.courseName;
 
       const modifiers = ["centered", "course"];

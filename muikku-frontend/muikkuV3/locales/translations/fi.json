@@ -2801,8 +2801,8 @@
     "content": {
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja saatavilla.",
-      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!",
-      "problemsExist": "Matriisin latauksen yhteydessä on havaittu seuraavat ongelmat, jotka voivat vaikuttaa matriisin näyttämään sisältöön."
+      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista myös aikataulutetut opinnot.",
+      "problemsExist": "Taulukosta voi puuttua oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2814,15 +2814,17 @@
       "inProgress": "$t(common:labels.inProgress)",
       "legendDescriptions": "Merkintöjen kuvaukset",
       "mandatory": "$t(common:labels.mandatory)",
+      "mandatoryNotAvailable": "$t(common:labels.mandatory), ei tarjolla",
       "mandatoryShorthand": "P",
       "optional": "$t(common:labels.optional)",
+      "optionalNotAvailable": "$t(common:labels.optional), ei tarjolla",
       "optionalShorthand": "V",
-      "otherStudies": "MUUT opinnot",
+      "otherStudies": "Muut opinnot",
       "schoolSubject": "Oppiaine",
       "signUpMessage": "Ilmoitusviesti",
       "signUpStudent": "Ilmoita opiskelija kurssille",
       "signUpStudentToWorkspace": "Ilmoita opiskelija kurssille {{workspaceName}}",
-      "suggestedNext": "Seuraavaksi ehdotettu",
+      "suggestedNext": "Ehdotettu",
       "supplementationRequest": "$t(common:labels.incomplete)",
       "supplementationRequestShorthand": "T",
       "transferred": "$t(common:labels.transferredCredit)",
@@ -2834,12 +2836,12 @@
       "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
     },
     "problems": {
-      "incompatibleStudent": "Opiskelija ei ole yhteensopiva OPS matriisin kanssa",
-      "noMath": "Opiskelijalle ei ole tehty <b>matematiikan ainevalintaa</b>",
-      "noNativeLanguage": "Opiskelijalle ei ole tehty <b>äidinkielen ainevalintaa</b>",
-      "noPrimaryForeignLanguage": "Opiskelijalle ei ole tehty <b>pitkän vieraan kielen ainevalintaa</b>",
-      "noSecondaryForeignLanguage": "Opiskelijalle ei ole tehty <b>lyhyen vieraan kielen ainevalintaa</b>",
-      "noReligion": "Opiskelijalle ei ole tehty <b>uskonnon ainevalintaa</b>"
+      "incompatibleStudent": "<b>Opiskelija ei ole yhteensopiva OPS matriisin kanssa</b>",
+      "noMath": "<b>matematiikka</b>",
+      "noNativeLanguage": "<b>äidinkieli ja kirjallisuus</b>",
+      "noPrimaryForeignLanguage": "<b>vieras kieli, A-oppimäärä</b>",
+      "noSecondaryForeignLanguage": "<b>toinen kotimainen kieli, B1-oppimäärä</b>",
+      "noReligion": "<b>katsomusaine</b>"
     }
   },
   "courseCarousel": {

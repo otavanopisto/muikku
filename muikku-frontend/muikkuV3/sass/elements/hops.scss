@@ -729,6 +729,7 @@
   list-style-type: disc;
   margin: 10px 0 0 20px;
   padding: 0;
+  width: 100%;
 }
 
 .hops-container__matrix-problems-list-item {
@@ -775,11 +776,21 @@
   justify-content: center;
 }
 
+.hops-container__indicator-item--mandatory.hops-container__indicator-item--not-available {
+  background: transparent;
+  border: 3px solid $color-mandatory;
+}
+
 .hops-container__indicator-item--optional {
   align-items: center;
   background: $color-optional;
   display: flex;
   justify-content: center;
+}
+
+.hops-container__indicator-item--optional.hops-container__indicator-item--not-available {
+  background: transparent;
+  border: 3px solid $color-optional;
 }
 
 .hops-container__indicator-item--approval {

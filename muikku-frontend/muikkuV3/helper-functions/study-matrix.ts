@@ -338,3 +338,32 @@ export const getCourseInfo = (
     needsSupplementation,
   };
 };
+
+/**
+ * getNonOPSTransferedActivities
+ * @param matrix matrix
+ * @param transferedList transfered list
+ * @returns non OPS transfered activities
+ */
+export const getNonOPSTransferedActivities = (
+  matrix: CourseMatrix,
+  transferedList: StudentStudyActivity[]
+) => {
+  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
+
+  const allTransferedSubjects = transferedList.map((item) => item.subject);
+
+  // Joined list of non OPS transfered subjects
+  const allNonOPSTransferedSubjects = allTransferedSubjects
+    .filter((subject) => !allOPSSubjects.includes(subject))
+    .join(",");
+
+  // List of non OPS transfered subjects without duplicates
+  const listOfallNonOPSTransferedSubjects = Array.from(
+    new Set(allNonOPSTransferedSubjects.split(","))
+  );
+
+  return transferedList.filter((tStudies) =>
+    listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
+  );
+};
