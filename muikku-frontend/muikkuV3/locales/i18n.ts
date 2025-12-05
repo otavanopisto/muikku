@@ -27,7 +27,8 @@ i18n.use(initReactI18next).init({
   },
 });
 
-/**Localize
+/**
+ * Localize
  * Helper functions for  time localization
  */
 export class Localize {

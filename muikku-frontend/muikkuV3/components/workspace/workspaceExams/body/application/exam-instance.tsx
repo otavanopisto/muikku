@@ -26,6 +26,9 @@ import ExamTimer from "./exam-timer";
 import { displayNotification } from "~/actions/base/notifications";
 import { ExamTimerRegistry } from "~/util/exam-timer";
 import { AnimatePresence, motion, Transition, Variants } from "framer-motion";
+import { useExamActivity } from "../../hooks/useExamActivity";
+import { useSmowlMonitoringStatus } from "../../hooks/useSmowlMonitoring";
+import DraggableWindow from "~/components/general/draggable-window";
 
 const variants: Variants = {
   entering: {
@@ -88,6 +91,13 @@ const ExamInstance = (props: ExamInstanceProps) => {
     () => exams.find((exam) => exam.folderId === examId),
     [exams, examId]
   );
+
+  // Get SMOWL monitoring status (hook listens for messages)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { monitoringStatus, monitoringLink } = useSmowlMonitoringStatus({
+    examId,
+    isSmowlActivity: true,
+  });
 
   // Handle timer expiration for active exam
   React.useEffect(() => {
@@ -199,7 +209,11 @@ const ExamInstance = (props: ExamInstanceProps) => {
           key="pre-info"
           className="exam__info"
         >
-          <PreExamInfo exam={preExamInfo} onCloseExam={props.onCloseExam} />
+          <PreExamInfo
+            exam={preExamInfo}
+            isSmowlActivity={true}
+            onCloseExam={props.onCloseExam}
+          />
         </motion.div>
       );
     } else if (currentExamStatusInfo.status === "ERROR") {
@@ -293,9 +307,29 @@ const ExamInstance = (props: ExamInstanceProps) => {
   };
 
   return (
-    <AnimatePresence exitBeforeEnter initial={false}>
-      {renderContent()}
-    </AnimatePresence>
+    <>
+      {/* SMOWL monitoring iframe - persists throughout exam session */}
+      {monitoringLink.link && (
+        <DraggableWindow initialPosition={{ x: 0, y: 0 }}>
+          <iframe
+            src={monitoringLink.link}
+            title="SMOWL Monitoring"
+            aria-hidden="true"
+            allow="microphone; camera"
+            sandbox="allow-top-navigation allow-scripts allow-modals allow-same-origin allow-popups allow-downloads allow-popups-to-escape-sandbox"
+            width="220"
+            height="300"
+            frameBorder={0}
+            allowFullScreen
+            scrolling="no"
+          />
+          {/* <div>Test</div> */}
+        </DraggableWindow>
+      )}
+      <AnimatePresence exitBeforeEnter initial={false}>
+        {renderContent()}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -306,6 +340,8 @@ const ExamInstance = (props: ExamInstanceProps) => {
  */
 interface PreExamInfoProps {
   exam?: ExamAttendance;
+  isSmowlActivity: boolean;
+  onStartExam?: () => void;
   onCloseExam: () => void;
 }
 
@@ -316,9 +352,14 @@ interface PreExamInfoProps {
  */
 const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   const { t } = useTranslation(["exams", "common"]);
-  const { exam, onCloseExam } = props;
+  const { exam, isSmowlActivity, onCloseExam, onStartExam } = props;
 
   const dispatch = useDispatch();
+
+  const { link, loading } = useExamActivity({
+    examId: exam?.folderId,
+    isSmowlActivity,
+  });
 
   /**
    * handleStartExam
@@ -326,6 +367,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   const handleStartExam = () => {
     if (exam && exam.folderId) {
       dispatch(startExam({ workspaceFolderId: exam.folderId }));
+      onStartExam?.();
     }
   };
 
@@ -337,6 +379,32 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   const allowRestart = exam?.allowRestart || false;
   // Check if exam has time limit
   const hasTimeLimit = exam?.minutes > 0 || false;
+
+  /**
+   * renderRegistrationLink
+   * @returns JSX.Element
+   */
+  const renderRegistrationLink = () => {
+    if (loading) {
+      return (
+        <div className="exam__content">
+          <div className="loader-empty" />
+        </div>
+      );
+    }
+
+    if (!isSmowlActivity || !link) {
+      return null;
+    }
+
+    return (
+      <div className="exam__content">
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          Rekisteröidy SMOWL-palveluun
+        </a>
+      </div>
+    );
+  };
 
   /**
    * buttonText
@@ -425,6 +493,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
           ></div>
         )}
 
+        {renderRegistrationLink()}
         <div className="exam__footer">
           <div className="exam__actions exam__actions--centered">
             {getButton()}
