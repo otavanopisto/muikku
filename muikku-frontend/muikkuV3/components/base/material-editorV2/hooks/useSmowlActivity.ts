@@ -12,7 +12,7 @@ import {
 } from "~/api_smowl/types";
 
 const smowlApi = getSmowlApi({
-  baseUrl: "https://results-api.smowltech.net/index.php/v2",
+  baseUrl: "/rest/smowl",
 });
 
 export const NO_DATA_AVAILABLE_RESPONSE: SmowlErrorResponse = {

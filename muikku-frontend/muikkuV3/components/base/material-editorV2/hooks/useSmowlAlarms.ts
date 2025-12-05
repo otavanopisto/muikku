@@ -18,7 +18,7 @@ import {
 import _ from "lodash";
 
 const smowlApi = getSmowlApi({
-  baseUrl: "https://results-api.smowltech.net/index.php/v2",
+  baseUrl: "/rest/smowl",
 });
 
 /**

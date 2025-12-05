@@ -720,14 +720,14 @@ export class SmowlApi {
  * @returns New SMowlApi instance
  */
 export function getSmowlApi(config: SmowlApiConfig): SmowlApi {
-  const entityName = SMOWL_ENTITY_NAME;
-  const apiKey = SMOWL_API_KEY;
-  const authString = `Basic ${btoa(entityName + ":" + apiKey)}`;
+  // const entityName = SMOWL_ENTITY_NAME;
+  // const apiKey = SMOWL_API_KEY;
+  // const authString = `Basic ${btoa(entityName + ":" + apiKey)}`;
   return new SmowlApi({
     ...config,
     headers: {
       ...config.headers,
-      Authorization: authString,
+      //Authorization: authString,
     },
   });
 }
