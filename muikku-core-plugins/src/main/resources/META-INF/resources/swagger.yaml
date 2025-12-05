@@ -469,9 +469,9 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
 
   /rest/announcer/announcements/{announcementId}/markAsRead:
-    post:
+    put:
       operationId: markAnnouncementAsRead
-      summary: Mark announcement as read by logged user
+      summary: Mark announcement as read or unread by logged user
       tags:
         - Announcer
       parameters:
@@ -484,7 +484,7 @@ paths:
             format: int64
       responses:
         "200":
-          description: Announcement marked as read successfully
+          description: Announcement marked as read or unread successfully
           content:
             application/json:
               schema:
