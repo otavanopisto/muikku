@@ -11605,7 +11605,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/LastWorkspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -15175,6 +15177,25 @@ components:
         feed:
           type: string
 
+    LastWorkspace:
+      type: object
+      description: Last workspace object
+      required:
+        - url
+        - workspaceId
+        - workspaceName
+        - materialName
+      properties:
+        url:
+          type: string
+        workspaceId:
+          type: integer
+          format: int64
+        workspaceName:
+          type: string
+        materialName:
+          type: string
+
     UserStudentFlag:
       type: object
       description: UserStudentFlag object
@@ -18302,21 +18323,6 @@ components:
           type: string
           format: date-time
           nullable: true
-    
-    UserEntityPropertyValue:
-      type: object
-      description: SetUserPropertyValueRequestBody object
-      required:
-        - key
-        - value
-      properties:
-        key:
-          type: string
-        value:
-          $ref: "#/components/schemas/AnyValue"
-        userEntityId:
-          type: integer
-          format: int64
 
     UserWithSchoolData:
       type: object
