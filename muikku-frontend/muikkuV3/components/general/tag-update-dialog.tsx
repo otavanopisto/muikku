@@ -169,7 +169,7 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
             }}
           />
         </div>
-        {displayColorPicker ? (
+        {displayColorPicker && (
           <div className="color-picker">
             <div
               className="color-picker-overlay"
@@ -177,7 +177,7 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
             />
             {sliderPicker}
           </div>
-        ) : null}
+        )}
       </div>
       <div className="dialog__container dialog__container--label-form">
         <div className="form-element form-element--edit-label">

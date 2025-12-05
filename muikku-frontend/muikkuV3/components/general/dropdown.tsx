@@ -26,7 +26,7 @@ import { __RouterContext as RouterContext } from "react-router";
 /**
  * ItemType2
  */
-export type ItemType2 = (closeDropdown: () => any) => any;
+type ItemType2 = (closeDropdown: () => any) => any;
 
 /**
  * DropdownItem
