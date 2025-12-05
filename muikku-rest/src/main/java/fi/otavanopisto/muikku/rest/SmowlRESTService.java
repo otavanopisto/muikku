@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.rest;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.Base64;
 
 import javax.inject.Inject;
@@ -23,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/smowl")
 @Produces("application/json")
@@ -38,6 +39,7 @@ public class SmowlRESTService extends AbstractRESTService {
 
   @POST
   @Path("/alarms/{PATH: .*}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response alarmsProxy(@PathParam("PATH") String smowlPath,
       String entityBody) {
     
@@ -51,6 +53,7 @@ public class SmowlRESTService extends AbstractRESTService {
 
   @POST
   @Path("/configs/{PATH: .*}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response configsProxy(@PathParam("PATH") String smowlPath,
       String entityBody) {
     
