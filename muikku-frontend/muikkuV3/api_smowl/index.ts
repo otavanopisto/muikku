@@ -219,10 +219,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
         ...this.config.headers,
       },
-      body: objectToFormUrlEncoded(params),
+      body: JSON.stringify(params),
     });
 
     const responseData = await response.json();
