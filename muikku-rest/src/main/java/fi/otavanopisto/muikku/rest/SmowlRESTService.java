@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -86,11 +85,10 @@ public class SmowlRESTService extends AbstractRESTService {
     
     Client client = ClientBuilder.newClient();
     
-    Builder builder = client.target(smowlUrl)
+    Response smowlResponse = client.target(smowlUrl)
         .request(MediaType.APPLICATION_JSON_TYPE)
-        .header(HttpHeaders.AUTHORIZATION, "Basic " + authString);
-    
-    Response smowlResponse = builder.post(Entity.entity(entityBody, MediaType.APPLICATION_JSON_TYPE));
+        .header(HttpHeaders.AUTHORIZATION, "Basic " + authString)
+        .post(Entity.entity(entityBody, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
     
     if (smowlResponse.hasEntity()) {
       return Response.status(smowlResponse.getStatus()).entity(smowlResponse.getEntity()).build();
