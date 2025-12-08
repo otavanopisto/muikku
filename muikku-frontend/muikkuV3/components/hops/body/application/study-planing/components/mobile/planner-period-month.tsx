@@ -353,7 +353,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
       };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(
-        item.course,
+        item,
         new Date(year, monthIndex, 1)
       );
     }

@@ -295,7 +295,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(
-        item.course,
+        item,
         new Date(year, monthIndex, 1)
       );
     }
