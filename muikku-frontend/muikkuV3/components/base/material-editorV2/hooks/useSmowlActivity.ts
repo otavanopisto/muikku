@@ -11,9 +11,7 @@ import {
   SmowlErrorResponse,
 } from "~/api_smowl/types";
 
-const smowlApi = getSmowlApi({
-  baseUrl: "/rest/smowl",
-});
+const smowlApi = getSmowlApi({});
 
 export const NO_DATA_AVAILABLE_RESPONSE: SmowlErrorResponse = {
   status: 400,

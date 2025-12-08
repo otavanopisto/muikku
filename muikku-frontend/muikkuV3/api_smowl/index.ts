@@ -1,4 +1,3 @@
-import { SMOWL_API_KEY, SMOWL_ENTITY_NAME } from "~/api_smowl/const";
 import type {
   AddActivityRequest,
   AddActivityResponse,
@@ -22,12 +21,14 @@ import type {
 } from "./types";
 import { SmowlApiError } from "./types";
 
+const BASE_URL = "/rest/smowl";
+
 /**
  * Configuration for SMOWL API client
  */
 export interface SmowlApiConfig {
-  /** Base URL for the SMOWL API */
-  baseUrl: string;
+  /** Base URL for the SMOWL API (default: /rest/smowl) */
+  baseUrl?: string;
   /** Optional headers to include in requests */
   headers?: Record<string, string>;
 }
@@ -219,10 +220,10 @@ export class SmowlApi {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         ...this.config.headers,
       },
-      body: JSON.stringify(params),
+      body: objectToFormUrlEncoded(params),
     });
 
     const responseData = await response.json();
@@ -720,14 +721,11 @@ export class SmowlApi {
  * @returns New SMowlApi instance
  */
 export function getSmowlApi(config: SmowlApiConfig): SmowlApi {
-  // const entityName = SMOWL_ENTITY_NAME;
-  // const apiKey = SMOWL_API_KEY;
-  // const authString = `Basic ${btoa(entityName + ":" + apiKey)}`;
   return new SmowlApi({
     ...config,
+    baseUrl: config.baseUrl || BASE_URL,
     headers: {
       ...config.headers,
-      //Authorization: authString,
     },
   });
 }
