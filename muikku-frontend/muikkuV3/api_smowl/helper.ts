@@ -19,6 +19,9 @@ interface MonitorringJwtParams {
    */
   activityType: string;
   activityId: string;
+  /**
+   * The container ID of the activity, e.g.: "course_id", "folder_id"...
+   */
   activityContainerId: string;
   /**
    * The monitoring mode, 0: Instructions mode, 1: Monitoring mode
@@ -51,6 +54,9 @@ interface RegistrationJwtParams {
    */
   activityType?: string;
   activityId?: string;
+  /**
+   * The container ID of the activity, e.g.: "course_id", "folder_id"...
+   */
   activityContainerId?: string;
 }
 
