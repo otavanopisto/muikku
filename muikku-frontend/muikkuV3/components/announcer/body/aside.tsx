@@ -109,8 +109,8 @@ class NavigationAside extends React.Component<
                 ns: "messaging",
                 context: "category",
               }),
-              editLabel: "Muokkaa ",
-              deleteLabel: "Poista",
+              editLabel: this.props.t("actions.edit"),
+              deleteLabel: this.props.t("actions.remove"),
             } as Omit<NavigationDropdownProps, "children">
           }
           isEditable={this.props.roles.includes("ADMINISTRATOR")}
