@@ -468,7 +468,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, pinnedToSelf)).build();
   }
   
-  @POST
+  @PUT
   @Path("/announcements/{ANNOUNCEMENTID}/markAsRead")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response markAnnouncementAsRead(@PathParam("ANNOUNCEMENTID") Long announcementId) {
@@ -482,9 +482,11 @@ public class AnnouncerRESTService extends PluginRESTService {
     AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
     
     if (announcementRecipient == null) {
-
       announcementRecipient = announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId(), new Date(), false);
+    } else { // mark as unread if announcement recipient exists
+      announcementRecipient = announcementController.updateAnnouncementRecipient(announcementRecipient, announcementRecipient.getReadDate() != null ? null : new Date(), announcementRecipient.isPinned());
     }
+    
     AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
     
     if (announcementRecipient != null) {

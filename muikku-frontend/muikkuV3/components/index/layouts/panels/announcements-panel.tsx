@@ -10,6 +10,7 @@ import { Panel } from "~/components/general/panel";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import AnnouncementOptions from "~/components/announcements/general/announcement-options";
 import { colorIntToHex } from "~/util/modifiers";
 
 /**
@@ -33,6 +34,7 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
     announcements: state.announcements.announcements,
     unreadCount: state.announcements.unreadCount,
   }));
+
   const pageCount = Math.ceil(announcements.length / itemsPerPage);
 
   /**
@@ -80,9 +82,24 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
           to={`/announcements#${announcement.id}`}
         >
           <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
+
           <span className="item-list__text-body item-list__text-body--multiline">
-            <span className="item-list__announcement-caption">
-              {announcement.caption}
+            <span>
+              {announcement.pinnedToSelf && (
+                <span
+                  title={t("labels.pinnedToSelf", { ns: "messaging" })}
+                  className="icon announcement__icon--pinned-to-self icon-pin"
+                ></span>
+              )}
+              {announcement.pinned ? (
+                <span
+                  title={t("labels.pinned", { ns: "messaging" })}
+                  className="icon icon-pin"
+                ></span>
+              ) : null}
+              <span className="item-list__announcement-caption">
+                {announcement.caption}
+              </span>
             </span>
             <span className="item-list__announcement-date">
               {localize.date(announcement.startDate)}
@@ -121,7 +138,8 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
                 )}
             </div>
           </span>
-          {announcement.pinned ? <span className="icon icon-pin"></span> : null}
+
+          <AnnouncementOptions announcement={announcement} />
         </Link>
       );
     }
