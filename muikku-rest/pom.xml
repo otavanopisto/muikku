@@ -95,6 +95,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>10.5</version>
+    </dependency>
+
     <!-- Muikku -->
 
     <dependency>
