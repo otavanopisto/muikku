@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { Announcement } from "~/generated/client";
+import { Announcement, AnnouncementCategory } from "~/generated/client";
 
 /**
  * AnnouncerNavigationItemType
@@ -8,6 +8,7 @@ import { Announcement } from "~/generated/client";
 export interface AnnouncerNavigationItemType {
   location: string;
   id: string | number;
+  type: "folder" | "label";
   icon: string;
   color?: string;
   text: string;
@@ -20,30 +21,35 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
   {
     location: "active",
     id: "active",
+    type: "folder",
     icon: "folder",
     text: "active",
   },
   {
     location: "unread",
     id: "unread",
+    type: "folder",
     icon: "folder",
     text: "unread",
   },
   {
     location: "expired",
     id: "expired",
+    type: "folder",
     icon: "folder",
     text: "expired",
   },
   {
     location: "own",
     id: "own",
+    type: "folder",
     icon: "folder",
     text: "own",
   },
   {
     location: "archived",
     id: "archived",
+    type: "folder",
     icon: "trash-alt",
     text: "archived",
   },
@@ -65,6 +71,7 @@ export interface AnnouncementsState {
   current: Announcement;
   selected: Announcement[];
   selectedIds: Array<number>;
+  categories: AnnouncementCategory[];
   location: string;
   toolbarLock: boolean;
   navigation: AnnouncerNavigationItemListType;
@@ -76,6 +83,7 @@ export interface AnnouncementsState {
  * AnnouncementsStatePatch
  */
 export interface AnnouncementsStatePatch {
+  categories?: AnnouncementCategory[];
   state?: AnnouncementsStateType;
   announcements?: Announcement[];
   unreadCount?: number;
@@ -101,6 +109,7 @@ const initialAnnouncementsState: AnnouncementsState = {
   selectedIds: [],
   location: "",
   toolbarLock: false,
+  categories: [],
   navigation: defaultNavigation,
   workspaceId: null,
   hasMore: false,
@@ -131,13 +140,47 @@ export const announcements: Reducer<AnnouncementsState> = (
       const newAllProperties: AnnouncementsStatePatch = action.payload;
       return Object.assign({}, state, newAllProperties);
     }
-
     case "UPDATE_SELECTED_ANNOUNCEMENTS":
       return {
         ...state,
         selected: action.payload,
         selectedIds: action.payload.map((s: Announcement) => s.id),
       };
+    case "ADD_ANNOUNCEMENT_CATEGORY":
+      return {
+        ...state,
+        categories: [...state.categories, action.payload],
+      };
+
+    case "DELETE_ANNOUNCEMENT_CATEGORY": {
+      const categories = [...state.categories];
+      const categoryToDeleteIndex = categories.findIndex(
+        (category) => category.id === action.payload
+      );
+
+      if (categoryToDeleteIndex !== -1) {
+        categories.splice(categoryToDeleteIndex, 1);
+      }
+
+      return {
+        ...state,
+        categories,
+      };
+    }
+
+    case "UPDATE_ANNOUNCEMENT_CATEGORY": {
+      const categories = [...state.categories];
+      const categoryToUpdateIndex = categories.findIndex(
+        (category) => category.id === action.payload.id
+      );
+      if (categoryToUpdateIndex !== -1) {
+        categories[categoryToUpdateIndex] = action.payload;
+      }
+      return {
+        ...state,
+        categories,
+      };
+    }
 
     case "ADD_TO_ANNOUNCEMENTS_SELECTED":
       return {
@@ -145,7 +188,6 @@ export const announcements: Reducer<AnnouncementsState> = (
         selected: state.selected.concat([action.payload]),
         selectedIds: state.selectedIds.concat([action.payload.id]),
       };
-
     case "REMOVE_FROM_ANNOUNCEMENTS_SELECTED":
       return {
         ...state,

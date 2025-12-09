@@ -379,12 +379,12 @@ public class WorkspaceMaterialController {
         : materialController.findMaterialById(workspaceMaterial.getMaterialId());
   }
 
-  public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials) {
-    return cloneWorkspaceNode(workspaceNode, parent, cloneMaterials, false);
+  public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials, WorkspaceNodeCopyMapper mapper) {
+    return cloneWorkspaceNode(workspaceNode, parent, cloneMaterials, false, mapper);
   }
 
   private WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials,
-      boolean overrideCloneMaterials) {
+      boolean overrideCloneMaterials, WorkspaceNodeCopyMapper mapper) {
     WorkspaceNode newNode;
     boolean isHtmlMaterial = false;
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
@@ -428,13 +428,22 @@ public class WorkspaceMaterialController {
       newNode = createWorkspaceFolder(parent, folder.getTitle(),
           generateUniqueUrlName(parent, workspaceNode.getUrlName()), index, workspaceNode.getHidden(),
           folder.getFolderType(), folder.getViewRestrict(), workspaceNode.getLanguage(), folder.getExam());
+      // Clone exam settings (page ids will be wrong for the copy and need to be adjusted by the caller)
+      if (folder.getExam()) {
+        mapper.getExamIds().add(folder.getId());
+        ExamSettings settings = examSettingsDAO.findByWorkspaceFolderId(folder.getId());
+        if (settings != null) {
+          examSettingsDAO.create(newNode.getId(), settings.getSettings());
+        }
+      }
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
     }
+    mapper.getIdMap().put(workspaceNode.getId(), newNode.getId());
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceNode);
     for (WorkspaceNode childNode : childNodes) {
-      cloneWorkspaceNode(childNode, newNode, cloneMaterials, isHtmlMaterial);
+      cloneWorkspaceNode(childNode, newNode, cloneMaterials, isHtmlMaterial, mapper);
     }
     return newNode;
   }

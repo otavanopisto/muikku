@@ -10,7 +10,6 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/form.scss";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
-import AnimateHeight from "react-animate-height";
 import WorkspaceSelect from "../workspace-select";
 import { useTranslation } from "react-i18next";
 import { useActivePeriod } from "../../context/active-period-context";
@@ -58,10 +57,25 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
 
   preview(getEmptyImage(), { captureDraggingState: true });
 
+  // Use a callback ref that conditionally attaches the drag ref
+  const dragRefCallback = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      const canDrag = !disabled;
+      if (node && canDrag) {
+        drag(node);
+      } else if (!canDrag) {
+        // Detach when dragging should be disabled
+        drag(null);
+      }
+    },
+    [disabled, drag]
+  );
+
   return (
     <BasePlannerPeriodCourse
       {...props}
-      ref={drag}
+      ref={dragRefCallback}
+      key={`draggable-card-${course.identifier}`}
       isDragging={isDragging}
       canDrag={!disabled}
       renderSpecifyContent={({
@@ -211,7 +225,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
           content={(closePortal) => (
             <div>
               <span>
-                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                {t("labels.studyPlannerRemoveCourseFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>
@@ -234,48 +248,6 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
             </div>
           )}
         />
-      )}
-      renderCourseState={({ isOpen, courseState }) => (
-        <AnimateHeight
-          duration={200}
-          height={isOpen ? "auto" : 0}
-          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-        >
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssi suunniteltu
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssille ilmoittauduttu
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssilta pyydetty arviointia
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssi arvioitu
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssin arvosana
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-        </AnimateHeight>
       )}
     />
   );

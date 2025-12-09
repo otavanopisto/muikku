@@ -400,9 +400,8 @@ class CommunicatorToolbar extends React.Component<
             <ButtonPill
               buttonModifiers="next-page"
               icon="arrow-left"
-              disabled={
-                this.props.messages.currentThread.newerThreadId === null
-              }
+              // Somehow the null turns into undefined in props, so if we chect exactly null, the button is never disabled
+              disabled={this.props.messages.currentThread.newerThreadId == null}
               onClick={this.loadMessage.bind(
                 this,
                 this.props.messages.currentThread.newerThreadId
@@ -411,9 +410,8 @@ class CommunicatorToolbar extends React.Component<
             <ButtonPill
               buttonModifiers="prev-page"
               icon="arrow-right"
-              disabled={
-                this.props.messages.currentThread.olderThreadId === null
-              }
+              // Somehow the null turns into undefined in props, so if we chect exactly null, the button is never disabled
+              disabled={this.props.messages.currentThread.olderThreadId == null}
               onClick={this.loadMessage.bind(
                 this,
                 this.props.messages.currentThread.olderThreadId

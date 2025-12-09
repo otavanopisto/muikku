@@ -18,11 +18,13 @@ import { AnnouncementsState } from "~/reducers/announcements";
 import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
 import { Action, Dispatch } from "redux";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * MessageViewProps
  */
-interface MessageViewProps {
+interface MessageViewProps extends WithTranslation {
   announcements: AnnouncementsState;
   userIndex: UserIndexState;
 }
@@ -61,6 +63,17 @@ class AnnouncementView extends React.Component<
         >
           <ApplicationListItemHeader modifiers="announcer-announcement">
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
+              {this.props.announcements.current.pinnedToSelf && (
+                <span
+                  title={this.props.i18n.t("labels.pinnedToSelf", {
+                    ns: "messaging",
+                  })}
+                  className="icon announcement__icon--pinned-to-self icon-pin"
+                ></span>
+              )}
+              {this.props.announcements.current.pinned && (
+                <span className="icon icon-pin"></span>
+              )}
               <ApplicationListItemDate
                 startDate={localize.date(
                   this.props.announcements.current.startDate
@@ -69,27 +82,39 @@ class AnnouncementView extends React.Component<
                   this.props.announcements.current.endDate
                 )}
               />
-              {this.props.announcements.current.pinned && (
-                <span className="icon icon-pin"></span>
-              )}
             </ApplicationListHeaderPrimary>
-            {this.props.announcements.current.workspaces.length ||
-            this.props.announcements.current.userGroupEntityIds.length ? (
-              <div className="labels labels--announcer-announcement">
-                {this.props.announcements.current.workspaces.map(
-                  (workspace) => (
-                    <span className="label" key={workspace.id}>
-                      <span className="label__icon label__icon--workspace icon-books"></span>
-                      <span className="label__text label__text--workspace">
-                        {workspace.name}{" "}
-                        {workspace.nameExtension
-                          ? "(" + workspace.nameExtension + ")"
-                          : null}
-                      </span>
+
+            <div className="labels labels--announcer-announcement">
+              {this.props.announcements.current.categories.length !== 0 &&
+                this.props.announcements.current.categories.map((category) => (
+                  <span className="label" key={category.id}>
+                    <span
+                      style={{
+                        color: colorIntToHex(category.color),
+                      }}
+                      className="label__icon label__icon--announcement-usergroup icon-tag"
+                    ></span>
+                    <span className="label__text label__text--announcement-usergroup">
+                      {category.category}
                     </span>
-                  )
-                )}
-                {this.props.announcements.current.userGroupEntityIds.map(
+                  </span>
+                ))}
+
+              {this.props.announcements.current.workspaces.length !== 0 &&
+                this.props.announcements.current.workspaces.map((workspace) => (
+                  <span className="label" key={workspace.id}>
+                    <span className="label__icon label__icon--workspace icon-books"></span>
+                    <span className="label__text label__text--workspace">
+                      {workspace.name}{" "}
+                      {workspace.nameExtension
+                        ? "(" + workspace.nameExtension + ")"
+                        : null}
+                    </span>
+                  </span>
+                ))}
+              {this.props.announcements.current.userGroupEntityIds.length !==
+                0 &&
+                this.props.announcements.current.userGroupEntityIds.map(
                   (userGroupId) => {
                     if (!this.props.userIndex.groups[userGroupId]) {
                       return null;
@@ -104,8 +129,7 @@ class AnnouncementView extends React.Component<
                     );
                   }
                 )}
-              </div>
-            ) : null}
+            </div>
           </ApplicationListItemHeader>
           <ApplicationListItemBody
             header={this.props.announcements.current.caption}
@@ -140,4 +164,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementView);
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncementView)
+);

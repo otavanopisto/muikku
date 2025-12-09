@@ -12,12 +12,15 @@ import { NavigationTopic } from "../../general/navigation";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
-
+import { colorIntToHex } from "~/util/modifiers";
+import CategoryUpdateDialog from "../dialogs/category-update";
+import { Role } from "~/generated/client";
 /**
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
   announcements: AnnouncementsState;
+  roles: Role[];
 }
 
 /**
@@ -54,10 +57,30 @@ class NavigationAside extends React.Component<
         )
       );
 
+    const categoryElementList: JSX.Element[] =
+      this.props.announcements.categories.map((category) => (
+        <NavigationElement
+          key={category.id}
+          isActive={
+            this.props.announcements.location === `category-${category.id}`
+          }
+          hash={`category-${category.id}`}
+          icon="tag"
+          editableWrapper={CategoryUpdateDialog}
+          editableWrapperArgs={{ category }}
+          isEditable={this.props.roles.includes("ADMINISTRATOR")}
+          iconColor={colorIntToHex(category.color)}
+        >
+          {category.category}
+        </NavigationElement>
+      ));
     return (
       <Navigation>
         <NavigationTopic name={this.props.i18n.t("labels.folders")}>
           {navigationElementList}
+        </NavigationTopic>
+        <NavigationTopic name={this.props.i18n.t("labels.categories")}>
+          {categoryElementList}
         </NavigationTopic>
       </Navigation>
     );
@@ -72,6 +95,7 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     announcements: state.announcements,
+    roles: state.status.roles,
   };
 }
 

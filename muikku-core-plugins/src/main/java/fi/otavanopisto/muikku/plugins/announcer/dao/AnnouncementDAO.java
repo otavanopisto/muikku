@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -181,16 +183,14 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     /**
      * User recipients for unread announcements:
      */
-    if (onlyUnread) {
-      Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
-      Root<AnnouncementRecipient> announcementRecipient = subquery.from(AnnouncementRecipient.class);
-      
-      subquery.select(announcementRecipient.get(AnnouncementRecipient_.announcement));
-      subquery.where(
-          criteriaBuilder.equal(announcementRecipient.get(AnnouncementRecipient_.userEntityId), loggedUser)
-          );
-      
-      predicates.add(criteriaBuilder.not(root.in(subquery)));
+
+    ListJoin<Announcement, AnnouncementRecipient> announcementRecipientJoin = root.join(Announcement_.announcementRecipients, JoinType.LEFT);
+    announcementRecipientJoin.on(criteriaBuilder.equal(announcementRecipientJoin.get(AnnouncementRecipient_.userEntityId), loggedUser));
+    
+    if (onlyUnread) { 
+      predicates.add(criteriaBuilder.isNull(
+          announcementRecipientJoin.get(AnnouncementRecipient_.id)
+          ));
     }
     
     /**
@@ -207,6 +207,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     criteria.orderBy(
         criteriaBuilder.desc(root.get(Announcement_.pinned)),
+        criteriaBuilder.desc(announcementRecipientJoin.get(AnnouncementRecipient_.pinned)),
         criteriaBuilder.desc(root.get(Announcement_.startDate)),
         criteriaBuilder.desc(root.get(Announcement_.id))
     );
@@ -217,6 +218,20 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     query.setMaxResults(maxResults);
     
     return query.getResultList();
+  }
+  
+  public List<Announcement> listAnnouncementsByCategory(AnnouncementCategory category){
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<Announcement> root = criteria.from(Announcement.class);
+    
+    Join<Announcement, AnnouncementCategory> categories = root.join(Announcement_.categories);
+
+    criteria.select(root).where(criteriaBuilder.equal(categories, category)).distinct(true);
+
+    return entityManager.createQuery(criteria).getResultList();
   }
   
   public Announcement updateCaption(Announcement announcement, String caption) {
