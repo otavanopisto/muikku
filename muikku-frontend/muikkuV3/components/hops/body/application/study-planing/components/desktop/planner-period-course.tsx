@@ -234,13 +234,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                       }
                     )}
               </span>
-              <div
-                className="study-planner__extra-section-date-inputs"
-                onDragStart={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
+              <div className="study-planner__extra-section-date-inputs">
                 <DatePicker
                   className="study-planner__input"
                   placeholderText={t("labels.startDate", {
@@ -266,22 +260,12 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               </div>
             </div>
 
-            <div
-              className="study-planner__extra-section-group study-planner__extra-section-group--button-set"
-              onDragStart={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
+            <div className="study-planner__extra-section-group study-planner__extra-section-group--button-set">
               <Button
                 buttonModifiers={["standard-ok", "execute"]}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSpecifyCourse(onClose);
-                }}
-                onDragStart={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
                 }}
               >
                 {t("actions.save", {
@@ -293,10 +277,6 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 onClick={(e) => {
                   e.stopPropagation();
                   onClose();
-                }}
-                onDragStart={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
                 }}
               >
                 {t("actions.cancel", {
@@ -328,13 +308,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               </span>
             </div>
 
-            <div
-              className="study-planner__extra-section-group study-planner__extra-section-group--button-set"
-              onDragStart={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
+            <div className="study-planner__extra-section-group study-planner__extra-section-group--button-set">
               <Button
                 buttonModifiers={["standard-ok", "fatal"]}
                 onClick={(e) => {
