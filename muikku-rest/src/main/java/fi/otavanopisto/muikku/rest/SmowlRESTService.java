@@ -72,8 +72,9 @@ public class SmowlRESTService extends AbstractRESTService {
     final String audience = systemSettingsController.getSetting("smowl.audience");
     final String licenseKey = systemSettingsController.getSetting("smowl.licenseKey");
     final String jwtSecret = systemSettingsController.getSetting("smowl.jwtSecret");
+//    final String entityName = systemSettingsController.getSetting("smowl.entityName");
     
-    if (StringUtils.isAnyBlank(issuer, audience, licenseKey, jwtSecret)) {
+    if (StringUtils.isAnyBlank(issuer, audience, licenseKey, jwtSecret)) { //, entityName)) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Smowl credentials are not set.").build();
     }
     
@@ -102,11 +103,12 @@ public class SmowlRESTService extends AbstractRESTService {
           .audience(audience)
           .issueTime(Date.from(now))
           .expirationTime(Date.from(now.plus(12, ChronoUnit.HOURS)));
-
-      claims.forEach((key, value) -> claimBuilder.claim(key, value));
-
-      // Sign and return
       
+      // Add Claims to the JWT
+      claimBuilder.claim("data", claims);
+//      claims.forEach((key, value) -> claimBuilder.claim(key, value));
+
+      // Sign the JWT
       SignedJWT signedJWT = new SignedJWT(
           new JWSHeader(JWSAlgorithm.HS256),
           claimBuilder.build()
@@ -114,8 +116,9 @@ public class SmowlRESTService extends AbstractRESTService {
       signedJWT.sign(new MACSigner(jwtSecret.getBytes()));
       String token = signedJWT.serialize();
 
+      // Return object
       Map<String, Object> ret = new HashMap<>();
-      ret.put("claims", claims);
+//      ret.put("entityName", entityName);
       ret.put("token", token);
       
       return Response.ok().entity(ret).build();
