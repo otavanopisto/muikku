@@ -118,6 +118,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     }
 
     const targetDate = new Date(year, monthIndex, 1);
+    targetDate.setMinutes(-targetDate.getTimezoneOffset());
 
     const plannedCourses = selectedPlanItemIds
       .map((courseIdentifier) => {
@@ -146,7 +147,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         return {
           ...curriculumConfig.strategy.createPlannedCourse(
             courseFromTray,
-            new Date(year, monthIndex, 1)
+            targetDate
           ),
         };
       })
@@ -232,6 +233,9 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    * @param selectedMonthItemIds selected plan item ids
    */
   const handleMonthEditConfirm = (selectedMonthItemIds: string[]) => {
+    const newDate = new Date(year, monthIndex, 1);
+    newDate.setMinutes(-newDate.getTimezoneOffset());
+
     const plannedCourses = selectedMonthItemIds
       .map((planItemIdentifier) => {
         if (planItemIdentifier.startsWith("new-note-card")) {
@@ -245,7 +249,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         if (course) {
           return {
             ...course,
-            startDate: new Date(year, monthIndex, 1),
+            startDate: newDate,
           };
         }
 
@@ -254,7 +258,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
             curriculumConfig.strategy.findCourseByIdentifier(
               planItemIdentifier
             ),
-            new Date(year, monthIndex, 1)
+            newDate
           ),
         };
       })
@@ -270,7 +274,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         id: null,
         title: "Muistiinpanon otsikko",
         identifier: `plan-note-${uuidv4()}`,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       });
     }
 
@@ -311,11 +315,14 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     let action: StudyPlanChangeAction = "add";
     let updatedNote: StudyPlannerNoteWithIdentifier;
 
+    const newDate = new Date(year, monthIndex, 1);
+    newDate.setMinutes(-newDate.getTimezoneOffset());
+
     if (isSelectedItemStudyPlannerNote(item)) {
       action = "update";
       updatedNote = {
         ...item,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       };
     } else {
       action = "add";
@@ -323,7 +330,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         id: null,
         title: "",
         identifier: `plan-note-${uuidv4()}`,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       };
     }
 
@@ -345,16 +352,19 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     let updatedCourse: PlannedCourseWithIdentifier;
     let action: StudyPlanChangeAction = "add";
 
+    const newDate = new Date(year, monthIndex, 1);
+    newDate.setMinutes(-newDate.getTimezoneOffset());
+
     if (isSelectedItemPlannedCourse(item)) {
       action = "update";
       updatedCourse = {
         ...item,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(
         item,
-        new Date(year, monthIndex, 1)
+        newDate
       );
     }
 

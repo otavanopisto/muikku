@@ -127,6 +127,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     }
 
     const targetDate = new Date(year, monthIndex, 1);
+    targetDate.setMinutes(-targetDate.getTimezoneOffset());
 
     const selectedCourseIds: string[] = [];
     const selectedNoteIds: string[] = [];
@@ -174,7 +175,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
         return {
           ...curriculumConfig.strategy.createPlannedCourse(
             courseFromTray,
-            new Date(year, monthIndex, 1)
+            targetDate
           ),
         };
       })
@@ -254,18 +255,21 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     let action: StudyPlanChangeAction = "add";
     let updatedNote: StudyPlannerNoteWithIdentifier;
 
+    const newDate = new Date(year, monthIndex, 1);
+    newDate.setMinutes(-newDate.getTimezoneOffset());
+
     if (isSelectedItemStudyPlannerNote(item)) {
       action = "update";
       updatedNote = {
         ...item,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       };
     } else {
       updatedNote = {
         id: null,
         title: "Muistiinpanon otsikko",
         identifier: `plan-note-${uuidv4()}`,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       };
     }
 
@@ -287,16 +291,19 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     let updatedCourse: PlannedCourseWithIdentifier;
     let action: StudyPlanChangeAction = "add";
 
+    const newDate = new Date(year, monthIndex, 1);
+    newDate.setMinutes(-newDate.getTimezoneOffset());
+
     if (isSelectedItemPlannedCourse(item)) {
       action = "update";
       updatedCourse = {
         ...item,
-        startDate: new Date(year, monthIndex, 1),
+        startDate: newDate,
       };
     } else {
       updatedCourse = curriculumConfig.strategy.createPlannedCourse(
         item,
-        new Date(year, monthIndex, 1)
+        newDate
       );
     }
 
