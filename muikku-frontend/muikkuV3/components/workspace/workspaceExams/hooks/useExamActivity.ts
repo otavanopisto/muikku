@@ -1,10 +1,6 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
-import {
-  SMOWL_API_KEY,
-  SMOWL_ENTITY_NAME,
-  SMOWL_LICENSE_KEY,
-} from "~/api_smowl/const";
+import { SMOWL_ENTITY_NAME, SMOWL_LICENSE_KEY } from "~/api_smowl/const";
 import { generateRegistrationLink } from "~/api_smowl/helper";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";

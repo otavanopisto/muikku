@@ -17,6 +17,7 @@ export type SmowlMonitoringStatus = "OK" | "NOTOK" | "PENDING" | null;
 interface UseSmowlMonitoringStatusProps {
   examId: number;
   isSmowlActivity: boolean;
+  isMonitoring: boolean;
 }
 
 /**
@@ -27,7 +28,7 @@ interface UseSmowlMonitoringStatusProps {
 export const useSmowlMonitoringStatus = (
   props: UseSmowlMonitoringStatusProps
 ) => {
-  const { examId, isSmowlActivity } = props;
+  const { examId, isSmowlActivity, isMonitoring } = props;
 
   const { status, workspaces } = useSelector((state: StateType) => state);
 
@@ -101,7 +102,7 @@ export const useSmowlMonitoringStatus = (
             activityType: "exam",
             activityId: examId.toString(),
             activityContainerId: workspaces.currentWorkspace.id.toString(),
-            isMonitoring: 0,
+            isMonitoring: isMonitoring ? 1 : 0,
           },
           {
             entityName: SMOWL_ENTITY_NAME,
@@ -134,6 +135,7 @@ export const useSmowlMonitoringStatus = (
     status.profile.emails,
     workspaces.currentWorkspace,
     examId,
+    isMonitoring,
   ]);
 
   return {

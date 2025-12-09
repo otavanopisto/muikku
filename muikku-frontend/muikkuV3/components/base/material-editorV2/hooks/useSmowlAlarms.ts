@@ -17,9 +17,7 @@ import {
 } from "~/api_smowl/types";
 import _ from "lodash";
 
-const smowlApi = getSmowlApi({
-  baseUrl: "/rest/smowl",
-});
+const smowlApi = getSmowlApi({});
 
 /**
  * Custom hook for smowl alarms
