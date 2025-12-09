@@ -55,7 +55,7 @@ public class SmowlRESTService extends AbstractRESTService {
 
   /*
   insert into SystemSetting (settingKey, settingValue) values ('smowl.entityName', ''), ('smowl.apiKey', ''), 
-    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', '');
+    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', ''), ('smowl.entityName', '');
   */
   
   @POST
@@ -72,9 +72,9 @@ public class SmowlRESTService extends AbstractRESTService {
     final String audience = systemSettingsController.getSetting("smowl.audience");
     final String licenseKey = systemSettingsController.getSetting("smowl.licenseKey");
     final String jwtSecret = systemSettingsController.getSetting("smowl.jwtSecret");
-//    final String entityName = systemSettingsController.getSetting("smowl.entityName");
+    final String entityName = systemSettingsController.getSetting("smowl.entityName");
     
-    if (StringUtils.isAnyBlank(issuer, audience, licenseKey, jwtSecret)) { //, entityName)) {
+    if (StringUtils.isAnyBlank(issuer, audience, licenseKey, jwtSecret, entityName)) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Smowl credentials are not set.").build();
     }
     
@@ -98,15 +98,13 @@ public class SmowlRESTService extends AbstractRESTService {
     
     try {
       JWTClaimsSet.Builder claimBuilder = new JWTClaimsSet.Builder()
-//          .jwtID(UUID.randomUUID().toString())
           .issuer(issuer)
           .audience(audience)
           .issueTime(Date.from(now))
           .expirationTime(Date.from(now.plus(12, ChronoUnit.HOURS)));
       
-      // Add Claims to the JWT
+      // Add Claims to the JWT - Smowl wants variables related to it under 'data'
       claimBuilder.claim("data", claims);
-//      claims.forEach((key, value) -> claimBuilder.claim(key, value));
 
       // Sign the JWT
       SignedJWT signedJWT = new SignedJWT(
@@ -118,7 +116,7 @@ public class SmowlRESTService extends AbstractRESTService {
 
       // Return object
       Map<String, Object> ret = new HashMap<>();
-//      ret.put("entityName", entityName);
+      ret.put("entityName", entityName);
       ret.put("token", token);
       
       return Response.ok().entity(ret).build();
