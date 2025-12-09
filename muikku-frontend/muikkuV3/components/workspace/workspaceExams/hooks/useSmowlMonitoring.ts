@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useSelector } from "react-redux";
-import { SMOWL_ENTITY_NAME, SMOWL_LICENSE_KEY } from "~/api_smowl/const";
-import { generateMonitoringLink } from "~/api_smowl/helper";
+import { generateMonitoringLinkWithJwt } from "~/api_smowl/helper";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 
@@ -95,17 +94,14 @@ export const useSmowlMonitoringStatus = (
           error: null,
         });
 
-        const monitoringLink = await generateMonitoringLink(
+        const monitoringLink = await generateMonitoringLinkWithJwt(
           {
-            entityKey: SMOWL_LICENSE_KEY,
-            userId: status.userId.toString(),
             activityType: "exam",
             activityId: examId.toString(),
             activityContainerId: workspaces.currentWorkspace.id.toString(),
             isMonitoring: isMonitoring ? 1 : 0,
           },
           {
-            entityName: SMOWL_ENTITY_NAME,
             userName: status.profile.loggedUserName,
             userEmail: status.profile.emails[0],
             lang: localize.lang,

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
-import { SMOWL_ENTITY_NAME, SMOWL_LICENSE_KEY } from "~/api_smowl/const";
-import { generateRegistrationLink } from "~/api_smowl/helper";
+import { generateRegistrationLinkWithJwt } from "~/api_smowl/helper";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 
@@ -39,15 +38,12 @@ export const useExamActivity = (props: UseExamActivityProps) => {
         setLoading(true);
         setError(null);
 
-        const registrationLink = await generateRegistrationLink(
+        const registrationLink = await generateRegistrationLinkWithJwt(
           {
-            userId: status.userId.toString(),
             activityId: examId.toString(),
             activityType: "exam",
-            entityKey: SMOWL_LICENSE_KEY,
           },
           {
-            entityName: SMOWL_ENTITY_NAME,
             userName: status.profile.loggedUserName,
             userEmail: status.profile.emails[0],
             lang: localize.lang,
