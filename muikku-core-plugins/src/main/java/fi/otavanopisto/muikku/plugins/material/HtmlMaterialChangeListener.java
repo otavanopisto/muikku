@@ -71,7 +71,9 @@ public class HtmlMaterialChangeListener {
     List<MaterialField> removedFields = newFieldCollection.getRemovedFields(oldFieldCollection);
     for (MaterialField removedField : removedFields) {
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), removedField.getName());
-      materialDeleteController.deleteQueryField(queryField, event.getRemoveAnswers());
+      if (queryField != null) {
+        materialDeleteController.deleteQueryField(queryField, event.getRemoveAnswers());
+      }
     }
     
     List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
