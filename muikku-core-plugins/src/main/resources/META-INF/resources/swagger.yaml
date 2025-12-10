@@ -14753,6 +14753,7 @@ components:
         - random
         - allowMultipleAttempts
         - openForAll
+        - proctored
       properties:
         examId:
           description: Exam folder id
@@ -14781,6 +14782,9 @@ components:
         description:
           description: Exam description
           type: string
+        proctored:
+          description: Is this a proctored exam
+          type: boolean
 
     ExamAttendance:
       type: object
