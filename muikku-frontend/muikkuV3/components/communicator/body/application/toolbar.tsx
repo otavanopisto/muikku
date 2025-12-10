@@ -510,7 +510,6 @@ class CommunicatorToolbar extends React.Component<
               tag={translateNavigationItemToGenericTag(currentLocation)}
               onDelete={this.handleDelete}
               onUpdate={this.handleUpdate}
-              onUpdate={this.handleUpdate}
               deleteDialogTitle={this.props.t("labels.remove", {
                 ns: "messaging",
                 context: "label",

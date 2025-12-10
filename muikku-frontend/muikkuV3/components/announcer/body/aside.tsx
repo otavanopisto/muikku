@@ -75,6 +75,11 @@ class NavigationAside extends React.Component<
     this.props.updateAnnouncementCategory(data);
   };
 
+  /**
+   * Translates category to a generic tag
+   * @param category announcement category
+   * @returns a generic Tag
+   */
   translateCategoryToGenericTag = (
     category: AnnouncementCategory
   ): GenericTag => ({
