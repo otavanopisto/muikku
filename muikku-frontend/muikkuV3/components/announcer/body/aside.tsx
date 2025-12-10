@@ -121,7 +121,10 @@ class NavigationAside extends React.Component<
               tag: this.translateCategoryToGenericTag(category),
               onDelete: this.handleDelete,
               onUpdate: this.handleUpdate,
-              deleteDialogTitle: this.props.t("labels.remove"),
+              deleteDialogTitle: this.props.t("labels.remove", {
+                ns: "messaging",
+                context: "category",
+              }),
               deleteDialogContent: this.props.t("content.removing", {
                 ns: "messaging",
                 context: "category",
