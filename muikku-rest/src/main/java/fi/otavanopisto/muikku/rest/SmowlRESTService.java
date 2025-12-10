@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -127,6 +128,28 @@ public class SmowlRESTService extends AbstractRESTService {
     }
   }
   
+  @GET
+  @Path("/apikey")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response apikey() {
+    // Staff-only endpoints
+    if (!sessionController.hasAnyRole(EnvironmentRoleArchetype.STAFF_ROLES)) {
+      return Response.status(Status.FORBIDDEN).entity("Management only available to staff members").build();
+    }
+
+    final String entityName = systemSettingsController.getSetting("smowl.entityName");
+    final String apiKey = systemSettingsController.getSetting("smowl.apiKey");
+    
+    if (StringUtils.isAnyBlank(entityName, apiKey)) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Smowl credentials are not set.").build();
+    }
+
+    Map<String, String> ret = new HashMap<>();
+    ret.put("entityName", entityName);
+    ret.put("swlAPIKey", apiKey);
+    return Response.ok().entity(ret).build();
+  }
+
   @POST
   @Path("/alarms/{PATH: .*}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
