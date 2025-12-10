@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.material;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -65,8 +66,6 @@ public class HtmlMaterialChangeListener {
         materialDeleteController.deleteQueryField(oldFieldInDb, event.getRemoveAnswers());
       }
     }
-
-    // TODO Logic for determining whether answers may be removed for deleted and (heavily) modified fields
     
     List<MaterialField> removedFields = newFieldCollection.getRemovedFields(oldFieldCollection);
     for (MaterialField removedField : removedFields) {
@@ -95,6 +94,22 @@ public class HtmlMaterialChangeListener {
     for (MaterialField newField : newFields) {
       HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newField);
       htmlMaterialFieldCreateEvent.fire(createEvent);
+    }
+    
+    // Fix for the bizarre situation where HTML would contain a field that wasn't just added
+    // but doesn't exist in the database either
+    
+    Set<String> fieldNames = newFieldCollection.getFieldNames();
+    for (String fieldName : fieldNames) {
+      QueryField fieldInDb = oldFieldsInDb.stream().filter(qf -> fieldName.equals(qf.getName())).findFirst().orElse(null);
+      if (fieldInDb != null) {
+        continue;
+      }
+      MaterialField newField = newFields.stream().filter(mf -> fieldName.equals(mf.getName())).findFirst().orElse(null);
+      if (newField == null) {
+        HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newFieldCollection.getField(fieldName));
+        htmlMaterialFieldCreateEvent.fire(createEvent);
+      }
     }
     
   }
