@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.rest;
+package fi.otavanopisto.muikku.plugins.smowl.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
@@ -37,6 +37,7 @@ import com.nimbusds.jwt.SignedJWT;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
