@@ -67,6 +67,8 @@ public class HtmlMaterialChangeListener {
       }
     }
     
+    // Handle removed fields
+    
     List<MaterialField> removedFields = newFieldCollection.getRemovedFields(oldFieldCollection);
     for (MaterialField removedField : removedFields) {
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), removedField.getName());
@@ -75,27 +77,14 @@ public class HtmlMaterialChangeListener {
       }
     }
     
-    List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
-    for (MaterialField updatedField : updatedFields) {
-      // awkward fix for #293; remove when implementing #305
-      if (isSelectFieldChangingType(event.getMaterial(), updatedField)) {
-        QueryField field = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), updatedField.getName());
-        materialDeleteController.deleteQueryField(field, event.getRemoveAnswers());
-        HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), updatedField);
-        htmlMaterialFieldCreateEvent.fire(createEvent);
-      }
-      else {
-        HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
-        htmlMaterialFieldUpdateEvent.fire(updatedEvent);
-      }
-    }
-    
+    // Handle added fields
+
     List<MaterialField> newFields = newFieldCollection.getNewFields(oldFieldCollection);
     for (MaterialField newField : newFields) {
       HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newField);
       htmlMaterialFieldCreateEvent.fire(createEvent);
     }
-    
+
     // Fix for the bizarre situation where HTML would contain a field that wasn't just added
     // but doesn't exist in the database either
     
@@ -109,6 +98,23 @@ public class HtmlMaterialChangeListener {
       if (newField == null) {
         HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newFieldCollection.getField(fieldName));
         htmlMaterialFieldCreateEvent.fire(createEvent);
+      }
+    }
+    
+    // Handle modified fields
+    
+    List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
+    for (MaterialField updatedField : updatedFields) {
+      // awkward fix for #293; remove when implementing #305
+      if (isSelectFieldChangingType(event.getMaterial(), updatedField)) {
+        QueryField field = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), updatedField.getName());
+        materialDeleteController.deleteQueryField(field, event.getRemoveAnswers());
+        HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), updatedField);
+        htmlMaterialFieldCreateEvent.fire(createEvent);
+      }
+      else {
+        HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
+        htmlMaterialFieldUpdateEvent.fire(updatedEvent);
       }
     }
     
