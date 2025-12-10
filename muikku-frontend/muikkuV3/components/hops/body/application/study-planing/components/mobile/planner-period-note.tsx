@@ -56,10 +56,25 @@ const MobilePlannerPeriodNote: React.FC<MobilePlannerPeriodNoteProps> = (
 
   preview(getEmptyImage(), { captureDraggingState: true });
 
+  // Use a callback ref that conditionally attaches the drag ref
+  const dragRefCallback = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      const canDrag = !disabled;
+      if (node && canDrag) {
+        drag(node);
+      } else if (!canDrag) {
+        // Detach when dragging should be disabled
+        drag(null);
+      }
+    },
+    [disabled, drag]
+  );
+
   return (
     <BasePlannerPeriodNote
       {...props}
-      ref={drag}
+      ref={dragRefCallback}
+      key={`draggable-note-${note.identifier}`}
       isDragging={isDragging}
       canDrag={!disabled}
       renderSpecifyContent={({
