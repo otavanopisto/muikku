@@ -1,9 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import {
-  MessagesNavigationItem,
-  MessagesState,
-} from "~/reducers/main-function/messages";
+import { MessagesState } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/buttons.scss";
