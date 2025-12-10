@@ -37,6 +37,7 @@ import com.nimbusds.jwt.SignedJWT;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.plugins.smowl.SmowlController;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -180,8 +181,7 @@ public class SmowlRESTService extends AbstractRESTService {
   }
 
   private Response proxyPost(String smowlPath, String entityBody) {
-    String smowlBaseUrl = "https://results-api.smowltech.net/index.php/v2";
-    String smowlUrl = smowlBaseUrl + smowlPath;
+    String smowlUrl = SmowlController.SMOWL_BASE_URL + smowlPath;
 
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
     final String apiKey = systemSettingsController.getSetting("smowl.apiKey");
