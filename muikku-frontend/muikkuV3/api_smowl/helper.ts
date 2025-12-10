@@ -150,3 +150,35 @@ async function getJwtToken(
 
   return responseData as JwtResponse;
 }
+
+/**
+ * Response from the SMOWL API for the API key
+ */
+interface SmowlApiAccountInfoResponse {
+  entityName: string;
+  swlAPIKey: string;
+}
+
+/**
+ * Gets the API key from the SMOWL API
+ * @returns The API key
+ */
+async function getSmowlApiAccountInfo(): Promise<SmowlApiAccountInfoResponse> {
+  const url = "/rest/smowl/apikey";
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error("Failed to get API key");
+  }
+
+  return responseData as SmowlApiAccountInfoResponse;
+}
+
+export { getSmowlApiAccountInfo };
