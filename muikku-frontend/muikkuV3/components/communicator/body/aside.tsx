@@ -105,11 +105,20 @@ class NavigationAside extends React.Component<
                       : undefined,
                   onDelete: this.handleDelete,
                   onUpdate: this.handleUpdate,
-                  deleteDialogTitle: "Poista",
-                  deleteDialogContent: "Haluatko varmasti poistaa kategorian?",
-                  uo
-                  editLabel: "Muokkaa ",
-                  deleteLabel: "Poista",
+                  deleteDialogTitle: this.props.t("labels.remove", {
+                    ns: "messaging",
+                    context: "label",
+                  }),
+                  deleteDialogContent: this.props.t("content.removing", {
+                    ns: "messaging",
+                    context: "label",
+                  }),
+                  updateDialogTitle: this.props.t("labels.edit", {
+                    ns: "messaging",
+                    context: "label",
+                  }),
+                  editLabel: this.props.t("labels.edit"),
+                  deleteLabel: this.props.t("labels.remove"),
                 } as Omit<NavigationDropdownProps, "children">
               }
               isEditable={item.type === "label"}

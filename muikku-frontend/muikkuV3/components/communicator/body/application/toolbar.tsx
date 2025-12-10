@@ -333,10 +333,20 @@ class CommunicatorToolbar extends React.Component<
                   tag={translateNavigationItemToGenericTag(currentLocation)}
                   onDelete={this.handleDelete}
                   onUpdate={this.handleUpdate}
-                  deleteDialogTitle="Poista"
-                  deleteDialogContent="Haluatko varmasti poistaa kategorian?"
-                  editLabel="Muokkaa "
-                  deleteLabel="Poista"
+                  deleteDialogTitle={this.props.t("labels.remove", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                  deleteDialogContent={this.props.t("content.removing", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                  updateDialogTitle={this.props.t("labels.edit", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                  editLabel={this.props.t("labels.edit")}
+                  deleteLabel={this.props.t("labels.remove")}
                 >
                   <ButtonPill
                     buttonModifiers="toolbar-edit-label"
@@ -500,10 +510,21 @@ class CommunicatorToolbar extends React.Component<
               tag={translateNavigationItemToGenericTag(currentLocation)}
               onDelete={this.handleDelete}
               onUpdate={this.handleUpdate}
-              deleteDialogTitle="Poista"
-              deleteDialogContent="Haluatko varmasti poistaa kategorian?"
-              editLabel="Muokkaa "
-              deleteLabel="Poista"
+              onUpdate={this.handleUpdate}
+              deleteDialogTitle={this.props.t("labels.remove", {
+                ns: "messaging",
+                context: "label",
+              })}
+              deleteDialogContent={this.props.t("content.removing", {
+                ns: "messaging",
+                context: "label",
+              })}
+              updateDialogTitle={this.props.t("labels.edit", {
+                ns: "messaging",
+                context: "label",
+              })}
+              editLabel={this.props.t("labels.edit")}
+              deleteLabel={this.props.t("labels.remove")}
             >
               <ButtonPill
                 buttonModifiers="toolbar-edit-label"
