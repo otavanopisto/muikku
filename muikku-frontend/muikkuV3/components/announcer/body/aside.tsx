@@ -14,6 +14,8 @@ import Navigation, {
   NavigationDropdownProps,
 } from "../../general/navigation";
 
+import { GenericTag } from "~/components/general/tag-update-dialog";
+
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
@@ -50,19 +52,37 @@ class NavigationAside extends React.Component<
 > {
   /**
    * Handles delete category
-   * @param category category to be deleted
+   * @param tag tag to be deleted
    */
-  handleDelete = (category: AnnouncementCategory) => {
-    this.props.deleteAnnouncementCategory(category.id);
+  handleDelete = (tag: GenericTag) => {
+    this.props.deleteAnnouncementCategory(tag.id);
   };
 
   /**
    * Handles update category
-   * @param category category to be updated
+   * @param tag tag to be updated
+   * @param success success callback
+   * @param fail fail callback
    */
-  handleUpdate = (category: AnnouncementCategory) => {
-    this.props.updateAnnouncementCategory(category);
+  handleUpdate = (tag: GenericTag, success?: () => void, fail?: () => void) => {
+    const data = {
+      id: tag.id,
+      category: tag.label,
+      color: tag.color,
+      success: success,
+      fail: fail,
+    };
+    this.props.updateAnnouncementCategory(data);
   };
+
+  translateCategoryToGenericTag = (
+    category: AnnouncementCategory
+  ): GenericTag => ({
+    id: category.id,
+    label: category.category,
+    color: category.color,
+  });
+
   /**
    * render
    * @returns JSX.Element
@@ -98,13 +118,20 @@ class NavigationAside extends React.Component<
           editableWrapper={NavigationDropdown}
           editableWrapperArgs={
             {
-              category: category,
+              tag: this.translateCategoryToGenericTag(category),
               onDelete: this.handleDelete,
               onUpdate: this.handleUpdate,
-              deleteDialogTitle: "Poista",
-              deleteDialogContent: "Haluatko varmasti poistaa kategorian?",
-              editLabel: "Muokkaa ",
-              deleteLabel: "Poista",
+              deleteDialogTitle: this.props.t("labels.remove"),
+              deleteDialogContent: this.props.t("content.removing", {
+                ns: "messaging",
+                context: "category",
+              }),
+              updateDialogTitle: this.props.t("labels.edit", {
+                ns: "messaging",
+                context: "category",
+              }),
+              editLabel: this.props.t("labels.edit"),
+              deleteLabel: this.props.t("labels.remove"),
             } as Omit<NavigationDropdownProps, "children">
           }
           isEditable={this.props.roles.includes("ADMINISTRATOR")}

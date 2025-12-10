@@ -7,10 +7,15 @@ import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
 import { colorIntToHex, hexToColorInt } from "~/util/modifiers";
 import { useTranslation } from "react-i18next";
-import { AnnouncementCategory } from "~/generated/client";
 
 const KEYCODES = {
   ENTER: 13,
+};
+
+export type GenericTag = {
+  id: number;
+  label: string;
+  color: number;
 };
 
 /**
@@ -18,11 +23,12 @@ const KEYCODES = {
  */
 interface TagUpdateDialogProps {
   children: React.ReactElement;
-  category: AnnouncementCategory;
+  title?: string;
+  tag: GenericTag;
   isOpen?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
-  onUpdate?: (tag: AnnouncementCategory) => void;
+  onUpdate: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
 }
 
 /**
@@ -31,11 +37,11 @@ interface TagUpdateDialogProps {
  * @returns JSX.Element
  */
 const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
-  const { category, isOpen, onClose, onOpen, onUpdate, children } = props;
+  const { tag, title, isOpen, onClose, onOpen, onUpdate, children } = props;
   const { t } = useTranslation();
   const [displayColorPicker, setDisplayColorPicker] = React.useState(false);
-  const [color, setColor] = React.useState(colorIntToHex(category.color));
-  const [name, setName] = React.useState(category.category);
+  const [color, setColor] = React.useState(colorIntToHex(tag.color));
+  const [name, setName] = React.useState(tag.label);
   const [locked, setLocked] = React.useState(false);
 
   /**
@@ -102,18 +108,16 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
       setLocked(false);
     };
 
-    if (name !== category.category || color !== colorIntToHex(category.color)) {
+    if (name !== tag.label || color !== colorIntToHex(tag.color)) {
       setLocked(true);
 
-      const data = {
-        id: category.id,
-        category: name,
+      const data: GenericTag = {
+        id: tag.id,
+        label: name,
         color: hexToColorInt(color),
-        success: success,
-        fail: fail,
       };
 
-      onUpdate(data);
+      onUpdate(data, success, fail);
     } else {
       closeDialog();
     }
@@ -201,7 +205,7 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
       onKeyStroke={handleKeydown}
       onOpen={onOpen}
       modifier="communicator-edit-label"
-      title={t("labels.edit", { context: "category" })}
+      title={title ? title : t("labels.edit")}
       content={content}
       footer={footer}
     >

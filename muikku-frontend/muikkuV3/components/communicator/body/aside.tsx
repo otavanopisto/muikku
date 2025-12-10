@@ -1,7 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import LabelUpdateDialog from "../dialogs/label-update";
-import { MessagesState } from "~/reducers/main-function/messages";
+import {
+  MessagesNavigationItem,
+  MessagesState,
+} from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 
 import "~/sass/elements/buttons.scss";
@@ -10,16 +12,28 @@ import "~/sass/elements/item-list.scss";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
+  NavigationDropdown,
+  NavigationDropdownProps,
 } from "~/components/general/navigation";
+import { GenericTag } from "~/components/general/tag-update-dialog";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
+import { Action, Dispatch, bindActionCreators } from "redux";
+import {
+  updateMessagesNavigationLabel,
+  removeMessagesNavigationLabel,
+  UpdateMessagesNavigationLabelTriggerType,
+  RemoveMessagesNavigationLabelTriggerType,
+} from "~/actions/main-function/messages";
+import { translateNavigationItemToGenericTag } from "../utils";
 
 /**
  * NavigationProps
  */
 interface NavigationProps extends WithTranslation {
   messages: MessagesState;
+  updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
+  removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
   openSignatureDialog: () => any;
 }
 
@@ -36,6 +50,38 @@ class NavigationAside extends React.Component<
   NavigationState
 > {
   /**
+   * handles update label
+   * @param tag generic tag
+   * @param success success callback
+   * @param fail fail callback
+   */
+  handleUpdate = (tag: GenericTag, success?: () => void, fail?: () => void) => {
+    const data = {
+      id: tag.id,
+      label: tag.label,
+      color: tag.color,
+      success,
+      fail,
+    };
+    this.props.updateMessagesNavigationLabel(data);
+  };
+
+  /**
+   * handles delete label
+   * @param tag generic tag
+   * @param success success callback
+   * @param fail fail callback
+   */
+  handleDelete = (tag: GenericTag, success?: () => void, fail?: () => void) => {
+    const data = {
+      id: tag.id,
+      location: this.props.messages.location,
+      success,
+      fail,
+    };
+    this.props.removeMessagesNavigationLabel(data);
+  };
+  /**
    * render
    */
   render() {
@@ -49,9 +95,22 @@ class NavigationAside extends React.Component<
               key={item.id}
               isActive={this.props.messages.location === item.location}
               hash={item.location}
-              editableWrapper={LabelUpdateDialog}
+              editableIcon="more_vert"
+              editableWrapper={NavigationDropdown}
               editableWrapperArgs={
-                item.type === "label" ? { label: item } : null
+                {
+                  tag:
+                    item.type === "label"
+                      ? translateNavigationItemToGenericTag(item)
+                      : undefined,
+                  onDelete: this.handleDelete,
+                  onUpdate: this.handleUpdate,
+                  deleteDialogTitle: "Poista",
+                  deleteDialogContent: "Haluatko varmasti poistaa kategorian?",
+                  uo
+                  editLabel: "Muokkaa ",
+                  deleteLabel: "Poista",
+                } as Omit<NavigationDropdownProps, "children">
               }
               isEditable={item.type === "label"}
             >
@@ -96,7 +155,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
+  return bindActionCreators(
+    { updateMessagesNavigationLabel, removeMessagesNavigationLabel },
+    dispatch
+  );
 }
 
 export default withTranslation(["messaging"])(
