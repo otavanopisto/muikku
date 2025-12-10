@@ -1,0 +1,90 @@
+// components/evaluation/body/application/evaluation/evaluation-exam-proctoring-reports.tsx
+import * as React from "react";
+
+/**
+ * SmowlActivityResultsProps
+ */
+interface SmowlActivityResultsProps {
+  entityName: string;
+  swlAPIKey: string;
+  /**
+   * JSON string of activity names, must include student id as key and first name and last name as value
+   * e.g.: {"0":"John Doe","1":"Jane Doe","2":"Jim Doe"}
+   */
+  aNamesJson: string;
+  /**
+   * The language of the user, e.g.: "en", "es", "fr", "pt", "it", "de"...
+   */
+  lang: string;
+  /**
+   * The ID of the activity, e.g.: "123"
+   */
+  activityId: string;
+  /**
+   * The type of activity, e.g.: "exam", "quiz", "test"...
+   */
+  activityType: string;
+  /**
+   * The referral, optional, defaults to "Integration"
+   */
+  referral?: string;
+}
+
+/**
+ * Creates a form and iframe to display the SMOWL activity results
+ * @param props props
+ * @returns JSX.Element
+ */
+const SmowlActivityResults = (props: SmowlActivityResultsProps) => {
+  const {
+    activityId,
+    entityName,
+    swlAPIKey,
+    aNamesJson,
+    lang,
+    activityType,
+    referral = "Integration",
+  } = props;
+
+  const formRef = React.useRef<HTMLFormElement | null>(null);
+  const hasSubmittedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (formRef.current && !hasSubmittedRef.current) {
+      hasSubmittedRef.current = true;
+      formRef.current.submit();
+    }
+  }, []);
+
+  return (
+    <>
+      <form
+        ref={formRef}
+        id="resultsForm"
+        style={{ display: "none" }}
+        target="smowl"
+        action="https://front-results.smowltech.net/index.php/ActivityStatus"
+        method="POST"
+      >
+        <input type="hidden" name="entity_Name" value={entityName} />
+        <input type="hidden" name="swlAPIKey" value={swlAPIKey} />
+        <input type="hidden" name="aNames_json" value={aNamesJson} />
+        <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="activityType" value={activityType} />
+        <input type="hidden" name="activityId" value={activityId} />
+        <input type="hidden" name="referral" value={referral} />
+      </form>
+
+      <iframe
+        id="smowl"
+        name="smowl"
+        width="100%"
+        height={750}
+        frameBorder={0}
+        allowFullScreen
+      />
+    </>
+  );
+};
+
+export { SmowlActivityResults };
