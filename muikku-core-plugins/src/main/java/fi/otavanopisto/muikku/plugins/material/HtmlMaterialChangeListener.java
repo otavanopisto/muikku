@@ -94,8 +94,10 @@ public class HtmlMaterialChangeListener {
       if (fieldInDb != null) {
         continue;
       }
+      // Now we know this field wasn't in the database...
       MaterialField newField = newFields.stream().filter(mf -> fieldName.equals(mf.getName())).findFirst().orElse(null);
       if (newField == null) {
+        // ...and now we know it wasn't freshly created
         HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newFieldCollection.getField(fieldName));
         htmlMaterialFieldCreateEvent.fire(createEvent);
       }
