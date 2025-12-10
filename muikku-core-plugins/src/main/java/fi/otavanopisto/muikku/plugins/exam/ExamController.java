@@ -389,6 +389,7 @@ public class ExamController {
     attendance.setMinutes(settingsJson.getMinutes());
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
     attendance.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntityId, workspaceFolderId));
+    attendance.setProctored(settingsJson.isProctored());
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
       if (attendance.getMinutes() > 0 && attendanceEntity.getExtraMinutes() != null) {

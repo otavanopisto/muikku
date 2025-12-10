@@ -80,6 +80,14 @@ public class ExamAttendanceRestModel {
     this.evaluationInfo = evaluationInfo;
   }
 
+  public boolean isProctored() {
+    return proctored;
+  }
+
+  public void setProctored(boolean proctored) {
+    this.proctored = proctored;
+  }
+
   private Long folderId;
   private String name;
   private String description;
@@ -89,5 +97,6 @@ public class ExamAttendanceRestModel {
   private int minutes;
   private List<ContentNode> contents;
   private RestAssignmentEvaluation evaluationInfo;
+  private boolean proctored;
 
 }
