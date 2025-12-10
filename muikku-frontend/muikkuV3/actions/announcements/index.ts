@@ -185,6 +185,12 @@ export interface CreateAnnouncementTriggerType {
 }
 
 /**
+ * MarkAsReadTriggerType
+ */
+export interface MarkAsReadTriggerType {
+  (announcement: Announcement): AnyActionType;
+}
+/**
  * DeleteAnnouncementCategoryTriggerType
  */
 export interface DeleteAnnouncementCategoryTriggerType {
@@ -296,6 +302,52 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
   };
 
 /**
+ * markOneAsRead
+ * @param announcement announcement
+ */
+const toggleOneAsRead: MarkAsReadTriggerType = function toggleOneAsRead(
+  announcement
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      const state = getState();
+
+      await announcerApi.markAnnouncementAsRead({
+        announcementId: announcement.id,
+      });
+      dispatch({
+        type: "UPDATE_ONE_ANNOUNCEMENT",
+        payload: {
+          update: { unread: !announcement.unread },
+          announcement,
+        },
+      });
+
+      const newUnreadCount = announcement.unread
+        ? state.announcements.unreadCount - 1
+        : state.announcements.unreadCount + 1;
+
+      dispatch({
+        type: "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
+        payload: newUnreadCount,
+      });
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.markAsReadError", {
+            ns: "messaging",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
  * markAllAsRead
  * @param location location
  * @param workspaceId workspaceId
@@ -323,6 +375,40 @@ const markAllAsRead: LoadAnnouncementsTriggerType = function markAllAsRead(
     }
   };
 };
+
+/**
+ * markOneAsRead
+ * @param announcement announcement
+ */
+const pinAnnouncementForSelf: MarkAsReadTriggerType =
+  function pinAnnouncementForSelf(announcement) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        await announcerApi.pinAnnouncement({
+          announcementId: announcement.id,
+        });
+        dispatch({
+          type: "UPDATE_ONE_ANNOUNCEMENT",
+          payload: {
+            update: { pinnedToSelf: !announcement.pinnedToSelf },
+            announcement,
+          },
+        });
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.pinError", {
+              ns: "messaging",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
 
 /**
  * loadMoreAnnouncements
@@ -945,6 +1031,8 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
 export {
   markAllAsRead,
+  toggleOneAsRead,
+  pinAnnouncementForSelf,
   loadAnnouncements,
   loadMoreAnnouncements,
   addToAnnouncementsSelected,

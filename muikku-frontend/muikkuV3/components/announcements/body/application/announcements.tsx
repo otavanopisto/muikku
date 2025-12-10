@@ -65,10 +65,13 @@ class Announcements extends React.Component<
     return (
       <article className="article">
         <header className="article__header article__header--announcement">
-          {this.props.announcement.caption}
           {this.props.announcement.pinned && (
             <span className="icon icon-pin"></span>
           )}
+          {this.props.announcement.pinnedToSelf && (
+            <span className="icon announcement__icon--pinned-to-self icon-pin"></span>
+          )}
+          {this.props.announcement.caption}
         </header>
         <div className="labels">
           {this.props.announcement.categories.length !== 0 &&
@@ -88,7 +91,7 @@ class Announcements extends React.Component<
               <span className="label" key={workspace.id}>
                 <span className="label__icon label__icon--workspace icon-books"></span>
                 <span className="label__text label__text--workspace">
-                  {workspace.name}{" "}
+                  {workspace.name}
                   {workspace.nameExtension
                     ? "(" + workspace.nameExtension + ")"
                     : null}

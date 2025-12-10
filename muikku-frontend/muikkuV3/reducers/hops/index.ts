@@ -82,9 +82,9 @@ export interface PlannedCourseWithIdentifier extends PlannedCourse {
 /**
  * PlannedCourseNew
  */
-export interface PlannedCourseNew {
+export interface PlannedCourseNew extends Course {
   type: "planned-course-new";
-  course: Course & { subjectCode: string };
+  subjectCode: string;
 }
 
 /**

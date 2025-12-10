@@ -41,7 +41,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
 
   return (
     <ul className="study-planner__planned-list">
-      {courses.map((course) => {
+      {courses.map((course, i) => {
         const isSelected = selectedPlanItemIds.some(
           (courseIdentifier) => courseIdentifier === course.identifier
         );
@@ -60,16 +60,16 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
           ? !_.isEqual(originalInfo, course)
           : true;
 
-        const isAssessed =
-          courseActivity &&
-          (courseActivity.status === "GRADED" ||
-            courseActivity.status === "SUPPLEMENTATIONREQUEST");
+        let isAssessed = false;
+
+        if (courseActivity) {
+          isAssessed =
+            courseActivity.status === "GRADED" ||
+            courseActivity.status === "SUPPLEMENTATIONREQUEST";
+        }
 
         return (
-          <li
-            key={course.identifier}
-            className="study-planner__planned-list-item"
-          >
+          <li key={i} className="study-planner__planned-list-item">
             <PlannerPeriodCourseCard
               key={course.identifier}
               disabled={disabled || isAssessed}
