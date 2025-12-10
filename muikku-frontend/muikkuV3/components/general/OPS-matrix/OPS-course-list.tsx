@@ -70,6 +70,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
 
       if (course.mandatory) {
         listItemIndicatormodifiers.push("MANDATORY");
+        !course.available && listItemIndicatormodifiers.push("NOT-AVAILABLE");
         return renderCourseItem ? (
           renderCourseItem({
             subject: sSubject,
@@ -86,10 +87,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
       }
 
       listItemIndicatormodifiers.push("OPTIONAL");
-
-      if (!course.available) {
-        listItemIndicatormodifiers.push("NOT-AVAILABLE");
-      }
+      !course.available && listItemIndicatormodifiers.push("NOT-AVAILABLE");
 
       return renderCourseItem ? (
         renderCourseItem({

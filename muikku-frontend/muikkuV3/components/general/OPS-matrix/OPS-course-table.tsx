@@ -105,6 +105,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
+          !course.available && modifiers.push("NOT-AVAILABLE");
           return renderCourseCell ? (
             renderCourseCell({
               subject: sSubject,
@@ -137,10 +138,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         }
 
         modifiers.push("OPTIONAL");
-
-        if (!course.available) {
-          modifiers.push("NOT-AVAILABLE");
-        }
+        !course.available && modifiers.push("NOT-AVAILABLE");
 
         return renderCourseCell ? (
           renderCourseCell({
