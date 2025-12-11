@@ -182,9 +182,7 @@ public class ExamRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     examController.createOrUpdateSettings(workspaceFolderId, settings);
-    if (settings.isProctored()) {
-      smowlController.addActivity(workspaceFolderId);
-    }
+    smowlController.setActivity(workspaceFolderId, settings.isProctored());
     return Response.ok().entity(settings).build();
   }
   
