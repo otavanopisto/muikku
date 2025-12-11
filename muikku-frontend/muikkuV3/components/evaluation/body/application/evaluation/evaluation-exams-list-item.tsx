@@ -214,6 +214,16 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
     return (
       <div className="evaluation-modal__item-meta">
+        {exam.proctored && (
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-label">
+              {t("labels.proctored", { ns: "exams" })}:
+            </span>
+            <span className="evaluation-modal__item-meta-item-data">
+              ${t("labels.yes", { ns: "common" })}
+            </span>
+          </div>
+        )}
         {isEnded ? (
           <>
             <div className="evaluation-modal__item-meta-item">

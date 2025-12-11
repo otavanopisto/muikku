@@ -194,6 +194,11 @@ const ExamsListItem = (props: ExamsListItemProps) => {
       <h2 className="exam__header">
         <span>{exam.name}</span>
         <div className="exam__labels">
+          {exam.proctored && (
+            <span className="exam__label">
+              {t("labels.proctored", { ns: "exams", context: "student" })}
+            </span>
+          )}
           {restartAllowed && (
             <span className="exam__label">
               {t("labels.allowMultipleAttempts", {

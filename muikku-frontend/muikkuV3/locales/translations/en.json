@@ -2520,6 +2520,7 @@
       "maxQuestionCount": "Max: {{count}} questions",
       "noQuestionRandomization": "No randomization",
       "proctored": "Proctoring",
+      "proctored_student": "The exam is proctored",
       "openToAllStudents": "Open to all students on the course",
       "questionRandomization": "Question randomization",
       "randomizedQuestionCount": "Number of random questions",

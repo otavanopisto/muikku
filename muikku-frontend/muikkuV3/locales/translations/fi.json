@@ -2520,6 +2520,7 @@
       "maxQuestionCount": "Max: {{count}} tehtävää",
       "noQuestionRandomization": "Ei satunnaisuutta",
       "proctored": "Proktorointi",
+      "proctored_student": "Koe on proktoroitu",
       "openToAllStudents": "Avoin kaikille kurssin opiskelijoille",
       "questionRandomization": "Tehtävien satunnaisuus",
       "randomizedQuestionCount": "Satunnaisten tehtävien määrä",
