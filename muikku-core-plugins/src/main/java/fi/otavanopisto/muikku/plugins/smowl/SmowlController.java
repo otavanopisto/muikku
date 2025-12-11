@@ -5,13 +5,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -62,16 +61,16 @@ public class SmowlController {
     
     // Payload
     
-    Map<String, Object> payload = new HashMap<>();
+    Form payload = new Form();
     
-    payload.put("activityType", "exam");
-    payload.put("activityId", workspaceFolderId);
-    payload.put("courseId", workspaceEntity.getId());
-    payload.put("numberUsers", 999);
-    payload.put("startDate", formatter.format(startDateTime));
-    payload.put("endDate", formatter.format(endDateTime));
-    payload.put("displayName", workspaceNode.getTitle());
-
+    payload.param("activityType", "exam");
+    payload.param("activityId", workspaceFolderId.toString());
+    payload.param("courseId", workspaceEntity.getId().toString());
+    payload.param("numberUsers", "999");
+    payload.param("startDate", formatter.format(startDateTime));
+    payload.param("endDate", formatter.format(endDateTime));
+    payload.param("displayName", workspaceNode.getTitle());
+    
     // Credentials
     
     String authString;
