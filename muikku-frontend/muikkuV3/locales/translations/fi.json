@@ -2492,6 +2492,7 @@
       "examParticipantsInfo": "Jos koe ei ole avoin kaikille kurssin opiskelijoille, kokeen pääsevät tekemään vain osallistujalistalle lisätyt opiskelijat. Lisäys kannattaa tehdä kokeen käynnistyessä, koska listalle lisätyt opiskelijat pääsevät aloittamaan kokeen milloin haluavat.",
       "noPermissions": "Sinulla ei ole oikeuksia kokeeseen. Ota yhteyttä kurssin opettajaan.",
       "noSelectedPages": "Ei valittuja sivuja",
+      "proctoredInfo": "Koe voi olla proktoroitu, jolloin kokeen suorittajaa valvotaan automaattisesti SMOWL-palvelulla. Tässä kannattaa valita kyllä vain, jos kokeessa on käytössä automaattinen valvonta tai valvontaa ei tarvita. Muussa tapauksessa valitse ei.",
       "openToAllStudentsInfo": "Koe voi olla avoin kaikille kurssin opiskelijoille, jolloin kaikki kurssin opiskelijat voivat itsenäisesti käynnistää kokeen ja tehdä sen. Tässä kannattaa valita kyllä vain, jos kokeessa on käytössä automaattinen valvonta tai valvontaa ei tarvita. Muussa tapauksessa valitse ei, jolloin kokeen suorittajat poimitaan kokeeseen Kokeeseen osallistujat -välilehdellä.",
       "randomizationInfo": "<p>Tehtävien satunnaisuus tarkoittaa sitä, että kokeeseen arvotaan määritelty määrä tehtäviä. Kokeessa voi olla kahdenlaista satunnaisuutta.</p><p><b>1. Kaikkien tehtävien satunnaisuus</b> tarkoittaa sitä, että koe arvotaan kaikista koeosioon luoduista tehtävistä. Kun valitset tämän kohdan, alle ilmestyy kenttä, johon voit syöttää kokeeseen arvottavien tehtävien määrän.</p><p><b>2. Kategorioihin perustuva satunnaisuus</b> tarkoittaa sitä, että luot Kokeen kategoriat -välilehdellä kategorioita, joihin liität tehtäviä. Kokeeseen arvotaan jokaisesta kategoriasta haluttu määrä tehtäviä.</p>",
       "resetExam": "Oletko varma, että haluat resetoida osallistujan koesuorituksen? Resetointi poistaa kaikki opiskelijan kokeen osallistumistiedot ja tehtävävastaukset."
@@ -2518,6 +2519,7 @@
       "fullQuestionRandomization": "Kaikkien tehtävien satunnaisuus",
       "maxQuestionCount": "Max: {{count}} tehtävää",
       "noQuestionRandomization": "Ei satunnaisuutta",
+      "proctored": "Proktorointi",
       "openToAllStudents": "Avoin kaikille kurssin opiskelijoille",
       "questionRandomization": "Tehtävien satunnaisuus",
       "randomizedQuestionCount": "Satunnaisten tehtävien määrä",

@@ -2492,6 +2492,7 @@
       "examParticipantsInfo": "If the exam is not open to all students on the course, only those who have been added to the participant list will be able to take it. It is recommended to add the students at the time the exam starts, because once they are on the list, they can begin the exam whenever they wish.",
       "noPermissions": "You do not have permission to access the exam. Please contact the course teacher.",
       "noSelectedPages": "No selected pages",
+      "proctoredInfo": "The exam can be proctored, which means that the student is monitored automatically by SMOWL. You should only select \"yes\" here if the exam uses automatic proctoring or if no supervision is required. Otherwise, select \"no\".",
       "openToAllStudentsInfo": "The exam can be made open to all students on the course, which allows every student to start and take the exam independently. You should only select \"yes\" here if the exam uses automatic proctoring or if no supervision is required. Otherwise, select \"no\", in which case the participants for the exam must be selected on the \"Test participants\" tab.",
       "randomizationInfo": "<p>Question randomization means that a specified number of questions are randomly drawn for the exam. There are two types of randomization available.</p><p><b>1. Randomize from all questions:</b> This means that questions are drawn randomly from the entire pool of questions created for the test section. When you select this option, a field will appear where you can enter the total number of questions to be drawn for the exam.</p><p><b>2. Randomize by category:</b> This means you first create categories in the \"Test categories\" tab and then add questions to each category. A specified number of questions will then be randomly drawn from each of those categories for the exam.</p>",
       "resetExam": "Are you sure you want to reset the participant's exam attempt? Resetting will delete all of the student's participation data and their answers."
@@ -2518,6 +2519,7 @@
       "fullQuestionRandomization": "Randomization of all questions",
       "maxQuestionCount": "Max: {{count}} questions",
       "noQuestionRandomization": "No randomization",
+      "proctored": "Proctoring",
       "openToAllStudents": "Open to all students on the course",
       "questionRandomization": "Question randomization",
       "randomizedQuestionCount": "Number of random questions",

@@ -689,6 +689,55 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           </div>
         </div>
       </div>
+
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">
+          {t("labels.proctored", {
+            ns: "exams",
+          })}
+          <span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t("content.proctoredInfo", {
+                      ns: "exams",
+                    }),
+                  }}
+                />
+              }
+            />
+          </span>
+        </h3>
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              value={examSettings?.proctored ? "YES" : "NO"}
+              onChange={(e) =>
+                handleExamSettingsChange("proctored", e.target.value === "YES")
+              }
+            >
+              <option value="YES">
+                {t("labels.yes", {
+                  ns: "common",
+                })}
+              </option>
+              <option value="NO">
+                {t("labels.no", {
+                  ns: "common",
+                })}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
