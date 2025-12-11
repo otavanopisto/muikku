@@ -18,12 +18,13 @@ import { AnnouncementsState } from "~/reducers/announcements";
 import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
 import { Action, Dispatch } from "redux";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * MessageViewProps
  */
-interface MessageViewProps {
+interface MessageViewProps extends WithTranslation {
   announcements: AnnouncementsState;
   userIndex: UserIndexState;
 }
@@ -62,6 +63,17 @@ class AnnouncementView extends React.Component<
         >
           <ApplicationListItemHeader modifiers="announcer-announcement">
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
+              {this.props.announcements.current.pinnedToSelf && (
+                <span
+                  title={this.props.i18n.t("labels.pinnedToSelf", {
+                    ns: "messaging",
+                  })}
+                  className="icon announcement__icon--pinned-to-self icon-pin"
+                ></span>
+              )}
+              {this.props.announcements.current.pinned && (
+                <span className="icon icon-pin"></span>
+              )}
               <ApplicationListItemDate
                 startDate={localize.date(
                   this.props.announcements.current.startDate
@@ -70,9 +82,6 @@ class AnnouncementView extends React.Component<
                   this.props.announcements.current.endDate
                 )}
               />
-              {this.props.announcements.current.pinned && (
-                <span className="icon icon-pin"></span>
-              )}
             </ApplicationListHeaderPrimary>
 
             <div className="labels labels--announcer-announcement">
@@ -155,4 +164,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementView);
+export default withTranslation(["workspace"])(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncementView)
+);
