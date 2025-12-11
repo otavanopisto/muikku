@@ -42,9 +42,9 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
 
   const { opened, section, currentNodeValue } = editorState;
 
-  const smowlEnabled = true;
-
   const examEnabled = currentNodeValue?.exam ?? false;
+
+  const proctored = currentNodeValue?.examSettings?.proctored ?? false;
 
   // Define entity type
   const entityType = section ? "section" : "material";
@@ -58,7 +58,7 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
   // Get tabs from strategy
   const editorTabs = strategy.getTabs(
     examEnabled,
-    smowlEnabled,
+    proctored,
     {
       canSetLicense: editorState.canSetLicense,
       canSetProducers: editorState.canSetProducers,

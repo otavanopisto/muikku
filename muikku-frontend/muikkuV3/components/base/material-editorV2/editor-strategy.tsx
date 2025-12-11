@@ -181,7 +181,7 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
         // Only show exam tabs
         return true;
 
-      case "smowl":
+      case "exam-smowl":
         // Smowl tab is only visible if smowlEnabled is true
         return smowlEnabled;
 
