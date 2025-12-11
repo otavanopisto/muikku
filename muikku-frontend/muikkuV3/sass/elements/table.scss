@@ -263,7 +263,7 @@
 .table__data--MANDATORY.table__data--NOT-AVAILABLE {
   .table__data-content-wrapper--course {
     background: transparent;
-    border: 3px solid $color-disabled;
+    border: 3px solid $color-mandatory;
   }
 }
 
@@ -351,6 +351,12 @@
   .table__data-content-wrapper--course {
     background: $color-passed-aborted;
     border-color: $color-passed-aborted-border;
+  }
+}
+
+.table__data--APPROVAL.table__data--NOT-AVAILABLE {
+  .table__data-content-wrapper--course {
+    border: unset;
   }
 }
 
