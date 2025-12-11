@@ -6,21 +6,21 @@ import {
   ListItemIndicator,
 } from "~/components/general/list";
 import Dropdown from "~/components/general/dropdown";
-import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
 import { useTranslation } from "react-i18next";
+import { StudentActivityByStatus } from "~/@types/shared";
 import {
-  Course,
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixSubject,
+} from "~/generated/client";
+import { getNonOPSTransferedActivities } from "~/helper-functions/study-matrix";
 
 /**
  * Interface for parameters passed to the course item renderer
  */
 export interface RenderItemParams {
-  subject: SchoolSubject;
-  course: Course;
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
   listItemModifiers: string[];
 }
 
@@ -28,7 +28,7 @@ export interface RenderItemParams {
  * Props for the OPSCourseList component
  */
 export interface OPSCourseListProps extends StudentActivityByStatus {
-  matrix: SchoolCurriculumMatrix | null;
+  matrix: CourseMatrix | null;
   studentIdentifier: string;
   studentUserEntityId: number;
   curriculumName: string;
@@ -44,13 +44,7 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
  * @returns Rendered list of courses
  */
 export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
-  const {
-    children,
-    matrix,
-    studyProgrammeName,
-    studentOptions,
-    renderCourseItem,
-  } = props;
+  const { children, matrix, transferedList, renderCourseItem } = props;
 
   const { t } = useTranslation("studyMatrix");
 
@@ -62,23 +56,21 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     );
   }
 
-  const filteredMatrix = filterMatrix(
-    studyProgrammeName,
-    matrix.subjectsTable,
-    studentOptions
+  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
   );
 
   /**
    * renderRows
    */
-  const renderRows = filteredMatrix.map((sSubject) => {
-    const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
-
-    const courses = sSubject.availableCourses.map((course) => {
+  const renderRows = matrix.subjects.map((sSubject) => {
+    const courses = sSubject.modules.map((course) => {
       const listItemIndicatormodifiers = ["course"];
 
       if (course.mandatory) {
         listItemIndicatormodifiers.push("MANDATORY");
+        !course.available && listItemIndicatormodifiers.push("NOT-AVAILABLE");
         return renderCourseItem ? (
           renderCourseItem({
             subject: sSubject,
@@ -87,7 +79,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
           })
         ) : (
           <DefaultCourseItem
-            key={`${sSubject.subjectCode}-${course.courseNumber}`}
+            key={`${sSubject.name}-${course.courseNumber}`}
             course={course}
             indicatorModifiers={listItemIndicatormodifiers}
           />
@@ -95,6 +87,8 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
       }
 
       listItemIndicatormodifiers.push("OPTIONAL");
+      !course.available && listItemIndicatormodifiers.push("NOT-AVAILABLE");
+
       return renderCourseItem ? (
         renderCourseItem({
           subject: sSubject,
@@ -103,7 +97,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
         })
       ) : (
         <DefaultCourseItem
-          key={`${sSubject.subjectCode}-${course.courseNumber}`}
+          key={`${sSubject.name}-${course.courseNumber}`}
           course={course}
           indicatorModifiers={listItemIndicatormodifiers}
         />
@@ -111,23 +105,85 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     });
 
     return (
-      showSubjectRow && (
-        <ListContainer key={sSubject.name} modifiers={["subject"]}>
-          <ListContainer modifiers={["row"]}>
-            <ListHeader
-              modifiers={["subject-name"]}
-            >{`${sSubject.name} (${sSubject.subjectCode})`}</ListHeader>
-          </ListContainer>
-          <ListContainer modifiers={["row"]}>{courses}</ListContainer>
+      <ListContainer key={sSubject.name} modifiers={["subject"]}>
+        <ListContainer modifiers={["row"]}>
+          <ListHeader
+            modifiers={["subject-name"]}
+          >{`${sSubject.name} (${sSubject.code})`}</ListHeader>
         </ListContainer>
-      )
+        <ListContainer modifiers={["row"]}>{courses}</ListContainer>
+      </ListContainer>
     );
   });
+
+  /**
+   * renderOtherSubjects
+   * @returns Rendered other subjects
+   */
+  const renderOtherSubjects = () => {
+    if (nonOPSTransferedActivities.length === 0) {
+      return null;
+    }
+
+    const renderRows = nonOPSTransferedActivities.map((tStudy) => {
+      const listItemIndicatormodifiers = ["course"];
+
+      if (tStudy.transferCreditMandatory) {
+        listItemIndicatormodifiers.push("MANDATORY");
+      } else {
+        listItemIndicatormodifiers.push("OPTIONAL");
+      }
+
+      listItemIndicatormodifiers.push("APPROVAL");
+
+      if (tStudy.passing) {
+        listItemIndicatormodifiers.push("PASSED-GRADE");
+      }
+
+      return (
+        <ListContainer key={tStudy.id} modifiers={["subject"]}>
+          <ListContainer modifiers={["row"]}>
+            <ListHeader modifiers={["subject-name"]}>
+              {tStudy.courseName}
+            </ListHeader>
+          </ListContainer>
+          <ListContainer modifiers={["row"]}>
+            <ListItem modifiers={["course"]}>
+              <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                <Dropdown
+                  content={
+                    <div className="hops-container__study-tool-dropdown-container">
+                      <div className="hops-container__study-tool-dropdow-title">
+                        {tStudy.courseName}
+                      </div>
+                    </div>
+                  }
+                >
+                  <span tabIndex={0} className="list__indicator-data-wapper">
+                    {tStudy.grade}
+                  </span>
+                </Dropdown>
+              </ListItemIndicator>
+            </ListItem>
+          </ListContainer>
+        </ListContainer>
+      );
+    });
+
+    return (
+      <>
+        <h3>{t("labels.otherStudies")}</h3>
+
+        {renderRows}
+      </>
+    );
+  };
 
   return (
     <div className="list">
       <ListContainer modifiers={["section"]}>{renderRows}</ListContainer>
 
+      {renderOtherSubjects()}
       {children && children}
     </div>
   );
@@ -136,11 +192,11 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
 /**
  * Props for the DefaultCourseItem component
  * @interface DefaultCourseItemProps
- * @property {Course} course - The course to be displayed
+ * @property {CourseMatrixModule} course - The course to be displayed
  * @property {string[]} indicatorModifiers - Array of CSS modifiers for the course indicator
  */
 interface DefaultCourseItemProps {
-  course: Course;
+  course: CourseMatrixModule;
   indicatorModifiers: string[];
 }
 

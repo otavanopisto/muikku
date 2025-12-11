@@ -1,11 +1,12 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { GuiderStudentStudyProgress } from "~/reducers/main-function/guider";
 import ProgressList from "./components/progress-list";
 import SignUpBehalfStudentDialog from "./dialogs/sign-up-behalf-student";
 import ProgressTable from "./components/progress-table";
 import { useState } from "react";
 import { WorkspaceSuggestion } from "~/generated/client";
+import OPSMatrixProblems from "~/components/general/OPS-matrix/OPS-matrix-problems";
+import OPSMatrixIndicators from "~/components/general/OPS-matrix/OPS-matrix-indicators";
 
 /**
  * ProgressHopsPlanningProps
@@ -43,72 +44,16 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     setWorkspaceToSignUp(workspaceToSignUp);
   };
 
-  const { t } = useTranslation(["studyMatrix"]);
-
   return (
     <>
-      <div className="hops-container__study-tool-indicators">
-        <div className="hops-container__study-tool-indicator-container--legend-title">
-          {t("labels.legendDescriptions", { ns: "studyMatrix" })}
-        </div>
-        <div className="hops-container__study-tool-indicator-container">
-          <div className="hops-container__indicator-item hops-container__indicator-item--mandatory">
-            {t("labels.mandatoryShorthand", { ns: "studyMatrix" })}
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.mandatory", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--optional">
-            {t("labels.optionalShorthand", { ns: "studyMatrix" })}
-            <sup>*</sup>
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.optional", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--approval"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.transferred", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--completed"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.completed", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--aborted">
-            {t("labels.abortedShorthand", { ns: "studyMatrix" })}
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.aborted", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--supplementationrequest">
-            {t("labels.supplementationRequestShorthand", { ns: "studyMatrix" })}
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.supplementationRequest", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.inProgress", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.suggestedNext", { ns: "studyMatrix" })}
-          </div>
-        </div>
+      <div className="hops__form-element-container  swiper-no-swiping">
+        <OPSMatrixProblems
+          matrixType={studyProgress.courseMatrix.type}
+          matrixProblems={studyProgress.courseMatrix.problems}
+        />
       </div>
+
+      <OPSMatrixIndicators />
 
       <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
         <div className="list">
@@ -126,6 +71,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
             studentOptions={studyProgress.options}
+            matrix={studyProgress.courseMatrix}
             onSignUpBehalf={handleSignUpBehalf}
           />
         </div>
@@ -147,6 +93,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
             studentOptions={studyProgress.options}
+            matrix={studyProgress.courseMatrix}
             onSignUpBehalf={handleSignUpBehalf}
           />
         </div>

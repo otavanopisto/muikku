@@ -21,6 +21,7 @@ import {
   StudentCourseChoice,
   OptionalCourseSuggestion,
   UserContact,
+  CourseMatrix,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -91,6 +92,7 @@ export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: OptionalCourseSuggestion[];
   options: string[];
+  courseMatrix: CourseMatrix;
 }
 
 /**
@@ -275,6 +277,11 @@ const initialGuiderState: GuiderState = {
       studentChoices: [],
       options: [],
       needSupplementationList: [],
+      courseMatrix: {
+        subjects: [],
+        type: null,
+        problems: [],
+      },
     },
   },
 };

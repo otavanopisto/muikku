@@ -13,7 +13,6 @@ import SuggestionList, {
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
 import {
-  compulsoryOrUpperSecondary,
   getCourseDropdownName,
   getCourseInfo,
   getHighestCourseNumber,
@@ -28,7 +27,6 @@ interface ProgressTableProps
     | "renderMandatoryCourseCellContent"
     | "renderOptionalCourseCellContent"
     | "currentMaxCourses"
-    | "matrix"
   > {
   onSignUpBehalf?: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
@@ -40,6 +38,7 @@ interface ProgressTableProps
  */
 const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const {
+    matrix,
     studentIdentifier,
     studentUserEntityId,
     suggestedNextList,
@@ -51,11 +50,6 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   } = props;
 
   const { t } = useTranslation(["studyMatrix"]);
-
-  const matrix = compulsoryOrUpperSecondary(
-    props.studyProgrammeName,
-    props.curriculumName
-  );
 
   const currentMaxCourses = getHighestCourseNumber(matrix);
 
@@ -88,7 +82,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       <SuggestionList
         studentId={studentIdentifier}
         studentsUserEntityId={studentUserEntityId}
-        subjectCode={subject.subjectCode}
+        subjectCode={subject.code}
         course={course}
       >
         {(context) => {
@@ -136,10 +130,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     }
 
     return (
-      <Td
-        key={`${subject.subjectCode}-${course.courseNumber}`}
-        modifiers={modifiers}
-      >
+      <Td key={`${subject.code}-${course.courseNumber}`} modifiers={modifiers}>
         <Dropdown
           content={
             <div className="hops-container__study-tool-dropdown-container">
@@ -147,7 +138,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                 {getCourseDropdownName(
                   subject,
                   course,
-                  matrix.type === "uppersecondary"
+                  matrix.type === "UPPER_SECONDARY"
                 )}
               </div>
               {canBeSelected && suggestionList}

@@ -3,7 +3,6 @@ import { Reducer } from "redux";
 import { LoadingState, SaveState } from "~/@types/shared";
 import { LanguageData } from "~/@types/shared";
 import { LanguageProfileSample } from "~/generated/client";
-import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 
 export type LanguageLevels =
   | "A11"
@@ -17,8 +16,6 @@ export type LanguageLevels =
   | "C11";
 
 export type SkillLevels = "N" | "E" | "H" | "K" | "V";
-
-export type Subjects = (typeof ALL_LANGUAGE_SUBJECTS)[number];
 
 export type LanguageItem<T> = {
   [key: string]: T;

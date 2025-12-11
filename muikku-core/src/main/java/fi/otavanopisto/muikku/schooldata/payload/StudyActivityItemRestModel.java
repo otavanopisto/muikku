@@ -84,6 +84,14 @@ public class StudyActivityItemRestModel {
     this.passing = passing;
   }
 
+  public Integer getTransferCreditLength() {
+    return transferCreditLength;
+  }
+
+  public void setTransferCreditLength(Integer transferCreditLength) {
+    this.transferCreditLength = transferCreditLength;
+  }
+
   private String subject;
   private String subjectName;
   private Long courseId;
@@ -93,5 +101,6 @@ public class StudyActivityItemRestModel {
   private boolean passing;
   private StudyActivityItemStatus status;
   private Date date;
+  private Integer transferCreditLength;
   private Boolean transferCreditMandatory;
 }

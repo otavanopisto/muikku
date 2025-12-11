@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
@@ -69,6 +70,10 @@ public class UserSchoolDataController {
   }
 
   /* HOPS */
+  
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String dataSource, String identifier) {
+    return getUserBridge(dataSource).getCourseMatrix(identifier);
+  }
 
   public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String dataSource, String identifier) {
     return getUserBridge(dataSource).getStudyActivity(identifier);

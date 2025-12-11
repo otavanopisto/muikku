@@ -46,6 +46,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
@@ -586,6 +587,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public BridgeResponse<Guardian> updateStudentsGuardianContinuedViewPermission(SchoolDataIdentifier studentIdentifier,
       SchoolDataIdentifier guardianIdentifier, boolean continuedViewPermission) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

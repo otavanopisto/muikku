@@ -193,6 +193,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           studentIdentifier: pyramusIdentifier,
         });
 
+        const courseMatrix = await hopsApi.getStudentCourseMatrix({
+          studentIdentifier: pyramusIdentifier,
+        });
+
         const skillAndArtCourses = filterActivityBySubjects(
           SKILL_AND_ART_SUBJECTS_CS,
           studentActivity
@@ -223,6 +227,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           studentChoices: [],
           supervisorOptionalSuggestions: [],
           options: studentOptions,
+          courseMatrix: courseMatrix,
         };
 
         return studyProgress;

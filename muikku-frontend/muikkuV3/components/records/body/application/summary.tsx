@@ -29,7 +29,7 @@ import Notes from "~/components/general/notes/notes";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
+import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
 
 /**
@@ -349,9 +349,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 />
               </div>
 
-              {carouselMatrixByStudyProgrammeAndCurriculum(
+              {carouselMatrixByStudyProgramme(
                 this.props.status.profile.studyProgrammeName,
-                this.props.status.profile.curriculumName
+                this.props.summary.data.studyProgress.courseMatrix
               ) !== null && (
                 <div className="application-sub-panel">
                   <div className="application-sub-panel__header">
@@ -364,6 +364,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       this.props.status.profile.studyProgrammeName
                     }
                     curriculumName={this.props.status.profile.curriculumName}
+                    matrix={this.props.summary.data.studyProgress.courseMatrix}
                     displayNotification={this.props.displayNotification}
                   />
                 </div>

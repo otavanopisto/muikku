@@ -3,6 +3,7 @@ import { WorkspaceDataType } from "~/reducers/workspaces";
 import { Reducer } from "redux";
 import {
   ActivityLogEntry,
+  CourseMatrix,
   OptionalCourseSuggestion,
   StudentCourseChoice,
   UserWithSchoolData,
@@ -27,6 +28,7 @@ export interface SummaryStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: OptionalCourseSuggestion[];
   options: string[];
+  courseMatrix: CourseMatrix;
 }
 
 /**

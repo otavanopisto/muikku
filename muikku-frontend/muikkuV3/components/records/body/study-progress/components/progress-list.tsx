@@ -2,7 +2,6 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
-  compulsoryOrUpperSecondary,
   getCourseDropdownName,
   getCourseInfo,
 } from "~/helper-functions/study-matrix";
@@ -23,9 +22,7 @@ import { WorkspaceSuggestion } from "~/generated/client";
 interface ProgressListProps
   extends Omit<
     OPSCourseListProps,
-    | "renderMandatoryCourseItemContent"
-    | "renderOptionalCourseItemContent"
-    | "matrix"
+    "renderMandatoryCourseItemContent" | "renderOptionalCourseItemContent"
   > {
   /** Callback function triggered when a student signs up for a course workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
@@ -40,6 +37,7 @@ interface ProgressListProps
  */
 const ProgressList: React.FC<ProgressListProps> = (props) => {
   const {
+    matrix,
     suggestedNextList,
     transferedList,
     gradedList,
@@ -50,11 +48,6 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     onSignUp,
   } = props;
   const { t } = useTranslation(["studyMatrix", "workspace"]);
-
-  const matrix = compulsoryOrUpperSecondary(
-    props.studyProgrammeName,
-    props.curriculumName
-  );
 
   /**
    * Render optional course item content
@@ -80,7 +73,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
       <SuggestionList
         studentId={studentIdentifier}
         studentsUserEntityId={studentUserEntityId}
-        subjectCode={subject.subjectCode}
+        subjectCode={subject.code}
         course={course}
       >
         {(context) => {
@@ -127,7 +120,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
 
     return (
       <ListItem
-        key={`${subject.subjectCode}-${course.courseNumber}`}
+        key={`${subject.code}-${course.courseNumber}`}
         modifiers={["course"]}
       >
         <ListItemIndicator modifiers={modifiers}>
@@ -138,7 +131,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
                   {getCourseDropdownName(
                     subject,
                     course,
-                    matrix.type === "uppersecondary"
+                    matrix.type === "UPPER_SECONDARY"
                   )}
                 </div>
                 {canBeSelected && suggestionList}
