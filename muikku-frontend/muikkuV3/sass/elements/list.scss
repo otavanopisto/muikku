@@ -184,19 +184,17 @@
 }
 
 .list__indicator--APPROVAL.list__indicator--NOT-AVAILABLE {
+  border: unset;
+
   &::after {
+    right: -4px;
     top: -3px;
-    right: -4px
   }
 
   &::before {
+    right: -4px;
     top: -3px;
-    right: -4px
   }
-}
-
-.list__indicator--APPROVAL.list__indicator--NOT-AVAILABLE {
-  border: unset;
 }
 
 .list__indicator--APPROVAL.list__indicator--PASSED-GRADE {
