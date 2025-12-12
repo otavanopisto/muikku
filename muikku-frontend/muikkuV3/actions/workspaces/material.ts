@@ -1424,7 +1424,7 @@ async function getSmowlDataFormMaterials(
     await Promise.all([
       (async () =>
         await smowlApi.getActiveServices({
-          activityType: "exam",
+          activityType: "course",
           activityId: workspaceId.toString(),
         }))(),
       (async () => {
@@ -1479,7 +1479,7 @@ async function getSmowlDataForExam(
   }
 
   const newActivity = await smowlApi.getActiveServices({
-    activityType: "course",
+    activityType: "exam",
     activityId: data.material.workspaceMaterialId.toString(),
   });
   const frontAlarms = await smowlApi.getFrontCameraAlarms({
