@@ -97,10 +97,9 @@ const ExamInstance = (props: ExamInstanceProps) => {
   );
 
   // Get SMOWL monitoring status (hook listens for messages)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { monitoringStatus, monitoringLink } = useSmowlMonitoringStatus({
     examId,
-    isSmowlActivity: true,
+    proctored: preExamInfo?.proctored || false,
     isMonitoring,
   });
 
@@ -841,9 +840,9 @@ const ExamInstanceTableOfContents = (
     };
 
   /**
-   * getTopicElementAttributes
+   * Get topic element attributes
    * @param content content
-   * @returns topic element attributes
+   * @returns Icon, icon title, class name, aria label
    */
   const getTopicElementAttributes = (content: MaterialContentNode) => {
     let icon: string | null = null;

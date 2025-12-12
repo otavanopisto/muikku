@@ -88,6 +88,8 @@ function DraggableWindow(props: DraggableWindowProps) {
         transition={{ type: "tween", duration: 0.3 }}
         style={{
           position: "fixed",
+          left: 0,
+          top: 0,
           zIndex: 10000,
           overflow: "unset",
           width: "220px",

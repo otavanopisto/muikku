@@ -15,7 +15,7 @@ export type SmowlMonitoringStatus = "OK" | "NOTOK" | "PENDING" | null;
  */
 interface UseSmowlMonitoringStatusProps {
   examId: number;
-  isSmowlActivity: boolean;
+  proctored: boolean;
   isMonitoring: boolean;
 }
 
@@ -27,12 +27,12 @@ interface UseSmowlMonitoringStatusProps {
 export const useSmowlMonitoringStatus = (
   props: UseSmowlMonitoringStatusProps
 ) => {
-  const { examId, isSmowlActivity, isMonitoring } = props;
+  const { examId, proctored, isMonitoring } = props;
 
   const { status, workspaces } = useSelector((state: StateType) => state);
 
   const [monitoringStatus, setMonitoringStatus] =
-    React.useState<SmowlMonitoringStatus>(isSmowlActivity ? "PENDING" : null);
+    React.useState<SmowlMonitoringStatus>(proctored ? "PENDING" : null);
 
   const [monitoringLink, setMonitoringLink] = React.useState<{
     link: string | null;
@@ -45,7 +45,7 @@ export const useSmowlMonitoringStatus = (
   });
 
   React.useEffect(() => {
-    if (!isSmowlActivity) {
+    if (!proctored) {
       setMonitoringStatus(null);
       return;
     }
@@ -71,10 +71,10 @@ export const useSmowlMonitoringStatus = (
     return () => {
       window.removeEventListener("message", handleMessage);
     };
-  }, [isSmowlActivity]);
+  }, [proctored]);
 
   React.useEffect(() => {
-    if (!isSmowlActivity || !examId || !workspaces.currentWorkspace) {
+    if (!proctored || !examId || !workspaces.currentWorkspace) {
       setMonitoringLink({
         link: null,
         loading: false,
@@ -125,7 +125,7 @@ export const useSmowlMonitoringStatus = (
 
     generateLink();
   }, [
-    isSmowlActivity,
+    proctored,
     status.userId,
     status.profile.loggedUserName,
     status.profile.emails,
