@@ -1428,7 +1428,7 @@ async function getSmowlDataFormMaterials(
           activityId: workspaceId.toString(),
         }))(),
       (async () => {
-        const frontAlarms = await await smowlApi.getFrontCameraAlarms({
+        const frontAlarms = await smowlApi.getFrontCameraAlarms({
           // eslint-disable-next-line camelcase
           activityList_json: activityListJson,
         });
