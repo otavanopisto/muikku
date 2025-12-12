@@ -18,6 +18,17 @@ import _ from "lodash";
 import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
+import {
+  createActivityListJson,
+  createAlarmsJson,
+  createComputerMonitoringAlarmsJson,
+  getSmowlApi,
+} from "~/api_smowl/index";
+import { Action, Dispatch } from "redux";
+import {
+  createComputerMonitoringAlarmHashMap,
+  createFrontAlarmHashMap,
+} from "~/api_smowl/helper";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -249,6 +260,7 @@ export interface MaterialShowOrHideExtraToolsTriggerType {
 const workspaceApi = MApi.getWorkspaceApi();
 const materialsApi = MApi.getMaterialsApi();
 const examApi = MApi.getExamApi();
+const smowlApi = getSmowlApi({});
 
 /**
  * createWorkspaceMaterialContentNode
@@ -836,7 +848,23 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               workspaceFolderId: data.material.workspaceMaterialId,
               examSettings: data.update.examSettings,
             });
+
+            // Checks and fetches the smowl data for the exam if proctoring is enabled first time
+            // and previous smowl data was not present
+            await getSmowlDataForExam(
+              {
+                material: data.material,
+                update: data.update,
+              },
+              dispatch
+            );
           }
+
+          // Smowl data update is done in one batch
+          await updateSmowlData({
+            material: data.material,
+            update: data.update,
+          });
 
           // if the title changed we need to update the path, sadly only the server knows
           if (
@@ -1004,28 +1032,67 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
           });
 
         if (state.status.loggedIn) {
+          // If the user is not a student, we need to get the exam settings and smowl data for the materials
           if (!state.status.isStudent) {
+            // Get the exam settings for the materials
             const examSettings = await examApi.getAllExamSettings({
               workspaceEntityId: workspaceId,
             });
 
+            // Get the smowl data for the materials
+            const {
+              smowlActivities,
+              frontAlarmsHashMap,
+              computerAlarmsHashMap,
+            } = await getSmowlDataFormMaterials(
+              workspaceId,
+              materialContentNodes
+            );
+
+            // Update the material content nodes with the exam settings and smowl data
             materialContentNodes = materialContentNodes.map((node) => {
               if (node.type !== "folder") {
                 return node;
               }
 
+              let updatedNode = { ...node };
+
               const examSetting = examSettings.find(
                 (setting) => setting.examId === node.workspaceMaterialId
               );
 
-              if (!examSetting) {
-                return node;
+              const activityId = `exam${node.workspaceMaterialId}`;
+
+              if (examSetting) {
+                updatedNode = {
+                  ...updatedNode,
+                  examSettings: examSetting,
+                };
               }
 
-              return {
-                ...node,
-                examSettings: examSetting,
-              };
+              if (smowlActivities[activityId]) {
+                updatedNode = {
+                  ...updatedNode,
+                  smowlActivity: smowlActivities[activityId],
+                };
+              }
+
+              if (frontAlarmsHashMap[activityId]) {
+                updatedNode = {
+                  ...updatedNode,
+                  smowlFrontCameraAlarm: frontAlarmsHashMap[activityId],
+                };
+              }
+
+              if (computerAlarmsHashMap[activityId]) {
+                updatedNode = {
+                  ...updatedNode,
+                  smowlComputerMonitoringAlarm:
+                    computerAlarmsHashMap[activityId],
+                };
+              }
+
+              return updatedNode;
             });
           } else {
             const examAttendances = await examApi.getExamAttendances({
@@ -1337,6 +1404,252 @@ const materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType =
       payload: undefined,
     };
   };
+
+/**
+ * Gets the smowl data for the materials
+ * @param workspaceId workspaceId
+ * @param materials materials
+ * @returns smowl activities (hash map), front alarms hash map, computer alarms hash map
+ */
+async function getSmowlDataFormMaterials(
+  workspaceId: number,
+  materials: MaterialContentNodeWithIdAndLogic[]
+) {
+  const activityListJson = createActivityListJson(
+    materials.map((node) => `${node.workspaceMaterialId}`),
+    "exam"
+  );
+
+  const [smowlActivities, frontAlarmsHashMap, computerAlarmsHashMap] =
+    await Promise.all([
+      (async () =>
+        await smowlApi.getActiveServices({
+          activityType: "exam",
+          activityId: workspaceId.toString(),
+        }))(),
+      (async () => {
+        const frontAlarms = await await smowlApi.getFrontCameraAlarms({
+          // eslint-disable-next-line camelcase
+          activityList_json: activityListJson,
+        });
+
+        return createFrontAlarmHashMap(frontAlarms.ActivityList_alarms);
+      })(),
+      (async () => {
+        const computerMonitoringAlarms =
+          await smowlApi.getComputerMonitoringAlarms({
+            // eslint-disable-next-line camelcase
+            activityList_json: activityListJson,
+          });
+
+        return createComputerMonitoringAlarmHashMap(
+          computerMonitoringAlarms.ActivityList_alarms
+        );
+      })(),
+    ]);
+
+  return {
+    smowlActivities,
+    frontAlarmsHashMap,
+    computerAlarmsHashMap,
+  };
+}
+
+/**
+ * Gets new smowl activity from Smowl API when proctoring is enabled first time
+ * @param data data
+ * @param data.material material
+ * @param data.update update
+ * @param dispatch dispatch
+ */
+async function getSmowlDataForExam(
+  data: {
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
+  },
+  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>
+) {
+  // If proctoring is enabled first time, we need to fetch the smowl activity
+  // after the exam settings are created
+  const noPreviousSmowlActivity = !data.material.smowlActivity;
+  const proctoredToBeEnabled = data.update.examSettings.proctored;
+
+  if (!(noPreviousSmowlActivity && proctoredToBeEnabled)) {
+    return;
+  }
+
+  const newActivity = await smowlApi.getActiveServices({
+    activityType: "exam",
+    activityId: data.material.workspaceMaterialId.toString(),
+  });
+  const frontAlarms = await smowlApi.getFrontCameraAlarms({
+    // eslint-disable-next-line camelcase
+    activityList_json: createActivityListJson(
+      [data.material.workspaceMaterialId.toString()],
+      "exam"
+    ),
+  });
+  const frontAlarmsHashMap = createFrontAlarmHashMap(
+    frontAlarms.ActivityList_alarms
+  );
+
+  const computerMonitoringAlarms = await smowlApi.getComputerMonitoringAlarms({
+    // eslint-disable-next-line camelcase
+    activityList_json: createActivityListJson(
+      [data.material.workspaceMaterialId.toString()],
+      "exam"
+    ),
+  });
+  const computerAlarmsHashMap = createComputerMonitoringAlarmHashMap(
+    computerMonitoringAlarms.ActivityList_alarms
+  );
+  const activityId = `exam${data.material.workspaceMaterialId}`;
+
+  dispatch({
+    type: "UPDATE_MATERIAL_CONTENT_NODE",
+    payload: {
+      material: data.material,
+      showRemoveAnswersDialogForPublish: false,
+      showUpdateLinkedMaterialsDialogForPublish: false,
+      showRemoveLinkedAnswersDialogForPublish: false,
+      showUpdateLinkedMaterialsDialogForPublishCount: 0,
+      update: {
+        smowlActivity: newActivity[activityId],
+        smowlFrontCameraAlarm: frontAlarmsHashMap[activityId],
+        smowlComputerMonitoringAlarm: computerAlarmsHashMap[activityId],
+      },
+      isDraft: false,
+    },
+  });
+  dispatch({
+    type: "UPDATE_MATERIAL_CONTENT_NODE",
+    payload: {
+      material: data.material,
+      showRemoveAnswersDialogForPublish: false,
+      showUpdateLinkedMaterialsDialogForPublish: false,
+      showRemoveLinkedAnswersDialogForPublish: false,
+      showUpdateLinkedMaterialsDialogForPublishCount: 0,
+      update: {
+        smowlActivity: newActivity[activityId],
+        smowlFrontCameraAlarm: frontAlarmsHashMap[activityId],
+        smowlComputerMonitoringAlarm: computerAlarmsHashMap[activityId],
+      },
+      isDraft: true,
+    },
+  });
+}
+
+/**
+ * Updates the smowl data for the material
+ * @param data data
+ * @param data.material material
+ * @param data.update update
+ */
+async function updateSmowlData(data: {
+  material: MaterialContentNodeWithIdAndLogic;
+  update: Partial<MaterialContentNodeWithIdAndLogic>;
+}) {
+  const promises = [];
+
+  // If the smowl activity changed, we need to update the smowl activity
+  if (
+    data.material.type === "folder" &&
+    !_.isEqual(data.material.smowlActivity, data.update.smowlActivity)
+  ) {
+    promises.push(updateSmowlTestExamMode(data));
+  }
+
+  // If the smowl front camera alarm changed, we need to update the smowl front camera alarm
+  if (
+    data.material.type === "folder" &&
+    !_.isEqual(
+      data.material.smowlFrontCameraAlarm,
+      data.update.smowlFrontCameraAlarm
+    )
+  ) {
+    promises.push(
+      smowlApi.setFrontCameraAlarms({
+        // eslint-disable-next-line camelcase
+        activityList_json: createActivityListJson(
+          [data.material.workspaceMaterialId.toString()],
+          "exam"
+        ),
+        // eslint-disable-next-line camelcase
+        alarms_json: createAlarmsJson(data.update.smowlFrontCameraAlarm.alarms),
+      })
+    );
+  }
+
+  // If the smowl computer monitoring alarm changed, we need to update the smowl computer monitoring alarm
+  if (
+    data.material.type === "folder" &&
+    !_.isEqual(
+      data.material.smowlComputerMonitoringAlarm,
+      data.update.smowlComputerMonitoringAlarm
+    )
+  ) {
+    promises.push(
+      smowlApi.setComputerMonitoringAlarms({
+        // eslint-disable-next-line camelcase
+        activityList_json: createActivityListJson(
+          [data.material.workspaceMaterialId.toString()],
+          "exam"
+        ),
+        // eslint-disable-next-line camelcase
+        alarms_json: createComputerMonitoringAlarmsJson(
+          data.update.smowlComputerMonitoringAlarm.alarms
+        ),
+      })
+    );
+  }
+
+  // Wait for all promises to resolve
+  await Promise.all(promises);
+}
+
+/**
+ * Updates the test exam mode for the material
+ * @param data data
+ * @param data.material material
+ * @param data.update update
+ */
+async function updateSmowlTestExamMode(data: {
+  material: MaterialContentNodeWithIdAndLogic;
+  update: Partial<MaterialContentNodeWithIdAndLogic>;
+}) {
+  // If there is not data for test exam mode to update, we don't need to do anything
+  if (data.update.smowlActivity.TestExamMode === undefined) {
+    return;
+  }
+
+  // If previous test exam mode is different compared to the new one, we need to update the test exam mode
+  // Either it was not originally present or it has changed
+  const testModeHasChanged =
+    !data.material.smowlActivity.TestExamMode ||
+    data.material.smowlActivity.TestExamMode !==
+      data.update.smowlActivity.TestExamMode;
+
+  // If test exam mode is being enabled, we need to activate it
+  if (testModeHasChanged && data.update.smowlActivity.TestExamMode) {
+    await smowlApi.activateTestExamMode({
+      // eslint-disable-next-line camelcase
+      activityList_json: createActivityListJson(
+        [data.material.workspaceMaterialId.toString()],
+        "exam"
+      ),
+    });
+  }
+  // If test exam mode is being disabled, we need to deactivate it
+  else if (testModeHasChanged && !data.update.smowlActivity.TestExamMode) {
+    await smowlApi.deactivateTestExamMode({
+      // eslint-disable-next-line camelcase
+      activityList_json: createActivityListJson(
+        [data.material.workspaceMaterialId.toString()],
+        "exam"
+      ),
+    });
+  }
+}
 
 export {
   requestWorkspaceMaterialContentNodeAttachments,

@@ -966,6 +966,10 @@ export const ExamSmowlIntegrationTab = (
 
   return (
     <div className="material-editor__content-wrapper">
+      <EditorButtonSet
+        editorPermissions={props.editorPermissions}
+        examEnabled={props.examEnabled}
+      />
       <div className="material-editor__sub-section">
         <h2 className="material-editor__sub-title">
           Smowl Integration

@@ -1,3 +1,9 @@
+import {
+  ComputerMonitoringAlarmsConfig,
+  FrontCameraAlarmsConfig,
+  MonitoringAlarmsActivityResult,
+} from "./types";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const MONITORING_ENDPOINT = "https://swl.smowltech.net/monitor/";
 export const REGISTRATION_ENDPOINT = "https://swl.smowltech.net/register/";
@@ -180,5 +186,49 @@ async function getSmowlApiAccountInfo(): Promise<SmowlApiAccountInfoResponse> {
 
   return responseData as SmowlApiAccountInfoResponse;
 }
+
+/**
+ * Creates a hash map of front camera alarms
+ * @param alarms - The alarms to create the hash map from
+ * @returns The hash map of front camera alarms
+ */
+export const createFrontAlarmHashMap = (
+  alarms: MonitoringAlarmsActivityResult<FrontCameraAlarmsConfig>[]
+): Record<string, MonitoringAlarmsActivityResult<FrontCameraAlarmsConfig>> =>
+  alarms.reduce<
+    Record<string, MonitoringAlarmsActivityResult<FrontCameraAlarmsConfig>>
+  >((acc, alarm) => {
+    const updatedAlarms = { ...alarm.alarms };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (updatedAlarms as any).created_at;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (updatedAlarms as any).updated_at;
+    acc[alarm.activity] = {
+      ...alarm,
+      alarms: updatedAlarms,
+    };
+    return acc;
+  }, {});
+
+/**
+ * Creates a hash map of computer monitoring alarms
+ * @param alarms - The alarms to create the hash map from
+ * @returns The hash map of computer monitoring alarms
+ */
+export const createComputerMonitoringAlarmHashMap = (
+  alarms: MonitoringAlarmsActivityResult<ComputerMonitoringAlarmsConfig>[]
+): Record<
+  string,
+  MonitoringAlarmsActivityResult<ComputerMonitoringAlarmsConfig>
+> =>
+  alarms.reduce<
+    Record<
+      string,
+      MonitoringAlarmsActivityResult<ComputerMonitoringAlarmsConfig>
+    >
+  >((acc, alarm) => {
+    acc[alarm.activity] = alarm;
+    return acc;
+  }, {});
 
 export { getSmowlApiAccountInfo };
