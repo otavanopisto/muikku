@@ -36,7 +36,7 @@ import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
-import { SmowlActivityResults } from "~/components/general/smowl-activity-results";
+import { SmowlActivityResults } from "~/components/general/smowl/smowl-activity-results";
 
 /**
  * ExamAssessmentEditorProps
