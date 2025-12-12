@@ -5,20 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Lob;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Table (
-    indexes = {
-      @Index(columnList = "settingKey", unique = true)
-    }
-  )
-
 public class SystemSetting {
 
   public Long getId() {
