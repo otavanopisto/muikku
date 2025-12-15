@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.material;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -65,14 +66,44 @@ public class HtmlMaterialChangeListener {
         materialDeleteController.deleteQueryField(oldFieldInDb, event.getRemoveAnswers());
       }
     }
-
-    // TODO Logic for determining whether answers may be removed for deleted and (heavily) modified fields
+    
+    // Handle removed fields
     
     List<MaterialField> removedFields = newFieldCollection.getRemovedFields(oldFieldCollection);
     for (MaterialField removedField : removedFields) {
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), removedField.getName());
-      materialDeleteController.deleteQueryField(queryField, event.getRemoveAnswers());
+      if (queryField != null) {
+        materialDeleteController.deleteQueryField(queryField, event.getRemoveAnswers());
+      }
     }
+    
+    // Handle added fields
+
+    List<MaterialField> newFields = newFieldCollection.getNewFields(oldFieldCollection);
+    for (MaterialField newField : newFields) {
+      HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newField);
+      htmlMaterialFieldCreateEvent.fire(createEvent);
+    }
+
+    // Fix for the bizarre situation where HTML would contain a field that wasn't just added
+    // but doesn't exist in the database either
+    
+    Set<String> fieldNames = newFieldCollection.getFieldNames();
+    for (String fieldName : fieldNames) {
+      QueryField fieldInDb = oldFieldsInDb.stream().filter(qf -> fieldName.equals(qf.getName())).findFirst().orElse(null);
+      if (fieldInDb != null) {
+        continue;
+      }
+      // Now we know this field wasn't in the database...
+      MaterialField newField = newFields.stream().filter(mf -> fieldName.equals(mf.getName())).findFirst().orElse(null);
+      if (newField == null) {
+        // ...and now we know it wasn't freshly created
+        HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newFieldCollection.getField(fieldName));
+        htmlMaterialFieldCreateEvent.fire(createEvent);
+      }
+    }
+    
+    // Handle modified fields
     
     List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
     for (MaterialField updatedField : updatedFields) {
@@ -87,12 +118,6 @@ public class HtmlMaterialChangeListener {
         HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
         htmlMaterialFieldUpdateEvent.fire(updatedEvent);
       }
-    }
-    
-    List<MaterialField> newFields = newFieldCollection.getNewFields(oldFieldCollection);
-    for (MaterialField newField : newFields) {
-      HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newField);
-      htmlMaterialFieldCreateEvent.fire(createEvent);
     }
     
   }
