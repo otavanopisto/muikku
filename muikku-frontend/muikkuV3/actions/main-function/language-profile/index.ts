@@ -210,10 +210,6 @@ export interface CreateLanguageProfileAudioSampleTriggerType {
 }
 
 /**
- *
- */
-
-/**
  * CreateLanguageProfileFileSampleTriggerType
  */
 export interface CreateLanguageProfileFileSampleTriggerType {
@@ -233,7 +229,7 @@ const LanguageProfileApi = MApi.getLanguageProfile();
  * @param userEntityId student id
  * @param data formData
  * @param success executed on success
- * @param fail executed on faoö
+ * @param fail executed on fail
  */
 const saveLanguageProfile: SaveLanguageProfileTriggerType =
   function saveLanguageProfile(
@@ -447,7 +443,7 @@ const loadLanguageSamples: loadLanguageProfileTriggerType =
  * @param userEntityId student id
  * @param sample request sample
  * @param success executed on success
- * @param fail executed on faoö
+ * @param fail executed on fail
  */
 const createLanguageSample: CreateLanguageProfileSampleTriggerType =
   function createLanguageSample(

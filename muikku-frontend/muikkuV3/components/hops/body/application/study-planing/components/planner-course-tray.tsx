@@ -410,7 +410,6 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      // eslint-disable-next-line jsdoc/require-jsdoc
       canDrag: !disabled,
     }),
     [disabled]
