@@ -29,6 +29,7 @@ import {
   createComputerMonitoringAlarmHashMap,
   createFrontAlarmHashMap,
 } from "~/api_smowl/helper";
+import { isSmowlApiError } from "~/api_smowl/types";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -1422,11 +1423,26 @@ async function getSmowlDataFormMaterials(
 
   const [smowlActivities, frontAlarmsHashMap, computerAlarmsHashMap] =
     await Promise.all([
-      (async () =>
-        await smowlApi.getActiveServices({
-          activityType: "course",
-          activityId: workspaceId.toString(),
-        }))(),
+      (async () => {
+        try {
+          return await smowlApi.getActiveServices({
+            activityType: "course",
+            activityId: workspaceId.toString(),
+          });
+        } catch (error) {
+          if (!isSmowlApiError(error)) {
+            throw error;
+          }
+          if (
+            error.status === 400 &&
+            error.error === 400 &&
+            error.messages.activityName ===
+              "No data available for the submitted activity Type and Id."
+          ) {
+            return {};
+          }
+        }
+      })(),
       (async () => {
         const frontAlarms = await smowlApi.getFrontCameraAlarms({
           // eslint-disable-next-line camelcase

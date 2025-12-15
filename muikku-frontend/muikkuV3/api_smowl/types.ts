@@ -472,3 +472,14 @@ export function createComputerMonitoringAlarmsJson(
 ): string {
   return JSON.stringify(alarms);
 }
+
+/**
+ * Checks if the given error is a SMOWL API error
+ * @param error - The error to check
+ * @returns True if the error is a SMOWL API error, false otherwise
+ */
+export const isSmowlApiError = (error: unknown): error is SmowlApiError =>
+  typeof error === "object" &&
+  error !== null &&
+  "name" in error &&
+  error.name === "SmowlApiError";
