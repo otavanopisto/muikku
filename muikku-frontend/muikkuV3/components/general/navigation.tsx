@@ -324,6 +324,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
           <nav
             ref={dropdownRef}
             className="menu__item-dropdown"
+            id="tagDropdownMenu"
             style={{
               position: "absolute",
               top: `${position.top}px`,
@@ -333,6 +334,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
             <ul className="menu__item-dropdown-list">
               <li
                 className="menu__item-dropdown-list-item"
+                id="editOption"
                 onClick={() => handleOptions("edit")}
               >
                 <span className="menu__item-dropdown-icon icon-pencil"></span>
@@ -340,6 +342,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
               </li>
               <li
                 className="menu__item-dropdown-list-item"
+                id="deleteOption"
                 onClick={() => handleOptions("delete")}
               >
                 <span className="menu__item-dropdown-icon icon-trash"></span>
