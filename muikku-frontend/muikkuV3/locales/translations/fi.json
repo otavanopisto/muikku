@@ -282,6 +282,7 @@
       "saveSuccess": "Tietojen tallennus onnistui",
       "sendError": "Lähetys epäonnistui. Ole hyvä ja yritä uudelleen.",
       "sendSuccess": "Lähetys onnistui",
+      "serverDoesNotReply": "Palvelin ei vastaa.",
       "unexpected_error": "Tapahtui odottamaton virhe",
       "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
       "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
