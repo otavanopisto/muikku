@@ -282,6 +282,7 @@
       "saveSuccess": "Saving succeeded",
       "sendError": "Sending failed. Please try again.",
       "sendSuccess": "Sending succeeded",
+      "serverDoesNotReply": "Server does not reply.",
       "unexpected_error": "An unexpected error occurred",
       "updateError_chatStatus": "Changing the chat status failed",
       "updateError_chatUserName": "Chat username change failed",
