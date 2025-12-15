@@ -1221,7 +1221,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         guiderApi
           .getGuiderUserWorkspaceActivity({
             identifier: id,
-            includeTransferCredits: true,
             includeAssignmentStatistics: true,
           })
           .then(
@@ -1442,7 +1441,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                   const workspacesWithActivity =
                     guiderApi.getGuiderUserWorkspaceActivity({
                       identifier: id,
-                      includeTransferCredits: true,
                       includeAssignmentStatistics: true,
                     });
 
