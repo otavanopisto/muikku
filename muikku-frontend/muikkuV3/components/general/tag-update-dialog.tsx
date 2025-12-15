@@ -185,9 +185,9 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
       </div>
       <div className="dialog__container dialog__container--label-form">
         <div className="form-element form-element--edit-label">
-          <label htmlFor="announcementCategoryName">{t("labels.name")}</label>
+          <label htmlFor="tagCategoryName">{t("labels.name")}</label>
           <input
-            id="announcementCategoryName"
+            id="tagCategoryName"
             placeholder={t("labels.name")}
             value={name}
             className="form-element__input form-element__input--announcement-category-name"
