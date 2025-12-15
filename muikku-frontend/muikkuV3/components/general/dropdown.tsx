@@ -29,16 +29,6 @@ import { __RouterContext as RouterContext } from "react-router";
 type ItemType2 = (closeDropdown: () => any) => any;
 
 /**
- * DropdownItem
- */
-export interface DropdownItem {
-  id: string;
-  icon: string;
-  text: string;
-  onClick?: () => void;
-}
-
-/**
  * DropdownProps
  */
 export interface DropdownProps {
