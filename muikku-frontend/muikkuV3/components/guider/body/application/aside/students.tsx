@@ -1,18 +1,26 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
-import LabelUpdateDialog from "../../../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
+  NavigationDropdown,
+  DropdownWrapperProps,
 } from "~/components/general/navigation";
-import { UserGroup } from "~/generated/client";
+import { UserFlag, UserGroup } from "~/generated/client";
 import { GuiderContext } from "../../../context";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
+import { hexToColorInt } from "~/util/modifiers";
+import { GenericTag } from "~/components/general/tag-update-dialog";
+
+import {
+  updateGuiderFilterLabel,
+  removeGuiderFilterLabel,
+} from "~/actions/main-function/guider";
 
 /**
  * NavigationAside
@@ -22,11 +30,42 @@ const StudentNavigationAside = () => {
   const { guider } = useSelector((state: StateType) => state);
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
+  const dispatch = useDispatch();
+
+  /**
+   * translates UserFlag to GenericTag
+   * @param label user flag label
+   * @returns a generic tag
+   */
+  const translateLabelToGenericTag = (label: UserFlag): GenericTag => ({
+    id: label.id,
+    label: label.name,
+    color: hexToColorInt(label.color),
+    description: label.description,
+    hasRecipients: true,
+    ownerIdentifier: label.ownerIdentifier,
+  });
+
+  /**
+   * Handles delete category
+   * @param tag tag to be deleted
+   */
+  const handleDelete = (tag: GenericTag) => {
+    // No action needed for guider labels
+    dispatch(removeGuiderFilterLabel(tag.id));
+  };
+
+  /**
+   * Handles update category
+   * @param tag tag to be updated
+   */
+  const handleUpdate = (tag: GenericTag) => {};
 
   const locationData = queryString.parse(
     document.location.hash.split("?")[1] || "",
     { arrayFormat: "bracket" }
   );
+
   return (
     <Navigation>
       {isMobileWidth && (
@@ -78,8 +117,28 @@ const StudentNavigationAside = () => {
                 iconColor={label.color}
                 isActive={isActive}
                 hash={"?" + hash}
-                editableWrapper={LabelUpdateDialog}
-                editableWrapperArgs={{ label: label }}
+                editableWrapper={NavigationDropdown}
+                editableWrapperArgs={
+                  {
+                    tag: translateLabelToGenericTag(label),
+                    onDelete: handleDelete,
+                    onUpdate: handleUpdate,
+                    deleteDialogTitle: t("labels.remove", {
+                      ns: "messaging",
+                      context: "category",
+                    }),
+                    deleteDialogContent: t("content.removing", {
+                      ns: "messaging",
+                      context: "category",
+                    }),
+                    updateDialogTitle: t("labels.edit", {
+                      ns: "messaging",
+                      context: "category",
+                    }),
+                    editLabel: t("labels.edit"),
+                    deleteLabel: t("labels.remove"),
+                  } satisfies DropdownWrapperProps
+                }
                 isEditable
               >
                 {label.name}

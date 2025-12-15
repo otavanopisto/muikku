@@ -435,7 +435,7 @@ export interface UpdateGuiderFilterLabelTriggerType {
  */
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
-    label: UserFlag;
+    id: number;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -2680,16 +2680,16 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
 
       try {
         await userApi.deleteFlag({
-          flagId: data.label.id,
+          flagId: data.id,
         });
 
         dispatch({
           type: "DELETE_GUIDER_AVAILABLE_FILTER_LABEL",
-          payload: data.label.id,
+          payload: data.id,
         });
         dispatch({
           type: "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
-          payload: data.label.id,
+          payload: data.id,
         });
         data.success && data.success();
       } catch (err) {
