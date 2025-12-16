@@ -2021,15 +2021,25 @@ public class WorkspaceRESTService extends PluginRESTService {
           Long copyExamId = idMap.get(examId);
           if (copyExamId != null) {
             ExamSettingsRestModel settings = examController.getSettingsJson(copyExamId);
-            if (settings != null && settings.getCategories() != null && !settings.getCategories().isEmpty()) {
-              List<ExamSettingsCategory> categories = settings.getCategories();
-              for (ExamSettingsCategory category : categories) {
-                List<Long> pageIds = category.getWorkspaceMaterialIds();
-                for (int i = 0; i < pageIds.size(); i++) {
-                  pageIds.set(i, idMap.get(pageIds.get(i)));
+            if (settings != null) {
+              boolean settingsModified = false;
+              if (settings.isProctored()) {
+                settings.setProctored(false); // Because UI doesn't want proctoring to be on in exam copy
+                settingsModified = true;
+              }
+              if (settings.getCategories() != null && !settings.getCategories().isEmpty()) {
+                List<ExamSettingsCategory> categories = settings.getCategories();
+                for (ExamSettingsCategory category : categories) {
+                  List<Long> pageIds = category.getWorkspaceMaterialIds();
+                  for (int i = 0; i < pageIds.size(); i++) {
+                    pageIds.set(i, idMap.get(pageIds.get(i)));
+                    settingsModified = true;
+                  }
                 }
               }
-              examController.createOrUpdateSettings(copyExamId, settings);
+              if (settingsModified) {
+                examController.createOrUpdateSettings(copyExamId, settings);
+              }
             }
           }
         }
