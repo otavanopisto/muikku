@@ -6,7 +6,7 @@ import {
   ComputerMonitoringAlarmsConfig,
   FrontCameraAlarmsConfig,
   MonitoringAlarmsActivityResult,
-} from "~/api_smowl/types";
+} from "~/api_smowl/index";
 import {
   ActivityLogEntry,
   AssessmentRequest,

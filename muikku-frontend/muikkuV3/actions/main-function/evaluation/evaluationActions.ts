@@ -37,7 +37,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
-import { getSmowlApiAccountInfo } from "~/api_smowl/helper";
+import { getSmowlApiAccountInfo } from "~/api_smowl/index";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
-import { generateRegistrationLinkWithJwt } from "~/api_smowl/helper";
+import { generateRegistrationLinkWithJwt } from "~/api_smowl/index";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 

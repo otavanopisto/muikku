@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SmowlApi } from "./SmowlApi";
 import {
   ComputerMonitoringAlarmsConfig,
   FrontCameraAlarmsConfig,
   MonitoringAlarmsActivityResult,
+  SmowlApiError,
+  SmowlApiConfig,
 } from "./types";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export const MONITORING_ENDPOINT = "https://swl.smowltech.net/monitor/";
-export const REGISTRATION_ENDPOINT = "https://swl.smowltech.net/register/";
+const MONITORING_ENDPOINT = "https://swl.smowltech.net/monitor/";
+const REGISTRATION_ENDPOINT = "https://swl.smowltech.net/register/";
 
 /**
  * Parameters for the monitoring JWT token
@@ -230,5 +233,97 @@ export const createComputerMonitoringAlarmHashMap = (
     acc[alarm.activity] = alarm;
     return acc;
   }, {});
+
+/**
+ * Converts an object to a form URL encoded string.
+ * @param obj - Object to convert
+ * @returns Form URL encoded string
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function objectToFormUrlEncoded(obj: Record<string, any>): string {
+  const params = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined && value !== null) {
+      // Convert to string - handle different types
+      params.append(key, String(value));
+    }
+  }
+
+  return params.toString();
+}
+
+/**
+ * Creates the activityList_json string in the required format.
+ * The API requires a JSON object (not array) with string numeric keys.
+ * Example: ["quiz1", "quiz2"] -> '{"0":"quiz1","1":"quiz2"}'
+ *
+ * @param activityId - Array of activity IDs
+ * @param activityType - Type of activity (e.g. "exam", "course", "test")
+ * @returns JSON string in the required format
+ */
+export function createActivityListJson(
+  activityId: string[],
+  activityType: "exam"
+): string {
+  const activityObject: Record<string, string> = {};
+  activityId.forEach((id, index) => {
+    activityObject[String(index)] = `${activityType}${id}`;
+  });
+  return JSON.stringify(activityObject);
+}
+
+/**
+ * Creates the alarms_json string in the required format.
+ * The API requires a JSON object with alarm keys and their values (can be int or string).
+ * Example: { INCORRECT_USER: 2, MORE_THAN_ONE: 1, ... } -> '{"INCORRECT_USER":2,"MORE_THAN_ONE":1,...}'
+ *
+ * @param alarms - Object containing alarm configurations
+ * @returns JSON string in the required format
+ */
+export function createAlarmsJson(alarms: FrontCameraAlarmsConfig): string {
+  return JSON.stringify(alarms);
+}
+
+/**
+ * Creates the alarms_json string in the required format for Computer Monitoring Service.
+ * The API requires a JSON object with alarm keys and their values.
+ * Example: { allowed_actions: {...}, allowed_programs: {...} } -> '{"allowed_actions":{...},"allowed_programs":{...}}'
+ *
+ * @param alarms - Object containing Computer Monitoring alarm configurations
+ * @returns JSON string in the required format
+ */
+export function createComputerMonitoringAlarmsJson(
+  alarms: ComputerMonitoringAlarmsConfig
+): string {
+  return JSON.stringify(alarms);
+}
+
+/**
+ * Checks if the given error is a SMOWL API error
+ * @param error - The error to check
+ * @returns True if the error is a SMOWL API error, false otherwise
+ */
+export const isSmowlApiError = (error: unknown): error is SmowlApiError =>
+  typeof error === "object" &&
+  error !== null &&
+  "name" in error &&
+  error.name === "SmowlApiError";
+
+/**
+ * Creates a new SMOWL API client instance
+ *
+ * @param config - Configuration for the SMOWL API client
+ * @returns New SMowlApi instance
+ */
+export function getSmowlApi(config: SmowlApiConfig): SmowlApi {
+  return new SmowlApi({
+    ...config,
+    baseUrl: config.baseUrl || "/rest/smowl",
+    headers: {
+      ...config.headers,
+    },
+  });
+}
 
 export { getSmowlApiAccountInfo };

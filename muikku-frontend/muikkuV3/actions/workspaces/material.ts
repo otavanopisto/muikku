@@ -18,18 +18,16 @@ import _ from "lodash";
 import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
-import {
-  createActivityListJson,
-  createAlarmsJson,
-  createComputerMonitoringAlarmsJson,
-  getSmowlApi,
-} from "~/api_smowl/index";
 import { Action, Dispatch } from "redux";
 import {
+  getSmowlApi,
+  createActivityListJson,
+  createAlarmsJson,
   createComputerMonitoringAlarmHashMap,
+  createComputerMonitoringAlarmsJson,
   createFrontAlarmHashMap,
-} from "~/api_smowl/helper";
-import { isSmowlApiError } from "~/api_smowl/types";
+  isSmowlApiError,
+} from "~/api_smowl/index";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS

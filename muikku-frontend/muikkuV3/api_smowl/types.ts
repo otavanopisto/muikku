@@ -1,4 +1,14 @@
 /**
+ * Configuration for SMOWL API client
+ */
+export interface SmowlApiConfig {
+  /** Base URL for the SMOWL API (default: /rest/smowl) */
+  baseUrl?: string;
+  /** Optional headers to include in requests */
+  headers?: Record<string, string>;
+}
+
+/**
  * Request parameters for adding a new activity
  */
 export interface AddActivityRequest {
@@ -458,28 +468,3 @@ export interface FrontCameraAlarmsConfig {
 }
 
 export type FrontCameraAlarms = keyof FrontCameraAlarmsConfig;
-
-/**
- * Creates the alarms_json string in the required format for Computer Monitoring Service.
- * The API requires a JSON object with alarm keys and their values.
- * Example: { allowed_actions: {...}, allowed_programs: {...} } -> '{"allowed_actions":{...},"allowed_programs":{...}}'
- *
- * @param alarms - Object containing Computer Monitoring alarm configurations
- * @returns JSON string in the required format
- */
-export function createComputerMonitoringAlarmsJson(
-  alarms: ComputerMonitoringAlarmsConfig
-): string {
-  return JSON.stringify(alarms);
-}
-
-/**
- * Checks if the given error is a SMOWL API error
- * @param error - The error to check
- * @returns True if the error is a SMOWL API error, false otherwise
- */
-export const isSmowlApiError = (error: unknown): error is SmowlApiError =>
-  typeof error === "object" &&
-  error !== null &&
-  "name" in error &&
-  error.name === "SmowlApiError";

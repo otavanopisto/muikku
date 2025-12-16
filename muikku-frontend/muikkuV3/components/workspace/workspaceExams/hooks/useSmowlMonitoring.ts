@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useSelector } from "react-redux";
-import { generateMonitoringLinkWithJwt } from "~/api_smowl/helper";
+import { generateMonitoringLinkWithJwt } from "~/api_smowl/index";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 

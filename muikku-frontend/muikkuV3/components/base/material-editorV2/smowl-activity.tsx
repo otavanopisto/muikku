@@ -11,7 +11,7 @@ import {
   FrontCameraAlarms,
   FrontCameraAlarmsConfig,
   MonitoringAlarmsActivityResult,
-} from "~/api_smowl/types";
+} from "~/api_smowl/";
 import { updateWorkspaceMaterialContentNode } from "~/actions/workspaces/material";
 
 /**
