@@ -26,6 +26,9 @@ interface PromptDialogProps {
   title: string;
   content: string;
   onExecute: () => void;
+  isOpen?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
   buttonLocales?: PromptDialogButtons;
 }
 
@@ -35,8 +38,17 @@ interface PromptDialogProps {
  */
 const PromptDialog: React.FC<PromptDialogProps> = (props) => {
   const [locked, setLocked] = React.useState(false);
-  const { modifier, children, title, content, onExecute, buttonLocales } =
-    props;
+  const {
+    modifier,
+    children,
+    title,
+    isOpen,
+    content,
+    onExecute,
+    onOpen,
+    onClose,
+    buttonLocales,
+  } = props;
   const { t } = useTranslation();
 
   /**
@@ -83,6 +95,9 @@ const PromptDialog: React.FC<PromptDialogProps> = (props) => {
       title={title}
       content={dialogContent}
       footer={dialogFooter}
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
     >
       {children}
     </Dialog>
