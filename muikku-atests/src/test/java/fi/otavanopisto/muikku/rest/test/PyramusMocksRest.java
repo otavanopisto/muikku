@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -140,8 +141,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
   private static void mockStudyProgrammes(List<String> payloads) throws JsonProcessingException {
     StudyProgramme[] sps = {
-        new StudyProgramme(1l, DEFAULT_ORGANIZATION_ID, "test", "Test Study Programme", 1l, null, false, false), 
-        new StudyProgramme(2l, 2l, "test", "Secondary Organization Study Programme", 1l, null, false, false) 
+        new StudyProgramme(1l, DEFAULT_ORGANIZATION_ID, "test", "Test Study Programme", 1l, null, false, false, null), 
+        new StudyProgramme(2l, 2l, "test", "Secondary Organization Study Programme", 1l, null, false, false, null) 
     };
     StudyProgrammeCategory[] spcs = {
         new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false)
@@ -278,7 +279,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     staffStudyProgrammes.add(1l);
     staffStudyProgrammes.add(2l);
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
-        role, tags, variables, staffStudyProgrammes);
+        EnumSet.of(role), tags, variables, staffStudyProgrammes);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
     
@@ -653,7 +654,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
     addPayload(payloads, objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(groupId)));
 
-    StudentGroupUser studentGroupStaffMember = new StudentGroupUser(1l, 4l);
+    StudentGroupUser studentGroupStaffMember = new StudentGroupUser(1l, 4l, false, false, false);
     StudentGroupUser[] studentGroupStaffMembers = { studentGroupStaffMember };
     
     stubFor(get(urlEqualTo(String.format("/1/students/studentGroups/%d/staffmembers", groupId)))

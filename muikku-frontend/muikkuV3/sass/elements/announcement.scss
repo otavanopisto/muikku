@@ -1,0 +1,62 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.announcement {
+  border-top: 2px solid $color-message-border;
+  cursor: pointer;
+  padding: 10px;
+
+  &:first-child {
+    border-top-color: transparent;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+    padding: 15px 10px;
+  }
+}
+
+.announcement__content {
+  flex-flow: row nowrap;
+}
+
+.announcement--environment {
+  .glyph {
+    color: $color-announcement-environment;
+  }
+}
+
+.announcement--workspace {
+  .glyph {
+    color: $color-announcement-workspace;
+  }
+}
+
+// These are for announcements panel-paginations spcific styles,
+// otherwise it uses same styles as Pager component
+.pagination {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 10px;
+}
+
+.pagination__link {
+  color: $color-pager-page-index-font;
+}
+
+.pagination__link--active {
+  color: $color-pager-selected-page-index-font;
+}
+
+.pagination__link,
+.pagination__link--active {
+  padding: 8px;
+}
+
+.announcement__icon--pinned-to-self {
+  color: $color-pinned-for-self-icon;
+  margin-left: 5px;
+}

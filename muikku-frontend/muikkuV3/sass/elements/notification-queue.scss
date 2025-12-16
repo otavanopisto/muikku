@@ -1,0 +1,196 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.notification-queue {
+  height: 0;
+  left: 2px;
+  line-height: 0;
+  position: fixed;
+  right: 2px;
+  text-align: center;
+  top: 2px;
+  z-index: 10000;
+}
+
+.notification-queue__items {
+  display: inline-block;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 300;
+  line-height: 1;
+  max-width: 100%;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    font-size: $text-desktop-font-size;
+    width: 620px;
+  }
+}
+
+.notification-queue__item {
+  background-color: $color-notification-queue-item-default-background;
+  border-bottom: 1px solid $color-notification-queue-item-border-color;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px $color-notification-queue-item-shadow;
+  color: $color-notification-queue-item-default-text;
+  display: block;
+  font-weight: 400;
+  line-height: 1.25rem;
+  margin: 0 0 5px;
+  overflow: hidden;
+  padding: 12px 55px 12px 12px;
+  position: relative;
+  text-align: center;
+  width: 100%;
+  word-wrap: break-word;
+  z-index: 2;
+
+  &.notification-queue__item--primary {
+    background-color: $color-notification-queue-item-primary-background;
+    color: $color-notification-queue-item-primary-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-primary-text;
+    }
+  }
+
+  &.notification-queue__item--warn {
+    background-color: $color-notification-queue-item-warn-background;
+    color: $color-notification-queue-item-warn-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-warn-text;
+    }
+  }
+
+  &.notification-queue__item--notice {
+    background-color: $color-notification-queue-item-notice-background;
+    color: $color-notification-queue-item-notice-text;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-notice-text;
+    }
+  }
+
+  &.notification-queue__item--info {
+    background-color: $color-notification-queue-item-info-background;
+    color: $color-notification-queue-item-info-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-info-text;
+    }
+  }
+
+  &.notification-queue__item--fatal {
+    background-color: $color-notification-queue-item-fatal-background;
+    color: $color-notification-queue-item-fatal-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-fatal-text;
+    }
+  }
+
+  &.notification-queue__item--persistent-info {
+    background-color: $color-default-contrast;
+    color: $color-default;
+
+    .notification-queue__close::before {
+      color: $color-default;
+    }
+  }
+
+  &.notification-queue__item--error {
+    background-color: $color-notification-queue-item-error-background;
+    color: $color-notification-queue-item-error-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-error-text;
+    }
+  }
+
+  &.notification-queue__item--success {
+    background-color: $color-notification-queue-item-success-background;
+    color: $color-notification-queue-item-success-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-success-text;
+    }
+  }
+
+  &.notification-queue__item--loading {
+    background-color: $color-notification-queue-item-loading-background;
+    background-image: url("/gfx/eventqueueloader.png");
+    background-position: 8px center;
+    background-repeat: no-repeat;
+    color: $color-notification-queue-item-loading-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-loading-text;
+    }
+  }
+
+  &.notification-queue__item--secondary {
+    background-color: $color-notification-queue-item-secondary-background;
+    color: $color-notification-queue-item-secondary-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-secondary-text;
+    }
+  }
+
+  &.notification-queue__item--inverse {
+    background-color: $color-notification-queue-item-inverse-background;
+    color: $color-notification-queue-item-inverse-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-inverse-text;
+    }
+  }
+
+  &.hidden {
+    height: 0;
+  }
+
+  .notification-queue__close {
+    align-items: center;
+    background-color: $color-notification-queue-item-close-background;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+
+    @include breakpoint($breakpoint-pad) {
+      width: 50px;
+    }
+
+    &::before {
+      color: $color-default;
+      content: "\e905";
+      font-family: "muikku";
+      font-size: 14px;
+      line-height: 14px;
+      opacity: 80%;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 65px 15px 15px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

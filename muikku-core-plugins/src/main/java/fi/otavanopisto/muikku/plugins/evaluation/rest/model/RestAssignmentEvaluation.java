@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationType;
 
 public class RestAssignmentEvaluation {
 
@@ -52,11 +52,11 @@ public class RestAssignmentEvaluation {
     this.audioAssessments = audioAssessments;
   }
 
-  public WorkspaceMaterialEvaluationType getEvaluationType() {
+  public WorkspaceNodeEvaluationType getEvaluationType() {
     return evaluationType;
   }
 
-  public void setEvaluationType(WorkspaceMaterialEvaluationType evaluationType) {
+  public void setEvaluationType(WorkspaceNodeEvaluationType evaluationType) {
     this.evaluationType = evaluationType;
   }
 
@@ -68,11 +68,20 @@ public class RestAssignmentEvaluation {
     this.id = id;
   }
 
+  public Double getPoints() {
+    return points;
+  }
+
+  public void setPoints(Double points) {
+    this.points = points;
+  }
+
   private Long id;
   private RestAssignmentEvaluationType type;
-  private WorkspaceMaterialEvaluationType evaluationType;
+  private WorkspaceNodeEvaluationType evaluationType;
   private String text;
   private Date date;
   private String grade;
+  private Double points;
   private List<RestAssignmentEvaluationAudioClip> audioAssessments = new ArrayList<>();
 }

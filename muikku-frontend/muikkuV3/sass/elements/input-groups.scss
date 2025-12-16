@@ -1,0 +1,152 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.input-group-container {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+
+.input-group {
+  align-items: flex-start;
+  border-left: 3px solid $color-default-item-separator-border;
+  display: flex;
+  flex-basis: calc(50% - 10px);
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: center;
+  margin: 5px;
+  min-height: 70px;
+  padding: 5px 10px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: calc(50% - 10px);
+  }
+}
+
+.input-group--checkbox {
+  align-items: center;
+  flex-basis: calc(100% - 10px);
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  .input-group__label {
+    padding: 0;
+  }
+}
+
+.input-group__label {
+  display: block;
+  font-weight: 600;
+  overflow: hidden;
+  padding: 0 0 5px;
+  text-overflow: ellipsis;
+}
+
+.input-group__input {
+  align-items: center;
+  appearance: none;
+  border: solid 2px $color-hops-form-element-border;
+  border-radius: 3px;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: 0 5px 0 0;
+  width: 1.5rem;
+  z-index: 2;
+
+  &[disabled] {
+    background-color: $color-disabled;
+    border: 0;
+  }
+
+  &:checked {
+    background-color: $color-application-dialog-border-color;
+    border: solid 2px $color-application-dialog-border-color;
+  }
+
+  &:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 0.875rem;
+  }
+}
+
+.input-group__items-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.input-group__item--checkbox {
+  align-items: center;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.input-group__item--disabled {
+  background-color: $color-disabled;
+  border: 0;
+}
+
+.input-group__item-container {
+  margin: 0 10px 0 0;
+  position: relative;
+
+  input[type="checkbox"]:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 0.875rem;
+  }
+
+  input[type="radio"]:checked + label,
+  input[type="checkbox"]:checked + label {
+    background-color: $color-application-dialog-border-color;
+    border-color: $color-application-dialog-border-color;
+    color: $color-default;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    cursor: pointer;
+    height: 100%;
+    opacity: 0%;
+    position: absolute;
+    width: 100%;
+  }
+
+  input[type="radio"]:disabled + label,
+  input[type="checkbox"]:disabled + label {
+    background: $color-default;
+    border-color: lighten($color-disabled, 20%);
+    color: lighten($color-disabled, 20%);
+  }
+
+  input[type="radio"]:checked:disabled + label,
+  input[type="checkbox"]:checked:disabled + label {
+    background: lighten($color-disabled, 10%);
+    border-color: lighten($color-disabled, 10%);
+    color: $color-default;
+  }
+}
+
+.input-group__item-label {
+  align-items: center;
+  background-color: $color-default;
+  border: 2px solid $color-hops-form-element-border;
+  border-radius: 100%;
+  color: $color-application-dialog-border-color;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+  height: 2rem;
+  justify-content: center;
+  padding: 10px;
+  width: 2rem;
+}

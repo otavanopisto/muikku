@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.rest.model;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -17,6 +18,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String nickName, 
               String studyProgrammeName,
               String studyProgrammeIdentifier,
+              String studyLevel,
               boolean hasImage, 
               boolean hasEvaluationFees,
               String curriculumIdentifier,
@@ -25,18 +27,17 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isDefaultOrganization,
               boolean isActive,
               Set<String> permissions,
-              EnvironmentRoleArchetype role,
+              Set<EnvironmentRoleArchetype> roles,
               String locale,
               String displayName,
-              String emails,
-              String addresses,
-              String phoneNumbers,
+              List<String> emails,
+              List<String> addresses,
+              List<String> phoneNumbers,
               String studyTimeLeftStr,
               OffsetDateTime studyStartDate,
               OffsetDateTime studyEndDate,
               OffsetDateTime studyTimeEnd,
-              UserWhoAmIInfoServices services
-              ) {
+              UserWhoAmIInfoServices services) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
     this.studyProgrammeIdentifier = studyProgrammeIdentifier;
@@ -46,7 +47,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.organizationIdentifier = organizationIdentifier;
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
-    this.role = role;
+    this.roles = roles;
     this.locale = locale;
     this.setPermissions(permissions);
     this.displayName = displayName;
@@ -58,6 +59,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.setStudyEndDate(studyEndDate);
     this.setStudyTimeEnd(studyTimeEnd);
     this.setServices(services);
+    this.studyLevel = studyLevel;
   }
 
   public String getStudyProgrammeName() {
@@ -148,27 +150,27 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.studyTimeLeftStr = studyTimeLeftStr;
   }
 
-  public String getEmails() {
+  public List<String> getEmails() {
     return emails;
   }
 
-  public void setEmails(String emails) {
+  public void setEmails(List<String> emails) {
     this.emails = emails;
   }
 
-  public String getAddresses() {
+  public List<String> getAddresses() {
     return addresses;
   }
 
-  public void setAddresses(String addresses) {
+  public void setAddresses(List<String> addresses) {
     this.addresses = addresses;
   }
 
-  public String getPhoneNumbers() {
+  public List<String> getPhoneNumbers() {
     return phoneNumbers;
   }
 
-  public void setPhoneNumbers(String phoneNumbers) {
+  public void setPhoneNumbers(List<String> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
   }
 
@@ -204,12 +206,12 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.locale = locale;
   }
 
-  public EnvironmentRoleArchetype getRole() {
-    return role;
+  public Set<EnvironmentRoleArchetype> getRoles() {
+    return roles;
   }
 
-  public void setRole(EnvironmentRoleArchetype role) {
-    this.role = role;
+  public void setRoles(Set<EnvironmentRoleArchetype> roles) {
+    this.roles = roles;
   }
 
   public UserWhoAmIInfoServices getServices() {
@@ -218,6 +220,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
 
   public void setServices(UserWhoAmIInfoServices services) {
     this.services = services;
+  }
+
+  public String getStudyLevel() {
+    return studyLevel;
+  }
+
+  public void setStudyLevel(String studyLevel) {
+    this.studyLevel = studyLevel;
   }
 
   private String studyProgrammeName;
@@ -230,15 +240,16 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private Set<String> permissions;
   private boolean isActive;
   private String displayName;
-  private String emails;
-  private String addresses;
-  private String phoneNumbers;
+  private List<String> emails;
+  private List<String> addresses;
+  private List<String> phoneNumbers;
   private String studyTimeLeftStr;
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private String locale;
-  private EnvironmentRoleArchetype role;
+  private Set<EnvironmentRoleArchetype> roles;
   private UserWhoAmIInfoServices services;
+  private String studyLevel; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
 
 }

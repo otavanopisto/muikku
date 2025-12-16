@@ -1,0 +1,1424 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "cke-styles";
+
+.material-page {
+  background-color: $color-application-panel-box-background;
+  border: solid 1px $color-application-panel-box-border;
+  position: relative;
+  width: 100%;
+
+  &.state-HIDDEN {
+    opacity: 30%;
+  }
+
+  &.state-SUBMITTED.state-HIDDEN,
+  &.state-WITHDRAWN.state-HIDDEN,
+  &.state-ANSWERED.state-HIDDEN,
+  &.state-PASSED.state-HIDDEN,
+  &.state-FAILED.state-HIDDEN,
+  &.state-INCOMPLETE.state-HIDDEN {
+    opacity: 60%;
+  }
+}
+
+.material-page--empty {
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
+}
+
+.material-page--workspace-description {
+  border: 0;
+}
+
+// Studies View exeptions
+.material-page--studies-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
+// Evaluation View exeptions
+.material-page--evaluation-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
+.material-page__de-floater {
+  clear: both;
+}
+
+.material-page__title {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row;
+  font-size: 1.25rem;
+  font-weight: 300;
+  justify-content: space-between;
+  line-height: 1.75rem;
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
+.material-page__title-icon {
+  position: absolute;
+  right: 25px;
+}
+
+.material-page__title-back-to-toc {
+  flex-grow: 1;
+  height: 1.5rem;
+}
+
+.material-page__ai-warning-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 10px 20px;
+}
+
+.material-page__ai-warning-icon {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 32px 32px;
+  height: 32px;
+  width: 32px;
+}
+
+.material-page__ai-warning-text {
+  font-size: $text-mobile-font-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-richtext-font-size;
+  }
+}
+
+.material-page__ai-warning-container--allowed {
+  background-color: lighten($color-ai-use-allowed, 55%);
+
+  .material-page__ai-warning-icon {
+    background-image: url("/gfx/icons/64x64/ai-allowed.png");
+  }
+
+  .material-page__ai-warning-text {
+    color: $color-ai-use-allowed;
+  }
+}
+
+.material-page__ai-warning-container--disallowed {
+  background-color: lighten($color-ai-use-disallowed, 53%);
+
+  .material-page__ai-warning-icon {
+    background-image: url("/gfx/icons/64x64/ai-disallowed.png");
+  }
+
+  .material-page__ai-warning-text {
+    color: $color-ai-use-disallowed;
+  }
+}
+
+// Sets different paddings for left as there is extra border
+.material-page__title--exercise,
+.material-page__title--assignment,
+.material-page__title--journal,
+.material-page__title--interim-evaluation {
+  padding-left: 7px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding-left: 15px;
+  }
+}
+
+.material-page__title--exercise {
+  border-left: 3px solid $color-exercise;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-exercise;
+  }
+}
+
+.material-page__title--assignment {
+  border-left: 3px solid $color-assignment;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-assignment;
+  }
+}
+
+.material-page__title--journal {
+  border-left: 3px solid $color-journal-page;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-journal-page;
+  }
+}
+
+.material-page__title--interim-evaluation {
+  border-left: 3px solid $color-interim-evaluation;
+
+  @include breakpoint($breakpoint-pad) {
+    border-left: 5px solid $color-interim-evaluation;
+  }
+}
+
+.material-page__title-meta {
+  color: $color-info;
+  font-style: italic;
+  padding: 5px 20px;
+}
+
+.material-page__content {
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
+.material-page__content-disclaimer {
+  font-style: italic;
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
+.material-page__content--view-restricted {
+  align-items: center;
+  color: darken($color-disabled, 30%);
+  display: flex;
+  font-size: 1rem;
+  font-style: italic;
+  justify-content: center;
+  min-height: 70px;
+}
+
+.material-page__content--binary-pdf {
+  margin: 15px 0 0;
+  padding: 0;
+
+  object {
+    display: none;
+    height: 520px;
+    width: 100%;
+
+    @include breakpoint($breakpoint-desktop) {
+      display: inline;
+      height: 840px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      height: 890px;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0 0;
+  }
+}
+
+.material-page__content--binary-image {
+  margin: 10px 0;
+
+  img {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 15px 0;
+  }
+}
+
+.material-page__buttonset {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0;
+    padding: 0 20px;
+  }
+}
+
+// METADATA
+.material-page__metadata-container {
+  border-top: 1px solid $color-application-panel-box-border;
+  font-size: 0.875rem;
+  font-weight: 300;
+  margin: 15px 0 0;
+  padding: 5px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0 0;
+    padding: 10px 20px;
+  }
+}
+
+// PRODUCERS
+.material-page__producers {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0;
+}
+
+.material-page__producers-label {
+  color: $color-default-contrast;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 5px 0 0;
+}
+
+.material-page__producers-item {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+// LICENSE
+.material-page__license {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0;
+}
+
+.material-page__license-label {
+  color: $color-default-contrast;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 5px 0 0;
+}
+
+.material-page__license-item {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+// IMAGE as FIGURE
+.image {
+  display: inline-block;
+  line-height: 1;
+  position: relative;
+
+  figcaption {
+    background: lighten($color-workspace, 45%);
+    color: $color-text-default;
+    font-family: $system-font-family;
+    font-size: $text-mobile-font-size;
+    line-height: 1.125rem;
+    padding: 6px 10px;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 0.875rem;
+      line-height: 1.3125rem;
+    }
+  }
+
+  .image__details {
+    left: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &::before {
+      background: $color-info;
+      border-radius: 100%;
+      color: $color-default;
+      cursor: help;
+      font-size: 1.625rem;
+      line-height: 1;
+      margin: 5px;
+      padding: 1px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .image__details:hover {
+    left: 0;
+
+    .image__details-container {
+      display: block;
+    }
+  }
+
+  .image__details-container {
+    background: $color-default;
+    color: $color-text-default;
+    display: none;
+    font-family: $system-font-family;
+    font-size: $text-mobile-font-size;
+    font-weight: 400;
+    margin: 2.25rem 0 0;
+    opacity: 90%;
+    padding: 15px 10px;
+  }
+
+  .image__details-label {
+    padding: 0 5px 0 0;
+  }
+}
+
+// CORRECT ANSWERS COUNTER
+.material-page__correct-answers {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.875rem;
+  font-weight: 400;
+  justify-content: center;
+  margin: 10px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
+    margin: 10px 0 20px;
+  }
+}
+
+.material-page__correct-answers-label {
+  padding: 0 10px 0 0;
+}
+
+// FIELD'S EXAMPLES
+.material-page__field-answer-examples {
+  @include text;
+
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $color-example-border;
+  border-radius: 2px;
+  box-shadow: 0 3px 5px 2px $color-example-box-shadow;
+  display: inline-flex;
+  flex-flow: row wrap;
+  margin: 4px;
+  max-width: 100%;
+  padding: 4px;
+  vertical-align: middle;
+}
+
+.material-page__field-answer-examples--memofield {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+  width: calc(100% - 8px); // 2 * padding and margin
+}
+
+.material-page__field-answer-examples--sorterfield {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 5px 0;
+}
+
+.material-page__field-answer-examples-title {
+  font-weight: 400;
+  line-height: 1.375rem;
+  padding: 2px 4px;
+}
+
+.material-page__field-answer-examples-title--memofield {
+  align-self: flex-start;
+}
+
+.material-page__field-answer-example {
+  border-radius: 2px;
+  font-weight: 300;
+  line-height: 1.375rem;
+  margin: 0 4px 0 0;
+  padding: 2px 4px;
+}
+
+// FIELD'S EXPLANATION
+.material-page__field-explanation-wrapper {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.material-page__field-explanation-button {
+  align-items: center;
+  color: $color-info;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 2px;
+}
+
+// FIELD'S HINT TEXT
+.material-page__field-hint {
+  background-color: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 2px;
+  color: $color-default-contrast;
+  display: block;
+  max-width: 300px;
+  opacity: 0%;
+  padding: 3px 6px;
+  position: absolute;
+  text-align: left;
+  visibility: hidden;
+  z-index: -1;
+
+  @include breakpoint($breakpoint-pad) {
+    font-weight: 300;
+    padding: 5px 10px;
+  }
+}
+
+// TASK FIELDS
+
+// Interim evaluation field
+.material-page__interim-evaluation-wrapper {
+  display: block;
+  padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
+  position: relative;
+
+  .material-page__field-answer-synchronizer {
+    left: 0;
+  }
+
+  // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
+  // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
+
+  /* stylelint-disable selector-class-pattern */
+  .cke_editable.cke_wysiwyg_div {
+    padding: 0 8px;
+  }
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $color-interim-evaluation;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  .cke_wysiwyg_div {
+    min-height: 150px;
+  }
+  /* stylelint-enable selector-class-pattern */
+}
+
+.material-page__interim-evaluation-field-label {
+  display: block;
+  font-weight: 600;
+}
+
+// Iframe Wrapper
+.material-page__iframe-wrapper {
+  display: block;
+  max-width: 100%;
+  position: relative;
+}
+
+.material-page__iframe-wrapper-overlay {
+  background: $color-default;
+  bottom: 0;
+  display: block;
+  left: 0;
+  opacity: 80%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
+}
+
+// Table Wrapper
+.material-page__table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+// Word Definition
+mark[data-muikku-word-definition] {
+  background: transparent;
+  border-bottom: 1px dashed  $color-material-word-definition-color;
+  color: $color-material-word-definition-color;
+  cursor: help;
+  font-weight: 400;
+  position: relative;
+}
+
+// Assignment assessment
+.material-page__assignment-assessment {
+  border-left-style: solid;
+  border-left-width: 5px;
+  border-top: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 20px 0 0;
+  padding: 10px;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0 0;
+    padding: 20px;
+  }
+}
+
+.material-page__assignment-locked {
+  background: lighten($color-info, 50%);
+  border-left-color: $color-info;
+  border-left-style: solid;
+  border-left-width: 5px;
+  border-top: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 20px 0 0;
+  padding: 10px;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0 0;
+    padding: 20px;
+  }
+  
+  .material-page__assignment-locked-icon {
+    color: $color-info;
+  }
+}
+
+.material-page__assignment-assessment--incomplete {
+  background: lighten($color-incomplete, 45%);
+  border-left-color: $color-incomplete;
+
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
+    background: $color-incomplete;
+  }
+
+  .material-page__assignment-assessment-icon {
+    color: $color-incomplete;
+  }
+}
+
+.material-page__assignment-assessment--passed {
+  background: lighten($color-passed, 55%);
+  border-left-color: $color-passed;
+
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
+    background: $color-passed;
+  }
+
+  .material-page__assignment-assessment-icon {
+    color: $color-passed;
+  }
+}
+
+.material-page__assignment-assessment--failed {
+  background: lighten($color-failed, 45%);
+  border-left-color: $color-failed;
+
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
+    background: $color-failed;
+  }
+
+  .material-page__assignment-assessment-icon {
+    color: $color-failed;
+  }
+}
+
+.material-page__assignment-assessment--withdrawn {
+  background: lighten($color-withdrawn, 45%);
+  border-left-color: $color-withdrawn;
+
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
+    background: $color-withdrawn;
+  }
+
+  .material-page__assignment-assessment-icon {
+    color: $color-withdrawn;
+  }
+}
+
+.material-page__assignment-assessment-literal {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.material-page__assignment-assessment-literal-label,
+.material-page__assignment-assessment-verbal-label {
+  @include assessment-text;
+
+  font-weight: 600;
+}
+
+.material-page__assignment-assessment-literal-data {
+  @include assessment-text;
+
+  line-height: 1.375rem;
+}
+
+.material-page__assignment-assessment-grade,
+.material-page__assignment-assessment-points {
+  @include assessment-text;
+
+  align-items: center;
+  display: flex;
+  flex-basis: 100;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  margin: 0 0 10px;
+}
+
+.material-page__assignment-assessment-grade-label,
+.material-page__assignment-assessment-points-label {
+  font-weight: 600;
+  padding: 0 10px 0 0;
+}
+
+.material-page__assignment-assessment-grade-data,
+.material-page__assignment-assessment-points-data {
+  border-radius: 3px;
+  color: $color-default;
+  line-height: 1;
+  padding: 5px 8px;
+}
+
+.material-page__assignment-assessment-grade-data--incomplete,
+  .material-page__assignment-assessment-points-data--incomplete {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+
+.material-page__assignment-assessment-icon,
+.material-page__assignment-locked-icon {
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 40%;
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+
+.material-page__assignment-assessment-date {
+  @include assessment-text;
+
+  align-items: center;
+  display: flex;
+  flex-basis: 100;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  margin: 0 0 10px;
+}
+
+.material-page__assignment-assessment-date-label {
+  font-weight: 600;
+  padding: 0 10px 0 0;
+}
+
+.material-page__assignment-assessment-date-data {
+  @include assessment-text;
+
+  line-height: 1.375rem;
+}
+
+// MATERIAL PAGE FIELD ANSWER SYNCHRONIZER
+.material-page__field-answer-synchronizer {
+  border-radius: 3px;
+  bottom: -20px;
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  left: 4px;
+  line-height: 1;
+  padding: 5px;
+  position: absolute;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.material-page__field-answer-synchronizer--saving {
+  background: $color-notice;
+  color: $color-default-contrast;
+}
+
+.material-page__field-answer-synchronizer--saved {
+  background: $color-success;
+  color: $color-default;
+}
+
+.material-page__field-answer-synchronizer--error {
+  background: $color-warn;
+  color: $color-default;
+}
+
+// MATERIAL PAGE CUSTOM BOX STYLES
+// These classNames cannot be changed as they a part of material page html and already saved to DB
+.material-styles-block {
+  box-sizing: content-box;
+  font-size: inherit;
+  margin: 20px 0;
+  min-height: 40px;
+  padding: 16px;
+  position: relative;
+
+  p:first-child,
+  h3:first-child,
+  h4:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child,
+  h3:first-child,
+  h4:first-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom: 0;
+  }
+
+  // This represents the generic icon added to the material style boxes
+  &::before {
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-default;
+    content: "";
+    display: flex;
+    font-family: "muikku";
+    font-size: 1.5rem;
+    height: 40px;
+    justify-content: center;
+    left: 16px;
+    position: absolute;
+    top: 16px;
+    width: 40px;
+  }
+}
+
+// BASIC BOX & GRAMMAR BOX & RECAP BOX
+// GRAMMAR BOX & RECAP BOX styles are deprecated but CANNOT be removed from the css.
+// GRAMMAR BOX & RECAP BOX are removed from CKE dropdown and existing GRAMMAR BOXes & RECAP BOXes
+// inherits BASIC BOX styling
+.material-basicbox,
+.material-grammarbox,
+.material-recapbox {
+  background: $color-material-basic-box-background;
+  border: 1px solid $color-material-basic-box;
+  border-left-width: 1px;
+
+  &::before {
+    display: none;
+  }
+}
+
+// THINKING BOX & JOURNAL BOX
+// Thinking box style is deprecated but CANNOT be removed from the css.
+// Thinking box was primarily used to provide journal specific information
+// so new style has been added called JOURNAL BOX. Existing THINKINGBOXes
+// inherits JOURNAL BOX styling
+.material-thinkingbox,
+.material-journalbox {
+  border: 1px solid $color-material-journal-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-journal-box;
+    content: "\f02d";
+  }
+}
+
+// MATERIAL'S EXERCISE FEEDBACK BOX
+// This will be visible only after user submits exercise.
+.material-exercise-feedback {
+  background: $color-default;
+  border: 1px solid $color-example-border;
+  border-radius: 2px;
+  border-right-width: 10px;
+  box-shadow: 0 3px 5px 2px $color-example-box-shadow;
+  margin: 20px -30px 20px -20px;
+  position: relative;
+}
+
+.material-exercise-feedback-correct {
+  border-color: $color-success;
+  color: darken($color-success, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-success;
+    content: "\f164";
+    font-size: 2rem;
+    opacity: 70%;
+  }
+}
+
+.material-exercise-feedback-incorrect {
+  border-color: $color-error;
+  color: darken($color-error, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-error;
+    content: "\ea08";
+    font-size: 2rem;
+    opacity: 90%;
+  }
+}
+
+// INSTRUCTION BOX
+.material-instructionbox {
+  border: 1px solid $color-material-instruction-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-instruction-box;
+    content: "\e635";
+  }
+}
+
+// PONDER BOX
+.material-ponderbox {
+  border: 1px solid $color-material-ponder-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-ponder-box;
+    content: "\f0eb";
+  }
+}
+
+// EVALUATION CRITERIA BOX
+.material-assignmentbox {
+  border: 1px solid $color-assignment;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-assignment;
+    content: "\e63d";
+  }
+}
+
+// OBJECTIVE / GOAL BOX
+.material-objectivebox {
+  border: 1px solid $color-material-objective-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-objective-box;
+    content: "\f041";
+  }
+}
+
+// INFORMATION / ATTENTION BOX
+.material-infobox {
+  border: 1px solid $color-material-info-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-info-box;
+    content: "\f12a";
+  }
+}
+
+// LINK BOX
+.material-linkbox {
+  border: 1px solid $color-material-link-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-link-box;
+    content: "\e9cb";
+  }
+}
+
+// MUIKKU LINK BOX
+.material-muikkulinkbox {
+  border: 1px solid $color-material-muikkulink-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-muikkulink-box;
+    content: "\e92a";
+  }
+}
+
+// AUDIO BOX
+.material-audiobox {
+  border: 1px solid $color-material-audio-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-audio-box;
+    content: "\ea27";
+  }
+}
+
+// FILE BOX
+.material-filebox {
+  border: 1px solid $color-material-file-box;
+  border-left-width: 3px;
+  padding-left: 72px;
+
+  &::before {
+    background: $color-material-file-box;
+    content: "\e92c";
+  }
+}
+
+// TABLE BOX - This style has preset visuals for table and it's elements
+.material-tablebox {
+  border: 0;
+  padding: 0;
+
+  table,
+  table[cellpadding],
+  table[cellspacing] {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: $text-desktop-richtext-font-size;
+    line-height: 1.35rem;
+    width: 100%;
+
+    caption {
+      font-size: 1.0625rem;
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    thead {
+      border-bottom: 1px solid $color-material-table-header-boder;
+    }
+
+    th {
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tbody {
+      th[scope="row"] {
+        border-right: 1px solid $color-material-table-header-boder;
+      }
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: $color-material-table-box-row-background;
+      }
+
+      &:nth-child(odd) {
+        background: $color-default;
+      }
+    }
+
+    td {
+      padding: 8px;
+    }
+  }
+}
+
+// TABLE BOX - This style has preset visuals for table and it's elements
+.material-tablebox-small {
+  border: 0;
+  padding: 0;
+
+  table,
+  table[cellpadding],
+  table[cellspacing] {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: $text-desktop-font-size;
+    line-height: 1.35rem;
+    width: 100%;
+
+    caption {
+      font-size: 1rem;
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    thead {
+      border-bottom: 1px solid $color-material-table-header-boder;
+    }
+
+    th {
+      font-weight: 400;
+      padding: 8px;
+      text-align: left;
+    }
+
+    tbody {
+      th[scope="row"] {
+        border-right: 1px solid $color-material-table-header-boder;
+      }
+    }
+
+    tr {
+      &:nth-child(even) {
+        background: $color-material-table-box-row-background;
+      }
+
+      &:nth-child(odd) {
+        background: $color-default;
+      }
+    }
+
+    td {
+      padding: 8px;
+    }
+  }
+}
+
+// MATERIAL TEXT STYLES
+.material-styles-text {
+  box-sizing: content-box;
+  margin: 20px auto;
+  max-width: 920px;
+  min-height: 14px;
+  position: relative;
+
+  p:first-child,
+  h3:first-child,
+  h4:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child,
+  h3:first-child,
+  h4:first-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom: 0;
+  }
+
+  a {
+    color: $color-info;
+    text-decoration: underline;
+  }
+}
+
+// HIGHLIGTH TEXT
+.material-text-highlight {
+  background: $color-material-highlight-text-background;
+  border-left: 3px solid $color-material-highlight-text-border;
+  border-radius: 0;
+  color: $color-default-contrast;
+  display: inline-block;
+  font-size: 1.25rem;
+  line-height: 35px;
+  padding: 15px 20px;
+}
+
+// CITATION TEXT
+.material-citation-basic {
+  color: $color-default-contrast;
+  display: inline-block;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 40px;
+  padding: 10px 35px;
+  quotes: "\201C""\201D";
+
+  > p {
+    display: inline;
+  }
+
+  &::before {
+    color: $color-material-citation-quote;
+    content: open-quote;
+    display: inline-block;
+    font-family: "Arial", sans-serif;
+    font-size: 70px;
+    line-height: 1px;
+    vertical-align: -25px;
+    width: 28px;
+  }
+
+  &::after {
+    color: $color-material-citation-quote;
+    content: close-quote;
+    display: inline-block;
+    font-family: "Arial", sans-serif;
+    font-size: 70px;
+    line-height: 1px;
+    vertical-align: -25px;
+    width: 25px;
+  }
+}
+
+// LONG CITATION TEXT
+.material-citation-long {
+  background: $color-material-citation-background;
+  box-shadow: none;
+  color: $color-default-contrast;
+  font-style: normal;
+  padding: 12px 12px 12px 50px;
+  position: relative;
+  quotes: "\201C""\201D";
+  text-shadow: none;
+
+  &::before {
+    color: $color-material-citation-quote;
+    content: open-quote;
+    font-family: "Arial", sans-serif;
+    font-size: 3.75rem;
+    left: 16px;
+    position: absolute;
+    top: 26px;
+  }
+}
+
+// EXAMPLE TEXT
+.material-example {
+  border-left: 3px solid $color-info;
+  border-radius: 0;
+  box-shadow: none;
+  color: $color-default-contrast;
+  padding: 0 10px 4px 15px;
+  text-shadow: none;
+}
+
+// EXERCISE TEXT
+.material-exercise {
+  border-left: 3px solid $color-exercise;
+  border-radius: 0;
+  box-shadow: none;
+  color: $color-default-contrast;
+  padding: 0 10px 4px 15px;
+  text-shadow: none;
+
+  // THIS IS THE ONLY special rule for allowing material-feedback element to be placed
+  // inside anorther styles element.
+  .material-exercise-feedback {
+    margin: 20px -40px 20px 0;
+  }
+}
+
+.material-exercise-feedback[data-show="true"] {
+  display: block;
+}
+
+.material-exercise-feedback[data-show="false"] {
+  display: none;
+}
+
+// Generic AUDIO tag styling
+audio {
+  border-radius: 3px;
+}
+
+// VISUALY GUIDED STYLES
+.material-visually-guided-styles-combo-block {
+  border-left-style: solid;
+  border-left-width: 2px;
+  box-sizing: content-box;
+  font-size: 1.25rem;
+  line-height: 2rem;
+  margin: 20px 0;
+  min-height: auto;
+  padding: 20px 20px 20px 157px;
+  position: relative;
+
+  &::before {
+    background-color: $color-default;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 48px 48px;
+    border-radius: 100%;
+    content: " ";
+    height: 56px;
+    left: 15px;
+    position: absolute;
+    top: calc(50% - 28px);
+    width: 56px;
+  }
+
+  &::after {
+    background-color: $color-default;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 48px 48px;
+    border-radius: 100%;
+    content: " ";
+    height: 56px;
+    left: 86px;
+    position: absolute;
+    top: calc(50% - 28px);
+    width: 56px;
+  }
+}
+
+.material-visually-guided-styles-block {
+  border-left-style: solid;
+  border-left-width: 2px;
+  box-sizing: content-box;
+  font-size: 1.25rem;
+  line-height: 2rem;
+  margin: 20px 0;
+  min-height: auto;
+  padding: 20px 20px 20px 86px;
+  position: relative;
+
+  &::before {
+    background-color: $color-default;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 48px 48px;
+    border-radius: 100%;
+    content: " ";
+    height: 56px;
+    left: 15px;
+    position: absolute;
+    top: calc(50% - 28px);
+    width: 56px;
+  }
+}
+
+.material-visually-guided-styles-combo__listen-and-speak {
+  background-color: $color-material-visually-guided-styles-listen-background;
+  border-left-color: $color-material-visually-guided-styles-listen-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/listen.png");
+    border: 2px solid $color-material-visually-guided-styles-listen-border;
+  }
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/speak.png");
+    border: 2px solid $color-material-visually-guided-styles-speak-border;
+  }
+}
+
+.material-visually-guided-styles__listen {
+  background-color: $color-material-visually-guided-styles-listen-background;
+  border-left-color: $color-material-visually-guided-styles-listen-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/listen.png");
+    border: 2px solid $color-material-visually-guided-styles-listen-border;
+  }
+}
+
+.material-visually-guided-styles__speak {
+  background-color: $color-material-visually-guided-styles-speak-background;
+  border-left-color: $color-material-visually-guided-styles-speak-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/speak.png");
+    border: 2px solid $color-material-visually-guided-styles-speak-border;
+  }
+}
+
+.material-visually-guided-styles__read {
+  background-color: $color-material-visually-guided-styles-read-background;
+  border-left: 2px solid $color-material-visually-guided-styles-read-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/read.png");
+    border: 2px solid $color-material-visually-guided-styles-read-border;
+  }
+}
+
+.material-visually-guided-styles__write {
+  background-color: $color-material-visually-guided-styles-write-background;
+  border-left: 2px solid $color-material-visually-guided-styles-write-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/write.png");
+    border: 2px solid $color-material-visually-guided-styles-write-border;
+  }
+}
+
+.material-visually-guided-styles__look {
+  background-color: $color-material-visually-guided-styles-look-background;
+  border-left: 2px solid $color-material-visually-guided-styles-look-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/look.png");
+    border: 2px solid $color-material-visually-guided-styles-look-border;
+  }
+}
+
+.material-visually-guided-styles__connect {
+  background-color: $color-material-visually-guided-styles-connect-background;
+  border-left: 2px solid $color-material-visually-guided-styles-connect-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/connect.png");
+    border: 2px solid $color-material-visually-guided-styles-connect-border;
+  }
+}
+
+.material-visually-guided-styles__record {
+  background-color: $color-material-visually-guided-styles-record-background;
+  border-left: 2px solid $color-material-visually-guided-styles-record-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/record.png");
+    border: 2px solid $color-material-visually-guided-styles-record-border;
+  }
+}
+
+.material-visually-guided-styles__search {
+  background-color: $color-material-visually-guided-styles-search-background;
+  border-left: 2px solid $color-material-visually-guided-styles-search-border;
+
+  &::before {
+    background-image: url("/gfx/icons/64x64/search.png");
+    border: 2px solid $color-material-visually-guided-styles-search-border;
+  }
+}

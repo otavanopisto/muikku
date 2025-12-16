@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.websocket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -19,6 +20,8 @@ import javax.websocket.Session;
 import org.apache.commons.codec.binary.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 
@@ -52,15 +55,50 @@ public class WebSocketMessenger {
     return ticket;
   }
   
-  public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
+  public void sendMessage(String eventType, Object data, Set<Long> recipients) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
-    ObjectMapper mapper = new ObjectMapper();
+    // JavaTimeModule required to serialize Java 8 LocalDate
+    ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).registerModule(new JavaTimeModule());
     String strMessage = null;
     try {
       strMessage = mapper.writeValueAsString(message);
     }
     catch (Exception e) {
-      logger.warning("Unable to serialize websocket message");
+      logger.warning(String.format("Unable to serialize websocket message: %s", e.getMessage()));
+      return;
+    }
+    for (String ticket : sessions.keySet()) {
+      WebSocketSessionInfo sessionInfo = sessions.get(ticket);
+      try {
+        if (sessionInfo == null || sessionInfo.getSession() == null) {
+          continue; // session not found or not yet opened, so skip it
+        }
+        else if (!sessionInfo.getSession().isOpen()) {
+          discardSession(sessionInfo.getSession(), ticket, null);
+          continue;
+        }
+        if (sessionInfo.getUserEntityId() != null && recipients.contains(sessionInfo.getUserEntityId())) {
+          sessionInfo.getSession().getBasicRemote().sendText(strMessage);
+          sessionInfo.access();
+        }
+      }
+      catch (Exception e) {
+        logger.log(Level.WARNING, String.format("Unable to send websocket message: %s", e.getMessage()));
+        discardSession(sessionInfo.getSession(), ticket, null);
+      }
+    }
+  }
+  
+  public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
+    WebSocketMessage message = new WebSocketMessage(eventType, data);
+    // JavaTimeModule required to serialize Java 8 LocalDate
+    ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).registerModule(new JavaTimeModule());;
+    String strMessage = null;
+    try {
+      strMessage = mapper.writeValueAsString(message);
+    }
+    catch (Exception e) {
+      logger.warning(String.format("Unable to serialize websocket message: %s", e.getMessage()));
       return;
     }
 
@@ -93,13 +131,14 @@ public class WebSocketMessenger {
   
   public void sendMessage(String eventType, Object data, String ticket) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
-    ObjectMapper mapper = new ObjectMapper();
+    // JavaTimeModule required to serialize Java 8 LocalDate
+    ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).registerModule(new JavaTimeModule());;
     String strMessage = null;
     try {
       strMessage = mapper.writeValueAsString(message);
     }
     catch (Exception e) {
-      logger.warning("Unable to serialize websocket message");
+      logger.warning(String.format("Unable to serialize websocket message: %s", e.getMessage()));
       return;
     }
     
@@ -177,7 +216,7 @@ public class WebSocketMessenger {
     }
   }
 
-  @Schedule(hour = "*", persistent = false)
+  @Schedule(hour = "*", minute = "*/5", persistent = false)
   private void discardExpiredSessions() {
     for (String ticket : sessions.keySet()) {
       WebSocketSessionInfo sessionInfo = sessions.get(ticket);

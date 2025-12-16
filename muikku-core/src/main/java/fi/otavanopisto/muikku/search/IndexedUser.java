@@ -1,11 +1,14 @@
 package fi.otavanopisto.muikku.search;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
+import fi.otavanopisto.muikku.search.annotations.IndexFieldType;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
@@ -25,7 +28,7 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
       type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
-      name = "archetype",
+      name = "roles",
       type = IndexableFieldType.KEYWORD
     ),
     @IndexableFieldOption (
@@ -41,6 +44,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
       multiFields = {
         @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
+    ),
+    @IndexableFieldOption (
+      name = "birthday",
+      type = IndexableFieldType.DATE
     ),
     @IndexableFieldOption (
       name = "email",
@@ -228,14 +235,6 @@ public class IndexedUser {
     this.schoolDataSource = schoolDataSource;
   }
 
-  public EnvironmentRoleArchetype getArchetype() {
-    return archetype;
-  }
-
-  public void setArchetype(EnvironmentRoleArchetype archetype) {
-    this.archetype = archetype;
-  }
-
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -277,12 +276,29 @@ public class IndexedUser {
     this.groups = groups;
   }
 
-  public Set<IndexedUserStudyPeriod> getStudyPeriods() {
+  public List<IndexedUserStudyPeriod> getStudyPeriods() {
     return studyPeriods;
   }
 
-  public void setStudyPeriods(Set<IndexedUserStudyPeriod> studyPeriods) {
+  public void setStudyPeriods(List<IndexedUserStudyPeriod> studyPeriods) {
     this.studyPeriods = studyPeriods;
+  }
+
+  public Set<EnvironmentRoleArchetype> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<EnvironmentRoleArchetype> roles) {
+    this.roles = roles;
+  }
+
+  @IndexField(type = IndexFieldType.DATE)
+  public LocalDate getBirthday() {
+    return birthday;
+  }
+
+  public void setBirthday(LocalDate birthday) {
+    this.birthday = birthday;
   }
 
   private String identifier;
@@ -304,11 +320,12 @@ public class IndexedUser {
   private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
-  private EnvironmentRoleArchetype archetype;
+  private Set<EnvironmentRoleArchetype> roles;
   private Long userEntityId;
   private Boolean defaultIdentifier;
   private String email;
   private Set<Long> workspaces;
   private Set<Long> groups;
-  private Set<IndexedUserStudyPeriod> studyPeriods;
+  private List<IndexedUserStudyPeriod> studyPeriods;
+  private LocalDate birthday;
 }

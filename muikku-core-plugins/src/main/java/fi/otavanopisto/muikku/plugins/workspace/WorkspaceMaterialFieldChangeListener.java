@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -36,30 +34,20 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelect
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
-import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSorterFieldAnswer;
 
 public class WorkspaceMaterialFieldChangeListener {
-
-  @Inject
-  private Logger logger;
   
   @Inject
   private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
-
+  
   @Inject
-  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
+  private MaterialDeleteController materialDeleteController;
   
   @Inject
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
@@ -226,7 +214,7 @@ public class WorkspaceMaterialFieldChangeListener {
       }
       else if (!deprecatedAnswers.isEmpty()) {
         for (WorkspaceMaterialSelectFieldAnswer deprecatedAnswer : deprecatedAnswers) {
-          deleteFieldAnswer(deprecatedAnswer);
+          materialDeleteController.deleteWorkspaceMaterialFieldAnswer(deprecatedAnswer);
         }
       }
     }
@@ -279,7 +267,7 @@ public class WorkspaceMaterialFieldChangeListener {
       }
       else if (!deprecatedAnswers.isEmpty()) {
         for (WorkspaceMaterialMultiSelectFieldAnswer deprecatedAnswer : deprecatedAnswers) {
-          deleteFieldAnswer(deprecatedAnswer);
+          materialDeleteController.deleteWorkspaceMaterialFieldAnswer(deprecatedAnswer);
         }
       }
     }
@@ -292,57 +280,6 @@ public class WorkspaceMaterialFieldChangeListener {
       }
     }
     return null;
-  }
-
-  // Delete
-  
-  public void onWorkspaceMaterialFieldDelete(@Observes WorkspaceMaterialFieldDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
-    WorkspaceMaterialField materialField = event.getWorkspaceMaterialField();
-    
-    List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFieldAnswersByField(materialField);
-    if (event.getRemoveAnswers()) {
-      for (WorkspaceMaterialFieldAnswer answer : answers) {
-        deleteFieldAnswer(answer); 
-      }
-    } else {
-      if (!answers.isEmpty()) {
-        throw new WorkspaceMaterialContainsAnswersExeption("Could not remove workspace material field because it contains answers");
-      }
-    }
-  }
-
-  private void deleteFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
-    if (answer instanceof WorkspaceMaterialAudioFieldAnswer) {
-      List<WorkspaceMaterialAudioFieldAnswerClip> audioAnswerClips = workspaceMaterialFieldAnswerController.listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer((WorkspaceMaterialAudioFieldAnswer) answer);
-      for (WorkspaceMaterialAudioFieldAnswerClip audioAnswerClip : audioAnswerClips) {
-        try {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
-        }
-        catch (Exception e) {
-          // Audio field was removed completely but it's not fatal if its answer files in file system fail to remove
-          logger.log(Level.WARNING, String.format("Problems removing file system files related to audio answer %d", answer.getId()), e);
-        }
-      }
-    }
-    else if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
-      List<WorkspaceMaterialFileFieldAnswerFile> fileAnswerFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer((WorkspaceMaterialFileFieldAnswer) answer);
-      for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {
-        try {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
-        }
-        catch (Exception e) {
-          // File field was removed completely but it's not fatal if its answer files in file system fail to remove
-          logger.log(Level.WARNING, String.format("Problems removing file system files related to file answer %d", answer.getId()), e);
-        }
-      }
-    }
-    else if (answer instanceof WorkspaceMaterialMultiSelectFieldAnswer) {
-      List<WorkspaceMaterialMultiSelectFieldAnswerOption> options = workspaceMaterialFieldAnswerController.listWorkspaceMaterialMultiSelectFieldAnswerOptions((WorkspaceMaterialMultiSelectFieldAnswer) answer); 
-      for (WorkspaceMaterialMultiSelectFieldAnswerOption option : options) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialMultiSelectFieldAnswerOption(option);
-      }
-    }
-    workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFieldAnswer(answer);
   }
   
 }

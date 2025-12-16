@@ -10,6 +10,11 @@ public enum IndexableFieldType {
   /**
    * String that is not analyzed
    */
-  KEYWORD
+  KEYWORD,
+  
+  /**
+   * Date
+   */
+  DATE
   
 }

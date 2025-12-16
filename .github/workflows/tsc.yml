@@ -1,0 +1,28 @@
+name: Typescript Compiler Check
+on:
+  pull_request:
+    branches: devel
+jobs:
+  tsc:
+    name: tsc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20.11.1
+
+      - name: Install Node.js dependencies
+        run: npm ci && npm run build-full
+        working-directory: muikku-frontend/muikkuV3
+
+      - name: Running Typescript Compiler Check
+        # uses: iCrawl/action-tsc@v1
+        # with:
+        #   project: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+        run: npm run type-check
+        working-directory: muikku-frontend/muikkuV3
+

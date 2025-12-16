@@ -96,8 +96,6 @@ import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
-import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.http.ContentType;
@@ -868,6 +866,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
+  protected void waitForExpectedText(String elementToLookFor, String textToAppear, int timesToTry, int interval) {
+    waitForPresent(elementToLookFor);
+    String currentText = getElementText(elementToLookFor);
+    int i = 0;
+    while(!currentText.equalsIgnoreCase(textToAppear)) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      refresh();
+      waitForPresent(elementToLookFor);
+      sleep(interval);
+      currentText = getElementText(elementToLookFor);
+    }
+    if(!currentText.equalsIgnoreCase(textToAppear))
+      throw new TimeoutException("Could not find expected text in a given timeout period.");
+  }
+  
   protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
     String text = findElement(elementWithText).getText();
     int i = 0;
@@ -938,9 +954,41 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void selectOption(String selector, String value){
+    waitForClickable(selector);
+
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
+        
+    List<WebElement> options = selectField.getAllSelectedOptions();
+    int i = 0;
+    WebElement option = options.get(0);
+    String optionValue = option.getAttribute("value");
+    while(!optionValue.equals(value)) {
+      if (i > 4) {
+        break;
+      }
+      i++;
+      
+      waitForClickable(selector);
+      selectField = new Select(findElementByCssSelector(selector));
+      selectField.selectByValue(value);  
+      sleep(1000);
+      
+      options = selectField.getAllSelectedOptions();
+      option = options.get(0);
+      optionValue = option.getAttribute("value");
+      
+      if (optionValue.equals(value)) {
+        break;
+      }else {
+        options.clear();
+      }
+    }
+    if(!optionValue.equals(value))
+      throw new TimeoutException("Could not select wanted value.");
+      
   }
+  
   
   
   protected boolean isInSelection(String selector, String compare) {
@@ -1342,10 +1390,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     response.then()
       .statusCode(200);
-      
+    
     Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
     assertNotNull(workspace);
     assertNotNull(workspace.getId());
+    assertNotNull(workspace.getUrlName());
+    
+    // TODO There seems to be problems with the cleanup procedure leading to workspaces being 
+    // recycled which leads to other problems, this might just be here for a workaround
+    reindex();
     
     return workspace;
   }
@@ -1365,6 +1418,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
     assertNotNull(workspace);
     assertNotNull(workspace.getId());
+    assertNotNull(workspace.getUrlName());
+    
+    // TODO There seems to be problems with the cleanup procedure leading to workspaces being 
+    // recycled which leads to other problems, this might just be here for a workaround
+    reindex();
     
     return workspace;
   }
@@ -1506,6 +1564,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
+  protected void cleanUpWorkspaceDiscussions() {
+    asAdmin()
+      .delete("/test/workspaces/discussions/cleanup")
+      .then()
+      .statusCode(204);
+  }
   protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, LockForumThread locked) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
@@ -1846,6 +1910,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected void waitUntilAttributeNotEmpty(String selector, String attribute){
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(60)).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        String value = StringUtils.lowerCase(getAttributeValue(selector, attribute));
+        if (!value.isBlank()) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
   protected WebElement findElementByTag(String name) {
     return getWebDriver().findElement(By.tagName(name));
   }
@@ -2007,12 +2083,33 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    waitForVisible("#wokspaceName");
+    String title = getAttributeValue("#wokspaceName", "value");
+    int i = 0;
+    while (title.isEmpty()) {
+      i++;
+      refresh();
+      sleep(1500);
+      title = getAttributeValue("#wokspaceName", "value");
+      if(i > 20)
+        break;
+    }
     scrollTo("input#" + workspaceAccess, 300);
-    sleep(500);
-    waitAndClick("input#" + workspaceAccess);
+    sleep(500);    
+    WebElement element = getWebDriver().findElement(By.cssSelector("input#" + workspaceAccess));
+    i = 0;
+    while (!element.isSelected()) {
+      waitAndClick("input#" + workspaceAccess);
+      sleep(500);
+      if(i > 15)
+        break;
+      i++;
+    }
+    
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
+    sleep(500);
     waitForPresent(".notification-queue__item--success");
     sleep(500);
   }

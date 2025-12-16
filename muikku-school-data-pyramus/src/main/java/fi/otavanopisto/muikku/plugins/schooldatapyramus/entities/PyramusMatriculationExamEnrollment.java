@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -19,96 +20,6 @@ public class PyramusMatriculationExamEnrollment
   @Override
   public void setId(Long id) {
     this.id = id;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @Override
-  public String getSsn() {
-    return ssn;
-  }
-
-  @Override
-  public void setSsn(String ssn) {
-    this.ssn = ssn;
-  }
-
-  @Override
-  public String getEmail() {
-    return email;
-  }
-
-  @Override
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  @Override
-  public String getPhone() {
-    return phone;
-  }
-
-  @Override
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  @Override
-  public String getAddress() {
-    return address;
-  }
-
-  @Override
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  @Override
-  public String getPostalCode() {
-    return postalCode;
-  }
-
-  @Override
-  public void setPostalCode(String postalCode) {
-    this.postalCode = postalCode;
-  }
-
-  @Override
-  public String getCity() {
-    return city;
-  }
-
-  @Override
-  public void setCity(String city) {
-    this.city = city;
-  }
-
-  @Override
-  public String getNationalStudentNumber() {
-    return nationalStudentNumber;
-  }
-
-  @Override
-  public void setNationalStudentNumber(String nationalStudentNumber) {
-    this.nationalStudentNumber = nationalStudentNumber;
-  }
-
-  @Override
-  public String getGuider() {
-    return guider;
-  }
-
-  @Override
-  public void setGuider(String guider) {
-    this.guider = guider;
   }
 
   @Override
@@ -231,26 +142,39 @@ public class PyramusMatriculationExamEnrollment
     this.degreeStructure = degreeStructure;
   }
 
+  @Override
+  public OffsetDateTime getEnrollmentDate() {
+    return enrollmentDate;
+  }
+
+  @Override
+  public void setEnrollmentDate(OffsetDateTime enrollmentDate) {
+    this.enrollmentDate = enrollmentDate;
+  }
+
+  @Override
+  public String getContactInfoChange() {
+    return contactInfoChange;
+  }
+
+  @Override
+  public void setContactInfoChange(String contactInfoChange) {
+    this.contactInfoChange = contactInfoChange;
+  }
+
   public Long id;
   public Long examId;
-  public String name;
-  public String ssn;
-  public String email;
-  public String phone;
-  public String address;
-  public String postalCode;
-  public String city;
-  public String nationalStudentNumber;
-  public String guider;
   public String enrollAs;
   public String degreeType;
   public boolean restartExam;
   public int numMandatoryCourses;
   public String location;
   public boolean canPublishName;
+  public String contactInfoChange;
   public String message;
   public Long studentId;
   public String state;
   public List<MatriculationExamAttendance> attendances;
   private String degreeStructure;
+  private OffsetDateTime enrollmentDate;
 }

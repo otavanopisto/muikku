@@ -1,0 +1,121 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.reading-ruler-container {
+  /* display: none; */
+  display: block;
+  height: 100vh;
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+
+  /* @include breakpoint($breakpoint-desktop) {
+    display: block;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+  } */
+}
+
+.reading-ruler-top,
+.reading-ruler-middle,
+.reading-ruler-bottom,
+.reading-ruler-dragger-handle-container {
+  background: $color-cagtegory-11;
+  height: 100px;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
+}
+
+.reading-ruler-top--inverted,
+.reading-ruler-middle--inverted,
+.reading-ruler-bottom--inverted {
+  background: unset;
+}
+
+.reading-ruler-middle {
+  align-items: center;
+  background: unset;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 100%;
+}
+
+.reading-ruler-dragger-handle-container {
+  align-items: center;
+  background: unset;
+  bottom: 0;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  top: auto;
+}
+
+.reading-ruler-middle-mobile-handle {
+  background-color: $color-default-contrast;
+  border-radius: 25px;
+  height: inherit;
+  opacity: 70%;
+  width: 200px;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
+}
+
+.reading-ruler-middle--inverted {
+  opacity: 50%;
+}
+
+.reading-ruler-bottom {
+  bottom: 0;
+  top: auto;
+}
+
+.reading-ruler-controllers {
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $color-default-separator-border;
+  border-radius: 20px;
+  display: inline-flex;
+  justify-content: flex-end;
+  min-width: 0;
+  position: fixed;
+  right: 10px;
+  width: auto;
+  z-index: 10010;
+}
+
+.reading-ruler-controllers-tool-button {
+  transform: rotate(0deg);
+  transition: rotate 0.2s ease;
+}
+
+.reading-ruler-controllers-tool-button--open {
+  transform: rotate(180deg);
+  transition: rotate 0.2s ease;
+}
+
+.reading-ruler-controllers-presets-container,
+.reading-ruler-controllers-settings-container {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0%;
+  visibility: hidden;
+  width: 0;
+}
+
+.reading-ruler-controllers-presets-container--open,
+.reading-ruler-controllers-settings-container--open {
+  opacity: 100%;
+  visibility: visible;
+  width: auto;
+}

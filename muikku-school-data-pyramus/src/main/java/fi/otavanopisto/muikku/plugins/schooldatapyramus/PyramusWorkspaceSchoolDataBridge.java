@@ -25,13 +25,13 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistWorkspacePricesRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistWorkspacePrice;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseDescription;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
@@ -45,6 +45,8 @@ import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistCoursePrice;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistCoursePricesRestModel;
 
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
@@ -190,18 +192,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<Workspace> listWorkspaces() {
-    List<Workspace> result = new ArrayList<Workspace>();
-    Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
-    if (courses != null) {
-      for (Course course : courses) {
-        result.add(createWorkspaceEntity(course));
-      }
-    }
-    return result;
-  }
-
-  @Override
   public Workspace updateWorkspace(Workspace workspace) {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
     if (pyramusCourseId == null) {
@@ -234,15 +224,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public void removeWorkspace(String identifier) {
-    if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-    }
-
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
   public WorkspaceType findWorkspaceType(String identifier) {
     if (identifier == null) {
       return null;
@@ -261,23 +242,23 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
+  public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
 
     if (role == WorkspaceRoleArchetype.STUDENT) {
-      Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+      Long studentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
       CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, OffsetDateTime.now(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
       
       return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
     } else {
-      Long staffMemberId = identifierMapper.getPyramusStaffId(user.getIdentifier());
+      Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
       CourseStaffMemberRoleEnum staffMemberRole = identifierMapper.getCourseStaffMemberRole(role);
       
       if (staffMemberRole != null && (staffMemberId != null)) {
         CourseStaffMember courseStaffMember = new CourseStaffMember(null, courseId, staffMemberId, staffMemberRole);
         return entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/staffMembers", courseStaffMember));
       } else {
-        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", staffMemberRole, user.getIdentifier()));
+        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", staffMemberRole, userIdentifier.getIdentifier()));
         throw new RuntimeException("Could not parse workspace staff member role");
       }
     }
@@ -312,19 +293,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       logger.severe(String.format("null courseId %d or userId %d", courseId, userId));
     }
     return null;
-  }
-  
-  @Override
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    
-    CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
-    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
-    
-    List<WorkspaceUser> result = entityFactory.createEntity(staffMembers);
-    result.addAll(entityFactory.createEntity(courseStudents));
-    
-    return result;
   }
   
   private Workspace createWorkspaceEntity(Course course) {
@@ -472,17 +440,18 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public WorklistBasePriceRestModel getWorkspaceBasePrice(String workspaceIdentifier) {
-    fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel pyramusPriceModel = pyramusClient.responseGet(String.format("/worklist/basePrice?course=%s", workspaceIdentifier), fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel.class).getEntity();
-    
-    WorklistBasePriceRestModel result = new WorklistBasePriceRestModel();
-    
-    if (pyramusPriceModel != null) {
-      for (Long courseModuleId : pyramusPriceModel.keySet()) {
-        result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).toId(), pyramusPriceModel.get(courseModuleId));
+  public WorklistWorkspacePricesRestModel getWorkspacePrices(String workspaceIdentifier) {
+    WorklistCoursePricesRestModel pyramusPrices = pyramusClient.responseGet(String.format("/worklist/coursePrices?course=%s", workspaceIdentifier), WorklistCoursePricesRestModel.class).getEntity();
+    WorklistWorkspacePricesRestModel result = new WorklistWorkspacePricesRestModel();
+    if (pyramusPrices != null) {
+      for (Long courseModuleId : pyramusPrices.keySet()) {
+        WorklistCoursePrice pyramusPrice = pyramusPrices.get(courseModuleId);
+        if (pyramusPrice != null) {
+          WorklistWorkspacePrice price = new WorklistWorkspacePrice(pyramusPrice.getFull(), pyramusPrice.getHalf()); 
+          result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).toId(), price);
+        }
       }
     }
-    
     return result;
   }
 

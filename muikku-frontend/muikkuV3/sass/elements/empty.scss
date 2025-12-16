@@ -1,0 +1,44 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.empty {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  line-height: 1.25rem;
+  padding: 20px;
+  width: 100%;
+
+  > * {
+    font-family: $system-font-family;
+    font-size: 1.125rem;
+    font-weight: 300;
+  }
+}
+
+.empty--chat {
+  > * {
+    font-family: $system-font-family;
+    font-size: 0.875rem;
+    font-weight: 400;
+  }
+}
+
+.empty--dialog-row,
+.empty--sub-panel-data {
+  justify-content: left;
+  padding: 0;
+}
+
+.empty--sub-panel-data {
+  span {
+    font-size: inherit;
+    font-weight: 400;
+  }
+}
+
+.empty--front-page {
+  padding: 10px;
+}

@@ -1,0 +1,602 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.link {
+  @include prefix(
+    transition,
+    moz ms webkit o,
+    background-color 0.3s,
+    color 0.3s
+  );
+
+  color: $color-link-default-text;
+  cursor: pointer;
+  display: inline-block;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: text;
+  vertical-align: middle;
+  white-space: nowrap;
+
+  .link__icon {
+    display: inline-block;
+  }
+
+  &:not(.link--icon) .link__icon {
+    margin-right: 10px;
+  }
+
+  &.disabled,
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 50%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.link--index {
+  text-decoration: underline;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.link--index-text-link {
+  text-decoration: underline;
+  vertical-align: top;
+}
+
+.link--frontpage {
+  color: $color-link-frontpage-text;
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+
+  .link__icon {
+    color: $color-environment-link-menu-navicon-icon-color;
+  }
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-link-hover-background;
+    color: $color-link-default-text;
+  }
+}
+
+.link--feed-nettilukio {
+  align-items: center;
+  color: $color-frontpage-card-upper-secondary-school-title;
+  display: flex;
+}
+
+.link--feed-nettipk {
+  align-items: center;
+  color: $color-frontpage-card-secondary-school-title;
+  display: flex;
+}
+
+.link--submit-worklist-approval,
+.link--worklist-entries-sorting {
+  text-decoration: underline;
+}
+
+.link--worklist-entries-sorting {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.link--forgot-password {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+  line-height: 1rem;
+  margin: 0 15px;
+  max-width: 75px;
+  text-align: left;
+  white-space: normal;
+  word-spacing: 75px;
+
+  &.link--forgot-password-main-function {
+    color: $color-main-function-label-forgot-password;
+  }
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: auto;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
+}
+
+.link--plagscan-logo {
+  align-items: center;
+  border: 0;
+  color: $color-default;
+  display: flex;
+
+  &:hover,
+  &:active {
+    color: $color-default;
+  }
+}
+
+.link--privacy-policy,
+.link--plagscan-privacy-policy,
+.link--accessibility-statement {
+  align-items: center;
+  color: $color-default;
+  display: inline-flex;
+
+  &:hover,
+  &:active {
+    color: $color-default;
+  }
+}
+
+.link--icon {
+  color: $color-environment-link-icon-color;
+  font-family: "muikku";
+  font-size: $link-icon-font-size;
+  font-style: normal;
+  font-variant: none;
+  font-weight: normal;
+  text-transform: none;
+
+  @include breakpoint($breakpoint-pad) {
+    &:hover,
+    &.hover {
+      background-color: $color-environment-link-icon-border-top-color-active;
+      color: $color-environment-link-icon-color-hover;
+    }
+
+    &:active,
+    &.active {
+      color: $color-environment-link-icon-color-active;
+
+      &::before {
+        background-color: $color-environment-link-icon-border-top-color-active;
+        content: " ";
+        height: $main-function-link-icon-active-border-size;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.link--highlight {
+  background-color: $color-link-highlight-background;
+  color: $color-link-highlight-text;
+}
+
+.link--inverse {
+  background-color: $color-link-inverse-background;
+  color: $color-link-inverse-text;
+
+  &:hover,
+  &.hover {
+    background-color: $color-link-hover-background;
+    color: $color-link-inverse-text;
+  }
+
+  &:active,
+  &.active {
+    background-color: $color-link-hover-background;
+    color: $color-link-inverse-text;
+  }
+}
+
+.link--full {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.link--menu {
+  justify-content: flex-start;
+  overflow: hidden;
+
+  &.active,
+  &:active {
+    background-color: $color-default;
+    color: $color-default-contrast;
+    font-weight: 600;
+  }
+
+  .link__icon {
+    background-color: $color-environment-link-menu-icon-background;
+    border-radius: 100%;
+    color: $color-environment-link-menu-icon-color;
+    font-size: 20px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    vertical-align: middle;
+    width: 35px;
+  }
+
+  .link__icon--workspace {
+    background-color: $color-workspace-link-menu-icon-background;
+  }
+}
+
+.link--menu-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.link--menu-instructions {
+  .link__icon {
+    background: $color-environment-link-menu-instructions-icon-background;
+    color: $color-environment-link-menu-instructions-icon-color;
+  }
+}
+
+.link--menu-helpdesk {
+  .link__icon {
+    background: $color-environment-link-menu-heldesk-icon-background;
+    color: $color-environment-link-menu-helpdesk-icon-color;
+  }
+}
+
+.link--menu-logout {
+  .link__icon {
+    background: $color-environment-link-menu-logout-icon-background;
+    color: $color-environment-link-menu-logout-icon-color;
+  }
+}
+
+.link--language-picker-dropdown,
+.link--profile-dropdown,
+.link--tasks-dropdown,
+.link--purchasable-product-dropdown,
+.link--chat-dropdown,
+.link--material-editor-dropdown {
+  color: $color-default-contrast;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-environment-dropdown-link-hover-background;
+    color: $color-default-contrast;
+  }
+
+  .link__icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 16px;
+  }
+}
+
+// Specific override for dropdown used in chat
+.link--chat-dropdown {
+  font-size: 0.825rem;
+  padding: 0 5px;
+}
+
+.link--chat-availability-chat {
+  .link__icon {
+    color: $color-chat-user-status-online;
+  }
+}
+
+.link--chat-availability-away {
+  .link__icon {
+    color: $color-chat-user-status-away;
+  }
+}
+
+.link--chat-availability-dnd {
+  .link__icon {
+    color: $color-chat-user-status-dnd;
+  }
+}
+
+.link--chat-availability-xa {
+  .link__icon {
+    color: $color-chat-user-status-offline;
+  }
+}
+
+.link--chat {
+  font-size: 0.825rem;
+  line-height: 1;
+  padding: 0 0 5px;
+  text-transform: none;
+}
+
+.link--material-management-dropdown {
+  color: $color-default;
+  justify-content: flex-start;
+
+  input[type="file"] {
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    opacity: 0%;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-material-page-admin-panel-main-hover-color;
+    color: $color-default;
+  }
+}
+
+// Restrict type dropdown links
+.link--restrict-type-dropdown-enabled {
+  .link__icon {
+    color: $color-material-page-admin-panel-enabled-color;
+  }
+}
+
+.link--restrict-type-dropdown-disabled {
+  .link__icon {
+    color: $color-material-page-admin-panel-disabled-color;
+  }
+}
+
+.link--restrict-type-dropdown-members-only {
+  .link__icon {
+    color: $color-tertiary;
+  }
+}
+
+// Material editor's page type dropdown links
+.link--material-editor-dropdown-active {
+  background: $color-default-generic-background;
+  font-weight: 600;
+}
+
+.link--material-editor-dropdown-exercise {
+  .link__icon {
+    color: $color-exercise;
+  }
+}
+
+.link--material-editor-dropdown-assignment {
+  .link__icon {
+    color: $color-assignment;
+  }
+}
+
+.link--material-editor-dropdown-journal {
+  .link__icon {
+    color: $color-journal-page;
+  }
+}
+
+.link--material-editor-dropdown-theory {
+  .link__icon {
+    color: $color-default-helper;
+  }
+}
+
+// Material editor's answers type dropdown links
+.link--material-editor-dropdown-always {
+  .link__icon {
+    color: $color-material-page-admin-panel-always-show-answers-color;
+  }
+}
+
+.link--material-editor-dropdown-on-request {
+  .link__icon {
+    color: $color-material-page-admin-panel-on-request-color;
+  }
+}
+
+.link--material-editor-dropdown-never {
+  .link__icon {
+    color: $color-material-page-admin-panel-never-show-answers-color;
+  }
+}
+
+
+// Links used in dropdowns of main functions
+.link--main-functions-settings-dropdown {
+  color: $color-default-contrast;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-environment-dropdown-link-hover-background;
+    color: $color-default-contrast;
+  }
+}
+
+.link--studies-file-attachment {
+  padding: 0 0 0 10px;
+}
+
+.link--communicator-label-dropdown,
+.link--guider-label-dropdown {
+  color: $color-default-contrast;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover {
+    background-color: $color-environment-dropdown-link-hover-background;
+  }
+
+  &:active,
+  &.active {
+    background-color: $color-main-function-label-link-active-background;
+  }
+
+  &.selected {
+    background-color: $color-main-function-label-link-selected-background;
+
+    .link__text {
+      color: $color-text-link-selected;
+      font-weight: 600;
+    }
+  }
+
+  &.semi-selected {
+    background-color: lighten(
+      $color-main-function-label-link-selected-background,
+      20%
+    );
+
+    .link__text {
+      color: $color-text-link-selected;
+      font-weight: 600;
+    }
+  }
+}
+
+.link--application-list,
+.link--evaluation,
+.link--contact-event-footer {
+  color: $color-link-application-item-footer;
+  cursor: pointer;
+  text-decoration: underline;
+  text-transform: none;
+
+  &:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.link--workspace-management {
+  margin-right: 20px;
+}
+
+// This has to be think differently as the element is not <Link> component currently
+.link--matriculation-enrollment {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 5px 0;
+}
+
+.link--workspace-assessment {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding: 0 10px;
+  width: 100%;
+
+  &::before {
+    border-radius: 100%;
+    box-shadow: $color-assessment-box-shadow;
+    padding: 8px;
+  }
+}
+
+.link--workspace-assessment-pending {
+  &::before {
+    background: $color-assessment-pending;
+  }
+}
+
+.link--workspace-assessment-interim-request {
+  &::before {
+    background: $color-interim-evaluation;
+  }
+}
+
+.link--workspace-assessment-failed {
+  &::before {
+    background: $color-assessment-failed;
+  }
+}
+
+.link--workspace-assessment-passed {
+  &::before {
+    background: $color-assessment-passed;
+  }
+}
+
+.link--workspace-assessment-incomplete {
+  &::before {
+    background: $color-assessment-incomplete;
+  }
+}
+
+.link--workspace-assessment-unassessed {
+  &::before {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.link--workspace-is-being-evaluated {
+  cursor: not-allowed;
+
+  &::before {
+    background: $color-default-contrast;
+  }
+}
+
+.link--evaluation {
+  font-size: 0.825rem;
+  text-decoration: underline;
+}
+
+.link--evaluation-delete {
+  color: $color-fatal;
+}
+
+.link--studies-open-close {
+  text-decoration: underline;
+
+  &:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.link--download-pdf {
+  display: block;
+  padding: 20px;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+    padding: 0;
+  }
+}
+
+.link--to-student-guider {
+  margin: 0 10px 0 0;
+}
+
+.link--study-planner-specify {
+  color: $color-info;
+  text-decoration: underline;
+}
+
+.link--study-planner-delete {
+  color: $color-fatal;
+  text-decoration: underline;
+}

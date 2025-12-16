@@ -28,10 +28,6 @@ public class CeeposPermissions  extends AbstractMuikkuPermissionCollection imple
   public static final String REMOVE_ORDER = "REMOVE_ORDER";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
-  public static final String PAY_ORDER = "PAY_ORDER";
-  
-  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String LIST_PRODUCTS = "LIST_PRODUCTS";
 

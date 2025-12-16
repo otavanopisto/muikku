@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>fi.otavanopisto.muikku</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.1.270-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>frontend</artifactId>
+  <packaging>jar</packaging>
+  <name>Muikku Frontend</name>
+  <description>Muikku Frontend</description>
+
+  <properties>
+    <frontend.environment>production</frontend.environment>
+  </properties>
+  
+  <profiles>
+    <profile>
+      <id>development</id>
+      <properties>
+        <frontend.environment />
+      </properties>
+    </profile>
+    
+
+    <!-- Muikku frontend v3 -->    
+
+    <profile>
+      <id>frontv3</id>
+      
+      <!-- Use frontend v3 when frontend v4 is not specifically requested-->
+      <activation>
+        <property>
+          <name>usefrontv4</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>1.15.1</version>
+            <configuration>
+              <workingDirectory>muikkuV3/</workingDirectory>
+              <environmentVariables>
+                <NODE_ENV>${frontend.environment}</NODE_ENV>
+              </environmentVariables>
+            </configuration>
+    
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <phase>generate-resources</phase>
+                <configuration>
+                  <nodeVersion>v20.18.0</nodeVersion>
+                  <npmVersion>10.8.2</npmVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm ci</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>ci</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm run build</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run build-full</arguments>
+                </configuration>
+              </execution>
+           </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Muikku frontend v4 -->
+
+    <profile>
+      <id>frontv4</id>
+      
+      <!-- Use frontend v4 when specifically requested-->
+      <activation>
+        <property>
+          <name>usefrontv4</name>
+          <value>true</value>
+        </property>
+      </activation>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>1.15.1</version>
+            <configuration>
+              <workingDirectory>muikkuV4/</workingDirectory>
+              <environmentVariables>
+                <NODE_ENV>${frontend.environment}</NODE_ENV>
+              </environmentVariables>
+            </configuration>
+    
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <phase>generate-resources</phase>
+                <configuration>
+                  <nodeVersion>v22.19.0</nodeVersion>
+                  <npmVersion>10.9.3</npmVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm ci</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>ci</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm run build</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run build-full</arguments>
+                </configuration>
+              </execution>
+           </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>dist</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>muikkuV3/generated</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>muikkuV4/generated</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-processor-plugin</artifactId>
+        <version>2.2.4</version>
+        <executions>
+          <execution>
+            <id>process</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <processors>
+                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+              </processors>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${hibernate-jpamodelgen.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>scripts</directory>
+        <targetPath>META-INF/resources/scripts</targetPath>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>.gitignore</exclude>
+        </excludes>
+      </resource>
+
+      <resource>
+        <directory>dist</directory>
+        <targetPath>META-INF/resources/scripts/dist</targetPath>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+  </build>
+  
+</project>

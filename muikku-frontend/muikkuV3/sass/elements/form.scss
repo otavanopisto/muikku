@@ -1,0 +1,816 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.form {
+  position: relative;
+  width: 100%;
+}
+
+.form__container-title {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-weight: 400;
+}
+
+.form__row {
+  margin: 0 0 15px;
+  position: relative;
+  width: 100%;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.form__row--evaluation-warning {
+  font-size: 1rem;
+  justify-content: center;
+
+  .recording-warning {
+    color: $color-recording;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+  }
+}
+
+.form__row--workspace-management {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.form__row--matriculation-plan {
+  margin: 0 0 5px;
+}
+
+.form__row--split {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.form__row-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form__buttons {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.form__buttons--notebook {
+  .button {
+    margin: 0 10px 0 0;
+  }
+}
+
+.form__buttons--evaluation {
+  justify-content: center;
+
+  .button {
+    margin: 0 5px;
+  }
+}
+
+.form__subdivision {
+  flex-basis: 100%;
+  margin: 5px 0;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 50%;
+    padding: 0 10px;
+
+    &:first-child {
+      padding: 0 10px 0 0;
+    }
+
+    &:last-child {
+      padding: 0 0 0 10px;
+    }
+  }
+
+  .form__row:last-child {
+    margin: 0;
+  }
+}
+
+// Sets splitted form's subdivision to reserve space only as much it needs
+.form__subdivision--auto-width {
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
+}
+
+input,
+select,
+option,
+textarea,
+fieldset,
+legend {
+  @include text;
+}
+
+// FIELDSET & LEGEND
+.form__fieldset {
+  border: 0;
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+}
+
+.form__legend {
+  display: block;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  padding: 0 0 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.form__fieldset-content {
+  display: flex;
+}
+
+.form__fieldset-content--horizontal {
+  align-items: center;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.form__fieldset-content--vertical {
+  align-items: flex-start;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+}
+
+// FORM ELEMENTS
+.form-switch-element {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0 10px;
+
+  label {
+    font-weight: 400;
+  }
+}
+
+.form-element {
+  width: auto;
+
+  label {
+    display: block;
+    font-family: $system-font-family;
+    font-size: $text-mobile-font-size;
+    font-weight: 600;
+    padding: 0 0 5px;
+
+    &:first-child {
+      margin-right: 5px;
+    }
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+    }
+  }
+
+  input[type="checkbox"] {
+    align-items: center;
+    appearance: none;
+    background: $color-default;
+    border: solid 2px $color-form-element-border;
+    border-radius: 3px;
+    display: flex;
+    height: 1rem;
+    justify-content: center;
+    margin-right: 5px;
+    padding: 0;
+    width: 1rem;
+
+    &[disabled] {
+      border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
+    }
+  }
+
+  input[type="radio"] {
+    align-items: center;
+    appearance: none;
+    border: solid 2px $color-form-element-border;
+    border-radius: 100%;
+    display: flex;
+    height: 1rem;
+    justify-content: center;
+    margin-right: 5px;
+    width: 1rem;
+
+    &[disabled] {
+      border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
+    }
+  }
+
+  input:checked {
+    background-color: $color-form-element-selected;
+    border: solid 2px $color-form-element-selected;
+  }
+
+  input:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 0.875rem;
+  }
+}
+
+.form-element--chat {
+  input[type="checkbox"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input[type="radio"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked {
+    background-color: $color-chat-primary;
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked::after {
+    color: $color-default;
+  }
+}
+
+.form-element--new-label {
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
+  }
+}
+
+.form-element--user-group-name {
+  width: 100%;
+}
+
+.form-element--sign-up-message {
+  max-width: 100%;
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
+  }
+}
+
+// Application-list item selector
+.form-element--item-selection-container {
+  padding: 2px;
+}
+
+// CHECKBOX or RADIOBUTTON form-element wrapper
+.form-element--checkbox-radiobutton,
+.form-element--icon-with-label {
+  align-items: center;
+  background-color: transparent;
+  border-radius: 0;
+  display: flex;
+  margin: 0 5px 0 0;
+  padding: 5px 10px 0 0;
+  width: auto;
+
+  label {
+    font-weight: 400;
+    padding: 0;
+  }
+}
+
+.form-element--edit-label {
+  margin: 0 0 10px;
+  width: 100%;
+}
+
+.form-element--new-user {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+  }
+}
+
+.form-element--organization-workspace-date {
+  margin-right: 10px;
+}
+
+.form-element--new-user:not(:first-child) {
+  margin: 10px 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 0 20px;
+  }
+}
+
+.form-element--main-action {
+  @include form-element-toolbar;
+}
+
+.form-element--add-producer,
+.form-element--add-exam-category,
+.form-element--search {
+  @include form-element-toolbar;
+
+  justify-content: flex-end;
+}
+
+.form-element--search {
+  position: relative;
+}
+
+.form-element--subpanel-search {
+  flex-basis: 100%;
+}
+
+.form-element--profile {
+  margin: 10px 0 0;
+}
+
+.form-element--workspace-name,
+.form-element--workspace-name-extension {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.form-element--forgot-password {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
+// COPY WORKSPACE --modifiers
+.form-element--copy-workspace-start-date {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    padding: 0 10px 10px 0;
+  }
+}
+
+.form-element--copy-workspace-ckeditor {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+
+  .cke {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.form-element--copy-workspace-end-date {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    padding: 0 0 10px 10px;
+  }
+}
+
+.form-element--copy-workspace-start-date,
+.form-element--copy-workspace-end-date {
+  .react-datepicker-wrapper {
+    display: block;
+  }
+
+  .react-datepicker__input-container {
+    display: block;
+  }
+}
+
+// DESCRIPTION
+.form-element__description {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.8125rem;
+  margin: 5px 0;
+}
+
+.form-element__description-chip {
+  align-items: center;
+  background: $color-disabled-background;
+  border-color: $color-disabled-background;
+  border-radius: 2px;
+  display: flex;
+  font-size: $text-mobile-font-size;
+  height: $input-height-mobile;
+  justify-content: center;
+  margin: 0 5px;
+  padding: 0 10px;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: $input-height-desktop;
+  }
+}
+
+// TEXTFIELD
+.form-element__input {
+  @include prefix(
+    transition,
+    webkit ms o moz,
+    box-shadow 0.2s ease-in-out,
+    border 0.2s ease-in-out
+  );
+
+  appearance: none;
+  border: solid 2px $color-form-element-border;
+  border-radius: 2px;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  height: $input-height-mobile;
+  padding: 0 10px;
+  resize: none;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: $input-height-desktop;
+  }
+
+  &.INVALID {
+    border-color: $color-fatal;
+  }
+
+  &.VALID {
+    border-color: $color-success;
+  }
+
+  &[disabled] {
+    border-color: $color-disabled-background;
+  }
+
+  @include form-focus;
+}
+
+.form-element__input--note-title,
+.form-element__input--material-editor-assignment-points {
+  width: 100%;
+}
+
+.form-element__input--content-centered {
+  text-align: center;
+}
+
+.form-element__divider {
+  margin: 0 5px;
+}
+
+.form-element__input--material-editor-title {
+  background: $color-default;
+  font-size: 1.25rem;
+  font-weight: 300;
+  height: auto;
+  line-height: 1;
+  padding: 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.375rem;
+    padding: 15px;
+  }
+}
+
+.form-element__input--new-label {
+  width: 100%;
+}
+
+// Teacher's Worklist Specific fields
+.form-element__input--worklist-description,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor,
+.form-element__input--worklist-date {
+  max-width: 100%;
+  width: 100%;
+}
+
+.form-element__input--worklist-date,
+.form-element__input--worklist-price,
+.form-element__input--worklist-factor {
+  text-align: center;
+}
+
+.form-element__input--worklist-description[disabled],
+.form-element__input--worklist-price[disabled],
+.form-element__input--worklist-factor[disabled] {
+  background: $color-disabled-background;
+  border-color: $color-disabled-background;
+}
+
+.form-element__input--profile-auto-reply {
+  width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }
+}
+
+.form-element__input--workspace-management,
+.form-element__input--material-editor {
+  margin: 0;
+  width: 100%;
+}
+
+.form-element__input--workspace-data,
+.form-element__input--guider-label-name,
+.form-element__input--communicator-label-name,
+.form-element__input--announcement-category-name,
+.form-element__input--profile,
+.form-element__input--workspace-name,
+.form-element__input--user-group-name,
+.form-element__input--workspace-name-extension,
+.form-element__input--new-user {
+  width: 100%;
+}
+
+.form-element__input--forgotpassword {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
+}
+
+.form-element__input--profile-error {
+  color: $color-fatal;
+}
+
+.form-element__input--label {
+  display: block;
+}
+
+.form-element__input--search,
+.form-element__input--add-producer,
+.form-element__input--add-exam-category,
+.form-element__input--add-material-producer {
+  background-color: $color-default;
+  border-bottom: 2px solid $color-main-function-input-field-border;
+  border-left: 2px solid $color-main-function-input-field-border;
+  border-right: 2px solid $color-main-function-input-field-decoration-background;
+  border-top: 2px solid $color-main-function-input-field-border;
+  width: 100%;
+}
+
+.form-element__input--search:focus {
+  position: fixed;
+  right: 46px;
+  width: calc(100% - 56px);
+
+  @include breakpoint($breakpoint-pad) {
+    position: relative;
+    right: unset;
+    width: 100%;
+  }
+}
+
+// TEXTFIELD DECORATION
+.form-element__input-decoration {
+  border-radius: 2px;
+}
+
+.form-element__input-decoration--search,
+.form-element__input-decoration--add-producer,
+.form-element__input-decoration--add-exam-category {
+  background-color: $color-main-function-input-field-decoration-background;
+
+  &::before {
+    @include form-element-input-search-decoration;
+
+    color: $color-search-icon;
+  }
+}
+
+.form-element__input-decoration--clear-search {
+  background-color: $color-search-clear-background;
+  cursor: pointer;
+  height: 1.8rem;
+  position: absolute;
+  right: 41px;
+  top: calc(50% - 0.9rem);
+  width: 1.8rem;
+
+  &::before {
+    @include form-element-input-clear-search-decoration;
+  }
+
+  &:active,
+  &.active {
+    &::before {
+      color: $color-search-clear-icon-active;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    right: 46px;
+  }
+}
+
+// SELECT
+.form-element__select {
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+    no-repeat right 5px center;
+  background-color: transparent;
+  border: 2px solid $color-form-element-border;
+  border-radius: 2px;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  height: $select-height-mobile;
+  padding: 0 25px 0 10px;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: $select-height-desktop;
+  }
+
+  &.INVALID {
+    border-color: $color-fatal;
+  }
+
+  &.VALID {
+    border-color: $color-success;
+  }
+
+  &[disabled] {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+      no-repeat right 5px center;
+    border: 2px solid lighten($color-disabled, 20%);
+  }
+
+  @include form-focus;
+}
+
+.form-element__select--guider-hops {
+  margin: 5px 10px 5px 0;
+}
+
+.form-element__select--worklist-template {
+  max-width: 200px;
+  width: 200px;
+}
+
+.form-element__select--matriculation-exam {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin-right: 5px;
+  max-width: 50%;
+}
+
+.form-element__select--hops-selector {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: auto;
+}
+
+.form-element__select--main-action {
+  display: inline-block;
+  font-weight: 300;
+  height: 35px;
+  min-width: 150px;
+  padding: 5px 25px 5px 5px;
+  text-transform: uppercase;
+  vertical-align: top;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
+}
+
+.form-element__select--material-editor {
+  background-color: $color-default;
+  width: 100%;
+}
+
+.form-element__select--toolbar-selector {
+  display: inline-block;
+  font-weight: 300;
+  height: 35px;
+  margin-right: 20px;
+  max-width: 200px;
+  padding: 5px 25px 5px 5px;
+  text-transform: uppercase;
+  vertical-align: top;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+    max-width: 250px;
+  }
+}
+
+.form-element__select--new-user {
+  width: 100%;
+}
+
+.form-element__select--evaluation {
+  background-color: $color-default;
+}
+
+// TEXTAREA
+.form-element__textarea-container {
+  width: 100%;
+}
+
+.form-element__textarea {
+  background-color: transparent;
+  border: 2px solid $color-form-element-border;
+  border-radius: 2px;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  min-height: 150px;
+  padding: 8px 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: $text-desktop-font-size;
+  }
+
+  @include form-focus;
+}
+
+.form-element__dropdown-selection-container {
+  padding: 3px 0;
+}
+
+.form-element__dropdown-selection-container--nowrap {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.form-element__autocomplete-highlight {
+  background: $color-form-element-autocomplete-highlight;
+}
+
+// This is exactly the same as env-dialog__actions
+.form-element__actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+
+  .button {
+    margin: 0 0 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+
+    .button {
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+.form-element__actions--wizard {
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: center;
+  }
+}

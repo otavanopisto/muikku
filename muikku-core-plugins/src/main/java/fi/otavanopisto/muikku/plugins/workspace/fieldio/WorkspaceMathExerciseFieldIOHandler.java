@@ -7,7 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -55,7 +55,7 @@ public class WorkspaceMathExerciseFieldIOHandler implements WorkspaceFieldIOHand
   private String clean(String html) {
     // Note: Some baseUri is needed but doesn't really matter because of preserveRelativeLinks
     Document doc = Jsoup.parse(html, "https://otavanopisto.muikkuverkko.fi"); 
-    doc = new Cleaner(Whitelist.relaxed()
+    doc = new Cleaner(Safelist.relaxed()
         .addAttributes("div", "id", "class")
         .addAttributes("span", "id", "class")
         .addAttributes("img", "class")

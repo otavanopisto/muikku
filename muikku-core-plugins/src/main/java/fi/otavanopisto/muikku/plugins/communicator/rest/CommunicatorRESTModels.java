@@ -3,11 +3,8 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.TagController;
@@ -25,21 +22,13 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
-import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserGroupEntityName;
+import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 
 public class CommunicatorRESTModels {
 
@@ -50,22 +39,10 @@ public class CommunicatorRESTModels {
   private UserEntityController userEntityController;
 
   @Inject
-  private UserController userController;
-
-  @Inject
   private TagController tagController;
-  
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
-
-  @Inject
-  private UserGroupController userGroupController;
-  
-  @Inject
-  private UserEntityFileController userEntityFileController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -73,110 +50,27 @@ public class CommunicatorRESTModels {
   @Inject
   private OrganizationEntityController organizationEntityController;
   
-  @Inject
-  private WorkspaceController workspaceController;
-  
-  @Inject
-  @Any
-  private Instance<SearchProvider> searchProviders;
-  
-  /**
-   * Returns message sender UserBasicInfo
-   * 
-   * @param communicatorMessage
-   * @return
-   */
-  public UserBasicInfo getSenderBasicInfo(CommunicatorMessage communicatorMessage) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
-      User user = userController.findUserByUserEntityDefaults(userEntity);
-      Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
-      
-      if (user == null)
-        return null;
-      
-      UserBasicInfo result = new UserBasicInfo(
-          userEntity.getId(), 
-          userEntity.defaultSchoolDataIdentifier().toId(),
-          user.getFirstName(), 
-          user.getLastName(), 
-          user.getNickName(),
-          hasPicture
-      );
-
-      return result;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-  private SearchProvider getProvider(String name) {
-    for (SearchProvider searchProvider : searchProviders) {
-      if (name.equals(searchProvider.getName())) {
-        return searchProvider;
-      }
-    }
-    return null;
-  }
-  
   public CommunicatorUserBasicInfo getCommunicatorUserBasicInfo(Long userEntityId) {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     if (userEntity == null) {
       return null;
     }
     
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByUserEntityDefaults(userEntity);
-      boolean studiesEnded = false;
-      boolean archived = userEntity.getArchived();
-      
-      if (user == null)
-        return new CommunicatorUserBasicInfo(
-            userEntity.getId(), 
-            null, 
-            null,
-            null,
-            null,
-            archived,
-            studiesEnded
-        );
-      
-      if (!Boolean.TRUE.equals(archived)) {
-        SearchProvider searchProvider = getProvider("elastic-search");
-        if (searchProvider != null) {
-          SearchResult result = searchProvider.findUser(userEntity.defaultSchoolDataIdentifier(), true);
-          
-          List<Map<String, Object>> results = result.getResults();
-          if (results != null) {
-            for (Map<String, Object> r : results) {
-              Object studyEndDate = r.get("studyEndDate");
-              
-              if (studyEndDate != null) {
-                studiesEnded = true;
-              }
-            }
-          }
-        }
-      }
-
-      CommunicatorUserBasicInfo result = new CommunicatorUserBasicInfo(
-          userEntity.getId(), 
-          user.getFirstName(), 
-          user.getLastName(), 
-          user.getNickName(),
-          user.getStudyProgrammeName(),
-          archived,
-          studiesEnded
-      );
-
-      return result;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    UserEntityName userEntityName = userEntityController.getName(userEntity, false);
+    boolean studiesEnded = !userEntityController.isActiveUserEntity(userEntity);
+    boolean archived = userEntity.getArchived();
+    
+    return new CommunicatorUserBasicInfo(
+        userEntity.getId(), 
+        userEntityName != null ? userEntityName.getFirstName() : null,
+        userEntityName != null ? userEntityName.getLastName() : null,
+        userEntityName != null ? userEntityName.getNickName() : null,
+        userEntityName != null ? userEntityName.getStudyProgrammeName() : null,
+        archived,
+        studiesEnded
+    );
   }
 
-  
   public List<CommunicatorUserLabelRESTModel> restUserLabel(List<CommunicatorUserLabel> userLabels) {
     List<CommunicatorUserLabelRESTModel> result = new ArrayList<CommunicatorUserLabelRESTModel>();
     for (CommunicatorUserLabel userLabel : userLabels)
@@ -207,18 +101,14 @@ public class CommunicatorRESTModels {
   }
   
   public List<CommunicatorUserBasicInfo> restRecipient2(List<CommunicatorMessageRecipient> recipients) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      List<CommunicatorUserBasicInfo> result = new ArrayList<CommunicatorUserBasicInfo>();
-      for (CommunicatorMessageRecipient recipient : recipients) {
-        CommunicatorUserBasicInfo restRecipientModel = getCommunicatorUserBasicInfo(recipient.getRecipient());
-        if (restRecipientModel != null)
-          result.add(restRecipientModel);
+    List<CommunicatorUserBasicInfo> result = new ArrayList<CommunicatorUserBasicInfo>();
+    for (CommunicatorMessageRecipient recipient : recipients) {
+      CommunicatorUserBasicInfo restRecipientModel = getCommunicatorUserBasicInfo(recipient.getRecipient());
+      if (restRecipientModel != null) {
+        result.add(restRecipientModel);
       }
-      return result;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
+    return result;
   }
 
   public CommunicatorThreadViewRESTModel restThreadViewModel(List<CommunicatorMessage> messages, 
@@ -230,81 +120,63 @@ public class CommunicatorRESTModels {
   }
 
   public List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients(List<CommunicatorMessageRecipientUserGroup> recipients) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      List<fi.otavanopisto.muikku.rest.model.UserGroup> result = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
-      for (CommunicatorMessageRecipientUserGroup recipient : recipients) {
-        fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient = restUserGroupRecipient(recipient);
-        if (restUserGroupRecipient != null)
-          result.add(restUserGroupRecipient);
-      }
-      return result;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
+    List<fi.otavanopisto.muikku.rest.model.UserGroup> result = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
+    for (CommunicatorMessageRecipientUserGroup recipient : recipients) {
+      fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient = restUserGroupRecipient(recipient);
+      if (restUserGroupRecipient != null)
+        result.add(restUserGroupRecipient);
     }
+    return result;
   }
   
   public fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient(CommunicatorMessageRecipientUserGroup userGroup) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      UserGroupEntity entity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
-      if (entity != null) {
-        Long userCount = userGroupEntityController.getGroupUserCount(entity);
-        UserGroup group = userGroupController.findUserGroup(entity);
-        if (group != null) {
-          OrganizationRESTModel organization = null;
-          if (group.getOrganizationIdentifier() != null) {
-            OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
-            if (organizationEntity != null) {
-              organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
-            }
+    UserGroupEntity entity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
+    if (entity != null) {
+      Long userCount = userGroupEntityController.getGroupUserCount(entity);
+      UserGroupEntityName userGroupEntityName = userGroupEntityController.getName(entity);
+      if (userGroupEntityName != null) {
+        OrganizationRESTModel organization = null;
+        if (entity.getOrganization() != null) {
+          OrganizationEntity organizationEntity = organizationEntityController.findBy(entity.getOrganization().schoolDataIdentifier());
+          if (organizationEntity != null) {
+            organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
-          return new fi.otavanopisto.muikku.rest.model.UserGroup(
-              entity.getId(),
-              group.getName(),
-              userCount,
-              organization,
-              group.getIsGuidanceGroup());
         }
+        
+        return new fi.otavanopisto.muikku.rest.model.UserGroup(
+            entity.getId(),
+            userGroupEntityName.getName(),
+            userCount,
+            organization,
+            userGroupEntityName.getIsGuidanceGroup());
       }
-      return null;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
+    return null;
   }
   
   public List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceGroupRecipients(List<CommunicatorMessageRecipientWorkspaceGroup> recipients) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> result = new ArrayList<CommunicatorMessageRecipientWorkspaceGroupRESTModel>();
-      for (CommunicatorMessageRecipientWorkspaceGroup recipient : recipients) {
-        CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient = restWorkspaceGroupRecipient(recipient);
-        if (restWorkspaceGroupRecipient != null)
-          result.add(restWorkspaceGroupRecipient);
+    List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> result = new ArrayList<CommunicatorMessageRecipientWorkspaceGroupRESTModel>();
+    for (CommunicatorMessageRecipientWorkspaceGroup recipient : recipients) {
+      CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient = restWorkspaceGroupRecipient(recipient);
+      if (restWorkspaceGroupRecipient != null) {
+        result.add(restWorkspaceGroupRecipient);
       }
-      return result;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
+    return result;
   }
   
   public CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient(CommunicatorMessageRecipientWorkspaceGroup workspaceGroup) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
-      if (workspaceEntity != null) {
-        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
+    if (workspaceEntity != null) {
+      WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
       
-        if (workspace != null) {
-          return new CommunicatorMessageRecipientWorkspaceGroupRESTModel(workspaceGroup.getWorkspaceEntityId(), 
-              workspaceGroup.getArchetype(), workspace.getName(), workspace.getNameExtension());
-        }
+      if (workspaceEntityName != null) {
+        return new CommunicatorMessageRecipientWorkspaceGroupRESTModel(workspaceGroup.getWorkspaceEntityId(), 
+            workspaceGroup.getArchetype(), workspaceEntityName.getName(), workspaceEntityName.getNameExtension());
       }
-      
-      return null;
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
+    
+    return null;
   }
   
   public List<CommunicatorMessageRESTModel> restFullMessage(List<CommunicatorMessage> messages) {

@@ -16,10 +16,11 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
 
   private static final long serialVersionUID = 5746392088055973392L;
   
-  public HopsSuggestion create(String studentIdentifier, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
+  public HopsSuggestion create(Long userEntityId, String category, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
     HopsSuggestion hopsSuggestion = new HopsSuggestion();
 
-    hopsSuggestion.setStudentIdentifier(studentIdentifier);
+    hopsSuggestion.setUserEntityId(userEntityId);
+    hopsSuggestion.setCategory(category);
     hopsSuggestion.setSubject(subject);
     hopsSuggestion.setCourseNumber(courseNumber);
     hopsSuggestion.setType(type);
@@ -29,8 +30,7 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
     return persist(hopsSuggestion);
   }
   
-  public HopsSuggestion update(HopsSuggestion hopsSuggestion, String studentIdentifier, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
-    hopsSuggestion.setStudentIdentifier(studentIdentifier);
+  public HopsSuggestion update(HopsSuggestion hopsSuggestion, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
     hopsSuggestion.setSubject(subject);
     hopsSuggestion.setType(type);
     hopsSuggestion.setCourseNumber(courseNumber);
@@ -40,21 +40,7 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
     return persist(hopsSuggestion);
   }
   
-  public List<HopsSuggestion> listByStudentIdentifier(String studentIdentifier) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<HopsSuggestion> criteria = criteriaBuilder.createQuery(HopsSuggestion.class);
-    Root<HopsSuggestion> root = criteria.from(HopsSuggestion.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.equal(root.get(HopsSuggestion_.studentIdentifier), studentIdentifier)
-    );
-
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
-  public HopsSuggestion findByStudentIdentifierAndSubjectAndCourseNumberAndWorkspaceEntityId(String studentIdentifier, String subject, Integer courseNumber, Long workspaceEntityId) {
+  public List<HopsSuggestion> listByUserEntityIdAndCategory(Long userEntityId, String category) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -63,7 +49,26 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(HopsSuggestion_.studentIdentifier), studentIdentifier),
+        criteriaBuilder.equal(root.get(HopsSuggestion_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsSuggestion_.category), category)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public HopsSuggestion findByUserEntityIdAndCategoryAndSubjectAndCourseNumberAndWorkspaceEntityId(Long userEntityId, String category,
+      String subject, Integer courseNumber, Long workspaceEntityId) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HopsSuggestion> criteria = criteriaBuilder.createQuery(HopsSuggestion.class);
+    Root<HopsSuggestion> root = criteria.from(HopsSuggestion.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HopsSuggestion_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsSuggestion_.category), category),
         criteriaBuilder.equal(root.get(HopsSuggestion_.subject), subject),
         criteriaBuilder.equal(root.get(HopsSuggestion_.courseNumber), courseNumber),
         criteriaBuilder.equal(root.get(HopsSuggestion_.workspaceEntityId), workspaceEntityId)

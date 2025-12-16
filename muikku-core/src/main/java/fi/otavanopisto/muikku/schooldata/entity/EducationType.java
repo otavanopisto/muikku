@@ -8,4 +8,6 @@ public interface EducationType extends SchoolDataEntity {
 	
 	public String getName();
 	
+	public String getCode();
+	
 }

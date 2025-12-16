@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +69,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -472,13 +469,11 @@ public class CeeposRESTService {
     
     // Ensure order ownership
 
-    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.PAY_ORDER)) {
-      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
-      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
-      if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
-        return Response.status(Status.FORBIDDEN).build();
-      }
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
+    UserEntity orderUserEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+    if (orderUserEntity == null || !orderUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     // Ensure order hasn't been handled yet
@@ -731,7 +726,7 @@ public class CeeposRESTService {
    * 
    * DESCRIPTION:
    * 
-   * Removes the given order. The order may NOT be in state ONGOING, PAID, or COMPLETE.
+   * Removes the given order. The order may NOT be in state PAID, or COMPLETE.
    * Order removal is only available for admins or the staff member who originally
    * created the order.
    * 
@@ -742,7 +737,7 @@ public class CeeposRESTService {
   @Path("/order/{ORDERID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeeOrder(@PathParam("ORDERID") Long orderId) {
+  public Response removeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
@@ -764,13 +759,12 @@ public class CeeposRESTService {
       if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
         logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
         return Response.status(Status.FORBIDDEN).build();
-        
       }
     }
     
     // Ensure order sate
     
-    if (order.getState() == CeeposOrderState.ONGOING || order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
+    if (order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid order state").build();
     }
     
@@ -819,7 +813,7 @@ public class CeeposRESTService {
     
     String path;
     String text;
-    if (product.getType() == CeeposProductType.ASSESSMENTREQUEST) {
+    if (product.getType() == CeeposProductType.ASSESSMENTREQUEST || product.getType() == CeeposProductType.ASSESSMENTREQUEST_FUNDED) {
       CeeposAssessmentRequestOrder assessmentRequestOrder = ceeposController.findAssessmentRequestOrderById(orderId);
       if (assessmentRequestOrder == null) {
         logger.warning(String.format("Ceepos assessment request order %d: Not found", orderId));
@@ -1055,6 +1049,7 @@ public class CeeposRESTService {
       break;
     
     case ASSESSMENTREQUEST:
+    case ASSESSMENTREQUEST_FUNDED:
       CeeposAssessmentRequestOrder assessmentRequestOrder = ceeposController.findAssessmentRequestOrderById(order.getId());
       if (assessmentRequestOrder == null) {
         logger.severe(String.format("Assessment request order %d not found", order.getId()));
@@ -1267,36 +1262,8 @@ public class CeeposRESTService {
     restOrder.setProduct(restProduct);
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
-    UserEntity userEntity = userEntityController.findUserEntityById(order.getCreatorId());
-    restOrder.setCreator(toRestModel(userEntity.defaultSchoolDataIdentifier()));
+    restOrder.setUserEntityId(order.getCreatorId());
     return restOrder;
-  }
-  
-  private CeeposOrderCreatorRestModel toRestModel(SchoolDataIdentifier identifier) {
-    SearchProvider elasticSearchProvider = getProvider("elastic-search");
-    SearchResult result = elasticSearchProvider.findUser(identifier, true);
-    if (result.getResults() == null || result.getResults().isEmpty()) {
-      return null;
-    }
-    Map<String, Object> userInfo = result.getResults().get(0);
-    CeeposOrderCreatorRestModel creator = new CeeposOrderCreatorRestModel();
-    creator.setEmail((String) userInfo.get("email"));
-    creator.setFirstName((String) userInfo.get("firstName"));
-    creator.setLastName((String) userInfo.get("lastName"));
-    creator.setId(identifier.toId());
-    creator.setUserEntityId(Long.valueOf(userInfo.get("userEntityId").toString()));
-    return creator;
-  }
-
-  private SearchProvider getProvider(String name) {
-    Iterator<SearchProvider> i = searchProviders.iterator();
-    while (i.hasNext()) {
-      SearchProvider provider = i.next();
-      if (name.equals(provider.getName())) {
-        return provider;
-      }
-    }
-    return null;
   }
 
 }

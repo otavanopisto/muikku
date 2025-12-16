@@ -1,42 +1,43 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
+import java.time.LocalDate;
+
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamStudentStatus;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamTerm;
+
 public class MatriculationCurrentExam {
 
   public MatriculationCurrentExam() {
   }
   
-  public MatriculationCurrentExam(long id, long starts, long ends, boolean eligible, boolean enrolled, long enrollmentDate, boolean compulsoryEducationEligible) {
+  public MatriculationCurrentExam(long id, Integer year, MatriculationExamTerm term, LocalDate starts, LocalDate ends, LocalDate confirmDate,
+      boolean compulsoryEducationEligible, MatriculationExamStudentStatus studentStatus, MatriculationExamEnrollment enrollment) {
     this.id = id;
+    this.year = year;
+    this.term = term;
     this.starts = starts;
     this.ends = ends;
-    this.eligible = eligible;
-    this.enrolled = enrolled;
-    this.enrollmentDate = enrollmentDate;
+    this.confirmDate = confirmDate;
     this.compulsoryEducationEligible = compulsoryEducationEligible;
+    this.studentStatus = studentStatus;
+    this.enrollment = enrollment;
   }
 
-  public long getStarts() {
+  public LocalDate getStarts() {
     return starts;
   }
   
-  public void setStarts(long starts) {
+  public void setStarts(LocalDate starts) {
     this.starts = starts;
   }
 
-  public long getEnds() {
+  public LocalDate getEnds() {
     return ends;
   }
 
-  public void setEnds(long ends) {
+  public void setEnds(LocalDate ends) {
     this.ends = ends;
-  }
-
-  public boolean isEligible() {
-    return eligible;
-  }
-
-  public void setEligible(boolean eligible) {
-    this.eligible = eligible;
   }
 
   public long getId() {
@@ -47,22 +48,6 @@ public class MatriculationCurrentExam {
     this.id = id;
   }
 
-  public boolean isEnrolled() {
-    return enrolled;
-  }
-
-  public void setEnrolled(boolean enrolled) {
-    this.enrolled = enrolled;
-  }
-
-  public long getEnrollmentDate() {
-    return enrollmentDate;
-  }
-
-  public void setEnrollmentDate(long enrollmentDate) {
-    this.enrollmentDate = enrollmentDate;
-  }
-
   public boolean isCompulsoryEducationEligible() {
     return compulsoryEducationEligible;
   }
@@ -71,11 +56,53 @@ public class MatriculationCurrentExam {
     this.compulsoryEducationEligible = compulsoryEducationEligible;
   }
 
+  public MatriculationExamStudentStatus getStudentStatus() {
+    return studentStatus;
+  }
+
+  public void setStudentStatus(MatriculationExamStudentStatus studentStatus) {
+    this.studentStatus = studentStatus;
+  }
+
+  public Integer getYear() {
+    return year;
+  }
+
+  public void setYear(Integer year) {
+    this.year = year;
+  }
+
+  public MatriculationExamTerm getTerm() {
+    return term;
+  }
+
+  public void setTerm(MatriculationExamTerm term) {
+    this.term = term;
+  }
+
+  public MatriculationExamEnrollment getEnrollment() {
+    return enrollment;
+  }
+
+  public void setEnrollment(MatriculationExamEnrollment enrollment) {
+    this.enrollment = enrollment;
+  }
+
+  public LocalDate getConfirmDate() {
+    return confirmDate;
+  }
+
+  public void setConfirmDate(LocalDate confirmDate) {
+    this.confirmDate = confirmDate;
+  }
+
   private long id;
-  private long starts;
-  private long ends;
-  private boolean eligible;
-  private boolean enrolled;
-  private long enrollmentDate;
+  private Integer year;
+  private MatriculationExamTerm term;
+  private LocalDate starts;
+  private LocalDate ends;
+  private LocalDate confirmDate;
   private boolean compulsoryEducationEligible;
+  private MatriculationExamStudentStatus studentStatus;
+  private MatriculationExamEnrollment enrollment;
 }

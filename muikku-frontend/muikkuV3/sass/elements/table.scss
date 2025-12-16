@@ -1,0 +1,389 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.table__scrollable-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+
+  .table {
+    position: relative;
+  }
+
+  .table__thead--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    .table__head {
+      top: 0;
+    }
+  }
+}
+
+.table--assignment-points {
+  .table__data,
+  .table__head {
+    height: 30px;
+  }
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: $system-font-family;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table--language-table,
+.table--question-table {
+  margin: 5px;
+  width: calc(100% - 10px);
+}
+
+.table__tbody {
+  border-bottom: 2px solid $color-hops-form-element-border;
+}
+
+.table__thead th {
+  background: $color-default;
+  border-bottom: 2px solid $color-hops-form-element-border;
+  z-index: 3;
+}
+
+.table__thead--sticky th {
+  position: sticky;
+  top: $navbar-mobile-height;
+
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+    top: $navbar-desktop-height;
+  }
+}
+
+.table__thead--sticky-inside-dialog th {
+  position: sticky;
+  top: $dialog-title-height;
+}
+
+// This is span element and is necessary wrapper for the flex elements alignment inside TD's
+.table__alignment-helper {
+  display: inline-block;
+}
+
+.table__alignment-helper--required::after {
+  color: $color-fatal;
+  content: " *";
+}
+
+.table__data,
+.table__head {
+  height: 50px;
+}
+
+.table__row {
+  background-color: $color-default;
+}
+
+.table__row--clickable {
+  cursor: pointer;
+}
+
+.table__row--disabled {
+  color: $color-disabled;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+.table__row--empty {
+  background: transparent;
+
+  .table__data {
+    height: 20px;
+  }
+}
+
+.table__row:nth-child(even) {
+  background-color: $color-default-lighter-generic-background;
+}
+
+.table__head {
+  color: $color-default-contrast;
+  font-weight: 600;
+}
+
+.table__head--month {
+  padding: 5px;
+  text-align: left;
+  width: 100px;
+}
+
+.table__head--planned-courses {
+  padding: 5px;
+  text-align: left;
+}
+
+.table__head--language,
+.table__head--subject {
+  padding: 5px;
+  text-align: left;
+  width: 100px;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 150px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 200px;
+  }
+}
+
+.table__head--left,
+.table__data--left {
+  text-align: left;
+}
+
+.table__head--centered,
+.table__data--centered {
+  text-align: center;
+}
+
+.table__head--language-profile-first-cell {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
+
+}
+
+.table__head--evaluate-workspaces {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 400px;
+  }
+}
+
+
+.table__head--right,
+.table__data--right {
+  text-align: right;
+}
+
+.table__data {
+  padding: 5px;
+  position: relative;
+  width: auto;
+}
+
+.table__data--language-profile-first-cell {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
+}
+
+.table__data--evaluate-workspaces,
+.table__data--language-levels {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: start;
+
+  @include breakpoint($breakpoint-pad) {
+    white-space: nowrap;
+    width: 400px;
+  }
+}
+
+.table__data--language-profile-single-column {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.table__data--subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.table__data--merged {
+  font-weight: 600;
+  padding: 10px 5px 5px;
+  text-align: left;
+}
+
+.table__data--language {
+  font-weight: 600;
+}
+
+.table__data--subject {
+  font-weight: 600;
+  max-width: 200px;
+  width: 200px;
+}
+
+.table__data--course {
+  overflow: hidden;
+  text-align: center;
+}
+
+.table__data-content-wrapper--course {
+  align-items: center;
+  border: 3px solid transparent;
+  border-radius: 100%;
+  color: $color-default-contrast;
+  cursor: pointer;
+  display: flex;
+  height: 35px;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 5px;
+  width: 35px;
+}
+
+.table__data--MANDATORY {
+  .table__data-content-wrapper--course {
+    background-color: $color-mandatory;
+  }
+}
+
+.table__data--OPTIONAL {
+  .table__data-content-wrapper--course {
+    background: $color-optional;
+  }
+}
+
+.table__data--COMPLETED {
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.table__data--COMPLETED.table__data--PASSED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-completed;
+    border-color: $color-completed-border;
+    border-radius: 50% 50% 50% 3px;
+  }
+}
+
+.table__data--COMPLETED.table__data--FAILED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-passed-failed;
+    border-color: $color-passed-failed-border;
+    border-radius: 50% 50% 50% 3px;
+  }
+}
+
+.table__data--APPROVAL {
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.table__data--ABORTED {
+  .table__data-content-wrapper--course {
+    background: $color-passed-aborted;
+    border-color: $color-passed-aborted-border;
+  }
+}
+
+.table__data--APPROVAL.table__data--PASSED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-completed;
+  }
+}
+
+.table__data--APPROVAL.table__data--FAILED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-passed-failed;
+  }
+}
+
+.table__data--SUPPLEMENTATIONREQUEST {
+  .table__data-content-wrapper--course {
+    background: lighten($color-incomplete, 30%);
+    border-color: $color-incomplete;
+    border-width: 3px;
+  }
+}
+
+.table__data--INPROGRESS {
+  .table__data-content-wrapper--course {
+    background: $color-default;
+    border-color: $color-info;
+    border-radius: 50% 3px 50% 50%;
+  }
+}
+
+.table__data--NEXT {
+  .table__data-content-wrapper--course {
+    background: lighten($color-next, 50%);
+    border-color: $color-next;
+    border-radius: 50% 3px;
+  }
+}
+
+.table__data-content--empty {
+  display: none;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    display: revert;
+  }
+}
+
+.table__data--NOSTATUS {
+  background-color: unset;
+}

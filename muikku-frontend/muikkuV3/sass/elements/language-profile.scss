@@ -1,0 +1,529 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.language-profile-container {
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.language-profile-container__fieldset {
+  border: 0;
+  border-bottom: 1px solid $color-default-separator-border;
+  margin: 0 0 15px;
+  padding: 0 0 10px;
+}
+
+.language-profile-container__subheader {
+  border: 0;
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 400;
+  margin: 0 5px 10px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+  }
+}
+
+.language-profile-container__subheader--cv {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.language-profile-container__secondary-header {
+  border: 0;
+  display: block;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  margin: 10px 5px 5px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+  }
+}
+
+.language-profile-container__fieldset-description {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  margin: 10px 5px;
+}
+
+.language-profile-container__fieldset-description--table-legend {
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  margin: 20px 0 5px;
+  padding: 10px;
+
+  @include text;
+}
+
+.language-profile-container__row {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 10px 0;
+  position: relative;
+  width: 100%;
+}
+
+.language-profile-container__row--new-sample {
+  background: $color-default-generic-background;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 10px;
+}
+
+.language-profile-container__row--sample {
+  align-items: center;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 5px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: $color-default-generic-background;
+  }
+
+  audio {
+    border-radius: 25px;
+    box-shadow: none;
+    height: 2rem;
+    width: 100%;
+  }
+}
+
+.language-profile-container__row--sample-tagged-for-removal {
+  .language-profile__sample-link,
+  .language-profile__textarea {
+    color: $color-disabled;
+    font-style: italic;
+    text-decoration: line-through;
+  }
+}
+
+.language-profile-container__row--buttons {
+  gap: 10px;
+  justify-content: center;
+}
+
+.language-profile__form-element-container {
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 5px;
+  position: relative;
+}
+
+.language-profile__button-container {
+  height: 0;
+  transform: height 0.3s ease-in-out;
+  transition: height 0.3s ease-in-out;
+  
+  &.state-OPEN {
+    height: 30px;
+    transition: height 0.3s ease-in-out;
+  }
+}
+
+.language-profile__sample {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+
+.language-profile__sample-buttons {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 0;
+}
+
+.language-profile__sample-buttons--add-sample {
+  margin: 10px 0 0;
+}
+
+.language-profile__sample-buttons--edit-sample {
+  margin: 10px 0;
+}
+
+
+.language-profile__select {
+  background: $color-default;
+  border: 2px solid $color-language-profile-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  height: $select-height-mobile;
+  padding: 4px;
+  width: 100%;
+
+  &[disabled] {
+    background-color: lighten($color-disabled, 25%);
+    border-color: lighten($color-disabled, 25%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: $select-height-desktop;
+  }
+}
+
+.language-profile__input-group-container {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.language-profile__textfield-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: space-between;
+
+   @include breakpoint($breakpoint-pad) {
+    flex-wrap: nowrap;
+  }
+}
+
+.language-profile__text-sample {
+  flex-basis: 100%;
+}
+
+.language-profile__textarea {
+  background: $color-default;
+  border: 2px solid $color-language-profile-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  height: 6rem;
+  padding: 4px 8px;
+  resize: vertical;
+  width: 100%;
+
+  &[disabled] {
+    background-color: lighten($color-disabled, 25%);
+    border: 2px solid lighten($color-disabled, 10%);
+  }
+}
+
+.language-profile__input-container {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 10px 0;
+}
+
+.language-profile__input {
+  background: $color-default;
+  border: 2px solid $color-language-profile-form-element-border;
+  border-radius: 3px;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: $select-height-mobile;
+  padding: 4px 8px;
+
+  &[disabled] {
+    background-color: lighten($color-disabled, 25%);
+    border-color: lighten($color-disabled, 25%);
+  }
+
+  &.INVALID {
+    animation: invalid 0.2s ease 0s normal forwards;
+    border: 2px solid $color-fatal;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: $select-height-desktop;
+  }
+}
+
+.language-profile__input[type="checkbox"],
+.language-profile__input[type="radio"] {
+  align-items: center;
+  appearance: none;
+  border: solid 2px $color-language-profile-form-element-border;
+  border-radius: 3px;
+  display: inline-flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: 0 5px;
+  padding: 4px 10px;
+  width: 1.5rem;
+
+  // Checked element
+  &:checked {
+    background-color: $color-language-profile-accent-color;
+    border: solid 2px $color-language-profile-accent-color;
+  }
+
+  // Checked element's checkmark
+  &:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 0.875rem;
+  }
+
+  // Disabled element
+  &[disabled] {
+    background: transparent;
+    border-color: lighten($color-disabled, 20%);
+  }
+
+  // Disabled and checked element
+  &[disabled]:checked {
+    background: lighten($color-disabled, 10%);
+    border-color: lighten($color-disabled, 10%);
+  }
+
+  // Disabled and checked element's checkmark
+  &[disabled]:checked::after {
+    color: $color-default;
+  }
+}
+
+.language-profile__input[type="radio"] {
+  border-radius: 100%;
+}
+
+.language-profile__label {
+  display: block;
+  font-weight: 600;
+  margin: 0 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.language-profile__field-description {
+  color: lighten($color-default-contrast, 30%);
+  display: block;
+  margin: 0 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.language-profile__add-language {
+  position: relative;
+}
+
+.language-profile__language-dropdown {
+  background-color: $color-default;
+  border: 1px solid $color-language-profile-accent-color;
+  box-shadow: 0 10px 20px $color-dropdown-default-shadow;
+  left: 0;
+  max-height: 200px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 40px;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  z-index: 5;
+}
+
+.language-profile__dropdown-item {
+  cursor: pointer;
+  padding: 10px;
+
+  &:hover {
+    background: lighten($color-language-profile-accent-color, 50%)
+  }
+}
+
+.language-profile__languages-wrapper {
+  border: 1px solid $color-default-separator-border;
+  border-radius: 3px;
+  margin: 10px 0;  
+}
+
+.language-profile__languages {
+  border-collapse: collapse;
+  width: 100%;
+
+  thead {
+    th {
+      border-bottom: 1px solid $color-outline;
+      padding: 5px;
+    }
+  }
+
+  tr:nth-child(even) {
+    background-color: $color-default-generic-background;
+  }
+}
+
+.language-profile__language {
+  cursor: pointer;
+
+  &.DISABLED {
+    color: $color-disabled;
+    cursor: not-allowed;
+  }
+}
+
+.language-profile__footer {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+}
+
+.language-profile__sample-file-description {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+
+  label {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+}
+
+.language-profile__sample-file {
+  align-items: center;
+  background: $color-default-generic-background;
+  border-radius: 5px;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: 30px;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 5px 0 5px 10px;
+}
+
+.language-profile__file-uploader-file {
+  background-color: $color-default;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.language-profile__file-uploader-field {
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  opacity: 0%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
+.language-profile__file-sample {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.language-profile__audio-sample {
+  flex-grow: 1;
+}
+
+.language-profile__audio-sample-description { 
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.language-profile__file-sample-description {
+  font-weight: 600;
+}
+
+.language-profile__file-uploader-container {
+  align-items: center;
+  background: $color-default;
+  border: 2px solid $color-language-profile-form-element-border;
+  border-radius: 2px;
+  display: flex;
+  height: 6rem;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.language-profile__file-description-input {
+  border: 2px solid $color-language-profile-form-element-border;
+  padding: 3px;
+}
+
+.language-profile__remove-button {
+  background: transparent;
+  color: $color-fatal;
+  cursor: pointer;
+  font-size: 1.0625rem;
+  height: auto;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  text-decoration: none;
+  width: auto;
+}
+
+.language-profile__stars-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+}
+
+.language-profile__stars {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 5px;
+
+}
+
+.language-profile__star {
+  appearance: none;
+  background-color: $color-default;
+  color: $color-language-profile-accent-color;
+  cursor: pointer;
+  font-size: 1rem;
+  height: auto;
+  text-decoration: none;
+  width: auto;
+}
+
+@keyframes invalid {
+	0% {
+		transform: translate(0);
+	}
+
+	20% {
+		transform: translate(-2px, 2px);
+	}
+
+	40% {
+		transform: translate(-2px, -2px);
+	}
+
+	60% {
+		transform: translate(2px, 2px);
+	}
+
+	80% {
+		transform: translate(2px, -2px);
+	}
+
+	100% {
+		transform: translate(0);
+	}
+}

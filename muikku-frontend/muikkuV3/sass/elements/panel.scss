@@ -1,0 +1,428 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+// PANEL GROUPS
+.panel-group {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.panel-group--dependants {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 66.66%;
+    flex-flow: row wrap;
+    flex-grow: 1;
+  }
+}
+
+.panel-group--studies {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33.333%;
+    flex-flow: row wrap;
+    max-width: 33.333%;
+  }
+}
+
+.panel-group--info {
+  order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33.333%;
+    flex-flow: row wrap;
+    max-width: 33.333%;
+  }
+}
+
+.panel-group--workspace-main {
+  order: 2;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }
+}
+
+.panel-group--workspace-aside {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    align-items: flex-start;
+    flex-basis: 33%;
+    flex-flow: row wrap;
+    max-width: 33%;
+  }
+}
+
+// PANELS
+.panel {
+  align-items: flex-start;
+  background-color: $color-panel-background-color;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+  max-width: 100%;
+  min-height: 25px;
+  overflow: visible;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: transparent;
+    box-shadow: none;
+    margin: 0;
+  }
+}
+
+.panel--continue-studies {
+  flex-shrink: 0;
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+  }
+}
+
+.panel--workspaces {
+  flex-shrink: 0;
+  order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+  }
+}
+
+.panel--announcements {
+  order: 3;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33.333%;
+    max-width: 33.333%;
+  }
+}
+
+.panel--workspace-signup {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+.panel--workspace-teachers {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+.panel--workspace-announcements {
+  order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+.panel--workspace-description {
+  order: 2;
+
+  @include breakpoint($breakpoint-desktop) {
+    align-items: initial;
+    align-self: stretch;
+    flex-basis: 67%;
+    flex-flow: column nowrap;
+    max-width: 67%;
+    order: 1;
+  }
+}
+
+.panel__header {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  height: 38px;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px;
+    padding: 0;
+  }
+}
+
+.panel__header--workspace-settings {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+// PANEL HEADER ICONS
+.panel__header-icon {
+  align-items: center;
+  border: 2px solid $color-default;
+  border-radius: 100%;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  height: 34px;
+  justify-content: center;
+  padding: 7px;
+  width: 34px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+    height: 38px;
+    width: 38px;
+  }
+}
+
+.panel__header-icon--wall {
+  background-color: $color-index-text-for-panels-title-wall-icon-background;
+  color: $color-index-text-for-panels-title-wall-icon-color;
+}
+
+.panel__header-icon--dependants {
+  background-color: $color-index-text-for-panels-title-dependants-icon-background;
+  color: $color-index-text-for-panels-title-dependants-icon-color;
+}
+
+.panel__header-icon--continue-studies {
+  background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
+  color: $color-index-text-for-panels-title-continue-studies-icon-color;
+}
+
+.panel__header-icon--workspaces {
+  background-color: $color-index-text-for-panels-title-workspaces-icon-background;
+  color: $color-index-text-for-panels-title-workspaces-icon-color;
+}
+
+.panel__header-icon--latest-messages {
+  background-color: $color-index-text-for-panels-title-latest-messages-icon-background;
+  color: $color-index-text-for-panels-title-latest-messages-icon-color;
+}
+
+.panel__header-icon--important {
+  background-color: $color-index-text-for-panels-title-important-icon-background;
+  color: $color-index-text-for-panels-title-important-icon-color;
+}
+
+.panel__header-icon--announcements {
+  background-color: $color-index-text-for-panels-title-announcements-icon-background;
+  color: $color-index-text-for-panels-title-announcements-icon-color;
+  position: relative;
+}
+
+.panel__header-icon--error {
+  background-color: $color-fatal;
+  color: $color-default;
+}
+
+.panel__header-icon--studies-ended {
+  background-color: $color-info;
+  color: $color-default;
+}
+
+.panel__header-icon--workspace-evaluation {
+  background-color: $color-workspace-text-for-panels-title-teachers-icon-background;
+  color: $color-workspace-text-for-panels-title-teachers-icon-color;
+
+  &.STATE-passed {
+    background-color: $color-passed;
+    color: $color-default;
+  }
+
+  &.STATE-incomplete {
+    background-color: $color-incomplete;
+    color: $color-default;
+  }
+}
+
+.panel__header-icon--workspace-teachers {
+  background-color: $color-workspace-text-for-panels-title-teachers-icon-background;
+  color: $color-workspace-text-for-panels-title-teachers-icon-color;
+}
+
+.panel__header-icon--workspace-announcements {
+  background-color: $color-workspace-text-for-panels-title-announcements-icon-background;
+  color: $color-workspace-text-for-panels-title-announcements-icon-color;
+  position: relative;
+}
+
+.panel__header-icon--workspace-description {
+  background-color: $color-workspace-text-for-panels-title-description-icon-background;
+  color: $color-workspace-text-for-panels-title-description-icon-color;
+}
+
+.panel__header-icon--workspace-signup {
+  background-color: $color-workspace-text-for-panels-title-signup-icon-background;
+  color: $color-workspace-text-for-panels-title-signup-icon-color;
+}
+
+.panel__header-title {
+  @include text;
+
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.25rem;
+  font-weight: 300;
+  height: $panel-header-title-height-mobile;
+  line-height: 1;
+  position: relative;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+    height: $panel-header-title-height-desktop;
+  }
+
+  &:not(:first-child) {
+    margin: 0 0 0 10px;
+  }
+}
+
+.panel__header-icon-text {
+  font-family: $system-font-family;
+}
+
+.panel__body {
+  @include text;
+
+  background-color: $color-panel-background-color;
+  border: 0;
+  border-radius: $panel-border-radius;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-height: 2.625rem;
+
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-panel-border-color;
+    margin: 0 10px 10px;
+  }
+}
+
+.panel__body--empty,
+.panel__body-content--empty {
+  font-style: italic;
+  padding: 10px;
+}
+
+.panel__body--studies-ended {
+  font-style: italic;
+  line-height: 1.35rem;
+  padding: 10px;
+}
+
+.panel__body--error {
+  font-style: italic;
+  line-height: 1.35rem;
+  padding: 10px;
+}
+
+.panel__body-highlight {
+  display: inline;
+  font-style: italic;
+  font-weight: 600;
+  margin: 0 5px;
+}
+
+.panel__body-text {
+  // This is for direct text content inside of panel_body
+  font-weight: 400;
+  line-height: 1.5rem;
+}
+
+.panel__body-title {
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding
+}
+
+.panel__body-content {
+  padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements
+}
+
+.panel__body-content--signup {
+  line-height: 1.5rem;
+}
+
+.panel__body-content--continue-studies {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.panel__body-footer {
+  line-height: 1;
+  padding: 0 10px 10px; // Top padding is omitted as panel__body-content has bottom padding
+}

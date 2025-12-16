@@ -24,6 +24,16 @@ public class WorkspaceMaterial extends WorkspaceNode {
   public WorkspaceNodeType getType() {
     return WorkspaceNodeType.MATERIAL;
   }
+  
+  @Transient
+  public boolean isExamAssignment() {
+    return getParent() != null && getParent() instanceof WorkspaceFolder && ((WorkspaceFolder) getParent()).getExam();
+  }
+  
+  @Transient
+  public boolean isAssignment() {
+    return assignmentType == WorkspaceMaterialAssignmentType.EVALUATED || assignmentType == WorkspaceMaterialAssignmentType.EXERCISE;
+  }
 
   public WorkspaceMaterialAssignmentType getAssignmentType() {
     return assignmentType;
@@ -40,6 +50,22 @@ public class WorkspaceMaterial extends WorkspaceNode {
   public void setCorrectAnswers(WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     this.correctAnswers = correctAnswers;
   }
+  
+  public Double getMaxPoints() {
+    return maxPoints;
+  }
+
+  public void setMaxPoints(Double maxPoints) {
+    this.maxPoints = maxPoints;
+  }
+  
+  public WorkspaceMaterialAI getAi() {
+    return ai;
+  }
+  
+  public void setAi(WorkspaceMaterialAI ai) {
+    this.ai = ai;
+  }
 
   @NotNull
   @Column(nullable = false)
@@ -50,5 +76,11 @@ public class WorkspaceMaterial extends WorkspaceNode {
   
   @Enumerated (EnumType.STRING)
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
+
+  @Column
+  private Double maxPoints;
+  
+  @Enumerated (EnumType.STRING)
+  private WorkspaceMaterialAI ai;
   
 }

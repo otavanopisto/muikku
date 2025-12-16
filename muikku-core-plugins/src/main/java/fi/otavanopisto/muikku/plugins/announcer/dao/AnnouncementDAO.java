@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -21,6 +25,9 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient_;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup_;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement_;
@@ -32,8 +39,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   private static final long serialVersionUID = -8721990589622544635L;
   
   public Announcement create(Long publisherUserEntityId, OrganizationEntity organizationEntity, 
-      String caption, String content, Date created, Date startDate, 
-      Date endDate, Boolean archived, Boolean publiclyVisible) {
+      String caption, String content, Date created, Date startDate,
+      Date endDate, Boolean archived, Boolean publiclyVisible, List<AnnouncementCategory> categories, boolean pinned) {
+
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setOrganizationEntityId(organizationEntity.getId());
@@ -44,12 +52,14 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setEndDate(endDate);
     announcement.setArchived(archived);
     announcement.setPubliclyVisible(publiclyVisible);
+    announcement.setCategories(categories);
+    announcement.setPinned(pinned);
     return persist(announcement);
   }
 
   public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, List<UserGroupEntity> userGroupEntities, 
-      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean archived) {
-    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, archived);
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults, List<AnnouncementCategory> categories) {
+    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults, categories);
   }
   
   public List<Announcement> listAnnouncements(
@@ -59,7 +69,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       AnnouncementEnvironmentRestriction environment, 
       AnnouncementTimeFrame timeFrame, 
       UserEntity announcementOwner,
-      boolean archived) {
+      boolean onlyUnread,
+      Long loggedUser,
+      boolean archived,
+      Integer firstResult, 
+      Integer maxResults,
+      List<AnnouncementCategory> categories) {
     EntityManager entityManager = getEntityManager();
     Date currentDate = onlyDateFields(new Date());
     
@@ -165,12 +180,57 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       groupPredicates.add(root.in(subquery));
     }
     
-    predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
+    /**
+     * User recipients for unread announcements:
+     */
+
+    ListJoin<Announcement, AnnouncementRecipient> announcementRecipientJoin = root.join(Announcement_.announcementRecipients, JoinType.LEFT);
+    announcementRecipientJoin.on(criteriaBuilder.equal(announcementRecipientJoin.get(AnnouncementRecipient_.userEntityId), loggedUser));
     
+    if (onlyUnread) { 
+      predicates.add(criteriaBuilder.isNull(
+          announcementRecipientJoin.get(AnnouncementRecipient_.id)
+          ));
+    }
+    
+    /**
+     * Announcement categories:
+     */
+    
+    if (CollectionUtils.isNotEmpty(categories)) {
+      ListJoin<Announcement, AnnouncementCategory> join = root.join(Announcement_.categories);
+      predicates.add(join.in(categories));
+    }
+    
+    predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
-    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)), criteriaBuilder.desc(root.get(Announcement_.id)));
+    criteria.orderBy(
+        criteriaBuilder.desc(root.get(Announcement_.pinned)),
+        criteriaBuilder.desc(announcementRecipientJoin.get(AnnouncementRecipient_.pinned)),
+        criteriaBuilder.desc(root.get(Announcement_.startDate)),
+        criteriaBuilder.desc(root.get(Announcement_.id))
+    );
     
+    TypedQuery<Announcement> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
+  }
+  
+  public List<Announcement> listAnnouncementsByCategory(AnnouncementCategory category){
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Announcement> criteria = criteriaBuilder.createQuery(Announcement.class);
+    Root<Announcement> root = criteria.from(Announcement.class);
+    
+    Join<Announcement, AnnouncementCategory> categories = root.join(Announcement_.categories);
+
+    criteria.select(root).where(criteriaBuilder.equal(categories, category)).distinct(true);
+
     return entityManager.createQuery(criteria).getResultList();
   }
   
@@ -201,6 +261,16 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement updateArchived(Announcement announcement, Boolean archived) {
     announcement.setArchived(archived);
+    return persist(announcement);
+  }
+  
+  public Announcement updateCategories(Announcement announcement, List<AnnouncementCategory> categories) {
+    announcement.setCategories(categories);
+    return persist(announcement);
+  }
+  
+  public Announcement updatePinned(Announcement announcement, boolean pinned) {
+    announcement.setPinned(pinned);
     return persist(announcement);
   }
   

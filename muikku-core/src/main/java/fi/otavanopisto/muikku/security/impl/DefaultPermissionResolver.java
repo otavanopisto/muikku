@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -133,8 +134,8 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (userSchoolDataIdentifier != null) {
       // Environment access as an individual
-      if (userSchoolDataIdentifier.getRole() != null) {
-        if (permissionController.hasPermission(userSchoolDataIdentifier.getRole(), permission)) {
+      for (EnvironmentRoleEntity roleEntity : userSchoolDataIdentifier.getRoles()) {
+        if (permissionController.hasPermission(roleEntity, permission)) {
           // TODO Override rules for environment users
           return true;
         }

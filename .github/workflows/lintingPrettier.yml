@@ -1,0 +1,27 @@
+name: Prettier Code Quality Review
+on:
+  pull_request:
+    branches: devel
+jobs:
+  prettier:
+    name: Prettier
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.11.1
+
+      - name: Install Node.js dependencies
+        run: npm ci
+        working-directory: muikku-frontend/muikkuV3
+
+      - name: Running Prettier Code Quality Review
+        uses: wearerequired/lint-action@v2
+        with:
+          prettier: true
+          prettier_extensions: "ts,tsx"
+          prettier_dir: muikku-frontend/muikkuV3

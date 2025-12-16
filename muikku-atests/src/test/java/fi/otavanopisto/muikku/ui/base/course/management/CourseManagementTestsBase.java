@@ -6,6 +6,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -318,7 +319,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").nameExtension("For test").buildCourse();
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
@@ -331,15 +332,30 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
+        navigate(String.format("/workspace/%s/", workspace.getUrlName()), false);
+        waitForVisible(".hero__workspace-name-extension span");
+        assertTextIgnoreCase(".hero__workspace-name-extension span", "For test");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        waitForVisible("#wokspaceName");
+        String title = getAttributeValue("#wokspaceName", "value");
+        int i = 0;
+        while (title.isEmpty()) {
+          i++;
+          refresh();
+          sleep(300);
+          title = getAttributeValue("#wokspaceName", "value");
+          if(i > 15)
+            break;
+        }
         waitForPresent(".license-selector select");
-        scrollIntoView(".license-selector select");
+        scrollTo(".license-selector select", 150);
+        waitForVisible(".license-selector select");
         selectOption(".license-selector select", "CC3");
+        sleep(1000);
         scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
-        waitForVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__item--success");
         waitForNotVisible(".loading");
-        
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".footer--workspace .license__link");
         assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by-nc-sa/3.0");
@@ -438,7 +454,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick(".navbar__item--settings a");
         waitForPresent("input#usergroup1");
         scrollIntoView("input#usergroup1");
-        waitAndClick("input#usergroup1");
         scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
@@ -449,21 +464,18 @@ public class CourseManagementTestsBase extends AbstractUITest {
         login();
         navigate("/coursepicker", false);
         waitForVisible(".application-panel__actions-aside ");
-//        refresh();
         waitForVisible(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
         assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
-        waitForVisible(".dialog__content-row #signUpMessage");
-        sendKeys("#signUpMessage", "Hello!\nSigning up!");
+
+        waitAndClickAndConfirm(".button--standard-ok", ".hero__workspace-title", 5, 10000);
         
         MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-        
         mockBuilder
-          .addCourseStudent(course1.getId(), courseStudent)
-          .build();
-        waitAndClick(".button--standard-ok");
-        waitForPresent(".hero__workspace-title");
+        .addCourseStudent(course1.getId(), courseStudent)
+        .build();
+        
         
         logout();
         mockBuilder.mockLogin(admin);
@@ -473,10 +485,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
         waitAndClick("div.application-list__item.message");
-        assertText(".application-list__item-content-body", "Opiskelija Student Tester (Test Study Programme) on ilmoittautunut kurssille Test (test extension).\n" + 
-            "\n" + 
-            "Viesti opiskelijalta:\n" + 
-            "Hello! Signing up!");
+        assertText(".application-list__item-content-body", "Opiskelija Student Tester (Test Study Programme) on ilmoittautunut kurssille Test (test extension).\n"
+            + "Opiskelijalle ei lähetetty automaattista liittymisviestiä.");
       }finally{
         deleteUserGroupUsers();
         deleteUserGroups();
@@ -488,5 +498,83 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  public void changeCourseDescriptionTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+
+      try{
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
+        waitAndClick(".material-admin-panel .icon-pencil");
+        waitForVisible("#materialEditorContainer");
+        addTextToCKEditor("Adding some test text");
+        waitAndClick(".button-pill--material-editor-publish-page");
+        waitForPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
+        waitAndClick(".button-pill__icon.icon-arrow-left");
+        refresh();
+        waitForPresent(".material-page__content.rich-text");
+        assertTextIgnoreCase(".material-page__content.rich-text", "Adding some test text");
+      }finally{
+        deleteWorkspace(workspace.getId());  
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void changeDescriptionLanguageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").nameExtension("For test").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try{
+        navigate(String.format("/workspace/%s/", workspace.getUrlName()), false);
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
+        waitAndClick(".material-admin-panel .icon-pencil");
+        waitForElementToBeClickable("select.form-element__select--material-editor");
+        selectOption("select.form-element__select--material-editor", "en");
+        waitAndClick(".button-pill--material-editor-publish-page");
+        waitForPresent(".button-pill--material-editor-publish-page.button-pill--disabled");
+        waitAndClick(".button-pill__icon.icon-arrow-left");
+        refresh();
+        waitForPresent(".material-page__content-wrapper");
+        assertEquals("Language not set as expected!" , "en", getAttributeValue(".material-page__content-wrapper", "lang"));
+      }finally{
+        deleteWorkspace(workspace.getId());  
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }

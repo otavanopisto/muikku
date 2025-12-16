@@ -13,9 +13,10 @@ public class HopsGoalsDAO extends CorePluginsDAO<HopsGoals> {
 
   private static final long serialVersionUID = 5461337114574820695L;
 
-  public HopsGoals create(String studentIdentifier, String goals) {
+  public HopsGoals create(Long userEntityId, String category, String goals) {
     HopsGoals hopsGoals = new HopsGoals();
-    hopsGoals.setStudentIdentifier(studentIdentifier);
+    hopsGoals.setUserEntityId(userEntityId);
+    hopsGoals.setCategory(category);
     hopsGoals.setGoals(goals);
     return persist(hopsGoals);
   }
@@ -25,7 +26,7 @@ public class HopsGoalsDAO extends CorePluginsDAO<HopsGoals> {
     return persist(hopsGoals);
   }
 
-  public HopsGoals findByStudentIdentifier(String studentIdentifier) {
+  public HopsGoals findByUserEntityIdAndCategory(Long userEntityId, String category) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -33,7 +34,10 @@ public class HopsGoalsDAO extends CorePluginsDAO<HopsGoals> {
     Root<HopsGoals> root = criteria.from(HopsGoals.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(HopsGoals_.studentIdentifier), studentIdentifier)
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HopsGoals_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsGoals_.category), category)
+      )
     );
 
     return getSingleResult(entityManager.createQuery(criteria));

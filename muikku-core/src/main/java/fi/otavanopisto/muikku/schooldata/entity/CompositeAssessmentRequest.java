@@ -6,6 +6,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public interface CompositeAssessmentRequest extends SchoolDataEntity {
 	
+  public SchoolDataIdentifier getIdentifier();
   public SchoolDataIdentifier getCourseStudentIdentifier();
   public SchoolDataIdentifier getUserIdentifier();
   public String getFirstName();
@@ -17,6 +18,7 @@ public interface CompositeAssessmentRequest extends SchoolDataEntity {
   public Date getCourseEnrollmentDate();
   public Date getAssessmentRequestDate();
   public Date getEvaluationDate();
-  public Boolean getPassing();
+  public boolean getPassing();
+  public boolean getLocked();
 
 }

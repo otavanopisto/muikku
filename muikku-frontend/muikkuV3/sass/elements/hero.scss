@@ -1,0 +1,285 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.hero {
+  @include text;
+}
+
+.hero--frontpage {
+  background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
+  background-size: cover;
+  margin-top: $navbar-mobile-height;
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    background-image: url("/gfx/oo-branded-site-header-background.png");
+    background-size: auto;
+    box-shadow: 0 2px 5px $color-hero-default-shadow;
+    margin-top: $navbar-desktop-height;
+  }
+}
+
+.hero--workspace {
+  border-bottom: 5px solid $color-hero-workspace-background;
+  border-top: 5px solid $color-hero-workspace-background;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+  max-width: 100%;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    border: 5px solid $color-hero-workspace-background;
+    border-radius: $panel-border-radius;
+    margin: 10px;
+  }
+}
+
+.hero__wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
+  padding: 1.5rem 0 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+    padding: 2.5rem 0.5rem;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    padding: 4.5rem 0.5rem;
+  }
+}
+
+.hero__wrapper--workspace {
+  align-items: flex-start;
+  background-position: center center;
+  background-size: cover;
+  flex-basis: 100%;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: center;
+  max-width: 100%;
+  min-height: 150px;
+  padding: 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    min-height: 196px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    min-height: 250px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    min-height: 270px;
+  }
+
+  &.STATE-passed::before {
+    background-image: inherit;
+    background-position: center center;
+    background-size: cover;
+    bottom: 0;
+    content: "";
+    filter: grayscale(100%);
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 0;
+  }
+}
+
+.hero__workspace-assessment-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+  justify-content: end;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+.hero__workspace-assessment {
+  align-items: center;
+  background: $color-passed;
+  border: 5px solid $color-default;
+  color: $color-default;
+  display: flex;
+  font-size: 5rem;
+  height: 150px;
+  justify-content: center;
+  margin-right: 20px;
+  width: 150px;
+}
+
+.hero__workspace-title {
+  display: none;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    box-shadow: 15px 0 10px $color-workspace-hero-shadow;
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 300;
+    padding: 10px 15px 10px 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.7rem;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    font-size: 2rem;
+  }
+}
+
+.hero__workspace-name-extension {
+  background: $color-hero-workspace-name-extension-background;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: 15px 0 10px $color-workspace-hero-shadow;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 5px 10px;
+  width: auto;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 300;
+    margin: 10px 0 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.25rem;
+  }
+}
+
+.hero__workspace-education-type {
+  background: $color-hero-workspace-education-type-background;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: 15px 0 10px $color-workspace-hero-shadow;
+  color: $color-default;
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 10px 0 0;
+  padding: 5px 10px;
+  width: auto;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.25rem;
+  }
+}
+
+.hero__item--frontpage {
+  padding: 0 1.5rem 1.5rem;
+  width: 100%;
+
+  &:nth-child(2) {
+    order: -1;
+
+    @include breakpoint($breakpoint-pad) {
+      order: initial;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
+}
+
+.hero__item-logo-container {
+  align-items: center;
+  display: flex;
+  flex-flow: nowrap;
+  flex-direction: row;
+  justify-content: center;
+
+  @include breakpoint ($breakpoint-pad) {
+    flex-direction: column;
+    padding: 0 5px;
+  }
+}
+
+.hero__header {
+  font-family: $branded-font-family;
+  font-size: 2rem;
+  line-height: 1;
+  text-align: left;
+  text-shadow: 0 5px 10px $color-frontpage-text-author-text-shadow;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 3rem;
+    text-align: center;
+  }
+}
+
+.hero__header--frontpage-muikku-author {
+  color: $color-frontpage-text-muikku-author;
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+}
+
+.hero__header--frontpage-muikku {
+  color: $color-frontpage-text-muikku;
+  font-weight: 900;
+  position: relative;
+}
+
+.hero__header--frontpage-verkko {
+  color: $color-frontpage-text-verkko;
+  font-weight: 300;
+  letter-spacing: 3px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 3rem;
+    font-weight: 200;
+    letter-spacing: 5px;
+    text-indent: 7px;
+  }
+}
+
+.hero__description {
+  color: $color-frontpage-text-muikku-description;
+  font-size: 0.925rem;
+  font-weight: 600;
+  line-height: 1.2rem;
+  margin: 1rem auto 0;
+  max-width: 100%;
+  text-align: center;
+  text-shadow: 0 5px 10px $color-frontpage-text-description-text-shadow;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 20em;
+  }
+}

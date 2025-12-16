@@ -6,8 +6,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fi.otavanopisto.muikku.plugins.calendar.dao.CalendarEventDAO;
 import fi.otavanopisto.muikku.plugins.calendar.dao.CalendarEventParticipantDAO;
 import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEvent;

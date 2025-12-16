@@ -8,7 +8,7 @@ public class WorkspaceFolder {
   public WorkspaceFolder() {
   }
 
-  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title, String path, MaterialViewRestrict viewRestrict, WorkspaceLanguage titleLanguage) {
+  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, boolean hidden, String title, String path, MaterialViewRestrict viewRestrict, WorkspaceLanguage titleLanguage, boolean exam) {
     super();
     this.id = id;
     this.parentId = parentId;
@@ -18,6 +18,7 @@ public class WorkspaceFolder {
     this.path = path;
     this.viewRestrict = viewRestrict;
     this.titleLanguage = titleLanguage;
+    this.exam = exam;
   }
   
   public Long getId() {
@@ -44,11 +45,11 @@ public class WorkspaceFolder {
     this.nextSiblingId = nextSiblingId;
   }
   
-  public Boolean getHidden() {
+  public boolean getHidden() {
     return hidden;
   }
 
-  public void setHidden(Boolean hidden) {
+  public void setHidden(boolean hidden) {
     this.hidden = hidden;
   }
   
@@ -84,13 +85,22 @@ public class WorkspaceFolder {
     this.titleLanguage = titleLanguage;
   }
 
+  public boolean getExam() {
+    return exam;
+  }
+
+  public void setExam(boolean exam) {
+    this.exam = exam;
+  }
+
   private Long id;
   private Long parentId;
   private Long nextSiblingId;
-  private Boolean hidden;
+  private boolean hidden;
   private String title;
   private String path;
   private MaterialViewRestrict viewRestrict;
   private WorkspaceLanguage titleLanguage;
+  private boolean exam;
 
 }

@@ -23,15 +23,7 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 public class CourseMaterialsManagementTestsBase extends AbstractUITest{
 
   @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.CHROME_HEADLESS
-    }
-  )
-  public void materialManagementAddChapterTest() throws Exception {
+  public void materialManagementAddChapter() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
@@ -50,10 +42,11 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         .build();
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".button-pill--editing-master-switch");
-        click(".button-pill--editing-master-switch");
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
         waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
+        waitAndClick(".dropdown--material-management-tooltip .dropdown__container-item:first-child .link--material-management-dropdown");
         waitAndClickAndConfirm(".material-admin-panel--chapter-functions .icon-pencil", ".material-editor--visible .form-element__input--material-editor-title", 5, 3000);
         waitForVisible(".material-editor--visible .form-element__input--material-editor-title");
         clearElement(".material-editor--visible .form-element__input--material-editor-title");
@@ -63,7 +56,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         sleep(500);
         waitAndClick(".button-pill--material-page-close-editor");
         waitForNotVisible(".tabs--material-editor");
-        assertText(".content-panel__chapter-title ", "Test title");
+        assertText(".content-panel__chapter-title ", "Test title");        
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -110,12 +103,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
+          waitAndClick(".tabs #tabControl-metadata");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "CC0");
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
@@ -171,12 +164,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
+          waitAndClick(".tabs #tabControl-metadata");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "CC4");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
@@ -232,12 +225,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
+          waitAndClick(".tabs #tabControl-metadata");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "CC3");
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
@@ -292,12 +285,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
+          waitAndClick(".tabs #tabControl-metadata");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "text_or_link");
           waitForVisible(".license-selector .form-element__input--material-editor");
           sendKeys(".license-selector .form-element__input--material-editor", "www.test.com");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
@@ -318,15 +311,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
   }  
 
   @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.SAFARI,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-    }
-  )
-  public void courseMaterialCKEditorTest() throws Exception {
+  public void courseMaterialAddAndDeletePageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
@@ -349,12 +334,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
             + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
             + "Nulla consectetur quam mi.";
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".button-pill--editing-master-switch");
-        click(".button-pill--editing-master-switch");
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
         waitForPresent(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
-        waitForPresent(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
-        click(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
+        waitForPresent(".dropdown--material-management.visible .dropdown__container-item:nth-child(3)");
+        click(".dropdown--material-management.visible .dropdown__container-item:nth-child(3)");
         waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
         waitForPresent(".material-editor--visible .form-element__input--material-editor-title");
@@ -369,7 +354,18 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         waitForNotVisible(".material-editor--visible");
         waitForPresent(".material-page__content.rich-text p");
         String actualContent = getElementText(".material-page__content.rich-text p");
-        assertEquals(contentInput, actualContent);        
+        assertText(".material-page__title.material-page__title--theory", "Test page title");
+        assertEquals(contentInput, actualContent);
+        
+        waitAndClickAndConfirm(".material-page--theory .material-admin-panel--page-functions .icon-pencil", ".material-editor--visible .form-element__input--material-editor-title", 5, 3000);
+        waitAndClick(".button-pill--material-editor-delete-page");
+        sleep(2500);
+        waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".button--standard-ok", 3, 1000);
+        sleep(2500);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent("#editingMasterSwitch");
+        assertNotPresent(".material-page__title.material-page__title--theory");
+        assertNotPresent(".material-page__content.rich-text");
       } finally {
         deleteWorkspaces();
       }
@@ -413,10 +409,10 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
             "EXERCISE");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".form-element__input--add-material-producer");
           sendKeys(".form-element__input--add-material-producer", "Test Producer Testalomente");
           waitAndClick(".add-producer--add-material-producer .form-element__input-decoration--add-material-producer.icon-plus");
@@ -472,8 +468,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
             "EXERCISE");
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           
           waitAndClick(".material-editor__buttonset-primary .button-pill--material-editor-change-page-type");
@@ -495,4 +491,157 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
     }
   }
   
+  @Test
+  public void courseMaterialHidePageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addCourse(course1)
+      .mockLogin(admin)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+  
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          selectFinnishLocale();
+          assertPresent(".material-page__title.material-page__title--exercise");
+          waitAndClick("#editingMasterSwitch");
+          waitAndClick(".material-admin-panel--page-functions .icon-eye");
+          waitForElementToAppear(".material-page--exercise.state-HIDDEN", 3, 1000);
+          waitAndClick("#editingMasterSwitch");
+          refresh();
+          assertNotPresent(".material-page__title.material-page__title--exercise");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        }
+        
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void courseMaterialLanguageChangeTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addCourse(course1)
+      .mockLogin(admin)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+  
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          selectFinnishLocale();
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".tabs #tabControl-metadata");
+          waitForClickable("select:has(> option[value=\"en\"])");
+          selectOption("select:has(> option[value=\"en\"])", "en");
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
+          waitForPresent(".material-page__content-wrapper");
+          assertEquals("Language not set as expected!" , "en", getAttributeValue(".material-page__content-wrapper", "lang"));
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        }
+        
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  @Test
+  public void courseMaterialAIUseTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addCourse(course1)
+      .mockLogin(admin)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+  
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          selectFinnishLocale();
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".tabs #tabControl-metadata");
+//        Tekoälyn käyttö dropdown. Valinta valuen perusteella.
+          waitForClickable("select:has(> option[value=\"ALLOWED\"])");
+          selectOption("select:has(> option[value=\"ALLOWED\"])", "ALLOWED");
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
+          waitForPresent(".material-page__ai-warning-text");
+          assertText(".material-page__ai-warning-text", "Tekoälyn käyttö sallittu tehtävän ohjeiden mukaisesti");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        }
+        
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+
 }

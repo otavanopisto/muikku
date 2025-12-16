@@ -1,0 +1,45 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.indicator {
+  background-color: $color-indicator-background;
+  border-radius: 100%;
+  color: $color-indicator-text;
+  display: block;
+  font-family: $branded-font-family;
+  font-size: #{$indicator-font-size}px;
+  height: auto;
+  line-height: #{$indicator-font-size}px;
+  max-width: 30px;
+  min-width: #{$indicator-font-size + $indicator-padding * 2}px;
+  overflow: hidden;
+  padding: #{$indicator-padding}px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  top: 0;
+
+  &.indicator--main-function,
+  &.indicator--workspace {
+    right: 14px;
+    top: 15px;
+  }
+
+  &.indicator--panel-header {
+    right: 2px;
+    top: 0;
+  }
+
+  .menu &.indicator--main-function {
+    margin-top: -10px;
+    right: 14px;
+    top: 50%;
+  }
+}
+
+.indicator:empty {
+  display: none;
+}

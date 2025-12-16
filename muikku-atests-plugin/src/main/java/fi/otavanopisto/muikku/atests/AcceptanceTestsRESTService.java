@@ -35,7 +35,6 @@ import fi.otavanopisto.muikku.dao.users.FlagDAO;
 import fi.otavanopisto.muikku.dao.users.FlagStudentDAO;
 import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
@@ -48,20 +47,24 @@ import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
@@ -77,6 +80,7 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -88,6 +92,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
@@ -120,6 +125,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
 
   @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
@@ -146,10 +154,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private WorkspaceMaterialController workspaceMaterialController; 
 
   @Inject
+  private MaterialDeleteController materialDeleteController; 
+
+  @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
   
   @Inject
   private EvaluationController evaluationController;
+
+  @Inject
+  private EvaluationDeleteController evaluationDeleteController;
   
   @Inject
   private ForumController forumController;
@@ -282,6 +296,40 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
 
+  @GET
+  @Path("/sdi_paramconverter/{SDI}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_path(@PathParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @GET
+  @Path("/sdi_paramconverter_queryparam")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_query(@QueryParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.noContent().build();
+    }
+  }
+
   @DELETE
   @Path("/communicator/messages")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -371,8 +419,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
     
-    fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, 
-        null, null, null, categoryEntity, payload.getCaption(), payload.getContent(), tagList);
+    UserRecipientList recipientsList = new UserRecipientList();
+    recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
+
+    fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipientsList, 
+        categoryEntity, payload.getCaption(), payload.getContent(), tagList);
     Long communicatorMessageId2 = message.getCommunicatorMessageId().getId();
     fi.otavanopisto.muikku.atests.CommunicatorMessage result = new fi.otavanopisto.muikku.atests.CommunicatorMessage(message.getId(), communicatorMessageId2, message.getSender(), payload.getCategoryName(), message.getCaption(), message.getContent(), message.getCreated(), payload.getTags(), payload.getRecipientIds(), payload.getRecipientGroupIds(), payload.getRecipientStudentsWorkspaceIds(), payload.getRecipientTeachersWorkspaceIds());
     
@@ -401,6 +452,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+    
     return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
   }
   
@@ -422,8 +475,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
+    logger.info(String.format("TESTS Deleting workspace %d", workspaceEntityId));
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
+      logger.warning(String.format("TESTS Deleting workspace aborted, workspace %d not found.", workspaceEntityId));
       return Response.status(404).entity("Not found").build();
     }
     try{
@@ -446,10 +502,21 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
     }
     
+    List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
+    for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
+      workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
+    }
+    List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+    for (WorkspaceSignupMessage signupMessage : signupMessages) {
+      workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
+    }
+    
     SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
     workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);
     workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     
+    logger.info(String.format("TESTS Workspace %d deleted.", workspaceEntityId));
+
     return Response.noContent().build();
   }
 
@@ -457,6 +524,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/workspaces")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspaces() {
+    logger.info(String.format("TESTS Deleting all workspaces"));
+
     List<WorkspaceEntity> workspaceEntities = workspaceEntityDAO.listAll();
     for (WorkspaceEntity workspaceEntity : workspaceEntities) {
       try{
@@ -481,11 +550,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
         workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
       }
+      List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+      for (WorkspaceSignupMessage signupMessage : signupMessages) {
+        workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
+      }
       
       SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
       workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);  
       workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     }
+    
+    logger.info(String.format("TESTS All workspaces deleted."));
+
     return Response.noContent().build();
   }
   
@@ -512,7 +588,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       }
     }
     
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null, false);
     if (workspaceFolder == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create workspace folder").build(); 
     }
@@ -563,17 +639,15 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     try {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, true);
+      materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, true);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
-    List<WorkspaceMaterialEvaluation> evaluations = evaluationController.listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(workspaceMaterialId);
-    for (WorkspaceMaterialEvaluation evaluation : evaluations) {
-      evaluationController.deleteWorkspaceMaterialEvaluation(evaluation);
+    List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(workspaceMaterialId);
+    for (WorkspaceNodeEvaluation evaluation : evaluations) {
+      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
-    
-    htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
     
     return Response.noContent().build();
   }
@@ -697,6 +771,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for(Announcement announcement : announcementController.listAll()) {
       announcementController.deleteAnnouncementWorkspaces(announcement);
       announcementController.deleteAnnouncementTargetGroups(announcement);
+      announcementController.deleteAnnouncementRecipientsByAnnouncement(announcement);
       announcementController.delete(announcement);
     }
 
@@ -711,7 +786,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     SchoolDataIdentifier schoolDataIdentifier = new SchoolDataIdentifier(user.getDefaultIdentifier(), user.getDefaultSchoolDataSource().getIdentifier());
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
-    Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
+    
+    Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible(), new ArrayList<AnnouncementCategory>(), false);
+    
+    if(payload.getWorkspaceEntityIds() != null) {
+      List<Long> workspaceEntityIds = payload.getWorkspaceEntityIds();
+      for (Long wsId : workspaceEntityIds) {
+        announcementController.addAnnouncementWorkspace(announcement, workspaceEntityController.findWorkspaceEntityById(wsId));
+      }
+    }
+    
     if(payload.getUserGroupEntityIds() != null) {
       List<Long> userGroups = payload.getUserGroupEntityIds();
       for (Long userGroupId : userGroups) {
@@ -931,7 +1015,34 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
-
+  
+  @DELETE
+  @Path("/workspaces/discussions/cleanup")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response cleanupWorkspaceDiscussions() {
+    List<WorkspaceEntity> workspaces = workspaceController.listWorkspaceEntities();
+    for(WorkspaceEntity workspaceEntity : workspaces) {
+      List<WorkspaceForumArea> forumAreas = forumController.listWorkspaceForumAreas(workspaceEntity);
+      List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+      List<ForumThread> threads = new ArrayList<>();
+      for(WorkspaceForumArea forumArea : forumAreas) {
+        threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true); 
+        for (ForumThread thread : threads) {
+          List<ForumThreadSubscription> subs = forumThreadSubscriptionController.listByThread(thread);
+          for (ForumThreadSubscription sub : subs) {
+            forumThreadSubscriptionController.deleteSubscription(sub);
+          }       
+          forumController.deleteThread(thread);
+        }
+        forumController.deleteArea(forumArea);   
+      }
+      for (ForumAreaGroup group : groups) {
+        forumController.deleteAreaGroup(group);
+      }
+    }
+    return Response.noContent().build();
+  }
+  
   @POST
   @Path("/discussiongroups")
   @RESTPermit (handling = Handling.UNSECURED)

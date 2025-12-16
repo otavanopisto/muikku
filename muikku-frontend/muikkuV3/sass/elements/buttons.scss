@@ -1,0 +1,2763 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.button {
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
+  align-items: center;
+  background-color: $color-button-default-background;
+  border-radius: 20px;
+  color: $color-button-default-text;
+  cursor: pointer;
+  display: flex;
+  font-family: $system-font-family;
+  font-size: $button-mobile-font-size;
+  justify-content: center;
+  overflow: hidden;
+  padding: 5px 15px;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  user-select: text;
+  white-space: nowrap;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-desktop-font-size;
+  }
+
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-disabled-background;
+    cursor: not-allowed;
+  }
+}
+
+.button--frontpage-button {
+  font-size: 0.7rem;
+}
+
+.button__icon {
+  font-size: 1rem;
+}
+
+.button-image {
+  align-items: center;
+  border-radius: 100%;
+  height: 35px;
+  justify-content: center;
+  margin-right: 10px;
+  width: 35px;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    height: 100%;
+    margin: 0;
+    width: 100%;
+  }
+}
+
+.button--button-has-icon {
+  padding: 5px 15px 5px 10px;
+}
+
+.button--create-student-order,
+.button--delete-student-order,
+.button--complete-student-order,
+.button--pay-student-order,
+.button--back-to-muikku,
+.button--send-message {
+  display: inline-flex;
+  margin: 0 10px 0 0;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button--delete-student-order,
+.button--complete-student-order {
+  font-size: 0.7rem;
+  padding: 4px 12px 4px 8px;
+
+  .button__icon {
+    font-size: 0.7rem;
+  }
+}
+
+.button--coursepicker-course-action {
+  margin: 0 10px 0 0;
+}
+
+.button--studies-course-action {
+  background: $color-default;
+  border: 1px solid darken($color-workspace, 10%);
+  color: darken($color-workspace, 15%);
+  font-size: 0.75rem;
+  margin: 0 10px 0 0;
+  padding: 4px 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  &:hover {
+    background: darken($color-workspace, 15%);
+    border: 1px solid darken($color-workspace, 15%);
+    color: $color-default;
+  }
+}
+
+.button--execute {
+  background-color: $color-button-execute-background;
+  color: $color-button-execute-text;
+  order: 3;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-execute-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-execute-background, 20%);
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 1;
+  }
+}
+
+.button--branded {
+  font-family: $branded-font-family;
+}
+
+.button--warn {
+  background-color: $color-button-warn-background;
+  color: $color-button-warn-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-warn-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-warn-background, 20%);
+  }
+}
+
+.button--assigments {
+  margin-left: 15px;
+}
+
+.button--info {
+  background-color: $color-button-info-background;
+  color: $color-button-info-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-info-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-info-background, 20%);
+  }
+}
+
+.button--fatal {
+  background-color: $color-button-fatal-background;
+  color: $color-button-fatal-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-fatal-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-fatal-background, 20%);
+  }
+}
+
+.button--error {
+  background-color: $color-button-error-background;
+  color: $color-button-error-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-error-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-error-background, 20%);
+  }
+}
+
+.button--success {
+  background-color: $color-button-success-background;
+  color: $color-button-success-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-success-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-success-background, 20%);
+  }
+}
+
+.button--cancel {
+  background-color: $color-button-cancel-background;
+  color: $color-button-cancel-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-cancel-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-cancel-background, 20%);
+  }
+}
+
+.button--continue-exam {
+  background: $color-accent;
+  color: $color-default;
+}
+
+.button--start-exam {
+  background: $color-info;
+  color: $color-default;
+}
+
+.button--goto-exam {
+  background: $color-info;
+  color: $color-default;
+}
+
+.button--disconnect-warning {
+  background-color: transparent;
+  border: 1px solid $color-default;
+  border-radius: 3px;
+  color: $color-default;
+  font-size: 1rem;
+}
+
+.button--loading {
+  background-color: $color-button-loading-background;
+  color: $color-button-loading-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-loading-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-loading-background, 20%);
+  }
+}
+
+.button--secondary {
+  background-color: $color-button-secondary-background;
+  color: $color-button-secondary-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-secondary-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-secondary-background, 20%);
+  }
+}
+
+.button--inverse {
+  background-color: $color-button-inverse-background;
+  color: $color-button-inverse-text;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-inverse-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-inverse-background, 20%);
+  }
+}
+
+.button--signup-read-more {
+  background: $color-workspace-signup-readmore-button-background;
+  color: $color-button-inverse-text;
+  display: inline-block;
+  line-height: 1.15rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-workspace-signup-readmore-button-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-workspace-signup-readmore-button-background,
+      20%
+    );
+  }
+}
+
+// STUDIES NOTES
+.button--note-priority {
+  background: $color-default;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin: 2px 10px 0 0;
+  padding: 2px 6px;
+
+  &.button--active {
+    color: $color-default;
+  }
+}
+
+.button--note-priority-high {
+  border-color: $color-priority-high;
+  color: $color-priority-high;
+
+  &.button--active {
+    background-color: $color-priority-high;
+  }
+}
+
+.button--note-priority-normal {
+  border-color: $color-priority-normal;
+  color: $color-priority-normal;
+
+  &.button--active {
+    background-color: $color-priority-normal;
+  }
+}
+
+.button--note-priority-low {
+  border-color: $color-priority-low;
+  color: $color-priority-low;
+
+  &.button--active {
+    background-color: $color-priority-low;
+  }
+}
+
+// FRONTPAGE
+.button--login {
+  background-color: $color-frontpage-button-login-background;
+  color: $color-frontpage-button-login-text;
+  font-size: 0.9375rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-frontpage-button-login-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-frontpage-button-login-background, 20%);
+  }
+
+  &.button--login-main-function {
+    background-color: $color-main-function-button-login-background;
+    color: $color-main-function-button-login-text;
+
+    &:hover,
+    &.hover {
+      background-color: darken(
+        $color-main-function-button-login-background,
+        10%
+      );
+    }
+
+    &:active,
+    &.active {
+      background-color: darken(
+        $color-main-function-button-login-background,
+        20%
+      );
+    }
+  }
+}
+
+.button--reset-password {
+  background-color: $color-frontpage-button-login-background;
+  color: $color-frontpage-button-login-text;
+  display: inline-block;
+  font-size: 0.9375rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-frontpage-button-login-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-frontpage-button-login-background, 20%);
+  }
+
+  &.button--login-main-function {
+    background-color: $color-main-function-button-login-background;
+    color: $color-main-function-button-login-text;
+
+    &:hover,
+    &.hover {
+      background-color: darken(
+        $color-main-function-button-login-background,
+        10%
+      );
+    }
+
+    &:active,
+    &.active {
+      background-color: darken(
+        $color-main-function-button-login-background,
+        20%
+      );
+    }
+  }
+}
+
+.button--frontpage-upper-secondary-school-readmore {
+  background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
+  color: $color-frontpage-button-upper-secondary-school-readmore-text;
+  display: inline-flex;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-frontpage-button-upper-secondary-school-readmore-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-frontpage-button-upper-secondary-school-readmore-background,
+      20%
+    );
+  }
+}
+
+.button--frontpage-secondary-school-readmore {
+  background-color: $color-frontpage-button-secondary-school-readmore-background;
+  color: $color-frontpage-button-secondary-school-readmore-text;
+  display: inline-flex;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-frontpage-button-secondary-school-readmore-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-frontpage-button-secondary-school-readmore-background,
+      20%
+    );
+  }
+}
+
+.button--frontpage-open-materials-readmore {
+  background-color: $color-frontpage-button-open-materials-readmore-background;
+  color: $color-frontpage-button-open-materials-readmore-text;
+  display: inline-flex;
+  margin: 5px 5px 0 0;
+  white-space: normal;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-frontpage-button-open-materials-readmore-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-frontpage-button-open-materials-readmore-background,
+      20%
+    );
+  }
+}
+
+.button--frontpage-website {
+  background-color: $color-frontpage-button-website-background;
+  color: $color-frontpage-button-website-text;
+  display: inline-flex;
+  margin: 0.3rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-frontpage-button-website-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-frontpage-button-website-background, 20%);
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    margin: 0 0.6rem 0 0;
+  }
+}
+
+.button--frontpage-newsletter {
+  background-color: $color-frontpage-button-newsletter-background;
+  color: $color-frontpage-button-newsletter-text;
+  display: inline-flex;
+  margin: 0.3rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-frontpage-button-newsletter-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-frontpage-button-newsletter-background,
+      20%
+    );
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    margin: 0;
+  }
+}
+
+.button--frontpage-bubble {
+  height: 40px;
+  letter-spacing: 1px;
+  overflow-wrap: break-word;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  white-space: normal;
+  width: 100%;
+}
+
+.button--yo-signup {
+  background-color: $color-yo-sign-up;
+  color: $color-yo-sign-up-contrast;
+  height: $button-primary-height;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+    width: auto;
+
+    &:hover,
+    &.hover {
+      background-color: darken($color-yo-sign-up, 10%);
+    }
+
+    &:active,
+    &.active {
+      background-color: darken($color-yo-sign-up, 20%);
+    }
+  }
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.button--primary {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  height: $button-primary-height;
+  width: fit-content;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-primary-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
+.button--primary-function {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-button-primary-background;
+    color: $color-button-primary-text;
+    display: inline-flex;
+    height: $button-primary-height;
+    width: 100%;
+
+    &:hover,
+    &.hover {
+      background-color: darken($color-button-primary-background, 10%);
+    }
+
+    &:active,
+    &.active {
+      background-color: darken($color-button-primary-background, 20%);
+    }
+  }
+}
+
+.button--guider-student {
+  overflow: unset;
+}
+
+// Button that appears inside views component
+.button--primary-function-content {
+  background-color: $color-button-primary-background;
+  border: 0;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  padding: 4px 10px;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-primary-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
+.button--remove-subject-row {
+  background: $color-fatal;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-fatal, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-fatal, 20%);
+  }
+}
+
+// Button that is used to save views form information
+.button--primary-function-save {
+  background-color: $color-button-primary-save-background;
+  color: $color-button-primary-save-text;
+  display: inline-flex;
+  font-size: $button-mobile-primary-font-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-desktop-primary-font-size;
+  }
+}
+
+.button--guider-share-label {
+  order: 2;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+}
+
+.button--communicator-remove-label,
+.button--guider-remove-label {
+  order: 1;
+
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-disabled-background;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 4;
+  }
+}
+
+.button--standard-ok {
+  order: 4;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 1;
+  }
+}
+
+.button--standard-cancel {
+  order: 3;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 2;
+  }
+}
+
+.button--standard-fit-content {
+  width: fit-content;
+}
+
+.button--contact-teacher {
+  font-size: 0.75rem;
+}
+
+.button--guider-hops-studytool {
+  background-color: $color-button-primary-background;
+  border: 0;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  font-size: 0.75rem;
+  margin: 5px 2.5px;
+  min-width: fit-content;
+  padding: 4px 10px;
+}
+
+.button--guider-hops-studytool-suggested {
+  background: $color-default;
+  border: 2px solid $color-suggested;
+  color: $color-suggested;
+  font-weight: 600;
+}
+
+.button--guider-hops-studytool-next {
+  background: $color-default;
+  border: 2px solid $color-next;
+  color: $color-next;
+  font-weight: 600;
+}
+
+.button--chat {
+  background: transparent;
+  color: $color-info;
+  font-size: 0.75rem;
+  margin: 0 4px;
+  padding: 0;
+  text-transform: none;
+}
+
+.button--delete-chip {
+  background: transparent;
+  border: 0;
+  height: 1rem;
+  padding: 0;
+  width: 1rem;
+
+  .button__icon {
+    font-size: 0.5rem;
+    margin: 0;
+  }
+}
+
+.button-icon {
+  @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
+  align-items: center;
+  background-color: transparent;
+  color: $color-icon-button-text;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: $button-pill-mobile-font-size;
+  height: $button-pill-mobile-size;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  user-select: none;
+  width: $button-pill-mobile-size;
+
+  &:hover,
+  &.hover {
+    background-color: transparent;
+  }
+
+  &:active,
+  &.active {
+    background-color: transparent;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+    cursor: not-allowed;
+  }
+
+  input {
+    height: 100%;
+    opacity: 0%;
+    position: absolute;
+    width: 100%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-desktop-font-size;
+    height: $button-pill-desktop-size;
+    width: $button-pill-desktop-size;
+  }
+}
+
+.button-icon--dialog-close {
+  @include breakpoint($breakpoint-pad) {
+    color: $color-default;
+  }
+}
+
+.button-icon--workspace-notebook {
+  height: 25px; // This button is used as a trigger top open extra tools panel. Height is the same as workspace activity container.
+}
+
+.button-icon--workspace-extra-tools-close {
+  height: 2.25rem; // This button is used as a trigger to close extra tools panel. Height is the same as tab height.
+}
+
+.button__icon--left {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.button__icon--right {
+  margin-left: 5px;
+  margin-right: 0;
+}
+
+.button-icon--notes-action {
+  color: $color-notes-action-button;
+  font-size: 0.9375rem;
+  height: 1.25rem;
+  margin: 0 0 0 10px;
+  width: 1.25rem;
+
+  &:hover {
+    color: $color-info;
+  }
+}
+
+.button-icon--workspace-add-note-from-context {
+  background: $color-default;
+  border: 1px solid $color-notes-action-button;
+  border-radius: 25px 25px 25px 3px;
+  box-shadow: 0 0 10px rgba(0 0 0 / 20%);
+  color: $color-notes-action-button;
+  font-size: 1.5rem;
+  padding: 10px;
+
+  &:hover {
+    background: $color-default;
+    color: $color-info;
+  }
+}
+
+.button-icon--notebook-drag-handle {
+  height: 100%;
+}
+
+.button-icon--journal-central {
+  font-size: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.button-icon--workspace-users-contact {
+  color: $color-info;
+}
+
+.button-icon--workspace-users-archive {
+  color: $color-fatal;
+}
+
+.button-icon--workspace-users-unarchive {
+  color: $color-info;
+}
+
+.button-icon--discussion-action {
+  color: $color-default-contrast;
+}
+
+.button-icon--discussion-action-active {
+  color: $color-info;
+}
+
+.button-icon--chat {
+  background: transparent;
+  border-radius: 100%;
+  color: $color-default-contrast;
+  font-size: 0.875rem;
+  height: 1.625rem;
+  padding: 5px;
+  width: 1.625rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-icon--chat-mobile-footer {
+  background: $color-default;
+  color: lighten($color-default-contrast, 20%);
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+.button-icon--chat-invert {
+  color: $color-default;
+}
+
+.button-icon--chat-block {
+  color: $color-fatal;
+}
+
+.button-icon--clear-skills {
+  color: $color-fatal;
+  font-size: 0.875rem;
+  height: 1.25rem;
+  margin-right: 5px;
+  width: 1.25rem;
+
+}
+
+
+.button-pill {
+  @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+
+  align-items: center;
+  background-color: $color-button-pill-background;
+  border-radius: 100%;
+  color: $color-button-pill-text;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: $button-pill-mobile-font-size;
+  height: $button-pill-mobile-size;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  user-select: none;
+  width: $button-pill-mobile-size;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-pill-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-pill-background, 20%);
+  }
+
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+    cursor: not-allowed;
+  }
+
+  input {
+    cursor: pointer;
+    height: 100%;
+    opacity: 0%;
+    position: absolute;
+    width: 100%;
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-pill element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-desktop-font-size;
+    height: $button-pill-desktop-size;
+    width: $button-pill-desktop-size;
+  }
+}
+
+.button-pill--evaluation-journal-sorter {
+  background: $color-default;
+  color: $color-button-default-text;
+
+  &:hover,
+  &.hover {
+    background: $color-default;
+    color: $color-button-default-text;
+  }
+}
+
+.button-pill--instructions {
+  background: lighten($color-tertiary, 30%);
+  border: 1px solid lighten($color-tertiary, 20%);
+  color: darken($color-info, 10%);
+  font-size: 0.7rem;
+  height: 1.25rem;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  /* stylelint-disable declaration-no-important */
+  text-decoration: none !important;
+  /* stylelint-enable declaration-no-important */
+  width: 1.25rem;
+
+  &:hover,
+  &.hover {
+    background: lighten($color-tertiary, 20%);
+  }
+
+  &:active,
+  &.active {
+    background: lighten($color-tertiary, 20%);
+  }
+}
+
+.button-pill--workspace-users-contact {
+  background-color: transparent;
+  color: $color-icon-button-text;
+
+  &:hover,
+  &.hover {
+    background-color: transparent;
+  }
+}
+
+.button-pill--organization {
+  color: $color-default;
+}
+
+.button-pill--floating {
+  background-color: $color-primary;
+  bottom: 10px;
+  box-shadow: 0 4px 8px $color-button-floating-shadow;
+  color: $color-default;
+  font-size: $button-pill-floating-font-size;
+  height: $button-pill-floating-size;
+  position: fixed;
+  right: 10px;
+  width: $button-pill-floating-size;
+
+  &:active {
+    box-shadow: 0 0 0 $color-button-floating-shadow;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.button-pill--current-language {
+  background-color: $color-environment-button-pill-language-background;
+  color: $color-environment-button-pill-language-text;
+  font-size: $button-pill-navbar-mobile-font-size;
+  height: $button-pill-navbar-mobile-size;
+  margin-right: 10px;
+  width: $button-pill-navbar-mobile-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-navbar-desktop-font-size;
+    height: $button-pill-navbar-desktop-size;
+    width: $button-pill-navbar-desktop-size;
+  }
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-environment-button-pill-language-background,
+      5%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-environment-button-pill-language-background,
+      10%
+    );
+  }
+}
+
+.button-pill--profile {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border: 1px solid $color-default;
+    box-shadow: 0 0 5px $color-button-pill-shadow;
+    display: inline-flex;
+    font-size: $button-pill-navbar-desktop-font-size;
+    height: $button-pill-navbar-desktop-size;
+    margin-right: 15px;
+    width: $button-pill-navbar-desktop-size;
+
+    &:hover,
+    &.hover {
+      background-color: $color-default;
+    }
+
+    &:active,
+    &.active {
+      background-color: $color-default;
+    }
+
+    .button-pill__icon {
+      color: $color-environment-button-pill-icon-user;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+.button-pill--search {
+  .button-pill__icon {
+    color: $color-environment-button-pill-icon-search;
+  }
+}
+
+.button-pill--hops {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.button-pill--settings {
+  background-color: $color-main-function-button-pill-settings-background;
+  color: $color-main-function-button-pill-settings-text;
+  font-size: $button-pill-settings-font-size;
+  height: 1.5rem;
+  vertical-align: top;
+  width: 1.5rem;
+
+  &:hover,
+  &.hover {
+    background-color: $color-main-function-button-pill-settings-background-hover;
+  }
+
+  &:active,
+  &.active {
+    background-color: $color-main-function-button-pill-settings-background-active;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+}
+
+.button-pill--delete,
+.button-pill--create-student-order,
+.button-pill--toggle,
+.button-pill--restore,
+.button-pill--edit,
+.button-pill--create-contact-log-entry,
+.button-pill--new-message,
+.button-pill--filter,
+.button-pill--add-note {
+  background-color: $color-main-function-button-pill-delete-background;
+  color: $color-main-function-button-pill-delete-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
+}
+
+// Slightly smaller button-pill to be used amongst other page elements a.k.a within content
+.button-pill--within-content {
+  font-size: 1rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+.button-pill--filter {
+  background-color: $color-main-function-button-pill-delete-background;
+  color: $color-main-function-button-pill-delete-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+}
+
+.button-pill--discussion-toolbar {
+  background-color: $color-main-function-button-pill-edit-background;
+  color: $color-main-function-button-pill-edit-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-right: 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-edit-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-edit-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+}
+
+.button-pill--label {
+  background-color: $color-main-function-button-pill-label-background;
+  color: $color-main-function-button-pill-label-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.button-pill--flag {
+  background-color: $color-main-function-button-pill-label-background;
+  color: $color-main-function-button-pill-label-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.button-pill--toggle-read,
+.button-pill--mark-all-read {
+  background-color: $color-main-function-button-pill-toggle-read-background;
+  color: $color-main-function-button-pill-toggle-read-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-toggle-read-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-toggle-read-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.button-pill--go-back {
+  background-color: $color-main-function-button-pill-go-back-background;
+  border-radius: 10px;
+  color: $color-main-function-button-pill-go-back-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-right: 10px;
+  vertical-align: top;
+
+  &:hover,
+  &.hover {
+    background-color: darken(
+      $color-main-function-button-pill-go-back-background,
+      10%
+    );
+  }
+
+  &:active,
+  &.active {
+    background-color: darken(
+      $color-main-function-button-pill-go-back-background,
+      20%
+    );
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin-right: 20px;
+  }
+}
+
+.button-pill--prev-page {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-main-function-button-pill-prev-page-background;
+    border-radius: 10px;
+    color: $color-main-function-button-pill-prev-page-text;
+    display: inline-flex;
+    margin-left: 10px;
+    vertical-align: top;
+
+    &:hover,
+    &.hover {
+      background-color: darken(
+        $color-main-function-button-pill-prev-page-background,
+        10%
+      );
+    }
+
+    &:active,
+    &.active {
+      background-color: darken(
+        $color-main-function-button-pill-prev-page-background,
+        20%
+      );
+    }
+
+    &.disabled,
+    &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
+  }
+}
+
+.button-pill--next-page {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-main-function-button-pill-next-page-background;
+    border-radius: 10px;
+    color: $color-main-function-button-pill-next-page-text;
+    display: inline-flex;
+    margin-left: 10px;
+    vertical-align: top;
+
+    &:hover,
+    &.hover {
+      background-color: darken(
+        $color-main-function-button-pill-next-page-background,
+        10%
+      );
+    }
+
+    &:active,
+    &.active {
+      background-color: darken(
+        $color-main-function-button-pill-next-page-background,
+        20%
+      );
+    }
+
+    &.disabled,
+    &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
+  }
+}
+
+.button-pill--toolbar-edit-label {
+  background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+  color: $color-main-function-button-pill-toolbar-edit-label-text;
+  display: inline-flex;
+  font-size: 1rem;
+  height: auto;
+  padding: 0 0 0 5px;
+  width: 22px;
+
+  &:hover,
+  &.hover {
+    background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+    color: $color-main-function-button-pill-toolbar-edit-label-text-hover;
+  }
+
+  &:active,
+  &.active {
+    background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+    color: $color-main-function-button-pill-toolbar-edit-label-text-active;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.button-pill--navigation-edit-label {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-main-function-button-pill-navigation-edit-label-background;
+    color: $color-main-function-button-pill-navigation-edit-label-text;
+    display: flex;
+    flex-basis: 1.125rem;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 1rem;
+    height: 1.125rem;
+    line-height: 1;
+    margin: 0 0 0 5px;
+    width: 1.125rem;
+
+    &:hover,
+    &.hover {
+      background-color: $color-main-function-button-pill-navigation-edit-label-background;
+      color: $color-main-function-button-pill-navigation-edit-label-text-hover;
+    }
+
+    &:active,
+    &.active {
+      background-color: $color-main-function-button-pill-navigation-edit-label-background;
+      color: $color-main-function-button-pill-navigation-edit-label-text-active;
+    }
+  }
+}
+
+// Environment dialog
+.button--workspace-management {
+  background-color: $color-button-execute-background;
+  color: $color-button-execute-text;
+  order: 3;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 1;
+  }
+}
+
+.button--load-further {
+  background-color: $color-pager-selected-page-index-background;
+  color: $color-pager-selected-page-index-font;
+  width: 200px;
+}
+
+.button--form-element-next {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  order: 5;
+}
+
+.button--form-element-last {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  order: 4;
+}
+
+.button--dialog-execute,
+.button--form-element-execute {
+  background-color: $color-button-execute-background;
+  color: $color-button-execute-text;
+  order: 4;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 4;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+}
+
+.button--dialog-clear,
+.button--form-element-clear {
+  background-color: $color-button-clear-background;
+  color: $color-button-execute-text;
+  order: 1;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+}
+
+.button--dialog-cancel,
+.button--form-element-cancel {
+  background-color: $color-button-cancel-background;
+  color: $color-button-cancel-text;
+  order: 5;
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+}
+
+.button-social {
+  @include prefix(
+    transition,
+    moz ms o webkit,
+    color 0.3s,
+    background-color 0.3s
+  );
+  @include prefix(user-select, moz ms o webkit, none);
+
+  background-color: $color-button-social-default-background;
+  border-radius: $button-social-size;
+  color: $color-button-social-default-text;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "muikku";
+  font-variant: normal;
+  height: $button-social-size;
+  line-height: $button-social-size;
+  margin: 0 0.3rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  vertical-align: middle;
+  width: $button-social-size;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-button-social-highlight-background;
+    color: $color-button-social-highlight-text;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    &:first-of-type {
+      margin: 0 0.3rem 0 0;
+    }
+
+    &:last-of-type {
+      margin: 0 0 0 0.3rem;
+    }
+  }
+
+  // This needs to be added here as we place external-link-indicator
+  // automatically to every button and anchor element that opens up a new tab/window.
+  // This way we only hide the indicator in button-social element and avoid making
+  // unnecessary conditional to the button and/or link component.
+  .external-link-indicator {
+    display: none;
+  }
+}
+
+.button--change-image-edit,
+.button--change-image-delete {
+  @include workspace-image-button;
+
+  flex-grow: 1;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover,
+  &:active {
+    background-color: $color-button-profile-image-edit-delete-hover-background;
+  }
+
+  .icon {
+    background: transparent;
+    padding-right: 5px;
+  }
+}
+
+.button--change-image-workspace {
+  flex-basis: 20%;
+  flex-grow: 0;
+}
+
+// Buttons used in Material pages
+.muikku-submit-interim-evaluation,
+.button--muikku-submit-journal,
+.button--muikku-submit-exercise,
+.button--muikku-show-correct-answers-button,
+.button--muikku-submit-assignment,
+.button--muikku-withdraw-assignment,
+.button--muikku-update-assignment {
+  color: $color-default;
+  font-size: $text-mobile-font-size;
+  margin: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.button--muikku-submit-interim-evaluation {
+  background-color: $color-interim-evaluation;
+  color: $color-default;
+}
+
+.button--muikku-submit-journal {
+  background-color: $color-journal-page;
+}
+
+.button--muikku-submit-exercise {
+  background: $color-exercise;
+}
+
+.button--muikku-show-correct-answers-button {
+  background: $color-tertiary;
+}
+
+.button--muikku-submit-assignment {
+  background: $color-assignment;
+}
+
+.button--muikku-withdraw-assignment {
+  background: darken($color-assignment, 10%);
+}
+
+.button--muikku-update-assignment {
+  background: $color-assignment;
+}
+
+// Evaluation related
+
+// Automatic sign-up message
+.button--add-signup-message {
+  background-color: $color-info;
+  border: 0;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-lock-request,
+.button--evaluation-lock-assignments {
+  background-color: $color-info;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-unlock-request,
+.button--evaluation-unlock-assignments {
+  background-color: $color-default-contrast;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-add-assessment {
+  background-color: $color-execute;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-add-supplementation {
+  background-color: $color-grade-incomplete;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button-pill--sorter,
+.button-pill--archive-request,
+.button-pill--archive-student,
+.button-pill--evaluate,
+.button-icon--important,
+.button-icon--unimportant,
+.button-pill--assignment-locked,
+.button-pill--assignment-unlocked {
+  border-radius: 3px;
+  box-sizing: unset;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "muikku";
+  font-size: 1.125rem;
+  height: 1.125rem;
+  line-height: 1.125rem;
+  margin: 0 10px 0 0;
+  padding: 6px;
+  width: 1.125rem;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.button-pill--sorter {
+  background: lighten($color-default-helper, 20%);
+  color: $color-default-contrast;
+
+  &:hover {
+    background: $color-info;
+    color: $color-default;
+  }
+}
+
+.button-pill--sorter-selected {
+  background: $color-info;
+  color: $color-default;
+}
+
+.button-pill--archive-request {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
+  }
+}
+
+.button-pill--archive-student {
+  background: $color-default-contrast;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-default-contrast, 10%);
+  }
+}
+
+.button-pill--evaluate {
+  background: $color-info;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-info, 10%);
+  }
+}
+
+.button-icon--important,
+.button-icon--unimportant {
+  background: transparent;
+  border-radius: 100%;
+  color: $color-info;
+
+  &:hover {
+    background: $color-default-contrast;
+    color: $color-default;
+  }
+}
+
+.button-pill--assignment-locked {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
+  }
+}
+
+.button-pill--assignment-unlocked {
+  background: lighten($color-default-helper, 20%);
+  color: $color-default-contrast;
+
+  &:hover {
+    background: lighten($color-default-helper, 5%);
+  }
+}
+
+.button-icon--important-selected,
+.button-icon--unimportant-selected {
+  background: $color-default-contrast;
+  color: $color-default;
+}
+
+// Material master management related
+.button-pill--material-management-master {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+
+  background: transparent;
+  border-radius: 15px;
+  color: $color-material-page-admin-panel-main-color;
+  font-size: 1.5rem;
+  height: 2.75rem;
+  margin: 0 5px;
+  overflow: visible;
+  position: relaive;
+  width: 2.75rem;
+
+  &:hover {
+    background: $color-material-page-admin-panel-main-hover-color;
+    color: $color-default;
+  }
+}
+
+// Material page management related
+.button-pill--material-management-page,
+.button-pill--material-management-chapter {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+
+  background: $color-default;
+  border: 0;
+  border-radius: 10px;
+  color: $color-material-page-admin-panel-main-color;
+  font-size: 1rem;
+  height: 1.75rem;
+  margin: 0 5px;
+  overflow: visible;
+  position: relative;
+  width: 1.75rem;
+
+  &:hover {
+    background: $color-material-page-admin-panel-main-hover-color;
+    border: 1px solid $color-material-page-admin-panel-main-hover-color;
+    color: $color-default;
+  }
+}
+
+// Material page editor related
+.button-pill--material-page-close-editor {
+  background: transparent;
+  color: $color-material-page-admin-panel-main-color;
+  font-size: 1.25rem;
+  height: 2rem;
+  position: absolute;
+  right: 0;
+  top: 3px;
+  width: 2rem;
+  z-index: 2;
+
+  &:hover {
+    background: transparent;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+    height: 2.5rem;
+    top: 0;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--material-page-close-mobile-editor {
+  position: static;
+}
+
+.button-pill--material-editor {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+
+  background: $color-material-page-admin-panel-main-color;
+  border: 1px solid $color-material-page-admin-panel-main-color;
+  border-radius: 10px;
+  color: $color-default;
+  font-size: 1rem;
+  height: 1.75rem;
+  margin: 0 5px;
+  overflow: visible;
+  position: relative;
+  width: 1.75rem;
+
+  &.button-pill--disabled {
+    background: $color-disabled;
+    border: 1px solid $color-disabled;
+    color: $color-default;
+    cursor: not-allowed;
+
+    &:hover {
+      background: $color-disabled;
+      border: 1px solid $color-disabled;
+      color: $color-default;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.button-pill--material-editor-change-page-type {
+  // This is default state for exercise/assignment buttons
+  background: $color-material-page-admin-panel-disabled-color;
+  border-color: $color-material-page-admin-panel-disabled-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-disabled-color;
+    border-color: $color-material-page-admin-panel-disabled-color;
+  }
+}
+
+.button-pill--material-editor-exercise {
+  background: $color-exercise;
+  border-color: $color-exercise;
+  color: $color-default;
+
+  &:hover {
+    background: $color-exercise;
+    border-color: $color-exercise;
+  }
+}
+
+.button-pill--material-editor-assignment {
+  background: $color-assignment;
+  border-color: $color-assignment;
+  color: $color-default;
+
+  &:hover {
+    background: $color-assignment;
+    border-color: $color-assignment;
+  }
+}
+
+.button-pill--material-editor-journal {
+  background: $color-journal-page;
+  border-color: $color-journal-page;
+  color: $color-default;
+
+  &:hover {
+    background: $color-journal-page;
+    border-color: $color-journal-page;
+  }
+}
+
+.button-pill--material-editor-interim-evaluation {
+  background: $color-interim-evaluation;
+  border-color: $color-interim-evaluation;
+  color: $color-default;
+
+  &:hover {
+    background: $color-interim-evaluation;
+    border-color: $color-interim-evaluation;
+  }
+}
+
+.button-pill--material-editor-publish-page {
+  background: $color-button-success-background;
+  border-color: $color-button-success-background;
+  color: $color-button-success-text;
+
+  &:hover {
+    background: $color-button-success-background;
+    border-color: $color-button-success-background;
+  }
+}
+
+.button-pill--material-editor-revert-page {
+  background: $color-warn;
+  border-color: $color-warn;
+  color: $color-default;
+
+  &:hover {
+    background: $color-warn;
+    border-color: $color-warn;
+  }
+}
+
+.button-pill--material-editor-delete-page,
+.button-pill--remove-custom-signup-message {
+  background: $color-fatal;
+  border-color: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: $color-fatal;
+    border-color: $color-fatal;
+  }
+}
+
+.button-pill--material-editor-disabled {
+  background: $color-material-page-admin-panel-disabled-color;
+  border-color: $color-material-page-admin-panel-disabled-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-disabled-color;
+    border-color: $color-material-page-admin-panel-disabled-color;
+  }
+}
+
+.button-pill--material-editor-enabled {
+  background: $color-material-page-admin-panel-enabled-color;
+  border-color: $color-material-page-admin-panel-enabled-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-enabled-color;
+    border-color: $color-material-page-admin-panel-enabled-color;
+  }
+}
+
+.button-pill--material-editor-members-only {
+  background: $color-tertiary;
+  border-color: $color-tertiary;
+
+  &:hover {
+    background: $color-tertiary;
+    border-color: $color-tertiary;
+  }
+}
+
+.button-pill--material-editor-always-show {
+  background: $color-material-page-admin-panel-always-show-answers-color;
+  border-color: $color-material-page-admin-panel-always-show-answers-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-always-show-answers-color;
+    border-color: $color-material-page-admin-panel-always-show-answers-color;
+  }
+}
+
+.button-pill--material-editor-never-show {
+  background: $color-material-page-admin-panel-never-show-answers-color;
+  border-color: $color-material-page-admin-panel-never-show-answers-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-never-show-answers-color;
+    border-color: $color-material-page-admin-panel-never-show-answers-color;
+  }
+}
+
+.button-pill--material-editor-on-request {
+  background: $color-material-page-admin-panel-on-request-color;
+  border-color: $color-material-page-admin-panel-on-request-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-on-request-color;
+    border-color: $color-material-page-admin-panel-on-request-color;
+  }
+}
+
+// Vertical switch
+.button-pill--switch-vertical {
+  align-items: center;
+  appearance: none;
+  background: $color-default;
+  border: 2px solid $color-default;
+  border-radius: 10px; // This is half of the whole width of the switch
+  display: flex;
+  height: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
+  justify-content: center;
+  margin-right: 15px;
+  position: relative;
+  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
+
+  &::after {
+    background: lighten($color-disabled, 10%);
+    border-radius: 100%;
+    content: " ";
+    height: $generic-mobile-switch-size;
+    position: absolute;
+    top: 0;
+    transition: 0.3s;
+    width: $generic-mobile-switch-size;
+  }
+
+  &:hover {
+    background: $color-default;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 12px; // This is half of the whole width of the switch
+    height: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      height: $generic-desktop-switch-size;
+      width: $generic-desktop-switch-size;
+    }
+  }
+}
+
+.button-pill--switch-vertical-active {
+  &::after {
+    background: $color-fatal;
+    border-radius: 100%;
+    content: " ";
+    position: absolute;
+    top: calc(100% - #{$generic-mobile-switch-size} * 2);
+    transform: translateY(100%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      top: calc(100% - #{$generic-desktop-switch-size} * 2);
+    }
+  }
+}
+
+// Horizontal switch
+.button-pill--switch-horizontal {
+  align-items: center;
+  appearance: none;
+  background: $color-default;
+  border: 2px solid $color-default;
+  border-radius: 10px; // This is half of the whole width of the switch
+  box-shadow: 0 0 0 1px $color-default-helper;
+  display: flex;
+  height: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
+  justify-content: center;
+  margin: 0;
+  position: relative;
+  width: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
+
+  &::after {
+    background: $color-default-helper;
+    border-radius: 100%;
+    content: " ";
+    height: $generic-mobile-switch-size;
+    left: 0;
+    position: absolute;
+    transition: 0.3s;
+    width: $generic-mobile-switch-size;
+  }
+
+  &:hover {
+    background: $color-default;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 12px; // This is half of the whole width of the switch
+    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    width: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
+
+    &::after {
+      height: $generic-desktop-switch-size;
+      width: $generic-desktop-switch-size;
+    }
+  }
+}
+
+.button-pill--switch-horizontal-active {
+  background: lighten($color-success, 45%);
+  border-color: lighten($color-success, 45%);
+  box-shadow: 0 0 0 1px $color-success;
+
+  &::after {
+    background: $color-success;
+    border-radius: 100%;
+    content: " ";
+    left: unset;
+    position: absolute;
+    right: $generic-mobile-switch-size;
+    transform: translateX(100%);
+  }
+
+  &:hover {
+    background: lighten($color-success, 45%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      right: $generic-desktop-switch-size;
+    }
+  }
+}
+
+.button-pill--signup-switch {
+  margin: 0 20px;
+}
+
+.button-pill--chat-sound-switch {
+  margin: 0;
+
+  &.button-pill--switch-horizontal-active {
+    background: lighten($color-chat-primary, 30%);
+    border-color: lighten($color-chat-primary, 30%);
+    box-shadow: 0 0 0 1px $color-chat-primary;
+
+    &::after {
+      background: $color-chat-primary;
+    }
+
+    &:hover {
+      background: lighten($color-chat-primary, 30%);
+    }
+  }
+}
+
+// Teacher's Worklist
+.button-pill--expand-worklist {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-default-helper;
+  font-size: 0.625rem;
+  height: 1.5rem;
+  width: 1.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-pill--add-worklist-entry {
+  border-radius: 3px;
+  color: $color-default;
+  height: 2.25rem;
+  width: 2.25rem;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--save-worklist-entry {
+  background: $color-execute;
+  border-radius: 3px;
+  color: $color-default;
+  height: 2.25rem;
+  margin: 0 0 0 5px;
+  width: 2.25rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: darken($color-execute, 20%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--cancel-worklist-entry {
+  background: $color-cancel;
+  border-radius: 3px;
+  color: $color-default;
+  height: 2.25rem;
+  width: 2.25rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: darken($color-cancel, 20%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--edit-worklist-entry {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-info;
+  font-size: 0.875rem;
+  height: 1.5rem;
+  width: 2.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-pill--delete-worklist-entry {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-fatal;
+  font-size: 0.875rem;
+  height: 1.5rem;
+  margin: 0 0 0 5px;
+  width: 2.5rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-pill--new-message-to-staff {
+  background: $color-info;
+  color: $color-default;
+  font-size: 1.125rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-info, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-info, 10%);
+  }
+}
+
+.button-pill--whatsapp-me {
+  background: $color-whatsapp-dark;
+  color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-whatsapp-dark, 10%);
+  }
+}
+
+.button-pill--appointment-calendar {
+  background: $color-appointment-calendar-button-background;
+  color: $color-default;
+  font-size: 1.25rem;
+  height: 2rem;
+  margin: 0 10px 0 0;
+  width: 2rem;
+
+  &:hover,
+  &.hover {
+    background: darken($color-appointment-calendar-button-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background: darken($color-appointment-calendar-button-background, 10%);
+  }
+}
+
+.button-pill--discussion-subscription {
+  background: $color-button-disabled-background;
+  color: $color-default;
+
+  &:hover,
+  &.hover {
+    background: $color-fatal;
+  }
+
+  &:active,
+  &.active {
+    background: $color-fatal;
+  }
+}
+
+.button--wizard {
+  background-color: $color-button-wizard-background;
+  border: 0;
+  color: $color-button-wizard-text;
+  display: inline-flex;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.button--journal-material-toggle {
+  color: $color-info;
+  text-transform: none;
+}
+
+.button--add-extra-row,
+.button--load-all-hops-events,
+.button--back-to-hops-start {
+  background: transparent;
+  border: 1px solid transparent;
+  color: $color-info;
+  padding: 4px 6px;
+
+  &.disabled {
+    background: transparent;
+    border: 1px solid transparent;
+    color: $color-disabled;
+
+    &:hover {
+      background: transparent;
+      border: 1px solid transparent;
+      color: $color-disabled;
+    }
+  }
+}
+
+.button--remove-extra-row,
+.button--remove-hops-row,
+.button--remove-pedagogy-row,
+.button--remove-language,
+.button--remove-sample,
+.button--cancel-sample-removal {
+  background: transparent;
+  height: 2.25rem;
+  padding: 5px;
+  width: 2.25rem;
+
+  .icon-trash {
+    align-items: center;
+    color: $color-fatal;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
+}
+
+.button--edit-extra-row {
+  background: transparent;
+  height: 2.25rem;
+  padding: 5px;
+  width: 2.25rem;
+
+  .icon-pencil {
+    align-items: center;
+    color: $color-info;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-pencil {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
+}
+
+.button--cancel-sample-removal {
+  .icon-trash {
+    color: $color-default-contrast;
+  }
+}
+
+.button--whatsapp-me {
+  background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
+  color: $color-default;
+  margin: 0 0 0 10px;
+}
+
+.button-icon--evaluation {
+  color: $color-info;
+  font-size: 2rem;
+
+  &.disabled,
+  &:disabled {
+    background-color: transparent;
+    color: $color-disabled;
+  }
+}
+
+.button-icon--back-to-toc {
+  background: transparent;
+  border: 0;
+  font-size: 1rem;
+  height: 1.5rem;
+}
+
+.button-icon--whatsapp-me {
+  font-size: 1.75rem;
+  height: 1.75rem;
+  margin: 0 5px 0 0;
+  transition: 0.3s;
+  width: 1.75rem;
+
+  &:hover {
+    color: $color-whatsapp-light;
+  }
+}
+
+.button-icon--whatsapp-active {
+  color: $color-whatsapp-dark;
+}
+
+.button-icon--whatsapp-inactive {
+  color: $color-disabled;
+}
+
+.button-icon--reading-ruler {
+  border-radius: 100%;
+  color: $color-default-contrast;
+
+  &.disabled,
+  &.disabled:hover,
+  &.disabled:active {
+    background-color: transparent;
+    color: $color-disabled;
+  }
+}
+
+.button-icon--toc-action,
+.button-icon--notebook-action {
+  color: $color-default-contrast;
+  font-size: 1rem;
+  height: 1.5rem;
+  margin: 0 5px;
+  width: 1.5rem;
+
+  &:first-child {
+    margin-left: 10px;
+  }
+
+  &:last-child {
+    margin-right: 10px;
+  }
+}
+
+.button-icon--notebook-item-action {
+  color: $color-default-contrast;
+  font-size: 0.875rem;
+  height: 1.25rem;
+  margin: 0 5px;
+  width: 1.25rem;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.button-icon--note-item-content {
+  transform: rotate(0deg);
+  transition: 0.3s ease-in-out transform;
+
+  &.state-OPEN {
+    transform: rotate(-180deg);
+  }
+}
+
+.button-icon--reading-ruler-active {
+  background: $color-default-contrast;
+  border-radius: 100%;
+  color: $color-default;
+  height: 2rem;
+  margin: 0 4px;
+  width: 2rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: $color-default-contrast;
+    border-radius: 100%;
+    color: $color-default;
+  }
+}
+
+.button--modify-hops {
+  background-color: $color-info;
+  color: $color-default;
+  margin-right: 10px;
+}
+
+.button--modify-hops-active {
+  background-color: $color-fatal;
+  color: $color-default;
+  margin-right: 10px;
+}
+
+.button--reading-ruler-preset-active {
+  background-color: $color-default-contrast;
+  color: $color-default;
+}
+
+.button--journal-filter {
+  margin: 0 10px 0 0;
+}
+
+.button--journal-filter-active {
+  background-color: $color-list-selected-background;
+  color: $color-default;
+}
+
+.button--planner-course-group-toggle,
+.button--study-planner-month-toggle {
+  align-items: center;
+  background: transparent;
+  color: $color-study-plan-tool-accent;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  gap: 5px;
+  justify-content: flex-start;
+  padding: 0;
+  text-decoration: none;
+  text-transform: none;
+  transition: color 0.1s ease-in-out;
+  white-space: wrap;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+
+  .button__icon {
+    font-size: 0.75rem;
+    margin: 0 3px;
+  }
+}
+
+.button--study-planner-extra-info-toggle {
+  font-size: 0.75rem;
+  padding-left: 0;
+}
+
+.button-icon--study-planner-month-selection {
+  background: transparent;
+  color: $color-study-plan-tool-accent;
+  font-size: 1rem;
+}

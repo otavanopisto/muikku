@@ -1,0 +1,145 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.user-language-profile {
+  background-color: transparent; 
+  
+}
+
+.user-language-profile__drawer {
+  border: 1px solid $color-panel-border-color;
+  margin-top:10px;
+}
+
+.user-language-profile__drawer-header { 
+  padding: 16px;
+
+}
+
+.user-language-profile__drawer-button {
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.5rem;
+  justify-content: space-between;
+  padding: 0;
+  width: 100%;
+}
+
+.user-language-profile__drawer-title {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.user-language-profile__drawer-content {
+  padding: 16px;
+}
+
+.user-language-profile-container__row {
+  margin: 10px 0;
+  width: 100%;
+}
+
+.user-language-profile__field-description {
+  color: lighten($color-default-contrast, 30%);
+  display: block;
+  margin: 0 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-language-profile__textarea {
+  background: $color-default;
+  border: 2px solid $color-language-profile-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  height: 6rem;
+  padding: 4px 8px;
+  resize: vertical;
+  width: 100%;
+
+  &[disabled] {
+    background-color: lighten($color-disabled, 25%);
+}
+}
+
+.user-language-profile__drawer-skill {
+  align-items: center;
+  margin: 8px 0;
+  padding: 0 10px;
+
+  > h5 { 
+    font-size: 0.875rem;
+  }
+
+  > p, > span {
+    font-size: 0.875rem;
+  }
+
+  > span:last-child {
+    margin-left: 5px;
+  }
+}
+
+.user-language-profile__skills-container {
+  border: 0;
+  margin-top: 20px;
+  padding: 10px 0;
+}
+
+.user-language-profile-container__subheader { 
+  font-size: 1.25rem;
+}
+
+.user-language-profile-container__secondary-header {
+  font-size: 1.125rem;
+  padding: 10px 0;
+}
+
+.user-language-profile__label,
+.user-language-profile__star-label {
+  font-weight: 600;
+  margin: 0 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.user-language-profile__cv-language-skill {
+  margin: 10px;
+}
+
+
+
+.user-language-profile__skill-row {
+  display: flex;
+  justify-content: space-between;
+  padding:0 10px 10px;
+}
+
+.user-language-profile__star-displayer {
+  display: flex;
+  flex-flow: column nowrap;}
+
+.user-language-profile__stars {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 5px;
+
+}
+
+.user-language-profile__star {
+  appearance: none;
+  background-color: $color-default;
+  color: $color-language-profile-accent-color;
+  cursor: pointer;
+  font-size: 1rem;
+  height: auto;
+  text-decoration: none;
+  width: auto;
+}

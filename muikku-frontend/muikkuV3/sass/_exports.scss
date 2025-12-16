@@ -1,0 +1,8 @@
+@import "./base/breakpoints";
+
+/* stylelint-disable property-case, property-no-unknown */
+:export {
+  mobileBreakpointXl: $breakpoint-mobile-xl;
+  mobilebreakpoint: $breakpoint-pad;
+}
+/* stylelint-enable property-case, property-no-unknown */

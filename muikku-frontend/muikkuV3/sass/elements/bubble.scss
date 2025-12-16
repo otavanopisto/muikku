@@ -1,0 +1,100 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.bubble {
+  align-items: center;
+  background-color: $color-bubble-default-background;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px $color-bubble-default-shadow;
+  display: flex;
+  flex-flow: column nowrap;
+  font-family: $branded-font-family;
+  font-size: 0.875rem;
+  justify-content: flex-start;
+  padding: 0.625rem;
+  position: relative;
+  text-align: center;
+  width: 100%;
+
+  &:hover,
+  &.hover {
+    border-color: $color-bubble-default-highlight-border;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    @include prefix(transition, webkit ms o moz, border-color 0.5s ease-in-out);
+
+    background-color: $color-bubble-default-background;
+    border: 6px solid $color-bubble-default-border;
+    border-radius: 100%;
+    box-shadow: 0 20px 60px $color-bubble-default-shadow;
+    height: $bubble-size-small;
+    padding: 1.7rem;
+    width: $bubble-size-small;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    height: $bubble-size-normal;
+    padding: 2.25rem;
+    width: $bubble-size-normal;
+  }
+}
+
+.bubble__title {
+  align-items: flex-end;
+  color: $color-bubble-default-title;
+  display: flex;
+  font-size: 1.3rem;
+  font-weight: 900;
+  min-height: 52px;
+  position: relative;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    padding: 0.2rem 0.5rem 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    padding: 0.2rem 0.5rem 0;
+  }
+}
+
+.bubble__content {
+  color: $color-bubble-default-content;
+  font-weight: 400;
+  padding-top: 0.5rem;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1rem;
+    min-height: 6.2rem;
+    padding: 1rem 0 0;
+  }
+}
+
+.bubble__button-container {
+  display: inline-block;
+  font-weight: 600;
+  padding: 0.875rem 0 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    display: inline-block;
+    padding: 0;
+  }
+}
+
+.bubble--application {
+  margin-left: auto;
+}
+
+.bubble--goto-materials {
+  margin-right: auto;
+}

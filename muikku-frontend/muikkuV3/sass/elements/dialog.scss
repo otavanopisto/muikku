@@ -1,0 +1,913 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.dialog {
+  @include prefix(transition, moz ms webkit o, opacity 0.3s);
+
+  align-items: center;
+  background-color: $color-overlay-background;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  opacity: 0%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9990;
+}
+
+.dialog--local {
+  position: absolute;
+
+  .dialog__window {
+    position: relative;
+  }
+}
+
+.dialog--matriculation {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
+}
+
+.dialog--studies {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
+
+  .dialog__content {
+    overflow: auto;
+  }
+}
+
+.dialog--guider-student {
+  background-color: $color-dialog-default-background;
+  overflow: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-overlay-background;
+  }
+
+  .dialog__content {
+    overflow: clip; // We use clip here instead of auto so that child elements can have sticky positioning
+  }
+}
+
+.dialog--disconnect-warning {
+  background-color: $color-disconnect-warning-overlay-background;
+}
+
+.dialog--upload-header-image .dialog__window {
+  max-width: none;
+}
+
+.dialog--visible {
+  opacity: 100%;
+}
+
+.dialog--workspace-signup-dialog {
+  z-index: 9999;
+}
+
+.dialog__window {
+  align-items: flex-start;
+  background-color: $color-dialog-default-background;
+  border-radius: 5px;
+  bottom: 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  font-family: $system-font-family;
+  font-size: $text-mobile-font-size;
+  justify-content: flex-start;
+  left: 10px;
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  width: calc(100% - 20px);
+
+  @include breakpoint($breakpoint-pad) {
+    bottom: auto;
+    box-shadow: 0 0 80px $color-dialog-default-shadow;
+    font-size: $text-desktop-font-size;
+    left: auto;
+    max-width: 470px;
+    position: relative;
+    right: auto;
+    top: auto;
+  }
+}
+
+.dialog__window--chat {
+  max-height: calc(100% - 20px);
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 700px;
+  }
+}
+
+.dialog__window--pedagogy-form-pdf {
+  height: 100%;
+  max-width: unset;
+  width: 100%;
+}
+
+.dialog__window--notebook-pdf-dialog, 
+.dialog__window--cv-pdf-dialog {
+  @include breakpoint($breakpoint-pad) {
+    height: 90%;
+    max-width: 1000px;
+    width: 90%;
+  }
+}
+
+.dialog__window--assignments {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 1000px;
+  }
+}
+
+.dialog__window--course-description {
+  .dialog__content {
+    line-height: 1.5rem;
+    padding: 5px 20px;
+  }
+}
+
+.dialog__window--guider-student {
+  position: absolute;
+
+  @include breakpoint($breakpoint-pad) {
+    box-shadow: unset;
+    max-width: unset;
+    top: 20px;
+    width: calc(100% - 40px);
+  }
+}
+
+.dialog__window--new-user {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 400px;
+    }
+  }
+}
+
+.dialog__window--edit-workspace,
+.dialog__window--edit-user-group {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 546px;
+    }
+  }
+}
+
+.dialog__window--new-workspace {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+
+    .dialog__content {
+      height: 420px;
+    }
+  }
+}
+
+.dialog__window--wizard,
+.dialog__window--studies {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 10px;
+    bottom: 20px;
+    left: 20px;
+    max-width: none;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+  }
+
+  .dialog__content {
+    display: flex;
+    flex-basis: auto;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-height: 100%;
+  }
+
+  .multi-step {
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    left: 5px;
+    position: absolute;
+    right: 5px;
+    top: 0;
+
+    @include breakpoint($breakpoint-pad) {
+      left: 20px;
+      right: 20px;
+      top: 20px;
+    }
+  }
+
+  .wizard__content {
+    display: flex;
+    flex-basis: auto;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: auto;
+  }
+}
+
+.dialog__window--copy-workspace {
+  height: 100%;
+  max-width: none;
+
+  .multi-step {
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+}
+
+.dialog__window--note-information {
+  max-height: 100%;
+  max-width: none;
+
+  .dialog__content {
+    padding: 20px 15px 20px 20px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 5px;
+    left: auto;
+    max-height: calc(100% - 30px);
+    right: auto;
+    width: 728px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 984px;
+  }
+}
+
+.dialog__window--exam {
+  background-color: $color-default-generic-background;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  max-width: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: auto;
+
+  .dialog__content {
+    display: flex;
+    flex-basis: auto;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-height: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    border-radius: 5px;
+    bottom: 20px;
+    left: auto;
+    max-height: calc(100% - 30px);
+    max-width: 1240px;
+    right: auto;
+    top: 20px;
+    width: 100%;
+  }
+}
+
+.dialog__window--disconnect-warning {
+  background-color: $color-info;
+  color: $color-default;
+  font-size: 1.175rem;
+  max-width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 5px;
+    font-size: 1.375rem;
+    margin: 0 20px;
+    max-width: 1200px;
+  }
+}
+
+.dialog__overlay {
+  align-items: center;
+  background-color: $color-default;
+  bottom: 0;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: 90%;
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+}
+
+.dialog__container {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.dialog__container--color-picker {
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 0 15px 15px 0;
+}
+
+.dialog__container--label-form {
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0;
+}
+
+.dialog__image-tools {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.dialog__slider {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding-right: 15px;
+}
+
+.dialog__header {
+  align-items: center;
+  background-color: $color-dialog-mobile-background;
+  border-radius: 5px 5px 0 0;
+  color: $color-dialog-mobile-text;
+  display: flex;
+  flex-basis: 3rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: $dialog-title-height;
+  padding: 15px 10px 15px 20px;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-dialog-desktop-background;
+    color: $color-dialog-desktop-text;
+    display: flex;
+    height: 3rem;
+    min-height: 3rem;
+    padding: 0 10px 0 20px;
+  }
+}
+
+.dialog__header--study-planner-delete-course,
+.dialog__header--study-planner-specify-course,
+.dialog__header--study-planner-edit-month {
+  padding: 10px;
+}
+
+.dialog__header--guider-student {
+  @include breakpoint($breakpoint-pad) {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+  }
+}
+
+.dialog__header--wizard,
+.dialog__header--course-description {
+  background: $color-default;
+  color: $color-default-contrast;
+}
+
+.dialog__header--exam,
+.dialog__header--wizard {
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-dialog-wizard-desktop-background;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-dialog-wizard-desktop-text;
+    display: flex;
+    height: 3rem;
+    padding: 0 20px;
+  }
+}
+
+.dialog__header--exam {
+  background-color: $color-default-generic-background;
+  color: $color-default-contrast;
+
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
+.dialog__header--disconnect-warning {
+  background-color: transparent;
+  color: $color-default;
+  flex-basis: auto;
+  height: auto;
+  padding: 20px;
+
+  .dialog__title {
+    font-size: 1.375rem;
+    text-transform: none;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 30px;
+
+    .dialog__title {
+      font-size: 1.75rem;
+      text-transform: none;
+    }
+
+    .dialog__close {
+      right: 5px;
+      top: 25px;
+    }
+  }
+}
+
+.dialog__header--chat {
+  background: $color-default;
+  color: $color-default-contrast;
+
+  .dialog__title {
+    font-size: 0.9375rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1rem;
+    }
+  }
+
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
+.dialog__header--matriculation {
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
+.dialog__icon-container {
+  align-items: center;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  display: flex;
+  font-size: 72px;
+  padding: 5px;
+  position: relative;
+}
+
+.dialog__title {
+  font-size: $dialog-title-mobile-font-size;
+  position: relative;
+  text-transform: uppercase;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $dialog-title-desktop-font-size;
+  }
+}
+
+.dialog__title-sub-container {
+  align-items: center;
+  display: flex;
+}
+
+.dialog__title-item {
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.dialog__title-item--hops-toggle {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.dialog__title-item--studyprogramme {
+  display: flex;
+}
+
+.dialog__close {
+  @include prefix(transition, moz ms o webkit, background-color 0.3s);
+
+  border-radius: $dialog-button-close-height;
+  cursor: pointer;
+  font-size: 18px;
+  height: $dialog-button-close-height;
+  line-height: $dialog-button-close-height;
+  margin-top: calc(-#{$dialog-button-close-height} / 2);
+  position: absolute;
+  right: 5px;
+  text-align: center;
+  top: 50%;
+  width: $dialog-button-close-height;
+}
+
+.dialog__content {
+  flex-basis: calc(100% - 6rem - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: 1.25rem;
+  max-height: calc(100% - 6rem - 20px);
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: $dialog-content-padding;
+  width: 100%;
+}
+
+.dialog__content--note-information {
+  display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: nowrap;
+  }
+}
+
+.dialog__note-item {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.dialog__note-recipients {
+  border-left: 1px solid $color-default-separator-border;
+  flex-basis: 100%;
+  margin: 0 0 0 10px;
+  padding: 0 0 0 10px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: 340px;
+  }
+}
+
+.dialog__content--study-planner-edit-month,
+.dialog__content--study-planner-specify-course,
+.dialog__content--study-planner-delete-course {
+  padding: 10px;
+}
+
+.dialog__content--workspace-signup-dialog {
+  display: block;
+  width: 100%;
+}
+
+.dialog__content--notebook-pdf-dialog {
+  max-height: 100%;
+}
+
+.dialog__content--disconnect-warning {
+  line-height: 1.5rem;
+  padding: 0 20px;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+    padding: 0 30px;
+  }
+}
+
+// Descrease top and bottom padding in chat's dialogs as they have white background
+.dialog__content--chat {
+  padding: 10px 20px;
+}
+
+.dialog__content-column-container {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px 30px;
+  justify-content: flex-start;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.dialog__content-column {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 50%;
+    width: auto;
+  }
+}
+
+.dialog__content-row {
+  margin: 0 0 15px;
+  width: 100%;
+
+  &:last-child {
+    margin: 0;
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 10px;
+  }
+}
+
+.dialog__content-row--user-search {
+  margin: 10px 0;
+}
+
+.dialog__content-row--dates {
+  display: flex;
+}
+
+.dialog__content-row--new-user {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.dialog__content-row--new-workspace,
+.dialog__content-row--edit-workspace {
+  display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    .form-element:not(:first-child) {
+      margin-left: 20px;
+    }
+  }
+}
+
+// wonder what this is, needs to be checked
+
+.dialog__content-row--label {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.dialog__content-row-header-title {
+  font-size: $label-large-font-size;
+}
+
+.dialog__content-row-header-description {
+  font-weight: 300;
+  padding: 10px 0;
+}
+
+.dialog__content-row-content {
+  padding: 2px 0 0;
+}
+
+.dialog__content-row-content--new-workspace,
+.dialog__content-row-content--edit-workspace,
+.dialog__content-row-content--summary-dates {
+  padding-left: 20px;
+
+  span {
+    margin-left: 10px;
+  }
+}
+
+.dialog__content-row-content--summary {
+  padding-left: 20px;
+}
+
+.dialog__content-row-content--summary-dates span {
+  margin-left: 0;
+
+  &:not(:first-child) {
+    margin-left: 5px;
+
+    &::before {
+      content: "-";
+      margin-right: 5px;
+    }
+  }
+}
+
+.dialog__footer {
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+  position: absolute;
+  right: 0;
+  text-align: right;
+
+  @include breakpoint($breakpoint-pad) {
+    position: relative;
+    width: 100%;
+  }
+}
+
+.dialog__footer--disconnect-warning {
+  .dialog__button-set {
+    justify-content: center;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 35px;
+  }
+}
+
+.dialog__button-set {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+  }
+
+  .button {
+    margin: 0 0 0 10px;
+
+    @include breakpoint($breakpoint-desktop) {
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+.dialog--evaluation {
+  width: 100%;
+
+  .dialog__header--evaluation {
+    display: none;
+  }
+
+  .dialog__content {
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
+  }
+
+  .dialog__window--evaluation {
+    @include breakpoint($breakpoint-pad) {
+      bottom: 0;
+      left: 0;
+      margin: 0;
+      max-width: 100%;
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+}
+
+.dialog--enrollment {
+  background: transparent;
+  bottom: auto;
+  left: calc(50% - 235px);
+  max-width: 470px;
+  top: 10px;
+
+  .dialog__content-row--label {
+    flex-flow: row nowrap;
+  }
+
+  .dialog__content-column {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+    padding-left: 24px;
+  }
+}
+
+.dialog__header--enrollment {
+  background: $color-default;
+  color: $color-default-contrast;
+
+  .button-icon--dialog-close {
+    color: $color-info;
+  }
+}
+
+.dialog__executer {
+  &.state-DONE {
+    color: $color-success;
+  }
+}
+
+.dialog--hops {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      left: auto;
+      right: auto;
+      width: 728px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      width: 984px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      width: 1160px;
+    }
+  }
+}
+
+.dialog__state {
+  align-items: center;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  display: flex;
+  margin: 20px 0 5px;
+  padding: 7px;
+
+  &.state-INFO {
+    border-color: $color-info;
+
+    .dialog__state-icon {
+      color: $color-info;
+    }
+  }
+}
+
+.dialog__state-icon {
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 35px;
+  margin: 0 7px 0 0;
+}
+
+.dialog__state-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
+}

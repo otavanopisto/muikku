@@ -152,7 +152,9 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
+    .mockIAmCounselor()
+    .mockUserContact(student)
     .build();
     login();
     
@@ -168,7 +170,7 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
-      waitAndClick("#STUDY_HISTORY");
+      waitAndClick("#tabControl-STUDY_HISTORY");
       waitAndClick("#studyLibrary");      
       waitForPresent(".file-uploader input");
       scrollIntoView(".file-uploader input");
@@ -214,9 +216,11 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
-      Long courseId = 6l;    
+      Long courseId = course1.getId();
+      
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
@@ -224,11 +228,13 @@ public class GuiderTestsBase extends AbstractUITest {
       OffsetDateTime signupEnd = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end, signupStart, signupEnd);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1, student.getId(), new ArrayList<>());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
+        .mockEmptyStudyActivity()
+        .mockUserContact(student)
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -245,10 +251,10 @@ public class GuiderTestsBase extends AbstractUITest {
       
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
         waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
@@ -279,10 +285,11 @@ public class GuiderTestsBase extends AbstractUITest {
         mockBuilder
           .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-          .mockStaffCompositeCourseAssessmentRequests();
+          .mockStaffCompositeCourseAssessmentRequests()
+          .mockIAmCounselor();
         
         logout();
         mockBuilder.mockLogin(admin);
@@ -311,7 +318,7 @@ public class GuiderTestsBase extends AbstractUITest {
         // Then test the history - tab
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");
-        waitAndClick("#STUDY_HISTORY");      
+        waitAndClick("#tabControl-STUDY_HISTORY");      
         waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
         assertText(".application-list__header-secondary .application-list__indicator-badge", "E");
         
@@ -341,6 +348,9 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course1)
       .addCourse(course2)
       .addCourse(course3)
+      .mockEmptyStudyActivity()
+      .mockIAmCounselor()
+      .mockUserContact(student)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -390,6 +400,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .mockLogin(admin)
       .addCourse(course1)
+      .mockUserContact(student)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -438,6 +449,7 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .mockUserContact(student)
         .build();
       try {
         selectFinnishLocale();
@@ -468,13 +480,15 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
         .mockStudyProgrammes()
         .mockStudentGroups()
         .mockEmptyStudyActivity()
+        .mockIAmCounselor()
+        .mockUserContact(student)
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -567,13 +581,15 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .addStudent(student)
       .mockLogin(admin)
-      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
       .addStudentToStudentGroup(2l, student)
       .mockPersons()
       .mockStudents()
       .mockStudyProgrammes()
       .mockStudentGroups()
       .mockEmptyStudyActivity()
+      .mockIAmCounselor()
+      .mockUserContact(student)
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -600,10 +616,9 @@ public class GuiderTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "opiskelijalle on luotu tilaus.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
-        WebElement deleteOrderButton = findElement(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
-        waitForStaleness(deleteOrderButton);
+        waitUntilElementGoesAway(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order", (long) 10);
         assertPresent(".icon-cart-plus");
       }finally {
         deleteUserGroupUsers();
@@ -626,13 +641,15 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
         .mockStudyProgrammes()
         .mockStudentGroups()
         .mockEmptyStudyActivity()
+        .mockIAmCounselor()
+        .mockUserContact(student)
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -695,7 +712,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/profile#general", false);
           assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("d.M.yyyy")));
           navigate("/profile#purchases", false);
-          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen.");
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilaus on peruttu.");
           logout();
           mockBuilder.mockLogin(admin);
           login();
@@ -734,8 +751,8 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try {
       mockBuilder
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
-        .addStudyProgramme(new StudyProgramme(3l, 1l, "test_sprogramme", "Nettikoulu/yo", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
+        .addStudyProgramme(new StudyProgramme(3l, 1l, "test_sprogramme", "Nettikoulu/yo", 1l, null, false, false, null))
         .addStaffMember(admin)
         .addStaffMember(manager)
         .addStaffMember(spl)
@@ -784,8 +801,10 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
+    .mockIAmCounselor()
+    .mockUserContact(student)
     .build();
     login();
     
@@ -810,8 +829,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       
       logout();
       mockBuilder.mockLogin(student);
@@ -821,7 +839,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitForVisible(".note__description");
       assertText(".note__description p", "Do some stuff!");
       navigate("/records", false);
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       assertText(".notes .notes__item .notes__item-author", "Admin Person");
       waitAndClick(".notes .notes__item .icon-more_vert");
@@ -840,9 +858,9 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      waitAndClick(".tabs--notes #archived");
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      waitAndClick(".tabs--notes #tabControl-archived");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header", "Task from guider.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteWorkspace(workspace.getId());

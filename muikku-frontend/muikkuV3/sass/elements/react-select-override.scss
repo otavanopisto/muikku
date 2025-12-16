@@ -1,0 +1,259 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// We need to nest this whole "react-select" component's custom styles as it's default classes are put to last always O_o
+.react-select-override {
+  background-color: $color-default;
+
+  /* stylelint-disable declaration-no-important */
+
+  // We have to put important here as react-select appends it's menu container inside
+  // the main container and therefore with relative positioning menu width cannot exceed the main container's width
+  position: unset !important;
+  /* stylelint-enable declaration-no-important */
+
+  .react-select-override__control {
+    border-color: $color-form-element-border;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: none;
+    font-family: $system-font-family;
+    font-size: $text-mobile-font-size;
+    height: $select-height-mobile;
+    max-width: 150px;
+    width: 100%;
+
+    &:hover {
+      border-color: $color-form-element-border;
+    }
+
+    &.react-select-override__control--is-focused {
+      border-color: $color-outline;
+    }
+
+    // We nest this so react-select-override block's modifier definitions does not need to duplicate this disabled style
+    &.react-select-override__control--is-disabled {
+      border-color: lighten($color-disabled, 20%);
+      border-style: solid;
+      border-width: 2px;
+
+      &:hover {
+        border-color: lighten($color-disabled, 20%);
+      }
+    }
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+      height: $select-height-desktop;
+      max-width: 320px;
+    }
+  }
+
+  .react-select-override__menu {
+    @include text;
+
+    display: flex;
+    max-width: 300px;
+    min-width: 100px;
+    top: unset;
+    z-index: 999;
+
+    @include breakpoint($breakpoint-pad) {
+      max-width: 400px;
+    }
+  }
+
+  .react-select-override__menu-list {
+    @include text;
+
+    display: flex;
+    flex-basis: 100%;
+    flex-flow: column nowrap;
+  }
+
+  .react-select-override__option {
+    @include text;
+  }
+
+  .react-select-override__option--is-disabled {
+    @include text;
+  }
+
+  .react-select-override__option--is-focused {
+    background-color: $color-default-generic-background;
+  }
+
+  .react-select-override__option--is-selected {
+    @include text;
+
+    background-color: $color-info;
+    color: $color-default;
+  }
+
+  .react-select-override__group-heading {
+    @include text;
+
+    font-weight: 600;
+    margin: 5px 0;
+    text-transform: none;
+  }
+
+  .react-select-override__option-label {
+    font-weight: 600;
+  }
+
+  .react-select-override__option-body {
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    margin: 5px 0 0;
+  }
+}
+
+// This definition is to allow react-select coponent to be rendered outside of dialogs when using props to place it under <body> directly
+.react-select-override__menu-portal {
+  @include text;
+}
+
+// Used for HOPS and PEDAGOGY FORM
+.react-select-override--hops {
+  .react-select-override__control {
+    border-color: $color-hops-form-element-border;
+    height: auto;
+    max-width: unset;
+
+    &:hover {
+      border-color: $color-hops-form-element-border;
+    }
+  }
+}
+
+.react-select-override--pedagogy-form {
+  .react-select-override__control {
+    border-color: $color-hops-form-element-border;
+    height: auto;
+    max-width: unset;
+
+    &:hover {
+      border-color: $color-hops-form-element-border;
+    }
+  }
+}
+
+.react-select-override--language-profile-form {
+  .react-select-override__control {
+    border-color: $color-language-profile-form-element-border;
+    height: auto;
+    max-width: unset;
+
+    &:hover {
+      border-color: $color-language-profile-form-element-border;
+    }
+  }
+}
+
+.react-select-override--material-editor {
+  .react-select-override__control {
+    max-width: unset;
+    width: 100%
+  }
+}
+
+.react-select-override--chat {
+  .react-select-override__control {
+    border-color: $color-chat-primary;
+
+    &:hover,
+    &:active {
+      border-color: $color-chat-primary;
+    }
+  }
+
+  .react-select-override__menu {
+    border: 1px solid lighten($color-chat-primary, 30%);
+    box-shadow: 0 10px 20px $color-dropdown-default-shadow;
+    max-width: 200px;
+  }
+
+  .react-select-override__option {
+    background: $color-default;
+    color: $color-default-contrast;
+    font-weight: 600;
+
+    &:hover,
+    &:active {
+      background: lighten($color-chat-primary, 35%);
+    }
+  }
+
+  .react-select-override__option--is-selected {
+    background: $color-chat-primary;
+    color: $color-default;
+
+    &:hover,
+    &:active {
+      background: $color-chat-primary;
+      color: $color-default;
+    }
+  }
+}
+
+.react-select-override--chat-mobile {
+  background: darken($color-chat-primary, 15%);
+  border-radius: $chat-border-radius;
+  display: block;
+  height: 1.625rem;
+  margin: 0 5px;
+
+  .react-select-override__control {
+    background: darken($color-chat-primary, 15%);
+    border: 0;
+    border-radius: $chat-border-radius;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    height: 1.625rem;
+    min-height: 1.625rem;
+  }
+
+  .react-select-override__value-container {
+    padding: 0 4px 0 8px;
+  }
+
+  .react-select-override__single-value {
+    color: $color-default;
+    font-weight: 600;
+  }
+
+  .react-select-override__input-container {
+    color: $color-default;
+    font-size: 1rem;
+  }
+
+  .react-select-override__indicator {
+    color: $color-default;
+    padding: 0 8px 0 4px;
+  }
+
+  .react-select-override__indicator-separator {
+    display: none;
+  }
+
+  .react-select-override__menu {
+    border: 1px solid lighten($color-chat-primary, 30%);
+    box-shadow: 0 10px 20px $color-dropdown-default-shadow;
+    max-width: 200px;
+  }
+
+  .react-select-override__option {
+    background: $color-default;
+    color: $color-default-contrast;
+    font-weight: 600;
+  }
+
+  .react-select-override__option--is-selected {
+    background: $color-chat-primary;
+    color: $color-default;
+  }
+}

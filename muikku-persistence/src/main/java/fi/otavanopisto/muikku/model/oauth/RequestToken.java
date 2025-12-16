@@ -1,17 +1,11 @@
-  package fi.otavanopisto.muikku.model.oauth;
+package fi.otavanopisto.muikku.model.oauth;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.validation.constraints.NotEmpty;
-
 @Entity
-@Cacheable (true)
-@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class RequestToken extends Token {
 
   public RequestToken() {

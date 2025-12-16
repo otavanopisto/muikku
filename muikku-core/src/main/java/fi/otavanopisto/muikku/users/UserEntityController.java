@@ -1,22 +1,27 @@
 package fi.otavanopisto.muikku.users;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,8 +39,11 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -57,6 +65,9 @@ public class UserEntityController implements Serializable {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
+  private UserProfilePictureController userProfilePictureController;
+
+  @Inject
   private UserEntityDAO userEntityDAO;
 
   @Inject
@@ -73,6 +84,12 @@ public class UserEntityController implements Serializable {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   @Any
@@ -271,29 +288,103 @@ public class UserEntityController implements Serializable {
     return userEntities.values();
   }
 
-  public List<String> listUserEntityIdentifiersByDataSource(SchoolDataSource dataSource) {
-    List<String> result = new ArrayList<>();
-
-    List<UserSchoolDataIdentifier> identifiers = listUserSchoolDataIdentifiersByDataSource(dataSource);
-    for (UserSchoolDataIdentifier indentifier : identifiers) {
-      result.add(indentifier.getIdentifier());
-    }
-
-    return result;
-  }
-
-  public List<String> listUserEntityIdentifiersByDataSource(String dataSource) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-    if (schoolDataSource == null) {
-      logger.severe("Could not find school data source: " + dataSource);
-      return null;
-    } else {
-      return listUserEntityIdentifiersByDataSource(schoolDataSource);
-    }
+  public boolean hasProfilePicture(UserEntity userEntity) {
+    return userProfilePictureController.hasProfilePicture(userEntity);
   }
   
-  public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
-    return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
+  /**
+   * Returns true if given UserEntity is an active user. Essentially
+   * checks if the default UserSchoolDataIdentifier of the UserEntity
+   * is active or not.
+   * 
+   * @param userEntity UserEntity
+   * @return true if userEntity is an active user
+   * @throws IllegalArgumentException if userEntity is null
+   */
+  public boolean isActiveUserEntity(UserEntity userEntity) throws IllegalArgumentException {
+    if (userEntity == null) {
+      throw new IllegalArgumentException("UserEntity was not specified");
+    }
+    
+    if (Boolean.TRUE.equals(userEntity.getArchived())) {
+      // Archived UserEntity can never be active
+      return false;
+    }
+
+    // Find the currently active UserSchoolDataIdentifier
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier());
+    
+    // findUserSchoolDataIdentifierBySchoolDataIdentifier returns only unarchived UserSchoolDataIdentifiers, so if we get null, return false.
+    return userSchoolDataIdentifier != null ? isActiveUserSchoolDataIdentifier(userSchoolDataIdentifier) : false;
+  }
+  
+  /**
+   * Returns true if the given UserSchoolDataIdentifier is considered to be active.
+   * 
+   * Requirements:
+   * - UserSchoolDataIdentifier cannot be archived
+   * - UserEntity the UserSchoolDataIdentifier points to must exist and cannot be archived
+   * - The given UserSchoolDataIdentifier must be the default identifier of the UserEntity
+   * 
+   * @param userSchoolDataIdentifier
+   * @return true if userSchoolDataIdentifier is considered to be active
+   * @throws IllegalArgumentException if userSchoolDataIdentifier is null
+   */
+  public boolean isActiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    if (userSchoolDataIdentifier == null) {
+      throw new IllegalArgumentException("UserSchoolDataIdentifier was not specified");
+    }
+    
+    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
+    
+    // Return false if userEntity is missing or either are archived
+    if (Boolean.TRUE.equals(userSchoolDataIdentifier.getArchived()) || userEntity == null || Boolean.TRUE.equals(userEntity.getArchived())) {
+      return false;
+    }
+
+    // Return false if identifier is not default identifier
+    if (!userSchoolDataIdentifier.schoolDataIdentifier().equals(userEntity.defaultSchoolDataIdentifier())) {
+      return false;
+    }
+
+    // Guardians have additional check to determine if they are acive or not. To be 
+    // active, they need to have active dependents (students) they are a guardian of.
+    // Sadly this information is only availabe through a bridge.
+    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        return userSchoolDataController.isActiveGuardian(userSchoolDataIdentifier.schoolDataIdentifier());
+      } finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+    }
+    
+    EnvironmentRoleArchetype[] staffRoles = {
+        EnvironmentRoleArchetype.ADMINISTRATOR, 
+        EnvironmentRoleArchetype.MANAGER, 
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER
+    };
+    
+    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
+      SearchProvider searchProvider = getProvider("elastic-search");
+      if (searchProvider != null) {
+        SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
+        return searchResult.getTotalHitCount() > 0;
+      }
+    }
+    
+    return true;
+  }
+  
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
   }
 
   public boolean isStudent(UserEntity userEntity) {
@@ -370,6 +461,102 @@ public class UserEntityController implements Serializable {
   
   public UserEntity markAsUpdatedByStudent(UserEntity userEntity) {
     return userEntityDAO.updateUpdatedByStudent(userEntity, Boolean.TRUE);
+  }
+  
+  /**
+   * Returns true, if the student is under 18 years old and
+   * part of compulsory education system.
+   * 
+   * @param studentIdentifier Student's identifier
+   * @return true if yes
+   */
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier == null) {
+      logger.log(Level.WARNING, "Called with null studentIdentifier.");
+      return false;
+    }
+    
+    for (SearchProvider searchProvider : searchProviders) {
+      if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+        SearchResult searchResult = searchProvider.findUser(studentIdentifier, true);
+        
+        if (searchResult.getTotalHitCount() != 1) {
+          logger.log(Level.WARNING, String.format("Couldn't find unique result for identifier %s, %d results.", studentIdentifier.toId(), searchResult.getTotalHitCount()));
+          return false;
+        }
+        
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
+
+        try {
+          String birthdayStr = (String) match.get("birthday");
+
+          if (StringUtils.isNotBlank(birthdayStr)) {
+            LocalDate birthday = LocalDate.parse(birthdayStr);
+            
+            if (birthday == null || birthday.plusYears(18).isBefore(LocalDate.now())) {
+              // Student is 18 years old or older, return false
+              return false;
+            }
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) match.get("studyPeriods");
+
+            if (CollectionUtils.isNotEmpty(studyPeriods)) {
+              EnumSet<UserStudyPeriodType> states = EnumSet.of(
+                  UserStudyPeriodType.COMPULSORY_EDUCATION, 
+                  UserStudyPeriodType.NON_COMPULSORY_EDUCATION, 
+                  UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION
+              );
+              LocalDate now = LocalDate.now();
+              LocalDate date = null;
+              UserStudyPeriodType state = null;
+    
+              /*
+               * Loop through study periods and for the periods
+               * that are active, check that they are one of the
+               * states that correspond to the compulsory state.
+               * After the loop is done, we should have the state
+               * in state variable that is the currently active one.
+               */
+              for (Map<String, Object> studyPeriod : studyPeriods) {
+                UserStudyPeriodType periodType = EnumUtils.getEnum(UserStudyPeriodType.class, (String) studyPeriod.get("type"));
+                if (states.contains(periodType)) {
+                  String periodBeginStr = (String) studyPeriod.get("begin");
+                  String periodEndStr = (String) studyPeriod.get("end");
+
+                  LocalDate periodBegin = StringUtils.isNotBlank(periodBeginStr) ? LocalDate.parse(periodBeginStr) : null;
+                  LocalDate periodEnd = StringUtils.isNotBlank(periodEndStr) ? LocalDate.parse(periodEndStr) : null;
+
+                  boolean isActivePeriod = 
+                      (periodBegin == null || periodBegin.equals(now) || periodBegin.isBefore(now)) &&
+                      (periodEnd == null || periodEnd.equals(now) || periodEnd.isAfter(now));
+
+                  if (isActivePeriod && (date == null || periodBegin.isAfter(date))) {
+                    date = periodBegin;
+                    state = periodType;
+                  }
+                }
+              }
+              
+              EnumSet<UserStudyPeriodType> activeStates = EnumSet.of(
+                  UserStudyPeriodType.COMPULSORY_EDUCATION, 
+                  UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION
+              );
+              
+              if (activeStates.contains(state)) {
+                return true;
+              }
+            }
+          }
+        }
+        catch (DateTimeParseException ex) {
+          return false;
+        }
+      }
+    }
+
+    return false;
   }
 
 }

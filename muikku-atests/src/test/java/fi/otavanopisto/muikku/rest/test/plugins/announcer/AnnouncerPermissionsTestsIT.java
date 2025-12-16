@@ -185,8 +185,9 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
     /**
      * Teacher can see
      *  - The public announcement
+     *  - The group announcement (special permission)
      */
-    testListAndFind(asTeacher(), TestRole.TEACHER, 1);
+    testListAndFind(asTeacher(), TestRole.TEACHER, 2);
   }
 
   @Test
@@ -202,7 +203,7 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
   
   private void testListAndFind(RequestSpecification request, TestRole role, int expectedCount) {
     Response response = request.get("/announcer/announcements");
-    response.then().statusCode(200).body("id.size()", is(expectedCount));
+    response.then().statusCode(200).body("announcements.id.size()", is(expectedCount));
 
     List<Long> ids = response.body().jsonPath().getList("id", Long.class);
     for (Long announcementId : ids) {

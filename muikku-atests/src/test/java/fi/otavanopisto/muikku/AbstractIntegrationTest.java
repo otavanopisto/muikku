@@ -175,7 +175,7 @@ public abstract class AbstractIntegrationTest {
       Statement statement = connection.createStatement();
       statement.execute("SELECT id AS result "
                   + "FROM CeeposOrder "
-                  + "ORDER BY ID DESC "
+                  + "ORDER BY id DESC "
                   + "LIMIT 1");
       ResultSet results = statement.getResultSet();
       String orderId = "";
@@ -186,6 +186,16 @@ public abstract class AbstractIntegrationTest {
     } finally {
       connection.close();
     }
+  }
+  
+  protected String getNextCeeposOrderId() throws ClassNotFoundException, SQLException {
+    String orderId = getLatestCeeposOrderId();
+    if (orderId == "") {
+      orderId = "1";
+    } else {
+      orderId = String.valueOf(Long.parseLong(orderId) + 1);
+    }
+    return orderId;  
   }
   
   protected void updateWorkspaceAccess(WorkspaceAccess access, String urlName) throws SQLException, ClassNotFoundException{

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
@@ -20,6 +21,9 @@ public class WorkspaceMultiSelectFieldIOHandler implements WorkspaceFieldIOHandl
 
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
+  
+  @Inject
+  private MaterialDeleteController materialDeleteController;
 
   @Override
   public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
@@ -56,7 +60,7 @@ public class WorkspaceMultiSelectFieldIOHandler implements WorkspaceFieldIOHandl
     }
     // From checked to unchecked
     for (WorkspaceMaterialMultiSelectFieldAnswerOption currentAnswer : currentAnswers) {
-      workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialMultiSelectFieldAnswerOption(currentAnswer);
+      materialDeleteController.deleteWorkspaceMaterialMultiSelectFieldAnswerOption(currentAnswer);
     }
   }
   

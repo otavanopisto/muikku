@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
+import java.util.List;
+
 public class MatriculationExamInitialData {
 
   public String getName() {
@@ -8,14 +10,6 @@ public class MatriculationExamInitialData {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getSsn() {
-    return ssn;
-  }
-
-  public void setSsn(String ssn) {
-    this.ssn = ssn;
   }
 
   public String getEmail() {
@@ -58,12 +52,12 @@ public class MatriculationExamInitialData {
     this.locality = locality;
   }
 
-  public String getGuidanceCounselor() {
-    return guidanceCounselor;
+  public List<String> getGuidanceCounselors() {
+    return guidanceCounselors;
   }
 
-  public void setGuidanceCounselor(String guidanceCounselor) {
-    this.guidanceCounselor = guidanceCounselor;
+  public void setGuidanceCounselors(List<String> guidanceCounselors) {
+    this.guidanceCounselors = guidanceCounselors;
   }
 
   public String getStudentIdentifier() {
@@ -74,24 +68,32 @@ public class MatriculationExamInitialData {
     this.studentIdentifier = studentIdentifier;
   }
 
-  public boolean isEnrollmentSent() {
-    return enrollmentSent;
+  public Double getCompletedCreditPointsCount() {
+    return completedCreditPointsCount;
   }
 
-  public void setEnrollmentSent(boolean enrollmentSent) {
-    this.enrollmentSent = enrollmentSent;
+  public void setCompletedCreditPointsCount(Double completedCreditPointsCount) {
+    this.completedCreditPointsCount = completedCreditPointsCount;
+  }
+
+  public List<String> getStudyAdvisors() {
+    return studyAdvisors;
+  }
+
+  public void setStudyAdvisors(List<String> studyAdvisors) {
+    this.studyAdvisors = studyAdvisors;
   }
 
   private String name;
-  private String ssn;
   private String email;
   private String phone;
   private String address;
   private String postalCode;
   private String locality;
-  private String guidanceCounselor;
+  private List<String> guidanceCounselors;
+  private List<String> studyAdvisors;
   private String studentIdentifier;
-  private boolean enrollmentSent;
+  private Double completedCreditPointsCount;
 
 }
 

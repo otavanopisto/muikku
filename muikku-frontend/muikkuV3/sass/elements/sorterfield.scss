@@ -1,0 +1,190 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// Sorterfield wrapper
+.sorterfield-wrapper {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+
+  // Nesting here prevents rich-text.scss rules from overriding sorterfields styleing
+  ol.sorterfield {
+    list-style-type: none;
+    margin: 0;
+  }
+
+  li.sorterfield__item {
+    display: flex;
+    list-style-type: none;
+  }
+}
+
+.sorterfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+// Disabled state for sorterfield
+.sorterfield.sorterfield--disabled {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+
+  .sorterfield__item {
+    border-color: $color-disabled-taskfield-border;
+
+    // Correctanswer state for item when field is disabled
+    &.correct-answer {
+      border-color: $color-correct-answer;
+    }
+
+    // Incorrectanswer state for item when field is disabled
+    &.incorrect-answer {
+      border-color: $color-incorrect-answer;
+    }
+  }
+
+  .sorterfield__data-container {
+    cursor: not-allowed;
+  }
+
+  .sorterfield__item-icon {
+    color: $color-disabled-taskfield-icon;
+  }
+}
+
+.sorterfield.sorterfield--horizontal.sorterfield--disabled {
+  border-color: $color-disabled-taskfield-border;
+}
+
+// If the whole taskfield is correct we then mark taskfield items as correct
+.sorterfield.correct-answer {
+  .sorterfield__item {
+    border-color: $color-correct-answer;
+  }
+}
+
+// Sorter field set to vertical mode
+.sorterfield.sorterfield--vertical {
+  align-items: flex-start;
+  border-left: 1px solid lighten($taskfield-border-color, 10%);
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0 0 0 5px;
+}
+
+// Sorter field set to horizontal mode
+.sorterfield.sorterfield--horizontal {
+  align-items: center;
+  border-bottom: 1px solid lighten($taskfield-border-color, 10%);
+  display: inline-flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  padding: 0 0 5px;
+}
+
+// Sorter fields item container
+.sorterfield__data-container {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2rem;
+  position: relative;
+  width: 100%;
+
+  &:hover,
+  &:focus {
+    margin: -2px;
+    padding: 2px;
+    width: calc(100% + 4px);
+  }
+}
+
+// Sorter field item
+.sorterfield__item {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  align-items: center;
+  cursor: grab;
+  flex-flow: row nowrap;
+  height: 2rem;
+  list-style-type: none;
+  margin: 4px;
+  user-select: text;
+
+  &:focus {
+    height: auto;
+    left: -2px;
+    min-height: 2rem;
+    padding: 5px 0;
+    position: absolute;
+    top: -2px;
+    width: calc(100% + 4px);
+    z-index: 99;
+  }
+}
+
+// Correctanswer state for item
+.sorterfield__item.correct-answer {
+  border-color: $color-correct-answer;
+}
+
+// Incorrectanswer state for item
+.sorterfield__item.incorrect-answer {
+  border-color: $color-incorrect-answer;
+}
+
+// Selected state of item
+.sorterfield__item.sorterfield__item--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+  color: $color-default;
+
+  .sorterfield__item-icon {
+    background: transparent;
+    color: $color-default;
+  }
+}
+
+// Correctanswer/Incorrectanswer and Selected state of item
+.sorterfield__item.correct-answer.sorterfield__item--selected,
+.sorterfield__item.incorrect-answer.sorterfield__item--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+  color: $color-default;
+
+  .sorterfield__item-icon {
+    background: transparent;
+    color: $color-default;
+  }
+}
+
+// Item's drag icon
+.sorterfield__item-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+// Item's label
+.sorterfield__item-label {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: 1; // This prevents text misalignment in mobile views
+  max-width: calc(100% - 25px);
+  overflow-wrap: initial;
+  padding: 6px 6px 6px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.25rem;
+    max-width: calc(100% - 27px); // Width of the drang handle
+    padding: 4px 6px 4px 0;
+  }
+}

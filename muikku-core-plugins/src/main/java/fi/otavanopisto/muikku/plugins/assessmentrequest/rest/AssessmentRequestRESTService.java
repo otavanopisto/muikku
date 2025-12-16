@@ -21,6 +21,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -34,14 +36,18 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentReq
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposController;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -95,6 +101,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   private UserEntityController userEntityController;
   
   @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
   private EvaluationController evaluationController;
   
   @GET
@@ -118,8 +127,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       if (order != null) {
         price.setPrice(0d);
       }
-      
     }
+    
     return Response.ok(price).build();
   }
 
@@ -127,32 +136,22 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentRequests")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createAssessmentRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, AssessmentRequestRESTModel newAssessmentRequest) {
-
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.NOT_FOUND).entity("Course not found").build();
     }
-    
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-    WorkspaceAssessmentRequest assessmentRequest = null;
-    
-    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-    assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(workspaceIdentifier, sessionController.getLoggedUser());
-    
-    if (assessmentRequest != null) {
-      if (assessmentRequest.getHandled().equals(Boolean.FALSE)) {
-        return Response.noContent().build();
-      }
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Course user not found").build();
     }
-    
     try {
-      assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
+      WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(sessionController.getLocale(), assessmentRequest);
-      return Response.ok(restModel(assessmentRequest)).build();
+      return Response.ok(assessmentRequestController.restModel(assessmentRequest)).build();
     }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Couldn't create workspace assessment request.", e);
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     } 
   }
   
@@ -189,6 +188,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Unable to determine price").build();
     }
     
+    // Figure out the product
+    
+    User user = userSchoolDataController.findUser(sessionController.getLoggedUser());
+    if (user == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unable to determine user").build();
+    }
+    CeeposProduct product = StringUtils.isBlank(user.getSchool())
+        ? ceeposController.findProductByType(CeeposProductType.ASSESSMENTREQUEST_FUNDED)
+        : ceeposController.findProductByType(CeeposProductType.ASSESSMENTREQUEST);
+    if (product == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unable to determine product").build();
+    }
+    
     // Create the order, or reuse an existing one as long as it is still CREATED or ONGOING
     
     order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.CREATED || o.getState() == CeeposOrderState.ONGOING).findFirst().orElse(null);
@@ -197,6 +209,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     }
     else { 
       order = ceeposController.createAssessmentRequestOrder(
+          product,
           sessionController.getLoggedUserEntity(),
           workspaceEntity,
           payload.getRequestText(),
@@ -217,6 +230,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     paymentUrl.append(httpRequest.getScheme());
     paymentUrl.append("://");
     paymentUrl.append(httpRequest.getServerName());
+    paymentUrl.append(":");
+    paymentUrl.append(httpRequest.getServerPort());
     paymentUrl.append("/ceepos/pay?order=");
     paymentUrl.append(order.getId());
     paymentUrl.append("&hash=");
@@ -275,19 +290,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
     
-    if(assessmentRequestIdentifier == null){
+    if (assessmentRequestIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid assessmentRequestIdentifier").build();
     }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     
-    if(workspaceEntity == null){
+    if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
     }
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
     
-    if(workspaceUserEntity == null){
+    if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace user entity not found").build();
     }
     
@@ -295,7 +310,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
     
-    if(!sessionController.getLoggedUser().equals(studentIdentifier)){
+    if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -308,10 +323,12 @@ public class AssessmentRequestRESTService extends PluginRESTService {
         assessmentRequestController.archiveWorkspaceAssessmentRequest(assessmentRequest, workspaceEntity, studentEntity);
         communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(sessionController.getLocale(), workspaceUserEntity);
         evaluationController.createAssessmentRequestCancellation(studentEntity.getId(), workspaceEntityId, new Date());
-      } else {
+      }
+      else {
         return Response.status(Status.FORBIDDEN).build();
       }
-    } else {
+    }
+    else {
       return Response.status(Status.NOT_FOUND).entity("Could not find assessment request").build();
     }
     
@@ -322,42 +339,13 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
 
     for (WorkspaceAssessmentRequest workspaceAssessmentRequest : workspaceAssessmentRequests) {
-      AssessmentRequestRESTModel restModel = restModel(workspaceAssessmentRequest);
+      AssessmentRequestRESTModel restModel = assessmentRequestController.restModel(workspaceAssessmentRequest);
       if (restModel != null) {
         restAssessmentRequests.add(restModel);
       }
     }
     
     return restAssessmentRequests;
-  }
-  
-  private AssessmentRequestRESTModel restModel(WorkspaceAssessmentRequest workspaceAssessmentRequest) {
-
-    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
-        workspaceAssessmentRequest.getWorkspaceUserIdentifier(),
-        workspaceAssessmentRequest.getWorkspaceUserSchoolDataSource());
-
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
-    if (workspaceUserEntity != null) {
-      SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
-          workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
-      SchoolDataIdentifier workspaceAssessmentRequestIdentifier = new SchoolDataIdentifier(
-          workspaceAssessmentRequest.getIdentifier(), workspaceAssessmentRequest.getSchoolDataSource());
-      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-      UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-      
-      AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
-          workspaceAssessmentRequestIdentifier.toId(), 
-          userIdentifier.toId(),
-          workspaceUserIdentifier.toId(),
-          workspaceEntity.getId(), 
-          userEntity.getId(), 
-          workspaceAssessmentRequest.getRequestText(), 
-          workspaceAssessmentRequest.getDate());
-  
-      return restAssessmentRequest;
-    }
-    return null;
   }
 
 }

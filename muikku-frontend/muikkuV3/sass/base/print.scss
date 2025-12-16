@@ -1,0 +1,43 @@
+@media print {
+  body {
+
+    /* stylelint-disable declaration-no-important */
+    background-color: $color-default !important;
+
+    /* stylelint-enable declaration-no-important */
+  }
+
+  .content-panel__navigation-open,
+  .material-page__buttonset,
+  .button--muikku-submit-exercise,
+  .button--muikku-submit-assignment,
+  .chat,
+  .navbar__default-options,
+  .button-pill--floating {
+    display: none;
+  }
+
+  .content-panel__item .material-page,
+  .content-panel__chapter .content-panel__chapter-title {
+    border: 1px solid $color-default;
+  }
+
+  .navbar,
+  .application-panel__actions {
+    position: relative;
+  }
+
+  .application-panel,
+  .reading-panel,
+  .content-panel {
+
+    /* stylelint-disable declaration-no-important */
+    padding: 1rem 0 0 !important;
+
+    /* stylelint-ensable declaration-no-important */
+  }
+
+  .screen-container .screen-container__wrapper {
+    margin: 1rem 0 0;
+  }
+}

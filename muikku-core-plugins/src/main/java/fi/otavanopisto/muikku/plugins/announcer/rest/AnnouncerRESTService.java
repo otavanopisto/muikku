@@ -47,14 +47,19 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestr
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
+import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -77,6 +82,12 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Inject
   @LocalSession
   private SessionController sessionController;
+  
+  @Inject
+  private UserController userController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -102,7 +113,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @POST
   @Path("/announcements")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -131,9 +142,27 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create workspace announcement").build();
       }
     }
-
+    
+    // Categories
+    List<AnnouncementCategory> categories = new ArrayList<AnnouncementCategory>();
+    
+    if (CollectionUtils.isNotEmpty(restModel.getCategories())) {
+      for (AnnouncementCategoryRESTModel categoryRest : restModel.getCategories()) {
+        AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryRest.getId());
+        
+        if (category != null) {
+          categories.add(category);
+        }
+      }
+    }
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
+    
+    boolean pinned = false;
+    
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      pinned = restModel.isPinned();
+    }
     
     Announcement announcement = announcementController.createAnnouncement(
         userEntity,
@@ -142,7 +171,9 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getContent(),
         restModel.getStartDate(),
         restModel.getEndDate(),
-        restModel.getPubliclyVisible());
+        restModel.getPubliclyVisible(),
+        categories,
+        pinned);
     
     for (Long userGroupEntityId : userGroupEntityIds) {
       UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
@@ -167,14 +198,18 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
     
+    
+    // Mark the announcement as read directly on behalf of the creator
+    announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId(), new Date(), false);
+    
     return Response
-        .ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces))
+        .ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, false))
         .build();
   }
 
   @PUT
   @Path("/announcements/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateAnnouncement(@PathParam("ID") Long announcementId, AnnouncementRESTModel restModel) {
     if (announcementId == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -216,6 +251,25 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
       }
     }
+    
+    boolean pinned = oldAnnouncement.isPinned();
+    
+    if (oldAnnouncement.isPinned() != restModel.isPinned() && sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      pinned = restModel.isPinned();
+    }
+    
+    // Categories
+    List<AnnouncementCategory> categories = new ArrayList<AnnouncementCategory>();
+    
+    if (CollectionUtils.isNotEmpty(restModel.getCategories())) {
+      for (AnnouncementCategoryRESTModel categoryRest : restModel.getCategories()) {
+        AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryRest.getId());
+        
+        if (category != null) {
+          categories.add(category);
+        }
+      }
+    }
 
     Announcement newAnnouncement = announcementController.updateAnnouncement(
         oldAnnouncement,
@@ -224,7 +278,9 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getStartDate(),
         restModel.getEndDate(),
         restModel.getPubliclyVisible(),
-        restModel.isArchived()
+        restModel.isArchived(),
+        pinned,
+        categories
     );
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
@@ -252,8 +308,16 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(newAnnouncement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(newAnnouncement);
     
+    
+    boolean pinnedToSelf = false;
+    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(newAnnouncement, sessionController.getLoggedUserEntity().getId());
+    
+    if (announcementRecipient != null) {
+      pinnedToSelf = announcementRecipient.isPinned();
+    }
     return Response
-        .ok(createRESTModel(newAnnouncement, announcementUserGroups, announcementWorkspaces))
+        .ok(createRESTModel(newAnnouncement, announcementUserGroups, announcementWorkspaces, pinnedToSelf))
         .build();
   }
   
@@ -268,7 +332,11 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
       @QueryParam("onlyEditable") @DefaultValue("false") boolean onlyEditable,
       @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
-      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
+      @QueryParam("onlyUnread") @DefaultValue("false") boolean onlyUnread,
+      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults,
+      @QueryParam("categoryIds") List<Long> categoryIds
   ) {
     if (!sessionController.isLoggedIn()) {
       return Response.noContent().build();
@@ -276,6 +344,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
     SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    Set<SchoolDataIdentifier> announcementsForUser = Set.of(loggedUser);
     UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
     OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
     if (organizationEntity == null) {
@@ -289,11 +358,40 @@ public class AnnouncerRESTService extends PluginRESTService {
             sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
                 AnnouncementEnvironmentRestriction.PUBLICANDGROUP : AnnouncementEnvironmentRestriction.PUBLIC;
 
+    if (schoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      /*
+       * Guardian cannot list with onlyMine - there's no sensible situation for that.
+       * They always only list the announcements of their dependants.
+       */
+      
+      if (onlyMine) {
+        return Response.status(Status.BAD_REQUEST).entity("Guardian cannot have own announcements.").build();
+      }
+      List<GuardiansDependent> guardiansDependents = userController.listGuardiansDependents(loggedUser);
+      announcementsForUser = guardiansDependents == null ? Collections.emptySet() :
+        guardiansDependents.stream().map(GuardiansDependent::getUserIdentifier).collect(Collectors.toSet());
+    }
+    
+    // Categories
+    List<AnnouncementCategory> announcementCategories = new ArrayList<AnnouncementCategory>();
+    
+    if (CollectionUtils.isNotEmpty(categoryIds)) {
+      
+      for (Long categoryId : categoryIds) {
+        AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryId);
+        
+        if (category != null) {
+          announcementCategories.add(category);
+        }
+      }
+    }
+    
     if (workspaceEntityId == null) {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
-      announcements = announcementController.listAnnouncements(loggedUser, organizationEntity,
-          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
+      announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
+          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults, announcementCategories);
+
     }
     else {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -306,9 +404,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
       
       announcements = announcementController.listWorkspaceAnnouncements(organizationEntity,
-          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
+          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults);
     }
-
+    int unreadAnnouncements = 0;
+    
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       if (onlyEditable && !canEdit(announcement, loggedUser)) {
@@ -317,17 +416,29 @@ public class AnnouncerRESTService extends PluginRESTService {
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
       List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
-          
-      AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
+      
+      AnnouncementRecipient ar = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, currentUserEntity.getId());
+      boolean isRecipientPinned = false;
+      // Count unread announcements      
+      if (ar == null) {
+        unreadAnnouncements++;
+      } else {
+        isRecipientPinned = ar.isPinned();
+      }
+      AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, isRecipientPinned);
       restModels.add(restModel);
+      
     }
+    AnnouncementWithUnreadsRESTModel restModel = new AnnouncementWithUnreadsRESTModel();
+    restModel.setAnnouncements(restModels);
+    restModel.setUnreadCount(unreadAnnouncements);
     
-    return Response.ok(restModels).build();
+    return Response.ok(restModel).build();
   }
   
   @GET
   @Path("/announcements/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     
     Announcement announcement = announcementController.findById(announcementId);
@@ -347,9 +458,220 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
     
-    return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
+    boolean pinnedToSelf = false;
+    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
+    
+    if (announcementRecipient != null) {
+      pinnedToSelf = announcementRecipient.isPinned();
+    }
+    return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, pinnedToSelf)).build();
+  }
+  
+  @PUT
+  @Path("/announcements/{ANNOUNCEMENTID}/markAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markAnnouncementAsRead(@PathParam("ANNOUNCEMENTID") Long announcementId) {
+    
+    Announcement announcement = announcementController.findById(announcementId);
+    
+    if (announcement == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid announcementId").build();
+    }
+    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
+    
+    if (announcementRecipient == null) {
+      announcementRecipient = announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId(), new Date(), false);
+    } else { // mark as unread if announcement recipient exists
+      announcementRecipient = announcementController.updateAnnouncementRecipient(announcementRecipient, announcementRecipient.getReadDate() != null ? null : new Date(), announcementRecipient.isPinned());
+    }
+    
+    AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+    
+    if (announcementRecipient != null) {
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+    }
+
+    return Response
+        .ok(restModel)
+        .build();
   }
 
+  @POST
+  @Path("/announcements/markAllAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markUsersAllAnnouncementAsRead() {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(sessionController.getLoggedUserEntity().getId());
+    
+    Set<SchoolDataIdentifier> announcementsForUser = Set.of(sessionController.getLoggedUser());
+    
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
+    
+    List<Announcement> announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
+        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENT, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100, new ArrayList<AnnouncementCategory>());
+
+    List<AnnouncementRecipientRESTModel> restModels = new ArrayList<AnnouncementRecipientRESTModel>();
+    
+    for (Announcement announcement : announcements) {
+      AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, userEntity.getId());
+      
+      if (announcementRecipient == null) {
+        announcementRecipient = announcementController.createAnnouncementRecipient(announcement, userEntity.getId(), new Date(), false);
+      }
+      
+      AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+      
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+      
+      restModels.add(restModel);
+    }
+
+    return Response
+        .ok(restModels)
+        .build();
+  }
+  
+  @POST
+  @Path("/categories/create")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createAnnouncementCategory(AnnouncementCategoryRESTModel restModel) {
+    
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create announcement categories").build();
+    }
+    
+    if (restModel.getCategory() == null || restModel.getColor() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing category name or color").build();
+    }
+    AnnouncementCategory announcementCategory = announcementController.createCategory(restModel.getCategory(), restModel.getColor());
+    
+    return Response
+        .ok(toRestModel(announcementCategory))
+        .build();
+  }
+  
+  @GET
+  @Path("/categories")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listCategories() {
+    List<AnnouncementCategory> categories = announcementController.listAnnouncementCategories();
+    
+    List<AnnouncementCategoryRESTModel> categoriesRestList = new ArrayList<AnnouncementCategoryRESTModel>();
+    for (AnnouncementCategory category : categories) {
+      categoriesRestList.add(toRestModel(category));
+    }
+    
+    return Response
+        .ok(categoriesRestList)
+        .build();
+  }
+  
+  @PUT
+  @Path("/categories/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateAnnouncementCategory(@PathParam("ID") Long announcementCategoryId, AnnouncementCategoryRESTModel restModel) {
+    if (announcementCategoryId == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (restModel.getCategory() == null || restModel.getColor() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing category name or color").build();
+    }
+    
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update announcement categories").build();
+    }
+    
+    AnnouncementCategory announcementCategory = announcementController.findAnnouncementCategoryById(announcementCategoryId);
+    
+    if (announcementCategory == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    return Response
+        .ok(toRestModel(announcementController.updateAnnouncementCategory(announcementCategory, restModel.getCategory(), restModel.getColor())))
+        .build();
+        
+  }
+  
+  @DELETE
+  @Path("/categories/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteAnnouncementCategory(@PathParam("ID") Long announcementCategoryId) {
+    AnnouncementCategory announcementCategory = announcementController.findAnnouncementCategoryById(announcementCategoryId);
+    
+    if (announcementCategory == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    announcementController.deleteAnnouncementCategory(announcementCategory);
+    
+    return Response.noContent().build();
+  }
+  
+  @PUT
+  @Path("/announcements/{ANNOUNCEMENTID}/pin")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response pinAnnouncementByReader(@PathParam("ANNOUNCEMENTID") Long announcementId) {
+    
+    Announcement announcement = announcementController.findById(announcementId);
+    
+    if (announcement == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid announcementId").build();
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.FIND_ANNOUNCEMENT)) {
+      if (!canSeeAnnouncement(announcement, sessionController.getLoggedUser())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
+    
+    if (announcementRecipient == null) {
+      announcementRecipient = announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId(), null, true);
+    } else {
+      announcementRecipient = announcementController.updateAnnouncementRecipient(announcementRecipient, announcementRecipient.getReadDate(), !announcementRecipient.isPinned());
+    }
+    
+    AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+    
+    if (announcementRecipient != null) {
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+      restModel.setPinned(announcementRecipient.isPinned());
+    }
+
+    return Response
+        .ok(restModel)
+        .build();
+  }
+
+  private AnnouncementCategoryRESTModel toRestModel(AnnouncementCategory category) {
+    AnnouncementCategoryRESTModel restModel = new AnnouncementCategoryRESTModel();
+    
+    restModel.setCategory(category.getCategoryName());
+    restModel.setId(category.getId());
+    restModel.setColor(category.getColor());
+    
+    return restModel;
+  }
+  
   private boolean canSeeAnnouncement(Announcement announcement, SchoolDataIdentifier userIdentifier) {
     /**
      * This is not very efficient, but things needed to be checked are
@@ -357,6 +679,11 @@ public class AnnouncerRESTService extends PluginRESTService {
      * - Is the user member of a workspace the announcement is for
      * - Is the announcement public
      */
+    
+    // hasOrganizationAccess returns false anyways if the user doesn't exist, so just shortcut it here too
+    if (userIdentifier == null) {
+      return false;
+    }
 
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (!hasOrganizationAccess(announcement, userSchoolDataIdentifier)) {
@@ -367,7 +694,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
     
     List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
-    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getId()).collect(Collectors.toSet());
+    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getUserGroupEntityId()).collect(Collectors.toSet());
 
     if (CollectionUtils.containsAny(announcementGroupIds, userGroupIds)) {
       return true;
@@ -400,6 +727,10 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
 
   private boolean hasOrganizationAccess(Announcement announcement, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    if (announcement == null || userSchoolDataIdentifier == null) {
+      return false;
+    }
+    
     Long announcementOrganizationId = announcement.getOrganizationEntityId();
     Long userOrganizationId = userSchoolDataIdentifier.getOrganization() != null ? userSchoolDataIdentifier.getOrganization().getId() : null;
 
@@ -414,7 +745,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     return Objects.equals(announcementOrganizationId, userOrganizationId);
   }
 
-  private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces) {
+  private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces, boolean pinnedToSelf) {
     AnnouncementRESTModel restModel = new AnnouncementRESTModel();
     restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
     restModel.setCaption(announcement.getCaption());
@@ -425,6 +756,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setId(announcement.getId());
     restModel.setPubliclyVisible(announcement.getPubliclyVisible());
     restModel.setArchived(announcement.getArchived());
+    restModel.setPinned(announcement.isPinned());
+    restModel.setPinnedToSelf(pinnedToSelf);
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {
@@ -459,6 +792,20 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
     }
+    
+    boolean unread = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId()) == null;
+    
+    restModel.setUnread(unread);
+    
+    // categories
+    List<AnnouncementCategoryRESTModel> categories = new ArrayList<AnnouncementCategoryRESTModel>();
+    List<AnnouncementCategory> announcementCategories = announcement.getCategories();
+    
+    for (AnnouncementCategory announcementCategory : announcementCategories) {
+      categories.add(toRestModel(announcementCategory));
+    }
+    
+    restModel.setCategories(categories);
 
     return restModel;
   }
@@ -498,7 +845,7 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/announcements/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
     Announcement announcement = announcementController.findById(announcementId);
     if (announcement == null) {
@@ -529,6 +876,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
 
     announcementController.archive(announcement);
+    
     return Response.noContent().build();
   }
   

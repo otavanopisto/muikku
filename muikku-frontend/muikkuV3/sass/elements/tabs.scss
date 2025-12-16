@@ -1,0 +1,391 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.tabs {
+  @include text;
+
+  margin-top: 10px;
+}
+
+.tabs--chat {
+  margin-top: 0;
+  order: 2;
+}
+
+.tabs--notes {
+  width: 100%;
+}
+
+.tabs--guider-student {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $dialog-max-resolution - $dialog-content-padding;
+  width: 100%;
+}
+
+.tabs--material-editor,
+.tabs--workspace-materials {
+  height: 100%;
+  margin: 0;
+}
+
+.tabs__header-actions {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tabs__header-actions--hops {
+  justify-content: center;
+  padding: 5px 0;
+}
+
+.tabs__tab-labels {
+  align-items: center;
+  border-bottom: 1px solid $color-tab-border;
+  display: none;
+  flex-flow: row nowrap;
+  height: 2.25rem;
+  margin-bottom: -1px;
+  padding: 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab-labels--pedagogy-support {
+  display: flex;
+}
+
+.tabs__tab-labels--chat {
+  border-bottom: none;
+}
+
+.tabs__tab-labels--application-panel {
+  border-bottom: solid 1px $color-application-panel-box-border;
+}
+
+.tabs__tab-labels--mobile {
+  display: flex;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.tabs__tab-labels--desktop {
+  background: $color-default;
+  border: 0;
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab-labels--no-tabs {
+  background: $color-default;
+  border: 0;
+  display: none;
+
+  .tabs__tab--no-tabs {
+    cursor: default;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab-labels--workspace-materials {
+  align-items: flex-start;
+  border-bottom: 1px solid $color-application-panel-box-border;
+}
+
+.tabs__tab {
+  @include text;
+
+  background: $color-tab-blur-background;
+  border-bottom: 0;
+  border-left: 1px solid $color-tab-blur-background;
+  border-radius: 5px 5px 0 0;
+  border-right: 1px solid $color-tab-blur-background;
+  border-top: 1px solid $color-tab-blur-background;
+  color: $color-tab-blur-font;
+  cursor: default;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: 1;
+  margin: 2px;
+  outline-offset: -2px;
+  padding: 10px;
+  text-align: left;
+  user-select: none;
+  z-index: 1;
+
+  &:first-child {
+    margin: 0 2px 0 0;
+  }
+
+  &:last-child {
+    margin: 0 0 0 2px;
+  }
+
+  &.active {
+    background: $color-tab-focus-background;
+    border-left: 1px solid $color-tab-border;
+    border-right: 1px solid $color-tab-border;
+    border-top: 1px solid $color-tab-border;
+    color: $color-tab-focus-font;
+    min-height: 2.25rem;
+    padding: 10px;
+    z-index: 3;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    cursor: pointer;
+  }
+}
+
+.tabs__tab--workspace-materials {
+  margin: 0;
+
+  &.active {
+    border-bottom: 2px solid $color-default;
+    border-left: 1px solid $color-application-panel-box-border;
+    border-right: 1px solid $color-application-panel-box-border;
+    border-top: 1px solid $color-application-panel-box-border;
+  }
+}
+
+.tabs__tab--chat {
+  border-bottom: none;
+  border-left: none;
+  border-radius: 0;
+  border-right: none;
+  border-top: none;
+  margin: 0;
+
+  &.active {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    margin-bottom: none;
+  }
+}
+
+.tabs__tab-data-container--no-tabs {
+  display: flex;
+}
+
+.tabs__tab-data-container--mobile-tabs {
+  display: flex;
+  flex-direction: column-reverse;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
+}
+
+.tabs__tab-data-container--desktop-tabs {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
+  }
+}
+
+.tabs__tab-data {
+  display: none;
+  flex-basis: 100%;
+  max-width: 100%;
+
+  &.active {
+    display: block;
+  }
+}
+
+.tabs__tab-data--workspace-table-of-contents,
+.tabs__tab-data--workspace-notebook {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: calc(4.25rem + 1px); // Same value as .tabs__tab-labels + content-panel close height + one pixel for the border
+
+  @include breakpoint($breakpoint-desktop) {
+    top: calc(2.25rem + 1px); // Same value as .tabs__tab-labels height + one pixel for the border
+  }
+}
+
+.tabs__tab-data--guider-student,
+.tabs__tab-data--pedagogy-support {
+  padding: 10px;
+}
+
+// Used when editing material page
+.tabs__tab-labels--material-editor {
+  padding: 0 40px 0 2px;
+}
+
+.tabs__tab-data--material-editor {
+  &.active {
+    display: flex;
+  }
+}
+
+// Used when viewing workspace students
+
+.tabs__tab--workspace-students {
+  flex-basis: 50%;
+
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border: 0;
+    color: $color-text-default;
+    font-weight: 600;
+
+    &.active {
+      margin: 0;
+      padding: 10px;
+    }
+
+    &:first-child {
+      padding: 10px 10px 10px 0;
+    }
+
+    &:last-child {
+      padding: 10px 0 10px 10px;
+    }
+  }
+
+  &.active {
+    display: block;
+  }
+}
+
+// Application-panel tabs
+
+.tabs__tab--application-panel {
+  background-clip: padding-box;
+  border-bottom: solid 1px $color-application-panel-box-border;
+  border-radius: 0;
+  border-top: solid 1px $color-tab-invisible-border;
+  color: $color-tab-focus-font;
+  flex-grow: 0;
+  font-size: 1rem;
+  font-weight: 300;
+  margin: 0 0 -1px;
+  padding: 10px 20px;
+  text-align: center;
+  text-transform: uppercase;
+
+  &.active {
+    border-bottom: solid 1px $color-tab-invisible-border;
+    border-left: solid 1px $color-application-panel-box-border;
+    border-right: solid 1px $color-application-panel-box-border;
+    border-top: solid 1px $color-application-panel-box-border;
+    padding: 10px 20px;
+  }
+
+  &:first-child {
+    margin-left: -1px;
+    padding: 10px 20px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 2px -1px 0;
+
+    &.active {
+      padding: 10px 20px;
+    }
+
+    &:first-child {
+      margin-left: 0;
+      padding: 10px 20px;
+    }
+
+    &:last-child {
+      padding: 10px 20px;
+    }
+  }
+}
+
+// When no tabs are used, instead all the tabs are rendered simultaneusly
+
+.tabs__tab--no-tabs {
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border: 0;
+    color: $color-text-default;
+    font-weight: 600;
+  }
+
+  &.active {
+    @include breakpoint($breakpoint-pad) {
+      background: $color-default;
+      border: 0;
+      color: $color-text-default;
+    }
+  }
+}
+
+.tabs__tab-data--workspace-students {
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 50%;
+
+    &:first-child {
+      padding: 0 10px;
+    }
+
+    &:last-child {
+      padding: 0 0 0 10px;
+    }
+  }
+
+  &.active {
+    display: flex;
+  }
+
+  &:first-child {
+    padding: 0 10px;
+  }
+
+  &:last-child {
+    padding: 0 0 0 10px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 50%;
+  }
+}
+
+.tabs__mobile-tab {
+  align-items: center;
+  background: $color-default;
+  display: flex;
+  font-size: 1.5rem;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.tabs__pagination-container--bullets {
+  align-items: center;
+  background: $color-default;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+
+  span {
+    margin-right: 4px;
+  }
+}

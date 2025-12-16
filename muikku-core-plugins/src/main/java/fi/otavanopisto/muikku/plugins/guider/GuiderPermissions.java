@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.DefaultEnvironmentPermissionRoles;
+import fi.otavanopisto.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.otavanopisto.muikku.security.MuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -42,6 +43,12 @@ public class GuiderPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER } )
   public static final String ACCESS_CONTACT_LOG = "ACCESS_CONTACT_LOG";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ({ WorkspaceRoleArchetype.TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
+  public static final String ACCESS_CONTACT_LOG_FOR_WORKSPACES = "ACCESS_CONTACT_LOG_FOR_WORKSPACES";
+  
   
   @Override
   public List<String> listPermissions() {

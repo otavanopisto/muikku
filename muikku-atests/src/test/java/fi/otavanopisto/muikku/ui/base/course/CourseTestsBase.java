@@ -33,10 +33,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForElementToBePresent(By.className("hero__workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.className("hero__workspace-title")).size() > 0;
       assertTrue(elementExists);
@@ -51,10 +62,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-home");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-home")).size() > 0;
 
@@ -70,10 +92,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-question");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-question")).size() > 0;
 
@@ -89,10 +122,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-leanpub");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-leanpub")).size() > 0;
       assertTrue(elementExists);
@@ -107,10 +151,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-bubbles");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-bubbles")).size() > 0;
       assertTrue(elementExists);
@@ -125,10 +180,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-users");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-users")).size() > 0;
       assertTrue(elementExists);
@@ -143,10 +209,21 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-book");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-book")).size() > 0;
       assertTrue(elementExists);

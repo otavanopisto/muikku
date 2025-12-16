@@ -20,6 +20,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String OWNER = "OWNER";
   
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.STUDENT_PARENT })
+  public static final String STUDENT_PARENT = "STUDENT_PARENT";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
   public static final String ACCESS_ALL_ORGANIZATIONS = "ACCESS_ALL_ORGANIZATIONS";
   
@@ -310,6 +314,9 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT })
   public static final String IS_WORKSPACE_STUDENT = "IS_WORKSPACE_STUDENT";
+
+  @Scope (PermissionScope.WORKSPACE)
+  public static final String SHOW_EXAMS = "SHOW_EXAMS";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })

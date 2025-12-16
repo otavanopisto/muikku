@@ -57,7 +57,7 @@ public class PyramusWorkspaceAssessmentRequest implements WorkspaceAssessmentReq
   public Boolean getHandled() {
     return handled;
   }
-
+  
   private String identifier;
   private String workSpaceUserIdentifier;
   private String requestText;

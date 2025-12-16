@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.workspace.dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +15,7 @@ import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAI;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial_;
@@ -24,7 +26,8 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
   private static final long serialVersionUID = -1777382212388116832L;
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String title, String urlName, Integer orderNumber,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers, WorkspaceLanguage language) {
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
+      WorkspaceLanguage language, Double maxPoints, WorkspaceMaterialAI ai) {
 
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
@@ -36,6 +39,8 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setCorrectAnswers(correctAnswers);
     workspaceMaterial.setTitle(title);
     workspaceMaterial.setLanguage(language);
+    workspaceMaterial.setMaxPoints(maxPoints);
+    workspaceMaterial.setAi(ai);
 
     return persist(workspaceMaterial);
   }
@@ -131,6 +136,20 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public long countByMaterialId(Long materialId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterial_.materialId), materialId)
+    );
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
   public List<WorkspaceMaterial> listByParentAndAssignmentType(WorkspaceNode parent, WorkspaceMaterialAssignmentType assignmentType) {
     EntityManager entityManager = getEntityManager();
     
@@ -148,6 +167,24 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<Long> listIdsByParentAndAssignmentTypesAndHidden(WorkspaceNode parent, Set<WorkspaceMaterialAssignmentType> assignmentTypes, boolean hidden) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root.get(WorkspaceMaterial_.id));
+    criteria.where(
+      criteriaBuilder.and(
+        root.get(WorkspaceMaterial_.assignmentType).in(assignmentTypes),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public WorkspaceMaterial updateMaterialId(WorkspaceMaterial workspaceMaterial, long materialId) {
     workspaceMaterial.setMaterialId(materialId);
     return persist(workspaceMaterial);
@@ -168,8 +205,14 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return persist(workspaceMaterial);
   }
 
-  public void delete(WorkspaceMaterial workspaceMaterial) {
-    super.delete(workspaceMaterial);
+  public WorkspaceMaterial updateMaxPoints(WorkspaceMaterial workspaceMaterial, Double maxPoints) {
+    workspaceMaterial.setMaxPoints(maxPoints);
+    return persist(workspaceMaterial);
+  }
+  
+  public WorkspaceMaterial updateAi(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAI ai) {
+    workspaceMaterial.setAi(ai);
+    return persist(workspaceMaterial);
   }
 
 }

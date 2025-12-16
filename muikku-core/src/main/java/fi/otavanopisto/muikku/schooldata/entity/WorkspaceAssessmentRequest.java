@@ -59,5 +59,5 @@ public interface WorkspaceAssessmentRequest extends SchoolDataEntity {
    * @return assessment request handled flag
    */
   public Boolean getHandled();
-
+  
 }

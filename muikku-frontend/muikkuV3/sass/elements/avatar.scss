@@ -1,0 +1,256 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.avatar-container {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-default;
+  display: flex;
+  font-family: $branded-font-family;
+  height: $avatar-mobile-size;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  width: $avatar-mobile-size;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-size;
+    width: $avatar-desktop-size;
+  }
+}
+
+.avatar-container--discussion-area {
+  background: $color-default-generic-background;
+  color: $color-info;
+  font-size: 1.5rem;
+}
+
+.avatar-container--small {
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-small-size;
+    width: $avatar-desktop-small-size;
+  }
+}
+
+.avatar-container--xsmall {
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-xsmall-size;
+    width: $avatar-desktop-xsmall-size;
+  }
+}
+
+.avatar-container--group {
+  border-radius: 0;
+  user-select: none;
+
+  @include breakpoint($breakpoint-pad) {
+    width: auto;
+  }
+}
+
+.avatar--group-members {
+  cursor: pointer;
+}
+
+.avatar__group-members-search {
+  input {
+    width: 100%;
+  }
+}
+
+.avatar__group-members-container {
+  max-height: 350px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 0 0 10px;
+  scrollbar-width: thin;
+}
+
+.avatar__group-user {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.avatar__group-user-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 150px;
+  text-align: left;
+}
+
+.avatar-container--chat {
+  height: $avatar-mobile-chat-size;
+  width: $avatar-mobile-chat-size;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-chat-size;
+    width: $avatar-desktop-chat-size;
+  }
+}
+
+.avatar {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-environment-link-icon-color;
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $avatar-mobile-font-size;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-font-size;
+  }
+}
+
+// stylelint-disable-next-line selector-class-pattern
+.avatar--approval_pending,
+.avatar--approved {
+  cursor: pointer;
+}
+
+// stylelint-disable-next-line selector-class-pattern
+.avatar--approval_pending {
+  animation: approval-pending-border-pulse 1.75s infinite;
+  border: 2px solid $color-info;
+}
+
+.avatar--approved {
+  border: 2px solid $color-success;
+}
+
+.avatar__decoration {
+  margin-right: 5px;
+}
+
+.avatar__text {
+  max-width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar--small {
+  height: $avatar-desktop-small-size;
+  width: $avatar-desktop-small-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-small-font-size;
+  }
+}
+
+.avatar--xsmall {
+  height: $avatar-desktop-xsmall-size;
+  width: $avatar-desktop-xsmall-size;
+
+  &.avatar--usergroup,
+  &.avatar--workspace {
+    border-radius: calc($avatar-desktop-xsmall-size / 2);
+    padding: 5px;
+  }
+
+  &.avatar--usergroup {
+    border: 1px solid $color-usergroup;
+
+    .icon {
+      color: $color-usergroup;
+    }
+  }
+
+  &.avatar--workspace {
+    border: 1px solid $color-workspace;
+
+    .icon {
+      color: $color-workspace;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-xsmall-font-size;
+  }
+}
+
+.avatar--group {
+  background-color: $color-default-generic-background;
+  color: $color-button-default-text;
+  max-width: 100%;
+}
+
+.avatar--usergroup,
+.avatar--workspace {
+  width: auto;
+}
+
+.avatar--chat {
+  font-size: $avatar-mobile-chat-font-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-chat-font-size;
+  }
+}
+
+.avatar-img {
+  position: absolute;
+  z-index: 2;
+}
+
+.avatar--category-1 {
+  background-color: $color-main-function-category-1;
+}
+
+.avatar--category-2 {
+  background-color: $color-main-function-category-2;
+}
+
+.avatar--category-3 {
+  background-color: $color-main-function-category-3;
+}
+
+.avatar--category-4 {
+  background-color: $color-main-function-category-4;
+}
+
+.avatar--category-5 {
+  background-color: $color-main-function-category-5;
+}
+
+.avatar--category-6 {
+  background-color: $color-main-function-category-6;
+}
+
+.avatar--category-7 {
+  background-color: $color-main-function-category-7;
+}
+
+.avatar--category-8 {
+  background-color: $color-main-function-category-8;
+}
+
+.avatar--category-9 {
+  background-color: $color-main-function-category-9;
+}
+
+.avatar--category-10 {
+  background-color: $color-main-function-category-10;
+}
+
+// Animations
+// blink
+@keyframes approval-pending-border-pulse {
+  50% {
+    opacity: 20%;
+  }
+
+  100% {
+    opacity: 100%;
+  }
+}

@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationStudentsActivityRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -68,6 +69,9 @@ public class OrganizationUserManagementRESTService {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -172,15 +176,23 @@ public class OrganizationUserManagementRESTService {
         propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
       }
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);        
+      
+      UserSchoolDataIdentifier staffMemberUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(staffMemberIdentifier);
+      
+      Set<String> roles = new HashSet<>();
+      if (staffMemberUSDI != null && staffMemberUSDI.getRoles() != null) {
+        staffMemberUSDI.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
+      }
+      
       staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
           staffMemberIdentifier.toId(),
-          new Long((Integer) o.get("userEntityId")),
+          Long.valueOf((Integer) o.get("userEntityId")),
           (String) o.get("firstName"),
           (String) o.get("lastName"), 
           email,
           propertyMap,
           organizationRESTModel,
-          (String) o.get("archetype"),
+          roles,
           hasImage));
     }
       
@@ -304,10 +316,11 @@ public class OrganizationUserManagementRESTService {
             studyTimeEnd,
             userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
+            o.get("curriculumIdentifier") == null ? null : courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId((String) o.get("curriculumIdentifier"))),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
-            null, // flags
-            organizationRESTModel));
+            organizationRESTModel,
+            false));
       }
     }
     

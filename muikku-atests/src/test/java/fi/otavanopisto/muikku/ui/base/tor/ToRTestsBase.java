@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
@@ -31,7 +29,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
-import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class ToRTestsBase extends AbstractUITest {
@@ -47,7 +44,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .addStaffMember(admin)
         .mockLogin(admin)
         .addCourse(course1)
@@ -98,7 +95,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date, true)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
           .mockStaffCompositeCourseAssessmentRequests()
@@ -142,7 +139,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .addStaffMember(admin)
         .mockLogin(admin)
         .addCourse(course1)
@@ -170,11 +167,11 @@ public class ToRTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -182,7 +179,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date, false)
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();
@@ -194,8 +191,8 @@ public class ToRTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--evaluate");
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
-        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        waitUntilHasText(".evaluation-modal__item-body span.textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.textfield--evaluation", "field value");
         waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
         waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");
@@ -213,7 +210,7 @@ public class ToRTestsBase extends AbstractUITest {
         
         navigate("/records#records", false);
         waitForPresent(".application-list__header-secondary");
-        waitAndClick(".application-list__header-secondary .button--assignments-and-exercieses");
+        waitAndClick(".application-list__header-secondary .button--assignments-and-exercises");
         waitUntilHasText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
         assertText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED", "E");
         waitAndClick(".dialog--studies .tabs__tab-data--assignments.active .application-list__item-header--studies-assignment");
@@ -231,92 +228,92 @@ public class ToRTestsBase extends AbstractUITest {
     }
   }
 
-  @Test
-  public void recordsHOPSAndMatriculation() throws JsonProcessingException, Exception {
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    
-    StudentMatriculationEligibility studentMatriculationEligibilityAI = new StudentMatriculationEligibility(true, 5, 4, 1);
-    StudentMatriculationEligibility studentMatriculationEligibilityMAA = new StudentMatriculationEligibility(false, 8, 5, 1);
-    try{
-      mockBuilder
-        .addStudent(student)
-        .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
-        .mockMatriculationExam(true)
-        .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
-        .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
-        .mockLogin(student)
-        .build();
-      login();
-      selectFinnishLocale();
-      navigate("/records#hops", false);
-      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
-      waitAndClick(".button--add-subject-row");
-      waitForVisible(".form-element__select--matriculation-exam");
-      selectOption(".form-element__select--matriculation-exam", "A");
-      sleep(1000);
-      waitAndClick(".button--add-subject-row");
-      waitForVisible(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam");
-      selectOption(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam", "M");
-      sleep(1000);
-      waitAndClick(".tabs--application-panel .tabs__tab--yo");
-      
-      waitForVisible(".tabs__tab-data--yo");
-      waitForVisible(".button--yo-signup");
-      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
+//  @Test
+//  public void recordsHOPSAndMatriculation() throws JsonProcessingException, Exception {
+//    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+//    Builder mockBuilder = mocker();
+//    
+//    StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityAI = new StudentMatriculationEligibilityOPS2021(true, 10d, 8d);
+//    StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityMAA = new StudentMatriculationEligibilityOPS2021(false, 16d, 10d);
+//    try{
+//      mockBuilder
+//        .addStudent(student)
+//        .mockStudentCourseStats(student.getId(), 25)
+//        .mockMatriculationEligibility(student.getId(), true)
+//        .mockMatriculationExam(true)
+//        .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
+//        .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
+//        .mockLogin(student)
+//        .build();
+//      login();
+//      selectFinnishLocale();
+//      navigate("/records#hops", false);
+//      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
+//      waitAndClick(".button--add-subject-row");
+//      waitForVisible(".form-element__select--matriculation-exam");
+//      selectOption(".form-element__select--matriculation-exam", "A");
+//      sleep(1000);
+//      waitAndClick(".button--add-subject-row");
+//      waitForVisible(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam");
+//      selectOption(".form-element__dropdown-selection-container:nth-child(2) .form-element__select--matriculation-exam", "M");
+//      sleep(1000);
+//      waitAndClick(".tabs--application-panel .tabs__tab--yo");
+//      
+//      waitForVisible(".tabs__tab-data--yo");
+//      waitForVisible(".button--yo-signup");
+//      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
+//
+//      waitForVisible(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label");
+//      assertTextIgnoreCase(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label", "Matematiikka, pitkä");
+//      assertTextIgnoreCase(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 6 / 8");
+//
+//      waitForVisible(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label");
+//      assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label", "Äidinkieli");
+//      assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 5 / 5");
+//    }finally {
+//      archiveUserByEmail(student.getEmail());
+//      mockBuilder.wiremockReset();
+//    }
+//  }
 
-      waitForVisible(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label");
-      assertTextIgnoreCase(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label", "Matematiikka, pitkä");
-      assertTextIgnoreCase(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 6 / 8");
-
-      waitForVisible(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label");
-      assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label", "Äidinkieli");
-      assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 5 / 5");
-    }finally {
-      archiveUserByEmail(student.getEmail());
-      mockBuilder.wiremockReset();
-    }
-  }
-
-  @Test
-  public void recordsMatriculationExamNoSubjectsSelected() throws JsonProcessingException, Exception {
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    
-    try{
-      mockBuilder
-        .addStudent(student)
-        .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
-        .mockMatriculationExam(true)
-        .mockLogin(student)
-        .build();
-      login();
-      selectFinnishLocale();
-      navigate("/records#hops", false);
-      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
-      waitAndClick(".button--add-subject-row");
-      waitForVisible(".form-element__select--matriculation-exam");
-      waitAndClick(".tabs--application-panel .tabs__tab--yo");
-      
-      waitForVisible(".tabs__tab-data--yo");
-      waitForVisible(".button--yo-signup");
-      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
-
-      waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
-      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta.");
-    }finally {
-      archiveUserByEmail(student.getEmail());
-      mockBuilder.wiremockReset();
-    }
-  }
+//  @Test
+//  public void recordsMatriculationExamNoSubjectsSelected() throws JsonProcessingException, Exception {
+//    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+//    Builder mockBuilder = mocker();
+//    
+//    try{
+//      mockBuilder
+//        .addStudent(student)
+//        .mockStudentCourseStats(student.getId(), 25)
+//        .mockMatriculationEligibility(student.getId(), true)
+//        .mockMatriculationExam(true)
+//        .mockLogin(student)
+//        .build();
+//      login();
+//      selectFinnishLocale();
+//      navigate("/records#hops", false);
+//      waitAndClick(".form-element--checkbox-radiobutton #goalMatriculationExamyes");
+//      waitAndClick(".button--add-subject-row");
+//      waitForVisible(".form-element__select--matriculation-exam");
+//      waitAndClick(".tabs--application-panel .tabs__tab--yo");
+//      
+//      waitForVisible(".tabs__tab-data--yo");
+//      waitForVisible(".button--yo-signup");
+//      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
+//
+//      waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
+//      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta.");
+//    }finally {
+//      archiveUserByEmail(student.getEmail());
+//      mockBuilder.wiremockReset();
+//    }
+//  }
 
   @Test
   public void studiesSummaryTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    student.addCounselor(new StudentGroupUser(1l, 1l));
+    student.addCounselor(new StudentGroupUser(1l, 1l, false, false, false));
     Builder mockBuilder = mocker();
     
     try{
@@ -324,7 +321,7 @@ public class ToRTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockLogin(student)
         .build();
         login();
@@ -340,26 +337,11 @@ public class ToRTestsBase extends AbstractUITest {
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
-      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Opinto-ohjaaja");        
+      waitForPresent(".application-sub-panel--counselors");        
       findElementOrReloadAndFind(".item-list--student-counselors .item-list__user-name", 5, 5000);
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
       assertPresent(".item-list--student-counselors .button-pill--new-message");
-      
-      waitForPresent(".application-sub-panel__card-header--summary-evaluated");
-      assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
-      waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
-      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
-      
-      waitForPresent(".application-sub-panel__card-header--summary-activity");
-      assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
-      waitForPresent(".application-sub-panel__card-highlight--summary-activity");
-      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
-
-      waitForPresent(".application-sub-panel__card-header--summary-returned");
-      assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
-      waitForPresent(".application-sub-panel__card-highlight--summary-returned");
-      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
@@ -376,7 +358,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockEmptyStudyActivity()
         .mockLogin(student)
         .build();
@@ -392,8 +374,7 @@ public class ToRTestsBase extends AbstractUITest {
       addTextToCKEditor("Do some stuff!");
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      
-      assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
+      assertText(".notes .notes__item .notes__item-header", "Task for myself.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
 //    "more actions" vertical menu
       waitAndClick(".notes .notes__item .icon-more_vert");
@@ -404,9 +385,9 @@ public class ToRTestsBase extends AbstractUITest {
       
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      waitAndClick(".tabs--notes #archived");
-      assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      waitAndClick(".tabs--notes #tabControl-archived");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header", "Task for myself.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();

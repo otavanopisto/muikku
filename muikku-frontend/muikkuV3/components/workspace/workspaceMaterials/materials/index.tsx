@@ -1,0 +1,1109 @@
+/* eslint-disable camelcase */
+/* eslint-disable react/no-string-refs */
+
+/**
+ * Depcrecated refs should be refactored
+ */
+
+import * as React from "react";
+import { StateType } from "~/reducers";
+import { connect } from "react-redux";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+  WorkspaceEditModeStateType,
+} from "~/reducers/workspaces";
+
+import ContentPanel, {
+  ContentPanelItem,
+} from "~/components/general/content-panel";
+import ProgressData from "../../progressData";
+
+import WorkspaceMaterial from "./material";
+import Button, { ButtonPill } from "~/components/general/button";
+import Dropdown from "~/components/general/dropdown";
+import Link from "~/components/general/link";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { Redirect } from "react-router-dom";
+import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
+import {
+  materialShowOrHideExtraTools,
+  MaterialShowOrHideExtraToolsTriggerType,
+  setWorkspaceMaterialEditorState,
+  createWorkspaceMaterialContentNode,
+  updateWorkspaceMaterialContentNode,
+  CreateWorkspaceMaterialContentNodeTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+} from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
+import ReadSpeakerReader from "~/components/general/readspeaker";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import {
+  MaterialCompositeReply,
+  MaterialViewRestriction,
+} from "~/generated/client";
+import { BackToToc } from "~/components/general/toc";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
+
+/**
+ * WorkspaceMaterialsProps
+ */
+interface WorkspaceMaterialsProps extends WithTranslation {
+  status: StatusType;
+  workspace: WorkspaceDataType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  materialReplies: MaterialCompositeReply[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  navigation: React.ReactElement<any>;
+  activeNodeId: number;
+  workspaceEditMode: WorkspaceEditModeStateType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onActiveNodeIdChange: (activeNodeId: number) => any;
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
+}
+
+/**
+ * WorkspaceMaterialsState
+ */
+interface WorkspaceMaterialsState {
+  defaultOffset: number;
+  redirect: string;
+}
+
+const DEFAULT_OFFSET = 67;
+
+/**
+ * WorkspaceMaterials
+ */
+class WorkspaceMaterials extends React.Component<
+  WorkspaceMaterialsProps,
+  WorkspaceMaterialsState
+> {
+  private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private contentPanelRef = React.createRef<any>();
+  // Add a refs map to store references to ContentPanelItem components
+  private materialRefs = new Map<number, React.RefObject<ContentPanelItem>>();
+
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: WorkspaceMaterialsProps) {
+    super(props);
+
+    this.state = {
+      defaultOffset: DEFAULT_OFFSET,
+      redirect: null,
+    };
+
+    this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.startupEditor = this.startupEditor.bind(this);
+    this.createPage = this.createPage.bind(this);
+    this.createSection = this.createSection.bind(this);
+    this.pastePage = this.pastePage.bind(this);
+    this.createPageFromBinary = this.createPageFromBinary.bind(this);
+    this.toggleSectionHiddenStatus = this.toggleSectionHiddenStatus.bind(this);
+
+    this.getFlattenedMaterials(props);
+  }
+
+  /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    const defaultOffset =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ((document.querySelector("#stick") as HTMLElement) || ({} as any))
+        .offsetHeight || DEFAULT_OFFSET;
+    if (defaultOffset !== this.state.defaultOffset) {
+      this.setState({
+        defaultOffset,
+      });
+    }
+
+    window.addEventListener("scroll", this.onScroll);
+  }
+
+  /**
+   * componentWillUnmount
+   */
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.onScroll);
+  }
+
+  /**
+   * UNSAFE_componentWillReceiveProps
+   * @param nextProps nextProps
+   */
+  UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
+    if (this.props.materials !== nextProps.materials) {
+      this.getFlattenedMaterials(nextProps);
+    }
+  }
+
+  /**
+   * toggleSectionHiddenStatus
+   * @param section section
+   */
+  toggleSectionHiddenStatus(section: MaterialContentNodeWithIdAndLogic) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      material: section,
+      update: {
+        ...section,
+        hidden: !section.hidden,
+      },
+      isDraft: false,
+    });
+  }
+
+  /**
+   * getMaterialsOptionListDropdown
+   * @param section section
+   * @param nextSection nextSection
+   * @param nextSibling nextSibling
+   * @param includesSection includesSection
+   */
+  getMaterialsOptionListDropdown(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSection: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
+    includesSection: boolean
+  ) {
+    const { t } = this.props;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const materialManagementItemsOptions: Array<any> = [
+      {
+        icon: "plus",
+        text: t("labels.create_chapter", { ns: "materials" }),
+        onClick: this.createSection.bind(this, nextSection),
+        file: false,
+      },
+      {
+        icon: "plus",
+        text: t("labels.create_examChapter", { ns: "materials" }),
+        onClick: this.createSection.bind(this, nextSection, true),
+        file: false,
+      },
+      {
+        icon: "plus",
+        text: t("labels.create_page", { ns: "materials" }),
+        onClick: this.createPage.bind(this, section, nextSibling),
+        file: false,
+      },
+      {
+        icon: "paste",
+        text: t("labels.paste", { ns: "materials" }),
+        onClick: this.pastePage.bind(this, section, nextSibling),
+        file: false,
+      },
+      {
+        icon: "attachment",
+        text: t("actions.add", { ns: "files" }),
+        onChange: this.createPageFromBinary.bind(this, section, nextSibling),
+        file: true,
+      },
+    ];
+
+    // If includesSection is false, remove the first two items, as they are section creation options
+    if (!includesSection) {
+      materialManagementItemsOptions.splice(0, 2);
+    }
+
+    return materialManagementItemsOptions;
+  }
+
+  /**
+   * startupEditor
+   * @param section section
+   */
+  startupEditor(section: MaterialContentNodeWithIdAndLogic) {
+    this.props.setWorkspaceMaterialEditorState({
+      currentNodeWorkspace: this.props.workspace,
+      currentNodeValue: section,
+      currentDraftNodeValue: { ...section },
+      parentNodeValue: null,
+      section: true,
+      opened: true,
+      canHide: true,
+      canDelete: true,
+      disablePlugins: false,
+      canPublish: true,
+      canRevert: true,
+      canRestrictView: true,
+      canCopy: false,
+      canChangePageType: false,
+      canChangeExerciseType: false,
+      canSetLicense: false,
+      canSetProducers: false,
+      canAddAttachments: false,
+      canEditContent: false,
+      showRemoveAnswersDialogForPublish: false,
+      showRemoveAnswersDialogForDelete: false,
+      showUpdateLinkedMaterialsDialogForPublish: false,
+      showRemoveLinkedAnswersDialogForPublish: false,
+      showUpdateLinkedMaterialsDialogForPublishCount: 0,
+      canSetTitle: true,
+    });
+  }
+
+  /**
+   * createPage
+   * @param section section
+   * @param nextSibling nextSibling
+   */
+  createPage(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
+  ) {
+    const { t } = this.props;
+
+    this.props.createWorkspaceMaterialContentNode(
+      {
+        workspace: this.props.workspace,
+        rootParentId: this.props.workspace.details.rootFolderId,
+        parentMaterial: section,
+        nextSibling,
+        title: t("labels.newPage", { ns: "materials" }),
+        makeFolder: false,
+      },
+      "materials"
+    );
+  }
+
+  /**
+   * createPageFromBinary
+   * @param section section
+   * @param nextSibling nextSibling
+   * @param e e
+   */
+  createPageFromBinary(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    this.props.createWorkspaceMaterialContentNode(
+      {
+        workspace: this.props.workspace,
+        rootParentId: this.props.workspace.details.rootFolderId,
+        parentMaterial: section,
+        nextSibling,
+        title: e.target.files[0].name,
+        file: e.target.files[0],
+        makeFolder: false,
+      },
+      "materials"
+    );
+  }
+
+  /**
+   * createSection
+   * @param nextSibling nextSibling
+   * @param examSection examSection
+   */
+  createSection(
+    nextSibling: MaterialContentNodeWithIdAndLogic,
+    examSection: boolean = false
+  ) {
+    const { t } = this.props;
+
+    this.props.createWorkspaceMaterialContentNode(
+      {
+        workspace: this.props.workspace,
+        rootParentId: this.props.workspace.details.rootFolderId,
+        nextSibling,
+        title: t("labels.newPage", { ns: "materials" }),
+        makeFolder: true,
+        exam: examSection,
+      },
+      "materials"
+    );
+  }
+
+  /**
+   * pastePage
+   * @param section section
+   * @param nextSibling nextSibling
+   */
+  pastePage(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
+  ) {
+    const workspaceMaterialCopiedId =
+      localStorage.getItem("workspace-material-copied-id") || null;
+    const workspaceCopiedId =
+      localStorage.getItem("workspace-copied-id") || null;
+
+    if (workspaceMaterialCopiedId) {
+      this.props.createWorkspaceMaterialContentNode(
+        {
+          workspace: this.props.workspace,
+          parentMaterial: section,
+          rootParentId: this.props.workspace.details.rootFolderId,
+          nextSibling,
+          copyMaterialId: parseInt(workspaceMaterialCopiedId),
+          copyWorkspaceId: parseInt(workspaceCopiedId),
+          makeFolder: false,
+        },
+        "materials"
+      );
+    }
+  }
+
+  /**
+   * getFlattenedMaterials
+   * @param props props
+   */
+  getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props) {
+    this.flattenedMaterial = [];
+    if (!props.materials) {
+      return;
+    }
+    props.materials.forEach((node) => {
+      node.children.forEach((subnode) => {
+        this.flattenedMaterial.push(subnode);
+      });
+    });
+  }
+
+  /**
+   * handleOpenMaterialExtraToolsDrawerClick
+   */
+  handleOpenMaterialExtraToolsDrawerClick = () => {
+    this.props.materialShowOrHideExtraTools();
+  };
+
+  /**
+   * onScroll
+   */
+  onScroll() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((window as any).IGNORE_SCROLL_EVENTS) {
+      return;
+    }
+    const newActive: number = this.getActive();
+    if (newActive !== this.props.activeNodeId) {
+      this.props.onActiveNodeIdChange(newActive);
+    }
+  }
+
+  /**
+   * getActive
+   */
+  getActive() {
+    //gets the current active node
+    let winner: number = null;
+
+    //when you are at the bottom the active is the last one
+    const isAllTheWayToTheBottom =
+      document.documentElement.scrollHeight -
+        document.documentElement.scrollTop ===
+      document.documentElement.clientHeight;
+
+    if (!isAllTheWayToTheBottom) {
+      let winnerTop: number = null;
+      let winnerVisibleWeight: number = null;
+
+      // Iterate through the material refs map instead of this.refs
+      for (const [refKey, ref] of this.materialRefs) {
+        if (!ref.current) {
+          continue;
+        }
+        const element = ref.current.getComponent();
+        const elementTop = element.getBoundingClientRect().top;
+        const elementBottom = element.getBoundingClientRect().bottom;
+        const isVisible =
+          elementTop < window.innerHeight &&
+          elementBottom >=
+            (document.querySelector("#stick") as HTMLElement).offsetHeight;
+
+        if (isVisible) {
+          let cropBottom = window.innerHeight - elementBottom;
+
+          if (cropBottom > 0) {
+            cropBottom = 0;
+          }
+
+          let cropTop = elementTop;
+
+          if (cropTop > 0) {
+            cropTop = 0;
+          }
+
+          const cropTotal = -cropTop - cropBottom;
+
+          const visibleFraction =
+            (element.offsetHeight - cropTotal) / element.offsetHeight;
+          let weight = visibleFraction;
+
+          if (!winner || elementTop < winnerTop) {
+            weight += 0.4;
+          }
+
+          if (!winnerVisibleWeight || weight >= winnerVisibleWeight) {
+            winner = refKey;
+            winnerTop = elementTop;
+            winnerVisibleWeight = weight;
+          }
+        }
+      }
+    } else {
+      winner =
+        this.flattenedMaterial[this.flattenedMaterial.length - 1]
+          .workspaceMaterialId;
+    }
+
+    winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
+    return winner;
+  }
+
+  /**
+   * getMaterialRef
+   * @param materialId materialId
+   */
+  getMaterialRef(materialId: number): React.RefObject<ContentPanelItem> {
+    if (!this.materialRefs.has(materialId)) {
+      this.materialRefs.set(materialId, React.createRef<ContentPanelItem>());
+    }
+    return this.materialRefs.get(materialId)!;
+  }
+
+  /**
+   * buildViewRestrictionLocaleString
+   * @param viewRestrict viewRestrict
+   * @returns locale string
+   */
+  buildViewRestrictionLocaleString = (
+    viewRestrict: MaterialViewRestriction
+  ) => {
+    const { t } = this.props;
+
+    switch (viewRestrict) {
+      case MaterialViewRestriction.LoggedIn:
+        return t("content.viewRestricted", { ns: "materials" });
+
+      case MaterialViewRestriction.WorkspaceMembers:
+        return t("content.viewRestricted_workspaceMembers", {
+          ns: "materials",
+        });
+
+      default:
+        return null;
+    }
+  };
+
+  /**
+   * renderDropdownItem
+   * @param item Dropdown item
+   * @param closeDropdown Function to close the dropdown
+   * @returns Rendered dropdown item
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderDropdownItem = (item: any, closeDropdown: () => void) => {
+    if (item.file) {
+      return (
+        <label
+          htmlFor="baseFileInput"
+          className={`link link--full link--material-management-dropdown`}
+        >
+          <input
+            type="file"
+            id="baseFileInput"
+            onChange={(e) => {
+              closeDropdown();
+              item.onChange && item.onChange(e);
+            }}
+          />
+          <span className={`link__icon icon-${item.icon}`}></span>
+          <span>{item.text}</span>
+        </label>
+      );
+    }
+    return (
+      <Link
+        className={`link link--full link--material-management-dropdown`}
+        onClick={() => {
+          closeDropdown();
+          item.onClick && item.onClick();
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    );
+  };
+
+  /**
+   * renderDropdownItems
+   * @param items Array of dropdown items
+   * @returns Array of rendered dropdown items
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderDropdownItems = (items: any[]) =>
+    items.map(
+      (item) => (closeDropdown: () => void) =>
+        this.renderDropdownItem(item, closeDropdown)
+    );
+
+  /**
+   * renderExamSection
+   * @param section section
+   * @returns Exam section
+   */
+  renderStudentExamSection = (section: MaterialContentNodeWithIdAndLogic) => {
+    const { t } = this.props;
+    const description = section.examAttendance?.description;
+
+    const descriptionElement = description ? (
+      <CkeditorLoaderContent html={description} />
+    ) : null;
+
+    if (section.hidden) {
+      return null;
+    }
+
+    return (
+      <section
+        key={"section-" + section.workspaceMaterialId}
+        className={`content-panel__chapter ${section.exam ? "content-panel__chapter--exam" : ""}`}
+        id={`s-${section.workspaceMaterialId}`}
+        style={{
+          scrollMarginTop: this.state.defaultOffset + "px",
+        }}
+      >
+        {/*TOP OF THE CHAPTER*/}
+        <h2 className="content-panel__chapter-title">
+          <div
+            className="content-panel__chapter-title-text"
+            lang={section.titleLanguage || this.props.workspace.language}
+          >
+            {section.title}
+            <BackToToc
+              tocElementId={
+                this.props.status.loggedIn
+                  ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${section.workspaceMaterialId}`
+              }
+              openToc={
+                this.contentPanelRef.current &&
+                this.contentPanelRef.current.openNavigation
+              }
+            />
+          </div>
+        </h2>
+
+        <div className="content-panel__item">
+          <article className="material-page">
+            <div className="material-page__content-wrapper">
+              <div className="material-page__content rich-text">
+                {descriptionElement}
+              </div>
+            </div>
+            <div className="material-page__de-floater" />
+            <div className="material-page__buttonset rs_skip_always">
+              <Button
+                buttonModifiers={["goto-exam"]}
+                to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
+              >
+                {t("actions.goToExam", { ns: "exams" })}
+              </Button>
+            </div>
+          </article>
+        </div>
+      </section>
+    );
+  };
+
+  /**
+   * render
+   */
+  render() {
+    const { t } = this.props;
+
+    t("labels.create", { ns: "materials", context: "chapter" });
+
+    if (this.state.redirect) {
+      return <Redirect push to={this.state.redirect} />;
+    }
+
+    if (!this.props.materials || !this.props.workspace) {
+      return null;
+    }
+
+    const readSpeakerParameters: string[] = [];
+
+    const isEditable = this.props.workspaceEditMode.active;
+
+    const createSectionElementWhenEmpty =
+      this.props.materials.length === 0 && isEditable ? (
+        <div className="material-admin-panel material-admin-panel--master-functions">
+          <Dropdown
+            modifier="material-management-tooltip"
+            items={this.renderDropdownItems([
+              {
+                icon: "plus",
+                text: t("labels.create", {
+                  ns: "materials",
+                  context: "chapter",
+                }),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: this.createSection.bind(this, null, false),
+                file: false,
+              },
+              {
+                icon: "plus",
+                text: t("labels.create", {
+                  ns: "materials",
+                  context: "examChapter",
+                }),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: this.createSection.bind(this, null, true),
+                file: false,
+              },
+            ])}
+          >
+            <ButtonPill
+              buttonModifiers="material-management-master"
+              icon="plus"
+            />
+          </Dropdown>
+        </div>
+      ) : null;
+
+    const emptyMessage =
+      this.props.materials.length === 0 ? (
+        <div className="material-page material-page--empty">
+          {t("content.empty", { ns: "materials", context: "materials" })}
+        </div>
+      ) : null;
+
+    // All material sections with pages and other possible elements
+    const results: JSX.Element[] = [];
+
+    this.props.materials.forEach((section, index) => {
+      readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
+
+      // If first section, then above it is "add new section" icon button
+      // And it is only showed when editing is active
+      if (index === 0 && isEditable) {
+        results.push(
+          <div
+            key={"sectionfunctions-" + section.workspaceMaterialId}
+            className="material-admin-panel material-admin-panel--master-functions"
+          >
+            <Dropdown
+              modifier="material-management-tooltip"
+              items={this.renderDropdownItems([
+                {
+                  icon: "plus",
+                  text: t("labels.create", {
+                    ns: "materials",
+                    context: "chapter",
+                  }),
+                  // eslint-disable-next-line jsdoc/require-jsdoc
+                  onClick: this.createSection.bind(this, section, false),
+                  file: false,
+                },
+                {
+                  icon: "plus",
+                  text: t("labels.create_examChapter", {
+                    ns: "materials",
+                    context: "examChapter",
+                  }),
+                  // eslint-disable-next-line jsdoc/require-jsdoc
+                  onClick: this.createSection.bind(this, section, true),
+                  file: false,
+                },
+              ])}
+            >
+              <ButtonPill
+                buttonModifiers="material-management-master"
+                icon="plus"
+              />
+            </Dropdown>
+          </div>
+        );
+      }
+
+      const nextSection = this.props.materials[index + 1] || null;
+
+      // Management option, only showed when editing is active
+      const lastManagementOptionsWithinSectionItem = isEditable ? (
+        <div className="material-admin-panel material-admin-panel--master-functions">
+          <Dropdown
+            modifier="material-management"
+            items={this.renderDropdownItems(
+              this.getMaterialsOptionListDropdown(
+                section,
+                nextSection,
+                null,
+                true
+              )
+            )}
+          >
+            <ButtonPill
+              buttonModifiers="material-management-master"
+              icon="plus"
+            />
+          </Dropdown>
+        </div>
+      ) : null;
+
+      // If section is an exam section and user is a student, show the exam section
+      if (section.exam && this.props.status.isStudent) {
+        results.push(this.renderStudentExamSection(section));
+        return;
+      }
+
+      // "section pages"
+      const sectionSpecificContentData: JSX.Element[] = [];
+
+      // If section is an exam section and user is not a student, show the exam description
+      // as first element of the section
+      if (section.exam && !this.props.status.isStudent) {
+        const description = section.examSettings?.description;
+
+        const descriptionElement = description ? (
+          <CkeditorLoaderContent html={description} />
+        ) : null;
+
+        sectionSpecificContentData.push(
+          <div className="content-panel__item">
+            <article
+              className={`material-page ${section.hidden ? "state-HIDDEN" : ""}`}
+            >
+              <div className="material-page__content-wrapper">
+                <div className="material-page__content rich-text">
+                  {descriptionElement}
+                </div>
+              </div>
+            </article>
+          </div>
+        );
+      }
+
+      // section is restricted in following cases:
+      // section is restricted for logged in users and users is not logged in...
+      // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
+      const isSectionViewRestricted =
+        (section.viewRestrict === MaterialViewRestriction.LoggedIn &&
+          !this.props.status.loggedIn) ||
+        (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
+          !this.props.workspace.isCourseMember &&
+          (this.props.status.isStudent || !this.props.status.loggedIn));
+
+      // If section is restricted we don't return anything
+      !isSectionViewRestricted &&
+        section.children.forEach((node, pageI) => {
+          // this is the next sibling for the content node that is to be added, aka the current
+          const nextSibling = node;
+
+          // Adding editing functions to page if editing is active
+          if (isEditable) {
+            sectionSpecificContentData.push(
+              <div
+                key={node.workspaceMaterialId + "-dropdown"}
+                className="material-admin-panel material-admin-panel--master-functions"
+              >
+                <Dropdown
+                  modifier="material-management"
+                  items={this.renderDropdownItems(
+                    this.getMaterialsOptionListDropdown(
+                      section,
+                      nextSection,
+                      nextSibling,
+                      false
+                    )
+                  )}
+                >
+                  <ButtonPill
+                    buttonModifiers="material-management-master"
+                    icon="plus"
+                  />
+                </Dropdown>
+              </div>
+            );
+          }
+
+          const compositeReplies =
+            this.props.workspace &&
+            this.props.materialReplies &&
+            this.props.materialReplies.find(
+              (reply) => reply.workspaceMaterialId === node.workspaceMaterialId
+            );
+
+          let showEvenIfHidden = false;
+
+          // if student has submitted something before material has been set to hidden or
+          // if student has answered something before material has been set to hidden then also
+          // other states are also shown as they are part of evaluation
+          // It will be still shown to student
+          if (node.hidden && compositeReplies) {
+            showEvenIfHidden =
+              compositeReplies &&
+              (compositeReplies.submitted !== null ||
+                compositeReplies.state === "ANSWERED" ||
+                compositeReplies.state === "SUBMITTED" ||
+                compositeReplies.state === "WITHDRAWN" ||
+                compositeReplies.state === "PASSED" ||
+                compositeReplies.state === "FAILED" ||
+                compositeReplies.state === "INCOMPLETE");
+          }
+
+          let readSpeakerComponent = undefined;
+
+          if (!this.props.workspaceEditMode.active) {
+            const arrayOfSectionsToRemoved = Array(
+              pageI === 0 ? index : index + 1
+            )
+              .fill(0)
+              .map((_, i) => i);
+
+            const arrayOfPagesToRemoved = Array(pageI)
+              .fill(0)
+              .map((_, i) => i);
+
+            let contentToRead = [
+              ...this.props.materials
+                .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
+                .map((section) => `s-${section.workspaceMaterialId}`),
+            ];
+
+            if (pageI !== 0) {
+              contentToRead = [
+                ...section.children
+                  .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
+                  .map((page) => `p-${page.workspaceMaterialId}`),
+                ...contentToRead,
+              ];
+            }
+
+            readSpeakerComponent = (
+              <ReadSpeakerReader
+                entityId={pageI + 1}
+                readParameterType="readid"
+                readParameters={contentToRead}
+              />
+            );
+          }
+
+          // Actual page material
+          // Nothing is shown is workspace or material "compositeReplies" are missing or
+          // editing is not active and material is hided and showEvenIfHidden is false
+          const material =
+            !this.props.workspace ||
+            !this.props.materialReplies ||
+            (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
+              <ContentPanelItem
+                id={`p-${node.workspaceMaterialId}`}
+                ref={this.getMaterialRef(node.workspaceMaterialId)}
+                key={node.workspaceMaterialId + ""}
+                scrollMarginTopOffset={this.state.defaultOffset}
+              >
+                {/*TOP OF THE PAGE*/}
+                <WorkspaceMaterial
+                  folder={section}
+                  materialContentNode={node}
+                  workspace={this.props.workspace}
+                  compositeReplies={compositeReplies}
+                  isViewRestricted={false}
+                  showEvenIfHidden={showEvenIfHidden}
+                  readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
+                    />
+                  }
+                />
+              </ContentPanelItem>
+            );
+          sectionSpecificContentData.push(material);
+        });
+
+      // Hidden materials are only shown if editing is active
+      // Otherwise nothing is returned
+      if (!isEditable && section.hidden) {
+        return;
+      }
+
+      results.push(
+        <section
+          key={"section-" + section.workspaceMaterialId}
+          className={`content-panel__chapter ${section.exam ? "content-panel__chapter--exam" : ""}`}
+          id={`s-${section.workspaceMaterialId}`}
+          style={{
+            scrollMarginTop: this.state.defaultOffset + "px",
+          }}
+        >
+          {/*TOP OF THE CHAPTER*/}
+          <h2
+            className={`content-panel__chapter-title ${
+              section.hidden ? "state-HIDDEN" : ""
+            }`}
+          >
+            {isEditable ? (
+              <div className="material-admin-panel material-admin-panel--chapter-functions">
+                <Dropdown
+                  openByHover
+                  modifier="material-management-tooltip"
+                  content={
+                    section.exam
+                      ? t("labels.edit", {
+                          ns: "materials",
+                          context: "examChapter",
+                        })
+                      : t("labels.edit", {
+                          ns: "materials",
+                          context: "chapter",
+                        })
+                  }
+                >
+                  <ButtonPill
+                    buttonModifiers="material-management-chapter"
+                    icon="pencil"
+                    onClick={this.startupEditor.bind(this, section)}
+                  />
+                </Dropdown>
+                <Dropdown
+                  openByHover
+                  modifier="material-management-tooltip"
+                  content={
+                    section.hidden
+                      ? t("labels.setVisible", { ns: "materials" })
+                      : t("labels.hide", { ns: "materials" })
+                  }
+                >
+                  <ButtonPill
+                    buttonModifiers="material-management-chapter"
+                    icon="eye"
+                    onClick={this.toggleSectionHiddenStatus.bind(this, section)}
+                  />
+                </Dropdown>
+              </div>
+            ) : null}
+            <div
+              className="content-panel__chapter-title-text"
+              lang={section.titleLanguage || this.props.workspace.language}
+            >
+              {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
+              />
+            </div>
+          </h2>
+
+          {isSectionViewRestricted ? (
+            <div className="content-panel__item">
+              <article className="material-page">
+                <div className="material-page__content material-page__content--view-restricted">
+                  {this.buildViewRestrictionLocaleString(section.viewRestrict)}
+                </div>
+              </article>
+            </div>
+          ) : null}
+          {sectionSpecificContentData}
+          {lastManagementOptionsWithinSectionItem}
+        </section>
+      );
+    });
+
+    const progressData =
+      this.props.workspace && this.props.workspace.activity ? (
+        <ProgressData
+          modifier="workspace-materials"
+          title={t("labels.progress", { ns: "workspace" })}
+          activity={this.props.workspace.activity}
+        />
+      ) : null;
+
+    return (
+      <ContentPanel
+        aside={progressData}
+        modifier="workspace-materials"
+        navigation={this.props.navigation}
+        title={t("labels.materials", { ns: "materials" })}
+        readspeakerComponent={
+          <ReadSpeakerReader
+            readParameterType="readid"
+            readParameters={readSpeakerParameters}
+          />
+        }
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
+      >
+        {results}
+        {emptyMessage}
+        {createSectionElementWhenEmpty}
+      </ContentPanel>
+    );
+  }
+}
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    status: state.status,
+    workspace: state.workspaces.currentWorkspace,
+    materials: state.workspaces.currentMaterials,
+    materialReplies: state.workspaces.currentMaterialsReplies,
+    activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
+    workspaceEditMode: state.workspaces.editMode,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      setWorkspaceMaterialEditorState,
+      createWorkspaceMaterialContentNode,
+      updateWorkspaceMaterialContentNode,
+      materialShowOrHideExtraTools,
+      displayNotification,
+    },
+    dispatch
+  );
+}
+
+const componentWithTranslation = withTranslation(
+  ["materials", "workspace", "files", "common"],
+  {
+    withRef: true,
+  }
+)(WorkspaceMaterials);
+
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(componentWithTranslation);

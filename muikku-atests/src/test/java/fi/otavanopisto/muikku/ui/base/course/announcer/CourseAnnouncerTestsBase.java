@@ -1,8 +1,9 @@
 package fi.otavanopisto.muikku.ui.base.course.announcer;
 
-import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+
 import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -62,21 +63,22 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
   @Test
   public void deleteWorkspaceAnnouncementTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
     login();
-    Long courseId = 1l;
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-    mockBuilder
-    .addCourseStaffMember(courseId, courseStaffMember)
-    .build();
+
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    ArrayList<Long> announcementWorkspaceIds = new ArrayList<Long>();
+    announcementWorkspaceIds.add(workspace.getId());
+    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, announcementWorkspaceIds);
     try{
-      Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
-      updateAnnouncementWorkspace(announcementId, workspace.getId());
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".item-list__announcement-caption",20, 1000);
+      
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
-      waitForPresent(".application-list__item-content-header");
+      waitForElementToAppear(".application-list__item-content-header",20, 1000);
       waitAndClick(".form-element--item-selection-container input");
       waitAndClick(".application-panel__toolbar .button-pill--delete");
       sleep(1500);
@@ -92,7 +94,6 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     }
   }
   
-  @SuppressWarnings("deprecation")
   @Test
   public void workspaceAnnouncementVisibleInWorkspaceFrontpageTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -108,7 +109,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
     
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder
@@ -126,8 +127,6 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     }
   }
 
-
-  @SuppressWarnings("deprecation")
   @Test
   public void workspaceAnnouncementReadingForStudentTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -143,7 +142,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
    
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder
@@ -163,8 +162,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
-  @SuppressWarnings("deprecation")
+
   @Test
   public void workspaceAnnouncementFrontpageListingForStudentTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -179,7 +177,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
    
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder
@@ -198,7 +196,6 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     }
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   public void workspaceAnnouncementFrontpageListingForStudentNotEnrolledTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -209,7 +206,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
    
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder

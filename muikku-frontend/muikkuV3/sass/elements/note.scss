@@ -1,0 +1,89 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.note {
+  border-left: 3px solid $color-default;
+  cursor: pointer;
+  padding: 5px 0 5px 5px;
+
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
+
+  &.state-LOW {
+    border-color: $color-priority-low;
+  }
+
+  &.state-NORMAL {
+    border-color: $color-priority-normal;
+  }
+
+  &.state-HIGH {
+    border-color: $color-priority-high;
+  }
+
+  &.state-OVERDUE {
+    animation: border 1s ease-in alternate infinite;
+    border-left: 3px solid $color-priority-high;
+  }
+}
+
+.note__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+
+  &.state-OVERDUE {
+    color: $color-fatal;
+    font-weight: 600;
+  }
+}
+
+.note__date {
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: normal;
+  padding: 5px 10px;
+}
+
+.note__overdue-tag {
+  background-color: lighten($color-fatal, 42%);
+  border-radius: 10px;
+  color: darken($color-fatal, 15%);
+  margin-right: 5px;
+  padding: 2px 8px;
+}
+
+.note__description {
+  padding: 5px;
+
+  // Override font-size inherited from global .rich-tect rule
+  &.rich-text {
+    font-size: $text-mobile-font-size;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.note__footer {
+  padding: 5px;
+}
+
+@keyframes border {
+  from {
+    border-left: 3px solid $color-priority-high;
+  }
+
+  to {
+    border-left: 3px solid $color-default;
+  }
+}

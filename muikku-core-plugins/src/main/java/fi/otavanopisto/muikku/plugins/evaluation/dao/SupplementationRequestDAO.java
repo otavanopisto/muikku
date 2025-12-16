@@ -34,12 +34,13 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     supplementationRequest.setWorkspaceSubjectIdentifier(workspaceSubjectIdentifier != null ? workspaceSubjectIdentifier.toId() : null);
     supplementationRequest.setRequestDate(requestDate);
     supplementationRequest.setRequestText(requestText);
+    supplementationRequest.setHandled(Boolean.FALSE);
     supplementationRequest.setArchived(Boolean.FALSE);
     
     return persist(supplementationRequest);
   }
   
-  public SupplementationRequest updateSupplementationRequest(
+  public SupplementationRequest update(
       SupplementationRequest supplementationRequest,
       Long userEntityId,
       Long studentEntityId,
@@ -58,9 +59,14 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     
     return persist(supplementationRequest);
   }
+
+  public SupplementationRequest updateHandled(SupplementationRequest supplementationRequest, boolean handled) {
+    supplementationRequest.setHandled(handled);
+    return persist(supplementationRequest);
+  }
   
-  public SupplementationRequest findLatestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
-    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  public SupplementationRequest findLatestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
+    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
     if (requests.isEmpty()) {
       return null;
     }
@@ -69,9 +75,14 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     }
     return requests.get(0);
   }
-
-  public SupplementationRequest findLatestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
-    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+  
+  public SupplementationRequest findLatestByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier subjectIdentifier, Boolean handled, Boolean archived) {
+    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(
+        studentEntityId,
+        workspaceEntityId,
+        subjectIdentifier == null ? null : subjectIdentifier.toId(),
+        handled,
+        archived);
     if (requests.isEmpty()) {
       return null;
     }
@@ -79,6 +90,73 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       requests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
     }
     return requests.get(0);
+  }
+  
+  public List<SupplementationRequest> listByWorkspaceAndHandledAndArchived(Long workspaceEntityId, Boolean handled, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
+    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.handled), handled),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<SupplementationRequest> listByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
+    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.handled), handled),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<SupplementationRequest> listByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, String subjectIdentifier, Boolean handled, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
+    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
+    criteria.select(root);
+
+    // If workspaceSubjectIdentifier is null, restrict to SupplementationRequests that have null workspaceSubjectIdentifier
+    // else return SupplementationRequests that match the subjectIdentifier or have null identifier (for backwards compatibility)
+    
+    Predicate workspaceSubjectPredicate = subjectIdentifier == null
+        ? criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
+        : criteriaBuilder.or(
+              criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceSubjectIdentifier), subjectIdentifier),
+              criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
+          );
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
+        workspaceSubjectPredicate,
+        criteriaBuilder.equal(root.get(SupplementationRequest_.handled), handled),
+        criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public List<SupplementationRequest> listByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
@@ -98,40 +176,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     
     return entityManager.createQuery(criteria).getResultList();
   }
-  
-  /**
-   * Returns a SupplementationRequest that matches given parameters. Due to backwards compatibility (pre WorkspaceSubject)
-   * returns also SuppplementationRequests that may have null workspaceSubjectIdentifier.
-   */
-  public List<SupplementationRequest> listByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
-    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
-    criteria.select(root);
-
-    // If workspaceSubjectIdentifier is null, restrict to SupplementationRequests that have null workspaceSubjectIdentifier
-    // else return SupplementationRequests that match the subjectIdentifier or have null identifier (for backwards compatibility)
-    Predicate workspaceSubjectPredicate = workspaceSubjectIdentifier == null
-        ? criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
-        : criteriaBuilder.or(
-              criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceSubjectIdentifier), workspaceSubjectIdentifier.toId()),
-              criteriaBuilder.isNull(root.get(SupplementationRequest_.workspaceSubjectIdentifier))
-          );
-    
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
-        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId),
-        workspaceSubjectPredicate,
-        criteriaBuilder.equal(root.get(SupplementationRequest_.archived), archived)
-      )
-    );
-    
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
   public void archive(SupplementationRequest supplementationRequest) {
     supplementationRequest.setArchived(Boolean.TRUE);
     getEntityManager().persist(supplementationRequest);

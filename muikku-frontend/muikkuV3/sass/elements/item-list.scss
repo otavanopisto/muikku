@@ -1,0 +1,333 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.item-list {
+  @include text;
+}
+
+.item-list__header {
+  font-weight: 400;
+  padding: 0 0 0 10px;
+}
+
+.item-list__content {
+  padding: 5px 0 10px 15px;
+}
+
+.item-list--student-counselors,
+.item-list--student-contact-info {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0 20px;
+  width: 100%;
+
+  .item-list__item {
+    align-items: flex-start;
+    border: 1px solid $color-default-separator-border;
+    border-radius: 3px;
+    box-shadow: 0 0 15px rgba(0 0 0 / 2%);
+    cursor: inherit;
+    flex-basis: calc(100% - 16px);
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 8px;
+    max-width: calc(100% - 10px);
+    padding: 10px;
+
+    @include breakpoint($breakpoint-pad) {
+      flex-basis: calc(50% - 16px);
+      max-width: calc(50% - 16px);
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: calc(33% - 16px);
+      max-width: calc(33% - 16px);
+    }
+  }
+}
+
+.item-list--matriculation-results {
+  width: 100%;
+}
+
+// Item-list items BASE
+.item-list__item {
+  align-items: flex-start;
+  color: $color-text-default;
+  cursor: pointer;
+  display: flex;
+  padding: 10px;
+  position: relative;
+}
+
+.item-list__item--continue-studies,
+.item-list__item--next-studies,
+.item-list__item--dependant-workspaces {
+  cursor: default;
+}
+
+.item-list__item--dependant-workspaces {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.item-list__item--teacher {
+  cursor: auto;
+}
+
+.item-list__item--info-popover {
+  background-color: transparent;
+  cursor: auto;
+  max-width: 325px;
+}
+
+// Item-list items in workspaces panel
+.item-list--panel-workspaces .item-list__item {
+  @include text;
+}
+
+// Item-list items in lastest messages panel
+.item-list--panel-latest-messages {
+  .item-list__item {
+    align-items: flex-start;
+    border-top: solid 1px $color-default-item-separator-border;
+
+    &:first-child {
+      border: 0;
+    }
+  }
+
+  .item-list__item--unread {
+    .item-list__icon {
+      color: $color-index-item-list-item-panel-latest-messages-unread-icon;
+    }
+
+
+  }
+}
+
+// Item-list items in workspace teachers
+.item-list--panel-teachers .item-list__item {
+  align-items: flex-start;
+  border-top: solid 1px $color-default-item-separator-border;
+
+  &:first-child {
+    border: 0;
+  }
+}
+
+// Item-list items in announcements
+.item-list--panel-announcements {
+  .item-list__item {
+    align-items: flex-start;
+    border-top: solid 1px $color-default-item-separator-border;
+
+    &:first-child {
+      border: 0;
+    }
+  }
+
+  .item-list__item--unread {
+    .item-list__icon {
+      color: $color-index-item-list-item-panel-announcements-unread-icon;
+    }
+
+    &.item-list__item--has-workspaces {
+      .item-list__icon {
+        color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
+      }
+    }
+
+  }
+}
+
+.item-list__item--bordered {
+  border-left: solid 4px;
+}
+
+.item-list__item--unread .item-list__text-body {
+  font-weight: 600;
+}
+
+.item-list__item-title {
+  display: flex;
+  flex-grow: 1;
+}
+
+.item-list__item-aside-title {
+  display: flex;
+  flex-grow: 0;
+}
+
+.item-list__item-content {
+  padding: 5px;
+}
+
+.item-list__item-footer {
+  padding: 5px;
+
+  a:not(:first-child) {
+    margin-left: 10px;
+  }
+}
+
+.item-list__item-actions {
+  align-items: center;
+  display: flex;
+  padding: 0 15px 15px 33px;
+
+  a {
+    cursor: pointer;
+  }
+}
+
+.item-list__item-actions--continue-studies {
+  flex-wrap: wrap;
+  padding: 0 15px 15px 31px;
+
+  span::after {
+    content: "\00a0"; /* &nbsp; */
+  }
+}
+
+// List item icons
+.item-list__icon {
+  align-items: center;
+  color: $color-item-list-icon-font-color;
+  display: flex;
+  flex-basis: 16px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $item-list-icon-font-size;
+  justify-content: center;
+  padding: 2px 0 0;
+}
+
+.item-list__icon--workspaces,
+.item-list__icon--dependant-workspaces,
+.item-list__icon--next-studies {
+  color: $color-index-item-list-item-panel-workspaces-icon;
+}
+
+.item-list__icon--continue-studies {
+  color: $color-index-item-list-item-panel-workspaces-icon;
+}
+
+.item-list__icon--latest-messages {
+  color: $color-index-item-list-item-panel-latest-messages-icon;
+}
+
+.item-list__icon--announcements {
+  color: $color-index-item-list-item-panel-announcements-icon;
+}
+
+.item-list__item--has-workspaces .item-list__icon {
+  color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
+}
+
+// List item texts
+
+// List item for listing users (teachers and students alike)
+.item-list__profile-picture {
+  padding: 0 5px 0 0;
+}
+
+.item-list__user-contact-info {
+  margin: 4px 0;
+}
+
+.item-list__user-extra-info {
+  margin: 4px 0;
+}
+
+.item-list__user-vacation-period {
+  color: $color-fatal;
+  margin: 0 0 12px;
+}
+
+.item-list__user-actions {
+  align-items: center;
+  display: flex;
+  margin: 4px 0;
+}
+
+.item-list__user-name {
+  font-weight: 600;
+}
+
+.item-list__counselors {
+  padding: 5px 0 0;
+}
+
+.item-list__user-email,
+.item-list__user-phone {
+  @include word-break;
+
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 2px 0;
+}
+
+.item-list__user-email .glyph,
+.item-list__user-phone .glyph {
+  margin: 0 5px 0 0;
+}
+
+// List item texts
+
+.item-list__text-title {
+  line-height: 1.25rem;
+}
+
+.item-list__text-body {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: $text-mobile-font-size;
+  line-height: 1.25rem;
+  margin-left: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.item-list__text-body--date {
+  font-weight: 600;
+}
+
+.item-list__text-body--multiline {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column wrap;
+  white-space: initial;
+}
+
+.item-list__text-body--multiline--footer {
+  display: inline-block;
+  margin: 0;
+  text-align: center;
+}
+
+// List item dates
+.item-list__latest-message-date,
+.item-list__announcement-date {
+  color: $color-index-text-panels-date-color;
+  font-size: calc(#{$text-mobile-font-size} / 1.1);
+  font-style: italic;
+  padding: 6px 0 0;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: calc(#{$text-desktop-font-size} / 1.1);
+  }
+}
+
+// List item labels (and similar)
+.item-list__announcement-workspaces,
+.item-list__announcement-usergroups {
+  margin: 10px 0 0;
+}

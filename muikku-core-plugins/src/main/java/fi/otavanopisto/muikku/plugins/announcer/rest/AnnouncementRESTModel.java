@@ -103,12 +103,44 @@ public class AnnouncementRESTModel {
     this.temporalStatus = temporalStatus;
   }
 
+  public boolean isUnread() {
+    return unread;
+  }
+
+  public void setUnread(boolean unread) {
+    this.unread = unread;
+  }
+
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
+
+  public boolean isPinnedToSelf() {
+    return pinnedToSelf;
+  }
+
+  public void setPinnedToSelf(boolean pinnedToSelf) {
+    this.pinnedToSelf = pinnedToSelf;
+  }
+
   public List<WorkspaceBasicInfo> getWorkspaces() {
     return workspaces;
   }
 
   public void setWorkspaces(List<WorkspaceBasicInfo> workspaces) {
     this.workspaces = workspaces;
+  }
+
+  public List<AnnouncementCategoryRESTModel> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(List<AnnouncementCategoryRESTModel> categories) {
+    this.categories = categories;
   }
 
   private Long id;
@@ -123,6 +155,9 @@ public class AnnouncementRESTModel {
   private List<Long> workspaceEntityIds;
   private Boolean publiclyVisible;
   private AnnouncementTemporalStatus temporalStatus;
-
+  private boolean unread;
+  private boolean pinned;
+  private boolean pinnedToSelf;
   private List<WorkspaceBasicInfo> workspaces;
+  private List<AnnouncementCategoryRESTModel> categories;
 }

@@ -1,0 +1,83 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "react",
+    "react-hooks",
+    "jsdoc"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:jsdoc/recommended"
+  ],
+  "settings": {
+    "react": {
+      "createClass": "createReactClass",
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "camelcase": 1,
+    "no-console": 1,
+    "arrow-body-style": [2, "as-needed"],
+    "prefer-const": 1,
+    "react/prop-types": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
+    "react/no-deprecated": 1,
+    "react/no-children-prop": [
+      1,
+      {
+        "allowFunctions": true
+      }
+    ],
+    "react-hooks/rules-of-hooks": 2,
+    "react-hooks/exhaustive-deps": 1,
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      1,
+      {
+        "args": "none"
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": 1,
+    "@typescript-eslint/no-empty-interface": 0,
+    "no-unused-vars": "off",
+    "no-var": 1,
+    "jsdoc/newline-after-description": 0,
+    "jsdoc/require-param-type": 0,
+    "jsdoc/require-returns-type": 0,
+    "jsdoc/require-returns": 0,
+    "jsdoc/tag-lines": 0,
+    "jsdoc/require-jsdoc": [
+      1,
+      {
+        "contexts": ["TSMethodSignature", "TSInterfaceDeclaration"],
+        "require": {
+          "ClassDeclaration": true,
+          "ClassExpression": true,
+          "MethodDefinition": true,
+          "FunctionExpression": true,
+          "ArrowFunctionExpression": true
+        }
+      }
+    ]
+  }
+}

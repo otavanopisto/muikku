@@ -19,7 +19,7 @@ public class HtmlMaterialCloneOperation implements MaterialCloneOperation<HtmlMa
 
   @Override
   public HtmlMaterial clone(HtmlMaterial material) {
-    HtmlMaterial clonedMaterial = htmlMaterialController.createHtmlMaterial(material.getTitle(), material.getHtml(), material.getContentType(), material, material.getLicense(), material.getViewRestrict());
+    HtmlMaterial clonedMaterial = htmlMaterialController.createHtmlMaterial(material.getTitle(), material.getHtml(), material.getContentType(), material.getLicense(), material.getViewRestrict());
     List<MaterialProducer> materialProducers = materialController.listMaterialProducers(material);
     for (MaterialProducer materialProducer : materialProducers) {
       materialController.createMaterialProducer(clonedMaterial, materialProducer.getName());
