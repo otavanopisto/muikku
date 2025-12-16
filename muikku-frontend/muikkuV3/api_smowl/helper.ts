@@ -172,7 +172,7 @@ interface SmowlApiAccountInfoResponse {
  * Gets the API key from the SMOWL API
  * @returns The API key
  */
-async function getSmowlApiAccountInfo(): Promise<SmowlApiAccountInfoResponse> {
+export async function getSmowlApiAccountInfo(): Promise<SmowlApiAccountInfoResponse> {
   const url = "/rest/smowl/apikey";
   const response = await fetch(url, {
     method: "GET",
@@ -325,5 +325,3 @@ export function getSmowlApi(config: SmowlApiConfig): SmowlApi {
     },
   });
 }
-
-export { getSmowlApiAccountInfo };
