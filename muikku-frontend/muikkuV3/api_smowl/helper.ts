@@ -14,7 +14,7 @@ const REGISTRATION_ENDPOINT = "https://swl.smowltech.net/register/";
 /**
  * Parameters for the monitoring JWT token
  */
-interface MonitoringJwtParamsV2 {
+interface MonitoringJwtParams {
   /**
    * The type of activity, e.g.: "quiz", "course", "test"...
    */
@@ -33,7 +33,7 @@ interface MonitoringJwtParamsV2 {
 /**
  * Parameters for the monitoring get parameters
  */
-interface MonitoringGetParamsV2 {
+interface MonitoringGetParams {
   userName: string;
   userEmail: string;
   /**
@@ -46,7 +46,7 @@ interface MonitoringGetParamsV2 {
 /**
  * Parameters for the registration JWT token
  */
-interface RegistrationJwtParamsV2 {
+interface RegistrationJwtParams {
   /**
    * The type of activity, e.g.: "quiz", "course", "test"...
    */
@@ -61,7 +61,7 @@ interface RegistrationJwtParamsV2 {
 /**
  * Parameters for the registration get parameters
  */
-interface RegistrationGetParamsV2 {
+interface RegistrationGetParams {
   userName: string;
   userEmail: string;
   /**
@@ -110,8 +110,8 @@ export const formLinkWithJwt = async (
  * @returns The registration link
  */
 export const generateRegistrationLinkWithJwt = async (
-  jwtParams: RegistrationJwtParamsV2,
-  getParams: RegistrationGetParamsV2
+  jwtParams: RegistrationJwtParams,
+  getParams: RegistrationGetParams
 ) => formLinkWithJwt(REGISTRATION_ENDPOINT, jwtParams, getParams);
 
 /**
@@ -121,8 +121,8 @@ export const generateRegistrationLinkWithJwt = async (
  * @returns The monitoring link
  */
 export const generateMonitoringLinkWithJwt = async (
-  jwtParams: MonitoringJwtParamsV2,
-  getParams: MonitoringGetParamsV2
+  jwtParams: MonitoringJwtParams,
+  getParams: MonitoringGetParams
 ) => formLinkWithJwt(MONITORING_ENDPOINT, jwtParams, getParams);
 
 /**
