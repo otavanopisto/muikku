@@ -1,21 +1,21 @@
 import * as React from "react";
 import { Tbody, Td, Tr } from "~/components/general/table";
 import Dropdown from "~/components/general/dropdown";
-import {
-  Course,
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
-import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
+import { StudentActivityByStatus } from "~/@types/shared";
 import { useTranslation } from "react-i18next";
+import {
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixSubject,
+} from "~/generated/client";
+import { getNonOPSTransferedActivities } from "~/helper-functions/study-matrix";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
  */
 export interface RenderItemParams {
-  subject: SchoolSubject;
-  course: Course;
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
   tdModifiers: string[];
 }
 
@@ -23,7 +23,7 @@ export interface RenderItemParams {
  * Props for the Progress Table component
  */
 export interface OPSCourseTableProps extends StudentActivityByStatus {
-  matrix: SchoolCurriculumMatrix | null;
+  matrix: CourseMatrix | null;
   studentIdentifier: string;
   studentUserEntityId: number;
   currentMaxCourses: number | null;
@@ -50,8 +50,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
   const {
     matrix,
     currentMaxCourses,
-    studyProgrammeName,
-    studentOptions,
+    transferedList,
     renderCourseCell,
     renderEmptyCell,
   } = props;
@@ -66,19 +65,16 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     );
   }
 
-  const filteredMatrix = filterMatrix(
-    studyProgrammeName,
-    matrix.subjectsTable,
-    studentOptions
+  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
   );
 
   /**
    * renderRows
    * !!--USES list of mock objects currently--!!
    */
-  const renderRows = filteredMatrix.map((sSubject, i) => {
-    const showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
-
+  const renderRows = matrix.subjects.map((sSubject, i) => {
     /**
      * Render courses based on possible max number of courses
      * So subject with less courses have their rows same amount of table cells but as empty
@@ -88,7 +84,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       .map((c, index) => {
         const modifiers = ["centered", "course"];
 
-        const course = sSubject.availableCourses.find(
+        const course = sSubject.modules.find(
           (aCourse) => aCourse.courseNumber === index + 1
         );
 
@@ -105,10 +101,11 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         }
 
         const courseDropdownName =
-          sSubject.subjectCode + course.courseNumber + " - " + course.name;
+          sSubject.code + course.courseNumber + " - " + course.name;
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
+          !course.available && modifiers.push("NOT-AVAILABLE");
           return renderCourseCell ? (
             renderCourseCell({
               subject: sSubject,
@@ -117,7 +114,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
             })
           ) : (
             <Td
-              key={`${sSubject.subjectCode}-${course.courseNumber}`}
+              key={`${sSubject.code}-${course.courseNumber}`}
               modifiers={modifiers}
             >
               <Dropdown
@@ -141,6 +138,8 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         }
 
         modifiers.push("OPTIONAL");
+        !course.available && modifiers.push("NOT-AVAILABLE");
+
         return renderCourseCell ? (
           renderCourseCell({
             subject: sSubject,
@@ -149,7 +148,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
           })
         ) : (
           <Td
-            key={`${sSubject.subjectCode}-${course.courseNumber}`}
+            key={`${sSubject.code}-${course.courseNumber}`}
             modifiers={modifiers}
           >
             <Dropdown
@@ -173,20 +172,81 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       });
 
     return (
-      showSubjectRow && (
-        <Tr key={sSubject.name} modifiers={["course"]}>
-          <Td modifiers={["subject"]}>
-            <div>{`${sSubject.name} (${sSubject.subjectCode})`}</div>
-          </Td>
-          {courses}
-        </Tr>
-      )
+      <Tr key={sSubject.name} modifiers={["course"]}>
+        <Td modifiers={["subject"]}>
+          <div>{`${sSubject.name} (${sSubject.code})`}</div>
+        </Td>
+        {courses}
+      </Tr>
     );
   });
+
+  /**
+   * renderOtherSubjects
+   */
+  const renderOtherSubjects = () => {
+    if (nonOPSTransferedActivities.length === 0) {
+      return null;
+    }
+
+    const renderRows = nonOPSTransferedActivities.map((tStudy) => {
+      let courseName = tStudy.courseName;
+
+      const modifiers = ["centered", "course"];
+
+      if (tStudy.transferCreditMandatory) {
+        modifiers.push("MANDATORY");
+      } else {
+        courseName = `${courseName}*`;
+        modifiers.push("OPTIONAL");
+      }
+
+      modifiers.push("APPROVAL");
+
+      if (tStudy.passing) {
+        modifiers.push("PASSED-GRADE");
+      }
+
+      return (
+        <Tr key={tStudy.id} modifiers={["course"]}>
+          <Td modifiers={["subject"]}>{courseName}</Td>
+          <Td modifiers={modifiers}>
+            <Dropdown
+              content={
+                <div className="hops-container__study-tool-dropdown-container">
+                  <div className="hops-container__study-tool-dropdow-title">
+                    {courseName}
+                  </div>
+                </div>
+              }
+            >
+              <span
+                tabIndex={0}
+                className="table__data-content-wrapper table__data-content-wrapper--course"
+              >
+                {tStudy.grade}
+              </span>
+            </Dropdown>
+          </Td>
+          <Td colSpan={currentMaxCourses - 1}></Td>
+        </Tr>
+      );
+    });
+
+    return (
+      <OPSCourseTableBody
+        currentMaxCourses={currentMaxCourses}
+        title={t("labels.otherStudies")}
+      >
+        {renderRows}
+      </OPSCourseTableBody>
+    );
+  };
 
   return (
     <>
       <OPSCourseTableBody>{renderRows}</OPSCourseTableBody>
+      {renderOtherSubjects()}
     </>
   );
 };
