@@ -2168,6 +2168,7 @@
       "cancelSuccess_interimEvaluationRequests": "Canceling the interim evaluation request succeeded",
       "copyError": "Copying the course failed",
       "createError": "Creating the course failed",
+      "deleteError": "Deleting the latest course failed",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Loading the course activity failed",
       "loadError_chatSettings": "Loading chat settings failed",

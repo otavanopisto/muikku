@@ -1,4 +1,5 @@
 import * as React from "react";
+import { IconButton } from "./button";
 
 /**
  * ItemList properties
@@ -42,6 +43,7 @@ type ItemProps<C extends React.ElementType> = {
   as?: C;
   modifier?: string;
   icon?: string;
+  onDelete?: () => void;
 };
 
 /**
@@ -62,7 +64,7 @@ type RootElementProps<C extends React.ElementType> = React.PropsWithChildren<
 const ListItem = <C extends React.ElementType = "div">(
   props: RootElementProps<C>
 ) => {
-  const { as, modifier, icon, children, ...rest } = props;
+  const { as, modifier, icon, children, onDelete, ...rest } = props;
   const Component = as || "div";
 
   return (
@@ -72,17 +74,20 @@ const ListItem = <C extends React.ElementType = "div">(
         modifier ? "item-list__item--" + modifier : ""
       }`}
     >
-      {icon ? (
-        <>
-          <span
-            className={`item-list__icon ${
-              modifier ? "item-list__icon--" + modifier : ""
-            } ${icon}`}
-          ></span>
-          <span className="item-list__text-body">{children}</span>
-        </>
-      ) : (
-        children
+      {icon && (
+        <span
+          className={`item-list__icon ${
+            modifier ? "item-list__icon--" + modifier : ""
+          } ${icon}`}
+        ></span>
+      )}
+      <span className="item-list__text-body">{children}</span>
+      {onDelete && (
+        <IconButton
+          icon="trash"
+          buttonModifiers="studies-panel-list-item-delete"
+          onClick={onDelete}
+        />
       )}
     </Component>
   );
@@ -97,7 +102,7 @@ interface FooterProps {
 
 /**
  * ItemFooter component
- * @param props
+ * @param props FooterProps
  * @returns JSX.Element
  */
 const ItemFooter: React.FC<FooterProps> = (props) => {
