@@ -282,6 +282,7 @@
       "saveSuccess": "Tietojen tallennus onnistui",
       "sendError": "Lähetys epäonnistui. Ole hyvä ja yritä uudelleen.",
       "sendSuccess": "Lähetys onnistui",
+      "serverDoesNotReply": "Palvelin ei vastaa.",
       "unexpected_error": "Tapahtui odottamaton virhe",
       "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
       "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
@@ -1190,6 +1191,10 @@
       "hide_comments": "Piilota vastaukset",
       "lock": "$t(common:actions.lock)",
       "lock_thread": "Lukitse ketju",
+      "markAsRead": "Merkitse luetuksi",
+      "markAsUnread": "Merkitse lukemattomaksi",
+      "pin": "Kiinnitä",
+      "unpin": "Poista kiinnitys",
       "remove": "$t(common:actions.remove)",
       "remove_message": "Poista viesti",
       "remove_contactEntry": "Poista yhteydenotto",
@@ -1264,6 +1269,8 @@
       "name_discussionArea": "Keskustelualueen nimi",
       "pin": "Kiinnitä viesti",
       "pinAnnouncement": "Kiinnitä tiedote",
+      "pinned": "Kiinnitetty",
+      "pinnedToSelf": "Kiinnitetty itselle",
       "recipients_one": "Vastaanottaja",
       "recipients_other": "Vastaanottajat",
       "remove": "$t(common:labels.remove)",
@@ -1334,6 +1341,8 @@
       "loadError_replies": "Viestien vastausten lataus epäonnistui",
       "loadError_signature": "Allekirjoituksen lataus epäonnistui",
       "loadError_unreadMessageCount": "Lukemattomien viestien määrän lataus epäonnistui",
+      "markAsReadError": "Lukemattoman viestin merkitseminen luetuiksi epäonnistui",
+      "pinError": "Viestin kiinnitys epäonnistui. Yritä uudelleen.",
       "recipientsRequiredError": "Viestillä ei ole vastaanottajia",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_message": "Viestin poisto epäonnistui. Yritä uudelleen.",
@@ -2801,7 +2810,8 @@
     "content": {
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja saatavilla.",
-      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!"
+      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista myös aikataulutetut opinnot.",
+      "problemsExist": "Taulukosta voi puuttua oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2813,14 +2823,17 @@
       "inProgress": "$t(common:labels.inProgress)",
       "legendDescriptions": "Merkintöjen kuvaukset",
       "mandatory": "$t(common:labels.mandatory)",
+      "mandatoryNotAvailable": "$t(common:labels.mandatory), ei tarjolla",
       "mandatoryShorthand": "P",
       "optional": "$t(common:labels.optional)",
+      "optionalNotAvailable": "$t(common:labels.optional), ei tarjolla",
       "optionalShorthand": "V",
+      "otherStudies": "Muut opinnot",
       "schoolSubject": "Oppiaine",
       "signUpMessage": "Ilmoitusviesti",
       "signUpStudent": "Ilmoita opiskelija kurssille",
       "signUpStudentToWorkspace": "Ilmoita opiskelija kurssille {{workspaceName}}",
-      "suggestedNext": "Seuraavaksi ehdotettu",
+      "suggestedNext": "Ehdotettu",
       "supplementationRequest": "$t(common:labels.incomplete)",
       "supplementationRequestShorthand": "T",
       "transferred": "$t(common:labels.transferredCredit)",
@@ -2830,6 +2843,14 @@
     },
     "notifications": {
       "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
+    },
+    "problems": {
+      "incompatibleStudent": "<b>Opiskelija ei ole yhteensopiva OPS matriisin kanssa</b>",
+      "noMath": "<b>matematiikka</b>",
+      "noNativeLanguage": "<b>äidinkieli ja kirjallisuus</b>",
+      "noPrimaryForeignLanguage": "<b>vieras kieli, A-oppimäärä</b>",
+      "noSecondaryForeignLanguage": "<b>toinen kotimainen kieli, B1-oppimäärä</b>",
+      "noReligion": "<b>katsomusaine</b>"
     }
   },
   "courseCarousel": {

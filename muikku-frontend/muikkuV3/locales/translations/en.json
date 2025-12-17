@@ -282,6 +282,7 @@
       "saveSuccess": "Saving succeeded",
       "sendError": "Sending failed. Please try again.",
       "sendSuccess": "Sending succeeded",
+      "serverDoesNotReply": "Server does not reply.",
       "unexpected_error": "An unexpected error occurred",
       "updateError_chatStatus": "Changing the chat status failed",
       "updateError_chatUserName": "Chat username change failed",
@@ -1190,6 +1191,10 @@
       "hide_comments": "Hide answers",
       "lock": "$t(common:actions.lock)",
       "lock_thread": "Lock threat",
+      "markAsRead": "Mark as read",
+      "markAsUnread": "Mark as unread",
+      "pin": "Pin",
+      "unpin": "Unpin",
       "remove": "$t(common:actions.remove)",
       "remove_message": "Delete message",
       "remove_contactEntry": "Delete contact entry",
@@ -1264,6 +1269,8 @@
       "name_discussionArea": "Discussion area name",
       "pin": "Pin message",
       "pinAnnouncement": "Pin announcement",
+      "pinned": "Pinned",
+      "pinnedToSelf": "Pinned to self",
       "recipients_one": "Recipient",
       "recipients_other": "Recipients",
       "remove": "$t(common:labels.remove)",
@@ -1334,6 +1341,8 @@
       "loadError_replies": "Loading replies failed. Please try again.",
       "loadError_signature": "Loading signatures failed. Please try again.",
       "loadError_unreadMessageCount": "Loading the unread message count failed. Please try again.",
+      "markAsReadError": "Marking the unread message as read failed. Please try again.",
+      "pinError": "Pinning the message failed. Please try again.",
       "recipientsRequiredError": "The message has no recipients",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_message": "Deleting the message failed. Please try again.",
@@ -2801,7 +2810,8 @@
     "content": {
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available",
-      "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites"
+      "noSuggestionAvailable_staff": "No courses available. Check scheduled studies as well",
+      "problemsExist": "Subjects may be missing from the table because no selections have been made for them. Missing subject selections:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2813,14 +2823,17 @@
       "inProgress": "$t(common:labels.inProgress)",
       "legendDescriptions": "Marking's descriptions",
       "mandatory": "$t(common:labels.mandatory)",
+      "mandatoryNotAvailable": "$t(common:labels.mandatory), not available",
       "mandatoryShorthand": "M",
       "optional": "$t(common:labels.optional)",
+      "optionalNotAvailable": "$t(common:labels.optional), not available",
       "optionalShorthand": "O",
+      "otherStudies": "Other studies",
       "schoolSubject": "School subject",
       "signUpMessage": "Sign up message",
       "signUpStudent": "Sign up student to course",
       "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
-      "suggestedNext": "Suggested next",
+      "suggestedNext": "Suggested",
       "supplementationRequest": "$t(common:labels.incomplete)",
       "supplementationRequestShorthand": "I",
       "transferred": "$t(common:labels.transferredCredit)",
@@ -2830,6 +2843,14 @@
     },
     "notifications": {
       "signUpError": "Signing up to course failed"
+    },
+    "problems": {
+      "incompatibleStudent": "<b>The student is incompatible with the OPS matrix</b>",
+      "noMath": "<b>Mathematics</b>",
+      "noNativeLanguage": "<b>Mother tongue and literature</b>",
+      "noPrimaryForeignLanguage": "<b>Foreign language, A syllabus</b>",
+      "noSecondaryForeignLanguage": "<b>Second national language, B1 syllabus</b>",
+      "noReligion": "<b>Religion or ethics</b>"
     }
   },
   "courseCarousel": {

@@ -8,7 +8,6 @@ import {
 } from "~/components/general/OPS-matrix/OPS-course-table";
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import {
-  compulsoryOrUpperSecondary,
   getCourseDropdownName,
   getCourseInfo,
   getHighestCourseNumber,
@@ -24,7 +23,6 @@ interface ProgressTableProps
     | "renderMandatoryCourseCellContent"
     | "renderOptionalCourseCellContent"
     | "currentMaxCourses"
-    | "matrix"
   > {}
 
 /**
@@ -35,6 +33,7 @@ interface ProgressTableProps
  */
 const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const {
+    matrix,
     suggestedNextList,
     transferedList,
     gradedList,
@@ -43,11 +42,6 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   } = props;
 
   const { t } = useTranslation(["studyMatrix"]);
-
-  const matrix = compulsoryOrUpperSecondary(
-    props.studyProgrammeName,
-    props.curriculumName
-  );
 
   const currentMaxCourses = getHighestCourseNumber(matrix);
 
@@ -88,10 +82,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     }
 
     return (
-      <Td
-        key={`${subject.subjectCode}-${course.courseNumber}`}
-        modifiers={modifiers}
-      >
+      <Td key={`${subject.code}-${course.courseNumber}`} modifiers={modifiers}>
         <Dropdown
           content={
             <div className="hops-container__study-tool-dropdown-container">
@@ -99,7 +90,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                 {getCourseDropdownName(
                   subject,
                   course,
-                  matrix.type === "uppersecondary"
+                  matrix.type === "UPPER_SECONDARY"
                 )}
               </div>
             </div>

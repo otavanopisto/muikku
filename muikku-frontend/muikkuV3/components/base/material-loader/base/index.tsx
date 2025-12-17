@@ -36,6 +36,7 @@ import {
   LinkDataset,
   WordDefinitionDataset,
 } from "../types";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 //These are all our supported objects as for now
 const fieldComponents: { [key: string]: any } = {
@@ -98,7 +99,7 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
 /**
  * BaseProps
  */
-interface BaseProps {
+interface BaseProps extends WithTranslation {
   material: MaterialContentNodeWithIdAndLogic;
   status: StatusType;
   workspace: WorkspaceDataType;
@@ -227,7 +228,7 @@ export function createFieldSavedStateClass(state: FieldStateStatus) {
 /**
  * Base
  */
-export default class Base extends React.Component<BaseProps, BaseState> {
+class Base extends React.Component<BaseProps, BaseState> {
   private answerCheckable: boolean;
 
   // whenever a field changes we save it as timeout not to send every keystroke to the server
@@ -361,10 +362,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       clearTimeout(this.timeoutConnectionFailedRegistry[actualData.fieldName]);
       delete this.timeoutConnectionFailedRegistry[actualData.fieldName];
 
-      // if we have an error
-      if (actualData.error) {
+      // if we have a context and an error
+      if (this.nameContextRegistry[actualData.fieldName] && actualData.error) {
         // eslint-disable-next-line no-console
         console.error && console.error(actualData.error);
+
         // we get the context and check whether it's synced
         this.nameContextRegistry[actualData.fieldName].setState({
           synced: false,
@@ -517,7 +519,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           null,
           stackId
         );
-        context.setState({ syncError: "server does not reply" });
+        context.setState({
+          syncError: this.props.t("notifications.serverDoesNotReply", {
+            ns: "common",
+          }),
+        });
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY) as any;
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE) as any;
   }
@@ -917,6 +923,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     );
   }
 }
+
+export default withTranslation(["common"])(Base);
 
 /**
  * Extract common props that are the same for all field components
