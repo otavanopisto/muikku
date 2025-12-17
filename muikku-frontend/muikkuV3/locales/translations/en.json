@@ -1281,6 +1281,7 @@
       "remove_discussionArea": "Delete discussion area",
       "remove_label": "Delete label",
       "remove_message": "Delete message",
+      "removeAllCollaborators": "Remove all collaborators",
       "reply": "Reply message",
       "replyCount": "Replies",
       "replySubject": "Re: {{topic}}",

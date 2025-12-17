@@ -421,7 +421,8 @@ export interface CreateGuiderFilterLabelTriggerType {
  */
 export interface UpdateGuiderFilterLabelTriggerType {
   (data: {
-    label: UserFlag;
+    id: number;
+    ownerIdentifier?: string;
     name: string;
     description: string;
     color: string;
@@ -2616,15 +2617,17 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
         );
       }
 
-      const newLabel: UserFlag = Object.assign({}, data.label, {
+      const newLabel: UserFlag = {
         name: data.name,
         description: data.description,
         color: data.color,
-      });
+        ownerIdentifier: data.ownerIdentifier,
+        id: data.id,
+      };
 
       try {
         await userApi.updateFlag({
-          flagId: data.label.id,
+          flagId: data.id,
           userFlag: newLabel,
         });
 

@@ -1281,6 +1281,7 @@
       "remove_discussionArea": "Poista keskustelualue",
       "remove_label": "Poista tunniste",
       "remove_message": "Poista viesti",
+      "removeAllCollaborators": "Poista kaikki jaot",
       "reply": "Vastaa viestiin",
       "replyCount": "Vastauksia",
       "replySubject": "Vs: {{topic}}",

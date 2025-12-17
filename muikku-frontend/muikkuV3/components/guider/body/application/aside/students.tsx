@@ -16,11 +16,13 @@ import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
 import { hexToColorInt } from "~/util/modifiers";
 import { GenericTag } from "~/components/general/tag-update-dialog";
+import MApi, { isMApiError } from "~/api/api";
 
 import {
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,
 } from "~/actions/main-function/guider";
+import { displayNotification } from "~/actions/base/notifications";
 
 /**
  * NavigationAside
@@ -52,14 +54,67 @@ const StudentNavigationAside = () => {
    */
   const handleDelete = (tag: GenericTag) => {
     // No action needed for guider labels
-    dispatch(removeGuiderFilterLabel(tag.id));
+    dispatch(removeGuiderFilterLabel({ id: tag.id }));
   };
 
   /**
    * Handles update category
    * @param tag tag to be updated
+   * @param onSuccess optional success callback
+   * @param onFail optional fail callback
    */
-  const handleUpdate = (tag: GenericTag) => {};
+  const handleUpdate = (
+    tag: GenericTag,
+    onSuccess?: () => void,
+    onFail?: () => void
+  ) => {
+    dispatch(
+      updateGuiderFilterLabel({
+        id: tag.id,
+        name: tag.label,
+        color: "#" + tag.color.toString(16).padStart(6, "0"),
+        description: tag.description || "",
+        ownerIdentifier: tag.ownerIdentifier,
+        success: onSuccess,
+        fail: onFail,
+      })
+    );
+  };
+
+  const handleRemoveAllCollaborators = async (
+    tag: GenericTag,
+    success?: () => void,
+    fail?: () => void
+  ) => {
+    const flagId = tag.id;
+    const userApi = MApi.getUserApi();
+
+    try {
+      const collaborators = await userApi.getFlagShares({
+        flagId,
+      });
+
+      await Promise.all(
+        collaborators.map((c) =>
+          userApi.deleteFlagShare({
+            flagId,
+            shareId: c.id,
+          })
+        )
+      );
+
+      success && success();
+      dispatch(
+        displayNotification("Collaborators removed successfully", "success")
+      );
+    } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
+      fail && fail();
+      dispatch(displayNotification(e.message, "error"));
+    }
+  };
 
   const locationData = queryString.parse(
     document.location.hash.split("?")[1] || "",
@@ -137,6 +192,11 @@ const StudentNavigationAside = () => {
                     }),
                     editLabel: t("labels.edit"),
                     deleteLabel: t("labels.remove"),
+                    customActionLabel: t("labels.removeAllCollaborators", {
+                      ns: "messaging",
+                    }),
+                    customActionIcon: "users",
+                    handleCustomAction: handleRemoveAllCollaborators,
                   } satisfies DropdownWrapperProps
                 }
                 isEditable

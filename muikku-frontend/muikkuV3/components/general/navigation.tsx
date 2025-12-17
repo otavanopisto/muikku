@@ -213,12 +213,17 @@ interface NavigationDropdownProps {
   onUpdate: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
   deleteDialogTitle: string;
   deleteDialogContent: string;
+  customActionDialogTitle?: string;
+  customActionDialogContent?: string;
+  handleCustomAction?: (tag: GenericTag) => void;
   updateDialogTitle?: string;
+  customActionIcon?: string;
+  customActionLabel?: string;
   editLabel: string;
   deleteLabel: string;
 }
 
-type NavigationDropdownAction = "edit" | "delete";
+type NavigationDropdownAction = "edit" | "delete" | "custom";
 
 /**
  * TagDropdown component
@@ -235,12 +240,20 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
     onUpdate,
     deleteDialogTitle,
     deleteDialogContent,
+    customActionDialogTitle,
+    customActionDialogContent,
+    handleCustomAction,
+    customActionIcon,
+    customActionLabel,
+
     editLabel,
     deleteLabel,
   } = props;
   const [open, setOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [customActionDialogOpen, setCustomActionDialogOpen] =
+    React.useState(false);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const triggerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLElement>(null);
@@ -302,14 +315,22 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
 
   /**
    * handleOptions
+   * @param e mouse event
    * @param action option action
    */
-  const handleOptions = (action: NavigationDropdownAction) => {
+  const handleOptions = (
+    e: React.MouseEvent,
+    action: NavigationDropdownAction
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
     unstable_batchedUpdates(() => {
       if (action === "edit") {
         setEditDialogOpen(true);
       } else if (action === "delete") {
         setDeleteDialogOpen(true);
+      } else if (action === "custom") {
+        setCustomActionDialogOpen(true);
       }
       setOpen(false);
     });
@@ -341,15 +362,27 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
               <li
                 className="menu__item-dropdown-list-item"
                 id="editOption"
-                onClick={() => handleOptions("edit")}
+                onClick={(e) => handleOptions(e, "edit")}
               >
                 <span className="menu__item-dropdown-icon icon-pencil"></span>
                 <span>{editLabel}</span>
               </li>
+              {customActionLabel && handleCustomAction && (
+                <li
+                  className="menu__item-dropdown-list-item"
+                  id="customActionOption"
+                  onClick={(e) => handleOptions(e, "custom")}
+                >
+                  <span
+                    className={`menu__item-dropdown-icon icon-${customActionIcon}`}
+                  ></span>
+                  <span>{customActionLabel}</span>
+                </li>
+              )}
               <li
                 className="menu__item-dropdown-list-item"
                 id="deleteOption"
-                onClick={() => handleOptions("delete")}
+                onClick={(e) => handleOptions(e, "delete")}
               >
                 <span className="menu__item-dropdown-icon icon-trash"></span>
                 <span>{deleteLabel}</span>
@@ -375,6 +408,16 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
         onExecute={() => handleDelete(tag)}
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
+      >
+        <span style={{ display: "none" }} />
+      </PromptDialog>
+
+      <PromptDialog
+        title={customActionDialogTitle}
+        content={customActionDialogContent}
+        onExecute={() => handleCustomAction(tag)}
+        isOpen={customActionDialogOpen}
+        onClose={() => setCustomActionDialogOpen(false)}
       >
         <span style={{ display: "none" }} />
       </PromptDialog>

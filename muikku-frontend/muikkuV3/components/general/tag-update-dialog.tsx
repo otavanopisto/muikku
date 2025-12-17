@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { ChromePicker, ColorState } from "react-color";
 import "~/sass/elements/form.scss";
@@ -24,10 +24,7 @@ export type GenericTag = {
   label: string;
   color: number;
   description?: string;
-  collaborators?: {
-    toRemove: string[];
-    toAdd: string[];
-  };
+  collaborators?: { toRemove: number[]; toAdd: number[] };
   hasRecipients?: boolean;
   ownerIdentifier?: string;
 };
@@ -54,8 +51,8 @@ interface TagUpdateDialogState {
   name: string;
   description: string;
   collaborators: ContactRecipientType[];
-  collaboratorsToRemove: string[];
-  collaboratorsToAdd: string[];
+  collaboratorsToRemove: number[];
+  collaboratorsToAdd: number[];
   locked: boolean;
 }
 
@@ -64,10 +61,10 @@ type TagUpdateDialogAction =
   | { type: "SET_NAME"; payload: string }
   | { type: "SET_DESCRIPTION"; payload: string }
   | { type: "SET_COLLABORATORS"; payload: ContactRecipientType[] }
-  | { type: "ADD_COLLABORATOR_TO_ADD"; payload: string }
-  | { type: "REMOVE_COLLABORATOR_TO_ADD"; payload: string }
-  | { type: "ADD_COLLABORATOR_TO_REMOVE"; payload: string }
-  | { type: "REMOVE_COLLABORATOR_TO_REMOVE"; payload: string }
+  | { type: "ADD_COLLABORATOR_TO_ADD"; payload: number }
+  | { type: "REMOVE_COLLABORATOR_TO_ADD"; payload: number }
+  | { type: "ADD_COLLABORATOR_TO_REMOVE"; payload: number }
+  | { type: "REMOVE_COLLABORATOR_TO_REMOVE"; payload: number }
   | { type: "TOGGLE_COLOR_PICKER" }
   | { type: "CLOSE_COLOR_PICKER" }
   | { type: "SET_LOCKED"; payload: boolean }
@@ -271,9 +268,9 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
     selectedCollaborators: ContactRecipientType[],
     changedCollaborator: ContactRecipientType
   ) => {
-    const collaboratorIdentifier = changedCollaborator.value.identifier;
+    const collaboratorIdentifier = changedCollaborator.value.id;
     const wasAlreadyCollaborator = state.collaborators.some(
-      (c) => c.value.identifier === collaboratorIdentifier
+      (c) => c.value.id === collaboratorIdentifier
     );
 
     dispatchState({
