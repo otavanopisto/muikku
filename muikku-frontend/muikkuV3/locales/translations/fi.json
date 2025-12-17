@@ -2811,7 +2811,7 @@
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja saatavilla.",
       "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista myös aikataulutetut opinnot.",
-      "problemsExist": "Taulukosta voi puuttua oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
+      "problemsExist": "Taulukossa voi olla ylimääräisiä oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",

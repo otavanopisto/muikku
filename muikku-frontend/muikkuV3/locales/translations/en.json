@@ -2811,7 +2811,7 @@
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available",
       "noSuggestionAvailable_staff": "No courses available. Check scheduled studies as well",
-      "problemsExist": "Subjects may be missing from the table because no selections have been made for them. Missing subject selections:"
+      "problemsExist": "Subjects may contain additional subjects because no subject selections have been made for them. Missing subject selections:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
