@@ -131,6 +131,8 @@
       "edit": "Edit",
       "edit_comment": "Edit comment",
       "edit_description": "Edit description",
+      "editing": "{{user}} is editing",
+      "editing_student": "Student is editing",
       "edited": "Edited",
       "email": "Email address",
       "emails_one": "Email",
