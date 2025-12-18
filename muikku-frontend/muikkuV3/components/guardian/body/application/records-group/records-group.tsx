@@ -70,6 +70,16 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
     );
   }
 
+  let categoryName = recordGroup.lineCategory;
+
+  if (recordGroup.showCredits) {
+    categoryName += ` - ${t("labels.courseCredits", {
+      ns: "studies",
+      mandatoryCredits: recordGroup.mandatoryCourseCredits,
+      totalCredits: recordGroup.completedCourseCredits,
+    })}`;
+  }
+
   return (
     <ApplicationList>
       <div
@@ -77,7 +87,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">
-          {recordGroup.lineCategory}
+          {categoryName}
         </h3>
         <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
       </div>

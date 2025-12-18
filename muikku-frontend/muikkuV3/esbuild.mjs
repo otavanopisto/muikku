@@ -2,6 +2,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { build as _build } from "esbuild";
 import { readFileSync } from "fs";
+import { emptyDirSync } from "fs-extra";
 import { sassPlugin } from "esbuild-sass-plugin";
 import { TsconfigPathsPlugin } from "@esbuild-plugins/tsconfig-paths";
 import moment from "moment";
@@ -47,6 +48,23 @@ const build = _build({
   // modified tsconfig
   tsconfigRaw: JSON.stringify({ tsConfig }),
   plugins: [
+    {
+      name: "clean-dist",
+      setup(build) {
+        // onStart is called whenever the build process starts
+        build.onStart(() => {
+          const outdir = build.initialOptions.outdir;
+          if (outdir) {
+            try {
+              emptyDirSync(outdir);
+              console.log(`Cleaned output directory: ${outdir}`);
+            } catch (e) {
+              console.error("Cleaning output directory failed", e);
+            }
+          }
+        });
+      },
+    },
     {
       name: "css",
       setup(build) {
