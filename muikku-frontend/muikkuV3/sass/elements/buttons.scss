@@ -825,6 +825,13 @@
   }
 }
 
+.button-icon--studies-panel-list-item-delete {
+  align-items: unset;
+  font-size: 0.925rem;
+  height: unset;
+  width: unset;
+}
+
 .button-icon--dialog-close {
   @include breakpoint($breakpoint-pad) {
     color: $color-default;
