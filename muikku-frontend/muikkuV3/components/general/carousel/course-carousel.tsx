@@ -14,6 +14,7 @@ import { SuggestedCourse } from "~/@types/shared";
 import Carousel from "react-multi-carousel";
 import WorkspaceDescriptionDialog from "./workspace-description-dialog";
 import { useTranslation } from "react-i18next";
+import { CourseMatrix } from "~/generated/client";
 
 const responsive = {
   desktop: {
@@ -46,6 +47,7 @@ interface CourseCarouselProps {
   studentUserEntityId: number;
   studyProgrammeName: string;
   curriculumName: string;
+  matrix: CourseMatrix;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -59,8 +61,7 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
   const { courseCarousel } = useCourseCarousel(
     props.studentId,
     props.studentUserEntityId,
-    props.studyProgrammeName,
-    props.curriculumName,
+    props.matrix,
     props.displayNotification
   );
 

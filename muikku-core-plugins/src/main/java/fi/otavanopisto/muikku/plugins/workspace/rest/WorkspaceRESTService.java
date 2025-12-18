@@ -2021,7 +2021,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           Long copyExamId = idMap.get(examId);
           if (copyExamId != null) {
             ExamSettingsRestModel settings = examController.getSettingsJson(copyExamId);
-            if (settings != null && !settings.getCategories().isEmpty()) {
+            if (settings != null && settings.getCategories() != null && !settings.getCategories().isEmpty()) {
               List<ExamSettingsCategory> categories = settings.getCategories();
               for (ExamSettingsCategory category : categories) {
                 List<Long> pageIds = category.getWorkspaceMaterialIds();

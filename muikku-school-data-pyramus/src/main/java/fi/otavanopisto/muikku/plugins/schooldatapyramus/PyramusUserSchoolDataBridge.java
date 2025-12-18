@@ -71,6 +71,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
@@ -147,9 +148,29 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private UserEntityController userEntityController;
+
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier) {
+
+    // Convert identifier to Pyramus student id
+
+    Long studentId = identifierMapper.getPyramusStudentId(identifier);
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
+    }
+
+    // Service call
+
+    BridgeResponse<CourseMatrixRestModel> response = pyramusClient.responseGet(
+        String.format("/muikku/students/%d/courseMatrix", studentId),
+        CourseMatrixRestModel.class);
+
+    return response;
   }
 
   @Override

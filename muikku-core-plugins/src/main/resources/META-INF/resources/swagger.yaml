@@ -6417,6 +6417,28 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/student/{studentIdentifier}/courseMatrix:
+    get:
+      operationId: getStudentCourseMatrix
+      summary: Returns the HOPS course matrix for the given student
+      description: Returns the HOPS course matrix for the given student
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student's HOPS course matrix
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseMatrix"
+
   /rest/hops/student/{studentIdentifier}/studyActivity:
     get:
       operationId: getStudentStudyActivity
@@ -17671,6 +17693,80 @@ components:
           type: string
           nullable: true
 
+    CourseMatrix:
+      type: object
+      description: OPS specific course matrix for a given student
+      required:
+        - type
+        - subjects
+        - problems
+      properties:
+        type:
+          $ref: "#/components/schemas/CourseMatrixType"
+          nullable: true
+        subjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixSubject"
+        problems:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixProblem"
+
+    CourseMatrixSubject:
+      type: object
+      description: Subject in course matrix
+      required:
+        - name
+        - code
+        - modules
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        modules:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixModule"
+
+    CourseMatrixModule:
+      type: object
+      description: Single course within a course matrix
+      required:
+        - name
+        - courseNumber
+        - length
+        - mandatory
+        - available
+      properties:
+        name:
+          type: string
+        courseNumber:
+          type: integer
+        length:
+          type: integer
+        mandatory:
+          type: boolean
+        available:
+          type: boolean
+
+    CourseMatrixProblem:
+      type: string
+      enum:
+        - INCOMPATIBLE_STUDENT
+        - NO_NATIVE_LANGUAGE
+        - NO_MATH
+        - NO_RELIGION
+        - NO_PRIMARY_FOREIGN_LANGUAGE
+        - NO_SECONDARY_FOREIGN_LANGUAGE
+
+    CourseMatrixType:
+      type: string
+      enum:
+        - UPPER_SECONDARY
+        - COMPULSORY
+
     StudentStudyActivity:
       type: object
       description: StudentStudyActivity object
@@ -17685,6 +17781,7 @@ components:
         - status
         - date
         - transferCreditMandatory
+        - transferCreditLength
         - id
       properties:
         subjectName:
@@ -17710,6 +17807,9 @@ components:
           type: string
           format: date-time
         transferCreditMandatory:
+          type: boolean
+          nullable: true
+        transferCreditLength:
           type: boolean
           nullable: true
         id:
