@@ -16249,7 +16249,6 @@ components:
         - ALWAYS
         - ON_REQUEST
         - NEVER
-        - NO_CHECK
 
     NodeEvaluation:
       type: object
