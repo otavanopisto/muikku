@@ -249,6 +249,11 @@ class MultiSelectField extends React.Component<
 
     const tooltipId = "multiSelectFieldTooltip-" + uuidv4();
 
+    // check for the correct answers we found
+    const correctAnswersFound = this.props.content.options.filter(
+      (a) => a.correct
+    );
+
     // The answer is right if it is not unknown and has no fails in it
     const answerIsBeingCheckedAndItisCorrect =
       this.props.checkAnswers &&
@@ -261,10 +266,6 @@ class MultiSelectField extends React.Component<
       this.props.displayCorrectAnswers &&
       !answerIsBeingCheckedAndItisCorrect
     ) {
-      // check for the correct answers we found
-      const correctAnswersFound = this.props.content.options.filter(
-        (a) => a.correct
-      );
       // if we got some in there
       if (correctAnswersFound.length) {
         // and we make the summary component
@@ -348,10 +349,9 @@ class MultiSelectField extends React.Component<
 
     // the classname we add to the element itself depending to the state, and only available if we check answers
     const fieldStateAfterCheck =
-      this.props.displayCorrectAnswers &&
-      this.props.checkAnswers &&
       this.state.answerState &&
-      this.state.answerState !== "UNKNOWN"
+      this.state.answerState !== "UNKNOWN" &&
+      this.props.checkAnswers
         ? this.state.answerState.includes("FAIL")
           ? "incorrect-answer"
           : "correct-answer"
@@ -383,11 +383,13 @@ class MultiSelectField extends React.Component<
             const isChecked = this.state.values.includes(o.name);
             let itemStateAfterCheck = "";
 
-            if (this.props.checkAnswers) {
-              if ((o.correct && isChecked) || (!o.correct && !isChecked)) {
-                itemStateAfterCheck = "correct-answer";
-              } else {
-                itemStateAfterCheck = "incorrect-answer";
+            if (correctAnswersFound.length) {
+              if (this.props.checkAnswers) {
+                if ((o.correct && isChecked) || (!o.correct && !isChecked)) {
+                  itemStateAfterCheck = "correct-answer";
+                } else {
+                  itemStateAfterCheck = "incorrect-answer";
+                }
               }
             }
 
