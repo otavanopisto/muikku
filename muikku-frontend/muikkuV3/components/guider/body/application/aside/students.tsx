@@ -102,13 +102,29 @@ const StudentNavigationAside = () => {
       }
 
       success && success();
-      dispatch(displayNotification("Flag shared successfully", "success"));
+      dispatch(
+        displayNotification(
+          t("notifications.addCollaboratorSuccess", {
+            ns: "flags",
+            collaboratorCount: tag.collaborators.toAdd.length,
+          }),
+          "success"
+        )
+      );
     } catch (e) {
       if (!isMApiError(e)) {
         throw e;
       }
       fail && fail();
-      dispatch(displayNotification(e.message, "error"));
+      dispatch(
+        displayNotification(
+          t("notifications.addCollaboratorError", {
+            ns: "flags",
+            error: e.message,
+          }),
+          "error"
+        )
+      );
     }
   };
 
@@ -160,14 +176,28 @@ const StudentNavigationAside = () => {
 
       success && success();
       dispatch(
-        displayNotification("Collaborators removed successfully", "success")
+        displayNotification(
+          t("notifications.removeCollaboratorSuccess", {
+            ns: "flags",
+            collaboratorCount: collaborators.length,
+          }),
+          "success"
+        )
       );
     } catch (e) {
       if (!isMApiError(e)) {
         throw e;
       }
       fail && fail();
-      dispatch(displayNotification(e.message, "error"));
+      dispatch(
+        displayNotification(
+          t("notifications.removeCollaboratorError", {
+            ns: "flags",
+            error: e.message,
+          }),
+          "error"
+        )
+      );
     }
   };
 
@@ -198,34 +228,40 @@ const StudentNavigationAside = () => {
       )}
       {guider.availableFilters.labels.length > 0 && (
         <NavigationTopic name={t("labels.flags", { ns: "flags" })}>
-          {guider.availableFilters.labels.map((label) => (
-            <GuiderLabel
-              key={label.id}
-              label={label}
-              hash={
-                guider.activeFilters.labelFilters.includes(label.id)
-                  ? queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        l: (locationData.l || []).filter(
-                          (i: string) => parseInt(i) !== label.id
-                        ),
-                      }),
-                      { arrayFormat: "bracket" }
-                    )
-                  : queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        l: (locationData.l || []).concat(label.id),
-                      }),
-                      { arrayFormat: "bracket" }
-                    )
-              }
-              onRemoveCollaborators={handleRemoveCollaborators}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
-          ))}
+          {guider.availableFilters.labels.map((label) => {
+            const isActive = guider.activeFilters.labelFilters.includes(
+              label.id
+            );
+            return (
+              <GuiderLabel
+                key={label.id}
+                label={label}
+                isActive={isActive}
+                hash={
+                  guider.activeFilters.labelFilters.includes(label.id)
+                    ? queryString.stringify(
+                        Object.assign({}, locationData, {
+                          c: "",
+                          l: (locationData.l || []).filter(
+                            (i: string) => parseInt(i) !== label.id
+                          ),
+                        }),
+                        { arrayFormat: "bracket" }
+                      )
+                    : queryString.stringify(
+                        Object.assign({}, locationData, {
+                          c: "",
+                          l: (locationData.l || []).concat(label.id),
+                        }),
+                        { arrayFormat: "bracket" }
+                      )
+                }
+                onRemoveCollaborators={handleRemoveCollaborators}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
+              />
+            );
+          })}
         </NavigationTopic>
       )}
 

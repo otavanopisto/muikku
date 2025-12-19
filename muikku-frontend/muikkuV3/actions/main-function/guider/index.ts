@@ -2653,6 +2653,12 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
           },
         });
         data.success && data.success();
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateSuccess", { ns: "flags" }),
+            "success"
+          )
+        );
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;

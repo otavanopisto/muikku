@@ -449,7 +449,7 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
         tag.collaborators && (
           <div className="form-element form-element--edit-label">
             <InputContactsAutofill
-              label={"Jaetaan henkilöille " + state.collaborators.length}
+              label={t("labels.addCollaborators", { ns: "flags" })}
               identifier="guiderLabelShare"
               modifier="guider"
               onChange={handleCollaboratorsChange}

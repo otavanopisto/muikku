@@ -105,16 +105,20 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
           onDelete,
           onUpdate,
           deleteDialogTitle: t("labels.remove", {
-            ns: "messaging",
-            context: "category",
+            ns: "flags",
           }),
           deleteDialogContent: t("content.removing", {
-            ns: "messaging",
-            context: "category",
+            ns: "flags",
+          }),
+          customActionDialogTitle: t("labels.removeCollaborators", {
+            ns: "flags",
+            collaboratorCount: tag.collaborators.all.length,
+          }),
+          customActionDialogContent: t("content.removingCollaborators", {
+            ns: "flags",
           }),
           updateDialogTitle: t("labels.edit", {
-            ns: "messaging",
-            context: "category",
+            ns: "flags",
           }),
           editLabel: t("labels.edit"),
           deleteLabel: t("labels.remove"),
@@ -123,6 +127,7 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
           }),
           customActionIcon: "users",
           disableDelete:
+            tag.collaborators.all.length > 0 ||
             label.ownerIdentifier !== status.userSchoolDataIdentifier,
           disableCustomAction:
             tag.collaborators.all.length === 0 ||
