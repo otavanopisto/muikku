@@ -1426,9 +1426,9 @@ export interface AddMessagesNavigationLabelTriggerType {
  */
 export interface UpdateMessagesNavigationLabelTriggerType {
   (data: {
-    label: MessagesNavigationItem;
-    newName: string;
-    newColor: string;
+    id: number;
+    label: string;
+    color: number;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1439,7 +1439,8 @@ export interface UpdateMessagesNavigationLabelTriggerType {
  */
 export interface RemoveMessagesNavigationLabelTriggerType {
   (data: {
-    label: MessagesNavigationItem;
+    id: number;
+    location: string;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1565,7 +1566,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      if (!data.newName) {
+      if (!data.label) {
         data.fail && data.fail();
         return dispatch(
           displayNotification(
@@ -1577,42 +1578,36 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
 
       const communicatorApi = MApi.getCommunicatorApi();
 
-      const newLabelData = {
-        name: data.newName,
-        color: hexToColorInt(data.newColor),
-        id: data.label.id,
-      };
-
       try {
         await communicatorApi.updateCommunicatorUserLabel({
-          labelId: data.label.id as number,
+          labelId: data.id,
           updateCommunicatorUserLabelRequest: {
-            id: data.label.id as number,
-            name: newLabelData.name,
-            color: newLabelData.color,
+            id: data.id,
+            name: data.label,
+            color: data.color,
           },
         });
 
         dispatch({
           type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
           payload: {
-            labelId: <number>data.label.id,
+            labelId: data.id,
             update: {
-              labelName: newLabelData.name,
-              labelColor: newLabelData.color,
+              labelName: data.label,
+              labelColor: data.color,
             },
           },
         });
         dispatch({
           type: "UPDATE_MESSAGES_NAVIGATION_LABEL",
           payload: {
-            labelId: <number>data.label.id,
+            labelId: data.id,
             update: {
               /**
                * text
                */
-              text: newLabelData.name,
-              color: data.newColor,
+              text: data.label,
+              color: colorIntToHex(data.color),
             },
           },
         });
@@ -1649,26 +1644,26 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
 
       try {
         await communicatorApi.deleteCommunicatorUserLabel({
-          labelId: data.label.id as number,
+          labelId: data.id as number,
         });
 
         const { messages } = getState();
 
         //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
-        if (messages.location === data.label.location) {
+        if (messages.location === data.location) {
           location.hash = "#inbox";
         }
 
         dispatch({
           type: "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL",
           payload: {
-            labelId: <number>data.label.id,
+            labelId: data.id,
           },
         });
         dispatch({
           type: "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
           payload: {
-            labelId: <number>data.label.id,
+            labelId: data.id,
           },
         });
         data.success && data.success();

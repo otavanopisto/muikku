@@ -3,11 +3,16 @@
 /**
  * Depcrecated refs should be refactored
  */
-
 import Link from "~/components/general/link";
 import * as React from "react";
+// eslint-disable-next-line camelcase
+import { createPortal, unstable_batchedUpdates } from "react-dom";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
+import UpdateDialog, {
+  GenericTag,
+} from "~/components/general/tag-update-dialog";
+import PromptDialog from "~/components/general/prompt-dialog";
 
 /**
  * Navigation
@@ -90,6 +95,7 @@ interface NavigationElementProps {
   isEditable?: boolean;
   editableWrapper?: any;
   editableWrapperArgs?: any;
+  editableIcon?: string;
   editableAction?: () => any;
   onScrollToSection?: () => any;
   scrollPadding?: number;
@@ -113,8 +119,7 @@ export class NavigationElement extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    let editableComponent = null;
-
+    let editableComponent: JSX.Element | null = null;
     const modifiers: Array<string> =
       typeof this.props.modifiers === "string"
         ? [this.props.modifiers]
@@ -129,7 +134,7 @@ export class NavigationElement extends React.Component<
             disablePropagation
             as="span"
             buttonModifiers="navigation-edit-label"
-            icon="pencil"
+            icon={this.props.editableIcon ? this.props.editableIcon : "pencil"}
           />
         </EditableWrapper>
       );
@@ -140,7 +145,7 @@ export class NavigationElement extends React.Component<
           disablePropagation
           as="span"
           buttonModifiers="navigation-edit-label"
-          icon="pencil"
+          icon={this.props.editableIcon ? this.props.editableIcon : "pencil"}
           onClick={this.props.editableAction}
         />
       );
@@ -189,3 +194,184 @@ export class NavigationElement extends React.Component<
     return (this.refs["element"] as any).getElement();
   }
 }
+
+/**
+ * NavigationDropdownProps
+ */
+export interface NavigationDropdownProps {
+  children: React.ReactNode;
+  // So far this only works for announcement categories,
+  // generalizing this is a different issue
+  tag: GenericTag;
+  onDelete: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
+  onUpdate: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
+  deleteDialogTitle: string;
+  deleteDialogContent: string;
+  updateDialogTitle?: string;
+  editLabel: string;
+  deleteLabel: string;
+}
+
+type NavigationDropdownAction = "edit" | "delete";
+
+/**
+ * TagDropdown component
+ * @param props component props
+ * @returns JSX.Element
+ */
+export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
+  props
+) => {
+  const {
+    children,
+    tag,
+    onDelete,
+    onUpdate,
+    deleteDialogTitle,
+    deleteDialogContent,
+    editLabel,
+    deleteLabel,
+  } = props;
+  const [open, setOpen] = React.useState(false);
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [position, setPosition] = React.useState({ top: 0, left: 0 });
+  const triggerRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+
+    /**
+     * handles click outside of dropdown
+     * @param e mouse event
+     */
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+
+      // Check if click is outside both trigger and dropdown
+      if (
+        triggerRef.current &&
+        !triggerRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  /**
+   * handleToggleOpen
+   * @param e mouse event
+   */
+  const handleToggleOpen = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + window.scrollY + 5,
+        left: rect.left + window.scrollX,
+      });
+    }
+
+    setOpen(!open);
+  };
+
+  /**
+   * handleDelete
+   * @param tag tag to be deleted
+   */
+  const handleDelete = (tag: GenericTag) => {
+    onDelete(tag);
+    setDeleteDialogOpen(false);
+  };
+
+  /**
+   * handleOptions
+   * @param action option action
+   */
+  const handleOptions = (action: NavigationDropdownAction) => {
+    unstable_batchedUpdates(() => {
+      if (action === "edit") {
+        setEditDialogOpen(true);
+      } else if (action === "delete") {
+        setDeleteDialogOpen(true);
+      }
+      setOpen(false);
+    });
+  };
+
+  // Clone the children and add our click handler
+  const trigger = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement, {
+        onClick: handleToggleOpen,
+      })
+    : children;
+
+  return (
+    <>
+      <div ref={triggerRef}>{trigger}</div>
+      {open &&
+        createPortal(
+          <nav
+            ref={dropdownRef}
+            className="menu__item-dropdown"
+            id="tagDropdownMenu"
+            style={{
+              position: "absolute",
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+            }}
+          >
+            <ul className="menu__item-dropdown-list">
+              <li
+                className="menu__item-dropdown-list-item"
+                id="editOption"
+                onClick={() => handleOptions("edit")}
+              >
+                <span className="menu__item-dropdown-icon icon-pencil"></span>
+                <span>{editLabel}</span>
+              </li>
+              <li
+                className="menu__item-dropdown-list-item"
+                id="deleteOption"
+                onClick={() => handleOptions("delete")}
+              >
+                <span className="menu__item-dropdown-icon icon-trash"></span>
+                <span>{deleteLabel}</span>
+              </li>
+            </ul>
+          </nav>,
+          document.body
+        )}
+
+      <UpdateDialog
+        tag={tag}
+        title={props.updateDialogTitle}
+        isOpen={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        onUpdate={onUpdate}
+      >
+        <span style={{ display: "none" }} />
+      </UpdateDialog>
+
+      <PromptDialog
+        title={deleteDialogTitle}
+        content={deleteDialogContent}
+        onExecute={() => handleDelete(tag)}
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <span style={{ display: "none" }} />
+      </PromptDialog>
+    </>
+  );
+};
