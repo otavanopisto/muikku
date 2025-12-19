@@ -215,12 +215,19 @@ interface NavigationDropdownProps {
   deleteDialogContent: string;
   customActionDialogTitle?: string;
   customActionDialogContent?: string;
-  handleCustomAction?: (tag: GenericTag) => void;
+  onCustomAction?: (
+    tag: GenericTag,
+    success?: () => void,
+    fail?: () => void
+  ) => void;
   updateDialogTitle?: string;
   customActionIcon?: string;
   customActionLabel?: string;
   editLabel: string;
   deleteLabel: string;
+  disableEdit?: boolean;
+  disableDelete?: boolean;
+  disableCustomAction?: boolean;
 }
 
 type NavigationDropdownAction = "edit" | "delete" | "custom";
@@ -242,12 +249,14 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
     deleteDialogContent,
     customActionDialogTitle,
     customActionDialogContent,
-    handleCustomAction,
+    onCustomAction,
     customActionIcon,
     customActionLabel,
-
     editLabel,
     deleteLabel,
+    disableEdit,
+    disableDelete,
+    disableCustomAction,
   } = props;
   const [open, setOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
@@ -349,6 +358,9 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
       {open &&
         createPortal(
           <nav
+            role="menu"
+            aria-label="Tag options menu"
+            aria-hidden={!open}
             ref={dropdownRef}
             className="menu__item-dropdown"
             id="tagDropdownMenu"
@@ -360,18 +372,24 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
           >
             <ul className="menu__item-dropdown-list">
               <li
-                className="menu__item-dropdown-list-item"
+                className={`menu__item-dropdown-list-item ${disableEdit ? " disabled" : ""}`}
                 id="editOption"
-                onClick={(e) => handleOptions(e, "edit")}
+                role="menuitem"
+                aria-disabled={disableEdit}
+                onClick={(e) => !disableEdit && handleOptions(e, "edit")}
               >
                 <span className="menu__item-dropdown-icon icon-pencil"></span>
                 <span>{editLabel}</span>
               </li>
-              {customActionLabel && handleCustomAction && (
+              {customActionLabel && onCustomAction && (
                 <li
-                  className="menu__item-dropdown-list-item"
+                  className={`menu__item-dropdown-list-item ${disableCustomAction ? "disabled" : ""}`}
                   id="customActionOption"
-                  onClick={(e) => handleOptions(e, "custom")}
+                  role="menuitem"
+                  aria-disabled={disableCustomAction}
+                  onClick={(e) =>
+                    !disableCustomAction && handleOptions(e, "custom")
+                  }
                 >
                   <span
                     className={`menu__item-dropdown-icon icon-${customActionIcon}`}
@@ -380,9 +398,11 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
                 </li>
               )}
               <li
-                className="menu__item-dropdown-list-item"
+                className={`menu__item-dropdown-list-item ${disableDelete ? "disabled" : ""}`}
                 id="deleteOption"
-                onClick={(e) => handleOptions(e, "delete")}
+                role="menuitem"
+                aria-disabled={disableDelete}
+                onClick={(e) => !disableDelete && handleOptions(e, "delete")}
               >
                 <span className="menu__item-dropdown-icon icon-trash"></span>
                 <span>{deleteLabel}</span>
@@ -415,7 +435,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
       <PromptDialog
         title={customActionDialogTitle}
         content={customActionDialogContent}
-        onExecute={() => handleCustomAction(tag)}
+        onExecute={() => onCustomAction(tag)}
         isOpen={customActionDialogOpen}
         onClose={() => setCustomActionDialogOpen(false)}
       >

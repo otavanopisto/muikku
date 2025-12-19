@@ -398,7 +398,7 @@ export interface RemoveFileFromCurrentStudentTriggerType {
 /**
  * UpdateLabelFiltersTriggerType action creator type
  */
-export interface UpdateLabelFiltersTriggerType {
+export interface TriggerType {
   (): AnyActionType;
 }
 

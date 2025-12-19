@@ -9,44 +9,35 @@ import Navigation, {
   NavigationDropdown,
   DropdownWrapperProps,
 } from "~/components/general/navigation";
-import { UserFlag, UserGroup } from "~/generated/client";
+import { UserFlag, UserGroup, UserSharedFlag } from "~/generated/client";
 import { GuiderContext } from "../../../context";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
 import { hexToColorInt } from "~/util/modifiers";
-import { GenericTag } from "~/components/general/tag-update-dialog";
+import {
+  Collaborator,
+  GenericTag,
+} from "~/components/general/tag-update-dialog";
+import { displayNotification } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 
 import {
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,
 } from "~/actions/main-function/guider";
-import { displayNotification } from "~/actions/base/notifications";
+import GuiderLabel from "./students/label";
 
 /**
  * NavigationAside
  */
 const StudentNavigationAside = () => {
   const { view, setView } = React.useContext(GuiderContext);
-  const { guider } = useSelector((state: StateType) => state);
+  const { guider, status } = useSelector((state: StateType) => state);
+
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const dispatch = useDispatch();
-
-  /**
-   * translates UserFlag to GenericTag
-   * @param label user flag label
-   * @returns a generic tag
-   */
-  const translateLabelToGenericTag = (label: UserFlag): GenericTag => ({
-    id: label.id,
-    label: label.name,
-    color: hexToColorInt(label.color),
-    description: label.description,
-    hasRecipients: true,
-    ownerIdentifier: label.ownerIdentifier,
-  });
 
   /**
    * Handles delete category
@@ -68,6 +59,12 @@ const StudentNavigationAside = () => {
     onSuccess?: () => void,
     onFail?: () => void
   ) => {
+    if (tag.collaborators.toAdd.length > 0) {
+      handleAddCollaborators(tag);
+    }
+    if (tag.collaborators.toRemove.length > 0) {
+      handleRemoveCollaborators(tag);
+    }
     dispatch(
       updateGuiderFilterLabel({
         id: tag.id,
@@ -81,7 +78,13 @@ const StudentNavigationAside = () => {
     );
   };
 
-  const handleRemoveAllCollaborators = async (
+  /**
+   * Handles adding collaborators to a tag
+   * @param tag tag
+   * @param success success
+   * @param fail fail
+   */
+  const handleAddCollaborators = async (
     tag: GenericTag,
     success?: () => void,
     fail?: () => void
@@ -90,18 +93,72 @@ const StudentNavigationAside = () => {
     const userApi = MApi.getUserApi();
 
     try {
-      const collaborators = await userApi.getFlagShares({
+      for (const collaborator of tag.collaborators.toAdd) {
+        await userApi.createFlagShare({
+          flagId,
+          createFlagShareRequest: {
+            flagId,
+            userIdentifier: collaborator.identifier,
+          },
+        });
+      }
+
+      success && success();
+      dispatch(displayNotification("Flag shared successfully", "success"));
+    } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
+      fail && fail();
+      dispatch(displayNotification(e.message, "error"));
+    }
+  };
+
+  /**
+   * Handles removing collaborators from a tag
+   * @param tag tag
+   * @param success success
+   * @param fail fail
+   */
+  const handleRemoveCollaborators = async (
+    tag: GenericTag,
+    success?: () => void,
+    fail?: () => void
+  ) => {
+    const flagId = tag.id;
+    const userApi = MApi.getUserApi();
+
+    try {
+      let collaborators: Collaborator[] = [];
+      const flagShares = await userApi.getFlagShares({
         flagId,
       });
 
-      await Promise.all(
-        collaborators.map((c) =>
-          userApi.deleteFlagShare({
-            flagId,
-            shareId: c.id,
-          })
-        )
-      );
+      // If no collaborators are given, remove all collaborators
+
+      if (!tag.collaborators || tag.collaborators.toRemove.length === 0) {
+        collaborators = flagShares.map((share) => ({
+          id: share.id,
+          identifier: share.userIdentifier,
+        }));
+      } else {
+        collaborators = flagShares
+          .filter((share) =>
+            tag.collaborators.toRemove.find(
+              (c) => c.id === share.user.userEntityId
+            )
+          )
+          .map((share) => ({
+            id: share.id,
+            identifier: share.userIdentifier,
+          }));
+      }
+      for (const collaborator of collaborators) {
+        await userApi.deleteFlagShare({
+          flagId,
+          shareId: collaborator.id,
+        });
+      }
 
       success && success();
       dispatch(
@@ -143,68 +200,34 @@ const StudentNavigationAside = () => {
       )}
       {guider.availableFilters.labels.length > 0 && (
         <NavigationTopic name={t("labels.flags", { ns: "flags" })}>
-          {guider.availableFilters.labels.map((label) => {
-            const isActive = guider.activeFilters.labelFilters.includes(
-              label.id
-            );
-            const hash = isActive
-              ? queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    l: (locationData.l || []).filter(
-                      (i: string) => parseInt(i) !== label.id
-                    ),
-                  }),
-                  { arrayFormat: "bracket" }
-                )
-              : queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    l: (locationData.l || []).concat(label.id),
-                  }),
-                  { arrayFormat: "bracket" }
-                );
-            return (
-              <NavigationElement
-                modifiers="aside-navigation-guider-flag"
-                icon="flag"
-                key={label.id}
-                iconColor={label.color}
-                isActive={isActive}
-                hash={"?" + hash}
-                editableWrapper={NavigationDropdown}
-                editableWrapperArgs={
-                  {
-                    tag: translateLabelToGenericTag(label),
-                    onDelete: handleDelete,
-                    onUpdate: handleUpdate,
-                    deleteDialogTitle: t("labels.remove", {
-                      ns: "messaging",
-                      context: "category",
-                    }),
-                    deleteDialogContent: t("content.removing", {
-                      ns: "messaging",
-                      context: "category",
-                    }),
-                    updateDialogTitle: t("labels.edit", {
-                      ns: "messaging",
-                      context: "category",
-                    }),
-                    editLabel: t("labels.edit"),
-                    deleteLabel: t("labels.remove"),
-                    customActionLabel: t("labels.removeAllCollaborators", {
-                      ns: "messaging",
-                    }),
-                    customActionIcon: "users",
-                    handleCustomAction: handleRemoveAllCollaborators,
-                  } satisfies DropdownWrapperProps
-                }
-                isEditable
-              >
-                {label.name}
-              </NavigationElement>
-            );
-          })}
+          {guider.availableFilters.labels.map((label) => (
+            <GuiderLabel
+              key={label.id}
+              label={label}
+              hash={
+                guider.activeFilters.labelFilters.includes(label.id)
+                  ? queryString.stringify(
+                      Object.assign({}, locationData, {
+                        c: "",
+                        l: (locationData.l || []).filter(
+                          (i: string) => parseInt(i) !== label.id
+                        ),
+                      }),
+                      { arrayFormat: "bracket" }
+                    )
+                  : queryString.stringify(
+                      Object.assign({}, locationData, {
+                        c: "",
+                        l: (locationData.l || []).concat(label.id),
+                      }),
+                      { arrayFormat: "bracket" }
+                    )
+              }
+              onRemoveCollaborators={handleRemoveCollaborators}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
+            />
+          ))}
         </NavigationTopic>
       )}
 
