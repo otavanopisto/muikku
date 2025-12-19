@@ -398,7 +398,7 @@ export interface RemoveFileFromCurrentStudentTriggerType {
 /**
  * UpdateLabelFiltersTriggerType action creator type
  */
-export interface UpdateLabelFiltersTriggerType {
+export interface TriggerType {
   (): AnyActionType;
 }
 
@@ -421,7 +421,8 @@ export interface CreateGuiderFilterLabelTriggerType {
  */
 export interface UpdateGuiderFilterLabelTriggerType {
   (data: {
-    label: UserFlag;
+    id: number;
+    ownerIdentifier?: string;
     name: string;
     description: string;
     color: string;
@@ -435,7 +436,7 @@ export interface UpdateGuiderFilterLabelTriggerType {
  */
 export interface RemoveGuiderFilterLabelTriggerType {
   (data: {
-    label: UserFlag;
+    id: number;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -2621,15 +2622,17 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
         );
       }
 
-      const newLabel: UserFlag = Object.assign({}, data.label, {
+      const newLabel: UserFlag = {
         name: data.name,
         description: data.description,
         color: data.color,
-      });
+        ownerIdentifier: data.ownerIdentifier,
+        id: data.id,
+      };
 
       try {
         await userApi.updateFlag({
-          flagId: data.label.id,
+          flagId: data.id,
           userFlag: newLabel,
         });
 
@@ -2655,6 +2658,12 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
           },
         });
         data.success && data.success();
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateSuccess", { ns: "flags" }),
+            "success"
+          )
+        );
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -2685,16 +2694,16 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
 
       try {
         await userApi.deleteFlag({
-          flagId: data.label.id,
+          flagId: data.id,
         });
 
         dispatch({
           type: "DELETE_GUIDER_AVAILABLE_FILTER_LABEL",
-          payload: data.label.id,
+          payload: data.id,
         });
         dispatch({
           type: "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
-          payload: data.label.id,
+          payload: data.id,
         });
         data.success && data.success();
       } catch (err) {
