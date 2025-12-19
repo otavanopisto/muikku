@@ -205,6 +205,15 @@
     background-color: $color-environment-dropdown-link-hover-background;
     color: $color-default-contrast;
   }
+
+  &.disabled,
+  &.disabled:hover {
+    background: transparent;
+    border: 1px solid transparent;
+    color: $color-disabled;
+    cursor: not-allowed;
+
+  }
 }
 
 .menu__item-dropdown-icon {

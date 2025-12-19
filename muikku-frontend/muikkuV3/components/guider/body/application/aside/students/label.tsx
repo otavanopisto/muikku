@@ -97,6 +97,7 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
       iconColor={label.color}
       isActive={isActive}
       hash={"?" + hash}
+      editableIcon="more_vert"
       editableWrapper={NavigationDropdown}
       editableWrapperArgs={
         {
@@ -121,7 +122,10 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
             ns: "messaging",
           }),
           customActionIcon: "users",
+          disableDelete:
+            label.ownerIdentifier !== status.userSchoolDataIdentifier,
           disableCustomAction:
+            tag.collaborators.all.length === 0 ||
             label.ownerIdentifier !== status.userSchoolDataIdentifier,
           onCustomAction: handleRemoveCollaborators,
         } satisfies DropdownWrapperProps

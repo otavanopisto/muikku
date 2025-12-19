@@ -6,15 +6,13 @@ import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
-  NavigationDropdown,
-  DropdownWrapperProps,
 } from "~/components/general/navigation";
-import { UserFlag, UserGroup, UserSharedFlag } from "~/generated/client";
+import { UserGroup } from "~/generated/client";
 import { GuiderContext } from "../../../context";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
-import { hexToColorInt } from "~/util/modifiers";
+
 import {
   Collaborator,
   GenericTag,
@@ -33,7 +31,7 @@ import GuiderLabel from "./students/label";
  */
 const StudentNavigationAside = () => {
   const { view, setView } = React.useContext(GuiderContext);
-  const { guider, status } = useSelector((state: StateType) => state);
+  const { guider } = useSelector((state: StateType) => state);
 
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);

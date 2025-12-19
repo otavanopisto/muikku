@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { ChromePicker, ColorState } from "react-color";
 import "~/sass/elements/form.scss";
@@ -8,12 +8,11 @@ import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
 import { colorIntToHex, hexToColorInt } from "~/util/modifiers";
 import { useTranslation } from "react-i18next";
-import MApi, { isMApiError } from "~/api/api";
 import { getName } from "~/util/modifiers";
 import { UserSharedFlag } from "~/generated/client/models/UserSharedFlag";
 import { ContactRecipientType } from "~/reducers/user-index";
-import { displayNotification } from "~/actions/base/notifications";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
+import { StateType } from "~/reducers";
 
 const KEYCODES = {
   ENTER: 13,
@@ -156,6 +155,7 @@ const tagUpdateDialogReducer = (
 const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
   const { tag, title, isOpen, onClose, onOpen, onUpdate, children } = props;
   const { t } = useTranslation();
+  const status = useSelector((state: StateType) => state.status);
 
   const [state, dispatchState] = React.useReducer(tagUpdateDialogReducer, {
     displayColorPicker: false,
@@ -445,23 +445,24 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
           />
         </div>
       )}
-      {tag.collaborators && (
-        <div className="form-element form-element--edit-label">
-          <InputContactsAutofill
-            label={"Jaetaan henkilöille " + state.collaborators.length}
-            identifier="guiderLabelShare"
-            modifier="guider"
-            onChange={handleCollaboratorsChange}
-            selectedItems={state.collaborators}
-            hasGroupPermission={false}
-            hasUserPermission={false}
-            hasWorkspacePermission={false}
-            hasStaffPermission
-            showEmails={false}
-            showFullNames
-          />
-        </div>
-      )}
+      {tag.ownerIdentifier === status.userSchoolDataIdentifier &&
+        tag.collaborators && (
+          <div className="form-element form-element--edit-label">
+            <InputContactsAutofill
+              label={"Jaetaan henkilöille " + state.collaborators.length}
+              identifier="guiderLabelShare"
+              modifier="guider"
+              onChange={handleCollaboratorsChange}
+              selectedItems={state.collaborators}
+              hasGroupPermission={false}
+              hasUserPermission={false}
+              hasWorkspacePermission={false}
+              hasStaffPermission
+              showEmails={false}
+              showFullNames
+            />
+          </div>
+        )}
     </div>
   );
 
