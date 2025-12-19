@@ -162,8 +162,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               const workspacesWithActivity =
                 await recordsApi.getWorkspaceActivity({
                   identifier: user.id,
-                  includeTransferCredits: "true",
-                  includeAssignmentStatistics: "true",
+                  includeAssignmentStatistics: true,
                 });
 
               return workspacesWithActivity;
