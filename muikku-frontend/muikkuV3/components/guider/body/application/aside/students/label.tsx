@@ -11,8 +11,8 @@ import {
   DropdownWrapperProps,
 } from "~/components/general/navigation";
 import { GenericTag } from "~/components/general/tag-update-dialog";
-
 import { UserFlag } from "~/generated/client";
+
 /**
  * Props for GuiderLabel
  */

@@ -210,6 +210,13 @@ export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
 export interface LoadStudentsTriggerType {
   (filters: GuiderActiveFiltersType): AnyActionType;
 }
+
+/**
+ * LoadMoreStudentsTriggerType action creator type
+ */
+export interface UpdateLabelFiltersTriggerType {
+  (): AnyActionType;
+}
 /**
  * LoadMoreStudentsTriggerType action creator type
  */
