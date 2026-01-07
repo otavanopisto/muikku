@@ -131,6 +131,8 @@
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
       "edit_description": "Muokkaa kuvausta",
+      "editing": "{{user}} muokkaa",
+      "editing_student": "Opiskelija muokkaa",
       "edited": "Muokattu",
       "email": "Sähköpostiosoite",
       "emails_one": "Sähköposti",
@@ -282,6 +284,7 @@
       "saveSuccess": "Tietojen tallennus onnistui",
       "sendError": "Lähetys epäonnistui. Ole hyvä ja yritä uudelleen.",
       "sendSuccess": "Lähetys onnistui",
+      "serverDoesNotReply": "Palvelin ei vastaa.",
       "unexpected_error": "Tapahtui odottamaton virhe",
       "updateError_chatStatus": "Chatin tilan vaihto epäonnistui.",
       "updateError_chatUserName": "Chatin käyttäjänimen vaihto epäonnistui.",
@@ -2171,6 +2174,7 @@
       "cancelSuccess_interimEvaluationRequests": "Välipalautepyyntö peruutettu onnistuneesti ",
       "copyError": "Kurssin kopiointi epäonnistui",
       "createError": "Kurssin luonti epäonnistui",
+      "deleteError": "Viimeisimmän kurssin poisto epäonnistui",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Kurssin tietojen lataus epäonnistui",
       "loadError_chatSettings": "Chatin asetuksien lataus epäonnistui",
@@ -2813,7 +2817,8 @@
     "content": {
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja saatavilla.",
-      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!"
+      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista myös aikataulutetut opinnot.",
+      "problemsExist": "Taulukossa voi olla ylimääräisiä oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2825,14 +2830,17 @@
       "inProgress": "$t(common:labels.inProgress)",
       "legendDescriptions": "Merkintöjen kuvaukset",
       "mandatory": "$t(common:labels.mandatory)",
+      "mandatoryNotAvailable": "$t(common:labels.mandatory), ei tarjolla",
       "mandatoryShorthand": "P",
       "optional": "$t(common:labels.optional)",
+      "optionalNotAvailable": "$t(common:labels.optional), ei tarjolla",
       "optionalShorthand": "V",
+      "otherStudies": "Muut opinnot",
       "schoolSubject": "Oppiaine",
       "signUpMessage": "Ilmoitusviesti",
       "signUpStudent": "Ilmoita opiskelija kurssille",
       "signUpStudentToWorkspace": "Ilmoita opiskelija kurssille {{workspaceName}}",
-      "suggestedNext": "Seuraavaksi ehdotettu",
+      "suggestedNext": "Ehdotettu",
       "supplementationRequest": "$t(common:labels.incomplete)",
       "supplementationRequestShorthand": "T",
       "transferred": "$t(common:labels.transferredCredit)",
@@ -2842,6 +2850,14 @@
     },
     "notifications": {
       "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
+    },
+    "problems": {
+      "incompatibleStudent": "<b>Opiskelija ei ole yhteensopiva OPS matriisin kanssa</b>",
+      "noMath": "<b>matematiikka</b>",
+      "noNativeLanguage": "<b>äidinkieli ja kirjallisuus</b>",
+      "noPrimaryForeignLanguage": "<b>vieras kieli, A-oppimäärä</b>",
+      "noSecondaryForeignLanguage": "<b>toinen kotimainen kieli, B1-oppimäärä</b>",
+      "noReligion": "<b>katsomusaine</b>"
     }
   },
   "courseCarousel": {

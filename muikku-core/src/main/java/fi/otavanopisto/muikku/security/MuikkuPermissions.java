@@ -164,6 +164,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER })
+  public static final String HOPS_GET_STUDENT_COURSE_MATRIX = "HOPS_GET_STUDENT_COURSE_MATRIX";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER })
   public static final String HOPS_SUGGEST_WORKSPACES = "HOPS_SUGGEST_WORKSPACES";
 
   @Scope (PermissionScope.ENVIRONMENT)

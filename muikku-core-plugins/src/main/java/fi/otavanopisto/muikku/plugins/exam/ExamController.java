@@ -363,15 +363,17 @@ public class ExamController {
       // Same as above but assignment ids are listed in categories
       Set<Long> ids = new HashSet<>();
       List<ExamSettingsCategory> categories = settingsJson.getCategories();
-      for (ExamSettingsCategory category : categories) {
-        List<Long> categoryIds = category.getWorkspaceMaterialIds();
-        if (category.getRandomCount() > 0 ) {
-          Random r = new Random();
-          while (categoryIds.size() > category.getRandomCount()) {
-            categoryIds.remove(r.nextInt(categoryIds.size()));
+      if (categories != null) {
+        for (ExamSettingsCategory category : categories) {
+          List<Long> categoryIds = category.getWorkspaceMaterialIds();
+          if (category.getRandomCount() > 0 ) {
+            Random r = new Random();
+            while (categoryIds.size() > category.getRandomCount()) {
+              categoryIds.remove(r.nextInt(categoryIds.size()));
+            }
           }
+          ids.addAll(categoryIds);
         }
-        ids.addAll(categoryIds);
       }
       return ids.isEmpty() ? null : StringUtils.join(ids, ',');
     }

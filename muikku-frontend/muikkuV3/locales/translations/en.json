@@ -131,6 +131,8 @@
       "edit": "Edit",
       "edit_comment": "Edit comment",
       "edit_description": "Edit description",
+      "editing": "{{user}} is editing",
+      "editing_student": "Student is editing",
       "edited": "Edited",
       "email": "Email address",
       "emails_one": "Email",
@@ -282,6 +284,7 @@
       "saveSuccess": "Saving succeeded",
       "sendError": "Sending failed. Please try again.",
       "sendSuccess": "Sending succeeded",
+      "serverDoesNotReply": "Server does not reply.",
       "unexpected_error": "An unexpected error occurred",
       "updateError_chatStatus": "Changing the chat status failed",
       "updateError_chatUserName": "Chat username change failed",
@@ -2171,6 +2174,7 @@
       "cancelSuccess_interimEvaluationRequests": "Canceling the interim evaluation request succeeded",
       "copyError": "Copying the course failed",
       "createError": "Creating the course failed",
+      "deleteError": "Deleting the latest course failed",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Loading the course activity failed",
       "loadError_chatSettings": "Loading chat settings failed",
@@ -2813,7 +2817,8 @@
     "content": {
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available",
-      "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites"
+      "noSuggestionAvailable_staff": "No courses available. Check scheduled studies as well",
+      "problemsExist": "Subjects may contain additional subjects because no subject selections have been made for them. Missing subject selections:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",
@@ -2825,14 +2830,17 @@
       "inProgress": "$t(common:labels.inProgress)",
       "legendDescriptions": "Marking's descriptions",
       "mandatory": "$t(common:labels.mandatory)",
+      "mandatoryNotAvailable": "$t(common:labels.mandatory), not available",
       "mandatoryShorthand": "M",
       "optional": "$t(common:labels.optional)",
+      "optionalNotAvailable": "$t(common:labels.optional), not available",
       "optionalShorthand": "O",
+      "otherStudies": "Other studies",
       "schoolSubject": "School subject",
       "signUpMessage": "Sign up message",
       "signUpStudent": "Sign up student to course",
       "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
-      "suggestedNext": "Suggested next",
+      "suggestedNext": "Suggested",
       "supplementationRequest": "$t(common:labels.incomplete)",
       "supplementationRequestShorthand": "I",
       "transferred": "$t(common:labels.transferredCredit)",
@@ -2842,6 +2850,14 @@
     },
     "notifications": {
       "signUpError": "Signing up to course failed"
+    },
+    "problems": {
+      "incompatibleStudent": "<b>The student is incompatible with the OPS matrix</b>",
+      "noMath": "<b>Mathematics</b>",
+      "noNativeLanguage": "<b>Mother tongue and literature</b>",
+      "noPrimaryForeignLanguage": "<b>Foreign language, A syllabus</b>",
+      "noSecondaryForeignLanguage": "<b>Second national language, B1 syllabus</b>",
+      "noReligion": "<b>Religion or ethics</b>"
     }
   },
   "courseCarousel": {
