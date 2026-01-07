@@ -2170,6 +2170,7 @@
       "cancelSuccess_interimEvaluationRequests": "Välipalautepyyntö peruutettu onnistuneesti ",
       "copyError": "Kurssin kopiointi epäonnistui",
       "createError": "Kurssin luonti epäonnistui",
+      "deleteError": "Viimeisimmän kurssin poisto epäonnistui",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Kurssin tietojen lataus epäonnistui",
       "loadError_chatSettings": "Chatin asetuksien lataus epäonnistui",
