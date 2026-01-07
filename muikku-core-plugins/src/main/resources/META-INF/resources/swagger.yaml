@@ -5800,11 +5800,6 @@ paths:
           description: Workspace identifier
           schema:
             type: string
-        - name: includeTransferCredits
-          in: query
-          description: Include transfer credits
-          schema:
-            type: boolean
         - name: includeAssignmentStatistics
           in: query
           description: Include assignment statistics
@@ -8453,16 +8448,11 @@ paths:
           description: Workspace identifier
           schema:
             type: string
-        - name: includeTransferCredits
-          in: query
-          description: String boolean
-          schema:
-            type: string
         - name: includeAssignmentStatistics
           in: query
-          description: String boolean
+          description: Include assignment statistics
           schema:
-            type: string
+            type: boolean
       responses:
         "200":
           description: Workspace activity
