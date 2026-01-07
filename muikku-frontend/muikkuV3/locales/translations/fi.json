@@ -131,6 +131,8 @@
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
       "edit_description": "Muokkaa kuvausta",
+      "editing": "{{user}} muokkaa",
+      "editing_student": "Opiskelija muokkaa",
       "edited": "Muokattu",
       "email": "Sähköpostiosoite",
       "emails_one": "Sähköposti",
