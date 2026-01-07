@@ -9,9 +9,11 @@ import * as React from "react";
 import { createPortal, unstable_batchedUpdates } from "react-dom";
 import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
-import { AnnouncementCategory } from "~/generated/client";
-import UpdateDialog from "~/components/general/tag-update-dialog";
+import UpdateDialog, {
+  GenericTag,
+} from "~/components/general/tag-update-dialog";
 import PromptDialog from "~/components/general/prompt-dialog";
+
 /**
  * Navigation
  */
@@ -200,11 +202,12 @@ export interface NavigationDropdownProps {
   children: React.ReactNode;
   // So far this only works for announcement categories,
   // generalizing this is a different issue
-  category: AnnouncementCategory;
-  onDelete: (tag: AnnouncementCategory) => void;
-  onUpdate: (tag: AnnouncementCategory) => void;
+  tag: GenericTag;
+  onDelete: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
+  onUpdate: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
   deleteDialogTitle: string;
   deleteDialogContent: string;
+  updateDialogTitle?: string;
   editLabel: string;
   deleteLabel: string;
 }
@@ -221,7 +224,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
 ) => {
   const {
     children,
-    category,
+    tag,
     onDelete,
     onUpdate,
     deleteDialogTitle,
@@ -264,7 +267,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
   }, [open]);
 
   /**
-   * H
+   * handleToggleOpen
    * @param e mouse event
    */
   const handleToggleOpen = (e: React.MouseEvent) => {
@@ -286,17 +289,8 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
    * handleDelete
    * @param tag tag to be deleted
    */
-  const handleDelete = (tag: AnnouncementCategory) => {
+  const handleDelete = (tag: GenericTag) => {
     onDelete(tag);
-    setDeleteDialogOpen(false);
-  };
-
-  /**
-   * handleDelete
-   * @param tag tag to be deleted
-   */
-  const handleUpdate = (tag: AnnouncementCategory) => {
-    onUpdate(tag);
     setDeleteDialogOpen(false);
   };
 
@@ -330,6 +324,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
           <nav
             ref={dropdownRef}
             className="menu__item-dropdown"
+            id="tagDropdownMenu"
             style={{
               position: "absolute",
               top: `${position.top}px`,
@@ -339,6 +334,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
             <ul className="menu__item-dropdown-list">
               <li
                 className="menu__item-dropdown-list-item"
+                id="editOption"
                 onClick={() => handleOptions("edit")}
               >
                 <span className="menu__item-dropdown-icon icon-pencil"></span>
@@ -346,6 +342,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
               </li>
               <li
                 className="menu__item-dropdown-list-item"
+                id="deleteOption"
                 onClick={() => handleOptions("delete")}
               >
                 <span className="menu__item-dropdown-icon icon-trash"></span>
@@ -357,10 +354,11 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
         )}
 
       <UpdateDialog
-        category={category}
+        tag={tag}
+        title={props.updateDialogTitle}
         isOpen={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
-        onUpdate={handleUpdate}
+        onUpdate={onUpdate}
       >
         <span style={{ display: "none" }} />
       </UpdateDialog>
@@ -368,7 +366,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
       <PromptDialog
         title={deleteDialogTitle}
         content={deleteDialogContent}
-        onExecute={() => handleDelete(category)}
+        onExecute={() => handleDelete(tag)}
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
       >
