@@ -131,6 +131,8 @@
       "edit": "Edit",
       "edit_comment": "Edit comment",
       "edit_description": "Edit description",
+      "editing": "{{user}} is editing",
+      "editing_student": "Student is editing",
       "edited": "Edited",
       "email": "Email address",
       "emails_one": "Email",
@@ -2168,6 +2170,7 @@
       "cancelSuccess_interimEvaluationRequests": "Canceling the interim evaluation request succeeded",
       "copyError": "Copying the course failed",
       "createError": "Creating the course failed",
+      "deleteError": "Deleting the latest course failed",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Loading the course activity failed",
       "loadError_chatSettings": "Loading chat settings failed",
@@ -2811,7 +2814,7 @@
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available",
       "noSuggestionAvailable_staff": "No courses available. Check scheduled studies as well",
-      "problemsExist": "Subjects may be missing from the table because no selections have been made for them. Missing subject selections:"
+      "problemsExist": "Subjects may contain additional subjects because no subject selections have been made for them. Missing subject selections:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",

@@ -18,6 +18,10 @@ import {
 import { useNextCourseSuggestions } from "~/hooks/useNextCourseSuggestions";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import ItemList from "~/components/general/item-list";
+import {
+  DeleteLastWorkspaceItemTriggerType,
+  deleteLastWorkspaceItem,
+} from "~/actions/workspaces";
 
 /**
  * WorkspacesPanelProps
@@ -26,6 +30,7 @@ interface WorkspacesPanelProps extends WithTranslation {
   status: StatusType;
   workspaces: WorkspaceDataType[];
   lastWorkspaces: WorkspaceMaterialReferenceType[];
+  deleteLastWorkspaceItem: DeleteLastWorkspaceItemTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -35,13 +40,22 @@ interface WorkspacesPanelProps extends WithTranslation {
  * @returns  JSX.element
  */
 const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
-  const { t, status, workspaces, lastWorkspaces } = props;
+  const { t, status, workspaces, lastWorkspaces, deleteLastWorkspaceItem } =
+    props;
 
   const { nextSuggestions } = useNextCourseSuggestions(
     props.status.userSchoolDataIdentifier,
     props.status.userId,
     props.displayNotification
   );
+
+  /**
+   * handleDeleteLastWorkspaceClick
+   * @param workspaceId workspaceId
+   */
+  const handleDeleteLastWorkspaceClick = (workspaceId: number) => () => {
+    deleteLastWorkspaceItem(workspaceId);
+  };
 
   return (
     <Panel
@@ -60,7 +74,13 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                 key={lastWorkspace.workspaceId}
                 modifier="continue-studies"
               >
-                <ItemList.Item icon="icon-forward" modifier="continue-studies">
+                <ItemList.Item
+                  icon="icon-forward"
+                  modifier="continue-studies"
+                  onDelete={handleDeleteLastWorkspaceClick(
+                    lastWorkspace.workspaceId
+                  )}
+                >
                   {lastWorkspace.workspaceName}
                 </ItemList.Item>
                 <ItemList.ItemFooter modifier="continue-studies">
@@ -216,7 +236,10 @@ function mapStateToProps(state: StateType) {
  * returns dispatch calls
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+  return bindActionCreators(
+    { displayNotification, deleteLastWorkspaceItem },
+    dispatch
+  );
 }
 export default withTranslation(["frontPage", "workspace"])(
   connect(mapStateToProps, mapDispatchToProps)(StudiesPanel)

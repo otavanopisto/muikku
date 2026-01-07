@@ -108,6 +108,14 @@ export const usePedagogyRedux = (
     return false;
   }, [pedagogyLocked, userId]);
 
+  // Check who is editing the form
+  const editinUserName = React.useMemo(() => {
+    if (pedagogyLocked?.userEntityId !== userId && pedagogyLocked?.locked) {
+      return pedagogyLocked?.userName;
+    }
+    return undefined;
+  }, [pedagogyLocked, userId]);
+
   // Initialize pedagogy support
   React.useEffect(() => {
     dispatch(
@@ -340,6 +348,7 @@ export const usePedagogyRedux = (
     editIsActive,
     studentIdentifier,
     editingDisabled,
+    editinUserName,
     pedagogySupportStudentPermissions,
     resetPedagogyData,
     saveAllData,

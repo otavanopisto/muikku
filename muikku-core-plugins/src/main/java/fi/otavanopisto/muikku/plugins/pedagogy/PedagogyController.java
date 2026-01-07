@@ -26,7 +26,7 @@ import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
-import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -139,9 +139,8 @@ public class PedagogyController {
       UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
       UserEntityName userEntityName = userEntityController.getName(studentEntity.defaultSchoolDataIdentifier(), true);
 
-      List<SpecEdTeacher> specEdTeachers = userSchoolDataController
-          .listStudentSpecEdTeachers(studentEntity.defaultSchoolDataIdentifier(), true, true);
-      if (!specEdTeachers.isEmpty()) {
+      List<GroupStaffMember> guidanceCounselors = userSchoolDataController.listStudentGuidanceCounselors(studentEntity.defaultSchoolDataIdentifier(), true);
+      if (!guidanceCounselors.isEmpty()) {
 
         StringBuffer url = new StringBuffer();
         url.append(httpRequest.getScheme());
@@ -157,8 +156,9 @@ public class PedagogyController {
             "plugin.pedagogy.published.counselor.content",
             new String[] { userEntityName.getDisplayNameWithLine(), url.toString() });
 
-        for (SpecEdTeacher specEdTeacher : specEdTeachers) {
-          String email = userEmailEntityController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier(), false);
+        for (GroupStaffMember guidanceCounselor : guidanceCounselors) {
+          UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(guidanceCounselor.userSchoolDataIdentifier());
+          String email = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
           mailer.sendMail(MailType.HTML, Arrays.asList(email), subject, content);
         }
       }

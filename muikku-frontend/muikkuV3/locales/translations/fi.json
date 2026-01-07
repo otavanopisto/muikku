@@ -131,6 +131,8 @@
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
       "edit_description": "Muokkaa kuvausta",
+      "editing": "{{user}} muokkaa",
+      "editing_student": "Opiskelija muokkaa",
       "edited": "Muokattu",
       "email": "Sähköpostiosoite",
       "emails_one": "Sähköposti",
@@ -2168,6 +2170,7 @@
       "cancelSuccess_interimEvaluationRequests": "Välipalautepyyntö peruutettu onnistuneesti ",
       "copyError": "Kurssin kopiointi epäonnistui",
       "createError": "Kurssin luonti epäonnistui",
+      "deleteError": "Viimeisimmän kurssin poisto epäonnistui",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Kurssin tietojen lataus epäonnistui",
       "loadError_chatSettings": "Chatin asetuksien lataus epäonnistui",
@@ -2811,7 +2814,7 @@
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja saatavilla.",
       "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista myös aikataulutetut opinnot.",
-      "problemsExist": "Taulukosta voi puuttua oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
+      "problemsExist": "Taulukossa voi olla ylimääräisiä oppiaineita, koska niistä ei ole tehty ainevalintaa. Puuttuvat ainevalinnat:"
     },
     "labels": {
       "aborted": "$t(common:labels.aborted)",

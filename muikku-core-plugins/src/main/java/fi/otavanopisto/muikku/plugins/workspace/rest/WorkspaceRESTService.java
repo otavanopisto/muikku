@@ -61,6 +61,10 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
@@ -172,6 +176,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.LastWorkspace;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -3946,6 +3951,47 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
 
+  @Path("/last/{WORKSPACEENTITYID}")
+  @DELETE
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteFromLatestWorkspaces(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
+
+    String lastWorkspaceJson = lastWorkspaces == null ? null : lastWorkspaces.getValue();
+    if (StringUtils.isNotEmpty(lastWorkspaceJson)) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      List<LastWorkspace> lastWorkspaceList = null;
+
+      try {
+        lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {
+        });
+
+        int lastWorkspaceListSize = lastWorkspaceList.size();
+
+        if (lastWorkspaceList != null) {
+          lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
+
+          if (lastWorkspaceListSize != lastWorkspaceList.size()) {
+            lastWorkspaceJson = objectMapper.writeValueAsString(lastWorkspaceList);
+            userEntityController.setUserEntityProperty(userEntity, "last-workspaces", lastWorkspaceJson);
+          }
+        }
+      }
+      catch (JsonProcessingException e) {
+        logger.log(Level.WARNING,
+            String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
+      }
+    }
+
+    return Response.ok(lastWorkspaceJson).build();
+  }
+  
   private WorkspaceSettingsRestModel getWorkspaceSettingsRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
     
     SearchProvider elasticSearchProvider = null;
