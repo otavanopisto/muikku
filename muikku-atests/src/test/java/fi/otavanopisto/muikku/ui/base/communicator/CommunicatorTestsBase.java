@@ -345,7 +345,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
         selectFinnishLocale();
-        waitAndClick(".application-panel__content-aside .icon-more_vert");        
+        waitAndClick(".application-panel__content-aside .icon-more_vert");
         waitAndClick("#tagDropdownMenu #deleteOption");
         waitAndClick(".button--standard-ok");
         waitForNotVisible("div>.dialog>.dialog__window");
