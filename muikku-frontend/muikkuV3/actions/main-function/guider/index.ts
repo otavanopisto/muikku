@@ -1060,6 +1060,10 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           studentIdentifier: id,
         });
 
+        const courseMatrix = await hopsApi.getStudentCourseMatrix({
+          studentIdentifier: id,
+        });
+
         const skillAndArtCourses = filterActivityBySubjects(
           SKILL_AND_ART_SUBJECTS_CS,
           studentActivity
@@ -1087,6 +1091,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               otherSubjects: otherSubjects,
               ...studentActivityByStatus,
               options: studentOptions,
+              courseMatrix: courseMatrix,
             },
           },
         });
@@ -1229,7 +1234,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         guiderApi
           .getGuiderUserWorkspaceActivity({
             identifier: id,
-            includeTransferCredits: true,
             includeAssignmentStatistics: true,
           })
           .then(
@@ -1450,7 +1454,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                   const workspacesWithActivity =
                     guiderApi.getGuiderUserWorkspaceActivity({
                       identifier: id,
-                      includeTransferCredits: true,
                       includeAssignmentStatistics: true,
                     });
 

@@ -17,6 +17,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -44,6 +45,9 @@ import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.CeeposPaymentResponseRestModel;
+import fi.otavanopisto.muikku.atests.HopsCourseMatrix;
+import fi.otavanopisto.muikku.atests.HopsCourseMatrixProblem;
+import fi.otavanopisto.muikku.atests.HopsCourseMatrixType;
 import fi.otavanopisto.muikku.atests.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockLoggable;
@@ -1544,6 +1548,20 @@ public class PyramusMock {
               .withHeader("Content-type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(userContacts))
               .withStatus(200))); 
+        return this;
+      }
+      
+      public Builder mockCourseMatrix() throws JsonProcessingException {
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/courseMatrix"), true);
+        HopsCourseMatrix hopsCourseMatrix = new HopsCourseMatrix();
+        hopsCourseMatrix.setProblems(Collections.emptySet());
+        hopsCourseMatrix.setSubjects(new ArrayList<>());
+        hopsCourseMatrix.setType(HopsCourseMatrixType.UPPER_SECONDARY);
+        stubFor(get(urlPattern)
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(hopsCourseMatrix))
+                .withStatus(200)));
         return this;
       }
       

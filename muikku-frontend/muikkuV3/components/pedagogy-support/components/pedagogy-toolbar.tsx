@@ -5,6 +5,7 @@ import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import { useMemo } from "react";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * PedagogyToolbarProps
@@ -29,6 +30,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     changedFields,
     editIsActive,
     editingDisabled,
+    editinUserName,
     toggleEditIsActive,
     updatePedagogyFormExtraDetails,
     saveAllData,
@@ -132,13 +134,28 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
             )}
           </>
         ) : (
-          <Button
-            buttonModifiers={["fatal", "standard-ok"]}
-            onClick={handleEditClick}
-            disabled={editingDisabled}
+          <Dropdown
+            openByHover
+            content={
+              editingDisabled &&
+              editinUserName && (
+                <p>
+                  {t("labels.editing", {
+                    ns: "common",
+                    user: editinUserName,
+                  })}
+                </p>
+              )
+            }
           >
-            {t("actions.edit", { ns: "common" })}
-          </Button>
+            <Button
+              buttonModifiers={["fatal", "standard-ok"]}
+              onClick={handleEditClick}
+              disabled={editingDisabled}
+            >
+              {t("actions.edit", { ns: "common" })}
+            </Button>
+          </Dropdown>
         )}
       </div>
 
@@ -182,8 +199,6 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
 };
 
 /**
- * usePedagogyToolbarLogic
- *
  * Custom hook that provides logic for the pedagogy toolbar
  */
 export const usePedagogyToolbarLogic = () => {
@@ -196,6 +211,7 @@ export const usePedagogyToolbarLogic = () => {
     implementedActionsHaveChanged,
     pedagogyFormExists,
     editingDisabled,
+    editinUserName,
     pedagogySupportStudentPermissions,
   } = usePedagogyValues;
 
@@ -224,6 +240,7 @@ export const usePedagogyToolbarLogic = () => {
       hasAnyChanges: hasMainFormChanges || implementedActionsHaveChanged,
       shouldShowSaveWithExtraDetails: pedagogyFormExists && hasMainFormChanges,
       editingDisabled,
+      editinUserName,
     };
   }, [
     changedFields.length,
@@ -233,6 +250,7 @@ export const usePedagogyToolbarLogic = () => {
     pedagogySupportStudentPermissions,
     implementedActionsHaveChanged,
     editingDisabled,
+    editinUserName,
   ]);
 
   return {

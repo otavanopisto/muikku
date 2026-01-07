@@ -1,14 +1,11 @@
+import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
-  Course,
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
-import { StudentStudyActivity } from "~/generated/client";
-import {
-  schoolCourseTableUppersecondary2021,
-  schoolCourseTableCompulsory2018,
-} from "~/mock/mock-data";
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixSubject,
+  StudentStudyActivity,
+} from "~/generated/client";
+import {} from "~/mock/mock-data";
 
 export const SKILL_AND_ART_SUBJECTS_CS: string[] = [
   "mu",
@@ -49,42 +46,6 @@ const LANGUAGE_SUBJECTS_B3_US = [
   "ENB3",
   "KIB3",
   "POB3",
-];
-
-const SUBJECTS_NOT_INCLUDED = [
-  "ÄIM",
-  "EAA",
-  "RAA",
-  "RUA",
-  "SAA",
-  "VEA",
-  "RAB2",
-  "SAB2",
-  "ARB3",
-  "ENB3",
-  "IAB3",
-  "KIB3",
-  "KXB3",
-  "KOB3",
-  "LAB3",
-  "POB3",
-  "RAB3",
-  "RUB3",
-  "SMB3",
-  "UK",
-  "UI",
-  "UJ",
-  "UX",
-  "MU",
-  "KT",
-];
-
-export const ALL_LANGUAGE_SUBJECTS = [
-  ...NATIVE_LANGUAGE_SUBJECTS_CS,
-  ...LANGUAGE_SUBJECTS_A1_US,
-  ...LANGUAGE_SUBJECTS_B1_US,
-  ...LANGUAGE_SUBJECTS_B2_US,
-  ...LANGUAGE_SUBJECTS_B3_US,
 ];
 
 /**
@@ -153,52 +114,18 @@ export const filterUpperSecondarySubjects = (
 };
 
 /**
- * Simple method to check if the subject should be shown by default.
- *
- * @param studyProgrammeName studyProgrammeName
- * @param subject subject
- * @returns boolean
- */
-export const showSubject = (
-  studyProgrammeName: string,
-  subject: SchoolSubject
-) => {
-  switch (studyProgrammeName) {
-    // Nettiperuskoulu shows all subjects without exceptions
-    case "Nettiperuskoulu":
-      return true;
-
-    // Nettiperuskoulu shows all subjects that are not in the list (Not teaching in Otavia)
-    case "Nettilukio":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return !SUBJECTS_NOT_INCLUDED.includes(subject.subjectCode);
-
-    // Same as above but also removes OP (Opinto-ohjaus)
-    case "Aineopiskelu/lukio":
-    case "Aineopiskelu/lukio (oppivelvolliset)":
-    case "Kahden tutkinnon opinnot":
-      return ![...SUBJECTS_NOT_INCLUDED, "OP"].includes(subject.subjectCode);
-
-    default:
-      return true;
-  }
-};
-
-/**
  * Gets the course dropdown name
  * @param subject subject
  * @param course course
  * @param showCredits boolean
  */
 export const getCourseDropdownName = (
-  subject: SchoolSubject,
-  course: Course,
+  subject: CourseMatrixSubject,
+  course: CourseMatrixModule,
   showCredits: boolean
 ) => {
   let courseDropdownName =
-    subject.subjectCode + course.courseNumber + " - " + course.name;
+    subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
   if (!course.mandatory) {
@@ -214,96 +141,12 @@ export const getCourseDropdownName = (
 };
 
 /**
- * Selects the correct school course table based on the study programme name
- *
- * @param studyProgrammeName studyProgrammeName
- * @param curriculumName curriculumName
- */
-export const compulsoryOrUpperSecondary = (
-  studyProgrammeName: string,
-  curriculumName: string
-) => {
-  if (!studyProgrammeName || !curriculumName) {
-    return null;
-  }
-
-  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
-  const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
-
-  /**
-   * Finds and returns OPS based matrix
-   *
-   * @param matrices list of matrices
-   * @returns OPS based matrix or null if OPS based matrix is not found
-   */
-  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
-    const matrix = matrices.find(
-      (matrix) => matrix.curriculumName === curriculumName
-    );
-
-    if (matrix) {
-      return matrix;
-    }
-    return null;
-  };
-
-  switch (studyProgrammeName) {
-    case "Nettiperuskoulu":
-    case "Nettiperuskoulu/yksityisopiskelu":
-    case "Aineopiskelu/perusopetus":
-    case "Aineopiskelu/perusopetus (oppilaitos ilmoittaa)":
-    case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
-      return matrixTableBasedOnOPS(compulsoryMatrices);
-
-    case "Nettilukio":
-    case "Aineopiskelu/lukio":
-    case "Aineopiskelu/lukio (oppivelvolliset)":
-    case "Kahden tutkinnon opinnot":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return matrixTableBasedOnOPS(uppersecondaryMatrices);
-
-    default:
-      return null;
-  }
-};
-
-/**
- * Filter matrix based on study programme name and selected course options
- *
- * @param studyProgrammeName studyProgrammeName of the student
- * @param matrix matrix to be filtered
- * @param options options selected by student
- * @returns filtered matrix
- */
-export const filterMatrix = (
-  studyProgrammeName: string,
-  matrix: SchoolSubject[],
-  options: string[]
-) => {
-  switch (studyProgrammeName) {
-    case "Nettiperuskoulu":
-      return filterCompulsorySubjects(matrix, options);
-
-    case "Nettilukio":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return filterUpperSecondarySubjects(matrix, options);
-
-    default:
-      return matrix;
-  }
-};
-
-/**
  * gets highest of course number available or if under 9, then default 9
  * @param matrix list of school sucjests
  * @returns number of highest course or default 9
  */
 export const getHighestCourseNumber = (
-  matrix: SchoolCurriculumMatrix | null
+  matrix: CourseMatrix | null
 ): number | null => {
   if (matrix === null) {
     return null;
@@ -311,8 +154,8 @@ export const getHighestCourseNumber = (
 
   let highestCourseNumber = 1;
 
-  for (const sSubject of matrix.subjectsTable) {
-    for (const aCourse of sSubject.availableCourses) {
+  for (const sSubject of matrix.subjects) {
+    for (const aCourse of sSubject.modules) {
       if (aCourse.courseNumber <= highestCourseNumber) {
         continue;
       } else {
@@ -394,8 +237,8 @@ export const filterActivityBySubjects = (
  */
 export const getCourseInfo = (
   modifiers: string[],
-  subject: SchoolSubject,
-  course: Course,
+  subject: CourseMatrixSubject,
+  course: CourseMatrixModule,
   suggestedNextList: StudentStudyActivity[],
   transferedList: StudentStudyActivity[],
   gradedList: StudentStudyActivity[],
@@ -412,12 +255,12 @@ export const getCourseInfo = (
   if (
     suggestedNextList.find(
       (sCourse) =>
-        sCourse.subject === subject.subjectCode &&
+        sCourse.subject === subject.code &&
         sCourse.courseNumber === course.courseNumber
     )
   ) {
     const suggestedCourseDataNext = suggestedNextList.filter(
-      (sCourse) => sCourse.subject === subject.subjectCode
+      (sCourse) => sCourse.subject === subject.code
     );
 
     courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
@@ -426,7 +269,7 @@ export const getCourseInfo = (
   } else if (
     transferedList.find(
       (tCourse) =>
-        tCourse.subject === subject.subjectCode &&
+        tCourse.subject === subject.code &&
         tCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -435,7 +278,7 @@ export const getCourseInfo = (
   } else if (
     gradedList.find(
       (gCourse) =>
-        gCourse.subject === subject.subjectCode &&
+        gCourse.subject === subject.code &&
         gCourse.courseNumber === course.courseNumber &&
         gCourse.grade !== "K"
     )
@@ -445,7 +288,7 @@ export const getCourseInfo = (
   } else if (
     needSupplementationList.find(
       (nCourse) =>
-        nCourse.subject === subject.subjectCode &&
+        nCourse.subject === subject.code &&
         nCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -455,7 +298,7 @@ export const getCourseInfo = (
   } else if (
     onGoingList.find(
       (oCourse) =>
-        oCourse.subject === subject.subjectCode &&
+        oCourse.subject === subject.code &&
         oCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -467,7 +310,7 @@ export const getCourseInfo = (
   // and holds grade value
   const evaluatedCourse = [...gradedList, ...transferedList].find(
     (gCourse) =>
-      gCourse.subject === subject.subjectCode &&
+      gCourse.subject === subject.code &&
       gCourse.courseNumber === course.courseNumber
   );
 
@@ -494,4 +337,33 @@ export const getCourseInfo = (
     grade,
     needsSupplementation,
   };
+};
+
+/**
+ * getNonOPSTransferedActivities
+ * @param matrix matrix
+ * @param transferedList transfered list
+ * @returns non OPS transfered activities
+ */
+export const getNonOPSTransferedActivities = (
+  matrix: CourseMatrix,
+  transferedList: StudentStudyActivity[]
+) => {
+  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
+
+  const allTransferedSubjects = transferedList.map((item) => item.subject);
+
+  // Joined list of non OPS transfered subjects
+  const allNonOPSTransferedSubjects = allTransferedSubjects
+    .filter((subject) => !allOPSSubjects.includes(subject))
+    .join(",");
+
+  // List of non OPS transfered subjects without duplicates
+  const listOfallNonOPSTransferedSubjects = Array.from(
+    new Set(allNonOPSTransferedSubjects.split(","))
+  );
+
+  return transferedList.filter((tStudies) =>
+    listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
+  );
 };
