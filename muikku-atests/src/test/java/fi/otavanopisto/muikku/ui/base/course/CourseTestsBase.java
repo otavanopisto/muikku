@@ -430,7 +430,7 @@ public class CourseTestsBase extends AbstractUITest {
       tabOutOfElement("input#profileVacationStart");
       waitAndClick(".application-panel__content-header");
       waitForPresent("input#profileVacationEnd");
-      sendKeys("input#profileVacationEnd", "21.12.2025");
+      sendKeys("input#profileVacationEnd", "21.12.2030");
       tabOutOfElement("input#profileVacationEnd");
       waitAndClick(".application-panel__content-header");
       waitAndClick("#profileVacationAutoReply");
@@ -445,7 +445,7 @@ public class CourseTestsBase extends AbstractUITest {
       selectFinnishLocale();
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".item-list__item--teacher .item-list__user-vacation-period");
-      assertTextIgnoreCase(".item-list__item--teacher .item-list__user-vacation-period", "Poissa 21.12.2010–21.12.2025");      
+      assertTextIgnoreCase(".item-list__item--teacher .item-list__user-vacation-period", "Poissa 21.12.2010–21.12.2030");      
     }finally{
       deleteWorkspace(workspace.getId());  
     }
