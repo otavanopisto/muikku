@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.search;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.existsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.idsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.nestedQuery;
 import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
@@ -34,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -1034,20 +1036,33 @@ public class ElasticSearchProvider implements SearchProvider {
               )
               .minimumShouldMatch(1)
         )
-        .should(
-            boolQuery()
-              .must(termQuery("sender.userEntityId", loggedUserIdStr))
-              .must(termQuery("sender.archivedBySender", Boolean.FALSE)))
-        .should(
-            boolQuery()
-              .must(termQuery("recipients.userEntityId", loggedUserIdStr))
-              .must(termQuery("recipients.archivedByReceiver", Boolean.FALSE)))
-        .should(
-            boolQuery()
-              .must(termQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
-              .must(termQuery("groupRecipients.recipients.archivedByReceiver", Boolean.FALSE)))
-        .minimumShouldMatch(1));
-    
+    )
+    .filter(
+        boolQuery()
+          .should(
+              nestedQuery("sender",
+                  boolQuery()
+                    .must(termQuery("sender.userEntityId", loggedUserIdStr))
+                    .must(termQuery("sender.archivedBySender", Boolean.FALSE))
+              , ScoreMode.Avg)
+          )
+          .should(
+              nestedQuery("recipients",
+                  boolQuery()
+                    .must(termQuery("recipients.userEntityId", loggedUserIdStr))
+                    .must(termQuery("recipients.archivedByReceiver", Boolean.FALSE))
+              , ScoreMode.Avg)
+          )
+          .should(
+              nestedQuery("groupRecipients.recipients",
+                  boolQuery()
+                    .must(termQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
+                    .must(termQuery("groupRecipients.recipients.archivedByReceiver", Boolean.FALSE))
+              , ScoreMode.Avg)
+          )
+          .minimumShouldMatch(1)
+    );
+
     try {
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)

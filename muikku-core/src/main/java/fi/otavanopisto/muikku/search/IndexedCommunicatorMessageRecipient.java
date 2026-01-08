@@ -76,12 +76,21 @@ public class IndexedCommunicatorMessageRecipient{
     this.id = id;
   }
 
+  public Boolean getTrashedByReceiver() {
+    return trashedByReceiver;
+  }
+
+  public void setTrashedByReceiver(Boolean trashedByReceiver) {
+    this.trashedByReceiver = trashedByReceiver;
+  }
+
   private Long id;
   private Long userEntityId;
   private String firstName;
   private String lastName;
   private String nickName;
   private Boolean readByReceiver;
+  private Boolean trashedByReceiver;
   private Boolean archivedByReceiver;
   private List<IndexedCommunicatorMessageLabels> labels;
   private String studyProgrammeName;
