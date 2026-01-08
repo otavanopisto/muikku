@@ -42,7 +42,6 @@ const StudentNavigationAside = () => {
    * @param tag tag to be deleted
    */
   const handleDelete = (tag: GenericTag) => {
-    // No action needed for guider labels
     dispatch(removeGuiderFilterLabel({ id: tag.id }));
   };
 

@@ -212,7 +212,7 @@ export interface LoadStudentsTriggerType {
 }
 
 /**
- * LoadMoreStudentsTriggerType action creator type
+ * UpdateLabelFiltersTriggerType action creator type
  */
 export interface UpdateLabelFiltersTriggerType {
   (): AnyActionType;
@@ -400,13 +400,6 @@ export interface AddFileToCurrentStudentTriggerType {
  */
 export interface RemoveFileFromCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType;
-}
-
-/**
- * UpdateLabelFiltersTriggerType action creator type
- */
-export interface TriggerType {
-  (): AnyActionType;
 }
 
 /**

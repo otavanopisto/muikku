@@ -338,6 +338,7 @@
       "preset3": "Preset theme 3",
       "profileMenu": "User profile menu of Muikku",
       "tab": "Tab {{current}}/{{tabCount}}",
+      "tagOptionMenu": "Tag editing menu",
       "uploadPicture": "Add profile picture"
     },
     "subjects": {

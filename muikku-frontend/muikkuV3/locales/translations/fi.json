@@ -338,6 +338,7 @@
       "preset3": "Esiasetettu teema 3",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
       "tab": "Välilehti {{current}}/{{tabCount}}",
+      "tagOptionMenu": "Tunnisteiden muokkausvalikko",
       "uploadPicture": "Lisää profiilin kuva"
     },
     "subjects": {

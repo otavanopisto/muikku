@@ -13,6 +13,7 @@ import UpdateDialog, {
   GenericTag,
 } from "~/components/general/tag-update-dialog";
 import PromptDialog from "~/components/general/prompt-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * Navigation
@@ -266,6 +267,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const triggerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLElement>(null);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (!open) return;
@@ -359,7 +361,7 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
         createPortal(
           <nav
             role="menu"
-            aria-label="Tag options menu"
+            aria-label={t("wcag.tagOptionMenu", { ns: "common" })}
             aria-hidden={!open}
             ref={dropdownRef}
             className="menu__item-dropdown"
