@@ -109,7 +109,7 @@ const tagUpdateDialogReducer = (
       return {
         ...state,
         collaboratorsToAdd: state.collaboratorsToAdd.filter(
-          (id) => id !== action.payload
+          (collaborator) => collaborator.id !== action.payload.id
         ),
       };
     case "ADD_COLLABORATOR_TO_REMOVE":
@@ -121,7 +121,7 @@ const tagUpdateDialogReducer = (
       return {
         ...state,
         collaboratorsToRemove: state.collaboratorsToRemove.filter(
-          (id) => id !== action.payload
+          (collaborator) => collaborator.id !== action.payload.id
         ),
       };
     case "TOGGLE_COLOR_PICKER":
