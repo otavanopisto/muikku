@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
