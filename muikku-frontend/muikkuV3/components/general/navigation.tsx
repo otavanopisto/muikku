@@ -261,10 +261,6 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
   } = props;
   const [open, setOpen] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState<DialogOpenType>(null);
-  //const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-  //const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-  //const [customActionDialogOpen, setCustomActionDialogOpen] =
-  //  React.useState(false);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const triggerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLElement>(null);
