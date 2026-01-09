@@ -338,6 +338,7 @@
       "preset3": "Preset theme 3",
       "profileMenu": "User profile menu of Muikku",
       "tab": "Tab {{current}}/{{tabCount}}",
+      "tagOptionMenu": "Tag editing menu",
       "uploadPicture": "Add profile picture"
     },
     "subjects": {
@@ -1284,6 +1285,7 @@
       "remove_discussionArea": "Delete discussion area",
       "remove_label": "Delete label",
       "remove_message": "Delete message",
+      "removeAllCollaborators": "Remove all collaborators",
       "reply": "Reply message",
       "replyCount": "Replies",
       "replySubject": "Re: {{topic}}",
@@ -1655,18 +1657,30 @@
       "share": "Share the flag"
     },
     "labels": {
+      "addCollaborators": "Add collaborators",
       "create": "Create a new flag",
       "createAndSearch": "Create and share flags",
       "edit": "Edit flag",
       "flags": "Flags",
+      "remove": "Remove flag",
+      "removeCollaborators": "Remove flag shares: ({{collaboratorCount}} shares)",
       "share": "Share the flag {{flag}}"
+    },
+    "content": {
+      "removing": "Are you sure you want to remove the flag?",
+      "removingCollaborators": "Are you sure you want to remove the flag shares?"
     },
     "notifications": {
       "addError": "Error adding the flag. Please try again.",
+      "addCollaboratorError": "Error sharing the flag. Please try again. {{error}}",
+      "addCollaboratorSuccess": "Flag shared successfully with {{collaboratorCount}} users.",
       "createError": "Flag creation failed. Please try again.",
       "loadError": "Flag loading failed. Please try loading the page again.",
       "removeError": "Flag removal failed. Please try again.",
+      "removeCollaboratorError": "Error unsharing the flag. Please try again. {{error}}",
+      "removeCollaboratorSuccess": "Flag unshared successfully with {{collaboratorCount}} users.",
       "updateError": "Flag editing failed.  Please try again.",
+      "updateSuccess": "Flag editing succeeded.",
       "removeWarning": "If you want to remove the flag, it must not be shared. Unshare to remove the flag."
     },
     "validation": {

@@ -10,7 +10,7 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
   NavigationDropdown,
-  NavigationDropdownProps,
+  DropdownWrapperProps,
 } from "~/components/general/navigation";
 import { GenericTag } from "~/components/general/tag-update-dialog";
 import { AnyActionType } from "~/actions";
@@ -116,7 +116,7 @@ class NavigationAside extends React.Component<
                   }),
                   editLabel: this.props.t("labels.edit"),
                   deleteLabel: this.props.t("labels.remove"),
-                } as Omit<NavigationDropdownProps, "children">
+                } satisfies DropdownWrapperProps
               }
               isEditable={item.type === "label"}
             >
