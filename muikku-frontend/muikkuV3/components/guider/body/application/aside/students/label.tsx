@@ -53,29 +53,32 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
           deleteDialogContent: t("content.removing", {
             ns: "flags",
           }),
-          customActionDialogTitle: t("labels.removeCollaborators", {
-            ns: "flags",
-            collaboratorCount: tag.collaborators.all.length,
-          }),
-          customActionDialogContent: t("content.removingCollaborators", {
-            ns: "flags",
-          }),
+          customAction: {
+            title: t("labels.removeCollaborators", {
+              ns: "flags",
+              collaboratorCount: tag.collaborators.all.length,
+            }),
+            icon: "users",
+            label: t("labels.removeAllCollaborators", {
+              ns: "messaging",
+            }),
+            content: t("content.removingCollaborators", {
+              ns: "flags",
+            }),
+            onCustomAction: handleRemoveCollaborators,
+          },
+
           updateDialogTitle: t("labels.edit", {
             ns: "flags",
           }),
           editLabel: t("labels.edit"),
           deleteLabel: t("labels.remove"),
-          customActionLabel: t("labels.removeAllCollaborators", {
-            ns: "messaging",
-          }),
-          customActionIcon: "users",
           disableDelete:
             tag.collaborators.all.length > 0 ||
             label.ownerIdentifier !== status.userSchoolDataIdentifier,
           disableCustomAction:
             tag.collaborators.all.length === 0 ||
             label.ownerIdentifier !== status.userSchoolDataIdentifier,
-          onCustomAction: handleRemoveCollaborators,
         } satisfies DropdownWrapperProps
       }
       isEditable
