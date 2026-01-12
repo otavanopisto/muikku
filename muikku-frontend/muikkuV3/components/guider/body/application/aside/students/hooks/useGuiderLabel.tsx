@@ -21,13 +21,13 @@ import { useTranslation } from "react-i18next";
  */
 export const useGuiderLabel = (label: UserFlag) => {
   const dispatch = useDispatch();
-  const [tag, setTag] = React.useState<GenericTag>({
+  const [currentTag, setCurrentTag] = React.useState<GenericTag>({
     id: label.id,
     label: label.name,
     color: hexToColorInt(label.color),
     description: label.description || "",
     ownerIdentifier: label.ownerIdentifier,
-    collaborators: { all: [], toAdd: [], toRemove: [] },
+    collaborators: [],
   });
   const { t } = useTranslation(["flags"]);
   /**
@@ -45,23 +45,29 @@ export const useGuiderLabel = (label: UserFlag) => {
    * @param onFail optional fail callback
    */
   const handleUpdate = (
-    tag: GenericTag,
+    updatedTag: GenericTag,
     onSuccess?: () => void,
     onFail?: () => void
   ) => {
-    if (tag.collaborators.toAdd.length > 0) {
-      handleAddCollaborators(tag);
+    const toRemove = currentTag.collaborators.filter(
+      (c) => !updatedTag.collaborators.find((updatedC) => updatedC.id === c.id)
+    );
+    const toAdd = updatedTag.collaborators.filter(
+      (c) => !currentTag.collaborators.find((oldC) => oldC.id === c.id)
+    );
+    if (toAdd.length > 0) {
+      handleAddCollaborators(updatedTag, toAdd);
     }
-    if (tag.collaborators.toRemove.length > 0) {
-      handleRemoveCollaborators(tag);
+    if (toRemove.length > 0) {
+      handleRemoveCollaborators(updatedTag, toRemove);
     }
     dispatch(
       updateGuiderFilterLabel({
-        id: tag.id,
-        name: tag.label,
-        color: "#" + tag.color.toString(16).padStart(6, "0"),
-        description: tag.description || "",
-        ownerIdentifier: tag.ownerIdentifier,
+        id: updatedTag.id,
+        name: updatedTag.label,
+        color: "#" + updatedTag.color.toString(16).padStart(6, "0"),
+        description: updatedTag.description || "",
+        ownerIdentifier: updatedTag.ownerIdentifier,
         success: onSuccess,
         fail: onFail,
       })
@@ -70,12 +76,14 @@ export const useGuiderLabel = (label: UserFlag) => {
 
   /**
    * Handles adding collaborators to a tag
-   * @param tag tag
+   * @param tag tag to add the collaborators to
+   * @param collaboratorsToAdd collaborators to add
    * @param success success
    * @param fail fail
    */
   const handleAddCollaborators = async (
     tag: GenericTag,
+    collaboratorsToAdd: Collaborator[],
     success?: () => void,
     fail?: () => void
   ) => {
@@ -83,7 +91,7 @@ export const useGuiderLabel = (label: UserFlag) => {
     const userApi = MApi.getUserApi();
 
     try {
-      for (const collaborator of tag.collaborators.toAdd) {
+      for (const collaborator of collaboratorsToAdd) {
         await userApi.createFlagShare({
           flagId,
           createFlagShareRequest: {
@@ -92,13 +100,18 @@ export const useGuiderLabel = (label: UserFlag) => {
           },
         });
       }
+      // Update local state
+      setCurrentTag((prevTag) => ({
+        ...prevTag,
+        collaborators: [...prevTag.collaborators, ...collaboratorsToAdd],
+      }));
 
       success && success();
       dispatch(
         displayNotification(
           t("notifications.addCollaboratorSuccess", {
             ns: "flags",
-            collaboratorCount: tag.collaborators.toAdd.length,
+            collaboratorCount: collaboratorsToAdd.length,
           }),
           "success"
         )
@@ -121,13 +134,29 @@ export const useGuiderLabel = (label: UserFlag) => {
   };
 
   /**
-   * Handles removing collaborators from a tag
-   * @param tag tag
+   * Wrapper for removing all collaborators from a tag
+   * @param tag tag tp remove collaborators from
+   * @param success success
+   * @param fail fail
+   */
+  const handleRemoveAllCollaborators = async (
+    tag: GenericTag,
+    success?: () => void,
+    fail?: () => void
+  ) => {
+    handleRemoveCollaborators(tag, undefined, success, fail);
+  };
+
+  /**
+   * Handles removing given collaborators from a tag
+   * @param tag tag to remove collaborators from
+   * @param collaboratorsToRemove collaborators to remove
    * @param success success
    * @param fail fail
    */
   const handleRemoveCollaborators = async (
     tag: GenericTag,
+    collaboratorsToRemove?: Collaborator[],
     success?: () => void,
     fail?: () => void
   ) => {
@@ -135,43 +164,49 @@ export const useGuiderLabel = (label: UserFlag) => {
     const userApi = MApi.getUserApi();
 
     try {
-      let collaborators: Collaborator[] = [];
+      let shares: { id: number; identifier: string }[] = [];
+
       const flagShares = await userApi.getFlagShares({
         flagId,
       });
 
       // If no collaborators are given, remove all collaborators
 
-      if (!tag.collaborators || tag.collaborators.toRemove.length === 0) {
-        collaborators = flagShares.map((share) => ({
+      if (!collaboratorsToRemove || collaboratorsToRemove.length === 0) {
+        shares = flagShares.map((share) => ({
           id: share.id,
           identifier: share.userIdentifier,
         }));
       } else {
-        collaborators = flagShares
+        shares = flagShares
           .filter((share) =>
-            tag.collaborators.toRemove.find(
-              (c) => c.id === share.user.userEntityId
-            )
+            collaboratorsToRemove.find((c) => c.id === share.user.userEntityId)
           )
           .map((share) => ({
             id: share.id,
             identifier: share.userIdentifier,
           }));
       }
-      for (const collaborator of collaborators) {
+      for (const share of shares) {
         await userApi.deleteFlagShare({
           flagId,
-          shareId: collaborator.id,
+          shareId: share.id,
         });
       }
-      loadCollaborators();
+      // Update local state
+      const updatedCollaborators = currentTag.collaborators.filter(
+        (c) => !shares.find((s) => s.identifier === c.identifier)
+      );
+      setCurrentTag((prevTag) => ({
+        ...prevTag,
+        collaborators: updatedCollaborators,
+      }));
       success && success();
       dispatch(
         displayNotification(
           t("notifications.removeCollaboratorSuccess", {
             ns: "flags",
-            collaboratorCount: collaborators.length,
+            collaboratorCount: shares.length,
           }),
           "success"
         )
@@ -203,9 +238,13 @@ export const useGuiderLabel = (label: UserFlag) => {
         flagId: label.id,
       });
 
-      setTag((prevTag) => ({
+      setCurrentTag((prevTag) => ({
         ...prevTag,
-        collaborators: { all: sharesResult, toRemove: [], toAdd: [] },
+        collaborators: sharesResult.map((share) => ({
+          name: share.user.firstName + " " + share.user.lastName,
+          id: share.user.userEntityId,
+          identifier: share.userIdentifier,
+        })),
       }));
     } catch (e) {
       if (!isMApiError(e)) {
@@ -220,10 +259,11 @@ export const useGuiderLabel = (label: UserFlag) => {
   }, [loadCollaborators]);
 
   return {
-    tag,
+    currentTag,
     handleDelete,
     handleUpdate,
-    setTag,
+    setCurrentTag,
+    handleRemoveAllCollaborators,
     handleAddCollaborators,
     handleRemoveCollaborators,
   };

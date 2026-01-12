@@ -29,8 +29,12 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
   const { label, isActive, hash } = props;
   const { status } = useSelector((state: StateType) => state);
   const { t } = useTranslation(["flags"]);
-  const { tag, handleDelete, handleUpdate, handleRemoveCollaborators } =
-    useGuiderLabel(label);
+  const {
+    currentTag,
+    handleDelete,
+    handleUpdate,
+    handleRemoveAllCollaborators,
+  } = useGuiderLabel(label);
 
   return (
     <NavigationElement
@@ -44,7 +48,7 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
       editableWrapper={NavigationDropdown}
       editableWrapperArgs={
         {
-          tag,
+          tag: currentTag,
           onDelete: handleDelete,
           onUpdate: handleUpdate,
           deleteDialogTitle: t("labels.remove", {
@@ -56,7 +60,7 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
           customAction: {
             title: t("labels.removeCollaborators", {
               ns: "flags",
-              collaboratorCount: tag.collaborators.all.length,
+              collaboratorCount: currentTag.collaborators.length,
             }),
             icon: "users",
             label: t("labels.removeAllCollaborators", {
@@ -65,7 +69,7 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
             content: t("content.removingCollaborators", {
               ns: "flags",
             }),
-            onCustomAction: handleRemoveCollaborators,
+            onCustomAction: handleRemoveAllCollaborators,
           },
 
           updateDialogTitle: t("labels.edit", {
@@ -74,10 +78,10 @@ const GuiderLabel: React.FC<GuiderLabelProps> = (props: GuiderLabelProps) => {
           editLabel: t("labels.edit"),
           deleteLabel: t("labels.remove"),
           disableDelete:
-            tag.collaborators.all.length > 0 ||
+            currentTag.collaborators.length > 0 ||
             label.ownerIdentifier !== status.userSchoolDataIdentifier,
           disableCustomAction:
-            tag.collaborators.all.length === 0 ||
+            currentTag.collaborators.length === 0 ||
             label.ownerIdentifier !== status.userSchoolDataIdentifier,
         } satisfies DropdownWrapperProps
       }

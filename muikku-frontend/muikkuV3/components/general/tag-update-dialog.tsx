@@ -8,8 +8,7 @@ import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
 import { colorIntToHex, hexToColorInt } from "~/util/modifiers";
 import { useTranslation } from "react-i18next";
-import { getName } from "~/util/modifiers";
-import { UserSharedFlag } from "~/generated/client/models/UserSharedFlag";
+
 import { ContactRecipientType } from "~/reducers/user-index";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { StateType } from "~/reducers";
@@ -19,6 +18,7 @@ const KEYCODES = {
 };
 
 export type Collaborator = {
+  name: string;
   id: number;
   identifier: string;
 };
@@ -28,11 +28,7 @@ export type GenericTag = {
   label: string;
   color: number;
   description?: string;
-  collaborators?: {
-    all: UserSharedFlag[];
-    toRemove: Collaborator[];
-    toAdd: Collaborator[];
-  };
+  collaborators?: Collaborator[];
   includeRecipients?: boolean;
   ownerIdentifier?: string;
 };
@@ -59,8 +55,6 @@ interface TagUpdateDialogState {
   name: string;
   description: string;
   collaborators: ContactRecipientType[];
-  collaboratorsToRemove: Collaborator[];
-  collaboratorsToAdd: Collaborator[];
   locked: boolean;
 }
 
@@ -69,10 +63,6 @@ type TagUpdateDialogAction =
   | { type: "SET_NAME"; payload: string }
   | { type: "SET_DESCRIPTION"; payload: string }
   | { type: "SET_COLLABORATORS"; payload: ContactRecipientType[] }
-  | { type: "ADD_COLLABORATOR_TO_ADD"; payload: Collaborator }
-  | { type: "REMOVE_COLLABORATOR_TO_ADD"; payload: Collaborator }
-  | { type: "ADD_COLLABORATOR_TO_REMOVE"; payload: Collaborator }
-  | { type: "REMOVE_COLLABORATOR_TO_REMOVE"; payload: Collaborator }
   | { type: "TOGGLE_COLOR_PICKER" }
   | { type: "CLOSE_COLOR_PICKER" }
   | { type: "SET_LOCKED"; payload: boolean }
@@ -100,30 +90,6 @@ const tagUpdateDialogReducer = (
       return { ...state, description: action.payload };
     case "SET_COLLABORATORS":
       return { ...state, collaborators: action.payload };
-    case "ADD_COLLABORATOR_TO_ADD":
-      return {
-        ...state,
-        collaboratorsToAdd: [...state.collaboratorsToAdd, action.payload],
-      };
-    case "REMOVE_COLLABORATOR_TO_ADD":
-      return {
-        ...state,
-        collaboratorsToAdd: state.collaboratorsToAdd.filter(
-          (collaborator) => collaborator.id !== action.payload.id
-        ),
-      };
-    case "ADD_COLLABORATOR_TO_REMOVE":
-      return {
-        ...state,
-        collaboratorsToRemove: [...state.collaboratorsToRemove, action.payload],
-      };
-    case "REMOVE_COLLABORATOR_TO_REMOVE":
-      return {
-        ...state,
-        collaboratorsToRemove: state.collaboratorsToRemove.filter(
-          (collaborator) => collaborator.id !== action.payload.id
-        ),
-      };
     case "TOGGLE_COLOR_PICKER":
       return { ...state, displayColorPicker: !state.displayColorPicker };
     case "CLOSE_COLOR_PICKER":
@@ -137,8 +103,8 @@ const tagUpdateDialogReducer = (
         name: action.payload.tag.label,
         description: action.payload.tag.description || "",
         collaborators: action.payload.collaborators,
-        collaboratorsToAdd: [],
-        collaboratorsToRemove: [],
+        //collaboratorsToAdd: [],
+        //collaboratorsToRemove: [],
         locked: false,
         displayColorPicker: false,
       };
@@ -163,23 +129,21 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
     name: tag.label,
     description: tag.description,
     collaborators: [],
-    collaboratorsToRemove: [],
-    collaboratorsToAdd: [],
     locked: false,
   });
 
   // Sync collaborators from tag prop to state whenever they change
   React.useEffect(() => {
-    if (tag.collaborators?.all && Array.isArray(tag.collaborators.all)) {
-      const loadedCollaborators = tag.collaborators.all
+    if (tag.collaborators && Array.isArray(tag.collaborators)) {
+      const loadedCollaborators = tag.collaborators
         .map(
-          (result: UserSharedFlag): ContactRecipientType => ({
+          (result: Collaborator): ContactRecipientType => ({
             type: "staff",
             value: {
-              id: result.user.userEntityId,
-              name: getName(result.user, true),
+              id: result.id,
+              name: result.name,
               email: "unknown",
-              identifier: result.user.userIdentifier,
+              identifier: result.identifier,
             },
           })
         )
@@ -190,7 +154,7 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
         payload: loadedCollaborators,
       });
     }
-  }, [tag.collaborators?.all]);
+  }, [tag.collaborators]);
 
   /**
    * handleColorPickerToggle handler for color picker display toggle
@@ -249,57 +213,12 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
    * @param changedCollaborator changed collaborator
    */
   const handleCollaboratorsChange = (
-    selectedCollaborators: ContactRecipientType[],
-    changedCollaborator: ContactRecipientType
+    selectedCollaborators: ContactRecipientType[]
   ) => {
-    const collaboratorId = changedCollaborator.value.id;
-    const wasAlreadyCollaborator = state.collaborators.some(
-      (c) => c.value.id === collaboratorId
-    );
-
     dispatchState({
       type: "SET_COLLABORATORS",
       payload: selectedCollaborators,
     });
-    const collaborator: Collaborator = {
-      id: collaboratorId,
-      identifier: changedCollaborator.value.identifier,
-    };
-
-    if (wasAlreadyCollaborator) {
-      // Collaborator was removed
-      const wasInToAddList = state.collaboratorsToAdd.some(
-        (c) => c.id === collaboratorId
-      );
-
-      if (wasInToAddList) {
-        dispatchState({
-          type: "REMOVE_COLLABORATOR_TO_ADD",
-          payload: collaborator,
-        });
-      } else {
-        dispatchState({
-          type: "ADD_COLLABORATOR_TO_REMOVE",
-          payload: collaborator,
-        });
-      }
-    } else {
-      // Collaborator was added
-      const wasInToRemoveList = state.collaboratorsToRemove.some(
-        (c) => c.id === collaboratorId
-      );
-      if (wasInToRemoveList) {
-        dispatchState({
-          type: "REMOVE_COLLABORATOR_TO_REMOVE",
-          payload: collaborator,
-        });
-      } else {
-        dispatchState({
-          type: "ADD_COLLABORATOR_TO_ADD",
-          payload: collaborator,
-        });
-      }
-    }
   };
 
   /**
@@ -329,21 +248,29 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
       state.name !== tag.label ||
       state.color !== colorIntToHex(tag.color) ||
       state.description !== (tag.description || "") ||
-      state.collaboratorsToAdd.length > 0 ||
-      state.collaboratorsToRemove.length > 0
+      state.collaborators.length !== tag.collaborators.length ||
+      !state.collaborators.every((c) =>
+        tag.collaborators?.some((tc) => tc.id === c.value.id)
+      )
     ) {
       dispatchState({ type: "SET_LOCKED", payload: true });
+
+      // Transform collaborators to Collaborator type
+      const collaborators = state.collaborators.map(
+        (c) =>
+          ({
+            name: c.value.name,
+            id: c.value.id,
+            identifier: c.value.identifier,
+          }) as Collaborator
+      );
 
       const data: GenericTag = {
         id: tag.id,
         label: state.name,
         color: hexToColorInt(state.color),
         description: state.description,
-        collaborators: {
-          all: tag.collaborators ? tag.collaborators.all : [],
-          toRemove: state.collaboratorsToRemove,
-          toAdd: state.collaboratorsToAdd,
-        },
+        collaborators,
       };
       dispatchState({
         type: "RESET",
