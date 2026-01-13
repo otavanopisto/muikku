@@ -210,7 +210,6 @@ const TagUpdateDialog: React.FC<TagUpdateDialogProps> = (props) => {
   /**
    * handleCollaboratorsChange handler for collaborators input change
    * @param selectedCollaborators selected collaborators
-   * @param changedCollaborator changed collaborator
    */
   const handleCollaboratorsChange = (
     selectedCollaborators: ContactRecipientType[]

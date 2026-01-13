@@ -40,7 +40,7 @@ export const useGuiderLabel = (label: UserFlag) => {
 
   /**
    * Handles update category
-   * @param tag tag to be updated
+   * @param updatedTag tag to be updated
    * @param onSuccess optional success callback
    * @param onFail optional fail callback
    */
