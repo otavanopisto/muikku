@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>drop table OrphanMaterial;</sql>
+  <sql>delete from SystemSetting where settingKey='materials.orphanRemoval';</sql>
+  <sql>delete from FaultyMaterial where id not in (select id from HtmlMaterial);</sql>
+
+</update>

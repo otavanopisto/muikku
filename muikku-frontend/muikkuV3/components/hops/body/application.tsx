@@ -46,6 +46,7 @@ import {
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
 import "~/sass/elements/react-datepicker-override.scss";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * Represents the available tabs in the HOPS application.
@@ -139,12 +140,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
       !_.isEqual(
         hops.hopsEditing.plannedCourses,
         hops.hopsStudyPlanState.plannedCourses
-      ) || !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals),
+      ) ||
+      !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals) ||
+      !_.isEqual(hops.hopsEditing.planNotes, hops.hopsStudyPlanState.planNotes),
     [
       hops.hopsEditing.goals,
       hops.hopsEditing.plannedCourses,
       hops.hopsStudyPlanState.goals,
       hops.hopsStudyPlanState.plannedCourses,
+      hops.hopsEditing.planNotes,
+      hops.hopsStudyPlanState.planNotes,
     ]
   );
 
@@ -367,12 +372,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
     : [];
 
   let editingDisabled = false;
+  let currentUserIsEditing = undefined;
 
   if (
     status.userId !== hops.hopsLocked?.userEntityId &&
     hops.hopsLocked?.locked
   ) {
     editingDisabled = true;
+    currentUserIsEditing = hops.hopsLocked.userName;
   }
 
   return (
@@ -389,13 +396,27 @@ const HopsApplication = (props: HopsApplicationProps) => {
           panelOptions={
             <div className="hops-edit__button-row">
               {hops.hopsMode === "READ" ? (
-                <Button
-                  onClick={handleStartEditing}
-                  disabled={editingDisabled}
-                  buttonModifiers={["info", "standard-ok"]}
+                <Dropdown
+                  openByHover
+                  content={
+                    editingDisabled && (
+                      <p>
+                        {t("labels.editing", {
+                          ns: "common",
+                          user: currentUserIsEditing,
+                        })}
+                      </p>
+                    )
+                  }
                 >
-                  {t("actions.edit", { ns: "common" })}
-                </Button>
+                  <Button
+                    onClick={handleStartEditing}
+                    disabled={editingDisabled}
+                    buttonModifiers={["info", "standard-ok"]}
+                  >
+                    {t("actions.edit", { ns: "common" })}
+                  </Button>
+                </Dropdown>
               ) : (
                 <Button
                   onClick={handleOpenPendingChangesDetailsDialog}

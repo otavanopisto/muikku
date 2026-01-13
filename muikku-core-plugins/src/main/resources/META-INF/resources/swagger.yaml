@@ -257,13 +257,14 @@ paths:
           schema:
             type: integer
             default: 10
-        - name: categories
+        - name: categoryIds
           in: query
           description: AnnouncementCategories
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/AnnouncementCategory"
+              type: integer
+              format: int64
       responses:
         "200":
           description: Fetch announcements successfully
@@ -468,9 +469,9 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
 
   /rest/announcer/announcements/{announcementId}/markAsRead:
-    post:
+    put:
       operationId: markAnnouncementAsRead
-      summary: Mark announcement as read by logged user
+      summary: Mark announcement as read or unread by logged user
       tags:
         - Announcer
       parameters:
@@ -483,7 +484,7 @@ paths:
             format: int64
       responses:
         "200":
-          description: Announcement marked as read successfully
+          description: Announcement marked as read or unread successfully
           content:
             application/json:
               schema:
@@ -557,41 +558,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
 
-    delete:
-        operationId: deleteAnnouncementCategory
-        summary: Delete announcement category by id
-        tags:
-          - Announcer
-        parameters:
-          - name: announcementCategoryId
-            in: path
-            description: Announcement category id
-            required: true
-            schema:
-              type: integer
-              format: int64
-        responses:
-          "200":
-            description: "Announcement category deleted successfully"
-          "400":
-            description: Invalid request was sent to the server
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ErrorModel"
-          "403":
-            description: Attempted to make a call with unauthorized client
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ErrorModel"
-          "500":
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ErrorModel"
-  
   /rest/announcer/categories/{categoryId}:
     put:
       operationId: updateAnnouncementCategory
@@ -617,6 +583,75 @@ paths:
                 $ref: "#/components/schemas/AnnouncementCategory"
         "403":
           description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
+    delete:
+      operationId: deleteAnnouncementCategory
+      summary: Delete announcement category by id
+      tags:
+        - Announcer
+      parameters:
+        - name: categoryId
+          in: path
+          description: Announcement category id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: "Announcement category deleted successfully"
+        "400":
+          description: Invalid request was sent to the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
+  /rest/announcer/announcements/{announcementId}/pin:
+    put:
+      operationId: pinAnnouncement
+      summary: Pin/unpin announcement to the logged user themself
+      tags:
+        - Announcer
+      parameters:
+        - name: announcementId
+          in: path
+          description: Announcement id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Announcement pinned successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnouncementRecipient"
+        "400":
+          description: Invalid request was sent to the server
           content:
             application/json:
               schema:
@@ -5808,11 +5843,6 @@ paths:
           description: Workspace identifier
           schema:
             type: string
-        - name: includeTransferCredits
-          in: query
-          description: Include transfer credits
-          schema:
-            type: boolean
         - name: includeAssignmentStatistics
           in: query
           description: Include assignment statistics
@@ -6425,6 +6455,28 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/student/{studentIdentifier}/courseMatrix:
+    get:
+      operationId: getStudentCourseMatrix
+      summary: Returns the HOPS course matrix for the given student
+      description: Returns the HOPS course matrix for the given student
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student's HOPS course matrix
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseMatrix"
+
   /rest/hops/student/{studentIdentifier}/studyActivity:
     get:
       operationId: getStudentStudyActivity
@@ -6499,6 +6551,54 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+
+  /rest/hops/student/{studentIdentifier}/studyPlannerNotes:
+    get:
+      operationId: getStudyPlannerNotes
+      summary: Get student notes
+      description: Get student notes
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyPlannerNote"
+    put:
+      operationId: updateStudyPlannerNotes
+      summary: Creates, updates, and deletes student's study planner notes
+      description: Creates, updates, and deletes student's study planner notes
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/StudyPlannerNotesUpdateRequestBody"
+      responses:
+        "200":
+          description: Student study planner notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyPlannerNote"
 
   /rest/hops/student/{studentIdentifier}/plannedCourses:
     get:
@@ -8391,16 +8491,11 @@ paths:
           description: Workspace identifier
           schema:
             type: string
-        - name: includeTransferCredits
-          in: query
-          description: String boolean
-          schema:
-            type: string
         - name: includeAssignmentStatistics
           in: query
-          description: String boolean
+          description: Include assignment statistics
           schema:
-            type: string
+            type: boolean
       responses:
         "200":
           description: Workspace activity
@@ -11545,6 +11640,34 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+  
+  /rest/workspace/last/{workspaceEntityId}:
+    delete:
+      operationId: deleteFromLatestWorkspaces
+      summary: Delete from latest workspaces
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Updated user entity property
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LastWorkspace"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   #WORKSPACENOTES
   /rest/workspacenotes/owner/{owner}:
@@ -11787,7 +11910,7 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/WorkspaceBasicInfo"
-    
+
     AnnouncementCategoryCreateRequestBody:
       content:
         application/json:
@@ -12874,12 +12997,26 @@ components:
                   type: integer
                   format: int64
 
+    StudyPlannerNotesUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Study planner notes update request
+            required:
+              - notes
+            properties:
+              notes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyPlannerNote"
+
     PlannedCoursesUpdateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: PlannedCoursesUpdateRequestBody object
+            description: Planned courses update request
             required:
               - plannedCourses
             properties:
@@ -13864,6 +14001,7 @@ components:
         - created
         - endDate
         - pinned
+        - pinnedToSelf
         - publiclyVisible
         - publisherUserEntityId
         - startDate
@@ -13892,6 +14030,8 @@ components:
           type: integer
           format: int64
         pinned:
+          type: boolean
+        pinnedToSelf:
           type: boolean
         publiclyVisible:
           type: boolean
@@ -13935,7 +14075,7 @@ components:
         color:
           type: integer
           format: int64
-    
+
     AnnouncementRecipient:
       type: object
       description: AnnouncementRecipient object
@@ -13944,6 +14084,7 @@ components:
         - announcementId
         - userEntityId
         - readDate
+        - pinned
       properties:
         id:
           type: integer
@@ -13951,6 +14092,8 @@ components:
         announcementId:
           type: integer
           format: int64
+        pinned:
+          type: boolean
         readDate:
           type: string
           format: date-time
@@ -15088,6 +15231,25 @@ components:
           description: Image url of the feed entry
           type: string
         feed:
+          type: string
+
+    LastWorkspace:
+      type: object
+      description: Last workspace object
+      required:
+        - url
+        - workspaceId
+        - workspaceName
+        - materialName
+      properties:
+        url:
+          type: string
+        workspaceId:
+          type: integer
+          format: int64
+        workspaceName:
+          type: string
+        materialName:
           type: string
 
     UserStudentFlag:
@@ -17053,6 +17215,30 @@ components:
           items:
             type: integer
 
+    StudyPlannerNote:
+      type: object
+      description: Study planner note object
+      required:
+        - title
+        - startDate
+      properties:
+        id:
+          description: The id of the note
+          type: integer
+          format: int64
+          readOnly: true
+          nullable: true
+        title:
+          description: The title of the note
+          type: string
+        content:
+          description: The content of the note
+          type: string
+        startDate:
+          description: The date of the note. Local date in ISO format (YYYY-MM-DD)
+          type: string
+          format: date
+
     PlannedCourse:
       type: object
       description: Planned course object
@@ -17081,6 +17267,7 @@ components:
         startDate:
           description: The start date of the planned course. Local date in ISO format (YYYY-MM-DD)
           type: string
+          format: date
         duration:
           description: The duration of the course in milliseconds
           type: integer
@@ -17589,6 +17776,80 @@ components:
           type: string
           nullable: true
 
+    CourseMatrix:
+      type: object
+      description: OPS specific course matrix for a given student
+      required:
+        - type
+        - subjects
+        - problems
+      properties:
+        type:
+          $ref: "#/components/schemas/CourseMatrixType"
+          nullable: true
+        subjects:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixSubject"
+        problems:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixProblem"
+
+    CourseMatrixSubject:
+      type: object
+      description: Subject in course matrix
+      required:
+        - name
+        - code
+        - modules
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        modules:
+          type: array
+          items:
+            $ref: "#/components/schemas/CourseMatrixModule"
+
+    CourseMatrixModule:
+      type: object
+      description: Single course within a course matrix
+      required:
+        - name
+        - courseNumber
+        - length
+        - mandatory
+        - available
+      properties:
+        name:
+          type: string
+        courseNumber:
+          type: integer
+        length:
+          type: integer
+        mandatory:
+          type: boolean
+        available:
+          type: boolean
+
+    CourseMatrixProblem:
+      type: string
+      enum:
+        - INCOMPATIBLE_STUDENT
+        - NO_NATIVE_LANGUAGE
+        - NO_MATH
+        - NO_RELIGION
+        - NO_PRIMARY_FOREIGN_LANGUAGE
+        - NO_SECONDARY_FOREIGN_LANGUAGE
+
+    CourseMatrixType:
+      type: string
+      enum:
+        - UPPER_SECONDARY
+        - COMPULSORY
+
     StudentStudyActivity:
       type: object
       description: StudentStudyActivity object
@@ -17603,6 +17864,7 @@ components:
         - status
         - date
         - transferCreditMandatory
+        - transferCreditLength
         - id
       properties:
         subjectName:
@@ -17628,6 +17890,9 @@ components:
           type: string
           format: date-time
         transferCreditMandatory:
+          type: boolean
+          nullable: true
+        transferCreditLength:
           type: boolean
           nullable: true
         id:

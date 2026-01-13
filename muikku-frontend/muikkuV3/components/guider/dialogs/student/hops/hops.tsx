@@ -48,6 +48,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -128,8 +129,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       !_.isEqual(
         hops.hopsStudyPlanState.plannedCourses,
         hops.hopsEditing.plannedCourses
-      ) || !_.isEqual(hops.hopsStudyPlanState.goals, hops.hopsEditing.goals),
-    [hops.hopsStudyPlanState, hops.hopsEditing]
+      ) ||
+      !_.isEqual(hops.hopsStudyPlanState.goals, hops.hopsEditing.goals) ||
+      !_.isEqual(hops.hopsStudyPlanState.planNotes, hops.hopsEditing.planNotes),
+    [
+      hops.hopsStudyPlanState.plannedCourses,
+      hops.hopsEditing.plannedCourses,
+      hops.hopsStudyPlanState.goals,
+      hops.hopsEditing.goals,
+      hops.hopsStudyPlanState.planNotes,
+      hops.hopsEditing.planNotes,
+    ]
   );
 
   // Check if the matriculation plan has changes
@@ -374,12 +384,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
     : [];
 
   let editingDisabled = false;
+  let studentIsEditing = false;
+  let currentUserIsEditing = undefined;
 
   if (
     status.userId !== hops.hopsLocked?.userEntityId &&
     hops.hopsLocked?.locked
   ) {
     editingDisabled = true;
+    studentIsEditing =
+      hops.hopsLocked.userEntityId === studentInfo.userEntityId;
+    currentUserIsEditing = hops.hopsLocked.userName;
   }
 
   return (
@@ -394,13 +409,34 @@ const HopsApplication = (props: HopsApplicationProps) => {
         {studentInfo.permissions.canEdit && (
           <div className="hops-edit__button-row">
             {hops.hopsMode === "READ" ? (
-              <Button
-                onClick={handleStartEditing}
-                disabled={editingDisabled}
-                buttonModifiers={["info", "standard-ok"]}
+              <Dropdown
+                openByHover
+                content={
+                  editingDisabled && studentIsEditing ? (
+                    <p>
+                      {t("labels.editing", {
+                        ns: "common",
+                        context: "student",
+                      })}
+                    </p>
+                  ) : (
+                    <p>
+                      {t("labels.editing", {
+                        ns: "common",
+                        user: currentUserIsEditing,
+                      })}
+                    </p>
+                  )
+                }
               >
-                {t("actions.edit", { ns: "common" })}
-              </Button>
+                <Button
+                  onClick={handleStartEditing}
+                  disabled={editingDisabled}
+                  buttonModifiers={["info", "standard-ok"]}
+                >
+                  {t("actions.edit", { ns: "common" })}
+                </Button>
+              </Dropdown>
             ) : (
               <Button
                 onClick={handleOpenPendingChangesDetailsDialog}

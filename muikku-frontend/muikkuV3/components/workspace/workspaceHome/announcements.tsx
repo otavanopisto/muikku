@@ -7,7 +7,9 @@ import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import PagerV2 from "~/components/general/pagerV2";
 import { useTranslation } from "react-i18next";
+import { colorIntToHex } from "~/util/modifiers";
 
+import AnnouncementOptions from "~/components/announcements/general/announcement-options";
 /**
  *
  * WorkspaceAnnouncements
@@ -107,13 +109,36 @@ const WorkspaceAnnouncements: React.FC = () => {
                   <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                   <span className="item-list__text-body item-list__text-body--multiline">
                     <span className="item-list__announcement-caption">
+                      {a.pinned && <span className="icon icon-pin"></span>}
+                      {a.pinnedToSelf && (
+                        <span
+                          title={t("labels.pinnedToSelf", { ns: "messaging" })}
+                          className="icon announcement__icon--pinned-to-self icon-pin"
+                        ></span>
+                      )}
                       {a.caption}
                     </span>
                     <span className="item-list__announcement-date">
                       {localize.date(a.startDate)}
                     </span>
+                    {a.categories.length !== 0 && (
+                      <div className="labels item-list__announcement-categories">
+                        {a.categories.map((category) => (
+                          <span className="label" key={category.id}>
+                            <span
+                              style={{ color: colorIntToHex(category.color) }}
+                              className="label__icon label__icon--announcement-usergroup icon-tag"
+                            ></span>
+                            <span className="label__text label__text--announcement-usergroup">
+                              {category.category}
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </span>
-                  {a.pinned && <span className="icon icon-pin"></span>}
+
+                  <AnnouncementOptions announcement={a} />
                 </Link>
               ))}
             </div>

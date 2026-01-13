@@ -12,6 +12,8 @@ import { AnimatedDrawer } from "../Animated-drawer";
 import WorkspaceSelect from "../workspace-select";
 import { useTranslation } from "react-i18next";
 import { useActivePeriod } from "../../context/active-period-context";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -38,6 +40,8 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
 
   const { t } = useTranslation(["hops_new", "common"]);
 
+  const [isBeingEdited, setIsBeingEdited] = React.useState(false);
+
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: "planned-course-card",
@@ -52,22 +56,40 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
       options: {
         dropEffect: "move",
       },
-      canDrag: !disabled,
+      canDrag: !disabled && !isBeingEdited,
     }),
-    [disabled]
+    [disabled, isBeingEdited]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });
+
+  // Use a callback ref that conditionally attaches the drag ref
+  const dragRefCallback = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      const canDrag = !disabled && !isBeingEdited;
+      if (node && canDrag) {
+        drag(node);
+      } else if (!canDrag) {
+        // Detach when dragging should be disabled
+        drag(null);
+      }
+    },
+    [disabled, isBeingEdited, drag]
+  );
 
   /**
    * handleSpecifyCourse
    * @param callback callback
    */
   const handleSpecifyClose = (callback: () => void) => {
-    if (pendingSpecify) {
-      callback();
-      setPendingSpecify(false);
-    }
+    unstable_batchedUpdates(() => {
+      if (pendingSpecify) {
+        callback();
+        setPendingSpecify(false);
+      }
+
+      setIsBeingEdited(false);
+    });
   };
 
   /**
@@ -84,10 +106,13 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
    * @param callback callback
    */
   const handleClose = (callback: () => void) => {
-    if (pendingDelete) {
-      callback();
-      setPendingDelete(false);
-    }
+    unstable_batchedUpdates(() => {
+      if (pendingDelete) {
+        callback();
+        setPendingDelete(false);
+      }
+      setIsBeingEdited(false);
+    });
   };
 
   /**
@@ -102,11 +127,10 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   return (
     <BasePlannerPeriodCourse
       {...props}
-      ref={drag}
-      // This is mandatory for the drag to notice the changes when disabled has changed
-      key={`${course.identifier}-${disabled}`}
+      ref={dragRefCallback}
+      key={`draggable-card-${course.identifier}`}
       isDragging={isDragging}
-      canDrag={!disabled}
+      canDrag={!disabled && !isBeingEdited}
       renderSpecifyContent={({
         onClose,
         onConfirm,
@@ -119,6 +143,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
         <AnimatedDrawer
           isOpen={isOpen}
           contentClassName="study-planner__extra-section"
+          onOpen={() => setIsBeingEdited(true)}
           onClose={() => handleSpecifyClose(onConfirm)}
         >
           <div className="study-planner__extra-section-title">
@@ -266,6 +291,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
         <AnimatedDrawer
           isOpen={isOpen}
           contentClassName="study-planner__extra-section"
+          onOpen={() => setIsBeingEdited(true)}
           onClose={() => handleClose(onConfirm)}
         >
           <div className="study-planner__extra-section-title">
@@ -276,7 +302,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-group">
               <span className="study-planner__extra-section-group-label-info">
-                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                {t("labels.studyPlannerRemoveCourseFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>

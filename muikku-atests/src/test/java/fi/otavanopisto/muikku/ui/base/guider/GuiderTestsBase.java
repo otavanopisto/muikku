@@ -235,6 +235,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addCourseStudent(course1.getId(), courseStudent)
         .mockEmptyStudyActivity()
         .mockUserContact(student)
+        .mockCourseMatrix()
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -351,6 +352,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
       .mockUserContact(student)
+      .mockCourseMatrix()
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -489,6 +491,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
         .mockUserContact(student)
+        .mockCourseMatrix()
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -590,6 +593,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
       .mockUserContact(student)
+      .mockCourseMatrix()
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -650,6 +654,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
         .mockUserContact(student)
+        .mockCourseMatrix()
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -805,6 +810,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockEmptyStudyActivity()
     .mockIAmCounselor()
     .mockUserContact(student)
+    .mockCourseMatrix()
     .build();
     login();
     

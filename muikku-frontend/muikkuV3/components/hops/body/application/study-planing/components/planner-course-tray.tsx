@@ -401,16 +401,15 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
-      type: "new-course-card",
+      type: "planned-course-new",
       item: {
         info: { ...course, subjectCode },
-        type: "new-course-card",
+        type: "planned-course-new",
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      // eslint-disable-next-line jsdoc/require-jsdoc
       canDrag: !disabled,
     }),
     [disabled]
@@ -429,7 +428,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
-  const modifiers = ["course-tray-card"];
+  const modifiers = ["tray-card"];
 
   !disabled ? modifiers.push("draggable") : modifiers.push("not-draggable");
   isDragging && modifiers.push("is-dragging");
@@ -446,15 +445,15 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         onClick={handleSelectCourse}
         ref={drag}
       >
-        <PlannerCardHeader modifiers={["course-tray-item"]}>
-          <span className="planner-course-tray-item__name">
+        <PlannerCardHeader>
+          <span className="study-planner__card-title">
             <b>{`${subjectCode}${course.courseNumber}`}</b>{" "}
             {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           </span>
         </PlannerCardHeader>
 
-        <PlannerCardContent modifiers={["planned-course-card"]}>
-          <div className="study-planner__course-labels">
+        <PlannerCardContent>
+          <div className="study-planner__card-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
               {course.mandatory
                 ? t("labels.mandatory", {
@@ -466,7 +465,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             </PlannerCardLabel>
 
             {isPlannedCourse && (
-              <PlannerCardLabel modifiers={["course-state", "planned"]}>
+              <PlannerCardLabel modifiers={["planned"]}>
                 {t("labels.planned", {
                   ns: "common",
                 })}
@@ -474,7 +473,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             )}
 
             {courseState.state && (
-              <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+              <PlannerCardLabel modifiers={[courseState.state]}>
                 {courseState.label}
               </PlannerCardLabel>
             )}

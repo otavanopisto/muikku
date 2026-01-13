@@ -546,7 +546,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         />
         {showRecipients && (
           <div className="notes__item-recipients">
-            {!specificRecipient
+            {specificRecipient == null
               ? avatars.map((avatar) => {
                   const avatarRecipient = recipients?.find(
                     (r) => r.recipientId === avatar.id
@@ -587,12 +587,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               : avatars
                   .filter((avatar) => avatar.groupAvatar)
                   .map((avatar) => (
-                    <Avatar
+                    <GroupAvatar
                       showTooltip
+                      groupMemberAction={avatarUpdateStatus}
                       key={avatar.id}
                       {...avatar}
                       size="xsmall"
-                    ></Avatar>
+                    ></GroupAvatar>
                   ))}
           </div>
         )}

@@ -1,15 +1,12 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import {
-  updateMessagesNavigationLabel,
-  removeMessagesNavigationLabel,
-  UpdateMessagesNavigationLabelTriggerType,
-  RemoveMessagesNavigationLabelTriggerType,
-} from "~/actions/main-function/messages";
-import {
-  MessagesState,
-  MessagesNavigationItem,
-} from "~/reducers/main-function/messages";
+  deleteAnnouncementCategory,
+  updateAnnouncementCategory,
+  DeleteAnnouncementCategoryTriggerType,
+  UpdateAnnouncementCategoryTriggerType,
+} from "~/actions/announcements";
+import { AnnouncementsState } from "~/reducers/announcements";
 import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { ChromePicker, ColorState } from "react-color";
@@ -19,32 +16,32 @@ import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
 import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
-
+import { colorIntToHex, hexToColorInt } from "~/util/modifiers";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AnnouncementCategory } from "~/generated/client";
 
 const KEYCODES = {
   ENTER: 13,
 };
 
 /**
- * CommunicatorLabelUpdateDialogProps
+ * AnnouncerLabelUpdateDialogProps
  */
-interface CommunicatorLabelUpdateDialogProps extends WithTranslation {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  children: React.ReactElement<any>;
-  label: MessagesNavigationItem;
+interface AnnouncerLabelUpdateDialogProps extends WithTranslation {
+  children: React.ReactElement;
+  category: AnnouncementCategory;
   isOpen?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClose?: () => any;
-  messages: MessagesState;
-  updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
-  removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
+  onOpen?: () => void;
+  onClose?: () => void;
+  announcements: AnnouncementsState;
+  updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType;
+  deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType;
 }
 
 /**
- * CommunicatorLabelUpdateDialogState
+ * AnnouncerLabelUpdateDialogState
  */
-interface CommunicatorLabelUpdateDialogState {
+interface AnnouncerLabelUpdateDialogState {
   displayColorPicker: boolean;
   color: string;
   name: string;
@@ -53,17 +50,17 @@ interface CommunicatorLabelUpdateDialogState {
 }
 
 /**
- * CommunicatorLabelUpdateDialog
+ * AnnouncerLabelUpdateDialog
  */
-class CommunicatorLabelUpdateDialog extends React.Component<
-  CommunicatorLabelUpdateDialogProps,
-  CommunicatorLabelUpdateDialogState
+class AnnouncerLabelUpdateDialog extends React.Component<
+  AnnouncerLabelUpdateDialogProps,
+  AnnouncerLabelUpdateDialogState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: CommunicatorLabelUpdateDialogProps) {
+  constructor(props: AnnouncerLabelUpdateDialogProps) {
     super(props);
 
     this.onColorChange = this.onColorChange.bind(this);
@@ -77,8 +74,8 @@ class CommunicatorLabelUpdateDialog extends React.Component<
 
     this.state = {
       displayColorPicker: false,
-      color: props.label.color,
-      name: props.label.text,
+      color: colorIntToHex(props.category.color),
+      name: props.category.category,
       removed: false,
       locked: false,
     };
@@ -89,10 +86,8 @@ class CommunicatorLabelUpdateDialog extends React.Component<
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(
-    nextProps: CommunicatorLabelUpdateDialogProps
-  ) {
-    if (nextProps.label.id !== this.props.label.id) {
+  UNSAFE_componentWillReceiveProps(nextProps: AnnouncerLabelUpdateDialogProps) {
+    if (nextProps.category.id !== this.props.category.id) {
       this.resetState(null, nextProps);
     }
   }
@@ -129,10 +124,11 @@ class CommunicatorLabelUpdateDialog extends React.Component<
    */
   resetState(e: HTMLElement, props = this.props): void {
     this.setState({
-      color: props.label.color,
+      color: colorIntToHex(props.category.color),
       removed: false,
-      name: props.label.text,
+      name: props.category.category,
     });
+    this.props.onOpen?.();
   }
 
   /**
@@ -190,29 +186,32 @@ class CommunicatorLabelUpdateDialog extends React.Component<
     };
 
     if (
-      (this.state.name !== this.props.label.text ||
-        this.state.color !== this.props.label.color) &&
+      (this.state.name !== this.props.category.category ||
+        this.state.color !== colorIntToHex(this.props.category.color)) &&
       !this.state.removed
     ) {
       this.setState({
         locked: true,
       });
-      this.props.updateMessagesNavigationLabel({
-        label: this.props.label,
-        newName: this.state.name,
-        newColor: this.state.color,
-        success,
-        fail,
-      });
+
+      const data = {
+        id: this.props.category.id,
+        category: this.state.name,
+        color: hexToColorInt(this.state.color),
+        success: success,
+        fail: fail,
+      };
+
+      this.props.updateAnnouncementCategory(data);
     } else if (this.state.removed) {
       this.setState({
         locked: true,
       });
-      this.props.removeMessagesNavigationLabel({
-        label: this.props.label,
+      this.props.deleteAnnouncementCategory(
+        this.props.category.id,
         success,
-        fail,
-      });
+        fail
+      );
     } else {
       closeDialog();
     }
@@ -282,7 +281,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
             onClick={this.onHandleClick}
           >
             <span
-              className={`glyph icon-${this.props.label.icon}`}
+              className={`glyph icon-tag`}
               style={{
                 color: this.state.removed ? "#aaa" : this.state.color,
               }}
@@ -300,14 +299,14 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         </div>
         <div className="dialog__container dialog__container--label-form">
           <div className="form-element form-element--edit-label">
-            <label htmlFor="communicatorLabelName">
+            <label htmlFor="announcementCategoryName">
               {this.props.t("labels.name")}
             </label>
             <input
-              id="communicatorLabelName"
+              id="announcementCategoryName"
               placeholder={this.props.t("labels.name")}
               value={this.state.name}
-              className="form-element__input form-element__input--communicator-label-name"
+              className="form-element__input form-element__input--announcement-category-name"
               disabled={this.state.removed}
               onChange={this.onNameChange}
             />
@@ -322,7 +321,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
         onKeyStroke={this.handleKeydown}
         onOpen={this.resetState}
         modifier="communicator-edit-label"
-        title={this.props.t("labels.edit", { context: "label" })}
+        title={this.props.t("labels.edit", { context: "category" })}
         content={content}
         footer={footer}
       >
@@ -338,7 +337,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    messages: state.messages,
+    announcements: state.announcements,
   };
 }
 
@@ -348,11 +347,11 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { updateMessagesNavigationLabel, removeMessagesNavigationLabel },
+    { updateAnnouncementCategory, deleteAnnouncementCategory },
     dispatch
   );
 }
 
 export default withTranslation(["messaging"])(
-  connect(mapStateToProps, mapDispatchToProps)(CommunicatorLabelUpdateDialog)
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncerLabelUpdateDialog)
 );

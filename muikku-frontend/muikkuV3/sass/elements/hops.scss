@@ -472,7 +472,7 @@
 
 .hops__form-element-icon {
   background-position: center;
-  background-repeat: no-repeat;  
+  background-repeat: no-repeat;
   background-size: 36px;
   border-radius: 5px;
   flex-basis: 42px;
@@ -702,15 +702,39 @@
   align-items: center;
 }
 
-.hops-container__study-tool-indicators {
+.hops-container__study-tool-indicators,
+.hops-container__matrix-problems {
   align-items: center;
   background: $color-default-lighter-generic-background;
-  border-radius: 3px;
+  border-radius: 5px;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
   margin: 5px;
   width: 100%;
+}
+
+.hops-container__matrix-problems {
+  background: lighten($color-fatal, 50%);
+  border: 2px solid $color-fatal;
+  border-radius: 3px;
+  padding: 10px;
+}
+
+.hops-container__matrix-problems-message {
+  font-size: 1.125rem;
+}
+
+.hops-container__matrix-problems-list {
+  list-style-type: disc;
+  margin: 10px 0 0 20px;
+  padding: 0;
+  width: 100%;
+}
+
+.hops-container__matrix-problems-list-item {
+  display: list-item;
+  padding: 4px;
 }
 
 .hops-container__study-tool-indicator-container {
@@ -752,11 +776,21 @@
   justify-content: center;
 }
 
+.hops-container__indicator-item--mandatory.hops-container__indicator-item--not-available {
+  background: transparent;
+  border: 3px solid $color-mandatory;
+}
+
 .hops-container__indicator-item--optional {
   align-items: center;
   background: $color-optional;
   display: flex;
   justify-content: center;
+}
+
+.hops-container__indicator-item--optional.hops-container__indicator-item--not-available {
+  background: transparent;
+  border: 3px solid $color-optional;
 }
 
 .hops-container__indicator-item--approval {

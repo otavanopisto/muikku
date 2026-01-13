@@ -6,6 +6,9 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
+import Dropdown from "~/components/general/dropdown";
+import Link from "~/components/general/link";
+import { filterMatch, filterHighlight, colorIntToHex } from "~/util/modifiers";
 import { AnnouncementsState } from "~/reducers/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
@@ -19,28 +22,37 @@ import {
   markAllAsRead,
   LoadAnnouncementsTriggerType,
   updateAnnouncement,
+  updateSelectedAnnouncementCategories,
+  UpdateSelectedAnnouncementCategoryTriggerType,
   UpdateAnnouncementTriggerType,
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
+  createAnnouncementCategory,
+  CreateAnnouncementCategoryTriggerType,
 } from "~/actions/announcements";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Announcement } from "~/generated/client";
+import { Announcement, Role } from "~/generated/client";
 
 /**
  * AnnouncerToolbarProps
  */
 interface AnnouncerToolbarProps extends WithTranslation {
   announcements: AnnouncementsState;
+  roles: Role[];
+  createAnnouncementCategory: CreateAnnouncementCategoryTriggerType;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   markAllAsRead: LoadAnnouncementsTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
+  updateSelectedAnnouncementCategories: UpdateSelectedAnnouncementCategoryTriggerType;
 }
 
 /**
  * AnnouncerToolbarState
  */
-interface AnnouncerToolbarState {}
+interface AnnouncerToolbarState {
+  category: string;
+}
 /**
  * AnnouncerToolbar
  */
@@ -61,6 +73,29 @@ class AnnouncerToolbar extends React.Component<
     this.restoreSelectedAnnouncements =
       this.restoreSelectedAnnouncements.bind(this);
     this.markAllAsRead = this.markAllAsRead.bind(this);
+    this.onUpdateCategory = this.onUpdateCategory.bind(this);
+    this.onCreateNewCategory = this.onCreateNewCategory.bind(this);
+    this.state = {
+      category: "",
+    };
+  }
+
+  /**
+   * onUpdateCategory
+   * @param e event
+   */
+  onUpdateCategory(e: React.ChangeEvent<HTMLInputElement>) {
+    const category = e.target.value;
+    this.setState({ category });
+  }
+
+  /**
+   * onCreateNewLabel
+   */
+  onCreateNewCategory() {
+    this.props.createAnnouncementCategory({
+      category: this.state.category,
+    });
   }
 
   /**
@@ -225,6 +260,7 @@ class AnnouncerToolbar extends React.Component<
         </ApplicationPanelToolbar>
       );
     } else {
+      const isAtLeastOneSelected = this.props.announcements.selected.length > 0;
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
@@ -261,6 +297,94 @@ class AnnouncerToolbar extends React.Component<
               disabled={this.props.announcements.unreadCount === 0}
               onClick={this.markAllAsRead}
             />
+            {this.props.roles.includes("ADMINISTRATOR") && (
+              <Dropdown
+                modifier="announcer-labels"
+                items={[
+                  <div
+                    key="update-label"
+                    className="form-element form-element--new-label"
+                  >
+                    <input
+                      className="form-element__input"
+                      value={this.state.category}
+                      onChange={this.onUpdateCategory}
+                      type="text"
+                      placeholder={this.props.i18n.t(
+                        "labels.createAndSearchCategories",
+                        { ns: "messaging" }
+                      )}
+                    />
+                  </div>,
+                  <Link
+                    key="new-link"
+                    tabIndex={0}
+                    className="link link--full link--new"
+                    onClick={this.onCreateNewCategory}
+                  >
+                    {this.props.i18n.t("actions.create", {
+                      ns: "messaging",
+                      context: "category",
+                    })}
+                  </Link>,
+                ].concat(
+                  this.props.announcements.categories
+                    .filter((item) =>
+                      filterMatch(item.category, this.state.category)
+                    )
+                    .map((category) => {
+                      const categoryInSelectedCount =
+                        this.props.announcements.selected.reduce(
+                          (count, selected) =>
+                            selected.categories.some(
+                              (c) => c.id === category.id
+                            )
+                              ? count + 1
+                              : count,
+                          0
+                        );
+                      const isSelected = this.props.announcements.selected.find(
+                        (selected) =>
+                          selected.categories.some((c) => c.id === category.id)
+                      );
+                      const isPartiallySelected =
+                        this.props.announcements.selected.length >
+                          categoryInSelectedCount &&
+                        categoryInSelectedCount > 0;
+
+                      return (
+                        <Link
+                          key={category.id}
+                          tabIndex={0}
+                          className={`link link--full link--communicator-label-dropdown ${
+                            isSelected ? "selected" : ""
+                          } ${isPartiallySelected ? "semi-selected" : ""} ${
+                            isAtLeastOneSelected ? "" : "disabled"
+                          }`}
+                          onClick={() =>
+                            this.props.updateSelectedAnnouncementCategories(
+                              category
+                            )
+                          }
+                        >
+                          <span
+                            className="link__icon icon-tag"
+                            style={{ color: colorIntToHex(category.color) }}
+                          ></span>
+                          <span className="link__text">
+                            {filterHighlight(
+                              category.category,
+                              this.state.category
+                            )}
+                          </span>
+                        </Link>
+                      );
+                    })
+                )}
+              >
+                <ButtonPill buttonModifiers="label" icon="tag" />
+              </Dropdown>
+            )}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       );
@@ -278,6 +402,7 @@ class AnnouncerToolbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     announcements: state.announcements,
+    roles: state.status.roles,
   };
 }
 
@@ -288,7 +413,13 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { updateAnnouncement, removeFromAnnouncementsSelected, markAllAsRead },
+    {
+      updateAnnouncement,
+      removeFromAnnouncementsSelected,
+      markAllAsRead,
+      createAnnouncementCategory,
+      updateSelectedAnnouncementCategories,
+    },
     dispatch
   );
 }

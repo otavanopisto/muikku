@@ -323,6 +323,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockStudentCourseStats(student.getId(), 25)
         .mockMatriculationEligibility(student.getId(), true)
         .mockLogin(student)
+        .mockCourseMatrix()
         .build();
         login();
       selectFinnishLocale();        
@@ -360,6 +361,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockStudentCourseStats(student.getId(), 25)
         .mockMatriculationEligibility(student.getId(), true)
         .mockEmptyStudyActivity()
+        .mockCourseMatrix()
         .mockLogin(student)
         .build();
         login();

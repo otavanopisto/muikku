@@ -46,25 +46,25 @@ const PlannerPeriodCourseCardPreview: React.FC<
 
   return (
     <PlannerCard
-      modifiers={["planned-course-card", "preview"]}
+      modifiers={["preview"]}
       innerContainerModifiers={innerContainerModifiers}
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
-        <span className="study-planner__course-name">
+      <PlannerCardHeader>
+        <span className="study-planner__card-title">
           <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
           {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <div className="study-planner__course-labels">
+      <PlannerCardContent>
+        <div className="study-planner__card-labels">
           <PlannerCardLabel
             modifiers={[course.mandatory ? "mandatory" : "optional"]}
           >
             {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
         </div>
-        <div className="study-planner__course-dates">
+        <div className="study-planner__card-dates">
           {calculatedEndDate ? (
             <>
               {localize.date(startDate)} - {localize.date(calculatedEndDate)}

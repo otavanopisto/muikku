@@ -8,6 +8,7 @@ import {
   updateHopsHistory,
   updateHopsStudyPlanGoals,
   updateHopsStudyPlanPlannedCourses,
+  updateHopsStudyPlanPlanNotes,
 } from "~/actions/main-function/hops/";
 import {
   HopsGoals,
@@ -15,9 +16,13 @@ import {
   HopsLocked,
   MatriculationPlan,
   PlannedCourse,
+  StudyPlannerNote,
 } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { PlannedCourseWithIdentifier } from "~/reducers/hops";
+import {
+  PlannedCourseWithIdentifier,
+  StudyPlannerNoteWithIdentifier,
+} from "~/reducers/hops";
 
 /**
  * Props for the HopsWebsocketWatcher component
@@ -212,7 +217,7 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
       const plannedCoursesWithIdentifiers =
         plannedCourses.map<PlannedCourseWithIdentifier>((course) => ({
           ...course,
-          identifier: course.id.toString(),
+          identifier: "planned-course-" + course.id,
         }));
 
       dispatch(
@@ -231,6 +236,45 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
       websocketState.websocket.removeEventCallback(
         "hops:planned-courses-updated",
         onHopsStudyPlanUpdated
+      );
+    };
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
+
+  // Hops study plan plan notes watcher
+  useEffect(() => {
+    /**
+     * Callback function to handle Hops study plan plan notes updates
+     * @param data - HopsStudyPlanPlanNotes
+     */
+    const onHopsStudyPlanPlanNotesUpdated = (
+      data: { notes: StudyPlannerNote[] } & { studentIdentifier: string }
+    ) => {
+      const { studentIdentifier, notes } = data;
+
+      if (studentIdentifier !== props.studentIdentifier) {
+        return;
+      }
+
+      const planNotesWithIdentifiers =
+        notes.map<StudyPlannerNoteWithIdentifier>((note) => ({
+          ...note,
+          identifier: "plan-note-" + note.id,
+        }));
+
+      dispatch(
+        updateHopsStudyPlanPlanNotes({ planNotes: planNotesWithIdentifiers })
+      );
+    };
+
+    websocketState.websocket.addEventCallback(
+      "hops:study-planner-notes-updated",
+      onHopsStudyPlanPlanNotesUpdated
+    );
+
+    return () => {
+      websocketState.websocket.removeEventCallback(
+        "hops:study-planner-notes-updated",
+        onHopsStudyPlanPlanNotesUpdated
       );
     };
   }, [dispatch, props.studentIdentifier, websocketState.websocket]);
