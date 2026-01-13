@@ -238,7 +238,7 @@ type NavigationDropdownAction = "edit" | "delete" | "custom";
 type DialogOpenType = "edit" | "delete" | "custom" | null;
 
 /**
- * TagDropdown component
+ * NavigationDropdown component
  * @param props component props
  * @returns JSX.Element
  */
