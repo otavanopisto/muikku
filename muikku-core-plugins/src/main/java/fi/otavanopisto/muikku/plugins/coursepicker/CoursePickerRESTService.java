@@ -67,7 +67,7 @@ import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemState;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -702,8 +702,16 @@ public class CoursePickerRESTService extends PluginRESTService {
           item.setCourseId(workspaceEntity.getId());
           item.setCourseNumber((Integer) s.get("courseNumber"));
           item.setSubject((String) s.get("subjectCode"));
-          item.setStatus(StudyActivityItemStatus.ONGOING);
+          item.setState(StudyActivityItemState.ONGOING);
           item.setSubjectName((String) s.get("subjectName"));
+          item.setLength((Integer) s.get("length"));
+          item.setLengthSymbol((String) s.get("lengthUnitSymbol"));
+          // TODO Mandatority X(
+          /*
+          // Fugly. Subtype 1 (Valtakunnallinen pakollinen; lukio) or 4 (Pakollinen; perusopetus)
+          item.setMandatory(StringUtils.equals((String) s.get("educationSubtypeIdentifier"), "PYRAMUS-1") ||
+              StringUtils.equals((String) s.get("educationSubtypeIdentifier"), "PYRAMUS-4"));
+          */
           item.setDate(new Date());
           
           restItems.add(item);

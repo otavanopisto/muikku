@@ -86,7 +86,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -627,7 +627,8 @@ public class HopsRestService {
               Boolean.FALSE);
           if (supplementationRequest != null && item.getDate().before(supplementationRequest.getRequestDate())) {
             item.setDate(supplementationRequest.getRequestDate());
-            item.setStatus(StudyActivityItemStatus.SUPPLEMENTATIONREQUEST);
+            item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
+            item.setText(supplementationRequest.getRequestText());
           }
         }
       }
@@ -657,11 +658,13 @@ public class HopsRestService {
             item.setCourseNumber(suggestion.getCourseNumber());
             item.setDate(suggestion.getCreated());
             item.setSubject(suggestion.getSubject());
+            // TODO length, lengthSymbol, mandatority, subjectName and god knows what else (hopefully not needed...) X(
 
             if (suggestion.getType().toLowerCase().contains("optional")) {
-              item.setStatus(StudyActivityItemStatus.SUGGESTED_OPTIONAL);
-            } else {
-              item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT);
+              item.setState(StudyActivityItemState.SUGGESTED_OPTIONAL);
+            }
+            else {
+              item.setState(StudyActivityItemState.SUGGESTED_NEXT);
               item.setCourseId(suggestion.getWorkspaceEntityId());
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
             }
@@ -1123,12 +1126,12 @@ public class HopsRestService {
       hopsSuggestion = hopsController.suggestWorkspace(
           hopsStudent,
           payload.getSubject(),
-          StudyActivityItemStatus.SUGGESTED_NEXT.name(),
+          StudyActivityItemState.SUGGESTED_NEXT.name(),
           payload.getCourseNumber(),
           payload.getCourseId());
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
 
-      item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+      item.setStatus(StudyActivityItemState.SUGGESTED_NEXT.name());
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
       item.setName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
       item.setId(hopsSuggestion.getId());
@@ -1160,13 +1163,13 @@ public class HopsRestService {
       hopsController.suggestWorkspace(
           hopsStudent,
           payload.getSubject(),
-          StudyActivityItemStatus.SUGGESTED_NEXT.name(),
+          StudyActivityItemState.SUGGESTED_NEXT.name(),
           payload.getCourseNumber(),
           workspaceEntity != null ? workspaceEntity.getId() : null);
 
       HopsSuggestionRestModel item = new HopsSuggestionRestModel();
 
-      item.setStatus(StudyActivityItemStatus.SUGGESTED_NEXT.name());
+      item.setStatus(StudyActivityItemState.SUGGESTED_NEXT.name());
       item.setCourseId(hopsSuggestion.getWorkspaceEntityId());
       item.setName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
       item.setId(hopsSuggestion.getId());

@@ -1,8 +1,9 @@
 package fi.otavanopisto.muikku.schooldata.payload;
 
-public enum StudyActivityItemStatus {
+public enum StudyActivityItemState {
 
   ONGOING,
+  PENDING,
   GRADED,
   SUPPLEMENTATIONREQUEST,
   TRANSFERRED,
