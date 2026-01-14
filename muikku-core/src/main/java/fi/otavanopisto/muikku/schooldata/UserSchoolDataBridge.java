@@ -319,4 +319,14 @@ public interface UserSchoolDataBridge {
    */
   public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier);
 
+  /**
+   * Updates Contact Info's Allow Study Discussions property for Contact Infos that have it.
+   * 
+   * @param studentIdentifier
+   * @param contactInfoId
+   * @param allowStudyDiscussions
+   * @return
+   */
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId, boolean allowStudyDiscussions);
+
 }

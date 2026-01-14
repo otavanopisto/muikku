@@ -130,7 +130,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(studentJson)
         .withStatus(200)));
 
-    Email email = new Email((long) 1, (long) 1, true, "testuser@example.com");
+    Email email = new Email((long) 1, true, "testuser@example.com");
     Email[] emails = {email};
     String emailJson = objectMapper.writeValueAsString(emails);
     
@@ -165,7 +165,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(student2Json)
         .withStatus(200)));
 
-    Email email2 = new Email((long) 5, (long) 1, true, "seconduser@example.com");
+    Email email2 = new Email((long) 5, true, "seconduser@example.com");
     Email[] emails2 = {email2};
     String email2Json = objectMapper.writeValueAsString(emails2);
     
@@ -311,7 +311,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staffMemberJson)
         .withStatus(200)));
     
-    Email staff1Email = new Email((long) 2, (long) 1, true, "teacher@example.com");
+    Email staff1Email = new Email((long) 2, true, "teacher@example.com");
     Email[] staff1Emails = {staff1Email};
     String staff1EmailJson = objectMapper.writeValueAsString(staff1Emails);
     stubFor(get(urlEqualTo("/1/staff/members/2/emails"))
@@ -320,7 +320,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staff1EmailJson)
         .withStatus(200)));   
     
-    Email staff2Email = new Email((long) 3, (long) 1, true, "mana@example.com");
+    Email staff2Email = new Email((long) 3, true, "mana@example.com");
     Email[] staff2Emails = {staff2Email};
     String staff2EmailJson = objectMapper.writeValueAsString(staff2Emails);
     stubFor(get(urlEqualTo("/1/staff/members/3/emails"))
@@ -329,7 +329,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staff2EmailJson)
         .withStatus(200)));
 
-    Email staff3Email = new Email((long) 4, (long) 1, true, "admin@example.com");
+    Email staff3Email = new Email((long) 4, true, "admin@example.com");
     Email[] staff3Emails = {staff3Email};
     String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
     stubFor(get(urlEqualTo("/1/staff/members/4/emails"))
@@ -509,7 +509,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staffMemberArrayJson)
         .withStatus(200)));
     
-    Email staffEmail = new Email(staffMemberId, (long) 1, true, email);
+    Email staffEmail = new Email(staffMemberId, true, email);
     Email[] staffEmails = { staffEmail };
     String staffEmailJson = objectMapper.writeValueAsString(staffEmails);
     
@@ -706,7 +706,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
 
-    Email staff3Email = new Email((long) 4, (long) 1, true, "admin@example.com");
+    Email staff3Email = new Email((long) 4, true, "admin@example.com");
     Email[] staff3Emails = {staff3Email};
     String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
     stubFor(get(urlEqualTo("/1/staff/members/4/emails"))
