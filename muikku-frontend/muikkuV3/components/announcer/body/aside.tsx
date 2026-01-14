@@ -11,7 +11,7 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
   NavigationDropdown,
-  NavigationDropdownProps,
+  DropdownWrapperProps,
 } from "../../general/navigation";
 
 import { GenericTag } from "~/components/general/tag-update-dialog";
@@ -140,7 +140,7 @@ class NavigationAside extends React.Component<
               }),
               editLabel: this.props.t("labels.edit"),
               deleteLabel: this.props.t("labels.remove"),
-            } as Omit<NavigationDropdownProps, "children">
+            } satisfies DropdownWrapperProps
           }
           isEditable={this.props.roles.includes("ADMINISTRATOR")}
           iconColor={colorIntToHex(category.color)}
@@ -154,9 +154,11 @@ class NavigationAside extends React.Component<
         <NavigationTopic name={this.props.i18n.t("labels.folders")}>
           {navigationElementList}
         </NavigationTopic>
-        <NavigationTopic name={this.props.i18n.t("labels.categories")}>
-          {categoryElementList}
-        </NavigationTopic>
+        {categoryElementList.length > 0 && (
+          <NavigationTopic name={this.props.i18n.t("labels.categories")}>
+            {categoryElementList}
+          </NavigationTopic>
+        )}
       </Navigation>
     );
   }
