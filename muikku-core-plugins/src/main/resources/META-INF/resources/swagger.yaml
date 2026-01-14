@@ -11597,7 +11597,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/workspace/last/{workspaceEntityId}:
     delete:
       operationId: deleteFromLatestWorkspaces
@@ -15946,7 +15946,6 @@ components:
         - mandatory
         - repeat
         - status
-        - funding
       properties:
         id:
           type: integer
