@@ -154,9 +154,11 @@ class NavigationAside extends React.Component<
         <NavigationTopic name={this.props.i18n.t("labels.folders")}>
           {navigationElementList}
         </NavigationTopic>
-        <NavigationTopic name={this.props.i18n.t("labels.categories")}>
-          {categoryElementList}
-        </NavigationTopic>
+        {categoryElementList.length > 0 && (
+          <NavigationTopic name={this.props.i18n.t("labels.categories")}>
+            {categoryElementList}
+          </NavigationTopic>
+        )}
       </Navigation>
     );
   }
