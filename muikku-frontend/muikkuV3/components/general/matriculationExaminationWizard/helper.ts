@@ -64,14 +64,14 @@ export const SUBJECT_CODES = [
 ];
 
 export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
-  K: "K (Hylätty, muu syy)",
-  IMPROBATUR: "I (Improbatur)",
-  APPROBATUR: "A (Approbatur)",
-  LUBENTER_APPROBATUR: "B (Lubenter approbatur)",
-  CUM_LAUDE_APPROBATUR: "C (Cum laude approbatur)",
-  MAGNA_CUM_LAUDE_APPROBATUR: "M (Magna cum laude approbatur)",
-  EXIMIA_CUM_LAUDE_APPROBATUR: "E (Eximia cum laude approbatur)",
   LAUDATUR: "L (Laudatur)",
+  EXIMIA_CUM_LAUDE_APPROBATUR: "E (Eximia cum laude approbatur)",
+  MAGNA_CUM_LAUDE_APPROBATUR: "M (Magna cum laude approbatur)",
+  CUM_LAUDE_APPROBATUR: "C (Cum laude approbatur)",
+  LUBENTER_APPROBATUR: "B (Lubenter approbatur)",
+  APPROBATUR: "A (Approbatur)",
+  IMPROBATUR: "I (Improbatur)",
+  K: "K (Hylätty, muu syy)",
   UNKNOWN: "Ei vielä tiedossa",
 };
 
