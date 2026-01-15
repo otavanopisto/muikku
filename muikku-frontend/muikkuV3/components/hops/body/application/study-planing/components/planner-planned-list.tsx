@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StudyPlanChangeAction } from "~/reducers/hops";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
-import { StudentStudyActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import PlannerPeriodCourseCard from "./planner-period-course";
 import _ from "lodash";
@@ -14,7 +14,7 @@ interface PlannerPlannedListProps {
   courses: PlannedCourseWithIdentifier[];
   selectedPlanItemIds: string[];
   originalPlannedCourses: PlannedCourseWithIdentifier[];
-  studyActivity: StudentStudyActivity[];
+  studyActivity: StudyActivityItem[];
   curriculumConfig: CurriculumConfig;
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
@@ -64,8 +64,8 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
 
         if (courseActivity) {
           isAssessed =
-            courseActivity.status === "GRADED" ||
-            courseActivity.status === "SUPPLEMENTATIONREQUEST";
+            courseActivity.state === "GRADED" ||
+            courseActivity.state === "SUPPLEMENTATIONREQUEST";
         }
 
         return (

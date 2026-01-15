@@ -74,7 +74,7 @@ export const useCourseCarousel = (
         const [loadedCourseCarouselData] = await Promise.all([
           (async () => {
             //Loaded student activity list
-            const studentActivityList = await hopsApi.getStudentStudyActivity({
+            const studentActivityList = await hopsApi.getStudyActivity({
               studentIdentifier: studentId,
             });
 
@@ -95,13 +95,13 @@ export const useCourseCarousel = (
               for (const aCourse of sCourseItem.modules) {
                 // If transfered, graded, ongoing
                 if (
-                  studentActivityList.find(
+                  studentActivityList.items.find(
                     (sItem) =>
                       sItem.subject === sCourseItem.code &&
                       sItem.courseNumber === aCourse.courseNumber &&
-                      (sItem.status === "TRANSFERRED" ||
-                        sItem.status === "GRADED" ||
-                        sItem.status === "ONGOING")
+                      (sItem.state === "TRANSFERRED" ||
+                        sItem.state === "GRADED" ||
+                        sItem.state === "ONGOING")
                   )
                 ) {
                   // Skip
@@ -118,8 +118,8 @@ export const useCourseCarousel = (
             }
 
             // Iterate studentActivity and pick only suggested next courses
-            for (const a of studentActivityList) {
-              if (a.status === "SUGGESTED_NEXT") {
+            for (const a of studentActivityList.items) {
+              if (a.state === "SUGGESTED_NEXT") {
                 suggestedNextIdList.push(a.courseId);
 
                 coursesAsNext.push({

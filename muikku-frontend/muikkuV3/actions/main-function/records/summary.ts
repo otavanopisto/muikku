@@ -13,7 +13,7 @@ import i18n from "~/locales/i18n";
 import {
   ActivityLogEntry,
   ActivityLogType,
-  StudentStudyActivity,
+  StudyActivityItem,
 } from "~/generated/client";
 import {
   filterActivityBySubjects,
@@ -49,7 +49,7 @@ export interface UpdateStudyProgressTriggerType {
  * Interface for the suggested next websocket thunk action creator
  */
 export interface RecordsSummarySuggestedNextWebsocketType {
-  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+  (data: { websocketData: StudyActivityItem }): AnyActionType;
 }
 
 /**
@@ -57,7 +57,7 @@ export interface RecordsSummarySuggestedNextWebsocketType {
  */
 export interface RecordsSummaryWorkspaceSignupWebsocketType {
   (data: {
-    websocketData: StudentStudyActivity | StudentStudyActivity[];
+    websocketData: StudyActivityItem | StudyActivityItem[];
   }): AnyActionType;
 }
 
@@ -185,7 +185,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
        * Study progress promise
        */
       const studyProgressPromise = async () => {
-        const studentActivity = await hopsApi.getStudentStudyActivity({
+        const studentActivity = await hopsApi.getStudyActivity({
           studentIdentifier: pyramusIdentifier,
         });
 
@@ -199,20 +199,20 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
 
         const skillAndArtCourses = filterActivityBySubjects(
           SKILL_AND_ART_SUBJECTS_CS,
-          studentActivity
+          studentActivity.items
         );
 
         const otherLanguageSubjects = filterActivityBySubjects(
           LANGUAGE_SUBJECTS_CS,
-          studentActivity
+          studentActivity.items
         );
 
         const otherSubjects = filterActivityBySubjects(
           OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-          studentActivity
+          studentActivity.items
         );
 
-        const studentActivityByStatus = filterActivity(studentActivity);
+        const studentActivityByStatus = filterActivity(studentActivity.items);
 
         const studyProgress: SummaryStudyProgress = {
           skillsAndArt: skillAndArtCourses,
@@ -298,7 +298,7 @@ const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocket
 
       const { suggestedNextList } = summaryData.studyProgress;
 
-      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+      const updatedSuggestedNextList: StudyActivityItem[] = [].concat(
         suggestedNextList
       );
 

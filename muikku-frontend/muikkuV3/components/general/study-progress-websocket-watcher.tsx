@@ -19,7 +19,7 @@ import {
   recordsSummaryAlternativeStudyOptionsWebsocket,
   RecordsSummaryAlternativeStudyOptionsWebsocketType,
 } from "~/actions/main-function/records/summary";
-import { StudentStudyActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 
@@ -97,7 +97,7 @@ const StudyProgressWebsocketWatcher = (
   } = props;
 
   // hops:workspace-suggested watcher
-  useWebsocketEvent<StudentStudyActivity>(
+  useWebsocketEvent<StudyActivityItem>(
     "hops:workspace-suggested",
     [
       (data) => recordsSummarySuggestedNextWebsocket({ websocketData: data }),
@@ -108,7 +108,7 @@ const StudyProgressWebsocketWatcher = (
   );
 
   // hops:workspace-signup watcher
-  useWebsocketEvent<StudentStudyActivity | StudentStudyActivity[]>(
+  useWebsocketEvent<StudyActivityItem | StudyActivityItem[]>(
     "hops:workspace-signup",
     [
       (data) => recordsSummaryWorkspaceSignupWebsocket({ websocketData: data }),

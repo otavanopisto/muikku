@@ -28,7 +28,7 @@ import {
   CreateNoteRequest,
   UpdateNoteReceiverRequest,
   UpdateNoteRequest,
-  StudentStudyActivity,
+  StudyActivityItem,
   FlaggedStudent,
   NoteReceiver,
 } from "~/generated/client";
@@ -525,7 +525,7 @@ export interface ArchiveNoteTriggerType {
  *  Interface for the suggested next websocket thunk action creator
  */
 export interface GuiderStudyProgressSuggestedNextWebsocketType {
-  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+  (data: { websocketData: StudyActivityItem }): AnyActionType;
 }
 
 /**
@@ -533,7 +533,7 @@ export interface GuiderStudyProgressSuggestedNextWebsocketType {
  */
 export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
   (data: {
-    websocketData: StudentStudyActivity | StudentStudyActivity[];
+    websocketData: StudyActivityItem | StudyActivityItem[];
   }): AnyActionType;
 }
 
@@ -1045,7 +1045,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
        * Study progress promise
        */
       const studyProgressPromise = async () => {
-        const studentActivity = await hopsApi.getStudentStudyActivity({
+        const studentActivity = await hopsApi.getStudyActivity({
           studentIdentifier: id,
         });
 
@@ -1059,20 +1059,20 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
         const skillAndArtCourses = filterActivityBySubjects(
           SKILL_AND_ART_SUBJECTS_CS,
-          studentActivity
+          studentActivity.items
         );
 
         const otherLanguageSubjects = filterActivityBySubjects(
           LANGUAGE_SUBJECTS_CS,
-          studentActivity
+          studentActivity.items
         );
 
         const otherSubjects = filterActivityBySubjects(
           OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-          studentActivity
+          studentActivity.items
         );
 
-        const studentActivityByStatus = filterActivity(studentActivity);
+        const studentActivityByStatus = filterActivity(studentActivity.items);
 
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -2889,7 +2889,7 @@ const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNex
 
       const { suggestedNextList } = currentStudent.studyProgress;
 
-      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+      const updatedSuggestedNextList: StudyActivityItem[] = [].concat(
         suggestedNextList
       );
 

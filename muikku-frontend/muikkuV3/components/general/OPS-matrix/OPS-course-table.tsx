@@ -189,14 +189,14 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       return null;
     }
 
-    const renderRows = nonOPSTransferedActivities.map((tStudy) => {
+    const renderRows = nonOPSTransferedActivities.map((tStudy, i) => {
       let courseName = tStudy.courseName;
 
       const modifiers = ["centered", "course"];
 
-      if (tStudy.transferCreditMandatory) {
+      if (tStudy.mandatority === "MANDATORY") {
         modifiers.push("MANDATORY");
-      } else {
+      } else if (tStudy.mandatority === "UNSPECIFIED_OPTIONAL") {
         courseName = `${courseName}*`;
         modifiers.push("OPTIONAL");
       }
@@ -208,7 +208,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
       }
 
       return (
-        <Tr key={tStudy.id} modifiers={["course"]}>
+        <Tr key={i} modifiers={["course"]}>
           <Td modifiers={["subject"]}>{courseName}</Td>
           <Td modifiers={modifiers}>
             <Dropdown

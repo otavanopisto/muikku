@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
-import { CourseStatus, StudentStudyActivity } from "~/generated/client";
+import { StudyActivityItemState, StudyActivityItem } from "~/generated/client";
 import {
   PeriodCourseItem,
   PlannedCourseNew,
@@ -139,7 +139,7 @@ const createPeriods = (
  */
 const createAndAllocateCoursesToPeriods = (
   studentDateInfo: StudentDateInfo,
-  studyActivities: StudentStudyActivity[],
+  studyActivities: StudyActivityItem[],
   plannedCourses: PlannedCourseWithIdentifier[],
   planNotes: StudyPlannerNoteWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
@@ -165,8 +165,8 @@ const createAndAllocateCoursesToPeriods = (
     // affect the plan.
     const useStudyActivityData =
       studyActivity &&
-      (studyActivity.status === "GRADED" ||
-        studyActivity.status === "SUPPLEMENTATIONREQUEST");
+      (studyActivity.state === "GRADED" ||
+        studyActivity.state === "SUPPLEMENTATIONREQUEST");
 
     const courseStartYear = useStudyActivityData
       ? new Date(studyActivity.date).getFullYear()
@@ -199,8 +199,8 @@ const createAndAllocateCoursesToPeriods = (
         !plannedCourseKeys.has(
           `${activity.subject}-${activity.courseNumber}`
         ) &&
-        (activity.status === "GRADED" ||
-          activity.status === "SUPPLEMENTATIONREQUEST")
+        (activity.state === "GRADED" ||
+          activity.state === "SUPPLEMENTATIONREQUEST")
     )
     .forEach((activity) => {
       const activityItem = createActivityOnlyCourseItem(
@@ -275,7 +275,7 @@ const createAndAllocateCoursesToPeriods = (
  * @returns activity-only course item
  */
 const createActivityOnlyCourseItem = (
-  studyActivity: StudentStudyActivity,
+  studyActivity: StudyActivityItem,
   curriculumStrategy: CurriculumStrategy
 ): PlannerActivityItem | null => {
   const matrix = curriculumStrategy.getCurriculumMatrix();
@@ -306,9 +306,9 @@ const createActivityOnlyCourseItem = (
  * Filtered course
  */
 interface FilteredCourse extends Course {
-  state?: CourseStatus;
+  state?: StudyActivityItemState;
   planned: boolean;
-  studyActivity?: StudentStudyActivity;
+  studyActivity?: StudyActivityItem;
 }
 
 /**
@@ -326,7 +326,7 @@ const filterSubjectsAndCourses = (
   searchTerm: string,
   selectedFilters: CourseFilter[],
   availableOPSCoursesMap: Map<string, number[]>,
-  studyActivities: StudentStudyActivity[],
+  studyActivities: StudyActivityItem[],
   plannedCourses: PlannedCourseWithIdentifier[]
 ) =>
   subjects
@@ -346,10 +346,10 @@ const filterSubjectsAndCourses = (
             pc.subjectCode === subject.subjectCode
         );
 
-        let state: CourseStatus = undefined;
+        let state: StudyActivityItemState = undefined;
 
         if (studyActivity) {
-          state = studyActivity.status;
+          state = studyActivity.state;
         }
 
         return {
