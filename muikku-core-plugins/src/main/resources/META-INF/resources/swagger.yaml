@@ -17806,13 +17806,25 @@ components:
       type: object
       description: Representation of all study activity of student
       required:
+        - educationType
         - items
+        - completedCourseCredits
+        - mandatoryCourseCredits
       properties:
+        educationType:
+          type: string
+          description: Student's education type, e.g. Lukio or Perusopetus
         items:
           type: array
           description: Study activity items
           items:
             $ref: "#/components/schemas/StudyActivityItem"
+        completedCourseCredits:
+          type: integer
+          description: Student's total number of course credits
+        mandatoryCourseCredits:
+          type: integer
+          description: Student's number of mandatory course credits
     
     StudyActivityItem:
       type: object
