@@ -79,6 +79,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -174,7 +175,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier) {
 
     // Convert identifier to Pyramus student id
 
@@ -185,16 +186,14 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Service call
 
-    BridgeResponse<StudyActivityItemRestModel[]> response = pyramusClient.responseGet(
+    BridgeResponse<StudyActivityRestModel> response = pyramusClient.responseGet(
         String.format("/muikku/students/%d/studyActivity", studentId),
-        StudyActivityItemRestModel[].class);
+        StudyActivityRestModel.class);
 
     // Convert Pyramus course ids in response to Muikku workspace entity ids
 
-    List<StudyActivityItemRestModel> items = null;
     if (response.getEntity() != null) {
-      items = new ArrayList<>();
-      for (StudyActivityItemRestModel item : response.getEntity()) {
+      for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
         if (item.getCourseId() != null) {
           WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
               getSchoolDataSource(),
@@ -207,10 +206,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             item.setCourseId(workspaceEntity.getId());
           }
         }
-        items.add(item);
       }
     }
-    return new BridgeResponse<List<StudyActivityItemRestModel>>(response.getStatusCode(), items);
+    return new BridgeResponse<StudyActivityRestModel>(response.getStatusCode(), response.getEntity());
   }
 
   @Override

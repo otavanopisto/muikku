@@ -34,7 +34,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -53,7 +53,7 @@ public interface UserSchoolDataBridge {
   /* HOPS */
 
   public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier);
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier);
   
   /* Worklist */
   

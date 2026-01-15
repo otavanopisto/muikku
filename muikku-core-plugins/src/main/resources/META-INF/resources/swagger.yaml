@@ -6454,9 +6454,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudyActivityItem"
+                $ref: "#/components/schemas/StudyActivity"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -17804,6 +17802,18 @@ components:
         - UPPER_SECONDARY
         - COMPULSORY
 
+    StudyActivity:
+      type: object
+      description: Representation of all study activity of student
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          description: Study activity items
+          items:
+            $ref: "#/components/schemas/StudyActivityItem"
+    
     StudyActivityItem:
       type: object
       description: Study activity item, e.g. a single transfer credit for student
@@ -17824,6 +17834,11 @@ components:
         - curriculums
         - text
         - evaluatorName
+        - studyProgramme
+        - evaluablesTotal
+        - evaluablesDone
+        - exercisesTotal
+        - exercisesDone
       properties:
         subjectName:
           type: string
@@ -17883,6 +17898,21 @@ components:
           type: string
           description: For graded courses, the name of the evaluator
           nullable: true
+        studyProgramme:
+          type: string
+          description: Student's study programme this item belongs to, e.g. Nettilukio 
+        evaluablesTotal:
+          type: integer
+          description: For course items, the total number of evaluable assignments in the course 
+        evaluablesDone:
+          type: integer
+          description: For course items, the number of evaluable assignments in the course that the student has submitted
+        exercisesTotal:
+          type: integer
+          description: For course items, the total number of exercise assignments in the course
+        exercisesDone:
+          type: integer
+          description: For course items, the number of exercise assignments in the course that the student has submitted
 
     StudentCourseChoice:
       allOf:

@@ -71,6 +71,11 @@ import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudyPlannerNotesWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -87,6 +92,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemState;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -152,6 +158,12 @@ public class HopsRestService {
 
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -611,14 +623,14 @@ public class HopsRestService {
 
     // Pyramus call for ongoing, transferred, and graded courses
 
-    BridgeResponse<List<StudyActivityItemRestModel>> response = userSchoolDataController.getStudyActivity(
+    BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
         studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
     if (response.ok()) {
 
-      // Add suggested courses to the list and track supplementation requests as well
-
-      List<StudyActivityItemRestModel> items = response.getEntity();
-      for (StudyActivityItemRestModel item : items) {
+      for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
+        
+        // Supplementation requests
+        
         if (item.getCourseId() != null && studentEntity != null) {
           SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
               studentEntity.getId(),
@@ -630,15 +642,86 @@ public class HopsRestService {
             item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
             item.setText(supplementationRequest.getRequestText());
           }
+          
+          // Assignment statistics
+          
+          int exercisesTotal = 0;
+          int exercisesDone = 0;
+          int evaluablesTotal = 0;
+          int evaluablesDone = 0;
+
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(item.getCourseId());
+          if (workspaceEntity == null) {
+            continue;
+          }
+          
+          // Exercises
+          
+          List<WorkspaceMaterial> assignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+              workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE);
+          exercisesTotal = assignments.size();
+          for (WorkspaceMaterial assignment : assignments) {
+            if (assignment.isExamAssignment()) {
+              exercisesTotal--;
+              continue;
+            }
+            WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
+                .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, studentEntity);
+            if (workspaceMaterialReply != null) {
+              switch (workspaceMaterialReply.getState()) {
+                case SUBMITTED:
+                case PASSED:
+                case FAILED:
+                case INCOMPLETE:
+                  exercisesDone++;
+                break;
+                default:
+                break;
+              }
+            }
+          }
+          
+          // Evaluables
+          
+          assignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+              workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
+          evaluablesTotal = assignments.size();
+          for (WorkspaceMaterial assignment : assignments) {
+            if (assignment.isExamAssignment()) {
+              evaluablesTotal--;
+              continue;
+            }
+            WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
+                .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, studentEntity);
+            if (workspaceMaterialReply != null) {
+              switch (workspaceMaterialReply.getState()) {
+                case SUBMITTED:
+                case PASSED:
+                case FAILED:
+                case INCOMPLETE:
+                  evaluablesDone++;
+                break;
+                default:
+                break;
+              }
+            }
+          }
+          
+          item.setExercisesTotal(exercisesTotal);
+          item.setExercisesDone(exercisesDone);
+          item.setEvaluablesTotal(evaluablesTotal);
+          item.setEvaluablesDone(evaluablesDone);
         }
       }
 
+      // Add suggested courses to the list
+      
       List<HopsSuggestion> suggestions = hopsController.listSuggestions(hopsStudent);
       for (HopsSuggestion suggestion : suggestions) {
 
         // Check if subject + course number already exists. If so, delete suggestion as it is already outdated
 
-        long matches = items
+        long matches = response.getEntity().getItems()
             .stream()
             .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()) && Objects.equals(s.getCourseId(), suggestion.getWorkspaceEntityId()))
             .count();
@@ -668,7 +751,7 @@ public class HopsRestService {
               item.setCourseId(suggestion.getWorkspaceEntityId());
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
             }
-            items.add(item);
+            response.getEntity().getItems().add(item);
           }
         }
         else {
@@ -679,7 +762,7 @@ public class HopsRestService {
         }
       }
 
-      return Response.status(response.getStatusCode()).entity(items).build();
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();

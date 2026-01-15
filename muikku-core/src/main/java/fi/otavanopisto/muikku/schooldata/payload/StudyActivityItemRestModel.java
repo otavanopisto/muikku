@@ -135,6 +135,46 @@ public class StudyActivityItemRestModel {
     this.evaluatorName = evaluatorName;
   }
 
+  public String getStudyProgramme() {
+    return studyProgramme;
+  }
+
+  public void setStudyProgramme(String studyProgramme) {
+    this.studyProgramme = studyProgramme;
+  }
+
+  public int getEvaluablesTotal() {
+    return evaluablesTotal;
+  }
+
+  public void setEvaluablesTotal(int evaluablesTotal) {
+    this.evaluablesTotal = evaluablesTotal;
+  }
+
+  public int getEvaluablesDone() {
+    return evaluablesDone;
+  }
+
+  public void setEvaluablesDone(int evaluablesDone) {
+    this.evaluablesDone = evaluablesDone;
+  }
+
+  public int getExercisesTotal() {
+    return exercisesTotal;
+  }
+
+  public void setExercisesTotal(int exercisesTotal) {
+    this.exercisesTotal = exercisesTotal;
+  }
+
+  public int getExercisesDone() {
+    return exercisesDone;
+  }
+
+  public void setExercisesDone(int exercisesDone) {
+    this.exercisesDone = exercisesDone;
+  }
+
   private String subject;
   private String subjectName;
   private Long courseId;
@@ -151,4 +191,10 @@ public class StudyActivityItemRestModel {
   private List<String> curriculums;
   private String text;
   private String evaluatorName;
+  private String studyProgramme;
+  private int evaluablesTotal;
+  private int evaluablesDone;
+  private int exercisesTotal;
+  private int exercisesDone;
+
 }
