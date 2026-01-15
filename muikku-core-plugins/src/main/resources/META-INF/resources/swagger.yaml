@@ -5272,7 +5272,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StudyActivityItem"
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyActivityItem"
         "400":
           description: Invalid request was sent to the server
         "500":
