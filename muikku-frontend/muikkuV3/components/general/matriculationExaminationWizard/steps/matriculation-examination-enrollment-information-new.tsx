@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
 import Button from "~/components/general/button";
@@ -32,6 +33,7 @@ import {
   FINNISH_SUBJECTS,
 } from "~/components/general/matriculationExaminationWizard/helper";
 import { useTranslation } from "react-i18next";
+import { Textarea } from "../textarea";
 
 /**
  * Required amount attendances for valid Examination (vähintään 5 suoritusta)
@@ -115,16 +117,26 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const values = useWizardContext();
 
   /**
-   * Returns list of finished subjects from finished attendances lists
+   * Gets list of finished attendances excluding attendances that are marked as "OUTDATED" in the term field
    *
-   * @returns list of finished subjects from finished attendances lists
+   * @returns list of finished attendances
    */
-  const getFinishedSubjects = React.useCallback(
+  const getFinishedAttendances = React.useCallback(
     () =>
-      examinationInformation.finishedAttendances.map(
-        (attendance) => attendance.subject
+      examinationInformation.finishedAttendances.filter(
+        (attendance) => attendance.term !== "OUTDATED"
       ),
     [examinationInformation.finishedAttendances]
+  );
+
+  /**
+   * Gets list of finished subjects from finished attendances lists
+   *
+   * @returns list of finished subjects
+   */
+  const getFinishedSubjects = React.useCallback(
+    () => getFinishedAttendances().map((attendance) => attendance.subject),
+    [getFinishedAttendances]
   );
 
   /**
@@ -140,14 +152,18 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
       (attendance) => attendance.subject
     );
 
-    examinationInformation.finishedAttendances.forEach((finishedAttendance) => {
+    getFinishedAttendances().forEach((finishedAttendance) => {
       if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
         attendances.push(finishedAttendance);
       }
     });
 
     return attendances;
-  }, [examinationInformation]);
+  }, [
+    examinationInformation.enrolledAttendances,
+    examinationInformation.plannedAttendances,
+    getFinishedAttendances,
+  ]);
 
   /**
    * getSuccesfulFinishedExams
@@ -156,7 +172,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const getSuccesfulFinishedExams = React.useCallback(() => {
     const succesfulFinishedExams: string[] = [];
 
-    examinationInformation.finishedAttendances.forEach((item) => {
+    getFinishedAttendances().forEach((item) => {
       // Because there is a case where examination is not yet graded
       // before next enrollment period starts, we need to include UNKNOWN
       // to the list of succesful grades to be able to continue with the enrollment
@@ -166,10 +182,12 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return succesfulFinishedExams;
-  }, [examinationInformation.finishedAttendances]);
+  }, [getFinishedAttendances]);
 
   /**
-   * getNonDuplicateAttendanceEnrolledAndPlanned
+   * Gets list of enrolled and planned attendances excluding not succeed finished attendances
+   *
+   * @returns list of enrolled and planned attendances excluding not succeed finished attendances
    */
   const getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed =
     React.useCallback(() => {
@@ -184,7 +202,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         .map((attendance) => attendance.subject)
         .filter((subject) => succesfullyFinishedExams.indexOf(subject) !== -1);
 
-      examinationInformation.finishedAttendances
+      getFinishedAttendances()
         .filter(
           (fAttendance) =>
             succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
@@ -196,16 +214,22 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         });
 
       return attendances;
-    }, [examinationInformation, getSuccesfulFinishedExams]);
+    }, [
+      examinationInformation.enrolledAttendances,
+      examinationInformation.plannedAttendances,
+      getFinishedAttendances,
+      getSuccesfulFinishedExams,
+    ]);
 
   /**
-   * getFailedExamsBySomeOtherReason
+   * Gets list of exams that are failed for some other reasons
+   *
    * @returns list of exams that are failed for some other reasons
    */
   const getFailedExamsBySomeOtherReason = () => {
     const failedExamsBySomeOtherReason: string[] = [];
 
-    examinationInformation.finishedAttendances.forEach((item) => {
+    getFinishedAttendances().forEach((item) => {
       if (item.grade === "K") {
         failedExamsBySomeOtherReason.push(item.subject);
       }
@@ -215,24 +239,26 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   };
 
   /**
-   * getRenewableForFreeFinishedAttendances
-   * @returns Array of failed attendaces with IMPROBATUR GRADE
+   * Gets list of exams that are renewable for free
+   *
+   * @returns list of exams that are renewable for free
    */
   const getRenewableForFreeFinishedAttendances = React.useCallback(() => {
     const renewableForFree: string[] = [];
 
-    examinationInformation.finishedAttendances.forEach((item) => {
+    getFinishedAttendances().forEach((item) => {
       if (item.grade === "IMPROBATUR") {
         renewableForFree.push(item.subject);
       }
     });
 
     return renewableForFree;
-  }, [examinationInformation.finishedAttendances]);
+  }, [getFinishedAttendances]);
 
   /**
-   * getNonRenewableForFreeFinishedAttendances
-   * @returns Array of non renewable for free list
+   * Gets list of exams that are not renewable for free
+   *
+   * @returns list of exams that are not renewable for free
    */
   const getNonRenewableForFreeFinishedAttendances = () => [
     ...getSuccesfulFinishedExams(),
@@ -240,8 +266,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   ];
 
   /**
-   * getAmountOfChoosedAttendances
-   * @returns number of choosed attendance including enrolled and finished excluding dublicated attendances
+   * Gets amount of choosed attendances including enrolled and finished excluding duplicate attendances
+   *
+   * @returns amount of choosed attendances including enrolled and finished excluding duplicate attendances
    */
   const getAmountOfChoosedAttendances = () =>
     getNonDuplicateAttendanceEnrolledAndPlanned().length;
@@ -290,14 +317,15 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     ).length;
 
   /**
-   * getAmountOfSucceedExams
+   * Gets amount of succeed exams excluding exams that are failed for some other reasons
+   *
    * @returns amount of succeed exams
    */
   const getAmountOfSucceedExams = React.useCallback(() => {
     let amountOfExamsWithOtherThanImprobatur = 0;
     let amountOFailedForOtherReasons = 0;
 
-    examinationInformation.finishedAttendances.map((item) => {
+    getFinishedAttendances().map((item) => {
       if (item.grade !== "IMPROBATUR") {
         amountOfExamsWithOtherThanImprobatur++;
       }
@@ -307,7 +335,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return amountOfExamsWithOtherThanImprobatur - amountOFailedForOtherReasons;
-  }, [examinationInformation.finishedAttendances]);
+  }, [getFinishedAttendances]);
 
   /**
    * getAmountOfFreeAttendances
@@ -526,7 +554,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const isConflictingRepeat = (
     attendance: MatriculationExamEnrolledSubject
   ) => {
-    if (attendance.repeat === false) {
+    //console.log("isConflictingRepeat", attendance);
+    if (attendance.subject && attendance.repeat === false) {
+      //console.log("getFinishedSubjects", getFinishedSubjects());
       return getFinishedSubjects().indexOf(attendance.subject) != -1;
     } else {
       return false;
@@ -665,9 +695,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
       default:
         return false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     examinationInformation.degreeType,
-    examinationInformation.enrolledAttendances.length,
+    examinationInformation.enrolledAttendances,
     hasConflictingRepeats,
     isConflictingAttendances,
     isIncompleteAttendances,
@@ -680,7 +711,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const handleNewEnrolledAttendanceClick = () => {
     const { degreeType } = examinationInformation;
 
-    const enrolledAttendances = examinationInformation.enrolledAttendances;
+    const updatedEnrolledAttendances = [
+      ...examinationInformation.enrolledAttendances,
+    ];
 
     const funding =
       compulsoryEducationEligible &&
@@ -690,7 +723,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           : undefined
         : MatriculationExamFundingType.SelfFunded;
 
-    enrolledAttendances.push({
+    updatedEnrolledAttendances.push({
       subject: "",
       mandatory: false,
       repeat: false,
@@ -700,7 +733,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     const modifiedExamination: ExaminationInformation = {
       ...examinationInformation,
-      enrolledAttendances,
+      enrolledAttendances: updatedEnrolledAttendances,
     };
 
     onExaminationInformationChange(modifiedExamination);
@@ -712,7 +745,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const handleNewFinishedAttendanceClick = () => {
     const { degreeType } = examinationInformation;
 
-    const finishedAttendances = examinationInformation.finishedAttendances;
+    const updatedFinishedAttendances = [
+      ...examinationInformation.finishedAttendances,
+    ];
 
     const funding =
       compulsoryEducationEligible &&
@@ -722,7 +757,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           : undefined
         : MatriculationExamFundingType.SelfFunded;
 
-    finishedAttendances.push({
+    updatedFinishedAttendances.push({
       term: getDefaultPastTerm().value,
       year: null,
       subject: "",
@@ -734,7 +769,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     const modifiedExamination: ExaminationInformation = {
       ...examinationInformation,
-      finishedAttendances,
+      finishedAttendances: updatedFinishedAttendances,
     };
 
     onExaminationInformationChange(modifiedExamination);
@@ -767,13 +802,15 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * @param i index of enrolled attendacen row which will be deleted
    */
   const handleDeleteEnrolledAttendanceRow = (i: number) => () => {
-    const enrolledAttendances = examinationInformation.enrolledAttendances;
+    const updatedEnrolledAttendances = [
+      ...examinationInformation.enrolledAttendances,
+    ];
 
-    enrolledAttendances.splice(i, 1);
+    updatedEnrolledAttendances.splice(i, 1);
 
     const modifiedExamination: ExaminationInformation = {
       ...examinationInformation,
-      enrolledAttendances,
+      enrolledAttendances: updatedEnrolledAttendances,
     };
 
     onExaminationInformationChange(modifiedExamination);
@@ -784,13 +821,15 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * @param i index of finished attendance row which will be deleted
    */
   const handleDeleteFinishedAttendanceRow = (i: number) => () => {
-    const finishedAttendances = examinationInformation.finishedAttendances;
+    const updatedFinishedAttendances = [
+      ...examinationInformation.finishedAttendances,
+    ];
 
-    finishedAttendances.splice(i, 1);
+    updatedFinishedAttendances.splice(i, 1);
 
     const modifiedExamination: ExaminationInformation = {
       ...examinationInformation,
-      finishedAttendances,
+      finishedAttendances: updatedFinishedAttendances,
     };
 
     onExaminationInformationChange(modifiedExamination);
@@ -801,12 +840,14 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * @param i index of planned attendance row which will be deleted
    */
   const handleDeletePlannedAttendanceRow = (i: number) => () => {
-    const plannedAttendances = examinationInformation.plannedAttendances;
-    plannedAttendances.splice(i, 1);
+    const updatedPlannedAttendances = [
+      ...examinationInformation.plannedAttendances,
+    ];
+    updatedPlannedAttendances.splice(i, 1);
 
     const modifiedExamination: ExaminationInformation = {
       ...examinationInformation,
-      plannedAttendances,
+      plannedAttendances: updatedPlannedAttendances,
     };
 
     onExaminationInformationChange(modifiedExamination);
@@ -866,13 +907,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         finishedAttendances: modifiedExamination.finishedAttendances.map(
           (fSubject) => ({
             ...fSubject,
-            funding: undefined,
+            funding: undefined as MatriculationExamFundingType | undefined,
           })
         ),
         enrolledAttendances: modifiedExamination.enrolledAttendances.map(
           (eSubject) => ({
             ...eSubject,
-            funding: undefined,
+            funding: undefined as MatriculationExamFundingType | undefined,
           })
         ),
       };
@@ -1273,6 +1314,29 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             </div>
           </div>
         ) : null}
+      </fieldset>
+
+      <fieldset className="matriculation-container__fieldset">
+        <legend className="matriculation-container__subheader">
+          Muut tiedot
+        </legend>
+
+        <div className="matriculation-container__row">
+          <div className="matriculation__form-element-container">
+            <Textarea
+              label="Opintopolku-url"
+              value={examinationInformation.opintopolkuUrl}
+              onChange={(e) =>
+                handleExaminationInformationChange(
+                  "opintopolkuUrl",
+                  e.target.value
+                )
+              }
+              rows={5}
+              className="matriculation__textarea"
+            />
+          </div>
+        </div>
       </fieldset>
 
       <fieldset className="matriculation-container__fieldset">

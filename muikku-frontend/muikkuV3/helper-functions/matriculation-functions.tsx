@@ -101,8 +101,12 @@ export const getNextTermsOptionsByDate = (date: Date | string, t: TFunction) =>
  * @param t t
  * @returns term options
  */
-export const getPastTermOptions = (t: TFunction) =>
-  getTermOptions(getPastTerms(), t);
+export const getPastTermOptions = (t: TFunction) => [
+  <option key="OUTDATED" value="OUTDATED">
+    Vielä aikaisempi
+  </option>,
+  ...getTermOptions(getPastTerms(), t),
+];
 
 /**
  * Resolves next 3 term options
@@ -131,9 +135,13 @@ export const getDefaultNextTerm = () => getNextTerms()[0];
  *
  * @param termString Term + year. Example: "SPRING2021"
  */
-export const parseTermToValues = (termString: string) => {
-  const term = termString ? termString.substring(0, 6) : null;
-  const year = term ? Number(termString.substring(6)) : null;
+export const parseTermToValues = (termString: string | null) => {
+  if (!termString) {
+    return { term: null, year: null };
+  }
+
+  const term = termString.substring(0, 6);
+  const year = Number(termString.substring(6));
 
   return { term, year };
 };

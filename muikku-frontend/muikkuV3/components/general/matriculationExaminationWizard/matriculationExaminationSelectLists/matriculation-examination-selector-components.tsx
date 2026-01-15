@@ -202,7 +202,7 @@ interface MatriculationExaminationFinishedInputGroupProps {
   readOnly?: boolean;
   onSubjectGroupChange: <T extends keyof MatriculationExamFinishedSubject>(
     key: T,
-    value: MatriculationExamFinishedSubject[T],
+    value: MatriculationExamFinishedSubject[T] | null,
     index: number
   ) => void;
   onClickDeleteRow: (index: number) => (e: React.MouseEvent) => void;
