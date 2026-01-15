@@ -34,5 +34,7 @@ public interface MatriculationExamEnrollment {
   public void setDegreeStructure(String degreeStructure);
   public OffsetDateTime getEnrollmentDate();
   public void setEnrollmentDate(OffsetDateTime enrollmentDate);
+  public String getOpintopolkuUrl();
+  public void setOpintopolkuUrl(String opintopolkuUrl);
 }
 
