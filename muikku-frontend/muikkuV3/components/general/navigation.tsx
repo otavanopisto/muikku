@@ -13,6 +13,7 @@ import UpdateDialog, {
   GenericTag,
 } from "~/components/general/tag-update-dialog";
 import PromptDialog from "~/components/general/prompt-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * Navigation
@@ -196,9 +197,15 @@ export class NavigationElement extends React.Component<
 }
 
 /**
+ * Props for a situation where Dropdown is used as a wrapper
+ */
+export interface DropdownWrapperProps
+  extends Omit<NavigationDropdownProps, "children"> {}
+
+/**
  * NavigationDropdownProps
  */
-export interface NavigationDropdownProps {
+interface NavigationDropdownProps {
   children: React.ReactNode;
   // So far this only works for announcement categories,
   // generalizing this is a different issue
@@ -207,15 +214,31 @@ export interface NavigationDropdownProps {
   onUpdate: (tag: GenericTag, success?: () => void, fail?: () => void) => void;
   deleteDialogTitle: string;
   deleteDialogContent: string;
+  customAction?: {
+    title: string;
+    content: string;
+    label: string;
+    icon: string;
+    onCustomAction: (
+      tag: GenericTag,
+      success?: () => void,
+      fail?: () => void
+    ) => void;
+  };
+
   updateDialogTitle?: string;
   editLabel: string;
   deleteLabel: string;
+  disableEdit?: boolean;
+  disableDelete?: boolean;
+  disableCustomAction?: boolean;
 }
 
-type NavigationDropdownAction = "edit" | "delete";
+type NavigationDropdownAction = "edit" | "delete" | "custom";
+type DialogOpenType = "edit" | "delete" | "custom" | null;
 
 /**
- * TagDropdown component
+ * NavigationDropdown component
  * @param props component props
  * @returns JSX.Element
  */
@@ -229,15 +252,19 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
     onUpdate,
     deleteDialogTitle,
     deleteDialogContent,
+    customAction,
     editLabel,
     deleteLabel,
+    disableEdit,
+    disableDelete,
+    disableCustomAction,
   } = props;
   const [open, setOpen] = React.useState(false);
-  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState<DialogOpenType>(null);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const triggerRef = React.useRef<HTMLDivElement>(null);
   const dropdownRef = React.useRef<HTMLElement>(null);
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (!open) return;
@@ -291,19 +318,27 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
    */
   const handleDelete = (tag: GenericTag) => {
     onDelete(tag);
-    setDeleteDialogOpen(false);
+    setOpenDialog(null);
   };
 
   /**
    * handleOptions
+   * @param e mouse event
    * @param action option action
    */
-  const handleOptions = (action: NavigationDropdownAction) => {
+  const handleOptions = (
+    e: React.MouseEvent,
+    action: NavigationDropdownAction
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
     unstable_batchedUpdates(() => {
       if (action === "edit") {
-        setEditDialogOpen(true);
+        setOpenDialog("edit");
       } else if (action === "delete") {
-        setDeleteDialogOpen(true);
+        setOpenDialog("delete");
+      } else if (action === "custom") {
+        setOpenDialog("custom");
       }
       setOpen(false);
     });
@@ -322,6 +357,9 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
       {open &&
         createPortal(
           <nav
+            role="menu"
+            aria-label={t("wcag.tagOptionMenu", { ns: "common" })}
+            aria-hidden={!open}
             ref={dropdownRef}
             className="menu__item-dropdown"
             id="tagDropdownMenu"
@@ -333,17 +371,37 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
           >
             <ul className="menu__item-dropdown-list">
               <li
-                className="menu__item-dropdown-list-item"
+                className={`menu__item-dropdown-list-item ${disableEdit ? " disabled" : ""}`}
                 id="editOption"
-                onClick={() => handleOptions("edit")}
+                role="menuitem"
+                aria-disabled={disableEdit}
+                onClick={(e) => !disableEdit && handleOptions(e, "edit")}
               >
                 <span className="menu__item-dropdown-icon icon-pencil"></span>
                 <span>{editLabel}</span>
               </li>
+              {customAction && (
+                <li
+                  className={`menu__item-dropdown-list-item ${disableCustomAction ? "disabled" : ""}`}
+                  id="customActionOption"
+                  role="menuitem"
+                  aria-disabled={disableCustomAction}
+                  onClick={(e) =>
+                    !disableCustomAction && handleOptions(e, "custom")
+                  }
+                >
+                  <span
+                    className={`menu__item-dropdown-icon icon-${customAction.icon}`}
+                  ></span>
+                  <span>{customAction.label}</span>
+                </li>
+              )}
               <li
-                className="menu__item-dropdown-list-item"
+                className={`menu__item-dropdown-list-item ${disableDelete ? "disabled" : ""}`}
                 id="deleteOption"
-                onClick={() => handleOptions("delete")}
+                role="menuitem"
+                aria-disabled={disableDelete}
+                onClick={(e) => !disableDelete && handleOptions(e, "delete")}
               >
                 <span className="menu__item-dropdown-icon icon-trash"></span>
                 <span>{deleteLabel}</span>
@@ -356,8 +414,8 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
       <UpdateDialog
         tag={tag}
         title={props.updateDialogTitle}
-        isOpen={editDialogOpen}
-        onClose={() => setEditDialogOpen(false)}
+        isOpen={openDialog === "edit"}
+        onClose={() => setOpenDialog(null)}
         onUpdate={onUpdate}
       >
         <span style={{ display: "none" }} />
@@ -367,11 +425,23 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
         title={deleteDialogTitle}
         content={deleteDialogContent}
         onExecute={() => handleDelete(tag)}
-        isOpen={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
+        isOpen={openDialog === "delete"}
+        onClose={() => setOpenDialog(null)}
       >
         <span style={{ display: "none" }} />
       </PromptDialog>
+
+      {customAction && (
+        <PromptDialog
+          title={customAction.title}
+          content={customAction.content}
+          onExecute={() => customAction.onCustomAction(tag)}
+          isOpen={openDialog === "custom"}
+          onClose={() => setOpenDialog(null)}
+        >
+          <span style={{ display: "none" }} />
+        </PromptDialog>
+      )}
     </>
   );
 };
