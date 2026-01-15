@@ -617,7 +617,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   handlePaste(e: React.ClipboardEvent) {
     const file =
       e.clipboardData && e.clipboardData.files && e.clipboardData.files[0];
-    if (file.type.startsWith("image")) {
+    if (file && file.type.startsWith("image")) {
       /* We stop and prevent normal paste bahaviour only if clipboard has image[0] there, everything else will bypass this */
       e.stopPropagation();
       e.preventDefault();
@@ -767,6 +767,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       node.className = "ace_invisible ace_emptyMessage";
       node.style.padding = "0 9px";
       this.aceEditor.renderer.scroller.appendChild(node);
+    }
+
+    // Kinda hacky but it works
+    // Sync aceEditor value to MathQuill and trigger onChange
+    // This ensures the value is up-to-date when onChange reads from MathQuill
+    if (this.selectedMathField && this.isOnAceEditor) {
+      this.selectedMathField.latex(this.aceEditor.getValue());
+      this.onChange();
     }
   }
 

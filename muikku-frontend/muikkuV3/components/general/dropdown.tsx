@@ -172,12 +172,6 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       return;
     }
 
-    // Check if click is inside a dialog (which renders via Portal outside dropdown)
-    const dialogElement = (target as Element).closest?.(".dialog");
-    if (dialogElement) {
-      return;
-    }
-
     this.close();
   };
 
