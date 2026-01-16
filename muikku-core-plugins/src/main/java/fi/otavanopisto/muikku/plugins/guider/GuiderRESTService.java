@@ -1351,6 +1351,9 @@ public class GuiderRESTService extends PluginRESTService {
 
     List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
     
+    // TODO Not all StudyActivityItemRestModel fields are populated. Replace this with a generic
+    // websocket message about course 123 having changed so that frontend can fetch its complete
+    // data via a separate endpoint
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
       SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
@@ -1372,12 +1375,6 @@ public class GuiderRESTService extends PluginRESTService {
           item.setSubjectName((String) s.get("subjectName"));
           item.setLength((Integer) s.get("length"));
           item.setLengthSymbol((String) s.get("lengthUnitSymbol"));
-          // TODO Mandatority
-          /*
-          // Fugly. Subtype 1 (Valtakunnallinen pakollinen; lukio) or 4 (Pakollinen; perusopetus)
-          item.setMandatory(StringUtils.equals((String) s.get("educationSubtypeIdentifier"), "PYRAMUS-1") ||
-              StringUtils.equals((String) s.get("educationSubtypeIdentifier"), "PYRAMUS-4"));
-          */
           item.setDate(new Date());
           
           restItems.add(item);
