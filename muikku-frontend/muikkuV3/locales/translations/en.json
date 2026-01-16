@@ -945,7 +945,7 @@
       "matriculationFormEmptySelectedExams": "No selected exams",
       "matriculationFormEmptyPlannedExams": "No planned exams",
       "matriculationFormEmptyPlace": "If you wish to take the exam somewhere other than Mikkeli, you must first arrange it with the respective educational institution.",
-      "matriculationFormConflictingRepeats": "Mark the exam for retaking if you have already taken it before.",
+      "matriculationFormConflictingRepeats": "Mark the exam for retaking if you have already taken it before. Mark the exam as the first attempt if you have not taken it before.",
       "matriculationFormCanRenewedForFree": "If you have previously received a grade of IMPROBATUR in the exam, you can retake the exam free of charge by choosing Free matriculation exam (retake).",
       "matriculationFormCompulsoryEligibleInfo": "Select the five exams that are free for you and those that you will pay for yourself.",
       "matriculationFormExaminationIsValid": "With these choices, you can graduate as a secondary school graduate!",
