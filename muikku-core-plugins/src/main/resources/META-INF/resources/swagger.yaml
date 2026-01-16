@@ -19243,6 +19243,8 @@ components:
         - TRANSFERRED
         - SUGGESTED_NEXT
         - SUGGESTED_OPTIONAL
+        - INTERIM_EVALUATION_REQUEST
+        - INTERIM_EVALUATION
 
     CourseType:
       type: string

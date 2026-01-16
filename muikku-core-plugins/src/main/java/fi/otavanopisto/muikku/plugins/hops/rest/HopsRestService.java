@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -49,7 +50,9 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.HopsStudent;
 import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
@@ -632,6 +635,11 @@ public class HopsRestService {
         // Supplementation requests
         
         if (item.getCourseId() != null && studentEntity != null) {
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(item.getCourseId());
+          if (workspaceEntity == null) {
+            continue;
+          }
+          
           SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
               studentEntity.getId(),
               item.getCourseId(),
@@ -642,6 +650,32 @@ public class HopsRestService {
             item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
             item.setText(supplementationRequest.getRequestText());
           }
+
+          // Interim evaluation request, if one exists and is newer than activity date so far
+
+          InterimEvaluationRequest interimEvaluationRequest = evaluationController.findLatestInterimEvaluationRequest(studentEntity, workspaceEntity, Boolean.FALSE);
+          if (interimEvaluationRequest != null && interimEvaluationRequest.getRequestDate().after(item.getDate())) {
+            item.setText(interimEvaluationRequest.getRequestText());
+            item.setDate(interimEvaluationRequest.getRequestDate());
+            item.setState(StudyActivityItemState.INTERIM_EVALUATION_REQUEST);
+          }
+
+          // Interim evaluation, if one exists and is newer than activity date so far (won't override active assessment request, though)
+
+          if (item.getState() != StudyActivityItemState.PENDING) {
+            List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(
+                workspaceEntity,
+                WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
+                BooleanPredicate.IGNORE);
+            for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+              WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceMaterial.getId(), studentEntity.getId());
+              if (evaluation != null && evaluation.getEvaluated().after(item.getDate())) {
+                item.setText(evaluation.getVerbalAssessment());
+                item.setDate(evaluation.getEvaluated());
+                item.setState(StudyActivityItemState.INTERIM_EVALUATION);
+              }
+            }
+          }
           
           // Assignment statistics
           
@@ -649,11 +683,6 @@ public class HopsRestService {
           int exercisesDone = 0;
           int evaluablesTotal = 0;
           int evaluablesDone = 0;
-
-          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(item.getCourseId());
-          if (workspaceEntity == null) {
-            continue;
-          }
           
           // Exercises
           
