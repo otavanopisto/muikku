@@ -10,6 +10,7 @@ import {
   loadWorkspaceStatus,
   updateStatusChatSettings,
 } from "~/actions/base/status";
+import { loadUserStudyActivity } from "~/actions/study-activity";
 
 /**
  * getOptionValue
@@ -97,6 +98,12 @@ export default async function (
   const loadAreaPermissions = () =>
     store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
 
+  /**
+   * Loads user study activity
+   */
+  const loadUserStudyActivities = () =>
+    store.dispatch(<Action>loadUserStudyActivity({}));
+
   const isWorkspace = window.location.pathname.includes("/workspace/");
   const workspaceUrl = window.location.pathname.split("/")[2];
 
@@ -111,6 +118,7 @@ export default async function (
         loadAreaPermissions();
         updateUnreadThreadMessagesCount();
         loadChatSettings();
+        loadUserStudyActivities();
         resolve(initializeWebsocket(actionsAndCallbacks));
       };
       store.dispatch(<Action>loadStatus(resolveFn));

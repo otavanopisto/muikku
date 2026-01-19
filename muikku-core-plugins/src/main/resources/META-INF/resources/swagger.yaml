@@ -11597,7 +11597,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/workspace/last/{workspaceEntityId}:
     delete:
       operationId: deleteFromLatestWorkspaces
@@ -17827,7 +17827,7 @@ components:
         mandatoryCourseCredits:
           type: integer
           description: Student's number of mandatory course credits
-    
+
     StudyActivityItem:
       type: object
       description: Study activity item, e.g. a single transfer credit for student
@@ -17869,6 +17869,7 @@ components:
         courseNumber:
           type: integer
           description: Course number, e.g. 2
+          nullable: true
         courseName:
           type: string
           description: Course name
@@ -17877,7 +17878,7 @@ components:
           description: Grade, e.g. 7
         passing:
           type: boolean
-          description: If there is a grade, is it a passing grade 
+          description: If there is a grade, is it a passing grade
         state:
           $ref: "#/components/schemas/StudyActivityItemState"
           description: Study activity item state, e.g. ONGOING for a course that hasn't been graded yet
@@ -17914,10 +17915,10 @@ components:
           nullable: true
         studyProgramme:
           type: string
-          description: Student's study programme this item belongs to, e.g. Nettilukio 
+          description: Student's study programme this item belongs to, e.g. Nettilukio
         evaluablesTotal:
           type: integer
-          description: For course items, the total number of evaluable assignments in the course 
+          description: For course items, the total number of evaluable assignments in the course
         evaluablesDone:
           type: integer
           description: For course items, the number of evaluable assignments in the course that the student has submitted

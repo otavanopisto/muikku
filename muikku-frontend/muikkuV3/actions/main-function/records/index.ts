@@ -256,6 +256,8 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             mandatoryCourseCredits: a[1].mandatoryCourseCredits,
           }));
 
+        console.log("studyActivityData data old", data);
+
         //and that should do it, it should give us the precious data we need in the order we need it to be
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
