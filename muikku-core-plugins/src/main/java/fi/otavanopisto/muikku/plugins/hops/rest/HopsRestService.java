@@ -640,15 +640,20 @@ public class HopsRestService {
             continue;
           }
           
-          SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
+          List<SupplementationRequest> requests = evaluationController.listSupplementationRequestsByStudentAndWorkspaceAndHandledAndArchived(
               studentEntity.getId(),
               item.getCourseId(),
               Boolean.FALSE,
               Boolean.FALSE);
-          if (supplementationRequest != null && item.getDate().before(supplementationRequest.getRequestDate())) {
-            item.setDate(supplementationRequest.getRequestDate());
-            item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
-            item.setText(supplementationRequest.getRequestText());
+          for (SupplementationRequest request : requests) {
+            if (isApplicable(request, item)) {
+              if (item.getDate().before(request.getRequestDate())) {
+                item.setDate(request.getRequestDate());
+                item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
+                item.setText(request.getRequestText());
+              }
+              break;
+            }
           }
 
           // Interim evaluation request, if one exists and is newer than activity date so far
@@ -796,6 +801,34 @@ public class HopsRestService {
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
+  }
+  
+  private boolean isApplicable(SupplementationRequest request, StudyActivityItemRestModel item) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(item.getCourseId());
+    if (workspaceEntity == null) {
+      return false;
+    }
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider == null) {
+      return false;
+    }
+    SearchResult result = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+    if (result == null || result.getTotalHitCount() != 1) {
+      return false;
+    }
+    Map<String, Object> workspace = result.getResults().get(0);
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> subjects = (List<Map<String, Object>>) workspace.get("subjects");
+    for (Map<String, Object> s : subjects) {
+      if (StringUtils.equals((String) s.get("identifier"), request.getWorkspaceSubjectIdentifier())) {
+        String subjectCode = (String) s.get("subjectCode");
+        Integer courseNumber = (Integer) s.get("courseNumber");
+        if (subjectCode != null && courseNumber != null && StringUtils.equals(subjectCode, item.getSubject()) && courseNumber == item.getCourseNumber()) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @GET
