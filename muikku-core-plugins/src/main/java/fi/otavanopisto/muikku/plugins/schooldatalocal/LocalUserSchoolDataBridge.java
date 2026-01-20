@@ -511,7 +511,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier) {
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

@@ -53,7 +53,7 @@ public interface UserSchoolDataBridge {
   /* HOPS */
 
   public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier);
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId);
   
   /* Worklist */
   

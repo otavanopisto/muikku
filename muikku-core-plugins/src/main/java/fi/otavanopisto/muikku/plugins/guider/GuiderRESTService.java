@@ -93,8 +93,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemState;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -1348,47 +1347,17 @@ public class GuiderRESTService extends PluginRESTService {
     if (!recipientEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
     }
-
-    List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
     
-    // TODO Not all StudyActivityItemRestModel fields are populated. Replace this with a generic
-    // websocket message about course 123 having changed so that frontend can fetch its complete
-    // data via a separate endpoint
-    SearchProvider searchProvider = getProvider("elastic-search");
-    if (searchProvider != null) {
-      SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
-      
-      if (searchResult.getTotalHitCount() > 0) {
-        List<Map<String, Object>> results = searchResult.getResults();
-        Map<String, Object> match = results.get(0);
+    // Websocket message
 
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
-        for (Map<String, Object> s : subjectList) {
-          StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
-          item.setCourseName(workspaceName);
-          item.setCourseId(workspaceEntity.getId());
-          item.setCourseNumber((Integer) s.get("courseNumber"));
-          item.setSubject((String) s.get("subjectCode"));
-          item.setState(StudyActivityItemState.ONGOING);
-          item.setSubjectName((String) s.get("subjectName"));
-          item.setLength((Integer) s.get("length"));
-          item.setLengthSymbol((String) s.get("lengthUnitSymbol"));
-          item.setDate(new Date());
-          
-          restItems.add(item);
-        }
-        
-        webSocketMessenger.sendMessage("hops:workspace-signup", restItems, Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
-
-        return Response.ok(restItems).build();
-      }
-      else {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount())).build();
-      }
-    } else {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Elastic search provider not found.", searchProvider)).build();
+    BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId());
+    if (response.ok()) {
+      webSocketMessenger.sendMessage("hops:workspace-signup", response.getEntity().getItems(), Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
+      return Response.ok(response.getEntity().getItems()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build(); 
     }
   }
 
