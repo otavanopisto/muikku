@@ -827,7 +827,7 @@ public class HopsRestService {
       if (StringUtils.equals((String) s.get("identifier"), request.getWorkspaceSubjectIdentifier())) {
         String subjectCode = (String) s.get("subjectCode");
         Integer courseNumber = (Integer) s.get("courseNumber");
-        if (subjectCode != null && courseNumber != null && StringUtils.equals(subjectCode, item.getSubject()) && courseNumber == item.getCourseNumber()) {
+        if (StringUtils.equals(subjectCode, item.getSubject()) && courseNumber == item.getCourseNumber()) {
           return true;
         }
       }
