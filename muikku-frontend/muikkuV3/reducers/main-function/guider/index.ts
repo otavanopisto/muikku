@@ -24,7 +24,6 @@ import {
   CourseMatrix,
   StudyActivity,
 } from "~/generated/client";
-import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 /**
  * GuiderFiltersType
@@ -116,7 +115,6 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceDataType[];
-  pastStudies: RecordWorkspaceActivitiesWithLineCategory[];
   pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
@@ -251,7 +249,6 @@ const initialGuiderState: GuiderState = {
     notifications: null,
     contactLogs: null,
     currentWorkspaces: [],
-    pastStudies: [],
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],

@@ -2,10 +2,7 @@ import * as React from "react";
 import { localize } from "~/locales/i18n";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import {
-  StudyActivityItem,
-  WorkspaceAssessmentState,
-} from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * AssessmentRequestIndicatorProps

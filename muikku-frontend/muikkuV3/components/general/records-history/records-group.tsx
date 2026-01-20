@@ -64,7 +64,21 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
     return 0;
   });
 
-  if (sortedCredits.length + recordGroup.transferCredits.length <= 0) {
+  const sortedTransferedCredits = recordGroup.transferCredits.sort((a, b) => {
+    const aString = a.activity.name.toLowerCase();
+    const bString = b.activity.name.toLowerCase();
+
+    if (aString > bString) {
+      return creditSortDirection === "asc" ? 1 : -1;
+    }
+    if (aString < bString) {
+      return creditSortDirection === "asc" ? -1 : 1;
+    }
+
+    return 0;
+  });
+
+  if (sortedCredits.length + sortedTransferedCredits.length <= 0) {
     return (
       <ApplicationList>
         <div className="application-list__header-container application-list__header-container--sorter">
@@ -126,12 +140,12 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
           })
         : null}
 
-      {recordGroup.transferCredits.length ? (
+      {sortedTransferedCredits.length ? (
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">Hyväksiluvut</h3>
           </div>
-          {recordGroup.transferCredits.map((credit, i) => (
+          {sortedTransferedCredits.map((credit, i) => (
             <ApplicationListItem
               className="course course--credits"
               key={`tranfer-credit-${i}`}
