@@ -6,12 +6,8 @@ import {
   ApplicationListItemContentContainer,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-//import Button from "~/components/general/button";
-//import WorkspaceAssignmentsAndDiaryDialog from "~/components/general/records-history/dialogs/workspace-assignments-and-diaries";
+import Button from "~/components/general/button";
 import { localize } from "~/locales/i18n";
-// import AssessmentRequestIndicator from "./assessment-request-indicator";
-// import RecordsAssessmentIndicator from "./records-assessment-indicator";
-// import ActivityIndicator from "./activity-indicator";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentDataNew } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
@@ -21,6 +17,7 @@ import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicatorNew from "./assessment-request-indicator-new";
 import RecordsAssessmentIndicatorNew from "./records-assessment-indicator-new";
 import ActivityIndicatorNew from "./activity-indicator-new";
+import WorkspaceAssignmentsAndDiaryDialogNew from "./dialogs/workspace-assigments-and-diaries-new";
 
 /**
  * RecordsGroupItemProps
@@ -387,8 +384,8 @@ export const RecordsGroupItemNew: React.FC<RecordsGroupItemNewProps> = (
         </div>
         <div className="application-list__header-secondary">
           <span>
-            {/* <WorkspaceAssignmentsAndDiaryDialog
-              credit={credit.activity}
+            <WorkspaceAssignmentsAndDiaryDialogNew
+              credit={credit[0]}
               userIdentifier={identifier}
               userEntityId={userEntityId}
             >
@@ -397,7 +394,7 @@ export const RecordsGroupItemNew: React.FC<RecordsGroupItemNewProps> = (
                   ns: "studies",
                 })}
               </Button>
-            </WorkspaceAssignmentsAndDiaryDialog> */}
+            </WorkspaceAssignmentsAndDiaryDialogNew>
           </span>
 
           {!isCombinationWorkspace ? (
