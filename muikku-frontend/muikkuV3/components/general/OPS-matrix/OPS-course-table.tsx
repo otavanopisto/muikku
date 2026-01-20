@@ -29,7 +29,6 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
   currentMaxCourses: number | null;
   curriculumName: string;
   studyProgrammeName: string;
-  studentOptions: string[];
   renderCourseCell?: (params: RenderItemParams) => JSX.Element;
   renderEmptyCell?: (params: {
     index: number;

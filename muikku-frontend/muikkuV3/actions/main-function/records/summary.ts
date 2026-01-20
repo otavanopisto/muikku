@@ -189,10 +189,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           studentIdentifier: pyramusIdentifier,
         });
 
-        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
-          studentIdentifier: pyramusIdentifier,
-        });
-
         const courseMatrix = await hopsApi.getStudentCourseMatrix({
           studentIdentifier: pyramusIdentifier,
         });
@@ -226,7 +222,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
             studentActivityByStatus.needSupplementationList,
           studentChoices: [],
           supervisorOptionalSuggestions: [],
-          options: studentOptions,
           courseMatrix: courseMatrix,
         };
 
@@ -390,44 +385,13 @@ const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebso
     };
   };
 
-/**
- * Thunk action creator for the alternative study options websocket
- * @param data data
- */
-const recordsSummaryAlternativeStudyOptionsWebsocket: RecordsSummaryAlternativeStudyOptionsWebsocketType =
-  function recordsSummaryAlternativeStudyOptionsWebsocket(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-      const summaryData = state.summary?.data;
-
-      if (!summaryData) {
-        return null;
-      }
-
-      const { studyProgress } = summaryData;
-
-      dispatch({
-        type: "UPDATE_STUDIES_SUMMARY",
-        payload: {
-          ...getState().summary.data,
-          studyProgress: { ...studyProgress, options: data.websocketData },
-        },
-      });
-    };
-  };
-
 export default {
   updateSummary,
   recordsSummarySuggestedNextWebsocket,
   recordsSummaryWorkspaceSignupWebsocket,
-  recordsSummaryAlternativeStudyOptionsWebsocket,
 };
 export {
   updateSummary,
   recordsSummarySuggestedNextWebsocket,
   recordsSummaryWorkspaceSignupWebsocket,
-  recordsSummaryAlternativeStudyOptionsWebsocket,
 };

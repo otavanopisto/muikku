@@ -1044,12 +1044,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       /**
        * Study progress promise
        */
-      const studyProgressPromise = async () => {
-        const studentActivity = await hopsApi.getStudyActivity({
-          studentIdentifier: id,
-        });
-
-        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+      const studyActivityPromise = async () => {
+        const studentStudyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: id,
         });
 
@@ -1059,20 +1055,30 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
         const skillAndArtCourses = filterActivityBySubjects(
           SKILL_AND_ART_SUBJECTS_CS,
-          studentActivity.items
+          studentStudyActivity.items
         );
 
         const otherLanguageSubjects = filterActivityBySubjects(
           LANGUAGE_SUBJECTS_CS,
-          studentActivity.items
+          studentStudyActivity.items
         );
 
         const otherSubjects = filterActivityBySubjects(
           OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-          studentActivity.items
+          studentStudyActivity.items
         );
 
-        const studentActivityByStatus = filterActivity(studentActivity.items);
+        const studentActivityByStatus = filterActivity(
+          studentStudyActivity.items
+        );
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyActivity",
+            value: studentStudyActivity,
+          },
+        });
 
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -1083,7 +1089,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               otherLanguageSubjects: otherLanguageSubjects,
               otherSubjects: otherSubjects,
               ...studentActivityByStatus,
-              options: studentOptions,
               courseMatrix: courseMatrix,
             },
           },
@@ -1124,7 +1129,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               });
           }),
 
-        studyProgressPromise(),
+        studyActivityPromise(),
 
         userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {
           dispatch({
@@ -2984,37 +2989,6 @@ const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceS
     };
   };
 
-/**
- * Thunk action creator for the alternative study options websocket
- * @param data data
- */
-const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =
-  function guiderStudyProgressAlternativeStudyOptionsWebsocket(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-      const currentStudent = state.guider.currentStudent;
-
-      if (!currentStudent) {
-        return null;
-      }
-
-      const { websocketData } = data;
-
-      const { studyProgress } = currentStudent;
-
-      dispatch({
-        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-        payload: {
-          property: "studyProgress",
-          value: { ...studyProgress, options: websocketData },
-        },
-      });
-    };
-  };
-
 export {
   loadNotes,
   createNote,
@@ -3055,5 +3029,4 @@ export {
   completeOrderFromCurrentStudent,
   guiderStudyProgressSuggestedNextWebsocket,
   guiderStudyProgressWorkspaceSignupWebsocket,
-  guiderStudyProgressAlternativeStudyOptionsWebsocket,
 };

@@ -66,7 +66,6 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             skillsAndArt={studyProgress.skillsAndArt}
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
-            studentOptions={studyProgress.options}
             matrix={studyProgress.courseMatrix}
             onSignUp={handleOpenSignUpDialog}
           />
@@ -88,7 +87,6 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             skillsAndArt={studyProgress.skillsAndArt}
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
-            studentOptions={studyProgress.options}
             matrix={studyProgress.courseMatrix}
             onSignUp={handleOpenSignUpDialog}
           />

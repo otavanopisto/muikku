@@ -22,6 +22,7 @@ import {
   OptionalCourseSuggestion,
   UserContact,
   CourseMatrix,
+  StudyActivity,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -91,7 +92,6 @@ export interface PedagogyFormAvailability {
 export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: OptionalCourseSuggestion[];
-  options: string[];
   courseMatrix: CourseMatrix;
 }
 
@@ -127,6 +127,7 @@ export interface GuiderStudentUserProfileType {
   };
   hopsPhase?: string;
   pedagogyFormAvailable: PedagogyFormAccess;
+  studyActivity: StudyActivity | null;
   studyProgress: GuiderStudentStudyProgress;
 }
 
@@ -265,6 +266,7 @@ const initialGuiderState: GuiderState = {
       mandatoryCourseCredits: 0,
       showCredits: false,
     },
+    studyActivity: null,
     studyProgress: {
       onGoingList: [],
       transferedList: [],
@@ -275,7 +277,6 @@ const initialGuiderState: GuiderState = {
       otherSubjects: {},
       supervisorOptionalSuggestions: [],
       studentChoices: [],
-      options: [],
       needSupplementationList: [],
       courseMatrix: {
         subjects: [],

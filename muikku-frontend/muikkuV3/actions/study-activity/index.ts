@@ -61,6 +61,9 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
       const { userIdentifier, onSuccess, onFail } = data;
       const state = getState();
 
+      if (!state.status.isStudent) {
+        return;
+      }
       if (state.studyActivity.userStudyActivityStatus === "READY") {
         return;
       }

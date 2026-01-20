@@ -27,7 +27,6 @@ export interface SummaryStudyTime {
 export interface SummaryStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: OptionalCourseSuggestion[];
-  options: string[];
   courseMatrix: CourseMatrix;
 }
 

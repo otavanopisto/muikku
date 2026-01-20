@@ -8,16 +8,12 @@ import {
   GuiderStudyProgressWorkspaceSignupWebsocketType,
   guiderStudyProgressSuggestedNextWebsocket,
   guiderStudyProgressWorkspaceSignupWebsocket,
-  GuiderStudyProgressAlternativeStudyOptionsWebsocketType,
-  guiderStudyProgressAlternativeStudyOptionsWebsocket,
 } from "~/actions/main-function/guider";
 import {
   RecordsSummarySuggestedNextWebsocketType,
   recordsSummarySuggestedNextWebsocket,
   recordsSummaryWorkspaceSignupWebsocket,
   RecordsSummaryWorkspaceSignupWebsocketType,
-  recordsSummaryAlternativeStudyOptionsWebsocket,
-  RecordsSummaryAlternativeStudyOptionsWebsocketType,
 } from "~/actions/main-function/records/summary";
 import { StudyActivityItem } from "~/generated/client";
 import { StateType } from "~/reducers";
@@ -35,12 +31,10 @@ interface StudyProgressWebsocketWatcherProps {
   // Records related actions
   recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocketType;
   recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebsocketType;
-  recordsSummaryAlternativeStudyOptionsWebsocket: RecordsSummaryAlternativeStudyOptionsWebsocketType;
 
   // Guider related actions
   guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType;
   guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType;
-  guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType;
 }
 
 /**
@@ -78,7 +72,6 @@ function useWebsocketEvent<T>(
  * and update the redux state accordingly:
  * - hops:workspace-suggested
  * - hops:workspace-signup
- * - hops:alternative-study-options
  * @param props props
  * @returns JSX.Element
  */
@@ -90,10 +83,8 @@ const StudyProgressWebsocketWatcher = (
     websocketState,
     recordsSummarySuggestedNextWebsocket,
     recordsSummaryWorkspaceSignupWebsocket,
-    recordsSummaryAlternativeStudyOptionsWebsocket,
     guiderStudyProgressSuggestedNextWebsocket,
     guiderStudyProgressWorkspaceSignupWebsocket,
-    guiderStudyProgressAlternativeStudyOptionsWebsocket,
   } = props;
 
   // hops:workspace-suggested watcher
@@ -114,22 +105,6 @@ const StudyProgressWebsocketWatcher = (
       (data) => recordsSummaryWorkspaceSignupWebsocket({ websocketData: data }),
       (data) =>
         guiderStudyProgressWorkspaceSignupWebsocket({ websocketData: data }),
-    ],
-    websocketState.websocket
-  );
-
-  // hops:alternative-study-options watcher
-  useWebsocketEvent<string[]>(
-    "hops:alternative-study-options",
-    [
-      (data) =>
-        recordsSummaryAlternativeStudyOptionsWebsocket({
-          websocketData: data,
-        }),
-      (data) =>
-        guiderStudyProgressAlternativeStudyOptionsWebsocket({
-          websocketData: data,
-        }),
     ],
     websocketState.websocket
   );
@@ -156,10 +131,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     {
       recordsSummarySuggestedNextWebsocket,
       recordsSummaryWorkspaceSignupWebsocket,
-      recordsSummaryAlternativeStudyOptionsWebsocket,
       guiderStudyProgressSuggestedNextWebsocket,
       guiderStudyProgressWorkspaceSignupWebsocket,
-      guiderStudyProgressAlternativeStudyOptionsWebsocket,
     },
     dispatch
   );
