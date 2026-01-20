@@ -597,7 +597,7 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studyActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("workspaceEntityId") Long workspaceEntityId) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -627,7 +627,7 @@ public class HopsRestService {
     // Pyramus call for ongoing, transferred, and graded courses
 
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntityId);
     if (response.ok()) {
 
       for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
@@ -748,51 +748,55 @@ public class HopsRestService {
         }
       }
 
-      // Add suggested courses to the list
+      // Add suggested courses to the list (skip if we want just one course and it has been found already)
       
-      List<HopsSuggestion> suggestions = hopsController.listSuggestions(hopsStudent);
-      for (HopsSuggestion suggestion : suggestions) {
+      if (workspaceEntityId == null || response.getEntity().getItems().isEmpty()) {
+        List<HopsSuggestion> suggestions = hopsController.listSuggestions(hopsStudent);
+        if (workspaceEntityId != null) {
+          suggestions.removeIf(s -> s.getWorkspaceEntityId() == null || !s.getWorkspaceEntityId().equals(workspaceEntityId));
+        }
+        for (HopsSuggestion suggestion : suggestions) {
 
-        // Check if subject + course number already exists. If so, delete suggestion as it is already outdated
+          // Check if subject + course number already exists. If so, delete suggestion as it is already outdated
 
-        long matches = response.getEntity().getItems()
-            .stream()
-            .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()) && Objects.equals(s.getCourseId(), suggestion.getWorkspaceEntityId()))
-            .count();
-        if (matches == 0) {
-          WorkspaceEntity workspaceEntity = null;
-          if (suggestion.getWorkspaceEntityId() != null) {
-            workspaceEntity = workspaceEntityController.findWorkspaceEntityById(suggestion.getWorkspaceEntityId());
-          }
-
-          if (workspaceEntity == null) {
-            logger.warning("Removing suggested workspace %d as it was not found");
-            hopsController.removeSuggestion(suggestion);
-          }
-          else {
-            StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
-            item.setCourseNumber(suggestion.getCourseNumber());
-            item.setDate(suggestion.getCreated());
-            item.setSubject(suggestion.getSubject());
-            // TODO length, lengthSymbol, mandatority, subjectName and god knows what else (hopefully not needed...) X(
-
-            if (suggestion.getType().toLowerCase().contains("optional")) {
-              item.setState(StudyActivityItemState.SUGGESTED_OPTIONAL);
+          long matches = response.getEntity().getItems()
+              .stream()
+              .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()) && Objects.equals(s.getCourseId(), suggestion.getWorkspaceEntityId()))
+              .count();
+          if (matches == 0) {
+            WorkspaceEntity workspaceEntity = null;
+            if (suggestion.getWorkspaceEntityId() != null) {
+              workspaceEntity = workspaceEntityController.findWorkspaceEntityById(suggestion.getWorkspaceEntityId());
+            }
+            if (workspaceEntity == null) {
+              logger.warning("Removing suggested workspace %d as it was not found");
+              hopsController.removeSuggestion(suggestion);
             }
             else {
-              item.setState(StudyActivityItemState.SUGGESTED_NEXT);
+              StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+
+              item.setCourseNumber(suggestion.getCourseNumber());
+              item.setDate(suggestion.getCreated());
+              item.setSubject(suggestion.getSubject());
               item.setCourseId(suggestion.getWorkspaceEntityId());
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
+              // TODO length, lengthSymbol, mandatority, subjectName and god knows what else (hopefully not needed...) X(
+
+              if (suggestion.getType().toLowerCase().contains("optional")) {
+                item.setState(StudyActivityItemState.SUGGESTED_OPTIONAL);
+              }
+              else {
+                item.setState(StudyActivityItemState.SUGGESTED_NEXT);
+              }
+              response.getEntity().getItems().add(item);
             }
-            response.getEntity().getItems().add(item);
           }
-        }
-        else {
+          else {
 
-          // Suggested subject + course number has turned into ongoing, transferred, or graded
+            // Suggested subject + course number has turned into ongoing, transferred, or graded
 
-          hopsController.removeSuggestion(suggestion);
+            hopsController.removeSuggestion(suggestion);
+          }
         }
       }
 

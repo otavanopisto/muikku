@@ -6450,6 +6450,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id, if we are only interested in the activity of a single workspace
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Student study activity

@@ -55,10 +55,12 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
@@ -66,8 +68,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemState;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -114,6 +115,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -684,57 +688,18 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (!teacherEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
     }
-    List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
     
-    // TODO Not all StudyActivityItemRestModel fields are populated. Replace this with a generic
-    // websocket message about course 123 having changed so that frontend can fetch its complete
-    // data via a separate endpoint
-    SearchProvider searchProvider = getProvider("elastic-search");
-    if (searchProvider != null) {
-      SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
-      
-      if (searchResult.getTotalHitCount() > 0) {
-        Map<String, Object> match = searchResult.getResults().get(0);
-
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
-        for (Map<String, Object> s : subjectList) {
-          StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
-          item.setCourseName(workspaceName);
-          item.setCourseId(workspaceEntity.getId());
-          item.setCourseNumber((Integer) s.get("courseNumber"));
-          item.setSubject((String) s.get("subjectCode"));
-          item.setState(StudyActivityItemState.ONGOING);
-          item.setSubjectName((String) s.get("subjectName"));
-          item.setLength((Integer) s.get("length"));
-          item.setLengthSymbol((String) s.get("lengthUnitSymbol"));
-          item.setDate(new Date());
-          
-          restItems.add(item);
-        }
-        
-        // Websocket recipients 
-        
-        List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(userIdentifier, false);
-
-        recipients.add(userSchoolDataIdentifier.getUserEntity());
-        
-        webSocketMessenger.sendMessage("hops:workspace-signup", restItems, recipients);
-      }
+    // Websocket message
+    
+    BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
+        userIdentifier.getDataSource(), userIdentifier.getIdentifier(), workspaceEntity.getId());
+    if (response.ok() && !response.getEntity().getItems().isEmpty()) {
+      List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(userIdentifier, false);
+      recipients.add(userSchoolDataIdentifier.getUserEntity());
+      webSocketMessenger.sendMessage("hops:workspace-signup", response.getEntity().getItems(), recipients);
     }
+
     return Response.noContent().build();
-  }
-  
-  private SearchProvider getProvider(String name) {
-    Iterator<SearchProvider> i = searchProviders.iterator();
-    while (i.hasNext()) {
-      SearchProvider provider = i.next();
-      if (name.equals(provider.getName())) {
-        return provider;
-      }
-    }
-    return null;
   }
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {

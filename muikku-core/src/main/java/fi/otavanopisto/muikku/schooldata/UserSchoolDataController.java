@@ -75,8 +75,8 @@ public class UserSchoolDataController {
     return getUserBridge(dataSource).getCourseMatrix(identifier);
   }
 
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier) {
-    return getUserBridge(dataSource).getStudyActivity(identifier);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier, Long courseId) {
+    return getUserBridge(dataSource).getStudyActivity(identifier, courseId);
   }
 
   /* Worklist */
