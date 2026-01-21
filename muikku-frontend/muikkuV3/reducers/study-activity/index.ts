@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
-import { StudyActivity } from "~/generated/client";
+import { CourseMatrix, StudyActivity } from "~/generated/client";
 
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
@@ -11,11 +11,16 @@ export interface StudyActivityState {
   // Current logged in user's study activity (student)
   userStudyActivity: StudyActivity | null;
   userStudyActivityStatus: ReducerStateType;
+
+  courseMatrix: CourseMatrix | null;
+  courseMatrixStatus: ReducerStateType;
 }
 
 const initialStudyActivityState: StudyActivityState = {
   userStudyActivity: null,
   userStudyActivityStatus: "IDLE",
+  courseMatrix: null,
+  courseMatrixStatus: "IDLE",
 };
 
 /**
@@ -42,6 +47,17 @@ export const studyActivity: Reducer<StudyActivityState> = (
       return {
         ...state,
         userStudyActivityItems: action.payload,
+      };
+
+    case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX":
+      return {
+        ...state,
+        courseMatrix: action.payload,
+      };
+    case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS":
+      return {
+        ...state,
+        courseMatrixStatus: action.payload,
       };
 
     default:

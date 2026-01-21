@@ -1,9 +1,18 @@
 import * as React from "react";
-import { SummaryStudyProgress } from "~/reducers/main-function/records/summary";
 import ProgressList from "./components/progress-list";
 import ProgressTable from "./components/progress-table";
 import OPSMatrixProblems from "~/components/general/OPS-matrix/OPS-matrix-problems";
 import OPSMatrixIndicators from "~/components/general/OPS-matrix/OPS-matrix-indicators";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
+import {
+  filterActivityBySubjects,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  LANGUAGE_SUBJECTS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+  filterActivity,
+} from "~/helper-functions/study-matrix";
+import { useMemo } from "react";
 /**
  * StudyProgressProps
  */
@@ -12,7 +21,6 @@ interface StudyProgressProps {
   studentUserEntityId: number;
   studyProgrammeName: string;
   curriculumName: string;
-  studyProgress: SummaryStudyProgress;
 }
 
 /**
@@ -26,15 +34,55 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     studentUserEntityId,
     studyProgrammeName,
     curriculumName,
-    studyProgress,
   } = props;
+
+  const courseMatrix = useSelector(
+    (state: StateType) => state.studyActivity.courseMatrix
+  );
+
+  const studyActivityItems = useSelector(
+    (state: StateType) => state.studyActivity.userStudyActivity?.items
+  );
+
+  const skillAndArtCourses = React.useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(
+      SKILL_AND_ART_SUBJECTS_CS,
+      studyActivityItems
+    );
+  }, [studyActivityItems]);
+
+  const otherLanguageSubjects = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(LANGUAGE_SUBJECTS_CS, studyActivityItems);
+  }, [studyActivityItems]);
+
+  const otherSubjects = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(
+      OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+      studyActivityItems
+    );
+  }, [studyActivityItems]);
+
+  const studentActivityByStatus = useMemo(() => {
+    if (!studyActivityItems)
+      return {
+        needSupplementationList: [],
+        onGoingList: [],
+        suggestedNextList: [],
+        transferedList: [],
+        gradedList: [],
+      };
+    return filterActivity(studyActivityItems);
+  }, [studyActivityItems]);
 
   return (
     <>
       <div className="hops__form-element-container  swiper-no-swiping">
         <OPSMatrixProblems
-          matrixType={studyProgress.courseMatrix.type}
-          matrixProblems={studyProgress.courseMatrix.problems}
+          matrixType={courseMatrix?.type}
+          matrixProblems={courseMatrix?.problems}
         />
       </div>
 
@@ -47,15 +95,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             studentUserEntityId={studentUserEntityId}
             studyProgrammeName={studyProgrammeName}
             curriculumName={curriculumName}
-            suggestedNextList={studyProgress.suggestedNextList}
-            onGoingList={studyProgress.onGoingList}
-            transferedList={studyProgress.transferedList}
-            gradedList={studyProgress.gradedList}
-            needSupplementationList={studyProgress.needSupplementationList}
-            skillsAndArt={studyProgress.skillsAndArt}
-            otherLanguageSubjects={studyProgress.otherLanguageSubjects}
-            otherSubjects={studyProgress.otherSubjects}
-            matrix={studyProgress.courseMatrix}
+            suggestedNextList={studentActivityByStatus.suggestedNextList}
+            onGoingList={studentActivityByStatus.onGoingList}
+            transferedList={studentActivityByStatus.transferedList}
+            gradedList={studentActivityByStatus.gradedList}
+            needSupplementationList={
+              studentActivityByStatus.needSupplementationList
+            }
+            skillsAndArt={skillAndArtCourses}
+            otherLanguageSubjects={otherLanguageSubjects}
+            otherSubjects={otherSubjects}
+            matrix={courseMatrix}
           />
         </div>
       </div>
@@ -67,15 +117,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             studentUserEntityId={studentUserEntityId}
             curriculumName={curriculumName}
             studyProgrammeName={studyProgrammeName}
-            suggestedNextList={studyProgress.suggestedNextList}
-            onGoingList={studyProgress.onGoingList}
-            transferedList={studyProgress.transferedList}
-            gradedList={studyProgress.gradedList}
-            needSupplementationList={studyProgress.needSupplementationList}
-            skillsAndArt={studyProgress.skillsAndArt}
-            otherLanguageSubjects={studyProgress.otherLanguageSubjects}
-            otherSubjects={studyProgress.otherSubjects}
-            matrix={studyProgress.courseMatrix}
+            suggestedNextList={studentActivityByStatus.suggestedNextList}
+            onGoingList={studentActivityByStatus.onGoingList}
+            transferedList={studentActivityByStatus.transferedList}
+            gradedList={studentActivityByStatus.gradedList}
+            needSupplementationList={
+              studentActivityByStatus.needSupplementationList
+            }
+            skillsAndArt={skillAndArtCourses}
+            otherLanguageSubjects={otherLanguageSubjects}
+            otherSubjects={otherSubjects}
+            matrix={courseMatrix}
           />
         </div>
       </div>
