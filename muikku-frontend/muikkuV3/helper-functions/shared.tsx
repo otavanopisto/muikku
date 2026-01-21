@@ -32,74 +32,10 @@ export const isStringHTML = (str: string) => {
 };
 
 /**
- * getAssessmentData
- * @param assessment assessment
- */
-export const getAssessmentData = (assessment: WorkspaceAssessmentState) => {
-  let evalStateClassName = "";
-  let evalStateIcon = "";
-  let assessmentIsPending = false;
-  let assessmentIsIncomplete = false;
-  let assessmentIsUnassessed = false;
-  let assessmentIsInterim = false;
-
-  switch (assessment.state) {
-    case "pass":
-      evalStateClassName = "workspace-assessment--passed";
-      evalStateIcon = "icon-thumb-up";
-      break;
-    case "pending":
-    case "pending_pass":
-    case "pending_fail":
-      evalStateClassName = "workspace-assessment--pending";
-      evalStateIcon = "icon-assessment-pending";
-      assessmentIsPending = true;
-      break;
-    case "fail":
-      evalStateClassName = "workspace-assessment--failed";
-      evalStateIcon = "icon-thumb-down";
-      break;
-    case "incomplete":
-      evalStateClassName = "workspace-assessment--incomplete";
-      assessmentIsIncomplete = true;
-      break;
-
-    case "interim_evaluation_request":
-      assessmentIsPending = true;
-      assessmentIsInterim = true;
-      evalStateClassName = "workspace-assessment--interim-evaluation-request";
-      evalStateIcon = "icon-assessment-pending";
-      break;
-    case "interim_evaluation":
-      assessmentIsInterim = true;
-      evalStateClassName = "workspace-assessment--interim-evaluation";
-      evalStateIcon = "icon-thumb-up";
-      break;
-
-    case "unassessed":
-    default:
-      assessmentIsUnassessed = true;
-  }
-
-  const literalAssessment =
-    assessment && assessment.text ? assessment.text : null;
-
-  return {
-    evalStateClassName,
-    evalStateIcon,
-    assessmentIsPending,
-    assessmentIsUnassessed,
-    assessmentIsIncomplete,
-    assessmentIsInterim,
-    literalAssessment,
-  };
-};
-
-/**
  * getAssessmentDataNew
  * @param assessment assessment
  */
-export const getAssessmentDataNew = (assessment: StudyActivityItem) => {
+export const getAssessmentData = (assessment: StudyActivityItem) => {
   let evalStateClassName = "";
   let evalStateIcon = "";
   let assessmentIsPending = false;

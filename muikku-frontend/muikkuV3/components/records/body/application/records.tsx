@@ -24,7 +24,6 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-import RecordsGroupNew from "~/components/general/records-history/records-group-new";
 import { StudyActivity } from "~/generated/client";
 
 /**
@@ -105,49 +104,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           displayNotification: this.props.displayNotification,
         }}
       >
-        <ApplicationSubPanel modifier="records-test">
-          {this.props.records.userData.map((lineCategoryData, i) => (
-            <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-              {lineCategoryData.credits.length +
-                lineCategoryData.transferCredits.length >
-              0 ? (
-                <RecordsGroup
-                  key={`credit-category-${i}`}
-                  recordGroup={lineCategoryData}
-                />
-              ) : (
-                <div className="application-sub-panel__item">
-                  <div className="empty">
-                    <span>
-                      {t("content.empty", {
-                        ns: "studies",
-                        context: "workspaces",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </ApplicationSubPanel.Body>
-          ))}
-        </ApplicationSubPanel>
-      </RecordsInfoProvider>
-    );
-
-    /**
-     * studentRecords
-     */
-    const studentRecordsNew = (
-      <RecordsInfoProvider
-        value={{
-          identifier: this.props.status.userSchoolDataIdentifier,
-          userEntityId: this.props.status.userId,
-          displayNotification: this.props.displayNotification,
-        }}
-      >
-        <ApplicationSubPanel modifier="records-test">
+        <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
             {this.props.studyActivities ? (
-              <RecordsGroupNew studyActivity={this.props.studyActivities} />
+              <RecordsGroup studyActivity={this.props.studyActivities} />
             ) : (
               <div className="application-sub-panel__item">
                 <div className="empty">
@@ -173,8 +133,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }
       >
         {studentRecords}
-        {studentRecordsNew}
-        {/* <ApplicationSubPanel>
+        <ApplicationSubPanel>
           <ApplicationSubPanel.Header>
             {t("labels.files")}
           </ApplicationSubPanel.Header>
@@ -207,7 +166,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </ApplicationListItem>
             )}
           </ApplicationSubPanel.Body>
-        </ApplicationSubPanel> */}
+        </ApplicationSubPanel>
       </BodyScrollKeeper>
     );
   }

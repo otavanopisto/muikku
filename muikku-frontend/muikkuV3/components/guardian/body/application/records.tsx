@@ -10,11 +10,17 @@ import { RecordsType } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions";
-import RecordsGroup from "./records-group/records-group";
+import RecordsGroup from "~/components/general/records-history/records-group";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { StudyActivity } from "~/generated/client";
 
 /**
  * RecordsProps
@@ -22,6 +28,8 @@ import { Action, Dispatch } from "redux";
 interface RecordsProps extends WithTranslation {
   records: RecordsType;
   status: StatusType;
+  displayNotification: DisplayNotificationTriggerType;
+  studyActivities: StudyActivity;
 }
 
 /**
@@ -88,16 +96,20 @@ class Records extends React.Component<RecordsProps, RecordsState> {
      * studentRecords
      */
     const studentRecords = (
-      <ApplicationSubPanel>
-        {this.props.records.userData.map((lineCategoryData, i) => (
-          <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-            {lineCategoryData.credits.length +
-              lineCategoryData.transferCredits.length >
-            0 ? (
-              <RecordsGroup
-                key={`credit-category-${i}`}
-                recordGroup={lineCategoryData}
-              />
+      <RecordsInfoProvider
+        value={{
+          identifier: this.props.status.userSchoolDataIdentifier,
+          userEntityId: this.props.status.userId,
+          displayNotification: this.props.displayNotification,
+          config: {
+            showAssigmentsAndDiaries: false,
+          },
+        }}
+      >
+        <ApplicationSubPanel>
+          <ApplicationSubPanel.Body>
+            {this.props.studyActivities ? (
+              <RecordsGroup studyActivity={this.props.studyActivities} />
             ) : (
               <div className="application-sub-panel__item">
                 <div className="empty">
@@ -111,8 +123,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </div>
             )}
           </ApplicationSubPanel.Body>
-        ))}
-      </ApplicationSubPanel>
+        </ApplicationSubPanel>
+      </RecordsInfoProvider>
     );
 
     return (
@@ -139,6 +151,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     status: state.status,
+    studyActivities: state.studyActivity.userStudyActivity,
   };
 }
 
@@ -147,7 +160,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 export default withTranslation(["studies"])(
   connect(mapStateToProps, mapDispatchToProps)(Records)

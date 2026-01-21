@@ -3,13 +3,13 @@ import { localize } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import { WorkspaceActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * TransfereCreditValueIndicatorProps
  */
 interface TransfereCreditIndicatorProps {
-  transferCredit: WorkspaceActivity;
+  transferCredit: StudyActivityItem;
 }
 
 /**
@@ -30,7 +30,7 @@ const TransferedCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   }
 
   //Transfred credits have only one assessment to describe them
-  const assessment = transferCredit.assessmentStates[0];
+  //const assessment = transferCredit.assessmentStates[0];
 
   return (
     <Dropdown
@@ -39,17 +39,17 @@ const TransferedCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
         <span>
           {t("content.transferCreditsDate", {
             ns: "studies",
-            date: localize.date(assessment.date),
-          }) + getShortenGradeExtension(assessment.grade)}
+            date: localize.date(transferCredit.date),
+          }) + getShortenGradeExtension(transferCredit.grade)}
         </span>
       }
     >
       <span
         className={`application-list__indicator-badge application-list__indicator-badge-course ${
-          assessment.passingGrade ? "state-PASSED" : "state-FAILED"
+          transferCredit.passing ? "state-PASSED" : "state-FAILED"
         }`}
       >
-        {shortenGrade(assessment.grade)}
+        {shortenGrade(transferCredit.grade)}
       </span>
     </Dropdown>
   );

@@ -16,7 +16,7 @@ import {
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
-import RecordsGroupNew from "~/components/general/records-history/records-group-new";
+import RecordsGroup from "~/components/general/records-history/records-group";
 import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
@@ -149,45 +149,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </div>
   );
 
-  /**
-   * studentRecords
-   */
-  // const studentRecords = (
-  //   <RecordsInfoProvider
-  //     value={{
-  //       identifier: basic.id,
-  //       userEntityId: basic.userEntityId,
-  //       displayNotification,
-  //     }}
-  //   >
-  //     <ApplicationSubPanel>
-  //       {pastStudies.map((lineCategoryData, i) => (
-  //         <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-  //           {lineCategoryData.credits.length +
-  //             lineCategoryData.transferCredits.length >
-  //           0 ? (
-  //             <RecordsGroup
-  //               key={`credit-category-${i}`}
-  //               recordGroup={lineCategoryData}
-  //             />
-  //           ) : (
-  //             <div className="application-sub-panel__item">
-  //               <div className="empty">
-  //                 <span>
-  //                   {t("content.notInWorkspaces", {
-  //                     ns: "guider",
-  //                   })}
-  //                 </span>
-  //               </div>
-  //             </div>
-  //           )}
-  //         </ApplicationSubPanel.Body>
-  //       ))}
-  //     </ApplicationSubPanel>
-  //   </RecordsInfoProvider>
-  // );
-
-  const studentRecordsNew = (
+  const studentRecords = (
     <RecordsInfoProvider
       value={{
         identifier: basic.id,
@@ -198,7 +160,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       <ApplicationSubPanel>
         <ApplicationSubPanel.Body>
           {studyActivity ? (
-            <RecordsGroupNew studyActivity={studyActivity} />
+            <RecordsGroup studyActivity={studyActivity} />
           ) : (
             <div className="application-sub-panel__item">
               <div className="empty">
@@ -217,7 +179,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
 
   const historyComponent = (
     <React.Fragment key="history-component">
-      <ApplicationSubPanel>{studentRecordsNew}</ApplicationSubPanel>
+      <ApplicationSubPanel>{studentRecords}</ApplicationSubPanel>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
           {t("labels.stats", { ns: "common" })}
