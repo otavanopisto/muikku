@@ -17882,6 +17882,7 @@ components:
         grade:
           type: string
           description: Grade, e.g. 7
+          nullable: true
         passing:
           type: boolean
           description: If there is a grade, is it a passing grade
@@ -17900,9 +17901,11 @@ components:
         length:
           type: integer
           description: Course or transfer credit length, e.g. 2
+          nullable: true
         lengthSymbol:
           type: string
           description: Course or transfer credit length symbol, e.g. op
+          nullable: true
         mandatority:
           description: The mandatority of the item
           $ref: "#/components/schemas/WorkspaceMandatority"
@@ -17912,9 +17915,11 @@ components:
           type: array
           items:
             type: string
+          nullable: true
         text:
           type: string
           description: Item text, e.g. supplementation request message or grade's verbal assesment
+          nullable: true
         evaluatorName:
           type: string
           description: For graded courses, the name of the evaluator
@@ -17922,6 +17927,7 @@ components:
         studyProgramme:
           type: string
           description: Student's study programme this item belongs to, e.g. Nettilukio
+          nullable: true
         evaluablesTotal:
           type: integer
           description: For course items, the total number of evaluable assignments in the course

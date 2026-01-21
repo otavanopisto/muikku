@@ -18,6 +18,7 @@ import AssessmentRequestIndicatorNew from "./assessment-request-indicator-new";
 import RecordsAssessmentIndicatorNew from "./records-assessment-indicator-new";
 import ActivityIndicatorNew from "./activity-indicator-new";
 import WorkspaceAssignmentsAndDiaryDialogNew from "./dialogs/workspace-assigments-and-diaries-new";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 
 /**
  * RecordsGroupItemProps
@@ -28,6 +29,7 @@ interface RecordsGroupItemNewProps {
    */
   credit: StudyActivityItem[];
   isCombinationWorkspace: boolean;
+  educationType: string;
 }
 
 /**
@@ -38,7 +40,7 @@ interface RecordsGroupItemNewProps {
 export const RecordsGroupItemNew: React.FC<RecordsGroupItemNewProps> = (
   props
 ) => {
-  const { credit, isCombinationWorkspace } = props;
+  const { credit, isCombinationWorkspace, educationType } = props;
 
   const { identifier, userEntityId, displayNotification } =
     useRecordsInfoContext();
@@ -275,69 +277,66 @@ export const RecordsGroupItemNew: React.FC<RecordsGroupItemNewProps> = (
   };
 
   /**
-   * getSumOfCredits
+   * Calculate sum of credits. If sum is 0, return null.
    * @returns string
    */
-  // const getSumOfCredits = () => {
-  //   if (!credit.activity.subjects) {
-  //     return null;
-  //   }
+  const getSumOfCredits = () => {
+    const sumOfCredits = credit.reduce(
+      (acc: number, curr) =>
+        acc + ((curr?.length && curr.lengthSymbol && curr.length) ?? 0),
+      0
+    );
 
-  //   const sumOfCredits = credit.activity.subjects.reduce(
-  //     (acc, curr) => acc + curr.courseLength,
-  //     0
-  //   );
+    if (sumOfCredits === 0) {
+      return null;
+    }
 
-  //   return `${sumOfCredits} ${credit.activity.subjects[0].courseLengthSymbol}`;
-  // };
+    return `${sumOfCredits} ${credit[0]?.lengthSymbol}`;
+  };
 
   /**
    * Depending what mandatority value is, returns description
    *
    * @returns mandatority description
    */
-  // const renderMandatorityDescription = () => {
-  //   // Get first OPS from curriculums there should be only one OPS per workspace
-  //   // Some old workspaces might have multiple OPS, but that is rare case
-  //   const OPS = credit.activity.curriculums[0];
+  const renderMandatorityDescription = () => {
+    // Get first OPS from curriculums there should be only one OPS per workspace
+    // Some old workspaces might have multiple OPS, but that is rare case
+    const OPS = credit[0].curriculums?.[0];
 
-  //   // If OPS data and workspace mandatority property is present
-  //   if (
-  //     OPS &&
-  //     credit.activity.mandatority &&
-  //     credit.activity.educationTypeName
-  //   ) {
-  //     const suitabilityMap = suitabilityMapHelper(t);
+    // If OPS data and workspace mandatority property is present
+    if (OPS && credit[0].mandatority) {
+      const suitabilityMap = suitabilityMapHelper(t);
 
-  //     // Create map property from education type name and OPS name that was passed
-  //     // Strings are changes to lowercase form and any empty spaces are removed
-  //     const education = `${credit.activity.educationTypeName
-  //       .toLowerCase()
-  //       .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
+      // Create map property from education type name and OPS name that was passed
+      // Strings are changes to lowercase form and any empty spaces are removed
+      const education = `${educationType
+        .toLowerCase()
+        .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
 
-  //     // Check if our map contains data with just created education string
-  //     // Otherwise just return null. There might not be all included values by every OPS created...
-  //     if (!suitabilityMap[education]) {
-  //       return null;
-  //     }
+      // Check if our map contains data with just created education string
+      // Otherwise just return null. There might not be all included values by every OPS created...
+      if (!suitabilityMap[education]) {
+        return null;
+      }
 
-  //     // Then get correct local string from map by suitability enum value
-  //     let localString = suitabilityMap[education][credit.activity.mandatority];
+      // Then get correct local string from map by suitability enum value
+      let localString = suitabilityMap[education][credit[0].mandatority];
 
-  //     const sumOfCredits = getSumOfCredits();
+      const sumOfCredits = getSumOfCredits();
 
-  //     // If there is sum of credits, return it with local string
-  //     if (sumOfCredits) {
-  //       localString = `${localString}, ${sumOfCredits}`;
-  //     }
+      // If there is sum of credits, return it with local string
+      if (sumOfCredits) {
+        localString = `${localString}, ${sumOfCredits}`;
+      }
 
-  //     return (
-  //       <div className="label">
-  //         <div className="label__text">{localString} </div>
-  //       </div>
-  //     );
-  //   }
-  // };
+      return (
+        <div className="label">
+          <div className="label__text">{localString} </div>
+        </div>
+      );
+    }
+  };
 
   const animateOpen = showE ? "auto" : 0;
 
@@ -373,13 +372,14 @@ export const RecordsGroupItemNew: React.FC<RecordsGroupItemNewProps> = (
             <div className="label">
               <div className="label__text">{credit[0].studyProgramme}</div>
             </div>
-            {credit[0].curriculums.map((curriculum) => (
-              <div key={curriculum} className="label">
-                <div className="label__text">{curriculum} </div>
-              </div>
-            ))}
+            {credit[0].curriculums &&
+              credit[0].curriculums.map((curriculum) => (
+                <div key={curriculum} className="label">
+                  <div className="label__text">{curriculum} </div>
+                </div>
+              ))}
 
-            {/* {renderMandatorityDescription()} */}
+            {renderMandatorityDescription()}
           </div>
         </div>
         <div className="application-list__header-secondary">
@@ -421,9 +421,19 @@ export const RecordsGroupItemNew: React.FC<RecordsGroupItemNewProps> = (
             const courseLength = a.length;
             const courseLengthSymbol = a.lengthSymbol;
 
-            const codeSubjectString = `${subjectCode}${courseNumber ? courseNumber : ""} (${
-              courseLength
-            } ${courseLengthSymbol}) - ${subjectName}`;
+            let codeSubjectString = `${subjectCode}`;
+
+            if (courseNumber) {
+              codeSubjectString += `${courseNumber}`;
+            }
+
+            if (courseLength && courseLengthSymbol) {
+              codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
+            }
+
+            if (subjectName) {
+              codeSubjectString += ` - ${subjectName}`;
+            }
 
             return (
               <div

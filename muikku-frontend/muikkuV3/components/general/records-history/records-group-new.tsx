@@ -235,6 +235,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
                 key={`credit-item-${i}`}
                 credit={studyActivityItems}
                 isCombinationWorkspace={isCombinationWorkspace}
+                educationType={studyActivity.educationType}
               />
             );
           })
@@ -261,11 +262,12 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
                     <div className="label">
                       <div className="label__text">{credit.studyProgramme}</div>
                     </div>
-                    {credit.curriculums.map((curriculum) => (
-                      <div key={curriculum} className="label">
-                        <div className="label__text">{curriculum} </div>
-                      </div>
-                    ))}
+                    {credit.curriculums &&
+                      credit.curriculums.map((curriculum) => (
+                        <div key={curriculum} className="label">
+                          <div className="label__text">{curriculum} </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <div className="application-list__header-secondary">
