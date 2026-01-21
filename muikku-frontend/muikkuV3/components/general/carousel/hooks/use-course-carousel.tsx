@@ -3,6 +3,8 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { SuggestedCourse } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
 import { CourseMatrix, WorkspaceSuggestion } from "~/generated/client";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
 
 /**
  * UseCourseCarousel
@@ -48,14 +50,17 @@ export const useCourseCarousel = (
     }
   );
 
+  const studyActivity = useSelector(
+    (state: StateType) => state.studyActivity.userStudyActivity
+  );
+
   React.useEffect(() => {
     /**
      * Loads student activity data
-     * @param studentId of student
      */
-    const loadStudentActivityListData = async (studentId: string) => {
+    const loadStudentActivityListData = async () => {
       // If matrix is not found, cancel function and return
-      if (!matrix) {
+      if (!matrix || !studyActivity) {
         setCourseCarousel((courseCarousel) => ({
           ...courseCarousel,
           carouselItems: null,
@@ -73,11 +78,6 @@ export const useCourseCarousel = (
         // Loadeds course carousel data
         const [loadedCourseCarouselData] = await Promise.all([
           (async () => {
-            //Loaded student activity list
-            const studentActivityList = await hopsApi.getStudyActivity({
-              studentIdentifier: studentId,
-            });
-
             // Initialized with empty array. This list will be looped
             // with server calls that returns suggested courses which will eventually go
             // to course carousel. For now there is atleast one course per subject. Might be changed later.
@@ -95,7 +95,7 @@ export const useCourseCarousel = (
               for (const aCourse of sCourseItem.modules) {
                 // If transfered, graded, ongoing
                 if (
-                  studentActivityList.items.find(
+                  studyActivity.items.find(
                     (sItem) =>
                       sItem.subject === sCourseItem.code &&
                       sItem.courseNumber === aCourse.courseNumber &&
@@ -118,7 +118,7 @@ export const useCourseCarousel = (
             }
 
             // Iterate studentActivity and pick only suggested next courses
-            for (const a of studentActivityList.items) {
+            for (const a of studyActivity.items) {
               if (a.state === "SUGGESTED_NEXT") {
                 suggestedNextIdList.push(a.courseId);
 
@@ -217,8 +217,8 @@ export const useCourseCarousel = (
       }
     };
 
-    loadStudentActivityListData(studentId);
-  }, [studentId, userEntityId, displayNotification, matrix]);
+    loadStudentActivityListData();
+  }, [userEntityId, displayNotification, matrix, studyActivity]);
 
   return {
     courseCarousel,
