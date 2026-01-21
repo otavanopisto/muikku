@@ -187,9 +187,15 @@ public class PedagogyRestService {
     
     // UI wants a skeleton return object for the student even if they don't yet have a form at all...
     if (form == null) {
-      return Response.ok(toRestModel(form, userEntity.getId())).build();
+      return Response.ok(toRestModel((PedagogyForm) null, userEntity.getId())).build();
     }
     else {
+      
+      // For student, act like the form doesn't exist even if it exists but isn't published yet
+      
+      if (form.getPublished() == null && userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+        return Response.ok(toRestModel((PedagogyForm) null, userEntity.getId())).build();
+      }
 
       // PedagogyFormHistory creation
       pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
