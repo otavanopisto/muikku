@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -74,7 +73,6 @@ import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudentChoiceWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudyPlannerNotesWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -157,9 +155,6 @@ public class HopsRestService {
 
   @Inject
   private CourseMetaController courseMetaController;
-  
-  @Inject
-  private WebSocketMessenger webSocketMessenger;
 
   @Inject
   private HopsWebsocketMessenger hopsWebSocketMessenger;
@@ -244,9 +239,14 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateHopsLock(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, HopsLockRestModel payload) {
 
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    HopsStudent hopsStudent = getHopsStudent(studentIdentifier);
+    if (hopsStudent == null) {
+      return Response.status(Status.NOT_FOUND).entity("HopsStudent not found").build();
+    }
+    
     // Access check
 
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -282,7 +282,7 @@ public class HopsRestService {
     msg.setUserEntityId(payload.getUserEntityId());
     msg.setUserName(payload.getUserName());
     msg.setStudentIdentifier(studentIdentifierStr);
-    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:lock-updated", msg);
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:lock-updated", msg);
 
     return Response.ok(payload).build();
   }
@@ -318,7 +318,7 @@ public class HopsRestService {
       return Response.status(Status.NOT_FOUND).entity("HopsStudent not found").build();
     }
 
-    hopsWebSocketMessenger.registerUser(studentIdentifierStr, sessionController.getLoggedUserEntity().getId());
+    hopsWebSocketMessenger.registerUser(hopsStudent.getUserEntityId(), sessionController.getLoggedUserEntity().getId());
 
     Hops hops = hopsController.findHops(hopsStudent);
     return hops == null ? Response.noContent().build() : Response.ok(hops.getFormData()).build();
@@ -373,7 +373,7 @@ public class HopsRestService {
     HopsStudyPlannerNotesWSMessage msg = new HopsStudyPlannerNotesWSMessage();
     msg.setNotes(restNotes);
     msg.setStudentIdentifier(studentIdentifierStr);
-    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:study-planner-notes-updated", msg);
+    hopsWebSocketMessenger.sendMessage(userEntity.getId(), "hops:study-planner-notes-updated", msg);
 
     return Response.ok(restNotes).build();
   }
@@ -465,7 +465,7 @@ public class HopsRestService {
     msg.setFormData(hopsWithChange.getFormData());
     msg.setLatestChange(hopsWithChange.getLatestChange());
     msg.setStudentIdentifier(studentIdentifierStr);
-    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:updated", msg);
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:updated", msg);
 
     return Response.ok(hopsWithChange).build();
   }
@@ -557,7 +557,7 @@ public class HopsRestService {
     msg.setStudyHours(payload.getStudyHours());
     msg.setStudentIdentifier(studentIdentifierStr);
 
-    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:goals-updated", msg);
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:goals-updated", msg);
 
     return Response.ok(payload).build();
   }
@@ -952,7 +952,7 @@ public class HopsRestService {
     HopsPlannedCoursesWSMessage msg = new HopsPlannedCoursesWSMessage();
     msg.setPlannedCourses(restPlannedCourses);
     msg.setStudentIdentifier(studentIdentifierStr);
-    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:planned-courses-updated", msg);
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:planned-courses-updated", msg);
 
     return Response.ok(restPlannedCourses).build();
   }
@@ -1009,14 +1009,21 @@ public class HopsRestService {
   @PUT
   @Path("/student/{STUDENTIDENTIFIER}/history/{HISTORYID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateHopsHistoryDetails(@PathParam ("STUDENTIDENTIFIER") String studentIdentifier, @PathParam("HISTORYID") Long historyId, HistoryItem hopsHistory) {
+  public Response updateHopsHistoryDetails(@PathParam ("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("HISTORYID") Long historyId, HistoryItem hopsHistory) {
 
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    
     if (studentIdentifier == null || historyId == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+
+    HopsStudent hopsStudent = getHopsStudent(studentIdentifier);
+    if (hopsStudent == null) {
+      return Response.status(Status.NOT_FOUND).entity("HopsStudent not found").build();
     }
 
     HopsHistory history = hopsController.findHistoryById(historyId);
@@ -1027,7 +1034,7 @@ public class HopsRestService {
     SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(history.getModifier());
 
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+      if (!StringUtils.equals(studentIdentifier.getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     } else if (!sdi.equals(sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier())){
@@ -1040,7 +1047,6 @@ public class HopsRestService {
     historyItem.setDate(updatedHistory.getDate());
 
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
-
 
     historyItem.setId(updatedHistory.getId());
 
@@ -1062,8 +1068,8 @@ public class HopsRestService {
     msg.setModifier(historyItem.getModifier());
     msg.setModifierHasImage(historyItem.getModifierHasImage());
     msg.setModifierId(historyItem.getModifierId());
-    msg.setStudentIdentifier(studentIdentifier);
-    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:history-item-updated", msg);
+    msg.setStudentIdentifier(studentIdentifierStr);
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:history-item-updated", msg);
 
     return Response.ok(historyItem).build();
   }
@@ -1303,10 +1309,7 @@ public class HopsRestService {
       msg.setSubject(item.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      // Usually HOPS related messages are only sent to students viewing their HOPS but since course
-      // suggestions change the student's study activity, use the universal messenger instead 
-      
-      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, Stream.of(hopsStudent.getUserEntityId()).collect(Collectors.toSet()));
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:worksapce-suggested", msg);
 
       return Response.ok(item).build();
 
@@ -1344,10 +1347,7 @@ public class HopsRestService {
       msg.setSubject(item.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      // Usually HOPS related messages are only sent to students viewing their HOPS but since course
-      // suggestions change the student's study activity, use the universal messenger instead 
-      
-      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, Stream.of(hopsStudent.getUserEntityId()).collect(Collectors.toSet()));
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:worksapce-suggested", msg);
 
       return Response.ok(item).build();
     }
@@ -1391,11 +1391,8 @@ public class HopsRestService {
     msg.setCreated(payload.getCreated());
     msg.setSubject(payload.getSubject());
     msg.setStudentIdentifier(studentIdentifierStr);
-
-    // Usually HOPS related messages are only sent to students viewing their HOPS but since course
-    // suggestions change the student's study activity, use the universal messenger instead 
     
-    webSocketMessenger.sendMessage("hops:workspace-suggested", msg, Stream.of(hopsStudent.getUserEntityId()).collect(Collectors.toSet()));
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:worksapce-suggested", msg);    
 
     return Response.noContent().build();
   }
@@ -1451,7 +1448,7 @@ public class HopsRestService {
       msg.setSubject(hopsOptionalSuggestionRestModel.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:optional-suggestion-updated", msg);
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:optional-suggestion-updated", msg);
 
       return Response.ok(hopsOptionalSuggestionRestModel).build();
     }
@@ -1466,7 +1463,7 @@ public class HopsRestService {
       msg.setSubject(hopsOptionalSuggestion.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:optional-suggestion-updated", msg);
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:optional-suggestion-updated", msg);
 
       return Response.noContent().build();
     }
@@ -1722,7 +1719,7 @@ public class HopsRestService {
       msg.setSubject(hopsStudentChoice.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:student-choice-updated", msg);
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:student-choice-updated", msg);
 
       return Response.ok(hopsStudentChoice).build();
     }
@@ -1734,7 +1731,7 @@ public class HopsRestService {
       msg.setSubject(hopsStudentChoice.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:student-choice-updated", msg);
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:student-choice-updated", msg);
 
       return Response.noContent().build();
     }

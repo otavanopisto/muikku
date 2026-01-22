@@ -493,7 +493,7 @@ public class MatriculationRESTService {
     msg.setGoalMatriculationExam(model.getGoalMatriculationExam());
     msg.setPlannedSubjects(model.getPlannedSubjects());
     msg.setStudentIdentifier(studentIdentifier.toId());
-    hopsWebSocketMessenger.sendMessage(studentIdentifier.toId(), "hops:matriculationplan-updated", msg);
+    hopsWebSocketMessenger.sendMessage(userSchoolDataIdentifier.getUserEntity().getId(), "hops:matriculationplan-updated", msg);
 
     return Response.ok().entity(model).build();
   }
