@@ -1392,7 +1392,10 @@ public class HopsRestService {
     msg.setSubject(payload.getSubject());
     msg.setStudentIdentifier(studentIdentifierStr);
 
-    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:workspace-suggested", msg);
+    // Usually HOPS related messages are only sent to students viewing their HOPS but since course
+    // suggestions change the student's study activity, use the universal messenger instead 
+    
+    webSocketMessenger.sendMessage("hops:workspace-suggested", msg, Stream.of(hopsStudent.getUserEntityId()).collect(Collectors.toSet()));
 
     return Response.noContent().build();
   }
