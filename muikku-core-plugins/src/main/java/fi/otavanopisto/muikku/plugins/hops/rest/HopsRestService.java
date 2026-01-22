@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -1305,9 +1306,7 @@ public class HopsRestService {
       // Usually HOPS related messages are only sent to students viewing their HOPS but since course
       // suggestions change the student's study activity, use the universal messenger instead 
       
-      Set<Long> recipients = new HashSet<>();
-      recipients.add(hopsStudent.getUserEntityId());
-      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, recipients);
+      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, Stream.of(hopsStudent.getUserEntityId()).collect(Collectors.toSet()));
 
       return Response.ok(item).build();
 
@@ -1348,9 +1347,7 @@ public class HopsRestService {
       // Usually HOPS related messages are only sent to students viewing their HOPS but since course
       // suggestions change the student's study activity, use the universal messenger instead 
       
-      Set<Long> recipients = new HashSet<>();
-      recipients.add(hopsStudent.getUserEntityId());
-      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, recipients);
+      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, Stream.of(hopsStudent.getUserEntityId()).collect(Collectors.toSet()));
 
       return Response.ok(item).build();
     }
