@@ -1309,7 +1309,7 @@ public class HopsRestService {
       msg.setSubject(item.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:worksapce-suggested", msg);
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:workspace-suggested", msg);
 
       return Response.ok(item).build();
 
@@ -1347,7 +1347,7 @@ public class HopsRestService {
       msg.setSubject(item.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:worksapce-suggested", msg);
+      hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:workspace-suggested", msg);
 
       return Response.ok(item).build();
     }
@@ -1392,7 +1392,7 @@ public class HopsRestService {
     msg.setSubject(payload.getSubject());
     msg.setStudentIdentifier(studentIdentifierStr);
     
-    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:worksapce-suggested", msg);    
+    hopsWebSocketMessenger.sendMessage(hopsStudent.getUserEntityId(), "hops:workspace-suggested", msg);    
 
     return Response.noContent().build();
   }
