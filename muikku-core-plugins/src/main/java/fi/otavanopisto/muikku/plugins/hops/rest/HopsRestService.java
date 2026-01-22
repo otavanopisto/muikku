@@ -73,6 +73,7 @@ import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudentChoiceWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudyPlannerNotesWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
+import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -155,6 +156,9 @@ public class HopsRestService {
 
   @Inject
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
 
   @Inject
   private HopsWebsocketMessenger hopsWebSocketMessenger;
@@ -1298,7 +1302,12 @@ public class HopsRestService {
       msg.setSubject(item.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:workspace-suggested", msg);
+      // Usually HOPS related messages are only sent to students viewing their HOPS but since course
+      // suggestions change the student's study activity, use the universal messenger instead 
+      
+      Set<Long> recipients = new HashSet<>();
+      recipients.add(hopsStudent.getUserEntityId());
+      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, recipients);
 
       return Response.ok(item).build();
 
@@ -1336,7 +1345,12 @@ public class HopsRestService {
       msg.setSubject(item.getSubject());
       msg.setStudentIdentifier(studentIdentifierStr);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:workspace-suggested", msg);
+      // Usually HOPS related messages are only sent to students viewing their HOPS but since course
+      // suggestions change the student's study activity, use the universal messenger instead 
+      
+      Set<Long> recipients = new HashSet<>();
+      recipients.add(hopsStudent.getUserEntityId());
+      webSocketMessenger.sendMessage("hops:workspace-suggested", msg, recipients);
 
       return Response.ok(item).build();
     }
