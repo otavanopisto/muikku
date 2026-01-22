@@ -4,17 +4,17 @@ import { Action, Dispatch } from "redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import {
-  GuiderStudyProgressSuggestedNextWebsocketType,
-  GuiderStudyProgressWorkspaceSignupWebsocketType,
-  guiderStudyProgressSuggestedNextWebsocket,
-  guiderStudyProgressWorkspaceSignupWebsocket,
+  GuiderWorkspaceSuggestedWebsocketType,
+  GuiderWorkspaceSignupWebsocketType,
+  guiderWorkspaceSuggestedWebsocket,
+  guiderWorkspaceSignupWebsocket,
 } from "~/actions/main-function/guider";
 import {
-  RecordsSummarySuggestedNextWebsocketType,
-  recordsSummarySuggestedNextWebsocket,
-  recordsSummaryWorkspaceSignupWebsocket,
-  RecordsSummaryWorkspaceSignupWebsocketType,
-} from "~/actions/main-function/records/summary";
+  StudyActivityWorkspaceSignupWebsocketTriggerType,
+  StudyActivityWorkspaceSuggestedWebsocketTriggerType,
+  studyActivityWorkspaceSuggestedWebsocket,
+  studyActivityWorkspaceSignupWebsocket,
+} from "~/actions/study-activity";
 import { StudyActivityItem } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { WebsocketStateType } from "~/reducers/util/websocket";
@@ -28,13 +28,13 @@ interface StudyProgressWebsocketWatcherProps {
   // Websocket state is missing when using Muikku as unlogged user
   websocketState: WebsocketStateType;
 
-  // Records related actions
-  recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocketType;
-  recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebsocketType;
+  // Study activity related actions
+  studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedWebsocketTriggerType;
+  studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsocketTriggerType;
 
   // Guider related actions
-  guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType;
-  guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType;
+  guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType;
+  guiderWorkspaceSignupWebsocket: GuiderWorkspaceSignupWebsocketType;
 }
 
 /**
@@ -81,30 +81,39 @@ const StudyProgressWebsocketWatcher = (
   const {
     children,
     websocketState,
-    recordsSummarySuggestedNextWebsocket,
-    recordsSummaryWorkspaceSignupWebsocket,
-    guiderStudyProgressSuggestedNextWebsocket,
-    guiderStudyProgressWorkspaceSignupWebsocket,
+    studyActivityWorkspaceSuggestedWebsocket,
+    studyActivityWorkspaceSignupWebsocket,
+    guiderWorkspaceSuggestedWebsocket,
+    guiderWorkspaceSignupWebsocket,
   } = props;
 
   // hops:workspace-suggested watcher
-  useWebsocketEvent<StudyActivityItem>(
+  useWebsocketEvent<{
+    id: number;
+    name: string;
+    subject: string;
+    courseNumber: number;
+    status: string;
+    description: string | null;
+    courseId: number;
+    created: string;
+    studentIdentifier: string;
+  }>(
     "hops:workspace-suggested",
     [
-      (data) => recordsSummarySuggestedNextWebsocket({ websocketData: data }),
       (data) =>
-        guiderStudyProgressSuggestedNextWebsocket({ websocketData: data }),
+        studyActivityWorkspaceSuggestedWebsocket({ websocketData: data }),
+      (data) => guiderWorkspaceSuggestedWebsocket({ websocketData: data }),
     ],
     websocketState.websocket
   );
 
   // hops:workspace-signup watcher
-  useWebsocketEvent<StudyActivityItem | StudyActivityItem[]>(
+  useWebsocketEvent<StudyActivityItem[]>(
     "hops:workspace-signup",
     [
-      (data) => recordsSummaryWorkspaceSignupWebsocket({ websocketData: data }),
-      (data) =>
-        guiderStudyProgressWorkspaceSignupWebsocket({ websocketData: data }),
+      (data) => studyActivityWorkspaceSignupWebsocket({ websocketData: data }),
+      (data) => guiderWorkspaceSignupWebsocket({ websocketData: data }),
     ],
     websocketState.websocket
   );
@@ -129,10 +138,10 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
-      recordsSummarySuggestedNextWebsocket,
-      recordsSummaryWorkspaceSignupWebsocket,
-      guiderStudyProgressSuggestedNextWebsocket,
-      guiderStudyProgressWorkspaceSignupWebsocket,
+      studyActivityWorkspaceSuggestedWebsocket,
+      studyActivityWorkspaceSignupWebsocket,
+      guiderWorkspaceSuggestedWebsocket,
+      guiderWorkspaceSignupWebsocket,
     },
     dispatch
   );

@@ -46,7 +46,10 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS":
       return {
         ...state,
-        userStudyActivityItems: action.payload,
+        userStudyActivity: {
+          ...state.userStudyActivity,
+          items: action.payload,
+        },
       };
 
     case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX":

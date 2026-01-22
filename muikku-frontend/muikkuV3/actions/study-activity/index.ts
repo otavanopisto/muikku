@@ -77,6 +77,34 @@ export interface LoadCourseMatrixTriggerType {
   }): AnyActionType;
 }
 
+// WEBSOCKET UPDATERS
+
+/**
+ * Study activity workspace suggested websocket trigger type
+ */
+export interface StudyActivityWorkspaceSuggestedWebsocketTriggerType {
+  (data: {
+    websocketData: {
+      id: number;
+      name: string;
+      subject: string;
+      courseNumber: number;
+      status: string;
+      description: string | null;
+      courseId: number;
+      created: string;
+      studentIdentifier: string;
+    };
+  }): AnyActionType;
+}
+
+/**
+ * Study activity workspace signup websocket trigger type
+ */
+export interface StudyActivityWorkspaceSignupWebsocketTriggerType {
+  (data: { websocketData: StudyActivityItem[] }): AnyActionType;
+}
+
 /**
  * Load user study activity thunk function
  * @param data data
@@ -194,8 +222,130 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
   };
 };
 
+/**
+ * Study activity workspace suggested websocket thunk
+ * @param data data
+ */
+const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedWebsocketTriggerType =
+  function studyActivityWorkspaceSuggestedWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { websocketData } = data;
+      const state = getState();
+
+      if (!state.status.isStudent) {
+        return;
+      }
+
+      if (state.studyActivity.userStudyActivityStatus !== "READY") {
+        return;
+      }
+
+      if (!websocketData.courseId) {
+        return;
+      }
+
+      const updatedStudyActivityByWorkspaceId = await hopsApi.getStudyActivity({
+        studentIdentifier: state.status.userSchoolDataIdentifier,
+        workspaceEntityId: websocketData.courseId,
+      });
+
+      // If no items, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      // It is possible that there are multiple items with the same courseId, so we need to remove all of them
+      if (updatedStudyActivityByWorkspaceId.items.length === 0) {
+        let updatedStudyActivityItems: StudyActivityItem[] = [].concat(
+          state.studyActivity.userStudyActivity.items
+        );
+
+        updatedStudyActivityItems = updatedStudyActivityItems.filter(
+          (item) => item.courseId !== websocketData.courseId
+        );
+
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
+          payload: updatedStudyActivityItems,
+        });
+      } else {
+        // If there are items, meaning that add new activity course or update existing activity course
+        // If there are multiple items with the same courseId, we need to update all of them
+        const updatedStudyActivityItems: StudyActivityItem[] = [].concat(
+          state.studyActivity.userStudyActivity.items
+        );
+
+        // Loop through all items and update matching items or add as new
+        updatedStudyActivityByWorkspaceId.items.forEach((item) => {
+          const indexOfItem = updatedStudyActivityItems.findIndex(
+            (i) => i.courseId === item.courseId && i.subject === item.subject
+          );
+
+          if (indexOfItem !== -1) {
+            updatedStudyActivityItems[indexOfItem] = item;
+          } else {
+            updatedStudyActivityItems.push(item);
+          }
+        });
+
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
+          payload: updatedStudyActivityItems,
+        });
+      }
+    };
+  };
+
+/**
+ * Study activity workspace signup websocket thunk
+ * @param data data
+ */
+const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsocketTriggerType =
+  function studyActivityWorkspaceSignupWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { websocketData } = data;
+
+      const state = getState();
+
+      if (!state.status.isStudent) {
+        return;
+      }
+
+      if (state.studyActivity.userStudyActivityStatus !== "READY") {
+        return;
+      }
+
+      const updatedStudyActivityItems: StudyActivityItem[] = [].concat(
+        state.studyActivity.userStudyActivity.items
+      );
+
+      websocketData.forEach((item) => {
+        const indexOfItem = updatedStudyActivityItems.findIndex(
+          (i) => i.courseId === item.courseId && i.subject === item.subject
+        );
+
+        if (indexOfItem !== -1) {
+          updatedStudyActivityItems[indexOfItem] = item;
+        } else {
+          updatedStudyActivityItems.push(item);
+        }
+      });
+
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
+        payload: updatedStudyActivityItems,
+      });
+    };
+  };
 export {
   loadUserStudyActivity,
   updateUserStudyActivityItems,
   loadCourseMatrix,
+
+  // WEBSOCKET UPDATERS
+  studyActivityWorkspaceSuggestedWebsocket,
+  studyActivityWorkspaceSignupWebsocket,
 };
