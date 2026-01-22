@@ -40,7 +40,6 @@ export interface SummaryDataType {
   graphData: GraphDataType;
   coursesDone: number;
   studentsDetails: UserWithSchoolData;
-  studyProgress: SummaryStudyProgress;
 }
 
 /**

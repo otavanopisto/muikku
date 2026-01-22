@@ -10,7 +10,10 @@ import {
   loadWorkspaceStatus,
   updateStatusChatSettings,
 } from "~/actions/base/status";
-import { loadUserStudyActivity } from "~/actions/study-activity";
+import {
+  loadCourseMatrix,
+  loadUserStudyActivity,
+} from "~/actions/study-activity";
 
 /**
  * getOptionValue
@@ -101,8 +104,10 @@ export default async function (
   /**
    * Loads user study activity
    */
-  const loadUserStudyActivities = () =>
+  const loadUserStudyData = () => {
     store.dispatch(<Action>loadUserStudyActivity({}));
+    store.dispatch(<Action>loadCourseMatrix({}));
+  };
 
   const isWorkspace = window.location.pathname.includes("/workspace/");
   const workspaceUrl = window.location.pathname.split("/")[2];
@@ -118,7 +123,7 @@ export default async function (
         loadAreaPermissions();
         updateUnreadThreadMessagesCount();
         loadChatSettings();
-        loadUserStudyActivities();
+        loadUserStudyData();
         resolve(initializeWebsocket(actionsAndCallbacks));
       };
       store.dispatch(<Action>loadStatus(resolveFn));

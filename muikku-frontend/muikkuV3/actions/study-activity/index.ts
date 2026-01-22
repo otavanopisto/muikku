@@ -1,4 +1,8 @@
-import { StudyActivity, StudyActivityItem } from "~/generated/client";
+import {
+  CourseMatrix,
+  StudyActivity,
+  StudyActivityItem,
+} from "~/generated/client";
 import { AnyActionType, SpecificActionType } from "..";
 import { ReducerStateType } from "~/reducers/study-activity";
 import { Action, Dispatch } from "redux";
@@ -26,6 +30,18 @@ export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS =
     StudyActivityItem[]
   >;
 
+export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
+  ReducerStateType
+>;
+
+export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
+  CourseMatrix
+>;
+
+// STUDYACTIVITY
+
 /**
  * Load user study activity trigger type
  */
@@ -43,6 +59,19 @@ export interface LoadUserStudyActivityTriggerType {
 export interface UpdateUserStudyActivityItemsTriggerType {
   (data: {
     courseId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+// COURSE MATRIX
+
+/**
+ * Load course matrix trigger type
+ */
+export interface LoadCourseMatrixTriggerType {
+  (data: {
+    userIdentifier?: string;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -76,8 +105,6 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
         const studyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: identifierToUse,
         });
-
-        console.log("studyActivity new", studyActivity);
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
@@ -118,4 +145,57 @@ const updateUserStudyActivityItems: UpdateUserStudyActivityItemsTriggerType =
     };
   };
 
-export { loadUserStudyActivity, updateUserStudyActivityItems };
+/**
+ * Load course matrix thunk function
+ * @param data data
+ */
+const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const { userIdentifier, onSuccess, onFail } = data;
+    const state = getState();
+
+    if (!state.status.isStudent) {
+      return;
+    }
+    if (state.studyActivity.courseMatrixStatus === "READY") {
+      return;
+    }
+
+    const identifierToUse = userIdentifier
+      ? userIdentifier
+      : state.status.userSchoolDataIdentifier;
+
+    try {
+      const courseMatrix = await hopsApi.getStudentCourseMatrix({
+        studentIdentifier: identifierToUse,
+      });
+
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
+        payload: courseMatrix,
+      });
+
+      onSuccess?.();
+    } catch (error) {
+      if (!isMApiError(error)) {
+        throw error;
+      }
+      onFail?.();
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
+        payload: "ERROR",
+      });
+    }
+  };
+};
+
+export {
+  loadUserStudyActivity,
+  updateUserStudyActivityItems,
+  loadCourseMatrix,
+};

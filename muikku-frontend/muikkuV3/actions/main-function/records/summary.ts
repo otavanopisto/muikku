@@ -181,55 +181,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         ]);
       }
 
-      /**
-       * Study progress promise
-       */
-      const studyProgressPromise = async () => {
-        const studentActivity = await hopsApi.getStudyActivity({
-          studentIdentifier: pyramusIdentifier,
-        });
-
-        const courseMatrix = await hopsApi.getStudentCourseMatrix({
-          studentIdentifier: pyramusIdentifier,
-        });
-
-        const skillAndArtCourses = filterActivityBySubjects(
-          SKILL_AND_ART_SUBJECTS_CS,
-          studentActivity.items
-        );
-
-        const otherLanguageSubjects = filterActivityBySubjects(
-          LANGUAGE_SUBJECTS_CS,
-          studentActivity.items
-        );
-
-        const otherSubjects = filterActivityBySubjects(
-          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-          studentActivity.items
-        );
-
-        const studentActivityByStatus = filterActivity(studentActivity.items);
-
-        const studyProgress: SummaryStudyProgress = {
-          skillsAndArt: skillAndArtCourses,
-          otherLanguageSubjects: otherLanguageSubjects,
-          otherSubjects: otherSubjects,
-          gradedList: studentActivityByStatus.gradedList,
-          onGoingList: studentActivityByStatus.onGoingList,
-          suggestedNextList: studentActivityByStatus.suggestedNextList,
-          transferedList: studentActivityByStatus.transferedList,
-          needSupplementationList:
-            studentActivityByStatus.needSupplementationList,
-          studentChoices: [],
-          supervisorOptionalSuggestions: [],
-          courseMatrix: courseMatrix,
-        };
-
-        return studyProgress;
-      };
-
-      const studyProgress = await studyProgressPromise();
-
       const graphData = {
         activity: activityLogsHash.general,
         workspaces: workspaces,
@@ -243,7 +194,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         coursesDone: coursesDone.length,
         graphData: graphData,
         studentsDetails: studentsDetails,
-        studyProgress: studyProgress,
       };
 
       dispatch({
@@ -289,41 +239,41 @@ const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocket
         return null;
       }
 
-      const { websocketData } = data;
+      // const { websocketData } = data;
 
-      const { suggestedNextList } = summaryData.studyProgress;
+      // const { suggestedNextList } = summaryData.studyProgress;
 
-      const updatedSuggestedNextList: StudyActivityItem[] = [].concat(
-        suggestedNextList
-      );
+      // const updatedSuggestedNextList: StudyActivityItem[] = [].concat(
+      //   suggestedNextList
+      // );
 
-      // If course id is null, meaning that delete existing activity course by
-      // finding that specific course with subject code and course number and splice it out
-      const indexOfCourse = updatedSuggestedNextList.findIndex(
-        (item) =>
-          item.courseId === websocketData.courseId &&
-          websocketData.subject === item.subject
-      );
+      // // If course id is null, meaning that delete existing activity course by
+      // // finding that specific course with subject code and course number and splice it out
+      // const indexOfCourse = updatedSuggestedNextList.findIndex(
+      //   (item) =>
+      //     item.courseId === websocketData.courseId &&
+      //     websocketData.subject === item.subject
+      // );
 
-      if (indexOfCourse !== -1) {
-        updatedSuggestedNextList.splice(indexOfCourse, 1);
-      } else {
-        // Add new
-        updatedSuggestedNextList.push(websocketData);
-      }
+      // if (indexOfCourse !== -1) {
+      //   updatedSuggestedNextList.splice(indexOfCourse, 1);
+      // } else {
+      //   // Add new
+      //   updatedSuggestedNextList.push(websocketData);
+      // }
 
-      const studyProgress: SummaryStudyProgress = {
-        ...summaryData.studyProgress,
-        suggestedNextList: updatedSuggestedNextList,
-      };
+      // const studyProgress: SummaryStudyProgress = {
+      //   ...summaryData.studyProgress,
+      //   suggestedNextList: updatedSuggestedNextList,
+      // };
 
-      dispatch({
-        type: "UPDATE_STUDIES_SUMMARY",
-        payload: {
-          ...getState().summary.data,
-          studyProgress: studyProgress,
-        },
-      });
+      // dispatch({
+      //   type: "UPDATE_STUDIES_SUMMARY",
+      //   payload: {
+      //     ...getState().summary.data,
+      //     studyProgress: studyProgress,
+      //   },
+      // });
     };
   };
 
@@ -344,44 +294,44 @@ const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebso
         return null;
       }
 
-      const { websocketData } = data;
+      // const { websocketData } = data;
 
-      const { studyProgress } = summaryData;
-      const { suggestedNextList, onGoingList, gradedList, transferedList } =
-        studyProgress;
+      // const { studyProgress } = summaryData;
+      // const { suggestedNextList, onGoingList, gradedList, transferedList } =
+      //   studyProgress;
 
-      // Combine all course lists and filter out the updated course
-      let allCourses = [
-        ...onGoingList,
-        ...gradedList,
-        ...transferedList,
-        ...suggestedNextList,
-      ];
-      const courseIdToFilter = Array.isArray(websocketData)
-        ? websocketData[0].courseId
-        : websocketData.courseId;
-      allCourses = allCourses.filter(
-        (item) => item.courseId !== courseIdToFilter
-      );
+      // // Combine all course lists and filter out the updated course
+      // let allCourses = [
+      //   ...onGoingList,
+      //   ...gradedList,
+      //   ...transferedList,
+      //   ...suggestedNextList,
+      // ];
+      // const courseIdToFilter = Array.isArray(websocketData)
+      //   ? websocketData[0].courseId
+      //   : websocketData.courseId;
+      // allCourses = allCourses.filter(
+      //   (item) => item.courseId !== courseIdToFilter
+      // );
 
-      // Add the new course(s)
-      allCourses = allCourses.concat(websocketData);
+      // // Add the new course(s)
+      // allCourses = allCourses.concat(websocketData);
 
-      // Get filtered course lists
-      const categorizedCourses = {
-        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
-      };
+      // // Get filtered course lists
+      // const categorizedCourses = {
+      //   ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
+      // };
 
-      dispatch({
-        type: "UPDATE_STUDIES_SUMMARY",
-        payload: {
-          ...getState().summary.data,
-          studyProgress: {
-            ...studyProgress,
-            ...categorizedCourses,
-          },
-        },
-      });
+      // dispatch({
+      //   type: "UPDATE_STUDIES_SUMMARY",
+      //   payload: {
+      //     ...getState().summary.data,
+      //     studyProgress: {
+      //       ...studyProgress,
+      //       ...categorizedCourses,
+      //     },
+      //   },
+      // });
     };
   };
 
