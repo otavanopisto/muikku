@@ -188,7 +188,7 @@ public class PedagogyRestService {
     // If the form doesn't exist (or exists but isn't yet published to the student), return an empty object
     
     if (form == null || (form.getPublished() == null && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
-      return Response.ok(toRestModel(form, userEntity.getId())).build();
+      return Response.ok(toRestModel((PedagogyForm) null, userEntity.getId())).build();
     }
     else {
       
