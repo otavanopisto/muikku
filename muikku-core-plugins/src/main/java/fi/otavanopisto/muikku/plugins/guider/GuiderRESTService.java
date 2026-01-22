@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
+import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
@@ -73,7 +74,6 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -221,7 +221,7 @@ public class GuiderRESTService extends PluginRESTService {
   private Instance<SearchProvider> searchProviders;
   
   @Inject
-  private WebSocketMessenger webSocketMessenger;
+  private HopsWebsocketMessenger hopsWebSocketMessenger;
   
   @Inject
   private CourseMetaController courseMetaController;
@@ -1353,7 +1353,9 @@ public class GuiderRESTService extends PluginRESTService {
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
         studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId());
     if (response.ok()) {
-      webSocketMessenger.sendMessage("hops:workspace-signup", response.getEntity().getItems(), Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
+      // Ensure caller and student are added to the listeners interested in the student's HOPS changes
+      hopsWebSocketMessenger.registerUser(studentEntity.getId(), sessionController.getLoggedUserEntity().getId());
+      hopsWebSocketMessenger.sendMessage(studentEntity.getId(), "hops:workspace-signup", response.getEntity().getItems());
       return Response.ok(response.getEntity().getItems()).build();
     }
     else {

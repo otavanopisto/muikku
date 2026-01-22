@@ -49,8 +49,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -82,7 +82,6 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
@@ -165,10 +164,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   private OrganizationEntityController organizationEntityController;
   
   @Inject
-  private WebSocketMessenger webSocketMessenger;
-  
-  @Inject
-  private UserGroupGuidanceController userGroupGuidanceController;
+  private HopsWebsocketMessenger hopsWebSocketMessenger;
   
   @Inject
   @Any
@@ -694,9 +690,9 @@ public class CoursePickerRESTService extends PluginRESTService {
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
         userIdentifier.getDataSource(), userIdentifier.getIdentifier(), workspaceEntity.getId());
     if (response.ok() && !response.getEntity().getItems().isEmpty()) {
-      List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(userIdentifier, false);
-      recipients.add(userSchoolDataIdentifier.getUserEntity());
-      webSocketMessenger.sendMessage("hops:workspace-signup", response.getEntity().getItems(), recipients);
+      // Ensure caller and student are added to the listeners interested in the student's HOPS changes
+      hopsWebSocketMessenger.registerUser(userSchoolDataIdentifier.getUserEntity().getId(), sessionController.getLoggedUserEntity().getId());
+      hopsWebSocketMessenger.sendMessage(userSchoolDataIdentifier.getUserEntity().getId(), "hops:workspace-signup", response.getEntity().getItems());
     }
 
     return Response.noContent().build();
