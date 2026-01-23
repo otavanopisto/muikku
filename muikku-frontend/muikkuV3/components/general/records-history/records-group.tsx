@@ -138,7 +138,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
-  const [creditSortDirection, setWorkspaceSortDirection] = React.useState<
+  const [activitySortDirection, setActivitySortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
 
@@ -148,15 +148,15 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   );
 
   const memoizedFilterActivity = React.useMemo(
-    () => filterAndSortActivity(parsedActivityItems, creditSortDirection),
-    [parsedActivityItems, creditSortDirection]
+    () => filterAndSortActivity(parsedActivityItems, activitySortDirection),
+    [parsedActivityItems, activitySortDirection]
   );
 
   /**
    * sortWorkspaces
    */
   const handleWorkspaceSortDirectionClick = () => {
-    setWorkspaceSortDirection((oldValue) =>
+    setActivitySortDirection((oldValue) =>
       oldValue === "asc" ? "desc" : "asc"
     );
   };
@@ -168,7 +168,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   const handleWorkspaceSortDirectionKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setWorkspaceSortDirection((oldValue) =>
+      setActivitySortDirection((oldValue) =>
         oldValue === "asc" ? "desc" : "asc"
       );
     }
@@ -216,24 +216,24 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
         <h3 className="application-list__header application-list__header--sorter">
           {categoryName}
         </h3>
-        <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
+        <div className={`icon-sort-alpha-${activitySortDirection}`}></div>
       </div>
       {memoizedFilterActivity.nonTransferedActivities.length
-        ? memoizedFilterActivity.nonTransferedActivities.map((credit, i) => {
+        ? memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => {
             let isCombinationWorkspace = false;
             let studyActivityItems: StudyActivityItem[] = [];
-            if (isCombinationWorkspaceActivity(credit)) {
+            if (isCombinationWorkspaceActivity(ntItem)) {
               // If assessmentState contains more than 1 items, then its is combination
               isCombinationWorkspace = true;
-              studyActivityItems = credit.studyActivityItems;
+              studyActivityItems = ntItem.studyActivityItems;
             } else {
-              studyActivityItems = [credit];
+              studyActivityItems = [ntItem];
             }
 
             return (
               <RecordsGroupItem
-                key={`credit-item-${i}`}
-                credit={studyActivityItems}
+                key={`record-group-item-${i}`}
+                studyActivityItems={studyActivityItems}
                 isCombinationWorkspace={isCombinationWorkspace}
                 educationType={studyActivity.educationType}
               />
@@ -246,24 +246,24 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">Hyväksiluvut</h3>
           </div>
-          {memoizedFilterActivity.transferedActivities.map((credit, i) => (
+          {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
             <ApplicationListItem
               className="course course--credits"
-              key={`tranfer-credit-transfered-${i}`}
+              key={`tranfered-activity-item-${i}`}
             >
               <ApplicationListItemHeader modifiers="course">
                 <span className="application-list__header-icon icon-books"></span>
                 <div className="application-list__header-primary">
                   <div className="application-list__header-primary-title">
-                    {credit.courseName}
+                    {tItem.courseName}
                   </div>
 
                   <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
                     <div className="label">
-                      <div className="label__text">{credit.studyProgramme}</div>
+                      <div className="label__text">{tItem.studyProgramme}</div>
                     </div>
-                    {credit.curriculums &&
-                      credit.curriculums.map((curriculum) => (
+                    {tItem.curriculums &&
+                      tItem.curriculums.map((curriculum) => (
                         <div key={curriculum} className="label">
                           <div className="label__text">{curriculum} </div>
                         </div>
@@ -271,7 +271,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
                   </div>
                 </div>
                 <div className="application-list__header-secondary">
-                  <TransferedCreditIndicator transferCredit={credit} />
+                  <TransferedCreditIndicator studyActivityItem={tItem} />
                 </div>
               </ApplicationListItemHeader>
             </ApplicationListItem>

@@ -12,13 +12,12 @@ import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
-//import { suitabilityMapHelper } from "~/@shared/suitability";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import RecordsAssessmentIndicator from "./records-assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
-import { suitabilityMapHelper } from "~/@shared/suitability";
 
 /**
  * RecordsGroupItemProps
@@ -27,7 +26,7 @@ interface RecordsGroupItemProps {
   /**
    * If credit contains more than one item, then it is combination workspace
    */
-  credit: StudyActivityItem[];
+  studyActivityItems: StudyActivityItem[];
   isCombinationWorkspace: boolean;
   educationType: string;
 }
@@ -38,7 +37,7 @@ interface RecordsGroupItemProps {
  * @returns JSX.Element
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
-  const { credit, isCombinationWorkspace, educationType } = props;
+  const { studyActivityItems, isCombinationWorkspace, educationType } = props;
 
   const { identifier, userEntityId, displayNotification } =
     useRecordsInfoContext();
@@ -54,7 +53,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const [showE, setShowE] = React.useState(false);
 
   const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
-    workspaceId: credit[0].courseId,
+    workspaceId: studyActivityItems[0].courseId,
     userEntityId,
     enabled: showE, // Only load data when expanded
     displayNotification,
@@ -65,11 +64,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns JSX.Element
    */
   const renderAssessmentsInformations = () => {
-    const { credit } = props;
+    const { studyActivityItems } = props;
 
     return (
       <>
-        {credit.map((a, i) => {
+        {studyActivityItems.map((a, i) => {
           const {
             evalStateClassName,
             evalStateIcon,
@@ -279,7 +278,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns string
    */
   const getSumOfCredits = () => {
-    const sumOfCredits = credit.reduce(
+    const sumOfCredits = studyActivityItems.reduce(
       (acc: number, curr) =>
         acc + ((curr?.length && curr.lengthSymbol && curr.length) ?? 0),
       0
@@ -289,7 +288,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
       return null;
     }
 
-    return `${sumOfCredits} ${credit[0]?.lengthSymbol}`;
+    return `${sumOfCredits} ${studyActivityItems[0]?.lengthSymbol}`;
   };
 
   /**
@@ -300,10 +299,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const renderMandatorityDescription = () => {
     // Get first OPS from curriculums there should be only one OPS per workspace
     // Some old workspaces might have multiple OPS, but that is rare case
-    const OPS = credit[0].curriculums?.[0];
+    const OPS = studyActivityItems[0].curriculums?.[0];
 
     // If OPS data and workspace mandatority property is present
-    if (OPS && credit[0].mandatority) {
+    if (OPS && studyActivityItems[0].mandatority) {
       const suitabilityMap = suitabilityMapHelper(t);
 
       // Create map property from education type name and OPS name that was passed
@@ -319,7 +318,8 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
       }
 
       // Then get correct local string from map by suitability enum value
-      let localString = suitabilityMap[education][credit[0].mandatority];
+      let localString =
+        suitabilityMap[education][studyActivityItems[0].mandatority];
 
       const sumOfCredits = getSumOfCredits();
 
@@ -357,21 +357,23 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               })
         }
         aria-expanded={showE}
-        aria-controls={"record" + credit[0].courseId}
+        aria-controls={"record" + studyActivityItems[0].courseId}
         tabIndex={0}
       >
         <span className="application-list__header-icon icon-books"></span>
         <div className="application-list__header-primary">
           <div className="application-list__header-primary-title">
-            {credit[0].courseName}
+            {studyActivityItems[0].courseName}
           </div>
 
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
             <div className="label">
-              <div className="label__text">{credit[0].studyProgramme}</div>
+              <div className="label__text">
+                {studyActivityItems[0].studyProgramme}
+              </div>
             </div>
-            {credit[0].curriculums &&
-              credit[0].curriculums.map((curriculum) => (
+            {studyActivityItems[0].curriculums &&
+              studyActivityItems[0].curriculums.map((curriculum) => (
                 <div key={curriculum} className="label">
                   <div className="label__text">{curriculum} </div>
                 </div>
@@ -383,7 +385,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         <div className="application-list__header-secondary">
           <span>
             <WorkspaceAssignmentsAndDiaryDialog
-              credit={credit[0]}
+              credit={studyActivityItems[0]}
               userIdentifier={identifier}
               userEntityId={userEntityId}
             >
@@ -398,26 +400,28 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           {!isCombinationWorkspace ? (
             // So "legasy" case where there is only one module, render indicator etc next to workspace name
             <>
-              <AssessmentRequestIndicator studyActivityItem={credit[0]} />
+              <AssessmentRequestIndicator
+                studyActivityItem={studyActivityItems[0]}
+              />
               <RecordsAssessmentIndicator
-                studyActivityItem={credit[0]}
+                studyActivityItem={studyActivityItems[0]}
                 isCombinationWorkspace={isCombinationWorkspace}
               />
             </>
           ) : null}
-          <ActivityIndicator studyActivityItem={credit[0]} />
+          <ActivityIndicator studyActivityItem={studyActivityItems[0]} />
         </div>
       </ApplicationListItemHeader>
 
       {isCombinationWorkspace ? (
         // If combinatin workspace render module assessments below workspace name
         <ApplicationListItemContentContainer modifiers="combination-course">
-          {credit.map((a) => {
-            const subjectCode = a.subject;
-            const subjectName = a.subjectName;
-            const courseNumber = a.courseNumber;
-            const courseLength = a.length;
-            const courseLengthSymbol = a.lengthSymbol;
+          {studyActivityItems.map((aItem) => {
+            const subjectCode = aItem.subject;
+            const subjectName = aItem.subjectName;
+            const courseNumber = aItem.courseNumber;
+            const courseLength = aItem.length;
+            const courseLengthSymbol = aItem.lengthSymbol;
 
             let codeSubjectString = `${subjectCode}`;
 
@@ -442,10 +446,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   {codeSubjectString}
                 </span>
 
-                <AssessmentRequestIndicator studyActivityItem={a} />
+                <AssessmentRequestIndicator studyActivityItem={aItem} />
 
                 <RecordsAssessmentIndicator
-                  studyActivityItem={a}
+                  studyActivityItem={aItem}
                   isCombinationWorkspace={isCombinationWorkspace}
                 />
               </div>
@@ -453,7 +457,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           })}
         </ApplicationListItemContentContainer>
       ) : null}
-      <AnimateHeight height={animateOpen} id={"record" + credit[0].courseId}>
+      <AnimateHeight
+        height={animateOpen}
+        id={"record" + studyActivityItems[0].courseId}
+      >
         {renderAssessmentsInformations()}
       </AnimateHeight>
     </ApplicationListItem>

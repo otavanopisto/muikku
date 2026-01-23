@@ -9,7 +9,7 @@ import { StudyActivityItem } from "~/generated/client";
  * TransfereCreditValueIndicatorProps
  */
 interface TransfereCreditIndicatorProps {
-  transferCredit: StudyActivityItem;
+  studyActivityItem: StudyActivityItem;
 }
 
 /**
@@ -20,17 +20,14 @@ interface TransfereCreditIndicatorProps {
 const TransferedCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   props
 ) => {
-  const { transferCredit } = props;
+  const { studyActivityItem } = props;
 
   const { t } = useTranslation(["studies", "common"]);
 
   // this shouldn't come to this, but just in case
-  if (transferCredit === null) {
+  if (studyActivityItem === null) {
     return <div className="application-list__header-secondary" />;
   }
-
-  //Transfred credits have only one assessment to describe them
-  //const assessment = transferCredit.assessmentStates[0];
 
   return (
     <Dropdown
@@ -39,17 +36,17 @@ const TransferedCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
         <span>
           {t("content.transferCreditsDate", {
             ns: "studies",
-            date: localize.date(transferCredit.date),
-          }) + getShortenGradeExtension(transferCredit.grade)}
+            date: localize.date(studyActivityItem.date),
+          }) + getShortenGradeExtension(studyActivityItem.grade)}
         </span>
       }
     >
       <span
         className={`application-list__indicator-badge application-list__indicator-badge-course ${
-          transferCredit.passing ? "state-PASSED" : "state-FAILED"
+          studyActivityItem.passing ? "state-PASSED" : "state-FAILED"
         }`}
       >
-        {shortenGrade(transferCredit.grade)}
+        {shortenGrade(studyActivityItem.grade)}
       </span>
     </Dropdown>
   );
