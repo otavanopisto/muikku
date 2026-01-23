@@ -102,9 +102,12 @@ export default async function (
     store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
 
   /**
-   * Loads user study activity
+   * Loads user study activity for student user after succesful login
    */
   const loadUserStudyData = () => {
+    if (!store.getState().status.isStudent) {
+      return;
+    }
     store.dispatch(<Action>loadUserStudyActivity({}));
     store.dispatch(<Action>loadCourseMatrix({}));
   };
