@@ -27,10 +27,6 @@
 
     <rewrite.version>3.5.1.Final</rewrite.version>
 
-    <!-- Jade -->
-
-    <jade4j.version>0.4.2</jade4j.version>
-
     <!-- Muikku -->
 
     <muikku.version>1.1.272-SNAPSHOT</muikku.version>
@@ -182,15 +178,6 @@
         <artifactId>rewrite-integration-cdi</artifactId>
         <version>${rewrite.version}</version>
       </dependency>
-
-      <!-- Jade -->
-
-      <dependency>
-        <groupId>de.neuland-bfi</groupId>
-        <artifactId>jade4j</artifactId>
-        <version>${jade4j.version}</version>
-      </dependency>
-
 
       <!-- Muikku -->
 

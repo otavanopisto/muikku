@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,9 +95,6 @@ public class MatriculationRESTService {
   
   @Inject
   private SavedMatriculationEnrollmentDAO savedMatriculationEnrollmentDAO;
-  
-  @Inject
-  private MatriculationNotificationController matriculationNotificationController;
   
   @Inject
   private TranscriptOfRecordsController transcriptOfRecordsController;
@@ -425,12 +421,6 @@ public class MatriculationRESTService {
     BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.submitMatriculationExamEnrollment(studentIdentifier, examId, schoolDataEntity);
     
     if (response.ok()) {
-      try {
-        matriculationNotificationController.sendEnrollmentNotification(enrollment, studentIdentifier);
-      } catch (IOException e) {
-        logger.log(Level.SEVERE, "Failed to send matriculation enrollment notification email", e);
-      }
-      
       return Response.ok().build();
     }
     else {
