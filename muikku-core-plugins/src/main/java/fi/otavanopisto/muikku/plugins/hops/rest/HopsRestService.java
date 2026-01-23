@@ -1193,7 +1193,7 @@ public class HopsRestService {
             if (!isStudent) {
               Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
               workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
-              if (workspaceType == null || !StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
+              if (workspaceType != null && !StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
                 continue;
               }
             }
