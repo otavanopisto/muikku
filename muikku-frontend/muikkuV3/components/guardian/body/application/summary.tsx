@@ -66,7 +66,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
     if (
       this.props.records.location !== "summary" ||
-      this.props.summary.status !== "READY"
+      this.props.summary.status !== "READY" ||
+      this.props.studyActivity.userStudyActivityStatus !== "READY" ||
+      this.props.studyActivity.courseMatrixStatus !== "READY"
     ) {
       return null;
     } else {

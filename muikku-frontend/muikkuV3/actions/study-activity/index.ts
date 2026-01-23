@@ -118,10 +118,20 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
       const { userIdentifier, onSuccess, onFail } = data;
       const state = getState();
 
-      if (!state.status.isStudent) {
+      const hasPermissions =
+        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
+        state.status.userSchoolDataIdentifier.startsWith(
+          "PYRAMUS-STUDENTPARENT-"
+        );
+
+      if (!hasPermissions) {
         return;
       }
-      if (state.studyActivity.userStudyActivityStatus === "READY") {
+
+      if (
+        state.studyActivity.userStudyActivityStatus === "READY" ||
+        state.studyActivity.userStudyActivityStatus === "LOADING"
+      ) {
         return;
       }
 
@@ -129,7 +139,16 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
         ? userIdentifier
         : state.status.userSchoolDataIdentifier;
 
+      if (!identifierToUse.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error(`Invalid student identifier ${identifierToUse}`);
+      }
+
       try {
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
+          payload: "LOADING",
+        });
+
         const studyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: identifierToUse,
         });
@@ -187,10 +206,20 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
     const { userIdentifier, onSuccess, onFail } = data;
     const state = getState();
 
-    if (!state.status.isStudent) {
+    const hasPermissions =
+      state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
+      state.status.userSchoolDataIdentifier.startsWith(
+        "PYRAMUS-STUDENTPARENT-"
+      );
+
+    if (!hasPermissions) {
       return;
     }
-    if (state.studyActivity.courseMatrixStatus === "READY") {
+
+    if (
+      state.studyActivity.courseMatrixStatus === "READY" ||
+      state.studyActivity.courseMatrixStatus === "LOADING"
+    ) {
       return;
     }
 
@@ -198,9 +227,23 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
       ? userIdentifier
       : state.status.userSchoolDataIdentifier;
 
+    if (!identifierToUse.startsWith("PYRAMUS-STUDENT-")) {
+      throw new Error(`Invalid student identifier ${identifierToUse}`);
+    }
+
     try {
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
+        payload: "LOADING",
+      });
+
       const courseMatrix = await hopsApi.getStudentCourseMatrix({
         studentIdentifier: identifierToUse,
+      });
+
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
+        payload: "READY",
       });
 
       dispatch({
@@ -235,7 +278,13 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
       const { websocketData } = data;
       const state = getState();
 
-      if (!state.status.isStudent) {
+      const hasPermissions =
+        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
+        state.status.userSchoolDataIdentifier.startsWith(
+          "PYRAMUS-STUDENTPARENT-"
+        );
+
+      if (!hasPermissions) {
         return;
       }
 
@@ -310,7 +359,13 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
 
       const state = getState();
 
-      if (!state.status.isStudent) {
+      const hasPermissions =
+        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
+        state.status.userSchoolDataIdentifier.startsWith(
+          "PYRAMUS-STUDENTPARENT-"
+        );
+
+      if (!hasPermissions) {
         return;
       }
 

@@ -20,7 +20,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { StudyActivity } from "~/generated/client";
+import { StudyActivityState } from "~/reducers/study-activity";
 
 /**
  * RecordsProps
@@ -29,7 +29,7 @@ interface RecordsProps extends WithTranslation {
   records: RecordsType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
-  studyActivities: StudyActivity;
+  studyActivity: StudyActivityState;
 }
 
 /**
@@ -67,10 +67,15 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
     if (
       this.props.records.userDataStatus === "LOADING" ||
-      this.props.records.userDataStatus === "WAIT"
+      this.props.records.userDataStatus === "WAIT" ||
+      this.props.studyActivity.userStudyActivityStatus === "LOADING" ||
+      this.props.studyActivity.userStudyActivityStatus === "IDLE"
     ) {
       return null;
-    } else if (this.props.records.userDataStatus === "ERROR") {
+    } else if (
+      this.props.records.userDataStatus === "ERROR" ||
+      this.props.studyActivity.userStudyActivityStatus === "ERROR"
+    ) {
       return (
         <div className="empty">
           <span>
@@ -108,8 +113,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       >
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            {this.props.studyActivities ? (
-              <RecordsGroup studyActivity={this.props.studyActivities} />
+            {this.props.studyActivity.userStudyActivity ? (
+              <RecordsGroup
+                studyActivity={this.props.studyActivity.userStudyActivity}
+              />
             ) : (
               <div className="application-sub-panel__item">
                 <div className="empty">
@@ -151,7 +158,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     status: state.status,
-    studyActivities: state.studyActivity.userStudyActivity,
+    studyActivity: state.studyActivity,
   };
 }
 
