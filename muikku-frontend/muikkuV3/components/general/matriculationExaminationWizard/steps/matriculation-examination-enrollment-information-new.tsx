@@ -33,7 +33,6 @@ import {
   FINNISH_SUBJECTS,
 } from "~/components/general/matriculationExaminationWizard/helper";
 import { useTranslation } from "react-i18next";
-import { Textarea } from "../textarea";
 
 /**
  * Required amount attendances for valid Examination (vähintään 5 suoritusta)
@@ -554,10 +553,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const isConflictingRepeat = (
     attendance: MatriculationExamEnrolledSubject
   ) => {
-    //console.log("isConflictingRepeat", attendance);
     if (attendance.subject && attendance.repeat === false) {
-      //console.log("getFinishedSubjects", getFinishedSubjects());
       return getFinishedSubjects().indexOf(attendance.subject) != -1;
+    } else if (attendance.subject && attendance.repeat === true) {
+      return getFinishedSubjects().indexOf(attendance.subject) == -1;
     } else {
       return false;
     }
@@ -572,8 +571,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     return (
       examinationInformation.enrolledAttendances.filter(
         (attendance) =>
-          attendance.repeat === false &&
-          finishedSubjects.indexOf(attendance.subject) != -1
+          (attendance.repeat === false &&
+            finishedSubjects.indexOf(attendance.subject) != -1) ||
+          (attendance.repeat === true &&
+            finishedSubjects.indexOf(attendance.subject) == -1)
       ).length > 0
     );
   }, [examinationInformation.enrolledAttendances, getFinishedSubjects]);
@@ -1323,7 +1324,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
-            <Textarea
+            <TextField
               label="Opintopolku-url"
               value={examinationInformation.opintopolkuUrl}
               onChange={(e) =>
@@ -1332,8 +1333,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
                   e.target.value
                 )
               }
-              rows={5}
-              className="matriculation__textarea"
+              className="matriculation__input"
             />
           </div>
         </div>

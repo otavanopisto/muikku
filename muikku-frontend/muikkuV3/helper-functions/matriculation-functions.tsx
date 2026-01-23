@@ -135,7 +135,7 @@ export const getDefaultNextTerm = () => getNextTerms()[0];
  *
  * @param termString Term + year. Example: "SPRING2021"
  */
-export const parseTermToValues = (termString: string | null) => {
+export const parseTermToValues = (termString: string) => {
   if (termString === "OUTDATED") {
     return { term: null, year: null };
   }
