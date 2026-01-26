@@ -1385,6 +1385,17 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             )}
           </div>
         </div>
+
+        <div className="matriculation-container__state state-INFO">
+          <div className="matriculation-container__state-icon icon-notification"></div>
+          <div className="matriculation-container__state-text">
+            <p className="matriculation-container__info-item">
+              {t("content.matriculationFormInfoBlock6", {
+                ns: "hops_new",
+              })}
+            </p>
+          </div>
+        </div>
         {renderInfoBoxByDegreeType()}
       </fieldset>
 

@@ -960,6 +960,7 @@
       "matriculationFormInfoBlock4": "<b>Note:&nbsp;</b> The examination requires one (1) advanced-level exam (e.g., long mathematics or a long, i.e., A-level, foreign language).",
       "matriculationFormInfoBlock4_noSelection": "<b><b>Note:&nbsp;</b> The examination requires one (1) advanced-level exam (e.g., long mathematics or a long, i.e., A-level, foreign language). (0 selected)",
       "matriculationFormInfoBlock5": "If you have previously taken exams outside of Nettilukio, add a link to Opintopolku below. Ensure that the link allows you to view your previously completed exams. Read the instructions in the question mark icon if needed.",
+      "matriculationFormInfoBlock6": "If you have successfully completed exams in the previous three years, the exams will be automatically included in your new degree. If you do not want your previous exams to be included in the degree, you must inform us at yo-kirjoitukset@otavia.fi.",
       "matriculationFormPublishNameOptionYes": "I agree to have my name published in the graduation lists",
       "matriculationFormPublishNameOptionNo": "I do not agree to have my name published in the graduation lists",
       "matriculationFormRepeatOptionFirstTime": "First time",
