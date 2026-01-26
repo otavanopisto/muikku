@@ -1,7 +1,4 @@
-import {
-  StudyActivityItem,
-  WorkspaceAssessmentState,
-} from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * sleep
