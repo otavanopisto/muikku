@@ -34,6 +34,10 @@ export const useWizard = (props: UseWizardProps) => {
   } = props;
 
   const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(0);
+  // Track invalid states internally instead of mutating props
+  const [stepInvalidStates, setStepInvalidStates] = React.useState<
+    Record<number, boolean>
+  >({});
 
   /**
    * Set the invalid state of a step. This will trigger a re-render of the wizard.
@@ -42,14 +46,24 @@ export const useWizard = (props: UseWizardProps) => {
    * @param value invalid state
    * @param index step index
    */
-  const isInvalid = React.useCallback(
-    (value: boolean, index: number) => {
-      // Update the steps directly from props
-      steps[index].isInvalid = value;
-      // Force a re-render
-      setCurrentStepIndex((currentIndex) => currentIndex);
-    },
-    [steps]
+  const isInvalid = React.useCallback((value: boolean, index: number) => {
+    setStepInvalidStates((prev) => {
+      // Only update if the value actually changed
+      if (prev[index] === value) {
+        return prev;
+      }
+      return { ...prev, [index]: value };
+    });
+  }, []);
+
+  // Merge invalid states with steps to create enhanced steps
+  const enhancedSteps = React.useMemo(
+    () =>
+      steps.map((step, index) => ({
+        ...step,
+        isInvalid: stepInvalidStates[index] ?? step.isInvalid ?? false,
+      })),
+    [steps, stepInvalidStates]
   );
 
   /**
@@ -57,15 +71,15 @@ export const useWizard = (props: UseWizardProps) => {
    */
   const next = React.useCallback(() => {
     setCurrentStepIndex((i) => {
-      if (i >= steps.length - 1) {
+      if (i >= enhancedSteps.length - 1) {
         return i;
       }
 
       // When onStepChange is defined, call it with the new step
-      onStepChange && onStepChange(steps[i + 1]);
+      onStepChange && onStepChange(enhancedSteps[i + 1]);
       return i + 1;
     });
-  }, [onStepChange, steps]);
+  }, [onStepChange, enhancedSteps]);
 
   /**
    * Go to the previous step
@@ -77,25 +91,25 @@ export const useWizard = (props: UseWizardProps) => {
       }
 
       // When onStepChange is defined, call it with the new step
-      onStepChange && onStepChange(steps[i - 1]);
+      onStepChange && onStepChange(enhancedSteps[i - 1]);
       return i - 1;
     });
-  }, [onStepChange, steps]);
+  }, [onStepChange, enhancedSteps]);
 
   /**
    * Go to a specific step
    */
   const goTo = React.useCallback(
     (step: number) => {
-      if (step < 0 || step >= steps.length) {
+      if (step < 0 || step >= enhancedSteps.length) {
         throw new Error(`Invalid step index: ${step}`);
       }
 
       // When onStepChange is defined, call it with the new step
-      onStepChange && onStepChange(steps[step]);
+      onStepChange && onStepChange(enhancedSteps[step]);
       setCurrentStepIndex(step);
     },
-    [onStepChange, steps]
+    [onStepChange, enhancedSteps]
   );
 
   // List of disabled steps indexes. If any of the steps are invalid, all the following steps are disabled
@@ -103,24 +117,24 @@ export const useWizard = (props: UseWizardProps) => {
     const disabledSteps: number[] = [];
     let invalidStepIndex = undefined;
 
-    for (let i = 0; i < steps.length; i++) {
+    for (let i = 0; i < enhancedSteps.length; i++) {
       if (invalidStepIndex !== undefined) {
         disabledSteps.push(i);
       }
 
-      if (steps[i].isInvalid) {
+      if (enhancedSteps[i].isInvalid) {
         invalidStepIndex = i;
       }
     }
     return disabledSteps;
-  }, [steps]);
+  }, [enhancedSteps]);
 
   return {
-    step: steps[currentStepIndex],
-    steps: steps,
+    step: enhancedSteps[currentStepIndex],
+    steps: enhancedSteps,
     currentStepIndex,
     isFirstStep: currentStepIndex === 0,
-    isLastStep: currentStepIndex === steps.length - 1,
+    isLastStep: currentStepIndex === enhancedSteps.length - 1,
     next,
     previous,
     goTo,
