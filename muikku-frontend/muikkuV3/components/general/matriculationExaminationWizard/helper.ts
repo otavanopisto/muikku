@@ -2,6 +2,7 @@ import { ExaminationGrade } from "~/@types/shared";
 
 export const ACADEMIC_SUBJECTS = [
   "UE",
+  "UO",
   "ET",
   "YO",
   "KE",
@@ -23,10 +24,11 @@ export const ADVANCED_SUBJECTS = [
   "VEA",
 ];
 
-export const FINNISH_SUBJECTS = ["AI", "S2", "Z", "I", "W"];
+export const FINNISH_SUBJECTS = ["AI", "S2", "O5", "Z", "I", "W"];
 export const SUBJECT_CODES = [
   "AI",
   "S2",
+  "O5",
   "ENA",
   "RAA",
   "ESA",
@@ -37,6 +39,7 @@ export const SUBJECT_CODES = [
   "MAA",
   "MAB",
   "UE",
+  "UO",
   "ET",
   "YO",
   "KE",
@@ -55,6 +58,7 @@ export const SUBJECT_CODES = [
   "ITC",
   "POC",
   "LAC",
+  "L7",
   "SM_DC",
   "SM_ICC",
   "SM_QC",

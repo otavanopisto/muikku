@@ -81,12 +81,13 @@ const REQUIRED_GROUPS = [
     "ITC",
     "POC",
     "LAC",
+    "L7",
     "SM_DC",
     "SM_ICC",
     "SM_QC",
   ],
   ["MAA", "RUA", "ENA", "RAA", "ESA", "SAA", "VEA"],
-  ["UE", "ET", "YO", "KE", "GE", "TT", "PS", "FI", "HI", "FY", "BI"],
+  ["UE", "UO", "ET", "YO", "KE", "GE", "TT", "PS", "FI", "HI", "FY", "BI"],
   ["MAA", "MAB"],
 ];
 
@@ -446,7 +447,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const isConflictingAttendances = React.useCallback((): string[][] => {
     // Can't enroll to two subjects that are in the same group
     const conflictingGroups = [
-      ["AI", "S2", "Z", "I", "W"],
+      ["AI", "S2", "O5", "Z", "I", "W"],
       ["UE", "ET", "YO", "KE", "GE", "TT"],
       ["RUA", "RUB"],
       ["PS", "FI", "HI", "FY", "BI"],
@@ -1319,19 +1320,45 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Muut tiedot
+          {t("labels.matriculationFormRegistrationSubTitle5", {
+            ns: "hops_new",
+          })}
         </legend>
+
+        <div className="matriculation-container__state state-INFO">
+          <div className="matriculation-container__state-icon icon-notification"></div>
+          <div className="matriculation-container__state-text">
+            <p className="matriculation-container__info-item">
+              {t("content.matriculationFormInfoBlock5", {
+                ns: "hops_new",
+              })}
+            </p>
+          </div>
+        </div>
 
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Opintopolku-url"
+              label={t("labels.matriculationFormFieldOpintopolkuUrl", {
+                ns: "hops_new",
+              })}
               value={examinationInformation.opintopolkuUrl}
               onChange={(e) =>
                 handleExaminationInformationChange(
                   "opintopolkuUrl",
                   e.target.value
                 )
+              }
+              instructions={
+                <div
+                  className="matriculation-container__info-item matriculation-container__info-item--instructions"
+                  dangerouslySetInnerHTML={{
+                    __html: t(
+                      "content.matriculationFormOpintopolkuUrlInstructions",
+                      { ns: "hops_new" }
+                    ),
+                  }}
+                />
               }
               className="matriculation__input"
             />
