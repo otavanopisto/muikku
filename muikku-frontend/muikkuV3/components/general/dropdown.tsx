@@ -24,9 +24,9 @@ import { Provider, ReactReduxContext } from "react-redux";
 import { __RouterContext as RouterContext } from "react-router";
 
 /**
- * itemType2
+ * ItemType2
  */
-type itemType2 = (closeDropdown: () => any) => any;
+type ItemType2 = (closeDropdown: () => any) => any;
 
 /**
  * DropdownProps
@@ -37,7 +37,7 @@ export interface DropdownProps {
   /**
    * Using item list as content
    */
-  items?: Array<React.ReactNode | itemType2>;
+  items?: Array<React.ReactNode | ItemType2>;
   /**
    * Content to show
    */
@@ -111,10 +111,7 @@ interface DropdownState {
 /**
  * Dropdown
  */
-export default class Dropdown extends React.Component<
-  DropdownProps,
-  DropdownState
-> {
+class Dropdown extends React.Component<DropdownProps, DropdownState> {
   private id: string;
   private isUnmounted = false;
   private originalPositionTop: number;
@@ -168,12 +165,14 @@ export default class Dropdown extends React.Component<
    * @param event event
    */
   handleOutsideClick = (event: MouseEvent) => {
-    if (
-      this.dropdownRef.current &&
-      !this.dropdownRef.current.contains(event.target as Node)
-    ) {
-      this.close();
+    const target = event.target as Node;
+
+    // Check if click is inside dropdown
+    if (this.dropdownRef.current && this.dropdownRef.current.contains(target)) {
+      return;
     }
+
+    this.close();
   };
 
   /**
@@ -766,3 +765,5 @@ export default class Dropdown extends React.Component<
     );
   }
 }
+
+export default Dropdown;

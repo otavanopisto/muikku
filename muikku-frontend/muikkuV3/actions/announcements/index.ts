@@ -926,6 +926,8 @@ const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
       getState: () => StateType
     ) => {
       try {
+        const { announcements } = getState();
+
         await announcerApi.deleteAnnouncementCategory({
           categoryId: id,
         });
@@ -934,6 +936,11 @@ const deleteAnnouncementCategory: DeleteAnnouncementCategoryTriggerType =
           type: "DELETE_ANNOUNCEMENT_CATEGORY",
           payload: id,
         });
+
+        //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
+        if (announcements.location === `category-${id}`) {
+          location.hash = "#active";
+        }
 
         success && success();
       } catch (err) {

@@ -112,6 +112,7 @@ public class CommunicatorMessageIndexer {
         senderData.setLastName(senderName.getLastName());
         senderData.setNickName(senderName.getNickName());
         senderData.setUserEntityId(senderId);
+        senderData.setTrashedBySender(communicatorMessage.getTrashedBySender());
         senderData.setArchivedBySender(communicatorMessage.getArchivedBySender());
         
         List<IndexedCommunicatorMessageLabels> labelsList = new ArrayList<IndexedCommunicatorMessageLabels>();
@@ -237,6 +238,7 @@ public class CommunicatorMessageIndexer {
       recipientData.setStudyProgrammeName(recipientName.getStudyProgrammeName());
       // set is message read/unread by receiver
       recipientData.setReadByReceiver(recipient.getReadByReceiver());
+      recipientData.setTrashedByReceiver(recipient.getTrashedByReceiver());
       recipientData.setArchivedByReceiver(recipient.getArchivedByReceiver());
         
       // set labels

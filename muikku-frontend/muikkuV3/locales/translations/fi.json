@@ -131,6 +131,8 @@
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
       "edit_description": "Muokkaa kuvausta",
+      "editing": "{{user}} muokkaa",
+      "editing_student": "Opiskelija muokkaa",
       "edited": "Muokattu",
       "email": "Sähköpostiosoite",
       "emails_one": "Sähköposti",
@@ -336,6 +338,7 @@
       "preset3": "Esiasetettu teema 3",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
       "tab": "Välilehti {{current}}/{{tabCount}}",
+      "tagOptionMenu": "Tunnisteiden muokkausvalikko",
       "uploadPicture": "Lisää profiilin kuva"
     },
     "subjects": {
@@ -1217,10 +1220,12 @@
       "removed": "Viesti on poistettu",
       "noneSelected_announcements": "Et ole valinnut yhtään tiedotetta",
       "removing": "$t(common:content.removing)",
-      "removing_message": "Oletko varma, että haluat poistaa viestin?",
       "removing_announcement": "Oletko varma, että haluat poistaa tiedotteen?",
+      "removing_category": "Oletko varma, että haluat poistaa kategorian?",
       "removing_contactEntry": "Oletko varma, että haluat poistaa yhteydenoton? Jos poistat yhteydenoton, myös sen kommentit poistuvat.",
       "removing_discussionArea": "Huom.! Keskustelualueen poisto poistaa myös kaikki sille jätetyt viestit!",
+      "removing_label": "Oletko varma, että haluat poistaa tunnisteen?",
+      "removing_message": "Oletko varma, että haluat poistaa viestin?",
       "removing_reply": "Vastaus poistetaan lopullisesti. Oletko varma, että haluat jatkaa?",
       "removing_thread": "Viesti ja siihen tulleet vastaukset poistetaan lopullisesti. Oletko varma, että haluat jatkaa?",
       "unsubscribe": "Lopeta keskustelualueen tilaus"
@@ -1274,10 +1279,13 @@
       "recipients_one": "Vastaanottaja",
       "recipients_other": "Vastaanottajat",
       "remove": "$t(common:labels.remove)",
-      "remove_message": "Poista viesti",
       "remove_announcement": "Poista tiedote",
+      "remove_category": "Poista kategoria",
       "remove_comment": "Poista vastaus",
       "remove_discussionArea": "Poista keskustelualue",
+      "remove_label": "Poista tunniste",
+      "remove_message": "Poista viesti",
+      "removeAllCollaborators": "Poista kaikki jaot",
       "reply": "Vastaa viestiin",
       "replyCount": "Vastauksia",
       "replySubject": "Vs: {{topic}}",
@@ -1649,18 +1657,30 @@
       "share": "Jaa lippu"
     },
     "labels": {
+      "addCollaborators": "Jaa käyttäjille",
       "create": "Luo uusi lippu",
       "createAndSearch": "Luo ja selaa lippuja",
       "edit": "Muokkaa lippua",
       "flags": "Liput",
+      "remove": "Poista lippu",
+      "removeCollaborators": "Poista lipun jaot: ({{collaboratorCount}} jakoa)",
       "share": "Jaa lippu {{flag}}"
+    },
+    "content": {
+      "removing": "Oletko varma, että haluat poistaa lipun?",
+      "removingCollaborators": "Oletko varma, että haluat poistaa lipun jaot?"
     },
     "notifications": {
       "addError": "Virhe lipun lisäämisessä. Yritä uudelleen.",
+      "addCollaboratorError": "Virhe lipun jakamisessa. Yritä uudelleen. {{error}}",
+      "addCollaboratorSuccess": "Lipun jakaminen onnistui {{collaboratorCount}} käyttäjälle.",
       "createError": "Virhe lipun luomisessa. Yritä uudelleen.",
       "loadError": "Lippujen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "removeError": "Lipun poistaminen epäonnistui. Yritä uudelleen.",
-      "updateError": "Lipunn muokkasu epäonnistui. Yritä uudelleen",
+      "removeCollaboratorError": "Lipun jakaminen epäonnistui. Yritä uudelleen. {{error}}",
+      "removeCollaboratorSuccess": "Jako poistettu onnistuneesti {{collaboratorCount}} käyttäjältä.",
+      "updateError": "Lipun muokkaus epäonnistui. Yritä uudelleen",
+      "updateSuccess": "Lipun muokkaus onnistui.",
       "removeWarning": "Poistettava lippu ei saa olla jaettu. Voit poistaa lipun, kun olet ensin poistanut lipun jaot."
     },
     "validation": {
@@ -2168,6 +2188,7 @@
       "cancelSuccess_interimEvaluationRequests": "Välipalautepyyntö peruutettu onnistuneesti ",
       "copyError": "Kurssin kopiointi epäonnistui",
       "createError": "Kurssin luonti epäonnistui",
+      "deleteError": "Viimeisimmän kurssin poisto epäonnistui",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Kurssin tietojen lataus epäonnistui",
       "loadError_chatSettings": "Chatin asetuksien lataus epäonnistui",

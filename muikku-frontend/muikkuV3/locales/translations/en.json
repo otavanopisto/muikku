@@ -131,6 +131,8 @@
       "edit": "Edit",
       "edit_comment": "Edit comment",
       "edit_description": "Edit description",
+      "editing": "{{user}} is editing",
+      "editing_student": "Student is editing",
       "edited": "Edited",
       "email": "Email address",
       "emails_one": "Email",
@@ -336,6 +338,7 @@
       "preset3": "Preset theme 3",
       "profileMenu": "User profile menu of Muikku",
       "tab": "Tab {{current}}/{{tabCount}}",
+      "tagOptionMenu": "Tag editing menu",
       "uploadPicture": "Add profile picture"
     },
     "subjects": {
@@ -1217,10 +1220,12 @@
       "removed": "Message deleted",
       "noneSelected_announcements": "No announcements selected",
       "removing": "$t(common:content.removing)",
-      "removing_message": "Are you sure you wish to delete the messsage?",
       "removing_announcement": "Are you sure you want to delete the announcement?",
+      "removing_category": "Are you sure you want to delete the category?",
       "removing_contactEntry": "Are you sure you want to delete the contact event? If you delete it, any comment it has will also be deleted",
       "removing_discussionArea": "Attention! Deleting the discussion area will also delete all the messages in it!",
+      "removing_label": "Are you sure you want to delete the label?",
+      "removing_message": "Are you sure you wish to delete the messsage?",
       "removing_reply": "The reply will be deleted permanently, are you sure you wish to continue?",
       "removing_thread": "The thread and all it's replies will be deleted permanently. Are you sure you wish to continue?",
       "unsubscribe": "Cancel area subscription"
@@ -1274,10 +1279,13 @@
       "recipients_one": "Recipient",
       "recipients_other": "Recipients",
       "remove": "$t(common:labels.remove)",
-      "remove_message": "Delete message",
       "remove_announcement": "Delete announcement",
+      "remove_category": "Delete category",
       "remove_comment": "Delete comment",
       "remove_discussionArea": "Delete discussion area",
+      "remove_label": "Delete label",
+      "remove_message": "Delete message",
+      "removeAllCollaborators": "Remove all collaborators",
       "reply": "Reply message",
       "replyCount": "Replies",
       "replySubject": "Re: {{topic}}",
@@ -1649,18 +1657,30 @@
       "share": "Share the flag"
     },
     "labels": {
+      "addCollaborators": "Add collaborators",
       "create": "Create a new flag",
       "createAndSearch": "Create and share flags",
       "edit": "Edit flag",
       "flags": "Flags",
+      "remove": "Remove flag",
+      "removeCollaborators": "Remove flag shares: ({{collaboratorCount}} shares)",
       "share": "Share the flag {{flag}}"
+    },
+    "content": {
+      "removing": "Are you sure you want to remove the flag?",
+      "removingCollaborators": "Are you sure you want to remove the flag shares?"
     },
     "notifications": {
       "addError": "Error adding the flag. Please try again.",
+      "addCollaboratorError": "Error sharing the flag. Please try again. {{error}}",
+      "addCollaboratorSuccess": "Flag shared successfully with {{collaboratorCount}} users.",
       "createError": "Flag creation failed. Please try again.",
       "loadError": "Flag loading failed. Please try loading the page again.",
       "removeError": "Flag removal failed. Please try again.",
+      "removeCollaboratorError": "Error unsharing the flag. Please try again. {{error}}",
+      "removeCollaboratorSuccess": "Flag unshared successfully with {{collaboratorCount}} users.",
       "updateError": "Flag editing failed.  Please try again.",
+      "updateSuccess": "Flag editing succeeded.",
       "removeWarning": "If you want to remove the flag, it must not be shared. Unshare to remove the flag."
     },
     "validation": {
@@ -2168,6 +2188,7 @@
       "cancelSuccess_interimEvaluationRequests": "Canceling the interim evaluation request succeeded",
       "copyError": "Copying the course failed",
       "createError": "Creating the course failed",
+      "deleteError": "Deleting the latest course failed",
       "loadError": "$t(common:notifications.loadError)",
       "loadError_activity": "Loading the course activity failed",
       "loadError_chatSettings": "Loading chat settings failed",

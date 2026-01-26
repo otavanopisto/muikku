@@ -31,6 +31,7 @@ interface AnnouncerLabelUpdateDialogProps extends WithTranslation {
   children: React.ReactElement;
   category: AnnouncementCategory;
   isOpen?: boolean;
+  onOpen?: () => void;
   onClose?: () => void;
   announcements: AnnouncementsState;
   updateAnnouncementCategory: UpdateAnnouncementCategoryTriggerType;
@@ -127,6 +128,7 @@ class AnnouncerLabelUpdateDialog extends React.Component<
       removed: false,
       name: props.category.category,
     });
+    this.props.onOpen?.();
   }
 
   /**

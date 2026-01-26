@@ -148,6 +148,8 @@ export type UPDATE_MATERIALS_ARE_DISABLED = SpecificActionType<
   boolean
 >;
 
+const workspaceApi = MApi.getWorkspaceApi();
+
 /**
  * SelectItem
  */
@@ -421,6 +423,50 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
+      }
+    };
+  };
+
+/**
+ * DeleteLastWorkspaceItemTriggerType
+ */
+export interface DeleteLastWorkspaceItemTriggerType {
+  (workspaceId: number): AnyActionType;
+}
+
+/**
+ * deleteLastWorkspaceItem
+ * @param workspaceId workspaceId
+ */
+const deleteLastWorkspaceItem: DeleteLastWorkspaceItemTriggerType =
+  function deleteLastWorkspaceItem(workspaceId) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        const updatedLastWorkspaces =
+          await workspaceApi.deleteFromLatestWorkspaces({
+            workspaceEntityId: workspaceId,
+          });
+
+        dispatch({
+          type: "UPDATE_LAST_WORKSPACES",
+          payload: updatedLastWorkspaces,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          actions.displayNotification(
+            i18n.t("notifications.deleteError", {
+              ns: "workspace",
+            }),
+            "error"
+          )
+        );
       }
     };
   };
@@ -2464,4 +2510,5 @@ export {
   updateCurrentWorkspaceAssessmentRequest,
   updateCurrentWorkspaceInterimEvaluationRequests,
   setAvailableCurriculums,
+  deleteLastWorkspaceItem,
 };
