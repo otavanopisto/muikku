@@ -785,7 +785,7 @@ public class HopsRestService {
               item.setSubject(suggestion.getSubject());
               item.setCourseId(suggestion.getWorkspaceEntityId());
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
-              // TODO length, lengthSymbol, mandatority, subjectName and god knows what else (hopefully not needed...) X(
+              // Note: This item lacks some course metadata but for suggested courses, front-end can live with that 
 
               if (suggestion.getType().toLowerCase().contains("optional")) {
                 item.setState(StudyActivityItemState.SUGGESTED_OPTIONAL);
