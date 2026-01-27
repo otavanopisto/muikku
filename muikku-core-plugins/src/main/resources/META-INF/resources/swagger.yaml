@@ -14857,7 +14857,26 @@ components:
         evaluationInfo:
           description: Exam evaluation info
           $ref: "#/components/schemas/NodeEvaluationInfo"
+        assignmentInfos:
+          description: Points summary for each assignment in the page, if the exam has been evaluated
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/ExamAssignmentInfo"
 
+    ExamAssignmentInfo:
+      type: object
+      description: Points information about a single exam assignment
+      properties:
+        name:
+          description: Title of the assignment page
+          type: string
+        points:
+          description: Points given for the assignment
+          type: number
+          format: double
+          nullable: true
+    
     ExamAttendee:
       type: object
       description: Exam attendee
