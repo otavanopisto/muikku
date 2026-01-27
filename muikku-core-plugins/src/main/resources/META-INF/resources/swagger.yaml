@@ -11597,7 +11597,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/workspace/last/{workspaceEntityId}:
     delete:
       operationId: deleteFromLatestWorkspaces
@@ -14859,10 +14859,9 @@ components:
           $ref: "#/components/schemas/NodeEvaluationInfo"
         assignmentInfos:
           description: Points summary for each assignment in the page, if the exam has been evaluated
-          schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/ExamAssignmentInfo"
+          type: array
+          items:
+            $ref: "#/components/schemas/ExamAssignmentInfo"
 
     ExamAssignmentInfo:
       type: object
@@ -14876,7 +14875,7 @@ components:
           type: number
           format: double
           nullable: true
-    
+
     ExamAttendee:
       type: object
       description: Exam attendee
