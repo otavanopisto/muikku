@@ -11,6 +11,8 @@ import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { useTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
+import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
+import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
 
 /**
  * ExamsListProps
@@ -111,6 +113,15 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           }) as RecordValue
       );
 
+    const assignmentInfoList = exam.assignmentInfos.map<AssignmentInfo>(
+      (aInfo) => ({
+        title: aInfo.name,
+        points: aInfo.points,
+        maxPoints: null,
+        grade: null,
+      })
+    );
+
     return (
       <div
         className={`material-page__assignment-assessment ${evalStateClassName}`}
@@ -170,6 +181,12 @@ const ExamsListItem = (props: ExamsListItemProps) => {
             </>
           ) : null}
         </div>
+
+        <AssignmentDetails
+          assignmentInfoList={assignmentInfoList}
+          omitColumns={["grade"]}
+          sectionTitle={t("labels.examAssignmentsPoints", { ns: "exams" })}
+        />
       </div>
     );
   };
