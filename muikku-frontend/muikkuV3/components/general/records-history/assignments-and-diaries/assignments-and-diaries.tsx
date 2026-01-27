@@ -24,6 +24,8 @@ import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
 import { WorkspaceActivity } from "~/generated/client";
 import Material from "./material";
 import Journal from "./journal";
+import { useExams } from "./hooks/useExams";
+import ExamsList from "./exams-list";
 
 /**
  * AssignmentsAndDiariesProps
@@ -108,6 +110,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     credit.id,
     displayNotification
   );
+
+  const { examsData } = useExams(credit.id, displayNotification);
 
   /**
    * onTabChange
@@ -631,6 +635,26 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <div className="loader-empty" />
             ) : (
               renderInterminEvaluationMaterialsList
+            )}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
+      ),
+    },
+    {
+      id: "EXAMS",
+      name: t("labels.exams", { ns: "exams" }),
+      type: "exams",
+      component: (
+        <ApplicationSubPanel modifier="studies-exams">
+          <ApplicationSubPanel.Header modifier="studies-exams">
+            <span>{t("labels.exams", { ns: "exams" })}</span>
+          </ApplicationSubPanel.Header>
+
+          <ApplicationSubPanel.Body>
+            {examsData.isLoading ? (
+              <div className="loader-empty" />
+            ) : (
+              <ExamsList exams={examsData.exams} />
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
