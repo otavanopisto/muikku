@@ -50,8 +50,8 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   if (
     !props.guider.currentStudent ||
     !props.guider.currentStudent.pastWorkspaces ||
-    !props.guider.currentStudent.pastStudies ||
-    !props.guider.currentStudent.activityLogs
+    !props.guider.currentStudent.activityLogs ||
+    !props.guider.currentStudent.studyActivity
   ) {
     return null;
   }
@@ -59,12 +59,12 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const { addFileToCurrentStudent, displayNotification } = props;
   const {
     activityLogs,
-    pastStudies,
     basic,
     files,
     currentWorkspaces,
     pastWorkspaces,
     activityLogState,
+    studyActivity,
   } = props.guider.currentStudent;
 
   /**
@@ -149,9 +149,6 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </div>
   );
 
-  /**
-   * studentRecords
-   */
   const studentRecords = (
     <RecordsInfoProvider
       value={{
@@ -161,28 +158,21 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       }}
     >
       <ApplicationSubPanel>
-        {pastStudies.map((lineCategoryData, i) => (
-          <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-            {lineCategoryData.credits.length +
-              lineCategoryData.transferCredits.length >
-            0 ? (
-              <RecordsGroup
-                key={`credit-category-${i}`}
-                recordGroup={lineCategoryData}
-              />
-            ) : (
-              <div className="application-sub-panel__item">
-                <div className="empty">
-                  <span>
-                    {t("content.notInWorkspaces", {
-                      ns: "guider",
-                    })}
-                  </span>
-                </div>
+        <ApplicationSubPanel.Body>
+          {studyActivity ? (
+            <RecordsGroup studyActivity={studyActivity} />
+          ) : (
+            <div className="application-sub-panel__item">
+              <div className="empty">
+                <span>
+                  {t("content.notInWorkspaces", {
+                    ns: "guider",
+                  })}
+                </span>
               </div>
-            )}
-          </ApplicationSubPanel.Body>
-        ))}
+            </div>
+          )}
+        </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
     </RecordsInfoProvider>
   );

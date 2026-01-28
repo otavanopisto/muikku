@@ -31,6 +31,7 @@ import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
+import { StudyActivityState } from "~/reducers/study-activity";
 
 /**
  * SummaryProps
@@ -40,6 +41,7 @@ interface SummaryProps extends WithTranslation {
   contacts: ContactsState;
   summary: SummaryType;
   status: StatusType;
+  studyActivity: StudyActivityState;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -345,13 +347,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   }
                   studentIdentifier={this.props.status.userSchoolDataIdentifier}
                   studentUserEntityId={this.props.status.userId}
-                  studyProgress={this.props.summary.data.studyProgress}
                 />
               </div>
 
               {carouselMatrixByStudyProgramme(
                 this.props.status.profile.studyProgrammeName,
-                this.props.summary.data.studyProgress.courseMatrix
+                this.props.studyActivity.courseMatrix
               ) !== null && (
                 <div className="application-sub-panel">
                   <div className="application-sub-panel__header">
@@ -364,7 +365,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       this.props.status.profile.studyProgrammeName
                     }
                     curriculumName={this.props.status.profile.curriculumName}
-                    matrix={this.props.summary.data.studyProgress.courseMatrix}
+                    matrix={this.props.studyActivity.courseMatrix}
                     displayNotification={this.props.displayNotification}
                   />
                 </div>
@@ -402,6 +403,7 @@ function mapStateToProps(state: StateType) {
     contacts: state.contacts,
     summary: state.summary,
     status: state.status,
+    studyActivity: state.studyActivity,
   };
 }
 

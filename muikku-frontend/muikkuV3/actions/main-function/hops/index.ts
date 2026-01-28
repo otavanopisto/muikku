@@ -16,7 +16,7 @@ import {
   MatriculationSubject,
   PlannedCourse,
   StudentInfo,
-  StudentStudyActivity,
+  StudyActivityItem,
   StudyPlannerNote,
 } from "~/generated/client";
 import {
@@ -115,7 +115,7 @@ export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
 
 export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
   "HOPS_UPDATE_STUDY_ACTIVITY",
-  StudentStudyActivity[]
+  StudyActivityItem[]
 >;
 
 export type HOPS_UPDATE_AVAILABLE_OPS_COURSES = SpecificActionType<
@@ -2329,7 +2329,7 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
-      const studyActivity = await hopsApi.getStudentStudyActivity({
+      const studyActivity = await hopsApi.getStudyActivity({
         studentIdentifier,
       });
 
@@ -2376,7 +2376,7 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
 
       dispatch({
         type: "HOPS_UPDATE_STUDY_ACTIVITY",
-        payload: studyActivity,
+        payload: studyActivity.items,
       });
 
       dispatch({

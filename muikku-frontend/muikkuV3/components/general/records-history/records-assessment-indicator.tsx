@@ -3,13 +3,13 @@ import { localize } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import { WorkspaceAssessmentState } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * AssessmentProps
  */
 interface RecordsAssessmentIndicatorProps {
-  assessment?: WorkspaceAssessmentState;
+  studyActivityItem?: StudyActivityItem;
   isCombinationWorkspace: boolean;
 }
 
@@ -21,20 +21,20 @@ interface RecordsAssessmentIndicatorProps {
 const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   props
 ) => {
-  const { assessment, isCombinationWorkspace } = props;
+  const { studyActivityItem, isCombinationWorkspace } = props;
 
   const { t } = useTranslation(["studies", "common"]);
 
-  if (!assessment) {
+  if (!studyActivityItem) {
     return null;
   }
 
   // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
   // as it has been evaluated as incomplete after evaluated as PASSED
   if (
-    assessment.grade &&
-    assessment.gradeDate &&
-    assessment.state !== "incomplete"
+    studyActivityItem.grade &&
+    studyActivityItem.gradeDate &&
+    studyActivityItem.state !== "SUPPLEMENTATIONREQUEST"
   ) {
     return (
       <Dropdown
@@ -43,23 +43,23 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluated", {
               ns: "studies",
-              date: localize.date(assessment.gradeDate),
-            }) + getShortenGradeExtension(assessment.grade)}
+              date: localize.date(studyActivityItem.gradeDate),
+            }) + getShortenGradeExtension(studyActivityItem.grade)}
           </span>
         }
       >
         <span
           className={`application-list__indicator-badge application-list__indicator-badge--course ${
-            assessment.passingGrade ? "state-PASSED" : "state-FAILED"
+            studyActivityItem.passing ? "state-PASSED" : "state-FAILED"
           }`}
         >
-          {shortenGrade(assessment.grade)}
+          {shortenGrade(studyActivityItem.grade)}
         </span>
       </Dropdown>
     );
-  } else if (assessment.state === "incomplete") {
+  } else if (studyActivityItem.state === "SUPPLEMENTATIONREQUEST") {
     const status =
-      assessment.state === "incomplete"
+      studyActivityItem.state === "SUPPLEMENTATIONREQUEST"
         ? t("labels.incomplete", {
             ns: "workspace",
           })
@@ -73,7 +73,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluated", {
               ns: "studies",
-              date: localize.date(assessment.date),
+              date: localize.date(studyActivityItem.date),
             }) +
               " - " +
               status}
@@ -82,7 +82,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
       >
         <span
           className={`application-list__indicator-badge application-list__indicator-badge--course ${
-            assessment.state === "incomplete"
+            studyActivityItem.state === "SUPPLEMENTATIONREQUEST"
               ? "state-INCOMPLETE"
               : "state-FAILED"
           }`}
@@ -98,11 +98,11 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           openByHover
           content={
             <span>
-              {assessment.grade && assessment.gradeDate
+              {studyActivityItem.grade && studyActivityItem.gradeDate
                 ? t("labels.evaluated", {
                     ns: "studies",
-                    date: localize.date(assessment.gradeDate),
-                  }) + getShortenGradeExtension(assessment.grade)
+                    date: localize.date(studyActivityItem.gradeDate),
+                  }) + getShortenGradeExtension(studyActivityItem.grade)
                 : t("content.notEvaluated", {
                     ns: "studies",
                   })}
@@ -111,7 +111,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         >
           <span
             className={`application-list__indicator-badge application-list__indicator-badge--course ${
-              assessment.state === "unassessed" ? "state-UNASSESSED" : ""
+              studyActivityItem.state === "ONGOING" ? "state-UNASSESSED" : ""
             }`}
           >
             -

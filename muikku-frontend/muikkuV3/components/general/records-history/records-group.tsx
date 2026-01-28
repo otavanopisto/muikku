@@ -3,17 +3,130 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import RecordsGroupItem from "./records-group-item";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
+import { CombinationWorkspaceActivity } from "./types";
+import { StudyActivity, StudyActivityItem } from "~/generated/client";
+import RecordsGroupItem from "./records-group-item";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
-import { RecordWorkspaceActivitiesWithLineCategory } from "./types";
+
+/**
+ * isCombinationWorkspaceActivity
+ * @param activity activity
+ * @returns boolean
+ */
+const isCombinationWorkspaceActivity = (
+  activity: StudyActivityItem | CombinationWorkspaceActivity
+): activity is CombinationWorkspaceActivity =>
+  Object.keys(activity).length === 3 &&
+  "courseId" in activity &&
+  "courseName" in activity &&
+  "studyActivityItems" in activity;
+
+/**
+ * isTransferredStudyActivityItem
+ * @param item item
+ * @returns boolean
+ */
+const isTransferredStudyActivityItem = (
+  item: StudyActivityItem | CombinationWorkspaceActivity
+): item is StudyActivityItem =>
+  !isCombinationWorkspaceActivity(item) && item.state === "TRANSFERRED";
+
+/**
+ * Parses activity items to single list containing combination workspaces and single study activity items
+ * @param activityItems activity items
+ * @returns StudyActivityItem[]
+ */
+const parseCombinationWorkspacesToSingleItem = (
+  activityItems: StudyActivityItem[]
+) => {
+  const listOfCourseIds: number[] = [];
+
+  activityItems.forEach((element) => {
+    if (element.courseId) {
+      listOfCourseIds.push(element.courseId);
+    }
+  });
+
+  const uniqueCourseIds = [
+    ...new Set(
+      listOfCourseIds.filter(
+        (item, _i, array) => array.indexOf(item) !== array.lastIndexOf(item)
+      )
+    ),
+  ];
+
+  const combinationWorkspaces =
+    uniqueCourseIds.map<CombinationWorkspaceActivity>((courseId) => ({
+      courseId,
+      courseName: activityItems.find((item) => item.courseId === courseId)
+        ?.courseName,
+      studyActivityItems: activityItems.filter(
+        (item) => item.courseId === courseId
+      ),
+    }));
+
+  return [
+    ...combinationWorkspaces,
+    ...activityItems.filter(
+      (item) => !item.courseId || !uniqueCourseIds.includes(item.courseId)
+    ),
+  ];
+};
+
+/**
+ * filterAndSortActivity
+ * @param credits credits
+ * @param sortDirection sort direction
+ * @returns filtered and sorted activity
+ */
+const filterAndSortActivity = (
+  credits: (StudyActivityItem | CombinationWorkspaceActivity)[],
+  sortDirection: "asc" | "desc"
+): {
+  transferedActivities: StudyActivityItem[];
+  nonTransferedActivities: (StudyActivityItem | CombinationWorkspaceActivity)[];
+} => ({
+  transferedActivities: credits
+    .filter(isTransferredStudyActivityItem)
+    .sort((a, b) => {
+      const aString = a.courseName.toLowerCase();
+      const bString = b.courseName.toLowerCase();
+
+      if (aString > bString) {
+        return sortDirection === "asc" ? 1 : -1;
+      }
+      if (aString < bString) {
+        return sortDirection === "asc" ? -1 : 1;
+      }
+      return 0;
+    }),
+  nonTransferedActivities: credits
+    .filter(
+      (item) =>
+        ("state" in item && item.state !== "TRANSFERRED") ||
+        isCombinationWorkspaceActivity(item)
+    )
+    .sort((a, b) => {
+      const aString = a.courseName.toLowerCase();
+      const bString = b.courseName.toLowerCase();
+
+      if (aString > bString) {
+        return sortDirection === "asc" ? 1 : -1;
+      }
+      if (aString < bString) {
+        return sortDirection === "asc" ? -1 : 1;
+      }
+      return 0;
+    }),
+});
 
 /**
  * RecordsListProps
  */
 interface RecordsGroupProps {
-  recordGroup: RecordWorkspaceActivitiesWithLineCategory;
+  studyActivity: StudyActivity;
 }
 
 /**
@@ -22,18 +135,28 @@ interface RecordsGroupProps {
  * @returns JSX.Element
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
-  const { recordGroup } = props;
+  const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
-  const [creditSortDirection, setWorkspaceSortDirection] = React.useState<
+  const [activitySortDirection, setActivitySortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
+
+  const parsedActivityItems = React.useMemo(
+    () => parseCombinationWorkspacesToSingleItem(studyActivity.items),
+    [studyActivity]
+  );
+
+  const memoizedFilterActivity = React.useMemo(
+    () => filterAndSortActivity(parsedActivityItems, activitySortDirection),
+    [parsedActivityItems, activitySortDirection]
+  );
 
   /**
    * sortWorkspaces
    */
   const handleWorkspaceSortDirectionClick = () => {
-    setWorkspaceSortDirection((oldValue) =>
+    setActivitySortDirection((oldValue) =>
       oldValue === "asc" ? "desc" : "asc"
     );
   };
@@ -45,31 +168,22 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   const handleWorkspaceSortDirectionKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setWorkspaceSortDirection((oldValue) =>
+      setActivitySortDirection((oldValue) =>
         oldValue === "asc" ? "desc" : "asc"
       );
     }
   };
 
-  const sortedCredits = recordGroup.credits.sort((a, b) => {
-    const aString = a.activity.name.toLowerCase();
-    const bString = b.activity.name.toLowerCase();
-
-    if (aString > bString) {
-      return creditSortDirection === "asc" ? 1 : -1;
-    }
-    if (aString < bString) {
-      return creditSortDirection === "asc" ? -1 : 1;
-    }
-    return 0;
-  });
-
-  if (sortedCredits.length + recordGroup.transferCredits.length <= 0) {
+  if (
+    memoizedFilterActivity.nonTransferedActivities.length +
+      memoizedFilterActivity.transferedActivities.length <=
+    0
+  ) {
     return (
       <ApplicationList>
         <div className="application-list__header-container application-list__header-container--sorter">
           <h3 className="application-list__header application-list__header--sorter">
-            {recordGroup.lineCategory}
+            {studyActivity.educationType}
           </h3>
         </div>
         <div className="application-sub-panel__item">
@@ -83,15 +197,13 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
     );
   }
 
-  let categoryName = recordGroup.lineCategory;
+  let categoryName = studyActivity.educationType;
 
-  if (recordGroup.showCredits) {
-    categoryName += ` - ${t("labels.courseCredits", {
-      ns: "studies",
-      mandatoryCredits: recordGroup.mandatoryCourseCredits,
-      totalCredits: recordGroup.completedCourseCredits,
-    })}`;
-  }
+  categoryName += ` - ${t("labels.courseCredits", {
+    ns: "studies",
+    mandatoryCredits: studyActivity.mandatoryCourseCredits,
+    totalCredits: studyActivity.completedCourseCredits,
+  })}`;
 
   return (
     <ApplicationList>
@@ -104,58 +216,62 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
         <h3 className="application-list__header application-list__header--sorter">
           {categoryName}
         </h3>
-        <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
+        <div className={`icon-sort-alpha-${activitySortDirection}`}></div>
       </div>
-      {sortedCredits.length
-        ? sortedCredits.map((credit, i) => {
-            // By default every workspace is not combination
+      {memoizedFilterActivity.nonTransferedActivities.length
+        ? memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => {
             let isCombinationWorkspace = false;
-
-            if (credit.activity.subjects) {
+            let studyActivityItems: StudyActivityItem[] = [];
+            if (isCombinationWorkspaceActivity(ntItem)) {
               // If assessmentState contains more than 1 items, then its is combination
-              isCombinationWorkspace = credit.activity.subjects.length > 1;
+              isCombinationWorkspace = true;
+              studyActivityItems = ntItem.studyActivityItems;
+            } else {
+              studyActivityItems = [ntItem];
             }
 
             return (
               <RecordsGroupItem
-                key={`credit-item-${credit.activity.id}`}
-                credit={credit}
+                key={`record-group-item-${i}`}
+                studyActivityItems={studyActivityItems}
                 isCombinationWorkspace={isCombinationWorkspace}
+                educationType={studyActivity.educationType}
               />
             );
           })
         : null}
 
-      {recordGroup.transferCredits.length ? (
+      {memoizedFilterActivity.transferedActivities.length ? (
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">Hyväksiluvut</h3>
           </div>
-          {recordGroup.transferCredits.map((credit, i) => (
+          {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
             <ApplicationListItem
               className="course course--credits"
-              key={`tranfer-credit-${i}`}
+              key={`tranfered-activity-item-${i}`}
             >
               <ApplicationListItemHeader modifiers="course">
                 <span className="application-list__header-icon icon-books"></span>
                 <div className="application-list__header-primary">
                   <div className="application-list__header-primary-title">
-                    {credit.activity.name}
+                    {tItem.courseName}
                   </div>
 
                   <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
                     <div className="label">
-                      <div className="label__text">{credit.lineName}</div>
+                      <div className="label__text">{tItem.studyProgramme}</div>
                     </div>
-                    {credit.activity.curriculums.map((curriculum) => (
-                      <div key={curriculum.identifier} className="label">
-                        <div className="label__text">{curriculum.name} </div>
-                      </div>
-                    ))}
+                    {tItem.curriculums &&
+                      tItem.curriculums.map((curriculum) => (
+                        <div key={curriculum} className="label">
+                          <div className="label__text">{curriculum} </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <div className="application-list__header-secondary">
-                  <TransferedCreditIndicator transferCredit={credit.activity} />
+                  <TransferedCreditIndicator studyActivityItem={tItem} />
                 </div>
               </ApplicationListItemHeader>
             </ApplicationListItem>

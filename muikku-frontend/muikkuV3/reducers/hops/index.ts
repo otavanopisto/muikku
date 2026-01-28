@@ -15,7 +15,7 @@ import {
   PlannedCourse,
   StudentInfo,
   HopsHistoryEntry,
-  StudentStudyActivity,
+  StudyActivityItem,
   HopsOpsCourse,
   HopsGoals,
   StudyPlannerNote,
@@ -49,7 +49,7 @@ interface HopsStudyPlanState {
   plannedCourses: PlannedCourseWithIdentifier[];
   planNotes: StudyPlannerNoteWithIdentifier[];
   availableOPSCourses: HopsOpsCourse[];
-  studyActivity: StudentStudyActivity[];
+  studyActivity: StudyActivityItem[];
   studyOptions: string[];
   goals: HopsGoals;
 }
@@ -112,7 +112,7 @@ export interface StudyPlannerNoteNew {
 export interface PlannerActivityItem {
   identifier: string;
   course: Course & { subjectCode: string };
-  studyActivity: StudentStudyActivity; // Required for activity-only items
+  studyActivity: StudyActivityItem; // Required for activity-only items
 }
 
 /**

@@ -7,7 +7,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import { StudentStudyActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -278,8 +278,8 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
 
                   const isAssessed =
                     course.studyActivity &&
-                    (course.studyActivity.status === "GRADED" ||
-                      course.studyActivity.status === "SUPPLEMENTATIONREQUEST");
+                    (course.studyActivity.state === "GRADED" ||
+                      course.studyActivity.state === "SUPPLEMENTATIONREQUEST");
 
                   return (
                     <PlannerCourseTrayItem
@@ -317,7 +317,7 @@ interface PlannerCourseTrayItemProps {
   isPlannedCourse: boolean;
   selected: boolean;
   curriculumConfig: CurriculumConfig;
-  studyActivity?: StudentStudyActivity;
+  studyActivity?: StudyActivityItem;
   onSelectCourse: (course: Course & { subjectCode: string }) => void;
 }
 
@@ -345,7 +345,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    */
   const getCourseState = () => {
     if (studyActivity) {
-      switch (studyActivity.status) {
+      switch (studyActivity.state) {
         case "GRADED":
           return studyActivity.passing
             ? {

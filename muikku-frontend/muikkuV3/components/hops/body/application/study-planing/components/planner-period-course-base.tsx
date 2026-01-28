@@ -4,7 +4,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import Link from "~/components/general/link";
 import {
   PlannerCourseWorkspaceInstance,
-  StudentStudyActivity,
+  StudyActivityItem,
 } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import {
@@ -32,7 +32,7 @@ export interface BasePlannerPeriodCourseProps {
   canDrag?: boolean;
   hasChanges: boolean;
   curriculumConfig: CurriculumConfig;
-  studyActivity?: StudentStudyActivity;
+  studyActivity?: StudyActivityItem;
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
     action: StudyPlanChangeAction
@@ -60,7 +60,7 @@ export interface BasePlannerPeriodCourseProps {
   renderCourseState?: (props: {
     isOpen: boolean;
     onClose: () => void;
-    courseState: StudentStudyActivity;
+    courseState: StudyActivityItem;
   }) => React.ReactNode;
 }
 
@@ -112,7 +112,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
    */
   const getCourseState = () => {
     if (studyActivity) {
-      switch (studyActivity.status) {
+      switch (studyActivity.state) {
         case "GRADED":
           return studyActivity.passing
             ? {
@@ -264,7 +264,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     const date = localize.date(new Date(studyActivity.date));
     let dateString: string | null = null;
 
-    switch (studyActivity.status) {
+    switch (studyActivity.state) {
       case "GRADED":
         dateString = t("studyPlanCardActivity.graded", {
           ns: "hops_new",

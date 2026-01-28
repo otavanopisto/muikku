@@ -10,7 +10,7 @@ import {
   isPeriodCourseItemPlannedCourse,
   isPeriodCourseItemStudyPlannerNote,
 } from "../helper";
-import { StudentStudyActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 
@@ -43,7 +43,7 @@ const periodVariants: Variants = {
  */
 const hasPlannedCoursesOrOngoingActivities = (
   plannedCourses: PlannedCourseWithIdentifier[],
-  studyActivity: StudentStudyActivity[]
+  studyActivity: StudyActivityItem[]
 ) =>
   plannedCourses.some((course) => {
     const activity = studyActivity.find(
@@ -52,7 +52,7 @@ const hasPlannedCoursesOrOngoingActivities = (
         sa.subject === course.subjectCode
     );
 
-    return activity === undefined || activity.status === "ONGOING";
+    return activity === undefined || activity.state === "ONGOING";
   });
 
 /**
@@ -129,8 +129,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
         const useStudyActivityData =
           studyActivity &&
-          (studyActivity.status === "GRADED" ||
-            studyActivity.status === "SUPPLEMENTATIONREQUEST");
+          (studyActivity.state === "GRADED" ||
+            studyActivity.state === "SUPPLEMENTATIONREQUEST");
 
         const startDate = useStudyActivityData
           ? new Date(studyActivity.date)

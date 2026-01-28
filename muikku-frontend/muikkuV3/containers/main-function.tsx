@@ -133,6 +133,10 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
+import {
+  loadCourseMatrix,
+  loadUserStudyActivity,
+} from "~/actions/study-activity";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let loadAnnouncementsTimer: ReturnType<typeof setTimeout> | null = null;
@@ -357,6 +361,21 @@ export default class MainFunction extends React.Component<
    */
   loadRecordsData(tab: string, userId?: string) {
     const givenLocation = tab;
+
+    // IMPORTANT
+    // These two thunk calls are here only for reason, that guardian view has shared reducer logic
+    // with student view, which will have its own complications currently.
+    this.props.store.dispatch(
+      loadUserStudyActivity({
+        userIdentifier: userId,
+      }) as Action
+    );
+
+    this.props.store.dispatch(
+      loadCourseMatrix({
+        userIdentifier: userId,
+      }) as Action
+    );
 
     if (givenLocation === "summary" || !givenLocation) {
       this.props.store.dispatch(

@@ -3,7 +3,7 @@ import {
   CourseMatrix,
   CourseMatrixModule,
   CourseMatrixSubject,
-  StudentStudyActivity,
+  StudyActivityItem,
 } from "~/generated/client";
 import {} from "~/mock/mock-data";
 
@@ -179,20 +179,20 @@ export const getHighestCourseNumber = (
  * Lists are Ongoing, Suggested next, Suggested optional, Transfered and graded
  */
 export const filterActivity = (
-  list: StudentStudyActivity[]
+  list: StudyActivityItem[]
 ): Omit<
   StudentActivityByStatus,
   "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
 > => {
-  const onGoingList = list.filter((item) => item.status === "ONGOING");
+  const onGoingList = list.filter((item) => item.state === "ONGOING");
   const suggestedNextList = list.filter(
-    (item) => item.status === "SUGGESTED_NEXT"
+    (item) => item.state === "SUGGESTED_NEXT"
   );
 
-  const transferedList = list.filter((item) => item.status === "TRANSFERRED");
-  const gradedList = list.filter((item) => item.status === "GRADED");
+  const transferedList = list.filter((item) => item.state === "TRANSFERRED");
+  const gradedList = list.filter((item) => item.state === "GRADED");
   const needSupplementationList = list.filter(
-    (item) => item.status === "SUPPLEMENTATIONREQUEST"
+    (item) => item.state === "SUPPLEMENTATIONREQUEST"
   );
 
   return {
@@ -211,7 +211,7 @@ export const filterActivity = (
  */
 export const filterActivityBySubjects = (
   subjectsList: string[],
-  list: StudentStudyActivity[]
+  list: StudyActivityItem[]
 ) =>
   subjectsList.reduce(
     (a, v) => ({
@@ -239,15 +239,15 @@ export const getCourseInfo = (
   modifiers: string[],
   subject: CourseMatrixSubject,
   course: CourseMatrixModule,
-  suggestedNextList: StudentStudyActivity[],
-  transferedList: StudentStudyActivity[],
-  gradedList: StudentStudyActivity[],
-  onGoingList: StudentStudyActivity[],
-  needSupplementationList: StudentStudyActivity[]
+  suggestedNextList: StudyActivityItem[],
+  transferedList: StudyActivityItem[],
+  gradedList: StudyActivityItem[],
+  onGoingList: StudyActivityItem[],
+  needSupplementationList: StudyActivityItem[]
 ) => {
   const updatedModifiers = [...modifiers];
 
-  let courseSuggestions: StudentStudyActivity[] = [];
+  let courseSuggestions: StudyActivityItem[] = [];
   let canBeSelected = true;
   let needsSupplementation = false;
   let grade: string | undefined = undefined;
@@ -347,7 +347,7 @@ export const getCourseInfo = (
  */
 export const getNonOPSTransferedActivities = (
   matrix: CourseMatrix,
-  transferedList: StudentStudyActivity[]
+  transferedList: StudyActivityItem[]
 ) => {
   const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
 
