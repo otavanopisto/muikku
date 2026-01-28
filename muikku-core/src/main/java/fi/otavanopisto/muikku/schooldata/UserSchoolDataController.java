@@ -381,6 +381,15 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
   }
 
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,
+      boolean allowStudyDiscussions) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).updateContactInfoAllowStudyDiscussions(studentIdentifier, contactInfoId, allowStudyDiscussions);
+  }
+
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource == null) {
