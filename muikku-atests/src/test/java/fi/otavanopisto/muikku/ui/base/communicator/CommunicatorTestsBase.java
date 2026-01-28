@@ -311,14 +311,14 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
-        waitAndClick(".application-panel__content-aside a[href^='#label-'] .icon-pencil");
-        waitForVisible(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
+        waitAndClick(".application-panel__content-aside .icon-more_vert");
+        waitAndClick("#tagDropdownMenu #editOption");
+        waitForVisible("#tagCategoryName");
         sleep(500);
-        clearElement(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name");
-        sendKeys(".dialog--visible .dialog__window--communicator-edit-label .form-element__input--communicator-label-name", "Dun dun duun");
-        waitAndClick(".dialog--visible .dialog__window--communicator-edit-label .button--standard-ok");
+        clearElement("#tagCategoryName");
+        sendKeys("#tagCategoryName", "Dun dun duun");
+        waitAndClick(".button--standard-ok");
         sleep(500);
-        waitForNotVisible(".dialog--visible .dialog__window--communicator-edit-label");
         waitForPresent(".application-panel__content-aside a[href^='#label-']");
         assertText(".application-panel__content-aside a[href^='#label-'] .menu__item-link-text", "Dun dun duun");
       }finally{
@@ -345,19 +345,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(recipient, "test");
         navigate("/communicator", false);
         selectFinnishLocale();
-        waitAndClick(".application-panel__content-aside a[href^='#label-'] .icon-pencil");
-        waitForVisible("div>.dialog>.dialog__window");
-        sleep(500);
-        waitForClickable("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--communicator-remove-label");
-        sleep(500);
-        click("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--communicator-remove-label");
-        sleep(500);
-        waitUntilContentChanged(".dialog--visible .dialog__footer .button--communicator-remove-label", "Poista tunniste");
-        assertClassPresent(".dialog--visible .dialog__footer .button--communicator-remove-label", "disabled");
-        waitForClickable("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--standard-ok");
-        click("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--standard-ok");
+        waitAndClick(".application-panel__content-aside .icon-more_vert");
+        waitAndClick("#tagDropdownMenu #deleteOption");
+        waitAndClick(".button--standard-ok");
         waitForNotVisible("div>.dialog>.dialog__window");
-        assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
+        assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
       }finally{
         deleteCommunicatorUserLabels(recipient);
         deleteCommunicatorMessages();

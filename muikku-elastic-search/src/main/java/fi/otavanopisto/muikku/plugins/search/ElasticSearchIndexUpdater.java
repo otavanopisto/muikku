@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -21,6 +23,8 @@ import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.client.indices.PutMappingRequest;
 import org.elasticsearch.xcontent.XContentType;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -32,6 +36,8 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
 import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectLevel2;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectType;
 
 @ApplicationScoped
 public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
@@ -103,22 +109,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         IndexableSubObject[] subObjects = indexable.subObjects();
         if (subObjects != null) {
           for (IndexableSubObject subObject : subObjects) {
-            IndexableFieldOption[] subObjectOptions = subObject.options();
-            
-            if (subObjectOptions != null) {
-              Map<String, ElasticMappingProperty> subObjectProperties = new HashMap<>();
-              
-              for (IndexableFieldOption subObjectOption : subObject.options()) {
-                TypedElasticMappingProperty property = fieldOptionToMapping(subObjectOption);
-                if (property != null) {
-                  subObjectProperties.put(subObjectOption.name(), property);
-                }
-              }
-              
-              if (!subObjectProperties.isEmpty()) {
-                properties.put(subObject.name(), new ElasticMappingProperties(subObjectProperties));
-              }
-            }
+            handleLevel1SubObject(subObject, properties);
           }
         }
 
@@ -130,6 +121,52 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
           }
         }
       }
+    }
+  }
+
+  private void handleLevel1SubObject(IndexableSubObject subObject, Map<String, ElasticMappingProperty> properties) {
+    // Null is fine for default, nested has to be there for nested queries
+    String subObjectType = subObject.type() == IndexableSubObjectType.NESTED ? "nested" : null;
+    
+    Map<String, ElasticMappingProperty> subObjectProperties = new HashMap<>();
+
+    if (ArrayUtils.isNotEmpty(subObject.options())) {
+      for (IndexableFieldOption subObjectOption : subObject.options()) {
+        TypedElasticMappingProperty property = fieldOptionToMapping(subObjectOption);
+        if (property != null) {
+          subObjectProperties.put(subObjectOption.name(), property);
+        }
+      }
+    }
+
+    if (ArrayUtils.isNotEmpty(subObject.subObjects())) {
+      for (IndexableSubObjectLevel2 subObjectL2 : subObject.subObjects()) {
+        handleLevel2SubObject(subObjectL2, subObjectProperties);
+      }
+    }
+    
+    if (StringUtils.isNotBlank(subObjectType) || MapUtils.isNotEmpty(subObjectProperties)) {
+      properties.put(subObject.name(), new ElasticObjectMappingProperty(subObjectType, subObjectProperties));
+    }
+  }
+
+  private void handleLevel2SubObject(IndexableSubObjectLevel2 subObject, Map<String, ElasticMappingProperty> properties) {
+    // Null is fine for default, nested has to be there for nested queries
+    String subObjectType = subObject.type() == IndexableSubObjectType.NESTED ? "nested" : null;
+    
+    Map<String, ElasticMappingProperty> subObjectProperties = new HashMap<>();
+    
+    if (ArrayUtils.isNotEmpty(subObject.options())) {
+      for (IndexableFieldOption subObjectOption : subObject.options()) {
+        TypedElasticMappingProperty property = fieldOptionToMapping(subObjectOption);
+        if (property != null) {
+          subObjectProperties.put(subObjectOption.name(), property);
+        }
+      }
+    }
+        
+    if (StringUtils.isNotBlank(subObjectType) || MapUtils.isNotEmpty(subObjectProperties)) {
+      properties.put(subObject.name(), new ElasticObjectMappingProperty(subObjectType, subObjectProperties));
     }
   }
 
@@ -173,7 +210,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   
   private void updateMapping(String indexName, ElasticMappingProperties properties) throws IOException {
     String mapping = new ObjectMapper().writeValueAsString(properties);
-    
+
     PutMappingRequest mappingRequest = new PutMappingRequest(indexName);
     mappingRequest.source(mapping, XContentType.JSON);
     
@@ -208,6 +245,27 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     }
 
     private Map<String, ElasticMappingProperty> properties;
+  }
+  
+  @JsonInclude(Include.NON_EMPTY)
+  public static class ElasticObjectMappingProperty extends ElasticMappingProperty {
+
+    public ElasticObjectMappingProperty(String type, Map<String, ElasticMappingProperty> properties) {
+      super();
+      this.type = type;
+      this.properties = properties;
+    }
+
+    public Map<String, ElasticMappingProperty> getProperties() {
+      return properties;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    private final String type;
+    private final Map<String, ElasticMappingProperty> properties;
   }
   
   public abstract static class TypedElasticMappingProperty extends ElasticMappingProperty {

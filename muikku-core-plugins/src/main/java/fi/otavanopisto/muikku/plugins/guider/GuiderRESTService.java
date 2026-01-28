@@ -693,7 +693,6 @@ public class GuiderRESTService extends PluginRESTService {
   public Response listWorkspaceActivities(
       @PathParam("USERIDENTIFIER") String userIdentifier,
       @QueryParam("workspaceIdentifier") String wsIdentifier,
-      @QueryParam("includeTransferCredits") boolean includeTransferCredits,
       @QueryParam("includeAssignmentStatistics") boolean includeAssignmentStatistics) {
 
     // Access check
@@ -722,7 +721,7 @@ public class GuiderRESTService extends PluginRESTService {
     WorkspaceActivityInfo activityInfo = evaluationController.getWorkspaceActivityInfoWithSummary(
         studentIdentifier, 
         workspaceIdentifier, 
-        includeTransferCredits, 
+        true,
         includeAssignmentStatistics);
     return Response.ok(activityInfo).build();
   }

@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ListJoin;
@@ -205,9 +206,23 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
+    /**
+     * Variables for sorting:
+     */
+    Expression<Integer> recipientPinnedOrder =
+        criteriaBuilder.<Integer>selectCase()
+          .when(criteriaBuilder.isTrue(announcementRecipientJoin.get(AnnouncementRecipient_.pinned)), 1)
+          .otherwise(0);
+    
+    Expression<Integer> unreadOrder =
+        criteriaBuilder.<Integer>selectCase()
+          .when(criteriaBuilder.isNull(announcementRecipientJoin.get(AnnouncementRecipient_.id)), 1)
+          .otherwise(0);
+    
     criteria.orderBy(
         criteriaBuilder.desc(root.get(Announcement_.pinned)),
-        criteriaBuilder.desc(announcementRecipientJoin.get(AnnouncementRecipient_.pinned)),
+        criteriaBuilder.desc(recipientPinnedOrder),
+        criteriaBuilder.desc(unreadOrder),
         criteriaBuilder.desc(root.get(Announcement_.startDate)),
         criteriaBuilder.desc(root.get(Announcement_.id))
     );

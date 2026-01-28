@@ -27,7 +27,7 @@ const UPPER_SECONDARY_MANDATORY_OFFSET = 2;
 const UPPER_SECONDARY_REQUIRED_EXCEPTION = ["BI", "FY", "KE", "GE"];
 
 // Compulsory curriculum has 45 courses required
-const COMPULSORY_TOTAL_REQUIRED_STUDIES = 45;
+const COMPULSORY_TOTAL_REQUIRED_STUDIES = 46;
 
 type WorkloadUnit = "credits" | "courses";
 
