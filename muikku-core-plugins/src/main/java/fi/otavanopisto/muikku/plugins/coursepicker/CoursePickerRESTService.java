@@ -690,8 +690,6 @@ public class CoursePickerRESTService extends PluginRESTService {
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
         userIdentifier.getDataSource(), userIdentifier.getIdentifier(), workspaceEntity.getId());
     if (response.ok() && !response.getEntity().getItems().isEmpty()) {
-      // Ensure caller and student are added to the listeners interested in the student's HOPS changes
-      hopsWebSocketMessenger.registerUser(userSchoolDataIdentifier.getUserEntity().getId(), sessionController.getLoggedUserEntity().getId());
       hopsWebSocketMessenger.sendMessage(userSchoolDataIdentifier.getUserEntity().getId(), "hops:workspace-signup", response.getEntity().getItems());
     }
 
