@@ -306,6 +306,27 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
+          {t("labels.matriculationFormRegistrationSubTitle5", {
+            ns: "hops_new",
+          })}
+        </legend>
+
+        <div className="matriculation-container__row">
+          <div className="matriculation__form-element-container">
+            <TextField
+              label={t("labels.matriculationFormFieldOpintopolkuUrl", {
+                ns: "hops_new",
+              })}
+              readOnly
+              value={examinationInformation.opintopolkuUrl}
+              className="matriculation__input"
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset className="matriculation-container__fieldset">
+        <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormRegistrationSubTitle2", {
             ns: "hops_new",
           })}
