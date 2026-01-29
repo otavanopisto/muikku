@@ -178,21 +178,6 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
   };
 
 /**
- * Update user study activity items thunk function
- * @param data data
- */
-const updateUserStudyActivityItems: UpdateUserStudyActivityItemsTriggerType =
-  function updateUserStudyActivityItems(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      //const { courseId, onSuccess, onFail } = data;
-      //const state = getState();
-    };
-  };
-
-/**
  * Load course matrix thunk function
  * @param data data
  */
@@ -397,7 +382,6 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
   };
 export {
   loadUserStudyActivity,
-  updateUserStudyActivityItems,
   loadCourseMatrix,
 
   // WEBSOCKET UPDATERS
