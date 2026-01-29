@@ -11597,7 +11597,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/workspace/last/{workspaceEntityId}:
     delete:
       operationId: deleteFromLatestWorkspaces
@@ -15713,6 +15713,7 @@ components:
         - canPublishName
         - state
         - attendances
+        - opintopolkuUrl
       properties:
         id:
           type: integer
@@ -15749,6 +15750,8 @@ components:
         enrollmentDate:
           type: string
           format: date-time
+        opintopolkuUrl:
+          type: string
 
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
@@ -15946,7 +15949,6 @@ components:
         - mandatory
         - repeat
         - status
-        - funding
       properties:
         id:
           type: integer
@@ -15984,9 +15986,11 @@ components:
         term:
           type: string
           description: Term of the exam. Example "AUTUMN" or "SPRING"
+          nullable: true
         year:
           type: integer
           description: Year of the exam.
+          nullable: true
         subject:
           type: string
           description: Subject code. Example "AI" etc...

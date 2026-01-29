@@ -69,7 +69,7 @@ export const MatriculationExaminationEnrolledAttendesList: React.FC<
     value: MatriculationExamEnrolledSubject[T],
     index: number
   ) => {
-    const modifiedExaminationEnrolledList = examinationEnrolledList;
+    const modifiedExaminationEnrolledList = [...examinationEnrolledList];
 
     modifiedExaminationEnrolledList[index][key] = value;
 
