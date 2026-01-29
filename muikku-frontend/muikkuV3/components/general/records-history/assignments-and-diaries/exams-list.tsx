@@ -154,7 +154,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
             dangerouslySetInnerHTML={{ __html: literalAssesment }}
           ></div>
 
-          {audioAssessments !== undefined && audioAssessments.length > 0 ? (
+          {audioAssessments && audioAssessments.length > 0 ? (
             <>
               <div className="material-page__assignment-assessment-verbal-label">
                 {t("labels.verbalEvaluation", { ns: "evaluation" })}:
