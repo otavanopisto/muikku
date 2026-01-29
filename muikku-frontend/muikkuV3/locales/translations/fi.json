@@ -990,6 +990,7 @@
     "matriculationTerms": {
       "AUTUMN": "Syksy {{year}}",
       "AUTUMN_adessive": "<b>Syksyllä {{year}}</b>",
+      "OUTDATED": "Vielä aikaisempi",
       "SPRING": "Kevät {{year}}",
       "SPRING_adessive": "<b>Keväällä {{year}}</b>"
     },

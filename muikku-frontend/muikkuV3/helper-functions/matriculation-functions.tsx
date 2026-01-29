@@ -103,7 +103,9 @@ export const getNextTermsOptionsByDate = (date: Date | string, t: TFunction) =>
  */
 export const getPastTermOptions = (t: TFunction) => [
   <option key="OUTDATED" value="OUTDATED">
-    Vielä aikaisempi
+    {t("matriculationTerms.OUTDATED", {
+      ns: "hops_new",
+    })}
   </option>,
   ...getTermOptions(getPastTerms(), t),
 ];

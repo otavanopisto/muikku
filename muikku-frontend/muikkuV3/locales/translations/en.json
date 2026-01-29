@@ -990,6 +990,7 @@
     "matriculationTerms": {
       "AUTUMN": "Autumn {{year}}",
       "AUTUMN_adessive": "<b>in autumn {{year}}</b>",
+      "OUTDATED": "Even earlier",
       "SPRING": "Spring {{year}}",
       "SPRING_adessive": "<b>in spring {{year}}</b>"
     },
