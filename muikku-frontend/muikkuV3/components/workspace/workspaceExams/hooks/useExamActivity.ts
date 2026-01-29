@@ -1,4 +1,6 @@
 import * as React from "react";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 import { useSelector } from "react-redux";
 import { generateRegistrationLinkWithJwt } from "~/api_smowl/index";
 import { localize } from "~/locales/i18n";
@@ -35,8 +37,10 @@ export const useExamActivity = (props: UseExamActivityProps) => {
      */
     const generateLink = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        unstable_batchedUpdates(() => {
+          setLoading(true);
+          setError(null);
+        });
 
         const registrationLink = await generateRegistrationLinkWithJwt(
           {
@@ -54,8 +58,10 @@ export const useExamActivity = (props: UseExamActivityProps) => {
 
         setLink(registrationLink);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error(String(err)));
-        setLink(null);
+        unstable_batchedUpdates(() => {
+          setError(err instanceof Error ? err : new Error(String(err)));
+          setLink(null);
+        });
       } finally {
         setLoading(false);
       }
