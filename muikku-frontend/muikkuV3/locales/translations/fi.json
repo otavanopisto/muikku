@@ -338,6 +338,7 @@
       "preset3": "Esiasetettu teema 3",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
       "tab": "Välilehti {{current}}/{{tabCount}}",
+      "tagOptionMenu": "Tunnisteiden muokkausvalikko",
       "uploadPicture": "Lisää profiilin kuva"
     },
     "subjects": {
@@ -1284,6 +1285,7 @@
       "remove_discussionArea": "Poista keskustelualue",
       "remove_label": "Poista tunniste",
       "remove_message": "Poista viesti",
+      "removeAllCollaborators": "Poista kaikki jaot",
       "reply": "Vastaa viestiin",
       "replyCount": "Vastauksia",
       "replySubject": "Vs: {{topic}}",
@@ -1656,18 +1658,30 @@
       "share": "Jaa lippu"
     },
     "labels": {
+      "addCollaborators": "Jaa käyttäjille",
       "create": "Luo uusi lippu",
       "createAndSearch": "Luo ja selaa lippuja",
       "edit": "Muokkaa lippua",
       "flags": "Liput",
+      "remove": "Poista lippu",
+      "removeCollaborators": "Poista lipun jaot: ({{collaboratorCount}} jakoa)",
       "share": "Jaa lippu {{flag}}"
+    },
+    "content": {
+      "removing": "Oletko varma, että haluat poistaa lipun?",
+      "removingCollaborators": "Oletko varma, että haluat poistaa lipun jaot?"
     },
     "notifications": {
       "addError": "Virhe lipun lisäämisessä. Yritä uudelleen.",
+      "addCollaboratorError": "Virhe lipun jakamisessa. Yritä uudelleen. {{error}}",
+      "addCollaboratorSuccess": "Lipun jakaminen onnistui {{collaboratorCount}} käyttäjälle.",
       "createError": "Virhe lipun luomisessa. Yritä uudelleen.",
       "loadError": "Lippujen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "removeError": "Lipun poistaminen epäonnistui. Yritä uudelleen.",
-      "updateError": "Lipunn muokkasu epäonnistui. Yritä uudelleen",
+      "removeCollaboratorError": "Lipun jakaminen epäonnistui. Yritä uudelleen. {{error}}",
+      "removeCollaboratorSuccess": "Jako poistettu onnistuneesti {{collaboratorCount}} käyttäjältä.",
+      "updateError": "Lipun muokkaus epäonnistui. Yritä uudelleen",
+      "updateSuccess": "Lipun muokkaus onnistui.",
       "removeWarning": "Poistettava lippu ei saa olla jaettu. Voit poistaa lipun, kun olet ensin poistanut lipun jaot."
     },
     "validation": {
