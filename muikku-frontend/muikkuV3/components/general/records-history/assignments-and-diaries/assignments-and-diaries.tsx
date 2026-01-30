@@ -61,6 +61,8 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     "common",
   ]);
 
+  console.log("");
+
   const [activeTab, setActiveTab] =
     React.useState<AssignmentsTabType>("EVALUATED");
 
