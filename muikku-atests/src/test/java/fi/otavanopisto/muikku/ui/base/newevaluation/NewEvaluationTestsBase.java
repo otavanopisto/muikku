@@ -652,6 +652,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
           navigate("/records#records", false);
           waitAndClick(".button--assignments-and-exercises");
+          sleep(2500);
           waitForVisible(".dialog--studies");
           waitForVisible(".journal--feedback");
           assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
