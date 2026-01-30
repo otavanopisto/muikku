@@ -5743,6 +5743,49 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/user/contacts/{userIdentifier}/contactInfos/{contactInfoId}:
+    put:
+      operationId: updateUserContactAllowStudyDiscussions
+      summary: Sets allowStudyDiscussions property of a contact info
+      description: Sets allowStudyDiscussions property of a contact info
+      tags:
+        - User
+      parameters:
+        - name: userIdentifier
+          in: path
+          description: User identifier
+          required: true
+          schema:
+            type: string
+        - name: contactInfoId
+          in: path
+          description: Id of the contact info
+          required: true
+          schema:
+            type: number
+            format: int64
+        - name: allowStudyDiscussions
+          in: query
+          description: allowStudyDiscussions
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: UserContact
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserContact"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "500":
+          description: Internal server error
+
   /rest/guider/users/{userId}/contactLog:
     get:
       operationId: getGuiderUserContactLog
@@ -14863,6 +14906,24 @@ components:
         evaluationInfo:
           description: Exam evaluation info
           $ref: "#/components/schemas/NodeEvaluationInfo"
+        assignmentInfos:
+          description: Points summary for each assignment in the page, if the exam has been evaluated
+          type: array
+          items:
+            $ref: "#/components/schemas/ExamAssignmentInfo"
+
+    ExamAssignmentInfo:
+      type: object
+      description: Points information about a single exam assignment
+      properties:
+        name:
+          description: Title of the assignment page
+          type: string
+        points:
+          description: Points given for the assignment
+          type: number
+          format: double
+          nullable: true
 
     ExamAttendee:
       type: object
@@ -15331,6 +15392,9 @@ components:
           type: string
         defaultContact:
           type: boolean
+        allowStudyDiscussions:
+          type: boolean
+          description: Is the contact a Guardian etc who can be contacted for study discussions, null for other contacts
 
     Guardian:
       type: object
@@ -15719,6 +15783,7 @@ components:
         - canPublishName
         - state
         - attendances
+        - opintopolkuUrl
       properties:
         id:
           type: integer
@@ -15755,6 +15820,8 @@ components:
         enrollmentDate:
           type: string
           format: date-time
+        opintopolkuUrl:
+          type: string
 
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
@@ -15952,7 +16019,6 @@ components:
         - mandatory
         - repeat
         - status
-        - funding
       properties:
         id:
           type: integer
@@ -15990,9 +16056,11 @@ components:
         term:
           type: string
           description: Term of the exam. Example "AUTUMN" or "SPRING"
+          nullable: true
         year:
           type: integer
           description: Year of the exam.
+          nullable: true
         subject:
           type: string
           description: Subject code. Example "AI" etc...
@@ -18130,7 +18198,6 @@ components:
         - city
         - region
         - country
-        - type
         - defaultAddress
       properties:
         identifier:
@@ -18147,8 +18214,6 @@ components:
           type: string
         country:
           type: string
-        type:
-          type: string
         defaultAddress:
           type: boolean
 
@@ -18157,13 +18222,10 @@ components:
       description: UserStudentEmail object
       required:
         - studentIdentifier
-        - type
         - address
         - defaultAddress
       properties:
         studentIdentifier:
-          type: string
-        type:
           type: string
         address:
           type: string
@@ -18175,13 +18237,10 @@ components:
       description: UserStudentPhoneNumber object
       required:
         - studentIdentifier
-        - type
         - number
         - defaultNumber
       properties:
         studentIdentifier:
-          type: string
-        type:
           type: string
         number:
           type: string

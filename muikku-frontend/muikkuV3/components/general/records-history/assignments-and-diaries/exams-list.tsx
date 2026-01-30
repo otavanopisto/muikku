@@ -1,23 +1,21 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
 import { ExamAttendance } from "~/generated/client";
 import { localize } from "~/locales/i18n";
-import { StateType } from "~/reducers";
-import ExamTimer from "./exam-timer";
 import "~/sass/elements/exam.scss";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { useTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
-import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
-import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
+import AssignmentDetails from "../../evaluation-assessment-details/assigments-details";
+import { AssignmentInfo } from "../../evaluation-assessment-details/helper";
 
 /**
  * ExamsListProps
  */
-interface ExamsListProps {}
+interface ExamsListProps {
+  exams: ExamAttendance[];
+}
 
 /**
  * ExamsListProps
@@ -26,22 +24,9 @@ interface ExamsListProps {}
  */
 const ExamsList = (props: ExamsListProps) => {
   const { t } = useTranslation(["exams", "evaluation", "common"]);
-  const { exams, examsStatus } = useSelector((state: StateType) => state.exams);
-  const currentWorkspace = useSelector(
-    (state: StateType) => state.workspaces.currentWorkspace
-  );
+  const { exams } = props;
 
-  if (!currentWorkspace || !exams || examsStatus === "LOADING") {
-    return <div className="exam loader-empty" />;
-  }
-
-  if (examsStatus === "ERROR") {
-    return (
-      <div className="empty">
-        <span>{"ERROR"}</span>
-      </div>
-    );
-  } else if (exams.length === 0) {
+  if (exams.length === 0) {
     return (
       <div className="empty">
         <span>{t("content.empty", { ns: "exams", context: "exams" })}</span>
@@ -72,7 +57,6 @@ interface ExamsListItemProps {
  */
 const ExamsListItem = (props: ExamsListItemProps) => {
   const { exam } = props;
-  const { workspaceUrl } = useParams<{ workspaceUrl: string }>();
   const { t } = useTranslation(["evaluation", "common"]);
 
   /**
@@ -170,7 +154,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
             dangerouslySetInnerHTML={{ __html: literalAssesment }}
           ></div>
 
-          {audioAssessments !== undefined && audioAssessments.length > 0 ? (
+          {audioAssessments && audioAssessments.length > 0 ? (
             <>
               <div className="material-page__assignment-assessment-verbal-label">
                 {t("labels.verbalEvaluation", { ns: "evaluation" })}:
@@ -272,21 +256,6 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           )}
         </div>
       </div>
-
-      {restartAllowed || !isEnded ? (
-        <div className="exam__footer">
-          <div className="exam__actions">
-            <Link
-              className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
-              to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
-            >
-              {t("actions.openExam", { ns: "exams" })}
-            </Link>
-
-            {hasTimeLimit && isStarted && !isEnded && <ExamTimer exam={exam} />}
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 };
