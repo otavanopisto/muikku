@@ -705,9 +705,6 @@ class StateOfStudies extends React.Component<
                     studyProgrammeName={
                       this.props.guider.currentStudent.basic.studyProgrammeName
                     }
-                    studyProgress={
-                      this.props.guider.currentStudent.studyProgress
-                    }
                   />
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>

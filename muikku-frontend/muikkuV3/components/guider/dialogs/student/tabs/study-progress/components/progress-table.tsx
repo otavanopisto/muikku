@@ -11,7 +11,7 @@ import SuggestionList, {
   SuggestionItemContext,
 } from "~/components/general/suggestion-list/suggestion-list";
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
-import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
+import { StudyActivityItem, WorkspaceSuggestion } from "~/generated/client";
 import {
   getCourseDropdownName,
   getCourseInfo,
@@ -189,7 +189,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
  */
 interface SuggestionListContentProps {
   suggestion: WorkspaceSuggestion;
-  suggestedCourses: StudentStudyActivity[];
+  suggestedCourses: StudyActivityItem[];
   suggestionContext: SuggestionItemContext;
   onSignUpBehalf: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
@@ -222,7 +222,7 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
   );
 
   // and the status is SUGGESTED_NEXT
-  if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
+  if (suggestedCourse && suggestedCourse.state === "SUGGESTED_NEXT") {
     // then the action is "remove"
     suggestionNextActionType = "remove";
   }

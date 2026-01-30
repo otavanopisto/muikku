@@ -22,20 +22,21 @@ public class HopsWebsocketMessenger {
     hopsUsers = new ConcurrentHashMap<>();
   }
   
-  public void registerUser(String studentIdentifier, Long userEntityId) {
-    Set<Long> userIds = hopsUsers.get(studentIdentifier);
+  public void registerUser(Long studentEntityId, Long userEntityId) {
+    Set<Long> userIds = hopsUsers.get(studentEntityId);
     if (userIds == null) {
       userIds = new HashSet<>();
+      userIds.add(studentEntityId);
       userIds.add(userEntityId);
-      hopsUsers.put(studentIdentifier, userIds);
+      hopsUsers.put(studentEntityId, userIds);
     }
     else {
       userIds.add(userEntityId);
     }
   }
   
-  public void sendMessage(String studentIdentifier, String eventType, Object data) {
-    Set<Long> userIds = hopsUsers.get(studentIdentifier);
+  public void sendMessage(Long studentEntityId, String eventType, Object data) {
+    Set<Long> userIds = hopsUsers.get(studentEntityId);
     if (userIds != null && !userIds.isEmpty()) {
       webSocketMessenger.sendMessage(eventType, data, userIds);
     }
@@ -46,7 +47,7 @@ public class HopsWebsocketMessenger {
     hopsUsers.clear();
   }
 
-  // Student identifier -> userEntity id set
-  private ConcurrentHashMap<String, Set<Long>> hopsUsers;
+  // Student entity id -> Set of userEntity ids to be notified
+  private ConcurrentHashMap<Long, Set<Long>> hopsUsers;
 
 }

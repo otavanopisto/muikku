@@ -28,16 +28,12 @@ import {
   CreateNoteRequest,
   UpdateNoteReceiverRequest,
   UpdateNoteRequest,
-  StudentStudyActivity,
+  StudyActivityItem,
   FlaggedStudent,
   NoteReceiver,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
-import {
-  RecordWorkspaceActivitiesWithLineCategory,
-  RecordWorkspaceActivityByLine,
-} from "~/components/general/records-history/types";
 import {
   filterActivity,
   filterActivityBySubjects,
@@ -45,6 +41,8 @@ import {
   OTHER_SUBJECT_OUTSIDE_HOPS_CS,
   SKILL_AND_ART_SUBJECTS_CS,
 } from "~/helper-functions/study-matrix";
+
+const hopsApi = MApi.getHopsApi();
 
 export type UPDATE_NOTES_STATE = SpecificActionType<
   "UPDATE_NOTES_STATE",
@@ -522,19 +520,29 @@ export interface ArchiveNoteTriggerType {
 }
 
 /**
- *  Interface for the suggested next websocket thunk action creator
+ *  Interface for the workspace suggested websocket thunk action creator
  */
-export interface GuiderStudyProgressSuggestedNextWebsocketType {
-  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+export interface GuiderWorkspaceSuggestedWebsocketType {
+  (data: {
+    websocketData: {
+      id: number;
+      name: string;
+      subject: string;
+      courseNumber: number;
+      status: string;
+      description: string | null;
+      courseId: number;
+      created: string;
+      studentIdentifier: string;
+    };
+  }): AnyActionType;
 }
 
 /**
  * Interface for the workspace signup websocket thunk action creator
  */
-export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
-  (data: {
-    websocketData: StudentStudyActivity | StudentStudyActivity[];
-  }): AnyActionType;
+export interface GuiderWorkspaceSignupWebsocketType {
+  (data: { websocketData: StudyActivityItem[] }): AnyActionType;
 }
 
 /**
@@ -1044,12 +1052,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       /**
        * Study progress promise
        */
-      const studyProgressPromise = async () => {
-        const studentActivity = await hopsApi.getStudentStudyActivity({
-          studentIdentifier: id,
-        });
-
-        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+      const studyActivityPromise = async () => {
+        const studentStudyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: id,
         });
 
@@ -1059,20 +1063,30 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
         const skillAndArtCourses = filterActivityBySubjects(
           SKILL_AND_ART_SUBJECTS_CS,
-          studentActivity
+          studentStudyActivity.items
         );
 
         const otherLanguageSubjects = filterActivityBySubjects(
           LANGUAGE_SUBJECTS_CS,
-          studentActivity
+          studentStudyActivity.items
         );
 
         const otherSubjects = filterActivityBySubjects(
           OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-          studentActivity
+          studentStudyActivity.items
         );
 
-        const studentActivityByStatus = filterActivity(studentActivity);
+        const studentActivityByStatus = filterActivity(
+          studentStudyActivity.items
+        );
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyActivity",
+            value: studentStudyActivity,
+          },
+        });
 
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -1083,7 +1097,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               otherLanguageSubjects: otherLanguageSubjects,
               otherSubjects: otherSubjects,
               ...studentActivityByStatus,
-              options: studentOptions,
               courseMatrix: courseMatrix,
             },
           },
@@ -1124,7 +1137,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               });
           }),
 
-        studyProgressPromise(),
+        studyActivityPromise(),
 
         userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {
           dispatch({
@@ -1317,7 +1330,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     try {
       const pastHistoryLoaded =
         !!getState().guider.currentStudent.pastWorkspaces;
-      const pastStudiesLoaded = !!getState().guider.currentStudent.pastStudies;
 
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -1410,152 +1422,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                 payload: {
                   property: "pastWorkspaces",
                   value: workspacesWithAddons,
-                },
-              });
-            })
-        );
-      }
-
-      if (!pastStudiesLoaded || forceLoad) {
-        dispatch({
-          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-          payload: {
-            property: "pastStudiesState",
-            value: <LoadingState>"LOADING",
-          },
-        });
-
-        promises.push(
-          guiderApi
-            .getGuiderStudents({
-              userIdentifier: id,
-              includeInactiveStudents: true,
-            })
-            .then(async (users) => {
-              //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
-              //The bigger number to be first
-              users = users.sort((a, b) => {
-                const aId = a.id.split("-")[2];
-                const bId = b.id.split("-")[2];
-
-                return parseInt(bId) - parseInt(aId);
-              });
-
-              // Get workspaces aka activities with line and category
-              const workspaceWithActivity = await Promise.all(
-                users.map(async (user) => {
-                  const workspacesWithActivity =
-                    guiderApi.getGuiderUserWorkspaceActivity({
-                      identifier: id,
-                      includeAssignmentStatistics: true,
-                    });
-
-                  return workspacesWithActivity;
-                })
-              );
-
-              // Get active category index
-              const activeCategoryIndex = workspaceWithActivity.findIndex(
-                (a) => a.defaultLine
-              );
-
-              // Filter out default line and sort by line category (alphabetically)
-              let sortedWorkspaceActivityData = workspaceWithActivity
-                .filter((a) => !a.defaultLine)
-                .sort((a, b) => {
-                  if (a.lineCategory > b.lineCategory) {
-                    return 1;
-                  }
-                  if (a.lineCategory < a.lineCategory) {
-                    return -1;
-                  }
-                  return 0;
-                });
-
-              // Add default line to the beginning of the array
-              // and then sorted array of non default lines
-              sortedWorkspaceActivityData = [
-                workspaceWithActivity[activeCategoryIndex],
-                ...sortedWorkspaceActivityData,
-              ];
-
-              // Helper object to hold category specific data
-              const helperObject: {
-                [category: string]: {
-                  credits: RecordWorkspaceActivityByLine[];
-                  transferedCredits: RecordWorkspaceActivityByLine[];
-                  completedCourseCredits: number;
-                  mandatoryCourseCredits: number;
-                  showCredits: boolean;
-                };
-              } = {};
-
-              // Loop through workspaces and add them to helper object
-              // by category
-              sortedWorkspaceActivityData.forEach((workspaceActivity) => {
-                const allCredits: RecordWorkspaceActivityByLine[] =
-                  workspaceActivity.activities.map((a) => ({
-                    lineName: workspaceActivity.lineName,
-                    activity: a,
-                  }));
-
-                const credits = allCredits.filter(
-                  (a) => a.activity.assessmentStates[0].state !== "transferred"
-                );
-
-                const transferedCredits = allCredits.filter(
-                  (a) => a.activity.assessmentStates[0].state === "transferred"
-                );
-
-                // If category exists in helper object, add credits to it
-                if (helperObject[workspaceActivity.lineCategory]) {
-                  helperObject[workspaceActivity.lineCategory].credits =
-                    helperObject[workspaceActivity.lineCategory].credits.concat(
-                      credits
-                    );
-
-                  helperObject[
-                    workspaceActivity.lineCategory
-                  ].transferedCredits =
-                    helperObject[
-                      workspaceActivity.lineCategory
-                    ].transferedCredits.concat(transferedCredits);
-                } else {
-                  // If category does not exist in helper object, create it and initialize it
-                  helperObject[workspaceActivity.lineCategory] = {
-                    credits: credits || [],
-                    transferedCredits: transferedCredits || [],
-                    completedCourseCredits:
-                      workspaceActivity.completedCourseCredits,
-                    mandatoryCourseCredits:
-                      workspaceActivity.mandatoryCourseCredits,
-                    showCredits: workspaceActivity.showCredits,
-                  };
-                }
-              });
-
-              const pastStudies: RecordWorkspaceActivitiesWithLineCategory[] =
-                Object.entries(helperObject).map((a) => ({
-                  lineCategory: a[0],
-                  credits: a[1].credits,
-                  transferCredits: a[1].transferedCredits,
-                  showCredits: a[1].showCredits,
-                  completedCourseCredits: a[1].completedCourseCredits,
-                  mandatoryCourseCredits: a[1].mandatoryCourseCredits,
-                }));
-
-              dispatch({
-                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                payload: {
-                  property: "pastStudies",
-                  value: pastStudies,
-                },
-              });
-              dispatch({
-                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                payload: {
-                  property: "pastStudiesState",
-                  value: <LoadingState>"READY",
                 },
               });
             })
@@ -2872,8 +2738,8 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
  * Thunk action creator for the suggested next websocket
  * @param data data
  */
-const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType =
-  function guiderStudyProgressSuggestedNextWebsocket(data) {
+const guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType =
+  function guiderWorkspaceSuggestedWebsocket(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
@@ -2887,42 +2753,64 @@ const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNex
 
       const { websocketData } = data;
 
-      const { suggestedNextList } = currentStudent.studyProgress;
-
-      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
-        suggestedNextList
-      );
-
-      // If course id is null, meaning that delete existing activity course by
-      // finding that specific course with subject code and course number and splice it out
-      const indexOfCourse = updatedSuggestedNextList.findIndex(
-        (item) =>
-          item.courseId === websocketData.courseId &&
-          websocketData.subject === item.subject
-      );
-
-      if (indexOfCourse !== -1) {
-        updatedSuggestedNextList.splice(indexOfCourse, 1);
-      } else {
-        // Add new
-        updatedSuggestedNextList.push(websocketData);
-      }
-
-      const studyProgress: GuiderStudentStudyProgress = {
-        ...state.guider.currentStudent.studyProgress,
-        suggestedNextList: updatedSuggestedNextList,
-      };
-
-      dispatch({
-        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-        payload: {
-          property: "studyProgress",
-          value: {
-            ...studyProgress,
-            suggestedNextList: updatedSuggestedNextList,
-          },
-        },
+      const updatedStudyActivityByWorkspaceId = await hopsApi.getStudyActivity({
+        studentIdentifier: currentStudent.basic.id,
+        workspaceEntityId: websocketData.courseId,
       });
+
+      // If no items, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      // It is possible that there are multiple items with the same courseId, so we need to remove all of them
+      if (updatedStudyActivityByWorkspaceId.items.length === 0) {
+        let updatedStudyActivityItems: StudyActivityItem[] = [].concat(
+          currentStudent.studyActivity.items
+        );
+
+        updatedStudyActivityItems = updatedStudyActivityItems.filter(
+          (item) => item.courseId !== websocketData.courseId
+        );
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyActivity",
+            value: {
+              ...currentStudent.studyActivity,
+              items: updatedStudyActivityItems,
+            },
+          },
+        });
+      } else {
+        // If there are items, meaning that add new activity course or update existing activity course
+        // If there are multiple items with the same courseId, we need to update all of them
+        const updatedStudyActivityItems: StudyActivityItem[] = [].concat(
+          currentStudent.studyActivity.items
+        );
+
+        // Loop through all items and update matching items or add as new
+        updatedStudyActivityByWorkspaceId.items.forEach((item) => {
+          const indexOfItem = updatedStudyActivityItems.findIndex(
+            (i) => i.courseId === item.courseId && i.subject === item.subject
+          );
+
+          if (indexOfItem !== -1) {
+            updatedStudyActivityItems[indexOfItem] = item;
+          } else {
+            updatedStudyActivityItems.push(item);
+          }
+        });
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyActivity",
+            value: {
+              ...currentStudent.studyActivity,
+              items: updatedStudyActivityItems,
+            },
+          },
+        });
+      }
     };
   };
 
@@ -2930,8 +2818,8 @@ const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNex
  * Thunk action creator for the workspace signup websocket
  * @param data data
  */
-const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType =
-  function guiderStudyProgressWorkspaceSignupWebsocket(data) {
+const guiderWorkspaceSignupWebsocket: GuiderWorkspaceSignupWebsocketType =
+  function guiderWorkspaceSignupWebsocket(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
@@ -2945,71 +2833,30 @@ const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceS
 
       const { websocketData } = data;
 
-      const { studyProgress } = currentStudent;
-      const { suggestedNextList, onGoingList, gradedList, transferedList } =
-        studyProgress;
-
-      // Combine all course lists and filter out the updated course
-      let allCourses = [
-        ...onGoingList,
-        ...gradedList,
-        ...transferedList,
-        ...suggestedNextList,
-      ];
-      const courseIdToFilter = Array.isArray(websocketData)
-        ? websocketData[0].courseId
-        : websocketData.courseId;
-      allCourses = allCourses.filter(
-        (item) => item.courseId !== courseIdToFilter
+      const updatedStudyActivityItems: StudyActivityItem[] = [].concat(
+        currentStudent.studyActivity.items
       );
 
-      // Add the new course(s)
-      allCourses = allCourses.concat(websocketData);
+      websocketData.forEach((item) => {
+        const indexOfItem = updatedStudyActivityItems.findIndex(
+          (i) => i.courseId === item.courseId && i.subject === item.subject
+        );
 
-      // Get filtered course lists
-      const categorizedCourses = {
-        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
-      };
-
-      dispatch({
-        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-        payload: {
-          property: "studyProgress",
-          value: {
-            ...studyProgress,
-            ...categorizedCourses,
-          },
-        },
+        if (indexOfItem !== -1) {
+          updatedStudyActivityItems[indexOfItem] = item;
+        } else {
+          updatedStudyActivityItems.push(item);
+        }
       });
-    };
-  };
-
-/**
- * Thunk action creator for the alternative study options websocket
- * @param data data
- */
-const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =
-  function guiderStudyProgressAlternativeStudyOptionsWebsocket(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-      const currentStudent = state.guider.currentStudent;
-
-      if (!currentStudent) {
-        return null;
-      }
-
-      const { websocketData } = data;
-
-      const { studyProgress } = currentStudent;
 
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          property: "studyProgress",
-          value: { ...studyProgress, options: websocketData },
+          property: "studyActivity",
+          value: {
+            ...currentStudent.studyActivity,
+            items: updatedStudyActivityItems,
+          },
         },
       });
     };
@@ -3053,7 +2900,6 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
-  guiderStudyProgressSuggestedNextWebsocket,
-  guiderStudyProgressWorkspaceSignupWebsocket,
-  guiderStudyProgressAlternativeStudyOptionsWebsocket,
+  guiderWorkspaceSuggestedWebsocket,
+  guiderWorkspaceSignupWebsocket,
 };
