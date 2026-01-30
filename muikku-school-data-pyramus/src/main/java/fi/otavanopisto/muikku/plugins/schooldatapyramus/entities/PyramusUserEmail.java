@@ -7,8 +7,8 @@ import fi.otavanopisto.muikku.schooldata.entity.AbstractUserEmail;
 public class PyramusUserEmail extends AbstractUserEmail {
 
   public PyramusUserEmail(SchoolDataIdentifier identifier, SchoolDataIdentifier userIdentifier, String address,
-      String type, Boolean defaultAddress) {
-    super(identifier, userIdentifier, address, type, defaultAddress);
+      Boolean defaultAddress) {
+    super(identifier, userIdentifier, address, defaultAddress);
   }
 
   @Override

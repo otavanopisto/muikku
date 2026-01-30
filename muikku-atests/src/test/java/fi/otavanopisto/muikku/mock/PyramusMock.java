@@ -669,7 +669,7 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(student))
               .withStatus(200)));
 
-          Email email = new Email(student.getId(), (long) 1, true, mockStudent.getEmail());
+          Email email = new Email(student.getId(), true, mockStudent.getEmail());
           Email[] emails = { email };
           
           stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", student.getId())))
@@ -873,7 +873,7 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(staffMemberArray))
               .withStatus(200)));
           
-          Email email = new Email(staffMember.getId(), 1l, true, mockStaffMember.getEmail());
+          Email email = new Email(staffMember.getId(), true, mockStaffMember.getEmail());
           Email[] emails = { email };
 
           stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", staffMember.getId())))
@@ -1541,7 +1541,7 @@ public class PyramusMock {
       
       public Builder mockUserContact(MockStudent mockStudent) throws JsonProcessingException {
         List<fi.otavanopisto.pyramus.rest.model.UserContact> userContacts = new ArrayList<>();
-        UserContact userContact = new UserContact(mockStudent.getId(), mockStudent.getFirstName() + " " + mockStudent.getLastName(), "0800123123", mockStudent.getEmail(), "test street", "0280128", "Testville", "Test city", "", true);
+        UserContact userContact = new UserContact(mockStudent.getId(), mockStudent.getFirstName() + " " + mockStudent.getLastName(), "0800123123", mockStudent.getEmail(), "test street", "0280128", "Testville", "Test city", "", true, null);
         userContacts.add(userContact);
         stubFor(get(urlEqualTo(String.format("/1/contacts/users/%d/contacts", mockStudent.getId())))
             .willReturn(aResponse()

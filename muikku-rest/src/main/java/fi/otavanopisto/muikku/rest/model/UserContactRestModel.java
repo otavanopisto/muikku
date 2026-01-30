@@ -5,7 +5,7 @@ public class UserContactRestModel {
   public UserContactRestModel() {
   }
 
-  public UserContactRestModel(Long id, String name, String phoneNumber, String email, String streetAddress, String postalCode, String city, String country, String contactType, boolean defaultContact) {
+  public UserContactRestModel(Long id, String name, String phoneNumber, String email, String streetAddress, String postalCode, String city, String country, String contactType, boolean defaultContact, Boolean allowStudyDiscussions) {
     this.id = id;
     this.name = name;
     this.phoneNumber = phoneNumber;
@@ -16,6 +16,7 @@ public class UserContactRestModel {
     this.country = country;
     this.contactType = contactType;
     this.defaultContact = defaultContact;
+    this.allowStudyDiscussions = allowStudyDiscussions;
   }
 
   public Long getId() {
@@ -98,6 +99,14 @@ public class UserContactRestModel {
     this.defaultContact = defaultContact;
   }
 
+  public Boolean getAllowStudyDiscussions() {
+    return allowStudyDiscussions;
+  }
+
+  public void setAllowStudyDiscussions(Boolean allowStudyDiscussions) {
+    this.allowStudyDiscussions = allowStudyDiscussions;
+  }
+
   private Long id;
   private String name;
   private String phoneNumber;
@@ -108,4 +117,5 @@ public class UserContactRestModel {
   private String country;
   private String contactType;
   private boolean defaultContact;
+  private Boolean allowStudyDiscussions;
 }
