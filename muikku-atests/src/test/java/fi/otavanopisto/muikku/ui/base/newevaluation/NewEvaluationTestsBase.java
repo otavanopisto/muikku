@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -31,6 +34,7 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
@@ -38,6 +42,9 @@ import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
+import fi.otavanopisto.pyramus.rest.model.hops.Mandatority;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
   
@@ -597,8 +604,35 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           assertTextIgnoreCase(".evaluation-modal__item-meta-item-data", evaluationDateString);
           
           logout();
+          
           StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityAI = new StudentMatriculationEligibilityOPS2021(true, 10d, 8d);
           StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityMAA = new StudentMatriculationEligibilityOPS2021(false, 16d, 10d);
+          List<StudyActivityItemRestModel> sairmList = new ArrayList<StudyActivityItemRestModel>();
+          StudyActivityItemRestModel sairm = new StudyActivityItemRestModel();
+          sairm.setCourseId(course1.getId());
+          sairm.setCourseName(course1.getName());
+          CourseModule cm = course1.getCourseModules().iterator().next();
+          sairm.setCourseNumber(cm.getCourseNumber());
+          
+          String ops21 = "OPS 2021";
+          List<String> curriculums = new ArrayList<String>();
+          curriculums.add(ops21);
+          sairm.setCurriculums(curriculums);
+          sairm.setDate(new Date(java.lang.System.currentTimeMillis()));
+          sairm.setEvaluatorName("Admin User");
+          sairm.setGrade("E");
+          sairm.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+          sairm.setLength(3);
+          sairm.setLengthSymbol("op");
+          sairm.setMandatority(Mandatority.MANDATORY);
+          sairm.setPassing(true);
+          sairm.setState(StudyActivityItemState.GRADED);
+          sairm.setStudyProgramme("Nettilukio");
+          sairm.setSubject("AI");
+          sairm.setSubjectName("Äidinkieli");
+          sairm.setText(evaluationText);
+          sairmList.add(sairm);
+          
           mockBuilder
           .addStudent(student)
           .mockStudentCourseStats(student.getId(), 25)
@@ -607,6 +641,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
           .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
           .mockLogin(student)
+          .mockStudyActivity(sairmList)
           .build();
           login();
           selectFinnishLocale();

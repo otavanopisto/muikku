@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,11 +26,15 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.hops.Mandatority;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
 
 public class ToRTestsBase extends AbstractUITest {
 
@@ -92,6 +97,33 @@ public class ToRTestsBase extends AbstractUITest {
         "EVALUATED");
       
       try {
+        List<StudyActivityItemRestModel> sairmList = new ArrayList<StudyActivityItemRestModel>();
+        StudyActivityItemRestModel sairm = new StudyActivityItemRestModel();
+        sairm.setCourseId(course1.getId());
+        sairm.setCourseName(course1.getName());
+        CourseModule cm = course1.getCourseModules().iterator().next();
+        sairm.setCourseNumber(cm.getCourseNumber());
+        
+        String ops21 = "OPS 2021";
+        List<String> curriculums = new ArrayList<String>();
+        curriculums.add(ops21);
+        sairm.setCurriculums(curriculums);
+        sairm.setDate(caa.getDate());
+        sairm.setEvaluatorName("Admin User");
+        sairm.setGrade(caa.getGrade());
+        sairm.setGradeDate(caa.getGradeDate());
+        sairm.setLength(3);
+        sairm.setLengthSymbol("ov");
+        sairm.setMandatority(Mandatority.MANDATORY);
+        sairm.setPassing(true);
+        sairm.setState(StudyActivityItemState.GRADED);
+        sairm.setStudyProgramme("Nettilukio");
+        sairm.setSubject("TEST");
+        sairm.setSubjectName(cas.getSubjectName());
+        sairm.setText(caa.getText());
+        sairmList.add(sairm);
+        
+        
         mockBuilder
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()
@@ -104,12 +136,12 @@ public class ToRTestsBase extends AbstractUITest {
           .mockStudentCourseStats(student.getId(), 10).build();
         
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder.mockLogin(student).mockStudyActivity(sairmList);
         login();
         
         navigate("/records#records", false);
         waitForPresent(".application-list__item-header--course .application-list__header-primary");
-        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-title", "testcourses (test extension)");
+        assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-title", "testcourses");
         assertText(".application-list__item-header--course .application-list__header-primary .application-list__header-primary-meta--records .label__text", "Nettilukio");
         
         waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
@@ -204,8 +236,35 @@ public class ToRTestsBase extends AbstractUITest {
         waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
         assertTextIgnoreCase(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED", "Excellent");
         mockBuilder.addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, true);
+        
+        List<StudyActivityItemRestModel> sairmList = new ArrayList<StudyActivityItemRestModel>();
+        StudyActivityItemRestModel sairm = new StudyActivityItemRestModel();
+        sairm.setCourseId(course1.getId());
+        sairm.setCourseName(course1.getName());
+        CourseModule cm = course1.getCourseModules().iterator().next();
+        sairm.setCourseNumber(cm.getCourseNumber());
+        
+        String ops21 = "OPS 2021";
+        List<String> curriculums = new ArrayList<String>();
+        curriculums.add(ops21);
+        sairm.setCurriculums(curriculums);
+        sairm.setDate(new Date(java.lang.System.currentTimeMillis()));
+        sairm.setEvaluatorName("Admin User");
+        sairm.setGrade("E");
+        sairm.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+        sairm.setLength(3);
+        sairm.setLengthSymbol("op");
+        sairm.setMandatority(Mandatority.MANDATORY);
+        sairm.setPassing(true);
+        sairm.setState(StudyActivityItemState.GRADED);
+        sairm.setStudyProgramme("Nettilukio");
+        sairm.setSubject("AI");
+        sairm.setSubjectName("Äidinkieli");
+        sairm.setText("Test evaluation");
+        sairmList.add(sairm);
+        
         logout();
-        mockBuilder.mockLogin(student);
+        mockBuilder.mockLogin(student).mockStudyActivity(sairmList);
         login();
         
         navigate("/records#records", false);
