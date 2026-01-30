@@ -196,7 +196,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     String url = courseId == null
         ? String.format("/muikku/students/%d/studyActivity", studentId)
         : String.format("/muikku/students/%d/studyActivity?courseId=%d", studentId, courseId);
-    logger.severe(String.format("HUOM HUOM URL in activity call %s", url));
     BridgeResponse<StudyActivityRestModel> response = pyramusClient.responseGet(url, StudyActivityRestModel.class);
 
     // Convert Pyramus course ids in response to Muikku workspace entity ids
