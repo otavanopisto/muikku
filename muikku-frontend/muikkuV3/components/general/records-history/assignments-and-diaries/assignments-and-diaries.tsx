@@ -110,7 +110,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     displayNotification
   );
 
-  const { examsData } = useExams(credit.id, displayNotification);
+  const { examsData } = useExams(courseId, displayNotification);
 
   /**
    * onTabChange
