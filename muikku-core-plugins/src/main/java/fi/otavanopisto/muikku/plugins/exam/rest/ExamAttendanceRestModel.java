@@ -1,7 +1,10 @@
 package fi.otavanopisto.muikku.plugins.exam.rest;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
@@ -79,6 +82,19 @@ public class ExamAttendanceRestModel {
   public void setEvaluationInfo(RestAssignmentEvaluation evaluationInfo) {
     this.evaluationInfo = evaluationInfo;
   }
+  
+  @JsonIgnore
+  public void addAssignmentInfo(ExamAssignmentRestModel assignmentInfo) {
+    assignmentInfos.add(assignmentInfo);
+  }
+
+  public List<ExamAssignmentRestModel> getAssignmentInfos() {
+    return assignmentInfos;
+  }
+
+  public void setAssignmentInfos(List<ExamAssignmentRestModel> assignmentInfos) {
+    this.assignmentInfos = assignmentInfos;
+  }
 
   private Long folderId;
   private String name;
@@ -89,5 +105,6 @@ public class ExamAttendanceRestModel {
   private int minutes;
   private List<ContentNode> contents;
   private RestAssignmentEvaluation evaluationInfo;
+  private List<ExamAssignmentRestModel> assignmentInfos = new ArrayList<>();
 
 }
