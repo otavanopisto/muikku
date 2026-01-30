@@ -156,7 +156,7 @@ public class ToRTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());
       }
     } finally {
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
 
@@ -283,7 +283,7 @@ public class ToRTestsBase extends AbstractUITest {
           deleteWorkspace(workspace.getId());
       }
     } finally {
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
 
@@ -331,7 +331,7 @@ public class ToRTestsBase extends AbstractUITest {
 //      assertTextIgnoreCase(".application-sub-panel__summary-item-state--eligible + div.application-sub-panel__summary-item-label + div.application-sub-panel__summary-item-description", "Osallistumisoikeuteen vaaditut kurssisuoritukset 5 / 5");
 //    }finally {
 //      archiveUserByEmail(student.getEmail());
-//      mockBuilder.wiremockReset();
+//      mockBuilder.resetBuilder();
 //    }
 //  }
 
@@ -364,7 +364,7 @@ public class ToRTestsBase extends AbstractUITest {
 //      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta.");
 //    }finally {
 //      archiveUserByEmail(student.getEmail());
-//      mockBuilder.wiremockReset();
+//      mockBuilder.resetBuilder();
 //    }
 //  }
 
@@ -405,7 +405,7 @@ public class ToRTestsBase extends AbstractUITest {
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
 
@@ -452,7 +452,7 @@ public class ToRTestsBase extends AbstractUITest {
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
   

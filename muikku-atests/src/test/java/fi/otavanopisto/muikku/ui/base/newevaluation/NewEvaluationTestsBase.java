@@ -174,7 +174,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         archiveUserByEmail(student.getEmail());
       }
     } finally {
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
   
@@ -275,7 +275,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           archiveUserByEmail(student.getEmail());
         }
       } finally {
-        mockBuilder.wiremockReset();
+        mockBuilder.resetBuilder();
     }
   }
 
@@ -340,7 +340,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           archiveUserByEmail(student2.getEmail());
         }
       } finally {
-        mockBuilder.wiremockReset();
+        mockBuilder.resetBuilder();
     }
   }
 
@@ -409,7 +409,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           archiveUserByEmail(student3.getEmail());
         }
       } finally {
-        mockBuilder.wiremockReset();
+        mockBuilder.resetBuilder();
       }
     }
 
@@ -510,7 +510,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           archiveUserByEmail(student.getEmail());
         }
       } finally {
-        mockBuilder.wiremockReset();
+        mockBuilder.resetBuilder();
     }
   }
 
@@ -663,7 +663,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
           archiveUserByEmail(student.getEmail());
         }
       } finally {
-        mockBuilder.wiremockReset();
+        mockBuilder.resetBuilder();
     }
   }
   
@@ -788,7 +788,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());      
       }
     } finally {
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
   
@@ -888,7 +888,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());      
       }
     } finally {
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
 
@@ -1000,7 +1000,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         archiveUserByEmail(student.getEmail());
       }
     } finally {
-      mockBuilder.wiremockReset();
+      mockBuilder.resetBuilder();
     }
   }
 
