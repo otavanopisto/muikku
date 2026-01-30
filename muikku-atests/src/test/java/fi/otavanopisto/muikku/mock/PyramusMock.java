@@ -1580,7 +1580,6 @@ public class PyramusMock {
       }
       
       public Builder mockCourseMatrix() throws JsonProcessingException {
-//      http://dev.muikku.fi:8081/rest/hops/student/PYRAMUS-STUDENT-6/courseMatrix antaa 404
         UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/courseMatrix"), true);
         HopsCourseMatrix hopsCourseMatrix = new HopsCourseMatrix();
         hopsCourseMatrix.setProblems(Collections.emptySet());
