@@ -298,7 +298,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withBody(staffMemberArrayJson)
         .withStatus(200)));
     
-    Email staffEmail = new Email(staffMemberId, (long) 1, true, email);
+    Email staffEmail = new Email(staffMemberId, true, email);
     Email[] staffEmails = { staffEmail };
     String staffEmailJson = objectMapper.writeValueAsString(staffEmails);
     
@@ -352,7 +352,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withBody(studentJson)
         .withStatus(200)));
 
-    Email emailObj = new Email(studentId, (long) 2, true, email);
+    Email emailObj = new Email(studentId, true, email);
     Email[] emails = { emailObj };
     String emailJson = objectMapper.writeValueAsString(emails);
 

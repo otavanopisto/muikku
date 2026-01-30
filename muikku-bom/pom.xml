@@ -4,7 +4,7 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>bom</artifactId>
-  <version>1.1.272-SNAPSHOT</version>
+  <version>1.1.273-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku BOM</name>
 
@@ -27,13 +27,9 @@
 
     <rewrite.version>3.5.1.Final</rewrite.version>
 
-    <!-- Jade -->
-
-    <jade4j.version>0.4.2</jade4j.version>
-
     <!-- Muikku -->
 
-    <muikku.version>1.1.272-SNAPSHOT</muikku.version>
+    <muikku.version>1.1.273-SNAPSHOT</muikku.version>
 
     <!-- Webapp-permission -->
 
@@ -182,15 +178,6 @@
         <artifactId>rewrite-integration-cdi</artifactId>
         <version>${rewrite.version}</version>
       </dependency>
-
-      <!-- Jade -->
-
-      <dependency>
-        <groupId>de.neuland-bfi</groupId>
-        <artifactId>jade4j</artifactId>
-        <version>${jade4j.version}</version>
-      </dependency>
-
 
       <!-- Muikku -->
 
