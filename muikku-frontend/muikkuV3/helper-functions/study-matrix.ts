@@ -414,3 +414,52 @@ export const buildRecordsRowsFromMatrix = (
 
   return { rows, transferredItems };
 };
+
+/**
+ * Groups StudyActivityItems by courseId. Returns only groups that have 2+ items
+ * (combination workspaces).
+ * @param items items
+ * @returns combination workspaces
+ */
+export const getCombinationWorkspaces = (
+  items: StudyActivityItem[]
+): StudyActivityItem[][] => {
+  const byCourseId = new Map<number, StudyActivityItem[]>();
+  for (const item of items) {
+    if (item.courseId == null) continue;
+    const list = byCourseId.get(item.courseId) ?? [];
+    list.push(item);
+    byCourseId.set(item.courseId, list);
+  }
+  return Array.from(byCourseId.values()).filter((list) => list.length >= 2);
+};
+
+/**
+ * Enriches matrix rows so that any row whose matched items belong to a combination
+ * workspace (same courseId shared by 2+ items) gets the full set of studyActivityItems
+ * for that workspace. Call after buildRecordsRowsFromMatrix when you have all items.
+ * @param rows rows
+ * @param allItems all items
+ * @returns rows with combination workspace
+ */
+export const enrichMatrixRowsWithCombinationWorkspace = (
+  rows: RecordsMatrixRow[],
+  allItems: StudyActivityItem[]
+): RecordsMatrixRow[] => {
+  const byCourseId = new Map<number, StudyActivityItem[]>();
+  for (const item of allItems) {
+    if (item.courseId == null) continue;
+    const list = byCourseId.get(item.courseId) ?? [];
+    list.push(item);
+    byCourseId.set(item.courseId, list);
+  }
+
+  return rows.map((row) => {
+    if (row.studyActivityItems.length === 0) return row;
+    const courseId = row.studyActivityItems[0].courseId;
+    if (courseId == null) return row;
+    const fullList = byCourseId.get(courseId);
+    if (!fullList || fullList.length < 2) return row;
+    return { ...row, studyActivityItems: fullList };
+  });
+};

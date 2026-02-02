@@ -127,6 +127,25 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
+
+        <ApplicationSubPanel>
+          <ApplicationSubPanel.Body>
+            {this.props.studyActivities ? (
+              <RecordsGroup studyActivity={this.props.studyActivities} />
+            ) : (
+              <div className="application-sub-panel__item">
+                <div className="empty">
+                  <span>
+                    {t("content.empty", {
+                      ns: "studies",
+                      context: "workspaces",
+                    })}
+                  </span>
+                </div>
+              </div>
+            )}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
       </RecordsInfoProvider>
     );
 
@@ -138,7 +157,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }
       >
         {studentRecords}
-        <ApplicationSubPanel>
+        {/* <ApplicationSubPanel>
           <ApplicationSubPanel.Header>
             {t("labels.files")}
           </ApplicationSubPanel.Header>
@@ -171,7 +190,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </ApplicationListItem>
             )}
           </ApplicationSubPanel.Body>
-        </ApplicationSubPanel>
+        </ApplicationSubPanel> */}
       </BodyScrollKeeper>
     );
   }
