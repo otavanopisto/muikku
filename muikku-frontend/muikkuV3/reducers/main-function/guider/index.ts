@@ -270,7 +270,6 @@ const initialGuiderState: GuiderState = {
       skillsAndArt: {},
       otherLanguageSubjects: {},
       otherSubjects: {},
-      supervisorOptionalSuggestions: [],
       studentChoices: [],
       needSupplementationList: [],
       courseMatrix: {
