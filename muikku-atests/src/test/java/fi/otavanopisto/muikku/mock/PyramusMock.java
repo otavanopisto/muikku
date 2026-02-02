@@ -92,6 +92,7 @@ import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityRestModel;
 import fi.otavanopisto.pyramus.rest.model.muikku.CredentialResetPayload;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
@@ -1334,6 +1335,7 @@ public class PyramusMock {
         
         if (loggable instanceof MockStudent) {
           mockEmptyStudyActivity();
+          mockCourseMatrix();
         }
         
         return this;
@@ -1528,13 +1530,39 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockEmptyStudyActivity () throws JsonProcessingException {
+      public Builder mockEmptyStudyActivity() throws JsonProcessingException {
         UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/studyActivity"), true);
-        List<StudyActivityItemRestModel> sair = new ArrayList<>();
+        pmock.studyActivity.setItems(new ArrayList<StudyActivityItemRestModel>());
+        pmock.studyActivity.setEducationType("Lukio");
+        stubFor(get(urlPattern)
+            .withQueryParam("courseId", matching(".*"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(pmock.studyActivity))
+                .withStatus(200)));
         stubFor(get(urlPattern)
             .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody(pmock.objectMapper.writeValueAsString(sair))
+                .withBody(pmock.objectMapper.writeValueAsString(pmock.studyActivity))
+                .withStatus(200)));
+        return this;
+      }
+
+      public Builder mockStudyActivity(List<StudyActivityItemRestModel> sairmList) throws JsonProcessingException {
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/studyActivity"), true);      
+        pmock.studyActivity.setItems(sairmList);
+        pmock.studyActivity.setEducationType("Lukio");
+        pmock.studyActivity.setCompletedCourseCredits(sairmList.iterator().next().getLength());
+        stubFor(get(urlPattern)
+            .withQueryParam("courseId", matching(".*"))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(pmock.studyActivity))
+                .withStatus(200)));
+        stubFor(get(urlPattern)
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(pmock.studyActivity))
                 .withStatus(200)));
         return this;
       }
@@ -1664,6 +1692,7 @@ public class PyramusMock {
         pmock.compositeStaffAssessmentRequests = new HashMap<>();
         pmock.courses = new ArrayList<>();
         pmock.organizations = new ArrayList<>();
+        pmock.studyActivity = new StudyActivityRestModel();
         WireMock.reset();
         return this;
       }
@@ -1753,4 +1782,5 @@ public class PyramusMock {
   private HashMap<Long, List<CourseSignupStudyProgramme>> signupStudyProgrammes = new HashMap<>();
   private HashMap<Long, List<CourseSignupStudentGroup>> signupStudentGroups = new HashMap<>();
   private List<MockCourseStudent> mockCourseStudents = new ArrayList<>();
+  private StudyActivityRestModel studyActivity = new StudyActivityRestModel();
 }

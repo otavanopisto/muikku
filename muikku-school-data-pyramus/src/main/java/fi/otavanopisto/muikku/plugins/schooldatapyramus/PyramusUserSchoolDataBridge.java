@@ -79,6 +79,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -173,7 +174,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId) {
 
     // Convert identifier to Pyramus student id
 
@@ -181,19 +182,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     if (studentId == null) {
       throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
     }
+    
+    // Convert course id to Pyramus course id
+    
+    if (courseId != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(courseId);
+      courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
+    }
 
     // Service call
 
-    BridgeResponse<StudyActivityItemRestModel[]> response = pyramusClient.responseGet(
-        String.format("/muikku/students/%d/studyActivity", studentId),
-        StudyActivityItemRestModel[].class);
+    String url = courseId == null
+        ? String.format("/muikku/students/%d/studyActivity", studentId)
+        : String.format("/muikku/students/%d/studyActivity?courseId=%d", studentId, courseId);
+    BridgeResponse<StudyActivityRestModel> response = pyramusClient.responseGet(url, StudyActivityRestModel.class);
 
     // Convert Pyramus course ids in response to Muikku workspace entity ids
 
-    List<StudyActivityItemRestModel> items = null;
     if (response.getEntity() != null) {
-      items = new ArrayList<>();
-      for (StudyActivityItemRestModel item : response.getEntity()) {
+      for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
         if (item.getCourseId() != null) {
           WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
               getSchoolDataSource(),
@@ -206,10 +213,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             item.setCourseId(workspaceEntity.getId());
           }
         }
-        items.add(item);
       }
     }
-    return new BridgeResponse<List<StudyActivityItemRestModel>>(response.getStatusCode(), items);
+    return new BridgeResponse<StudyActivityRestModel>(response.getStatusCode(), response.getEntity());
   }
 
   @Override

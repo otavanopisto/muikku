@@ -1,4 +1,4 @@
-import { WorkspaceActivity } from "~/generated/client";
+import { StudyActivityItem, WorkspaceActivity } from "~/generated/client";
 
 /**
  * RecordWorkspaceByLineCategory
@@ -18,4 +18,13 @@ export interface RecordWorkspaceActivitiesWithLineCategory {
 export interface RecordWorkspaceActivityByLine {
   lineName: string;
   activity: WorkspaceActivity;
+}
+
+/**
+ * Combination workspace activity
+ */
+export interface CombinationWorkspaceActivity {
+  courseId: number;
+  courseName: string;
+  studyActivityItems: StudyActivityItem[];
 }

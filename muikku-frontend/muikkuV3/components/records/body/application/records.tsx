@@ -24,12 +24,14 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { StudyActivity } from "~/generated/client";
 
 /**
  * RecordsProps
  */
 interface RecordsProps extends WithTranslation {
   records: RecordsType;
+  studyActivities: StudyActivity;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -103,29 +105,22 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }}
       >
         <ApplicationSubPanel>
-          {this.props.records.userData.map((lineCategoryData, i) => (
-            <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-              {lineCategoryData.credits.length +
-                lineCategoryData.transferCredits.length >
-              0 ? (
-                <RecordsGroup
-                  key={`credit-category-${i}`}
-                  recordGroup={lineCategoryData}
-                />
-              ) : (
-                <div className="application-sub-panel__item">
-                  <div className="empty">
-                    <span>
-                      {t("content.empty", {
-                        ns: "studies",
-                        context: "workspaces",
-                      })}
-                    </span>
-                  </div>
+          <ApplicationSubPanel.Body>
+            {this.props.studyActivities ? (
+              <RecordsGroup studyActivity={this.props.studyActivities} />
+            ) : (
+              <div className="application-sub-panel__item">
+                <div className="empty">
+                  <span>
+                    {t("content.empty", {
+                      ns: "studies",
+                      context: "workspaces",
+                    })}
+                  </span>
                 </div>
-              )}
-            </ApplicationSubPanel.Body>
-          ))}
+              </div>
+            )}
+          </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </RecordsInfoProvider>
     );
@@ -185,6 +180,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     status: state.status,
+    studyActivities: state.studyActivity.userStudyActivity,
   };
 }
 

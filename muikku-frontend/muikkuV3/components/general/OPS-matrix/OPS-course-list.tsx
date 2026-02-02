@@ -33,7 +33,6 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
   studentUserEntityId: number;
   curriculumName: string;
   studyProgrammeName: string;
-  studentOptions: string[];
   renderCourseItem?: (params: RenderItemParams) => JSX.Element;
 }
 
@@ -125,12 +124,12 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
       return null;
     }
 
-    const renderRows = nonOPSTransferedActivities.map((tStudy) => {
+    const renderRows = nonOPSTransferedActivities.map((tStudy, i) => {
       const listItemIndicatormodifiers = ["course"];
 
-      if (tStudy.transferCreditMandatory) {
+      if (tStudy.mandatority === "MANDATORY") {
         listItemIndicatormodifiers.push("MANDATORY");
-      } else {
+      } else if (tStudy.mandatority === "UNSPECIFIED_OPTIONAL") {
         listItemIndicatormodifiers.push("OPTIONAL");
       }
 
@@ -141,7 +140,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
       }
 
       return (
-        <ListContainer key={tStudy.id} modifiers={["subject"]}>
+        <ListContainer key={i} modifiers={["subject"]}>
           <ListContainer modifiers={["row"]}>
             <ListHeader modifiers={["subject-name"]}>
               {tStudy.courseName}

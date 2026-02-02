@@ -5272,7 +5272,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StudentStudyActivity"
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyActivityItem"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6479,7 +6481,7 @@ paths:
 
   /rest/hops/student/{studentIdentifier}/studyActivity:
     get:
-      operationId: getStudentStudyActivity
+      operationId: getStudyActivity
       summary: Get student study activity
       description: Get student study activity
       tags:
@@ -6491,15 +6493,19 @@ paths:
           required: true
           schema:
             type: string
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id, if we are only interested in the activity of a single workspace
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Student study activity
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudentStudyActivity"
+                $ref: "#/components/schemas/StudyActivity"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -17872,9 +17878,33 @@ components:
         - UPPER_SECONDARY
         - COMPULSORY
 
-    StudentStudyActivity:
+    StudyActivity:
       type: object
-      description: StudentStudyActivity object
+      description: Representation of all study activity of student
+      required:
+        - educationType
+        - items
+        - completedCourseCredits
+        - mandatoryCourseCredits
+      properties:
+        educationType:
+          type: string
+          description: Student's education type, e.g. Lukio or Perusopetus
+        items:
+          type: array
+          description: Study activity items
+          items:
+            $ref: "#/components/schemas/StudyActivityItem"
+        completedCourseCredits:
+          type: integer
+          description: Student's total number of course credits
+        mandatoryCourseCredits:
+          type: integer
+          description: Student's number of mandatory course credits
+
+    StudyActivityItem:
+      type: object
+      description: Study activity item, e.g. a single transfer credit for student
       required:
         - subjectName
         - subject
@@ -17883,43 +17913,101 @@ components:
         - courseName
         - grade
         - passing
-        - status
+        - state
         - date
-        - transferCreditMandatory
-        - transferCreditLength
-        - id
+        - gradeDate
+        - length
+        - lengthSymbol
+        - mandatority
+        - curriculums
+        - text
+        - evaluatorName
+        - studyProgramme
+        - evaluablesTotal
+        - evaluablesDone
+        - exercisesTotal
+        - exercisesDone
       properties:
         subjectName:
           type: string
+          description: Subject human readable name, e.g. Biologia
           nullable: true
         subject:
           type: string
+          description: Subject code, e.g. BI
         courseId:
           type: integer
+          description: Course id in Muikku, i.e. workspaceEntityId
           format: int64
           nullable: true
         courseNumber:
           type: integer
+          description: Course number, e.g. 2
+          nullable: true
         courseName:
           type: string
+          description: Course name
         grade:
           type: string
+          description: Grade, e.g. 7
+          nullable: true
         passing:
           type: boolean
-        status:
-          $ref: "#/components/schemas/CourseStatus"
+          description: If there is a grade, is it a passing grade
+        state:
+          $ref: "#/components/schemas/StudyActivityItemState"
+          description: Study activity item state, e.g. ONGOING for a course that hasn't been graded yet
         date:
           type: string
+          description: Item date, depends on status, e.g. when an assessment request was made
           format: date-time
-        transferCreditMandatory:
-          type: boolean
+        gradeDate:
+          type: string
+          description: For graded courses, the date when the grade was given
+          format: date-time
           nullable: true
-        transferCreditLength:
-          type: boolean
-          nullable: true
-        id:
+        length:
           type: integer
-          format: int64
+          description: Course or transfer credit length, e.g. 2
+          nullable: true
+        lengthSymbol:
+          type: string
+          description: Course or transfer credit length symbol, e.g. op
+          nullable: true
+        mandatority:
+          description: The mandatority of the item
+          $ref: "#/components/schemas/WorkspaceMandatority"
+          nullable: true
+        curriculums:
+          description: Item curriculums, e.g. OPS 2021
+          type: array
+          items:
+            type: string
+          nullable: true
+        text:
+          type: string
+          description: Item text, e.g. supplementation request message or grade's verbal assesment
+          nullable: true
+        evaluatorName:
+          type: string
+          description: For graded courses, the name of the evaluator
+          nullable: true
+        studyProgramme:
+          type: string
+          description: Student's study programme this item belongs to, e.g. Nettilukio
+          nullable: true
+        evaluablesTotal:
+          type: integer
+          description: For course items, the total number of evaluable assignments in the course
+        evaluablesDone:
+          type: integer
+          description: For course items, the number of evaluable assignments in the course that the student has submitted
+        exercisesTotal:
+          type: integer
+          description: For course items, the total number of exercise assignments in the course
+        exercisesDone:
+          type: integer
+          description: For course items, the number of exercise assignments in the course that the student has submitted
 
     StudentCourseChoice:
       allOf:
@@ -19217,15 +19305,18 @@ components:
         - interim_evaluation_request
         - interim_evaluation
 
-    CourseStatus:
+    StudyActivityItemState:
       type: string
       enum:
         - ONGOING
         - GRADED
+        - PENDING
         - SUPPLEMENTATIONREQUEST
         - TRANSFERRED
         - SUGGESTED_NEXT
         - SUGGESTED_OPTIONAL
+        - INTERIM_EVALUATION_REQUEST
+        - INTERIM_EVALUATION
 
     CourseType:
       type: string

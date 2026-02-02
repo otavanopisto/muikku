@@ -22,8 +22,8 @@ import {
   OptionalCourseSuggestion,
   UserContact,
   CourseMatrix,
+  StudyActivity,
 } from "~/generated/client";
-import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 /**
  * GuiderFiltersType
@@ -91,7 +91,6 @@ export interface PedagogyFormAvailability {
 export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: OptionalCourseSuggestion[];
-  options: string[];
   courseMatrix: CourseMatrix;
 }
 
@@ -116,7 +115,6 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceDataType[];
-  pastStudies: RecordWorkspaceActivitiesWithLineCategory[];
   pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
@@ -127,6 +125,7 @@ export interface GuiderStudentUserProfileType {
   };
   hopsPhase?: string;
   pedagogyFormAvailable: PedagogyFormAccess;
+  studyActivity: StudyActivity | null;
   studyProgress: GuiderStudentStudyProgress;
 }
 
@@ -250,7 +249,6 @@ const initialGuiderState: GuiderState = {
     notifications: null,
     contactLogs: null,
     currentWorkspaces: [],
-    pastStudies: [],
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],
@@ -265,6 +263,7 @@ const initialGuiderState: GuiderState = {
       mandatoryCourseCredits: 0,
       showCredits: false,
     },
+    studyActivity: null,
     studyProgress: {
       onGoingList: [],
       transferedList: [],
@@ -275,7 +274,6 @@ const initialGuiderState: GuiderState = {
       otherSubjects: {},
       supervisorOptionalSuggestions: [],
       studentChoices: [],
-      options: [],
       needSupplementationList: [],
       courseMatrix: {
         subjects: [],

@@ -9,7 +9,7 @@ import OPSCourseList, {
   OPSCourseListProps,
   RenderItemParams,
 } from "~/components/general/OPS-matrix/OPS-course-list";
-import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
+import { StudyActivityItem, WorkspaceSuggestion } from "~/generated/client";
 import Button from "~/components/general/button";
 import SuggestionList, {
   SuggestionItemContext,
@@ -166,7 +166,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
  */
 interface SuggestionListContentProps {
   suggestion: WorkspaceSuggestion;
-  suggestedCourses: StudentStudyActivity[];
+  suggestedCourses: StudyActivityItem[];
   suggestionContext: SuggestionItemContext;
   onSignUpBehalf: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
@@ -199,7 +199,7 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
   );
 
   // and the status is SUGGESTED_NEXT
-  if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
+  if (suggestedCourse && suggestedCourse.state === "SUGGESTED_NEXT") {
     // then the action is "remove"
     suggestionNextActionType = "remove";
   }
