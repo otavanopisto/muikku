@@ -24,13 +24,15 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-import { StudyActivity } from "~/generated/client";
+import { CourseMatrix, StudyActivity } from "~/generated/client";
+import { RecordsListMatrixView } from "~/components/general/records-history/records-matrix-list";
 
 /**
  * RecordsProps
  */
 interface RecordsProps extends WithTranslation {
   records: RecordsType;
+  courseMatrix: CourseMatrix;
   studyActivities: StudyActivity;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -106,8 +108,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       >
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            {this.props.studyActivities ? (
-              <RecordsGroup studyActivity={this.props.studyActivities} />
+            {this.props.studyActivities && this.props.courseMatrix ? (
+              <RecordsListMatrixView
+                courseMatrix={this.props.courseMatrix}
+                studyActivity={this.props.studyActivities}
+              />
             ) : (
               <div className="application-sub-panel__item">
                 <div className="empty">
@@ -181,6 +186,7 @@ function mapStateToProps(state: StateType) {
     records: state.records,
     status: state.status,
     studyActivities: state.studyActivity.userStudyActivity,
+    courseMatrix: state.studyActivity.courseMatrix,
   };
 }
 

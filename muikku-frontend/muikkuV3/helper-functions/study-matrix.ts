@@ -3,6 +3,7 @@ import {
   CourseMatrix,
   CourseMatrixModule,
   CourseMatrixSubject,
+  StudyActivity,
   StudyActivityItem,
 } from "~/generated/client";
 import {} from "~/mock/mock-data";
@@ -366,4 +367,50 @@ export const getNonOPSTransferedActivities = (
   return transferedList.filter((tStudies) =>
     listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
   );
+};
+
+/**
+ * Row descriptor for the matrix-based records list.
+ * CourseMatrix provides the structure; StudyActivity is mapped onto each row.
+ */
+export interface RecordsMatrixRow {
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
+  studyActivityItems: StudyActivityItem[];
+}
+
+/**
+ * Builds the list of rows for the matrix-based records view.
+ * Structure comes from CourseMatrix; StudyActivity items are matched by subject code + course number.
+ * Transferred items that are not part of the matrix (e.g. Hyväksiluvut) are returned separately.
+ *
+ * @param matrix CourseMatrix (structure)
+ * @param studyActivity StudyActivity or null (student data; when null, rows have empty studyActivityItems)
+ * @returns rows and transferredItems for the list and Hyväksiluvut section
+ */
+export const buildRecordsRowsFromMatrix = (
+  matrix: CourseMatrix,
+  studyActivity: StudyActivity | null
+): { rows: RecordsMatrixRow[]; transferredItems: StudyActivityItem[] } => {
+  const items = studyActivity?.items ?? [];
+  const transferedList = items.filter((item) => item.state === "TRANSFERRED");
+  const transferredItems = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
+  );
+
+  const rows: RecordsMatrixRow[] = [];
+
+  for (const subject of matrix.subjects) {
+    for (const course of subject.modules) {
+      const studyActivityItems = items.filter(
+        (item) =>
+          item.subject === subject.code &&
+          item.courseNumber === course.courseNumber
+      );
+      rows.push({ subject, course, studyActivityItems });
+    }
+  }
+
+  return { rows, transferredItems };
 };
