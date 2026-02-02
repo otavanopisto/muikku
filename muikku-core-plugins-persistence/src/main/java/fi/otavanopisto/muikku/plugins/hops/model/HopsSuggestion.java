@@ -38,14 +38,6 @@ public class HopsSuggestion {
   public void setCourseNumber(Integer courseNumber) {
     this.courseNumber = courseNumber;
   }
-  
-  public String getType() {
-    return type;
-  }
-  
-  public void setType(String type) {
-    this.type = type;
-  }
 
   public Long getWorkspaceEntityId() {
     return workspaceEntityId;
@@ -99,10 +91,6 @@ public class HopsSuggestion {
   
   @Column
   private Integer courseNumber;
-  
-  @NotNull
-  @Column (nullable = false)
-  private String type;
   
   @Column
   private Long workspaceEntityId;

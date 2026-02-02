@@ -6246,34 +6246,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/hops/student/{studentIdentifier}/optionalSuggestion:
-    post:
-      operationId: createOptionalSuggestion
-      summary: Create optional suggestion for student
-      description: Create optional suggestion for student
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/OptionalSuggestionCreateRequestBody"
-      responses:
-        "200":
-          description: Student optional suggestion created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OptionalCourseSuggestion"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/hops/availableCourses:
     get:
       operationId: getAvailableCourses
@@ -6343,34 +6315,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/HopsOpsCourse"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/hops/student/{studentIdentifier}/optionalSuggestions:
-    get:
-      operationId: getStudentOptionalSuggestions
-      summary: Get student optional suggestions
-      description: Get student optional suggestions
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Student optional suggestions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/OptionalCourseSuggestion"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12716,22 +12660,6 @@ components:
             allOf:
               - $ref: "#/components/schemas/AlternativeStudyOption"
 
-    OptionalSuggestionCreateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: OptionalSuggestionCreateRequestBody object
-            required:
-              - subject
-              - courseNumber
-            properties:
-              subject:
-                type: string
-              courseNumber:
-                type: integer
-
     StudentCourseChoiceSaveRequestBody:
       required: true
       content:
@@ -17198,10 +17126,6 @@ components:
         email:
           type: string
 
-    OptionalCourseSuggestion:
-      allOf:
-        - $ref: "#/components/schemas/Course"
-
     HopsAvailableCourse:
       type: object
       description: Course that a user can sign up to
@@ -19314,7 +19238,6 @@ components:
         - SUPPLEMENTATIONREQUEST
         - TRANSFERRED
         - SUGGESTED_NEXT
-        - SUGGESTED_OPTIONAL
         - INTERIM_EVALUATION_REQUEST
         - INTERIM_EVALUATION
 
