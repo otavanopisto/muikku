@@ -8,7 +8,7 @@ import { StudyActivityItem } from "~/generated/client";
 /**
  * AssessmentProps
  */
-interface RecordsAssessmentIndicatorProps {
+interface AssessmentIndicatorProps {
   studyActivityItem?: StudyActivityItem;
   isCombinationWorkspace: boolean;
 }
@@ -18,9 +18,7 @@ interface RecordsAssessmentIndicatorProps {
  * @param props Component props
  * @returns JSX.Element
  */
-const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
-  props
-) => {
+const AssessmentIndicator: React.FC<AssessmentIndicatorProps> = (props) => {
   const { studyActivityItem, isCombinationWorkspace } = props;
 
   const { t } = useTranslation(["studies", "common"]);
@@ -124,4 +122,4 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   return null;
 };
 
-export default RecordsAssessmentIndicator;
+export default AssessmentIndicator;

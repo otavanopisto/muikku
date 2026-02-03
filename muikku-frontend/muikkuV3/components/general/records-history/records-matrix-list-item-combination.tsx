@@ -15,7 +15,7 @@ import AssignmentDetails from "~/components/general/evaluation-assessment-detail
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
-import RecordsAssessmentIndicator from "./records-assessment-indicator";
+import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 
@@ -23,7 +23,7 @@ import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-
  * Props for the combination-workspace (Yhdistelmäopintojaksot) list item.
  * Expects two or more StudyActivityItems that share the same courseId.
  */
-export interface RecordsMatrixCombinationItemProps {
+interface RecordsMatrixCombinationItemProps {
   studyActivityItems: StudyActivityItem[];
   educationType: string;
 }
@@ -33,7 +33,7 @@ export interface RecordsMatrixCombinationItemProps {
  * Shows workspace title, programme/curriculum labels, list of modules, and expandable assessments.
  * @param props props
  */
-export const RecordsMatrixCombinationItem: React.FC<
+const RecordsMatrixCombinationItem: React.FC<
   RecordsMatrixCombinationItemProps
 > = (props) => {
   const { studyActivityItems, educationType } = props;
@@ -350,7 +350,7 @@ export const RecordsMatrixCombinationItem: React.FC<
                 {codeSubjectString}
               </span>
               <AssessmentRequestIndicator studyActivityItem={aItem} />
-              <RecordsAssessmentIndicator
+              <AssessmentIndicator
                 studyActivityItem={aItem}
                 isCombinationWorkspace={true}
               />

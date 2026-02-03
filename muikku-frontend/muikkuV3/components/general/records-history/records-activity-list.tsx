@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 import { CombinationWorkspaceActivity } from "./types";
 import { StudyActivity, StudyActivityItem } from "~/generated/client";
-import RecordsGroupItem from "./records-group-item";
+import RecordsActivityListItem from "./records-activity-list-item";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
 
 /**
@@ -125,7 +125,7 @@ const filterAndSortActivity = (
 /**
  * RecordsListProps
  */
-interface RecordsGroupProps {
+interface RecordsActivityListProps {
   studyActivity: StudyActivity;
 }
 
@@ -134,7 +134,7 @@ interface RecordsGroupProps {
  * @param props props
  * @returns JSX.Element
  */
-export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
+const RecordsActivityList: React.FC<RecordsActivityListProps> = (props) => {
   const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
@@ -231,8 +231,8 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
             }
 
             return (
-              <RecordsGroupItem
-                key={`record-group-item-${i}`}
+              <RecordsActivityListItem
+                key={`record-activity-list-item-${i}`}
                 studyActivityItems={studyActivityItems}
                 isCombinationWorkspace={isCombinationWorkspace}
                 educationType={studyActivity.educationType}
@@ -282,4 +282,4 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   );
 };
 
-export default RecordsGroup;
+export default RecordsActivityList;

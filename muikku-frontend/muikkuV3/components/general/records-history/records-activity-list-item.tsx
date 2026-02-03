@@ -15,14 +15,14 @@ import AssignmentDetails from "~/components/general/evaluation-assessment-detail
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
-import RecordsAssessmentIndicator from "./records-assessment-indicator";
+import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 
 /**
- * RecordsGroupItemProps
+ * RecordsActivityListItemProps
  */
-interface RecordsGroupItemProps {
+interface RecordsActivityListItemProps {
   /**
    * If credit contains more than one item, then it is combination workspace
    */
@@ -36,7 +36,9 @@ interface RecordsGroupItemProps {
  * @param props props
  * @returns JSX.Element
  */
-export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
+export const RecordsActivityListItem: React.FC<RecordsActivityListItemProps> = (
+  props
+) => {
   const { studyActivityItems, isCombinationWorkspace, educationType } = props;
 
   const { identifier, userEntityId, displayNotification } =
@@ -403,7 +405,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               <AssessmentRequestIndicator
                 studyActivityItem={studyActivityItems[0]}
               />
-              <RecordsAssessmentIndicator
+              <AssessmentIndicator
                 studyActivityItem={studyActivityItems[0]}
                 isCombinationWorkspace={isCombinationWorkspace}
               />
@@ -448,7 +450,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                 <AssessmentRequestIndicator studyActivityItem={aItem} />
 
-                <RecordsAssessmentIndicator
+                <AssessmentIndicator
                   studyActivityItem={aItem}
                   isCombinationWorkspace={isCombinationWorkspace}
                 />
@@ -467,4 +469,4 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   );
 };
 
-export default RecordsGroupItem;
+export default RecordsActivityListItem;

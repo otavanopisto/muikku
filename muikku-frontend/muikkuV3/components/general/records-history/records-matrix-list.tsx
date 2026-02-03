@@ -17,9 +17,9 @@ import {
   getCombinationWorkspaces,
   RecordsMatrixRow,
 } from "~/helper-functions/study-matrix";
-import { RecordsMatrixGroupItem } from "./records-matrix-list-item";
+import RecordsMatrixListItem from "./records-matrix-list-item";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
-import { RecordsMatrixCombinationItem } from "./records-matrix-list-item-combination";
+import RecordsMatrixCombinationItem from "./records-matrix-list-item-combination";
 import Dropdown from "../dropdown";
 import { ButtonPill } from "../button";
 import { SearchFormElement } from "../form-element";
@@ -38,7 +38,7 @@ interface SubjectGroup {
 /**
  * RecordsListMatrixViewProps
  */
-export interface RecordsListMatrixViewProps {
+interface RecordsMatrixListProps {
   /** CourseMatrix (structure). When null, nothing is rendered. */
   courseMatrix: CourseMatrix | null;
   /** StudyActivity (student data). When null, rows still render with empty activity. */
@@ -60,9 +60,7 @@ type FilterOptions = StudyActivityItemState | "NOACTIVITY";
  * CourseMatrix and StudyActivity are passed as props so the component can be reused.
  * @param props props
  */
-export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
-  props
-) => {
+const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   const {
     courseMatrix,
     studyActivity,
@@ -297,7 +295,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
                 duration={200}
               >
                 {courseRows.map((row, i) => (
-                  <RecordsMatrixGroupItem
+                  <RecordsMatrixListItem
                     key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
                     subject={row.subject}
                     course={row.course}
@@ -377,4 +375,4 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
   );
 };
 
-export default RecordsListMatrixView;
+export default RecordsMatrixList;

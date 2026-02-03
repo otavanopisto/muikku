@@ -19,7 +19,7 @@ import {
   StudyActivityItem,
 } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
-import RecordsAssessmentIndicator from "./records-assessment-indicator";
+import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import Dropdown from "../dropdown";
@@ -28,7 +28,7 @@ import Dropdown from "../dropdown";
  * Props for the matrix-based records list item.
  * Structure comes from CourseMatrix (subject, course); StudyActivity is mapped onto it.
  */
-export interface RecordsMatrixGroupItemProps {
+export interface RecordsMatrixListItemProps {
   subject: CourseMatrixSubject;
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
@@ -42,7 +42,7 @@ export interface RecordsMatrixGroupItemProps {
  * Displays one (subject, course) from CourseMatrix with optional StudyActivity data.
  * @param props props
  */
-export const RecordsMatrixGroupItem: React.FC<RecordsMatrixGroupItemProps> = (
+export const RecordsMatrixListItem: React.FC<RecordsMatrixListItemProps> = (
   props
 ) => {
   const {
@@ -374,7 +374,7 @@ export const RecordsMatrixGroupItem: React.FC<RecordsMatrixGroupItemProps> = (
               <AssessmentRequestIndicator
                 studyActivityItem={subjectSpecificActivityItem}
               />
-              <RecordsAssessmentIndicator
+              <AssessmentIndicator
                 studyActivityItem={subjectSpecificActivityItem}
                 isCombinationWorkspace={false}
               />
@@ -393,4 +393,4 @@ export const RecordsMatrixGroupItem: React.FC<RecordsMatrixGroupItemProps> = (
   );
 };
 
-export default RecordsMatrixGroupItem;
+export default RecordsMatrixListItem;

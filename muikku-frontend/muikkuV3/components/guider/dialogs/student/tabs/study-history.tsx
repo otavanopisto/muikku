@@ -16,7 +16,6 @@ import {
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
-import RecordsGroup from "~/components/general/records-history/records-group";
 import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
@@ -24,6 +23,7 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import RecordsListing from "~/components/general/records-history/records";
 
 type studyHistoryAside = "history" | "library";
 
@@ -65,6 +65,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     pastWorkspaces,
     activityLogState,
     studyActivity,
+    studyProgress,
   } = props.guider.currentStudent;
 
   /**
@@ -160,7 +161,10 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       <ApplicationSubPanel>
         <ApplicationSubPanel.Body>
           {studyActivity ? (
-            <RecordsGroup studyActivity={studyActivity} />
+            <RecordsListing
+              courseMatrix={studyProgress.courseMatrix}
+              studyActivity={studyActivity}
+            />
           ) : (
             <div className="application-sub-panel__item">
               <div className="empty">

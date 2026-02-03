@@ -8,16 +8,11 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/file-uploader.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
-import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
-import ApplicationList, {
-  ApplicationListItem,
-} from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
-import RecordsGroup from "~/components/general/records-history/records-group";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import {
@@ -25,7 +20,8 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { CourseMatrix, StudyActivity } from "~/generated/client";
-import { RecordsListMatrixView } from "~/components/general/records-history/records-matrix-list";
+import RecordsListing from "~/components/general/records-history/records";
+import RecordsGroup from "~/components/general/records-history/records-activity-list";
 
 /**
  * RecordsProps
@@ -108,8 +104,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       >
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            {this.props.studyActivities && this.props.courseMatrix ? (
-              <RecordsListMatrixView
+            {this.props.studyActivities ? (
+              <RecordsListing
                 courseMatrix={this.props.courseMatrix}
                 studyActivity={this.props.studyActivities}
               />
