@@ -66,15 +66,15 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     const { t } = this.props;
 
     if (
-      this.props.records.userDataStatus === "LOADING" ||
-      this.props.records.userDataStatus === "WAIT" ||
       this.props.studyActivity.userStudyActivityStatus === "LOADING" ||
-      this.props.studyActivity.userStudyActivityStatus === "IDLE"
+      this.props.studyActivity.userStudyActivityStatus === "IDLE" ||
+      this.props.studyActivity.courseMatrixStatus === "LOADING" ||
+      this.props.studyActivity.courseMatrixStatus === "IDLE"
     ) {
       return null;
     } else if (
-      this.props.records.userDataStatus === "ERROR" ||
-      this.props.studyActivity.userStudyActivityStatus === "ERROR"
+      this.props.studyActivity.userStudyActivityStatus === "ERROR" ||
+      this.props.studyActivity.courseMatrixStatus === "ERROR"
     ) {
       return (
         <div className="empty">

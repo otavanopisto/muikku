@@ -65,10 +65,6 @@ const clearDependantState: clearDependantTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
-        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
-        payload: <AllStudentUsersDataStatusType>"WAITING",
-      });
-      dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
         payload: <SummaryStatusType>"WAITING",
       });

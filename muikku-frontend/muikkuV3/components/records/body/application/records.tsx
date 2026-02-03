@@ -19,17 +19,16 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-import { CourseMatrix, StudyActivity } from "~/generated/client";
 import RecordsListing from "~/components/general/records-history/records";
 import RecordsGroup from "~/components/general/records-history/records-activity-list";
+import { StudyActivityState } from "~/reducers/study-activity";
 
 /**
  * RecordsProps
  */
 interface RecordsProps extends WithTranslation {
   records: RecordsType;
-  courseMatrix: CourseMatrix;
-  studyActivities: StudyActivity;
+  studyActivity: StudyActivityState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -45,8 +44,6 @@ interface RecordsState {}
 export interface StoredCurriculum {
   [identifier: string]: string;
 }
-
-const storedCurriculumIndex: StoredCurriculum = {};
 
 /**
  * Records
@@ -68,11 +65,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     const { t } = this.props;
 
     if (
-      this.props.records.userDataStatus === "LOADING" ||
-      this.props.records.userDataStatus === "WAIT"
+      this.props.studyActivity.userStudyActivityStatus === "LOADING" ||
+      this.props.studyActivity.userStudyActivityStatus === "IDLE" ||
+      this.props.studyActivity.courseMatrixStatus === "LOADING" ||
+      this.props.studyActivity.courseMatrixStatus === "IDLE"
     ) {
       return null;
-    } else if (this.props.records.userDataStatus === "ERROR") {
+    } else if (
+      this.props.studyActivity.userStudyActivityStatus === "ERROR" ||
+      this.props.studyActivity.courseMatrixStatus === "ERROR"
+    ) {
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return (
@@ -80,15 +82,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <span>{"ERROR"}</span>
         </div>
       );
-    }
-
-    if (
-      !Object.keys(storedCurriculumIndex).length &&
-      this.props.records.curriculums.length
-    ) {
-      this.props.records.curriculums.forEach((curriculum) => {
-        storedCurriculumIndex[curriculum.identifier] = curriculum.name;
-      });
     }
 
     /**
@@ -104,10 +97,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       >
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            {this.props.studyActivities ? (
+            {this.props.studyActivity.userStudyActivity ? (
               <RecordsListing
-                courseMatrix={this.props.courseMatrix}
-                studyActivity={this.props.studyActivities}
+                courseMatrix={this.props.studyActivity.courseMatrix}
+                studyActivity={this.props.studyActivity.userStudyActivity}
               />
             ) : (
               <div className="application-sub-panel__item">
@@ -126,8 +119,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            {this.props.studyActivities ? (
-              <RecordsGroup studyActivity={this.props.studyActivities} />
+            {this.props.studyActivity.userStudyActivity ? (
+              <RecordsGroup
+                studyActivity={this.props.studyActivity.userStudyActivity}
+              />
             ) : (
               <div className="application-sub-panel__item">
                 <div className="empty">
@@ -200,8 +195,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     status: state.status,
-    studyActivities: state.studyActivity.userStudyActivity,
-    courseMatrix: state.studyActivity.courseMatrix,
+    studyActivity: state.studyActivity,
   };
 }
 
