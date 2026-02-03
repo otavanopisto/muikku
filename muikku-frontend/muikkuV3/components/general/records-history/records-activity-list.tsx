@@ -5,91 +5,61 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
-import { CombinationWorkspaceActivity } from "./types";
 import { StudyActivity, StudyActivityItem } from "~/generated/client";
 import RecordsActivityListItem from "./records-activity-list-item";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
+import { getCombinationWorkspaces } from "~/helper-functions/study-matrix";
 
 /**
- * isCombinationWorkspaceActivity
- * @param activity activity
- * @returns boolean
- */
-const isCombinationWorkspaceActivity = (
-  activity: StudyActivityItem | CombinationWorkspaceActivity
-): activity is CombinationWorkspaceActivity =>
-  Object.keys(activity).length === 3 &&
-  "courseId" in activity &&
-  "courseName" in activity &&
-  "studyActivityItems" in activity;
-
-/**
- * isTransferredStudyActivityItem
- * @param item item
- * @returns boolean
- */
-const isTransferredStudyActivityItem = (
-  item: StudyActivityItem | CombinationWorkspaceActivity
-): item is StudyActivityItem =>
-  !isCombinationWorkspaceActivity(item) && item.state === "TRANSFERRED";
-
-/**
- * Parses activity items to single list containing combination workspaces and single study activity items
+ * Parses activity items into a flat list of combination workspaces and single items.
+ * Uses the same combination detection as the matrix implementation (2+ items sharing courseId).
  * @param activityItems activity items
- * @returns StudyActivityItem[]
+ * @returns list of CombinationWorkspaceActivity (for combos) and StudyActivityItem (for singles)
  */
-const parseCombinationWorkspacesToSingleItem = (
+function parseActivityItems(
   activityItems: StudyActivityItem[]
-) => {
-  const listOfCourseIds: number[] = [];
+): (StudyActivityItem | StudyActivityItem[])[] {
+  const combinationGroups = getCombinationWorkspaces(activityItems);
+  const combinationWorkspaceIds = new Set(
+    combinationGroups.map((g) => g[0].courseId!)
+  );
+  const singleItems = activityItems.filter(
+    (item) =>
+      item.courseId == null || !combinationWorkspaceIds.has(item.courseId)
+  );
+  return [...combinationGroups, ...singleItems];
+}
 
-  activityItems.forEach((element) => {
-    if (element.courseId) {
-      listOfCourseIds.push(element.courseId);
-    }
-  });
-
-  const uniqueCourseIds = [
-    ...new Set(
-      listOfCourseIds.filter(
-        (item, _i, array) => array.indexOf(item) !== array.lastIndexOf(item)
-      )
-    ),
-  ];
-
-  const combinationWorkspaces =
-    uniqueCourseIds.map<CombinationWorkspaceActivity>((courseId) => ({
-      courseId,
-      courseName: activityItems.find((item) => item.courseId === courseId)
-        ?.courseName,
-      studyActivityItems: activityItems.filter(
-        (item) => item.courseId === courseId
-      ),
-    }));
-
-  return [
-    ...combinationWorkspaces,
-    ...activityItems.filter(
-      (item) => !item.courseId || !uniqueCourseIds.includes(item.courseId)
-    ),
-  ];
-};
+/**
+ * getEntryCourseName
+ * @param entry entry
+ * @returns course name
+ */
+function getEntryCourseName(
+  entry: StudyActivityItem | StudyActivityItem[]
+): string {
+  const item = Array.isArray(entry) ? entry[0] : entry;
+  return (item.courseName ?? "").toLowerCase();
+}
 
 /**
  * filterAndSortActivity
- * @param credits credits
+ * @param activityItems activity items
  * @param sortDirection sort direction
  * @returns filtered and sorted activity
  */
 const filterAndSortActivity = (
-  credits: (StudyActivityItem | CombinationWorkspaceActivity)[],
+  activityItems: (StudyActivityItem | StudyActivityItem[])[],
   sortDirection: "asc" | "desc"
 ): {
   transferedActivities: StudyActivityItem[];
-  nonTransferedActivities: (StudyActivityItem | CombinationWorkspaceActivity)[];
+  nonTransferedActivities: (StudyActivityItem | StudyActivityItem[])[];
 } => ({
-  transferedActivities: credits
-    .filter(isTransferredStudyActivityItem)
+  transferedActivities: activityItems
+    .filter(
+      (item): item is StudyActivityItem =>
+        !Array.isArray(item) && item.state === "TRANSFERRED"
+    )
     .sort((a, b) => {
       const aString = a.courseName.toLowerCase();
       const bString = b.courseName.toLowerCase();
@@ -102,15 +72,14 @@ const filterAndSortActivity = (
       }
       return 0;
     }),
-  nonTransferedActivities: credits
+  nonTransferedActivities: activityItems
     .filter(
       (item) =>
-        ("state" in item && item.state !== "TRANSFERRED") ||
-        isCombinationWorkspaceActivity(item)
+        ("state" in item && item.state !== "TRANSFERRED") || Array.isArray(item)
     )
     .sort((a, b) => {
-      const aString = a.courseName.toLowerCase();
-      const bString = b.courseName.toLowerCase();
+      const aString = getEntryCourseName(a).toLowerCase();
+      const bString = getEntryCourseName(b).toLowerCase();
 
       if (aString > bString) {
         return sortDirection === "asc" ? 1 : -1;
@@ -142,14 +111,14 @@ const RecordsActivityList: React.FC<RecordsActivityListProps> = (props) => {
     "asc" | "desc"
   >("asc");
 
-  const parsedActivityItems = React.useMemo(
-    () => parseCombinationWorkspacesToSingleItem(studyActivity.items),
+  const memoizedActivityItems = React.useMemo(
+    () => parseActivityItems(studyActivity.items),
     [studyActivity]
   );
 
   const memoizedFilterActivity = React.useMemo(
-    () => filterAndSortActivity(parsedActivityItems, activitySortDirection),
-    [parsedActivityItems, activitySortDirection]
+    () => filterAndSortActivity(memoizedActivityItems, activitySortDirection),
+    [memoizedActivityItems, activitySortDirection]
   );
 
   /**
@@ -219,26 +188,14 @@ const RecordsActivityList: React.FC<RecordsActivityListProps> = (props) => {
         <div className={`icon-sort-alpha-${activitySortDirection}`}></div>
       </div>
       {memoizedFilterActivity.nonTransferedActivities.length
-        ? memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => {
-            let isCombinationWorkspace = false;
-            let studyActivityItems: StudyActivityItem[] = [];
-            if (isCombinationWorkspaceActivity(ntItem)) {
-              // If assessmentState contains more than 1 items, then its is combination
-              isCombinationWorkspace = true;
-              studyActivityItems = ntItem.studyActivityItems;
-            } else {
-              studyActivityItems = [ntItem];
-            }
-
-            return (
-              <RecordsActivityListItem
-                key={`record-activity-list-item-${i}`}
-                studyActivityItems={studyActivityItems}
-                isCombinationWorkspace={isCombinationWorkspace}
-                educationType={studyActivity.educationType}
-              />
-            );
-          })
+        ? memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
+            <RecordsActivityListItem
+              key={`record-activity-list-item-${i}`}
+              studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
+              isCombinationWorkspace={Array.isArray(ntItem)}
+              educationType={studyActivity.educationType}
+            />
+          ))
         : null}
 
       {memoizedFilterActivity.transferedActivities.length ? (
