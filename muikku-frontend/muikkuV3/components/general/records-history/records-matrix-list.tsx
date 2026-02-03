@@ -42,7 +42,7 @@ export interface RecordsListMatrixViewProps {
   /** CourseMatrix (structure). When null, nothing is rendered. */
   courseMatrix: CourseMatrix | null;
   /** StudyActivity (student data). When null, rows still render with empty activity. */
-  studyActivity: StudyActivity | null;
+  studyActivity: StudyActivity;
   /** Optional: show credits in section header. Uses studyActivity if provided. */
   showCreditsInHeader?: boolean;
   /**
@@ -85,28 +85,42 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
 
   const { t } = useTranslation(["studies", "common"]);
 
+  // Build records rows from matrix and study activity
   const { rows, transferredItems } = React.useMemo(() => {
     if (!courseMatrix) return { rows: [], transferredItems: [] };
     return buildRecordsRowsFromMatrix(courseMatrix, studyActivity);
   }, [courseMatrix, studyActivity]);
 
-  const combinationWorkspaceRows = React.useMemo(() => {
-    if (!studyActivity) return [];
-    return getCombinationWorkspaces(studyActivity?.items ?? []);
-  }, [studyActivity]);
+  // Get combination workspace rows
+  const combinationWorkspaceRows = React.useMemo(
+    () => getCombinationWorkspaces(studyActivity.items),
+    [studyActivity]
+  );
 
-  const enrichedRows = React.useMemo(() => {
-    if (!rows || !studyActivity) return rows;
-    return enrichMatrixRowsWithCombinationWorkspace(
-      rows,
-      studyActivity?.items ?? []
-    );
-  }, [rows, studyActivity]);
+  // Enriches matrix rows so that any row whose matched items belong to a combination
+  // workspace (same courseId shared by 2+ items) gets the full set of studyActivityItems
+  // for that workspace. Call after buildRecordsRowsFromMatrix when you have all items.
+  const enrichedRows = React.useMemo(
+    () => enrichMatrixRowsWithCombinationWorkspace(rows, studyActivity.items),
+    [rows, studyActivity]
+  );
 
+  // Group rows by subject
   const subjectGroups = React.useMemo((): SubjectGroup[] => {
-    const filtered = showAllMatrixCourses
+    // Filter rows depending if courses without activity should be shown
+    let filtered = showAllMatrixCourses
       ? enrichedRows
       : enrichedRows.filter((row) => row.studyActivityItems.length > 0);
+
+    // Filter rows depending on search value
+    const searchTrimmed = searchValue.trim().toLowerCase();
+    if (searchTrimmed) {
+      filtered = filtered.filter((row) =>
+        row.course.name.toLowerCase().includes(searchTrimmed)
+      );
+    }
+
+    // Group rows by subject
     const map = new Map<
       string,
       {
@@ -125,12 +139,14 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
       map.get(key)!.courseRows.push(row);
     }
     return Array.from(map.values());
-  }, [enrichedRows, showAllMatrixCourses]);
+  }, [enrichedRows, showAllMatrixCourses, searchValue]);
 
+  // State for expanded subjects
   const [expandedSubjects, setExpandedSubjects] = React.useState<Set<string>>(
     () => new Set(subjectGroups.map((g) => g.subject.code))
   );
 
+  // Effect to ensure all subjects are expanded when subjectGroups changes
   React.useEffect(() => {
     setExpandedSubjects((prev) => {
       const next = new Set(prev);
@@ -198,17 +214,15 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
     );
   }
 
-  const categoryName = studyActivity
-    ? `${studyActivity.educationType}${
-        showCreditsInHeader
-          ? ` - ${t("labels.courseCredits", {
-              ns: "studies",
-              mandatoryCredits: studyActivity.mandatoryCourseCredits,
-              totalCredits: studyActivity.completedCourseCredits,
-            })}`
-          : ""
-      }`
-    : "";
+  const categoryName = `${studyActivity.educationType}${
+    showCreditsInHeader
+      ? ` - ${t("labels.courseCredits", {
+          ns: "studies",
+          mandatoryCredits: studyActivity.mandatoryCourseCredits,
+          totalCredits: studyActivity.completedCourseCredits,
+        })}`
+      : ""
+  }`;
 
   const filterCheckboxes = [
     <div key="all" className="filter-item">
@@ -225,13 +239,11 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
 
   return (
     <ApplicationList>
-      {categoryName && (
-        <div className="application-list__header-container application-list__header-container--sorter">
-          <h3 className="application-list__header application-list__header--sorter">
-            {categoryName}
-          </h3>
-        </div>
-      )}
+      <div className="application-list__header-container application-list__header-container--sorter">
+        <h3 className="application-list__header application-list__header--sorter">
+          {categoryName}
+        </h3>
+      </div>
 
       <div className="application-list__subheader-container">
         <SearchFormElement
@@ -246,56 +258,68 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
         </Dropdown>
       </div>
 
-      {subjectGroups.map((group) => {
-        const { subject, courseRows } = group;
-        const subjectCode = subject.code;
-        const isExpanded = expandedSubjects.has(subjectCode);
-        const contentId = `records-matrix-subject-${subjectCode}`;
+      {subjectGroups.length > 0 ? (
+        subjectGroups.map((group) => {
+          const { subject, courseRows } = group;
+          const subjectCode = subject.code;
+          const isExpanded = expandedSubjects.has(subjectCode);
+          const contentId = `records-matrix-subject-${subjectCode}`;
 
-        return (
-          <React.Fragment key={subjectCode}>
-            <div
-              className="application-list__subheader-container"
-              role="button"
-              tabIndex={0}
-              onClick={() => toggleSubject(subjectCode)}
-              onKeyDown={(e) => handleSubjectKeyDown(e, subjectCode)}
-              aria-expanded={isExpanded}
-              aria-controls={contentId}
-              aria-label={
-                isExpanded
-                  ? t("wcag.collapseRecordInfo", { ns: "studies" })
-                  : t("wcag.expandRecordInfo", { ns: "studies" })
-              }
-            >
-              <h3 className="application-list__subheader">
-                {subject.name} ({subject.code})
-              </h3>
-              <span
-                className={`application-list__subheader-icon icon-arrow-${
-                  isExpanded ? "down" : "right"
-                }`}
-                aria-hidden
-              />
-            </div>
-            <AnimateHeight
-              id={contentId}
-              height={isExpanded ? "auto" : 0}
-              duration={200}
-            >
-              {courseRows.map((row, i) => (
-                <RecordsMatrixGroupItem
-                  key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
-                  subject={row.subject}
-                  course={row.course}
-                  studyActivityItems={row.studyActivityItems}
-                  educationType={studyActivity?.educationType ?? ""}
+          return (
+            <React.Fragment key={subjectCode}>
+              <div
+                className="application-list__subheader-container"
+                role="button"
+                tabIndex={0}
+                onClick={() => toggleSubject(subjectCode)}
+                onKeyDown={(e) => handleSubjectKeyDown(e, subjectCode)}
+                aria-expanded={isExpanded}
+                aria-controls={contentId}
+                aria-label={
+                  isExpanded
+                    ? t("wcag.collapseRecordInfo", { ns: "studies" })
+                    : t("wcag.expandRecordInfo", { ns: "studies" })
+                }
+              >
+                <h3 className="application-list__subheader">
+                  {subject.name} ({subject.code})
+                </h3>
+                <span
+                  className={`application-list__subheader-icon icon-arrow-${
+                    isExpanded ? "down" : "right"
+                  }`}
+                  aria-hidden
                 />
-              ))}
-            </AnimateHeight>
-          </React.Fragment>
-        );
-      })}
+              </div>
+              <AnimateHeight
+                id={contentId}
+                height={isExpanded ? "auto" : 0}
+                duration={200}
+              >
+                {courseRows.map((row, i) => (
+                  <RecordsMatrixGroupItem
+                    key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
+                    subject={row.subject}
+                    course={row.course}
+                    studyActivityItems={row.studyActivityItems}
+                    educationType={studyActivity.educationType}
+                  />
+                ))}
+              </AnimateHeight>
+            </React.Fragment>
+          );
+        })
+      ) : (
+        <div className="application-list__subheader-container">
+          {searchValue.trim() || activeFilters.length > 0 ? (
+            <h3 className="application-list__subheader">
+              Ei suoritustietoja hakuehdon tai suodattimen mukaan
+            </h3>
+          ) : (
+            <h3 className="application-list__subheader">Ei suoritustietoja</h3>
+          )}
+        </div>
+      )}
 
       {combinationWorkspaceRows.length > 0 && (
         <>
@@ -308,7 +332,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
             <RecordsMatrixCombinationItem
               key={`combination-workspace-${row[0].courseId}`}
               studyActivityItems={row}
-              educationType={studyActivity?.educationType ?? ""}
+              educationType={studyActivity.educationType}
             />
           ))}
         </>
