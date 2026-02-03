@@ -496,6 +496,13 @@
     height: 24px;
     padding: 0 9px;
   }
+
+  &.state-WITHDRAWN {
+    background-color: #ebebeb;
+    border-radius: 12px;
+    height: 24px;
+    padding: 0 9px;
+  }
 }
 
 .evaluation-modal__item-meta-item-label {
