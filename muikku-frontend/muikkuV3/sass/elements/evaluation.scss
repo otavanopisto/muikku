@@ -492,8 +492,8 @@
   &.state-INCOMPLETE {
     border-radius: 12px;
     padding: 0px 9px;
-    background-color: #009fe3;
-    color: #fff;
+    background-color: $color-submitted;
+    color: $color-default;
     height: 24px;
   }
 }
