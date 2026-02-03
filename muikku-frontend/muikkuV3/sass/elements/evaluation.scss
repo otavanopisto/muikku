@@ -486,6 +486,16 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin: 0 15px 0 0;
+
+  &.state-SUPPLEMENTED,
+  &.state-SUBMITTED,
+  &.state-INCOMPLETE {
+    border-radius: 12px;
+    padding: 0px 9px;
+    background-color: #009fe3;
+    color: #fff;
+    height: 24px;
+  }
 }
 
 .evaluation-modal__item-meta-item-label {

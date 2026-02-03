@@ -333,7 +333,18 @@ class EvaluationAssessmentAssignment extends React.Component<
           default:
             return "state-EVALUATED";
         }
+      } else {
+        switch (compositeReply.state) {
+          case "WITHDRAWN":
+            return "state-WITHDRAWN";
+          case "ANSWERED":
+            return "state-ANSWERED";
+          case "SUBMITTED":
+            return "state-SUBMITTED";
+        }
       }
+    } else {
+      return "state-UNANSWERED";
     }
   };
 
@@ -397,6 +408,8 @@ class EvaluationAssessmentAssignment extends React.Component<
       // Grade class mod
       const assignmentGradeClassMod = this.assigmentGradeClass(compositeReply);
 
+      const assignmentFunctionClassMod =
+        this.assignmentFunctionClass(compositeReply);
       // Points and max points object
       const pointsAndMaxPoints = {
         points: this.props.compositeReply.evaluationInfo?.points,
@@ -415,7 +428,9 @@ class EvaluationAssessmentAssignment extends React.Component<
             </div>
           ) : (
             hasSubmitted && (
-              <div className="evaluation-modal__item-meta-item">
+              <div
+                className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+              >
                 <span className="evaluation-modal__item-meta-item-label">
                   {t("labels.done", { ns: "evaluation" })}
                 </span>
