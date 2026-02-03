@@ -369,7 +369,7 @@ export const RecordsMatrixGroupItem: React.FC<RecordsMatrixGroupItemProps> = (
                 </WorkspaceAssignmentsAndDiaryDialog>
               </span>
             )}
-          {hasActivity && (
+          {hasActivity && !isCombinationWorkspace && (
             <>
               <AssessmentRequestIndicator
                 studyActivityItem={subjectSpecificActivityItem}

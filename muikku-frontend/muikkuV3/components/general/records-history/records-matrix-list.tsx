@@ -6,7 +6,11 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
-import { CourseMatrix, StudyActivity } from "~/generated/client";
+import {
+  CourseMatrix,
+  StudyActivity,
+  StudyActivityItemState,
+} from "~/generated/client";
 import {
   buildRecordsRowsFromMatrix,
   enrichMatrixRowsWithCombinationWorkspace,
@@ -16,6 +20,12 @@ import {
 import { RecordsMatrixGroupItem } from "./records-matrix-list-item";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
 import { RecordsMatrixCombinationItem } from "./records-matrix-list-item-combination";
+import Dropdown from "../dropdown";
+import { ButtonPill } from "../button";
+import { SearchFormElement } from "../form-element";
+import { useLocalStorage } from "usehooks-ts";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
@@ -42,6 +52,8 @@ export interface RecordsListMatrixViewProps {
   showCoursesWithoutActivity?: boolean;
 }
 
+type FilterOptions = StudyActivityItemState | "NOACTIVITY";
+
 /**
  * Matrix-based records list. Structure comes from CourseMatrix; StudyActivity is mapped onto it.
  * Rows are grouped by subject; each subject is a collapsible subtitle with its courses listed under it.
@@ -57,6 +69,19 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
     showCreditsInHeader = true,
     showCoursesWithoutActivity = false,
   } = props;
+
+  const status = useSelector((state: StateType) => state.status);
+
+  const [searchValue, setSearchValue] = useLocalStorage(
+    `${status.userId}-records-matrix-search`,
+    ""
+  );
+  const [activeFilters, setActiveFilters] = useLocalStorage<
+    (FilterOptions | "ALL")[]
+  >(`${status.userId}-records-matrix-filters`, []);
+
+  const showAllMatrixCourses =
+    showCoursesWithoutActivity || activeFilters.includes("ALL");
 
   const { t } = useTranslation(["studies", "common"]);
 
@@ -79,7 +104,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
   }, [rows, studyActivity]);
 
   const subjectGroups = React.useMemo((): SubjectGroup[] => {
-    const filtered = showCoursesWithoutActivity
+    const filtered = showAllMatrixCourses
       ? enrichedRows
       : enrichedRows.filter((row) => row.studyActivityItems.length > 0);
     const map = new Map<
@@ -100,7 +125,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
       map.get(key)!.courseRows.push(row);
     }
     return Array.from(map.values());
-  }, [enrichedRows, showCoursesWithoutActivity]);
+  }, [enrichedRows, showAllMatrixCourses]);
 
   const [expandedSubjects, setExpandedSubjects] = React.useState<Set<string>>(
     () => new Set(subjectGroups.map((g) => g.subject.code))
@@ -142,6 +167,25 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
     }
   };
 
+  /**
+   * handleSearchFormElementChange
+   * @param value value
+   */
+  const handleSearchFormElementChange = (value: string) => {
+    setSearchValue(value);
+  };
+
+  /**
+   * handleFilterClick
+   * @param e e
+   */
+  const handleFilterClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as FilterOptions | "ALL";
+    setActiveFilters((prev) =>
+      prev.includes(value) ? prev.filter((f) => f !== value) : [...prev, value]
+    );
+  };
+
   if (!courseMatrix) {
     return (
       <ApplicationList>
@@ -166,6 +210,19 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
       }`
     : "";
 
+  const filterCheckboxes = [
+    <div key="all" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeFilters.includes("ALL")}
+        type="checkbox"
+        value="ALL"
+        id="filter-all"
+      />
+      <label htmlFor="filter-all">Näytä kaikki</label>
+    </div>,
+  ];
+
   return (
     <ApplicationList>
       {categoryName && (
@@ -176,6 +233,19 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
         </div>
       )}
 
+      <div className="application-list__subheader-container">
+        <SearchFormElement
+          updateField={handleSearchFormElementChange}
+          name="records-matrix-search"
+          id="records-matrix-search"
+          placeholder="Hae suoritustietoja"
+          value={searchValue}
+        />
+        <Dropdown items={filterCheckboxes}>
+          <ButtonPill icon="filter" buttonModifiers={["filter"]} />
+        </Dropdown>
+      </div>
+
       {subjectGroups.map((group) => {
         const { subject, courseRows } = group;
         const subjectCode = subject.code;
@@ -183,7 +253,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
         const contentId = `records-matrix-subject-${subjectCode}`;
 
         return (
-          <div key={subjectCode}>
+          <React.Fragment key={subjectCode}>
             <div
               className="application-list__subheader-container"
               role="button"
@@ -223,7 +293,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
                 />
               ))}
             </AnimateHeight>
-          </div>
+          </React.Fragment>
         );
       })}
 
@@ -247,7 +317,7 @@ export const RecordsListMatrixView: React.FC<RecordsListMatrixViewProps> = (
       {transferredItems.length > 0 && (
         <>
           <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">Hyväksiluvut</h3>
+            <h3 className="application-list__subheader">Muut hyväksiluvut</h3>
           </div>
           {transferredItems.map((tItem, i) => (
             <ApplicationListItem
