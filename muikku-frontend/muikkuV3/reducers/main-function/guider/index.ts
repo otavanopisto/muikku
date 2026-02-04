@@ -19,7 +19,6 @@ import {
   ActivityLogEntry,
   Note,
   StudentCourseChoice,
-  OptionalCourseSuggestion,
   UserContact,
   CourseMatrix,
   StudyActivity,
@@ -90,7 +89,6 @@ export interface PedagogyFormAvailability {
  */
 export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
-  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
   courseMatrix: CourseMatrix;
 }
 
@@ -272,7 +270,6 @@ const initialGuiderState: GuiderState = {
       skillsAndArt: {},
       otherLanguageSubjects: {},
       otherSubjects: {},
-      supervisorOptionalSuggestions: [],
       studentChoices: [],
       needSupplementationList: [],
       courseMatrix: {

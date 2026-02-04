@@ -16,23 +16,21 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
 
   private static final long serialVersionUID = 5746392088055973392L;
   
-  public HopsSuggestion create(Long userEntityId, String category, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
+  public HopsSuggestion create(Long userEntityId, String category, String subject, Integer courseNumber, Long workspaceEntityId) {
     HopsSuggestion hopsSuggestion = new HopsSuggestion();
 
     hopsSuggestion.setUserEntityId(userEntityId);
     hopsSuggestion.setCategory(category);
     hopsSuggestion.setSubject(subject);
     hopsSuggestion.setCourseNumber(courseNumber);
-    hopsSuggestion.setType(type);
     hopsSuggestion.setWorkspaceEntityId(workspaceEntityId);
     hopsSuggestion.setCreated(new Date());
     
     return persist(hopsSuggestion);
   }
   
-  public HopsSuggestion update(HopsSuggestion hopsSuggestion, String subject, String type, Integer courseNumber, Long workspaceEntityId) {
+  public HopsSuggestion update(HopsSuggestion hopsSuggestion, String subject, Integer courseNumber, Long workspaceEntityId) {
     hopsSuggestion.setSubject(subject);
-    hopsSuggestion.setType(type);
     hopsSuggestion.setCourseNumber(courseNumber);
     hopsSuggestion.setWorkspaceEntityId(workspaceEntityId);
     hopsSuggestion.setCreated(new Date());

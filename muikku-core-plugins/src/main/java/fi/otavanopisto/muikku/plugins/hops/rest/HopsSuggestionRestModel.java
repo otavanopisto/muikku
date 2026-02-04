@@ -36,14 +36,6 @@ public class HopsSuggestionRestModel {
     this.courseNumber = courseNumber;
   }
   
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
   public Long getCourseId() {
     return courseId;
   }
@@ -64,7 +56,6 @@ public class HopsSuggestionRestModel {
   private String name;
   private String subject;
   private Integer courseNumber;
-  private String status; // optional/next
   private Long courseId;
   private Date created;
 
