@@ -92,7 +92,8 @@ public class HopsSuggestion {
   @Column
   private Integer courseNumber;
   
-  @Column
+  @NotNull
+  @Column (nullable = false)
   private Long workspaceEntityId;
 
   @NotNull
