@@ -20,10 +20,10 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 
 /**
- * Props for the combination-workspace (Yhdistelmäopintojaksot) list item.
+ * Props for the combination-workspace (Yhdistelmäopintojaksot) row.
  * Expects two or more StudyActivityItems that share the same courseId.
  */
-interface RecordsMatrixCombinationItemProps {
+interface RecordsMatrixRowCombinationProps {
   studyActivityItems: StudyActivityItem[];
   educationType: string;
 }
@@ -33,8 +33,8 @@ interface RecordsMatrixCombinationItemProps {
  * Shows workspace title, programme/curriculum labels, list of modules, and expandable assessments.
  * @param props props
  */
-const RecordsMatrixCombinationItem: React.FC<
-  RecordsMatrixCombinationItemProps
+const RecordsMatrixRowCombination: React.FC<
+  RecordsMatrixRowCombinationProps
 > = (props) => {
   const { studyActivityItems, educationType } = props;
 
@@ -366,4 +366,4 @@ const RecordsMatrixCombinationItem: React.FC<
   );
 };
 
-export default RecordsMatrixCombinationItem;
+export default RecordsMatrixRowCombination;

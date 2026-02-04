@@ -25,10 +25,10 @@ import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-
 import Dropdown from "../dropdown";
 
 /**
- * Props for the matrix-based records list item.
+ * Props for the matrix-based records row.
  * Structure comes from CourseMatrix (subject, course); StudyActivity is mapped onto it.
  */
-export interface RecordsMatrixListItemProps {
+export interface RecordsMatrixRowProps {
   subject: CourseMatrixSubject;
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
@@ -42,9 +42,7 @@ export interface RecordsMatrixListItemProps {
  * Displays one (subject, course) from CourseMatrix with optional StudyActivity data.
  * @param props props
  */
-export const RecordsMatrixListItem: React.FC<RecordsMatrixListItemProps> = (
-  props
-) => {
+export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   const {
     subject,
     course,
@@ -393,4 +391,4 @@ export const RecordsMatrixListItem: React.FC<RecordsMatrixListItemProps> = (
   );
 };
 
-export default RecordsMatrixListItem;
+export default RecordsMatrixRow;

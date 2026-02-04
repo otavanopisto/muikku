@@ -370,6 +370,36 @@ export const getNonOPSTransferedActivities = (
 };
 
 /**
+ * getNonOPSActivities
+ * @param matrix matrix
+ * @param items items
+ * @returns non OPS activities
+ */
+export const getNonOPSActivities = (
+  matrix: CourseMatrix,
+  items: StudyActivityItem[]
+) => {
+  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
+  const allSubjectsFromItems = items.map((item) => item.subject);
+
+  // Joined list of non OPS transfered subjects
+  const allNonOPSSubjects = allSubjectsFromItems
+    .filter((subject) => !allOPSSubjects.includes(subject))
+    .join(",");
+
+  // List of non OPS subjects without duplicates
+  const listOfallNonOPSSubjects = Array.from(
+    new Set(allNonOPSSubjects.split(","))
+  );
+
+  // Filter out non OPS subjects that have courseId (course instance exists)
+  return items.filter(
+    (item) =>
+      listOfallNonOPSSubjects.includes(item.subject) && item.courseId !== null
+  );
+};
+
+/**
  * Row descriptor for the matrix-based records list.
  * CourseMatrix provides the structure; StudyActivity is mapped onto each row.
  */
@@ -391,13 +421,19 @@ export interface RecordsMatrixRow {
 export const buildRecordsRowsFromMatrix = (
   matrix: CourseMatrix,
   studyActivity: StudyActivity | null
-): { rows: RecordsMatrixRow[]; transferredItems: StudyActivityItem[] } => {
+): {
+  rows: RecordsMatrixRow[];
+  transferedActivities: StudyActivityItem[];
+  nonOPSActivities: StudyActivityItem[];
+} => {
   const items = studyActivity?.items ?? [];
   const transferedList = items.filter((item) => item.state === "TRANSFERRED");
-  const transferredItems = getNonOPSTransferedActivities(
+  const transferedActivities = getNonOPSTransferedActivities(
     matrix,
     transferedList
   );
+
+  const nonOPSActivities = getNonOPSActivities(matrix, items);
 
   const rows: RecordsMatrixRow[] = [];
 
@@ -412,7 +448,7 @@ export const buildRecordsRowsFromMatrix = (
     }
   }
 
-  return { rows, transferredItems };
+  return { rows, transferedActivities, nonOPSActivities };
 };
 
 /**

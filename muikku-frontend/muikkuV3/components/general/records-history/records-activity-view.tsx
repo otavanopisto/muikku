@@ -1,14 +1,11 @@
 import * as React from "react";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
+import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 import { StudyActivity, StudyActivityItem } from "~/generated/client";
-import RecordsActivityListItem from "./records-activity-list-item";
-import TransferedCreditIndicator from "./transfered-credit-indicator";
+import RecordsActivityListItem from "./records-activity-row";
 import { getCombinationWorkspaces } from "~/helper-functions/study-matrix";
+import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 
 /**
  * Parses activity items into a flat list of combination workspaces and single items.
@@ -204,34 +201,10 @@ const RecordsActivityList: React.FC<RecordsActivityListProps> = (props) => {
             <h3 className="application-list__subheader">Hyväksiluvut</h3>
           </div>
           {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
-            <ApplicationListItem
-              className="course course--credits"
-              key={`tranfered-activity-item-${i}`}
-            >
-              <ApplicationListItemHeader modifiers="course">
-                <span className="application-list__header-icon icon-books"></span>
-                <div className="application-list__header-primary">
-                  <div className="application-list__header-primary-title">
-                    {tItem.courseName}
-                  </div>
-
-                  <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
-                    <div className="label">
-                      <div className="label__text">{tItem.studyProgramme}</div>
-                    </div>
-                    {tItem.curriculums &&
-                      tItem.curriculums.map((curriculum) => (
-                        <div key={curriculum} className="label">
-                          <div className="label__text">{curriculum} </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-                <div className="application-list__header-secondary">
-                  <TransferedCreditIndicator studyActivityItem={tItem} />
-                </div>
-              </ApplicationListItemHeader>
-            </ApplicationListItem>
+            <RecordsActivityRowTransfered
+              key={`transfered-activity-item-${i}`}
+              studyActivityItem={tItem}
+            />
           ))}
         </>
       ) : null}

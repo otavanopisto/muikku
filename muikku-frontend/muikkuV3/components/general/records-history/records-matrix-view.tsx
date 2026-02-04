@@ -1,9 +1,6 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
+import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 import {
@@ -15,24 +12,25 @@ import {
   buildRecordsRowsFromMatrix,
   enrichMatrixRowsWithCombinationWorkspace,
   getCombinationWorkspaces,
-  RecordsMatrixRow,
+  RecordsMatrixRow as RecordsMatrixRowType,
 } from "~/helper-functions/study-matrix";
-import RecordsMatrixListItem from "./records-matrix-list-item";
-import TransferedCreditIndicator from "./transfered-credit-indicator";
-import RecordsMatrixCombinationItem from "./records-matrix-list-item-combination";
+import RecordsMatrixRow from "./records-matrix-row";
+import RecordsMatrixRowCombination from "./records-matrix-row-combination";
 import Dropdown from "../dropdown";
 import { ButtonPill } from "../button";
 import { SearchFormElement } from "../form-element";
 import { useLocalStorage } from "usehooks-ts";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+import RecordsActivityRow from "./records-activity-row";
+import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
  */
 interface SubjectGroup {
   subject: { code: string; name: string };
-  courseRows: RecordsMatrixRow[];
+  courseRows: RecordsMatrixRowType[];
 }
 
 /**
@@ -84,8 +82,9 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   const { t } = useTranslation(["studies", "common"]);
 
   // Build records rows from matrix and study activity
-  const { rows, transferredItems } = React.useMemo(() => {
-    if (!courseMatrix) return { rows: [], transferredItems: [] };
+  const { rows, transferedActivities, nonOPSActivities } = React.useMemo(() => {
+    if (!courseMatrix)
+      return { rows: [], transferedActivities: [], nonOPSActivities: [] };
     return buildRecordsRowsFromMatrix(courseMatrix, studyActivity);
   }, [courseMatrix, studyActivity]);
 
@@ -123,7 +122,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
       string,
       {
         subject: { code: string; name: string };
-        courseRows: RecordsMatrixRow[];
+        courseRows: RecordsMatrixRowType[];
       }
     >();
     for (const row of filtered) {
@@ -294,8 +293,9 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
                 height={isExpanded ? "auto" : 0}
                 duration={200}
               >
+                {/* Normal rows related to matrix, so using RecordsMatrixRow */}
                 {courseRows.map((row, i) => (
-                  <RecordsMatrixListItem
+                  <RecordsMatrixRow
                     key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
                     subject={row.subject}
                     course={row.course}
@@ -319,6 +319,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
         </div>
       )}
 
+      {/* Combination workspace rows related to matrix, so using RecordsMatrixRowCombination */}
       {combinationWorkspaceRows.length > 0 && (
         <>
           <div className="application-list__subheader-container">
@@ -327,7 +328,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
             </h3>
           </div>
           {combinationWorkspaceRows.map((row) => (
-            <RecordsMatrixCombinationItem
+            <RecordsMatrixRowCombination
               key={`combination-workspace-${row[0].courseId}`}
               studyActivityItems={row}
               educationType={studyActivity.educationType}
@@ -336,39 +337,28 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
         </>
       )}
 
-      {transferredItems.length > 0 && (
+      {/* Transfered activities and non OPS activities, so using RecordsActivityRow and RecordsActivityRowTransfered */}
+      {(transferedActivities.length > 0 || nonOPSActivities.length > 0) && (
         <>
           <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">Muut hyväksiluvut</h3>
+            <h3 className="application-list__subheader">Muut suoritustiedot</h3>
           </div>
-          {transferredItems.map((tItem, i) => (
-            <ApplicationListItem
-              className="course course--credits"
-              key={`transfered-activity-item-${i}`}
-            >
-              <ApplicationListItemHeader modifiers="course">
-                <span className="application-list__header-icon icon-books"></span>
-                <div className="application-list__header-primary">
-                  <div className="application-list__header-primary-title">
-                    {tItem.courseName}
-                  </div>
-                  <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
-                    <div className="label">
-                      <div className="label__text">{tItem.studyProgramme}</div>
-                    </div>
-                    {tItem.curriculums?.map((curriculum) => (
-                      <div key={curriculum} className="label">
-                        <div className="label__text">{curriculum} </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="application-list__header-secondary">
-                  <TransferedCreditIndicator studyActivityItem={tItem} />
-                </div>
-              </ApplicationListItemHeader>
-            </ApplicationListItem>
-          ))}
+          {nonOPSActivities.length > 0 &&
+            nonOPSActivities.map((item) => (
+              <RecordsActivityRow
+                key={`non-ops-activity-item-${item.courseId}`}
+                studyActivityItems={[item]}
+                isCombinationWorkspace={false}
+                educationType={studyActivity.educationType}
+              />
+            ))}
+          {transferedActivities.length > 0 &&
+            transferedActivities.map((tItem, i) => (
+              <RecordsActivityRowTransfered
+                key={`transfered-activity-item-${i}`}
+                studyActivityItem={tItem}
+              />
+            ))}
         </>
       )}
     </ApplicationList>

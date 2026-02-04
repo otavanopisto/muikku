@@ -20,9 +20,9 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 
 /**
- * RecordsActivityListItemProps
+ * RecordsActivityRowProps
  */
-interface RecordsActivityListItemProps {
+interface RecordsActivityRowProps {
   /**
    * If credit contains more than one item, then it is combination workspace
    */
@@ -36,7 +36,7 @@ interface RecordsActivityListItemProps {
  * @param props props
  * @returns JSX.Element
  */
-export const RecordsActivityListItem: React.FC<RecordsActivityListItemProps> = (
+export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
   props
 ) => {
   const { studyActivityItems, isCombinationWorkspace, educationType } = props;
@@ -469,4 +469,4 @@ export const RecordsActivityListItem: React.FC<RecordsActivityListItemProps> = (
   );
 };
 
-export default RecordsActivityListItem;
+export default RecordsActivityRow;

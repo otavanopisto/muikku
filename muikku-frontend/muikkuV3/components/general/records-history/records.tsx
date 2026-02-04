@@ -1,7 +1,7 @@
 import * as React from "react";
 import { CourseMatrix, StudyActivity } from "~/generated/client";
-import RecordsMatrixList from "./records-matrix-list";
-import RecordsActivityList from "./records-activity-list";
+import RecordsMatrixView from "./records-matrix-view";
+import RecordsActivityView from "./records-activity-view";
 
 /**
  * RecordsViewProps
@@ -20,13 +20,13 @@ const RecordsListing = (props: RecordsListingProps) => {
   const { courseMatrix, studyActivity } = props;
   if (!courseMatrix.problems.includes("INCOMPATIBLE_STUDENT")) {
     return (
-      <RecordsMatrixList
+      <RecordsMatrixView
         courseMatrix={courseMatrix}
         studyActivity={studyActivity}
       />
     );
   }
-  return <RecordsActivityList studyActivity={studyActivity} />;
+  return <RecordsActivityView studyActivity={studyActivity} />;
 };
 
 export default RecordsListing;

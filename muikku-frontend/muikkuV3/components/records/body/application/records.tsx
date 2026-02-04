@@ -20,7 +20,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import RecordsListing from "~/components/general/records-history/records";
-import RecordsGroup from "~/components/general/records-history/records-activity-list";
+import RecordsGroup from "~/components/general/records-history/records-activity-view";
 import { StudyActivityState } from "~/reducers/study-activity";
 
 /**
