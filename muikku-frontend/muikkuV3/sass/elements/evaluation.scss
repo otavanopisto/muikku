@@ -378,6 +378,11 @@
   margin: 0 0 0 15px;
 }
 
+.evaluation-modal__item-remove-evaluation {
+  display: flex;
+  justify-content: end;
+}
+
 .evaluation-modal__item-header {
   align-items: center;
   display: flex;
@@ -489,7 +494,8 @@
 
   &.state-SUPPLEMENTED,
   &.state-SUBMITTED,
-  &.state-INCOMPLETE {
+  &.state-INCOMPLETE,
+  &.state-EVALUATED {
     background-color: $color-submitted;
     border-radius: 12px;
     color: $color-default;

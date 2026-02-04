@@ -2398,6 +2398,7 @@
       "gradeImproved2": "as improved",
       "interimEvaluation1": "gave",
       "interimEvaluation2": "interim evaluation",
+
       "interimEvaluationRequest1": "left",
       "interimEvaluationRequest2": "interim evaluation request",
       "interimEvaluationRequestCancel1": "cancelled",
@@ -2405,6 +2406,7 @@
       "isRecording": "Recording. Press \"Stop recording\" when you are ready.",
       "notFound": "There are no students with chosen filters",
       "removing": "$t(common:content.removing)",
+      "removing_assignmentEvaluation": "Are you sure you want to delete the assessment for assignment: {{assignmentTitle}}?",
       "removing_entry": "Are you sure you want to delete the entry from student: {{studentName}}?",
       "removing_evaluationRequest": "Are you sure you want to delete the evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
       "removing_interimRequest": "Are you sure you want to delete the interim evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",

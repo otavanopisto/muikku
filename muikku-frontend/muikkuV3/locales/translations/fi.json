@@ -2356,6 +2356,7 @@
       "confirmCancel": "Ymmärrän ja haluan poistua",
       "evaluateStudent": "Arvioi opiskelija",
       "evaluateAssignment": "Arvioi tehtävä",
+
       "grade": "Arvioi",
       "grade_journal": "Oppimispäiväkirjan kokonaispalaute",
       "grade_overall": "Anna kokonaispalaute",
@@ -2368,6 +2369,7 @@
       "openAll": "Avaa kaikki",
       "pickModule": "Valitse arvioitava moduuli",
       "remove": "$t(common:actions.remove)",
+      "removeAssignmentEvaluation": "Poista tehtävän arviointi",
       "remove_evaluation": "Poista arviointi",
       "remove_evaluationRequest": "Poista arviointipyyntö",
       "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
@@ -2405,6 +2407,7 @@
       "isRecording": "Tallennus käynnissä. Kun olet valmis, paina Lopeta tallennus -painiketta.",
       "notFound": "Valituilla suodattimilla ei löydy yhtään opiskelijaa",
       "removing": "$t(common:content.removing)",
+      "removing_assignmentEvaluation": "Oletko varma, että haluat poistaa tehtävän <b>{{assignmentTitle}}</b> arvioinnin?",
       "removing_entry": "Oletko varma, että haluat poistaa merkinnän opiskelijalta {{studentName}}?",
       "removing_evaluationRequest": "Oletko varma, että haluat poistaa opiskelijan <b>{{student}}</b> arviointipyynnön kurssilta <b>{{workspace}}</b>?",
       "removing_interimRequest": "Oletko varma, että haluat poistaa opiskelijan <b>{{student}}</b> välipalautepyynnön kurssilta <b>{{workspace}}</b>?",

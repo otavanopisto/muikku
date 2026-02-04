@@ -30,6 +30,7 @@ import {
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
+import PromptDialog from "~/components/general/prompt-dialog";
 
 /**
  * EvaluationCardProps
@@ -565,6 +566,25 @@ class EvaluationAssessmentAssignment extends React.Component<
         )) ||
         this.props.compositeReply === undefined);
 
+    const removeEvaluation = (
+      <>
+        <span
+          dangerouslySetInnerHTML={{
+            __html: t("content.removing", {
+              ns: "evaluation",
+              context: "assignmentEvaluation",
+              assignmentTitle: this.props.assigment.title,
+            }),
+          }}
+        ></span>
+        <EvaluationMaterial
+          material={this.state.materialNode}
+          workspace={this.props.workspace}
+          compositeReply={compositeReply}
+          userEntityId={this.props.selectedAssessment.userEntityId}
+        />
+      </>
+    );
     return (
       <div className={`evaluation-modal__item `}>
         <div
@@ -705,12 +725,31 @@ class EvaluationAssessmentAssignment extends React.Component<
           {this.state.isLoading ? (
             <div className="loader-empty" />
           ) : this.props.workspace && this.state.materialNode ? (
-            <EvaluationMaterial
-              material={this.state.materialNode}
-              workspace={this.props.workspace}
-              compositeReply={compositeReply}
-              userEntityId={this.props.selectedAssessment.userEntityId}
-            />
+            <>
+              <div className="evaluation-modal__item-remove-evaluation">
+                <PromptDialog
+                  title={t("actions.removeAssignmentEvaluation", {
+                    ns: "evaluation",
+                  })}
+                  content={removeEvaluation}
+                  onExecute={() => console.log("häsremove")}
+                >
+                  <ButtonPill
+                    aria-label={t("actions.removeAssignmentEvaluation", {
+                      ns: "evaluation",
+                    })}
+                    buttonModifiers={["remove-evaluation"]}
+                    icon="trash"
+                  />
+                </PromptDialog>
+              </div>
+              <EvaluationMaterial
+                material={this.state.materialNode}
+                workspace={this.props.workspace}
+                compositeReply={compositeReply}
+                userEntityId={this.props.selectedAssessment.userEntityId}
+              />
+            </>
           ) : null}
         </AnimateHeight>
       </div>

@@ -24,7 +24,7 @@ interface PromptDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   title: string;
-  content: string;
+  content: string | React.ReactElement;
   onExecute: () => void;
   isOpen?: boolean;
   onOpen?: () => void;
