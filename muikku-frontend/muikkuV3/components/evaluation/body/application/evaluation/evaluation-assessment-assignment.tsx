@@ -421,9 +421,11 @@ class EvaluationAssessmentAssignment extends React.Component<
         <div className="evaluation-modal__item-meta">
           {hasSubmitted === null ||
           (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
-            <div className="evaluation-modal__item-meta-item">
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
               <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.notDone", { ns: "evaluation" })}
+                {t("labels.withdrawnAssignment", { ns: "evaluation" })}
               </span>
             </div>
           ) : (
