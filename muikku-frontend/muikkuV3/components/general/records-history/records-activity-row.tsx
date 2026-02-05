@@ -7,17 +7,15 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import { localize } from "~/locales/i18n";
 import { useRecordsInfoContext } from "./context/records-info-context";
-import { getAssessmentData } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
+import { AssessmentInformation } from "./assessment-information";
 
 /**
  * RecordsActivityRowProps
@@ -61,199 +59,18 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
     displayNotification,
   });
 
-  /**
-   * Renders assessment information block per subject
-   * @returns JSX.Element
-   */
-  const renderAssessmentsInformations = () => {
-    const { studyActivityItems } = props;
-
-    return (
-      <>
-        {studyActivityItems.map((a, i) => {
-          const {
-            evalStateClassName,
-            evalStateIcon,
-            assessmentIsPending,
-            assessmentIsIncomplete,
-            assessmentIsUnassessed,
-            literalAssessment,
-            assessmentIsInterim,
-          } = getAssessmentData(a);
-
-          // Find subject data, that contains basic information about that subject
-          const subjectCode = a.subject;
-          const courseNumber = a.courseNumber;
-          const subjectName = a.subjectName;
-
-          const subjectCodeString = `(${subjectName}, ${subjectCode}${courseNumber})`;
-
-          // Interim assessments use same style as reqular assessment requests
-          // Only changing factor is whether is it pending or not and its indicated by
-          // label "Interim evaluation request" or "Interim evaluation"
-          if (assessmentIsInterim) {
-            return (
-              <div
-                key={`${subjectCode}-${courseNumber}`}
-                className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-              >
-                <div
-                  className={`workspace-assessment__icon ${evalStateIcon}`}
-                ></div>
-                <div className="workspace-assessment__date">
-                  <span className="workspace-assessment__date-label">
-                    {t("labels.date")}:
-                  </span>
-                  <span className="workspace-assessment__date-data">
-                    {localize.date(a.date)}
-                  </span>
-                </div>
-
-                <div className="workspace-assessment__literal">
-                  <div className="workspace-assessment__literal-label">
-                    {assessmentIsPending
-                      ? t("labels.interimEvaluationRequest", {
-                          ns: "evaluation",
-                        })
-                      : t("labels.interimEvaluation", {
-                          ns: "materials",
-                        })}
-                    :
-                  </div>
-                  <div
-                    className="workspace-assessment__literal-data rich-text"
-                    dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                  ></div>
-                </div>
-              </div>
-            );
-          }
-          // Else block only happens for regular workspace assessments
-          else {
-            if (
-              !assessmentIsUnassessed &&
-              !assessmentIsPending &&
-              !assessmentIsInterim
-            ) {
-              return (
-                <div key={`${subjectCode}-${courseNumber}`}>
-                  {/*
-                   * If it's first assessment element, show loader until assignment info is loaded and then show assignment details if available
-                   * This is to avoid showing multiple assignment details components as one assignment details is for whole workspace
-                   */}
-                  {i === 0 && assignmentInfoLoading && (
-                    <div className="loader-empty" />
-                  )}
-                  {i === 0 && assignmentInfo.length > 0 && (
-                    <div className="form__row">
-                      <AssignmentDetails assignmentInfoList={assignmentInfo} />
-                    </div>
-                  )}
-                  <div
-                    className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-                  >
-                    <div
-                      className={`workspace-assessment__icon ${evalStateIcon}`}
-                    ></div>
-                    <div className="workspace-assessment__subject">
-                      <span className="workspace-assessment__subject-data">
-                        {subjectCodeString}
-                      </span>
-                    </div>
-
-                    <div className="workspace-assessment__date">
-                      <span className="workspace-assessment__date-label">
-                        {t("labels.date")}:
-                      </span>
-
-                      <span className="workspace-assessment__date-data">
-                        {localize.date(a.date)}
-                      </span>
-                    </div>
-
-                    {a.evaluatorName && (
-                      <div className="workspace-assessment__evaluator">
-                        <span className="workspace-assessment__evaluator-label">
-                          {t("labels.assessor", {
-                            ns: "evaluation",
-                          })}
-                          :
-                        </span>
-
-                        <span className="workspace-assessment__evaluator-data">
-                          {a.evaluatorName}
-                        </span>
-                      </div>
-                    )}
-                    <div className="workspace-assessment__grade">
-                      <span className="workspace-assessment__grade-label">
-                        {t("labels.grade", {
-                          ns: "workspace",
-                        })}
-                        :
-                      </span>
-                      <span className="workspace-assessment__grade-data">
-                        {assessmentIsIncomplete
-                          ? t("labels.incomplete", {
-                              ns: "workspace",
-                            })
-                          : a.grade}
-                      </span>
-                    </div>
-
-                    <div className="workspace-assessment__literal">
-                      <div className="workspace-assessment__literal-label">
-                        {t("labels.evaluation", {
-                          ns: "evaluation",
-                          context: "literal",
-                        })}
-                        :
-                      </div>
-                      <div
-                        className="workspace-assessment__literal-data rich-text"
-                        dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              );
-            } else {
-              return (
-                <div
-                  key={`${subjectCode}-${courseNumber}`}
-                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-                >
-                  <div
-                    className={`workspace-assessment__icon ${evalStateIcon}`}
-                  ></div>
-                  <div className="workspace-assessment__date">
-                    <span className="workspace-assessment__date-label">
-                      {t("labels.date")}:
-                    </span>
-                    <span className="workspace-assessment__date-data">
-                      {localize.date(a.date)}
-                    </span>
-                  </div>
-                  <div className="workspace-assessment__literal">
-                    <div className="workspace-assessment__literal-label">
-                      {t("labels.evaluationRequest", {
-                        ns: "evaluation",
-                      })}
-                      :
-                    </div>
-                    <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
-                  </div>
-                </div>
-              );
-            }
-          }
-        })}
-      </>
-    );
-  };
+  const assessmentExist = React.useMemo(
+    () =>
+      studyActivityItems.some(
+        (a) =>
+          a.state === "GRADED" ||
+          a.state === "SUPPLEMENTATIONREQUEST" ||
+          a.state === "INTERIM_EVALUATION" ||
+          a.state === "INTERIM_EVALUATION_REQUEST" ||
+          a.state === "PENDING"
+      ),
+    [studyActivityItems]
+  );
 
   /**
    * handleShowEvaluationClick
@@ -340,14 +157,23 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
 
   const animateOpen = showE ? "auto" : 0;
 
+  const headerModifiers = React.useMemo(() => {
+    const modifiers = ["course"];
+    if (isCombinationWorkspace) {
+      modifiers.push("combination-course");
+    }
+    if (!assessmentExist) {
+      modifiers.push("no-assessment");
+    }
+    return modifiers;
+  }, [assessmentExist, isCombinationWorkspace]);
+
   return (
     <ApplicationListItem className="course course--studies" tabIndex={-1}>
       <ApplicationListItemHeader
-        modifiers={
-          isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
-        }
-        onClick={handleShowEvaluationClick}
-        onKeyDown={handleShowEvaluationKeyDown}
+        modifiers={headerModifiers}
+        onClick={assessmentExist ? handleShowEvaluationClick : undefined}
+        onKeyDown={assessmentExist ? handleShowEvaluationKeyDown : undefined}
         role="button"
         aria-label={
           showE
@@ -463,7 +289,15 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
         height={animateOpen}
         id={"record" + studyActivityItems[0].courseId}
       >
-        {renderAssessmentsInformations()}
+        {studyActivityItems.map((a, i) => (
+          <AssessmentInformation
+            key={`${a.subject}-${a.courseNumber}`}
+            assessment={a}
+            assignmentInfo={assignmentInfo}
+            assignmentInfoLoading={assignmentInfoLoading}
+            showAssignmentInfo={i === 0}
+          />
+        ))}
       </AnimateHeight>
     </ApplicationListItem>
   );

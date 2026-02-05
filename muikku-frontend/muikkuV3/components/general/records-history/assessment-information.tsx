@@ -12,6 +12,7 @@ interface AssessmentInformationProps {
   assessment: StudyActivityItem;
   assignmentInfo: AssignmentInfo[];
   assignmentInfoLoading: boolean;
+  showAssignmentInfo?: boolean;
 }
 
 /**
@@ -20,7 +21,7 @@ interface AssessmentInformationProps {
  * @returns JSX.Element
  */
 export const AssessmentInformation = (props: AssessmentInformationProps) => {
-  const { assessment } = props;
+  const { assessment, showAssignmentInfo = false } = props;
 
   const subjectCode = assessment.subject;
   const courseNumber = assessment.courseNumber;
@@ -35,6 +36,7 @@ export const AssessmentInformation = (props: AssessmentInformationProps) => {
           subjectCode={subjectCode}
           courseNumber={courseNumber}
           subjectName={subjectName}
+          showAssignmentInfo={showAssignmentInfo}
         />
       );
 
@@ -45,6 +47,7 @@ export const AssessmentInformation = (props: AssessmentInformationProps) => {
           subjectCode={subjectCode}
           courseNumber={courseNumber}
           subjectName={subjectName}
+          showAssignmentInfo={showAssignmentInfo}
         />
       );
 
@@ -93,6 +96,8 @@ interface AssessmentInformationSharedProps {
   subjectName: string;
 }
 
+// ASSESSMENT VARIANTS start here
+
 /**
  * AssessmentInformationGradedProps
  */
@@ -100,6 +105,7 @@ interface AssessmentInformationGradedProps
   extends AssessmentInformationSharedProps {
   assignmentInfo: AssignmentInfo[];
   assignmentInfoLoading: boolean;
+  showAssignmentInfo: boolean;
 }
 
 /**
@@ -118,6 +124,7 @@ const AssessmentInformationGraded = (
     subjectCode,
     courseNumber,
     subjectName,
+    showAssignmentInfo,
   } = props;
 
   const subjectCodeString = `(${subjectName}, ${subjectCode}${courseNumber})`;
@@ -130,8 +137,10 @@ const AssessmentInformationGraded = (
 
   return (
     <div key={`${subjectCode}-${courseNumber}`}>
-      {assignmentInfoLoading && <div className="loader-empty" />}
-      {assignmentInfo.length > 0 && (
+      {showAssignmentInfo && assignmentInfoLoading && (
+        <div className="loader-empty" />
+      )}
+      {showAssignmentInfo && assignmentInfo.length > 0 && (
         <div className="form__row">
           <AssignmentDetails assignmentInfoList={assignmentInfo} />
         </div>
@@ -196,6 +205,7 @@ interface AssessmentInformationIncompleteProps
   extends AssessmentInformationSharedProps {
   assignmentInfo: AssignmentInfo[];
   assignmentInfoLoading: boolean;
+  showAssignmentInfo: boolean;
 }
 
 /**
@@ -214,14 +224,17 @@ const AssessmentInformationIncomplete = (
     subjectCode,
     courseNumber,
     subjectName,
+    showAssignmentInfo,
   } = props;
 
   const subjectCodeString = `(${subjectName}, ${subjectCode}${courseNumber})`;
 
   return (
     <div key={`${subjectCode}-${courseNumber}`}>
-      {assignmentInfoLoading && <div className="loader-empty" />}
-      {assignmentInfo.length > 0 && (
+      {showAssignmentInfo && assignmentInfoLoading && (
+        <div className="loader-empty" />
+      )}
+      {showAssignmentInfo && assignmentInfo.length > 0 && (
         <div className="form__row">
           <AssignmentDetails assignmentInfoList={assignmentInfo} />
         </div>
@@ -322,6 +335,8 @@ const AssessmentInformationInterimEvaluation = (
     </div>
   );
 };
+
+// ASSESSMENT VARIANTS end here
 
 // ASSESSMENT REQUEST VARIANTS start here
 

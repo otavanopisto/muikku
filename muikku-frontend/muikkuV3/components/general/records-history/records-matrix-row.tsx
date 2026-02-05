@@ -256,6 +256,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
           assessment={subjectSpecificActivityItem}
           assignmentInfo={assignmentInfo}
           assignmentInfoLoading={assignmentInfoLoading}
+          showAssignmentInfo={true}
         />
       </AnimateHeight>
     </ApplicationListItem>
