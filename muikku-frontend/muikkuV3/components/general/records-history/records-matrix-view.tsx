@@ -38,7 +38,7 @@ interface SubjectGroup {
 /**
  * RecordsListMatrixViewProps
  */
-interface RecordsMatrixListProps {
+interface RecordsMatrixViewProps {
   /** CourseMatrix (structure). When null, nothing is rendered. */
   courseMatrix: CourseMatrix | null;
   /** StudyActivity (student data). When null, rows still render with empty activity. */
@@ -52,15 +52,13 @@ interface RecordsMatrixListProps {
   showCoursesWithoutActivity?: boolean;
 }
 
-type FilterOptions = StudyActivityItemState | "NOACTIVITY";
-
 /**
  * Matrix-based records list. Structure comes from CourseMatrix; StudyActivity is mapped onto it.
  * Rows are grouped by subject; each subject is a collapsible subtitle with its courses listed under it.
  * CourseMatrix and StudyActivity are passed as props so the component can be reused.
  * @param props props
  */
-const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
+const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
   const {
     courseMatrix,
     studyActivity,
@@ -74,12 +72,23 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
     `${status.userId}-records-matrix-search`,
     ""
   );
-  const [activeFilters, setActiveFilters] = useLocalStorage<
-    (FilterOptions | "ALL")[]
-  >(`${status.userId}-records-matrix-filters`, []);
+
+  const [showMatrixStructure, setShowMatrixStructure] =
+    useLocalStorage<boolean>(
+      `${status.userId}-records-matrix-show-structure`,
+      false
+    );
+
+  const [activeStateFilters, setActiveStateFilters] = useLocalStorage<
+    StudyActivityItemState[]
+  >(`${status.userId}-records-matrix-state-filters`, []);
+
+  const [courseTypeFilters, setCourseTypeFilters] = useLocalStorage<
+    ("mandatory" | "optional")[]
+  >(`${status.userId}-records-matrix-course-type-filters`, []);
 
   const showAllMatrixCourses =
-    showCoursesWithoutActivity || activeFilters.includes("ALL");
+    showCoursesWithoutActivity || showMatrixStructure;
 
   const { t } = useTranslation(["studies", "common"]);
 
@@ -96,6 +105,42 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
     [studyActivity]
   );
 
+  const filteredCombinationWorkspaceRows = React.useMemo(() => {
+    if (showMatrixStructure || activeStateFilters.length === 0) {
+      return combinationWorkspaceRows;
+    }
+
+    return combinationWorkspaceRows.filter((row) =>
+      row.some((item) => activeStateFilters.includes(item.state))
+    );
+  }, [combinationWorkspaceRows, activeStateFilters, showMatrixStructure]);
+
+  // Filter "Muut suoritustiedot" by activity state (same logic as subject groups)
+  const filteredNonOPSActivities = React.useMemo(() => {
+    if (showMatrixStructure || activeStateFilters.length === 0) {
+      return nonOPSActivities;
+    }
+
+    return nonOPSActivities.filter((item) =>
+      activeStateFilters.includes(item.state)
+    );
+  }, [nonOPSActivities, activeStateFilters, showMatrixStructure]);
+
+  // If no filters are applied, return all transfered activities
+  // If "TRANSFERRED" filter is applied, return all transfered activities
+  // Otherwise, return empty array
+  const filteredTransferedActivities = React.useMemo(() => {
+    if (
+      showMatrixStructure ||
+      activeStateFilters.length === 0 ||
+      activeStateFilters.includes("TRANSFERRED")
+    ) {
+      return transferedActivities;
+    }
+
+    return [];
+  }, [transferedActivities, activeStateFilters, showMatrixStructure]);
+
   // Enriches matrix rows so that any row whose matched items belong to a combination
   // workspace (same courseId shared by 2+ items) gets the full set of studyActivityItems
   // for that workspace. Call after buildRecordsRowsFromMatrix when you have all items.
@@ -110,6 +155,30 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
     let filtered = showAllMatrixCourses
       ? enrichedRows
       : enrichedRows.filter((row) => row.studyActivityItems.length > 0);
+
+    // Filter rows depending on activity state if complete matrix is not shown
+    if (!showMatrixStructure && activeStateFilters.length > 0) {
+      filtered = filtered.filter((row) =>
+        row.studyActivityItems.some((item) =>
+          activeStateFilters.includes(item.state)
+        )
+      );
+    }
+
+    // Filter rows depending on course type
+    // Only show rows where the course is mandatory if "mandatory" is in the courseTypeFilters
+    // and the course is optional if "optional" is in the courseTypeFilters
+    if (courseTypeFilters.length > 0) {
+      filtered = filtered.filter((row) => {
+        if (row.course.mandatory && courseTypeFilters.includes("mandatory")) {
+          return true;
+        }
+        if (!row.course.mandatory && courseTypeFilters.includes("optional")) {
+          return true;
+        }
+        return false;
+      });
+    }
 
     // Filter rows depending on search value
     const searchTrimmed = searchValue.trim().toLowerCase();
@@ -138,7 +207,14 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
       map.get(key)!.courseRows.push(row);
     }
     return Array.from(map.values());
-  }, [enrichedRows, showAllMatrixCourses, searchValue]);
+  }, [
+    showAllMatrixCourses,
+    enrichedRows,
+    showMatrixStructure,
+    activeStateFilters,
+    courseTypeFilters,
+    searchValue,
+  ]);
 
   // State for expanded subjects
   const [expandedSubjects, setExpandedSubjects] = React.useState<Set<string>>(
@@ -155,7 +231,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   }, [subjectGroups]);
 
   /**
-   * toggleSubject
+   * Toggle subject expansion/collapse
    * @param subjectCode subject code
    */
   const toggleSubject = (subjectCode: string) => {
@@ -168,7 +244,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   };
 
   /**
-   * handleSubjectKeyDown
+   * Handle subject key down event for toggle subject expansion/collapse
    * @param e e
    * @param subjectCode subject code
    */
@@ -183,7 +259,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   };
 
   /**
-   * handleSearchFormElementChange
+   * Handle search form element change
    * @param value value
    */
   const handleSearchFormElementChange = (value: string) => {
@@ -191,25 +267,45 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   };
 
   /**
-   * handleFilterClick
+   * Handle show matrix structure click
+   */
+  const handleShowMatrixStructureClick = () => {
+    setShowMatrixStructure((prev) => !prev);
+  };
+
+  /**
+   * Handle filter click
    * @param e e
    */
   const handleFilterClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as FilterOptions | "ALL";
-    setActiveFilters((prev) =>
+    const value = e.target.value as StudyActivityItemState;
+    setActiveStateFilters((prev) =>
       prev.includes(value) ? prev.filter((f) => f !== value) : [...prev, value]
     );
   };
 
   /**
-   * handleOpenAllSubjectsClick
+   * Handle course type filter click
+   * @param e e
+   */
+  const handleCourseTypeFilterClick = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value as "mandatory" | "optional";
+    setCourseTypeFilters((prev) =>
+      prev.includes(value) ? prev.filter((f) => f !== value) : [...prev, value]
+    );
+  };
+
+  /**
+   * Handle open all subjects click
    */
   const handleOpenAllSubjectsClick = () => {
     setExpandedSubjects(new Set(subjectGroups.map((g) => g.subject.code)));
   };
 
   /**
-   * handleCloseAllSubjectsClick
+   * Handle close all subjects click
    */
   const handleCloseAllSubjectsClick = () => {
     setExpandedSubjects(new Set());
@@ -238,15 +334,87 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   }`;
 
   const filterCheckboxes = [
-    <div key="all" className="filter-item">
+    <div key="filterTitle" className="filter-category">
+      <div className="filter-category__label">Kurssin tila</div>
+    </div>,
+    <div key="transferred" className="filter-item">
       <input
         onChange={handleFilterClick}
-        checked={activeFilters.includes("ALL")}
+        checked={activeStateFilters.includes("TRANSFERRED")}
         type="checkbox"
-        value="ALL"
-        id="filter-all"
+        value="TRANSFERRED"
+        id="filter-transferred"
+        disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-all">Näytä kaikki</label>
+      <label htmlFor="filter-transferred">Hyväksiluettut</label>
+    </div>,
+    <div key="ongoing" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeStateFilters.includes("GRADED")}
+        type="checkbox"
+        value="GRADED"
+        id="filter-graded"
+        disabled={showMatrixStructure}
+      />
+      <label htmlFor="filter-graded">Suoritettu</label>
+    </div>,
+    <div key="ongoing" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeStateFilters.includes("ONGOING")}
+        type="checkbox"
+        value="ONGOING"
+        id="filter-graded"
+        disabled={showMatrixStructure}
+      />
+      <label htmlFor="filter-ongoing">Keskeneräiset</label>
+    </div>,
+    <div key="ongoing" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeStateFilters.includes("SUPPLEMENTATIONREQUEST")}
+        type="checkbox"
+        value="SUPPLEMENTATIONREQUEST"
+        id="filter-graded"
+        disabled={showMatrixStructure}
+      />
+      <label htmlFor="filter-supplementationrequest">Täydennettävät</label>
+    </div>,
+    <div key="filterTitle" className="filter-category">
+      <div className="filter-category__label">Kurssityyppi</div>
+    </div>,
+    <div key="mandatory" className="filter-item">
+      <input
+        onChange={handleCourseTypeFilterClick}
+        checked={courseTypeFilters.includes("mandatory")}
+        type="checkbox"
+        value="mandatory"
+      />
+      <label htmlFor="filter-mandatory">Pakolliset</label>
+    </div>,
+    <div key="optional" className="filter-item">
+      <input
+        onChange={handleCourseTypeFilterClick}
+        checked={courseTypeFilters.includes("optional")}
+        type="checkbox"
+        value="optional"
+      />
+      <label htmlFor="filter-optional">Valinnaiset</label>
+    </div>,
+    <div key="filterTitle" className="filter-category">
+      <div className="filter-category__label">Kokonaisuus</div>
+    </div>,
+    <div key="showMatrixStructure" className="filter-item">
+      <input
+        onChange={handleShowMatrixStructureClick}
+        checked={showMatrixStructure}
+        type="checkbox"
+        id="filter-show-matrix-structure"
+      />
+      <label htmlFor="filter-show-matrix-structure">
+        Näytä opintokokonaisuus
+      </label>
     </div>,
   ];
 
@@ -334,7 +502,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
         })
       ) : (
         <div className="application-list__subheader-container">
-          {searchValue.trim() || activeFilters.length > 0 ? (
+          {searchValue.trim() || activeStateFilters.length > 0 ? (
             <h3 className="application-list__subheader">
               Ei suoritustietoja hakuehdon tai suodattimen mukaan
             </h3>
@@ -345,7 +513,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
       )}
 
       {/* Combination workspace rows related to matrix, so using RecordsMatrixRowCombination */}
-      {combinationWorkspaceRows.length > 0 && (
+      {filteredCombinationWorkspaceRows.length > 0 && (
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">
@@ -369,7 +537,7 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
               }
             />
           </div>
-          {combinationWorkspaceRows.map((row) => (
+          {filteredCombinationWorkspaceRows.map((row) => (
             <RecordsMatrixRowCombination
               key={`combination-workspace-${row[0].courseId}`}
               studyActivityItems={row}
@@ -380,7 +548,8 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
       )}
 
       {/* Transfered activities and non OPS activities, so using RecordsActivityRow and RecordsActivityRowTransfered */}
-      {(transferedActivities.length > 0 || nonOPSActivities.length > 0) && (
+      {(filteredTransferedActivities.length > 0 ||
+        filteredNonOPSActivities.length > 0) && (
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">Muut suoritustiedot</h3>
@@ -405,8 +574,8 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
               }
             />
           </div>
-          {nonOPSActivities.length > 0 &&
-            nonOPSActivities.map((item) => (
+          {filteredNonOPSActivities.length > 0 &&
+            filteredNonOPSActivities.map((item) => (
               <RecordsActivityRow
                 key={`non-ops-activity-item-${item.courseId}`}
                 studyActivityItems={[item]}
@@ -414,8 +583,8 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
                 educationType={studyActivity.educationType}
               />
             ))}
-          {transferedActivities.length > 0 &&
-            transferedActivities.map((tItem, i) => (
+          {filteredTransferedActivities.length > 0 &&
+            filteredTransferedActivities.map((tItem, i) => (
               <RecordsActivityRowTransfered
                 key={`transfered-activity-item-${i}`}
                 studyActivityItem={tItem}
@@ -427,4 +596,4 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
   );
 };
 
-export default RecordsMatrixList;
+export default RecordsMatrixView;

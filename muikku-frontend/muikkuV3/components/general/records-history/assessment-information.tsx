@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
  * AssessmentInformationProps
  */
 interface AssessmentInformationProps {
-  assessment: StudyActivityItem;
+  assessment: StudyActivityItem | null;
   assignmentInfo: AssignmentInfo[];
   assignmentInfoLoading: boolean;
   showAssignmentInfo?: boolean;
@@ -23,11 +23,15 @@ interface AssessmentInformationProps {
 export const AssessmentInformation = (props: AssessmentInformationProps) => {
   const { assessment, showAssignmentInfo = false } = props;
 
-  const subjectCode = assessment.subject;
-  const courseNumber = assessment.courseNumber;
-  const subjectName = assessment.subjectName;
+  if (!assessment) {
+    return null;
+  }
 
-  switch (assessment.state) {
+  const subjectCode = assessment?.subject;
+  const courseNumber = assessment?.courseNumber;
+  const subjectName = assessment?.subjectName;
+
+  switch (assessment?.state) {
     // GRADED, SUPPLEMENTATIONREQUEST, INTERIM_EVALUATION are assessments
     case "GRADED":
       return (

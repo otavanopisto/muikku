@@ -91,7 +91,7 @@ const filterAndSortActivity = (
 /**
  * RecordsListProps
  */
-interface RecordsActivityListProps {
+interface RecordsActivityViewProps {
   studyActivity: StudyActivity;
 }
 
@@ -100,7 +100,7 @@ interface RecordsActivityListProps {
  * @param props props
  * @returns JSX.Element
  */
-const RecordsActivityList: React.FC<RecordsActivityListProps> = (props) => {
+const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
   const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
@@ -212,4 +212,4 @@ const RecordsActivityList: React.FC<RecordsActivityListProps> = (props) => {
   );
 };
 
-export default RecordsActivityList;
+export default RecordsActivityView;
