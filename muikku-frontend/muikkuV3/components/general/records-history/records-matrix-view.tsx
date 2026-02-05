@@ -24,6 +24,8 @@ import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import RecordsActivityRow from "./records-activity-row";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
+import { Instructions } from "../instructions";
+import Link from "../link";
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
@@ -199,6 +201,20 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
     );
   };
 
+  /**
+   * handleOpenAllSubjectsClick
+   */
+  const handleOpenAllSubjectsClick = () => {
+    setExpandedSubjects(new Set(subjectGroups.map((g) => g.subject.code)));
+  };
+
+  /**
+   * handleCloseAllSubjectsClick
+   */
+  const handleCloseAllSubjectsClick = () => {
+    setExpandedSubjects(new Set());
+  };
+
   if (!courseMatrix) {
     return (
       <ApplicationList>
@@ -253,6 +269,15 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
         <Dropdown items={filterCheckboxes}>
           <ButtonPill icon="filter" buttonModifiers={["filter"]} />
         </Dropdown>
+      </div>
+
+      <div className="application-list__subheader-container">
+        <Link className="link" onClick={handleCloseAllSubjectsClick}>
+          {t("actions.closeAll")}
+        </Link>
+        <Link className="link" onClick={handleOpenAllSubjectsClick}>
+          {t("actions.openAll")}
+        </Link>
       </div>
 
       {subjectGroups.length > 0 ? (
@@ -326,6 +351,23 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
             <h3 className="application-list__subheader">
               Yhdistelmäopintojaksot
             </h3>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t("instructions.recordsCombinationWorkspaces", {
+                      ns: "studies",
+                    }),
+                  }}
+                />
+              }
+            />
           </div>
           {combinationWorkspaceRows.map((row) => (
             <RecordsMatrixRowCombination
@@ -342,6 +384,26 @@ const RecordsMatrixList: React.FC<RecordsMatrixListProps> = (props) => {
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">Muut suoritustiedot</h3>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t(
+                      "instructions.recordsTransferredAndOtherActivities",
+                      {
+                        ns: "studies",
+                      }
+                    ),
+                  }}
+                />
+              }
+            />
           </div>
           {nonOPSActivities.length > 0 &&
             nonOPSActivities.map((item) => (

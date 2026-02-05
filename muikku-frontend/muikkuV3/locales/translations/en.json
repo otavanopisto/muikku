@@ -591,6 +591,10 @@
       "studyProgress": "Study progress",
       "transferCredits": "Transfer credits"
     },
+    "instructions": {
+      "recordsCombinationWorkspaces": "Records in combination workspaces",
+      "recordsTransferredAndOtherActivities": "Records in transferred credits and other activities"
+    },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_studies": "Loading records failed. Please try refreshing the page.",
