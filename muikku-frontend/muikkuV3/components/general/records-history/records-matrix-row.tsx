@@ -6,12 +6,9 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import { localize } from "~/locales/i18n";
 import { useRecordsInfoContext } from "./context/records-info-context";
-import { getAssessmentData } from "~/helper-functions/shared";
 import { getCourseDropdownName } from "~/helper-functions/study-matrix";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import {
   CourseMatrixModule,
@@ -23,6 +20,7 @@ import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import Dropdown from "../dropdown";
+import { AssessmentInformation } from "./assessment-information";
 
 /**
  * Props for the matrix-based records row.
@@ -80,6 +78,16 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
 
   const rowId = `record-matrix-${subject.code}-${course.courseNumber}`;
 
+  const assessmentExist = React.useMemo(
+    () =>
+      subjectSpecificActivityItem?.state === "GRADED" ||
+      subjectSpecificActivityItem?.state === "SUPPLEMENTATIONREQUEST" ||
+      subjectSpecificActivityItem?.state === "INTERIM_EVALUATION" ||
+      subjectSpecificActivityItem?.state === "INTERIM_EVALUATION_REQUEST" ||
+      subjectSpecificActivityItem?.state === "PENDING",
+    [subjectSpecificActivityItem]
+  );
+
   /**
    * getSumOfCredits
    * @returns sum of credits
@@ -121,158 +129,6 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   };
 
   /**
-   * renderAssessmentInformation
-   * @returns assessments informations
-   */
-  const renderAssessmentInformation = () => {
-    if (!subjectSpecificActivityItem) return null;
-
-    const {
-      evalStateClassName,
-      evalStateIcon,
-      assessmentIsPending,
-      assessmentIsIncomplete,
-      assessmentIsUnassessed,
-      literalAssessment,
-      assessmentIsInterim,
-    } = getAssessmentData(subjectSpecificActivityItem);
-
-    const subjectCode = subjectSpecificActivityItem.subject;
-    const courseNumber = subjectSpecificActivityItem.courseNumber;
-    const subjectName = subjectSpecificActivityItem.subjectName;
-    const subjectCodeString = `(${subjectName}, ${subjectCode}${courseNumber})`;
-
-    if (assessmentIsInterim) {
-      return (
-        <div
-          key={`${subjectCode}-${courseNumber}`}
-          className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-        >
-          <div className={`workspace-assessment__icon ${evalStateIcon}`}></div>
-          <div className="workspace-assessment__date">
-            <span className="workspace-assessment__date-label">
-              {t("labels.date")}:
-            </span>
-            <span className="workspace-assessment__date-data">
-              {localize.date(subjectSpecificActivityItem.date)}
-            </span>
-          </div>
-          <div className="workspace-assessment__literal">
-            <div className="workspace-assessment__literal-label">
-              {assessmentIsPending
-                ? t("labels.interimEvaluationRequest", {
-                    ns: "evaluation",
-                  })
-                : t("labels.interimEvaluation", { ns: "materials" })}
-              :
-            </div>
-            <div
-              className="workspace-assessment__literal-data rich-text"
-              dangerouslySetInnerHTML={{ __html: literalAssessment }}
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (
-      !assessmentIsUnassessed &&
-      !assessmentIsPending &&
-      !assessmentIsInterim
-    ) {
-      return (
-        <div key={`${subjectCode}-${courseNumber}`}>
-          {assignmentInfoLoading && <div className="loader-empty" />}
-          {assignmentInfo.length > 0 && (
-            <div className="form__row">
-              <AssignmentDetails assignmentInfoList={assignmentInfo} />
-            </div>
-          )}
-          <div
-            className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-          >
-            <div
-              className={`workspace-assessment__icon ${evalStateIcon}`}
-            ></div>
-            <div className="workspace-assessment__subject">
-              <span className="workspace-assessment__subject-data">
-                {subjectCodeString}
-              </span>
-            </div>
-            <div className="workspace-assessment__date">
-              <span className="workspace-assessment__date-label">
-                {t("labels.date")}:
-              </span>
-              <span className="workspace-assessment__date-data">
-                {localize.date(subjectSpecificActivityItem.date)}
-              </span>
-            </div>
-            {subjectSpecificActivityItem.evaluatorName && (
-              <div className="workspace-assessment__evaluator">
-                <span className="workspace-assessment__evaluator-label">
-                  {t("labels.assessor", { ns: "evaluation" })}:
-                </span>
-                <span className="workspace-assessment__evaluator-data">
-                  {subjectSpecificActivityItem.evaluatorName}
-                </span>
-              </div>
-            )}
-            <div className="workspace-assessment__grade">
-              <span className="workspace-assessment__grade-label">
-                {t("labels.grade", { ns: "workspace" })}:
-              </span>
-              <span className="workspace-assessment__grade-data">
-                {assessmentIsIncomplete
-                  ? t("labels.incomplete", { ns: "workspace" })
-                  : subjectSpecificActivityItem.grade}
-              </span>
-            </div>
-            <div className="workspace-assessment__literal">
-              <div className="workspace-assessment__literal-label">
-                {t("labels.evaluation", {
-                  ns: "evaluation",
-                  context: "literal",
-                })}
-                :
-              </div>
-              <div
-                className="workspace-assessment__literal-data rich-text"
-                dangerouslySetInnerHTML={{ __html: literalAssessment }}
-              />
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div
-        key={`${subjectCode}-${courseNumber}`}
-        className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-      >
-        <div className={`workspace-assessment__icon ${evalStateIcon}`}></div>
-        <div className="workspace-assessment__date">
-          <span className="workspace-assessment__date-label">
-            {t("labels.date")}:
-          </span>
-          <span className="workspace-assessment__date-data">
-            {localize.date(subjectSpecificActivityItem.date)}
-          </span>
-        </div>
-        <div className="workspace-assessment__literal">
-          <div className="workspace-assessment__literal-label">
-            {t("labels.evaluationRequest", { ns: "evaluation" })}:
-          </div>
-          <div
-            className="workspace-assessment__literal-data rich-text"
-            dangerouslySetInnerHTML={{ __html: literalAssessment }}
-          />
-        </div>
-      </div>
-    );
-  };
-
-  /**
    * handleShowEvaluationClick
    */
   const handleShowEvaluationClick = () => {
@@ -296,12 +152,17 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
 
   const animateOpen = showE ? "auto" : 0;
 
+  const headerModifiers = React.useMemo(
+    () => (assessmentExist ? ["course"] : ["course", "no-assessment"]),
+    [assessmentExist]
+  );
+
   return (
     <ApplicationListItem className="course course--studies" tabIndex={-1}>
       <ApplicationListItemHeader
-        modifiers={["course"]}
-        onClick={handleShowEvaluationClick}
-        onKeyDown={handleShowEvaluationKeyDown}
+        modifiers={headerModifiers}
+        onClick={assessmentExist ? handleShowEvaluationClick : undefined}
+        onKeyDown={assessmentExist ? handleShowEvaluationKeyDown : undefined}
         role="button"
         aria-label={
           showE
@@ -367,25 +228,35 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
                 </WorkspaceAssignmentsAndDiaryDialog>
               </span>
             )}
-          {hasActivity && !isCombinationWorkspace && (
+          {hasActivity && (
             <>
-              <AssessmentRequestIndicator
-                studyActivityItem={subjectSpecificActivityItem}
-              />
+              {!isCombinationWorkspace && (
+                <AssessmentRequestIndicator
+                  studyActivityItem={subjectSpecificActivityItem}
+                />
+              )}
+
               <AssessmentIndicator
                 studyActivityItem={subjectSpecificActivityItem}
                 isCombinationWorkspace={false}
               />
-              <ActivityIndicator
-                studyActivityItem={subjectSpecificActivityItem}
-              />
+
+              {!isCombinationWorkspace && (
+                <ActivityIndicator
+                  studyActivityItem={subjectSpecificActivityItem}
+                />
+              )}
             </>
           )}
         </div>
       </ApplicationListItemHeader>
 
       <AnimateHeight height={animateOpen} id={rowId}>
-        {renderAssessmentInformation()}
+        <AssessmentInformation
+          assessment={subjectSpecificActivityItem}
+          assignmentInfo={assignmentInfo}
+          assignmentInfoLoading={assignmentInfoLoading}
+        />
       </AnimateHeight>
     </ApplicationListItem>
   );
