@@ -314,8 +314,8 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
   if (!courseMatrix) {
     return (
       <ApplicationList>
-        <div className="application-list__header-container application-list__header-container--sorter">
-          <h3 className="application-list__header application-list__header--sorter">
+        <div className="application-list__header-container">
+          <h3 className="application-list__header">
             {t("content.empty", { ns: "studies", context: "workspaces" })}
           </h3>
         </div>
@@ -346,7 +346,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-transferred"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-transferred">Hyväksiluettut</label>
+      <label htmlFor="filter-transferred">Hyväksiluettu</label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -365,10 +365,10 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         checked={activeStateFilters.includes("ONGOING")}
         type="checkbox"
         value="ONGOING"
-        id="filter-graded"
+        id="filter-ongoing"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-ongoing">Keskeneräiset</label>
+      <label htmlFor="filter-ongoing">Keskeneräinen</label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -376,10 +376,10 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         checked={activeStateFilters.includes("SUPPLEMENTATIONREQUEST")}
         type="checkbox"
         value="SUPPLEMENTATIONREQUEST"
-        id="filter-graded"
+        id="filter-supplementationrequest"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-supplementationrequest">Täydennettävät</label>
+      <label htmlFor="filter-supplementationrequest">Täydennettävä</label>
     </div>,
     <div key="filterTitle" className="filter-category">
       <div className="filter-category__label">Kurssityyppi</div>
@@ -390,8 +390,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         checked={courseTypeFilters.includes("mandatory")}
         type="checkbox"
         value="mandatory"
+        id="filter-mandatory"
       />
-      <label htmlFor="filter-mandatory">Pakolliset</label>
+      <label htmlFor="filter-mandatory">Pakollinen</label>
     </div>,
     <div key="optional" className="filter-item">
       <input
@@ -399,8 +400,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         checked={courseTypeFilters.includes("optional")}
         type="checkbox"
         value="optional"
+        id="filter-optional"
       />
-      <label htmlFor="filter-optional">Valinnaiset</label>
+      <label htmlFor="filter-optional">Valinnainen</label>
     </div>,
     <div key="filterTitle" className="filter-category">
       <div className="filter-category__label">Kokonaisuus</div>
@@ -420,13 +422,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
 
   return (
     <ApplicationList>
-      <div className="application-list__header-container application-list__header-container--sorter">
-        <h3 className="application-list__header application-list__header--sorter">
-          {categoryName}
-        </h3>
-      </div>
-
-      <div className="application-list__subheader-container">
+      <div className="application-list__header application-list__header--filters">
         <SearchFormElement
           updateField={handleSearchFormElementChange}
           name="records-matrix-search"
@@ -434,16 +430,26 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
           placeholder="Hae suoritustietoja"
           value={searchValue}
         />
-        <Dropdown items={filterCheckboxes}>
+        <Dropdown modifier="records-filters" items={filterCheckboxes}>
           <ButtonPill icon="filter" buttonModifiers={["filter"]} />
         </Dropdown>
       </div>
 
-      <div className="application-list__subheader-container">
-        <Link className="link" onClick={handleCloseAllSubjectsClick}>
+      <div className="application-list__description-container">
+        {categoryName}
+      </div>
+
+      <div className="application-list__actions-container">
+        <Link
+          className="link link--application-list"
+          onClick={handleCloseAllSubjectsClick}
+        >
           {t("actions.closeAll")}
         </Link>
-        <Link className="link" onClick={handleOpenAllSubjectsClick}>
+        <Link
+          className="link link--application-list"
+          onClick={handleOpenAllSubjectsClick}
+        >
           {t("actions.openAll")}
         </Link>
       </div>
@@ -471,15 +477,15 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                     : t("wcag.expandRecordInfo", { ns: "studies" })
                 }
               >
-                <h3 className="application-list__subheader">
-                  {subject.name} ({subject.code})
-                </h3>
                 <span
                   className={`application-list__subheader-icon icon-arrow-${
                     isExpanded ? "down" : "right"
                   }`}
                   aria-hidden
                 />
+                <h3 className="application-list__subheader">
+                  {subject.name} ({subject.code})
+                </h3>
               </div>
               <AnimateHeight
                 id={contentId}

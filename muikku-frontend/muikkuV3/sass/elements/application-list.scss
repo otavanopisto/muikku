@@ -27,15 +27,35 @@
 
 .application-list__header-container,
 .application-list__subheader-container {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  margin: 10px 0 0;
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 14px 0;
+    padding: 14px 0 7px;
   }
+}
+
+.application-list__subheader-container {
+  cursor: pointer;
+}
+
+.application-list__actions-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 14px 0 7px;
+  }
+}
+
+.application-list__subheader-icon {
+  font-size: 0.75rem;
+  margin-right: 10px;
+  padding: 2px;
 }
 
 .application-list__header-container--sorter {
@@ -64,6 +84,14 @@
 .application-list__header--sorter {
   font-size: 0.875rem;
   margin-bottom: 0;
+}
+
+.application-list__header--filters {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .application-list__subheader {
@@ -1043,11 +1071,10 @@
 }
 
 .application-list__item-text-body--discussion-message-overflow::before {
-  background:
-    linear-gradient(
-      $color-application-list-item-fade-background 1rem,
-      $color-default
-    );
+  background: linear-gradient(
+    $color-application-list-item-fade-background 1rem,
+    $color-default
+  );
   bottom: 0;
   content: "";
   height: 4rem;
