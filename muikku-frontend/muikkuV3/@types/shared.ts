@@ -2,13 +2,13 @@
 
 import {
   HopsHistoryEntry,
-  StudentStudyActivity,
   WorkspaceSuggestion,
   MatriculationExamEnrolledSubject,
   MatriculationExamFinishedSubject,
   MatriculationExamPlannedSubject,
   MatriculationExamEnrollment,
-  CourseStatus,
+  StudyActivityItemState,
+  StudyActivityItem,
 } from "~/generated/client";
 
 /**
@@ -328,12 +328,11 @@ export const courseFilter = [
   "mandatory",
   "optional",
   "planned",
-  CourseStatus.Ongoing,
-  CourseStatus.Graded,
-  CourseStatus.Supplementationrequest,
-  CourseStatus.Transferred,
-  CourseStatus.SuggestedNext,
-  CourseStatus.SuggestedOptional,
+  StudyActivityItemState.Ongoing,
+  StudyActivityItemState.Graded,
+  StudyActivityItemState.Supplementationrequest,
+  StudyActivityItemState.Transferred,
+  StudyActivityItemState.SuggestedNext,
 ] as const;
 
 export type CourseFilter = (typeof courseFilter)[number];
@@ -368,23 +367,23 @@ export interface StudentActivityByStatus {
   /**
    * List of need supplementation courses
    */
-  needSupplementationList: StudentStudyActivity[];
+  needSupplementationList: StudyActivityItem[];
   /**
    * List of ongoing courses
    */
-  onGoingList: StudentStudyActivity[];
+  onGoingList: StudyActivityItem[];
   /**
    * List of suggested courses for next
    */
-  suggestedNextList: StudentStudyActivity[];
+  suggestedNextList: StudyActivityItem[];
   /**
    * List of transfered courses
    */
-  transferedList: StudentStudyActivity[];
+  transferedList: StudyActivityItem[];
   /**
    * List of graded courses
    */
-  gradedList: StudentStudyActivity[];
+  gradedList: StudyActivityItem[];
   /**
    * skillsAndArt
    */
@@ -414,7 +413,7 @@ export interface UploadingValue {
  * SkillAndArtByKeys
  */
 export interface ActivityBySubject {
-  [key: string]: StudentStudyActivity[];
+  [key: string]: StudyActivityItem[];
 }
 
 /**
@@ -431,7 +430,6 @@ export type HopsWebsocketMessage =
   | "hops:workspace-suggested"
   | "hops:workspace-signup"
   | "hops:alternative-study-options"
-  | "hops:optional-suggestion-updated"
   | "hops:studentchoice-updated";
 
 export type LanguageCode =

@@ -17,6 +17,7 @@ import {
 import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { StudyActivity } from "~/generated/client";
 
 /**
  * CoursepickerWorkspacesProps
@@ -26,6 +27,7 @@ interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
   workspaces: WorkspaceDataType[];
+  studyActivity: StudyActivity;
 }
 
 /**
@@ -82,7 +84,13 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
     return (
       <ApplicationList>
         {this.props.workspaces.map((workspace: WorkspaceDataType) => (
-          <Course key={workspace.id} workspace={workspace} />
+          <Course
+            key={workspace.id}
+            workspace={workspace}
+            studyActivityItems={(this.props.studyActivity?.items ?? []).filter(
+              (item) => item.courseId === workspace.id
+            )}
+          />
         ))}
         {this.props.workspacesState === "LOADING_MORE" ? (
           <ApplicationListItem className="loader-empty" />
@@ -101,6 +109,7 @@ function mapStateToProps(state: StateType) {
     workspacesState: state.workspaces.state,
     workspacesHasMore: state.workspaces.hasMore,
     workspaces: state.workspaces.availableWorkspaces,
+    studyActivity: state.studyActivity.userStudyActivity,
   };
 }
 

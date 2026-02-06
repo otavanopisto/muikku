@@ -6,7 +6,7 @@ public class StudentAddress {
   }
 
   public StudentAddress(String identifier, String studentIdentifier, String street, String postalCode, String city, String region,
-      String country, String type, Boolean defaultAddress) {
+      String country, Boolean defaultAddress) {
     super();
     this.identifier = identifier;
     this.studentIdentifier = studentIdentifier;
@@ -15,7 +15,6 @@ public class StudentAddress {
     this.city = city;
     this.region = region;
     this.country = country;
-    this.type = type;
     this.defaultAddress = defaultAddress;
   }
 
@@ -67,14 +66,6 @@ public class StudentAddress {
     this.country = country;
   }
 
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
   public Boolean getDefaultAddress() {
     return defaultAddress;
   }
@@ -98,6 +89,5 @@ public class StudentAddress {
   private String city;
   private String region;
   private String country;
-  private String type;
   private Boolean defaultAddress;
 }

@@ -1,13 +1,13 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import { WorkspaceActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * ActivityIndicatorProps
  */
 interface ActivityIndicatorProps {
-  credit: WorkspaceActivity;
+  studyActivityItem: StudyActivityItem;
 }
 
 /**
@@ -17,16 +17,19 @@ interface ActivityIndicatorProps {
  * @returns JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
-  const { credit } = props;
+  const { studyActivityItem } = props;
   const { t } = useTranslation(["studies", "common"]);
 
-  if (credit.exercisesTotal + credit.evaluablesTotal === 0) {
+  if (
+    studyActivityItem.exercisesTotal + studyActivityItem.evaluablesTotal ===
+    0
+  ) {
     return null;
   }
 
   return (
     <div className="activity-badge">
-      {credit.evaluablesTotal ? (
+      {studyActivityItem.evaluablesTotal ? (
         <Dropdown
           openByHover
           content={
@@ -34,7 +37,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
               {t("labels.evaluablesDone", {
                 ns: "studies",
                 percent: Math.round(
-                  (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                  (studyActivityItem.evaluablesDone /
+                    studyActivityItem.evaluablesTotal) *
+                    100
                 ),
               })}
             </span>
@@ -48,13 +53,17 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
               aria-label={t("wcag.assignmentsActivity", {
                 ns: "studies",
                 percent: Math.round(
-                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                  (studyActivityItem.exercisesDone /
+                    studyActivityItem.exercisesTotal) *
+                    100
                 ),
               })}
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
                 Math.round(
-                  (credit.evaluablesAnswered / credit.evaluablesTotal) * 100
+                  (studyActivityItem.evaluablesDone /
+                    studyActivityItem.evaluablesTotal) *
+                    100
                 )
               }
             ></div>
@@ -63,7 +72,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
       ) : (
         <div className="activity-badge__item activity-badge__item--empty"></div>
       )}
-      {credit.exercisesTotal ? (
+      {studyActivityItem.exercisesTotal ? (
         <Dropdown
           openByHover
           content={
@@ -71,7 +80,9 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
               {t("labels.exercisesDone", {
                 ns: "studies",
                 percent: Math.round(
-                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                  (studyActivityItem.exercisesDone /
+                    studyActivityItem.exercisesTotal) *
+                    100
                 ),
               })}
             </span>
@@ -85,13 +96,17 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
               aria-label={t("wcag.exercisesActivity", {
                 ns: "studies",
                 percent: Math.round(
-                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                  (studyActivityItem.exercisesDone /
+                    studyActivityItem.exercisesTotal) *
+                    100
                 ),
               })}
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
                 Math.round(
-                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                  (studyActivityItem.exercisesDone /
+                    studyActivityItem.exercisesTotal) *
+                    100
                 )
               }
             ></div>

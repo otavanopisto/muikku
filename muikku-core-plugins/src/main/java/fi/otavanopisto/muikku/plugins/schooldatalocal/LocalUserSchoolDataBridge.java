@@ -53,7 +53,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -511,7 +511,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
@@ -592,6 +592,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier,
+      Long contactInfoId, boolean allowStudyDiscussions) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

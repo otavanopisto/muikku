@@ -61,7 +61,6 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
-import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -879,7 +878,7 @@ public class PyramusUpdater {
             defaultIdentifier = identifier;
           }
           
-          // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+          // List the user's personal emails and add them to the emails list
           Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
           identifierEmails = pyramusEmailsToMuikkuEmails(studentEmails, schoolDataIdentifier);
         } else {
@@ -914,7 +913,7 @@ public class PyramusUpdater {
           defaultIdentifier = identifier;
         }
       
-        // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+        // List the user's personal emails and add them to the emails list
         Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
         emails.put(schoolDataIdentifier, pyramusEmailsToMuikkuEmails(staffMemberEmails, schoolDataIdentifier));
       }
@@ -938,7 +937,7 @@ public class PyramusUpdater {
           defaultIdentifier = identifier;
         }
       
-        // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+        // List the user's personal emails and add them to the emails list
         Email[] studentParentEmails = pyramusClient.get().get("/studentparents/studentparents/" + studentParent.getId() + "/emails", Email[].class);
         emails.put(schoolDataIdentifier, pyramusEmailsToMuikkuEmails(studentParentEmails, schoolDataIdentifier));
       }
@@ -989,19 +988,13 @@ public class PyramusUpdater {
 
     if (pyramusEmails != null) {
       for (Email pyramusEmail : pyramusEmails) {
-        ContactType contactType = pyramusEmail.getContactTypeId() != null ? pyramusClient.get().get("/common/contactTypes/" + pyramusEmail.getContactTypeId(), ContactType.class) : null;
-        if (contactType != null) {
-          boolean userEmailAlreadyInList = identifierEmails.stream().anyMatch(m -> m.getAddress().equals(pyramusEmail.getAddress()));
-          if (!contactType.getNonUnique() && !userEmailAlreadyInList) {
-            identifierEmails.add(new PyramusUserEmail(
-                toIdentifier(identifierMapper.getEmailIdentifier(pyramusEmail.getId())),
-                userIdentifier,
-                pyramusEmail.getAddress(),
-                null, // contact type; irrelevant for updater
-                pyramusEmail.getDefaultAddress()));
-          }
-        } else {
-          logger.log(Level.WARNING, String.format("ContactType of email was not found by id (%d) - email is ignored", pyramusEmail.getContactTypeId()));
+        boolean userEmailAlreadyInList = identifierEmails.stream().anyMatch(m -> m.getAddress().equals(pyramusEmail.getAddress()));
+        if (!userEmailAlreadyInList) {
+          identifierEmails.add(new PyramusUserEmail(
+              toIdentifier(identifierMapper.getEmailIdentifier(pyramusEmail.getId())),
+              userIdentifier,
+              pyramusEmail.getAddress(),
+              pyramusEmail.getDefaultAddress()));
         }
       }
     }

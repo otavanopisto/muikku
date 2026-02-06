@@ -1,12 +1,20 @@
 import * as React from "react";
-import { GuiderStudentStudyProgress } from "~/reducers/main-function/guider";
 import ProgressList from "./components/progress-list";
 import SignUpBehalfStudentDialog from "./dialogs/sign-up-behalf-student";
 import ProgressTable from "./components/progress-table";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { WorkspaceSuggestion } from "~/generated/client";
 import OPSMatrixProblems from "~/components/general/OPS-matrix/OPS-matrix-problems";
 import OPSMatrixIndicators from "~/components/general/OPS-matrix/OPS-matrix-indicators";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
+import {
+  filterActivity,
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+} from "~/helper-functions/study-matrix";
 
 /**
  * ProgressHopsPlanningProps
@@ -16,7 +24,6 @@ interface StudyProgressProps {
   studentUserEntityId: number;
   studyProgrammeName: string;
   curriculumName: string;
-  studyProgress: GuiderStudentStudyProgress;
 }
 
 /**
@@ -30,11 +37,52 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     studentUserEntityId,
     studyProgrammeName,
     curriculumName,
-    studyProgress,
   } = props;
 
   const [workspaceToSignUp, setWorkspaceToSignUp] =
     useState<WorkspaceSuggestion | null>(null);
+
+  const courseMatrix = useSelector(
+    (state: StateType) =>
+      state.guider.currentStudent?.studyProgress.courseMatrix
+  );
+
+  const studyActivityItems = useSelector(
+    (state: StateType) => state.guider.currentStudent?.studyActivity?.items
+  );
+
+  const skillAndArtCourses = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(
+      SKILL_AND_ART_SUBJECTS_CS,
+      studyActivityItems
+    );
+  }, [studyActivityItems]);
+
+  const otherLanguageSubjects = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(LANGUAGE_SUBJECTS_CS, studyActivityItems);
+  }, [studyActivityItems]);
+
+  const otherSubjects = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(
+      OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+      studyActivityItems
+    );
+  }, [studyActivityItems]);
+
+  const studentActivityByStatus = useMemo(() => {
+    if (!studyActivityItems)
+      return {
+        needSupplementationList: [],
+        onGoingList: [],
+        suggestedNextList: [],
+        transferedList: [],
+        gradedList: [],
+      };
+    return filterActivity(studyActivityItems);
+  }, [studyActivityItems]);
 
   /**
    * Handles sign up behalf
@@ -48,8 +96,8 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     <>
       <div className="hops__form-element-container  swiper-no-swiping">
         <OPSMatrixProblems
-          matrixType={studyProgress.courseMatrix.type}
-          matrixProblems={studyProgress.courseMatrix.problems}
+          matrixType={courseMatrix?.type}
+          matrixProblems={courseMatrix?.problems}
         />
       </div>
 
@@ -62,16 +110,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             studentUserEntityId={studentUserEntityId}
             studyProgrammeName={studyProgrammeName}
             curriculumName={curriculumName}
-            suggestedNextList={studyProgress.suggestedNextList}
-            onGoingList={studyProgress.onGoingList}
-            transferedList={studyProgress.transferedList}
-            gradedList={studyProgress.gradedList}
-            needSupplementationList={studyProgress.needSupplementationList}
-            skillsAndArt={studyProgress.skillsAndArt}
-            otherLanguageSubjects={studyProgress.otherLanguageSubjects}
-            otherSubjects={studyProgress.otherSubjects}
-            studentOptions={studyProgress.options}
-            matrix={studyProgress.courseMatrix}
+            suggestedNextList={studentActivityByStatus.suggestedNextList}
+            onGoingList={studentActivityByStatus.onGoingList}
+            transferedList={studentActivityByStatus.transferedList}
+            gradedList={studentActivityByStatus.gradedList}
+            needSupplementationList={
+              studentActivityByStatus.needSupplementationList
+            }
+            skillsAndArt={skillAndArtCourses}
+            otherLanguageSubjects={otherLanguageSubjects}
+            otherSubjects={otherSubjects}
+            matrix={courseMatrix}
             onSignUpBehalf={handleSignUpBehalf}
           />
         </div>
@@ -84,16 +133,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             studentUserEntityId={studentUserEntityId}
             curriculumName={curriculumName}
             studyProgrammeName={studyProgrammeName}
-            suggestedNextList={studyProgress.suggestedNextList}
-            onGoingList={studyProgress.onGoingList}
-            transferedList={studyProgress.transferedList}
-            gradedList={studyProgress.gradedList}
-            needSupplementationList={studyProgress.needSupplementationList}
-            skillsAndArt={studyProgress.skillsAndArt}
-            otherLanguageSubjects={studyProgress.otherLanguageSubjects}
-            otherSubjects={studyProgress.otherSubjects}
-            studentOptions={studyProgress.options}
-            matrix={studyProgress.courseMatrix}
+            suggestedNextList={studentActivityByStatus.suggestedNextList}
+            onGoingList={studentActivityByStatus.onGoingList}
+            transferedList={studentActivityByStatus.transferedList}
+            gradedList={studentActivityByStatus.gradedList}
+            needSupplementationList={
+              studentActivityByStatus.needSupplementationList
+            }
+            skillsAndArt={skillAndArtCourses}
+            otherLanguageSubjects={otherLanguageSubjects}
+            otherSubjects={otherSubjects}
+            matrix={courseMatrix}
             onSignUpBehalf={handleSignUpBehalf}
           />
         </div>
