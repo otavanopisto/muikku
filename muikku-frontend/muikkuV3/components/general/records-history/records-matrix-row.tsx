@@ -173,7 +173,9 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
         aria-controls={rowId}
         tabIndex={0}
       >
-        <span className="application-list__header-icon icon-books"></span>
+        <span
+          className={`${hasActivity ? "application-list__header-icon" : "application-list__header-icon application-list__header-icon--inactive"}  icon-books`}
+        ></span>
         <div className="application-list__header-primary">
           <div className="application-list__header-primary-title">{title}</div>
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">

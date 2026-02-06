@@ -78,6 +78,12 @@
     font-family: "muikku";
     font-size: 0.875rem;
   }
+
+  input[disabled],
+  input[disabled] + label {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
 }
 
 .filter-item--assignments {

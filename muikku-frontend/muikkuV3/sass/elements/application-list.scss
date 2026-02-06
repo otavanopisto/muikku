@@ -164,6 +164,7 @@
 }
 
 .application-list__header-icon {
+  align-self: flex-start;
   color: $color-course-icon;
   display: inline-flex;
   flex-basis: auto;
@@ -175,6 +176,10 @@
   &.state-UNPUBLISHED {
     color: $color-disabled;
   }
+}
+
+.application-list__header-icon--inactive {
+  color: $color-disabled;
 }
 
 .application-list__header-icon--notification-1 {
