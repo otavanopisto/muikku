@@ -716,6 +716,14 @@ public class EvaluationController {
 
     return evaluation;
   }
+  
+  public void archiveWorkspaceNodeEvaluation(WorkspaceNodeEvaluation workspaceNodeEvaluation) {
+    workspaceNodeEvaluationDAO.archive(workspaceNodeEvaluation);
+  }
+  
+  public void deleteWorkspaceNodeEvaluation(WorkspaceNodeEvaluation workspaceNodeEvaluation) {
+    workspaceNodeEvaluationDAO.delete(workspaceNodeEvaluation);
+  }
 
   public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
     supplementationRequestDAO.archive(supplementationRequest);
@@ -843,6 +851,7 @@ public class EvaluationController {
       evaluation.setDate(workspaceNodeEvaluation.getEvaluated());
       evaluation.setText(workspaceNodeEvaluation.getVerbalAssessment());
       evaluation.setPoints(workspaceNodeEvaluation.getPoints());
+      evaluation.setArchived(workspaceNodeEvaluation.isArchived());
       // Only assessments have grading info
       if (evaluationType == WorkspaceNodeEvaluationType.GRADED) {
         GradingScale gradingScale = gradingController.findGradingScale(
