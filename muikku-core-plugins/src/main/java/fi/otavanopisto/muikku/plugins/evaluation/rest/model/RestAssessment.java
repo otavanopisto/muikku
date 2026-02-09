@@ -15,8 +15,7 @@ public class RestAssessment {
       String verbalAssessment,
       Date assessmentDate,
       Boolean passing,
-      Double points,
-      boolean archived) {
+      Double points) {
     this.identifier = identifier;
     this.assessorIdentifier = assessorIdentifier;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
@@ -25,7 +24,6 @@ public class RestAssessment {
     this.assessmentDate = assessmentDate;
     this.passing = passing;
     this.points = points;
-    this.archived = archived;
   }
 
   public String getIdentifier() {
@@ -92,14 +90,6 @@ public class RestAssessment {
     this.points = points;
   }
 
-  public boolean isArchived() {
-    return archived;
-  }
-
-  public void setArchived(boolean archived) {
-    this.archived = archived;
-  }
-
   private String identifier;
   private String assessorIdentifier;
   private String gradingScaleIdentifier;
@@ -108,6 +98,5 @@ public class RestAssessment {
   private Date assessmentDate;
   private Boolean passing;
   private Double points;
-  private boolean archived;
 
 }

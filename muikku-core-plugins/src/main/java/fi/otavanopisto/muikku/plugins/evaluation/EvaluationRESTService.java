@@ -1897,6 +1897,7 @@ public class EvaluationRESTService extends PluginRESTService {
         gradingScaleStr,
         evaluation.getVerbalAssessment(),
         passingGrade,
+        evaluation.isArchived(),
         audioAssessments);
   }
   
