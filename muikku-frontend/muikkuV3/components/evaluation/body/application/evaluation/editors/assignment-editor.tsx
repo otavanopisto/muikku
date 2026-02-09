@@ -406,10 +406,28 @@ class AssignmentEditor extends SessionStateComponent<
 
     try {
       await evaluationApi.deleteWorkspaceNodeAssessment({
-        workspaceEntityId: workspaceEntityId,
+        workspaceId: workspaceEntityId,
         userEntityId: userEntityId,
+        workspaceNodeId: this.props.materialAssignment.id,
         assessmentId: this.props.compositeReplies.evaluationInfo.id,
       });
+      notificationActions.displayNotification(
+        t("notifications.deleteSuccess", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+        }),
+        "success"
+      );
+      this.setState(
+        {
+          locked: false,
+        },
+        () => {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        }
+      );
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
@@ -424,7 +442,9 @@ class AssignmentEditor extends SessionStateComponent<
         "error"
       );
 
-      this.setState({ locked: false });
+      this.setState({
+        locked: false,
+      });
     }
   };
 
