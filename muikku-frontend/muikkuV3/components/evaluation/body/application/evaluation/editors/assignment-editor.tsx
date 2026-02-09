@@ -393,6 +393,10 @@ class AssignmentEditor extends SessionStateComponent<
     }
   };
 
+  /**
+   * deleteAssignmentEvaluation
+   * Deletes the assignment evaluation from server
+   */
   deleteAssignmentEvaluation = async () => {
     const evaluationApi = MApi.getEvaluationApi();
 
@@ -418,6 +422,13 @@ class AssignmentEditor extends SessionStateComponent<
         }),
         "success"
       );
+
+      this.props.updateCurrentStudentCompositeRepliesData({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceMaterialId: this.props.materialAssignment.id,
+      });
+
       this.setState(
         {
           locked: false,
