@@ -13999,6 +13999,7 @@ components:
         - gradeIdentifier
         - assessmentDate
         - passing
+        - archived
         - verbalAssessment
       properties:
         identifier:
@@ -14012,6 +14013,8 @@ components:
         assessmentDate:
           type: string
         passing:
+          type: boolean
+        archived:
           type: boolean
         verbalAssessment:
           type: string
@@ -16239,6 +16242,7 @@ components:
         - grade
         - date
         - audioAssessments
+        - archived
       properties:
         id:
           description: The id of the evaluation
@@ -16272,6 +16276,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AudioAssessment"
+        archived:
+          description: Indicates whether the workspace node evaluation has been archived
+          type: boolean
 
     MaterialAnswer:
       type: object
@@ -16473,6 +16480,9 @@ components:
           type: string
         passed:
           description: Whether the student passed evaluation
+          type: boolean
+        archived:
+          description: Whether workspace node evaluation has been archived
           type: boolean
         audioAssessments:
           description: Audio assessments of the material
