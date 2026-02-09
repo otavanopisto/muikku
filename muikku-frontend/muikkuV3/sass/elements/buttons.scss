@@ -1627,6 +1627,16 @@
   }
 }
 
+.button--dialog-delete {
+  background-color: $color-button-fatal-background;
+  color: $color-button-fatal-text;
+  order: 1;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+}
+
 .button--dialog-cancel,
 .button--form-element-cancel {
   background-color: $color-button-cancel-background;
