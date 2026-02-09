@@ -120,6 +120,14 @@ public class WorkspaceNodeEvaluation {
     this.points = points;
   }
 
+  public boolean isArchived() {
+    return archived;
+  }
+
+  public void setArchived(boolean archived) {
+    this.archived = archived;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -162,5 +170,9 @@ public class WorkspaceNodeEvaluation {
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
   private WorkspaceNodeEvaluationType evaluationType;
+  
+  @NotNull
+  @Column (nullable = false)
+  private boolean archived;
 
 }

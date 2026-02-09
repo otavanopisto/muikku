@@ -11,9 +11,9 @@ public class RestAssessmentWithAudio extends RestAssessment {
   }
 
   public RestAssessmentWithAudio(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier,
-      String verbalAssessment, Date assessmentDate, Boolean passing, Double points, WorkspaceNodeEvaluationType evaluationType,
+      String verbalAssessment, Date assessmentDate, Boolean passing, Double points, boolean archived, WorkspaceNodeEvaluationType evaluationType,
       List<RestAssignmentEvaluationAudioClip> audioAssessments) {
-    super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing, points);
+    super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing, points, archived);
     this.evaluationType = evaluationType;
     this.audioAssessments = audioAssessments;
   }

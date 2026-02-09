@@ -31,6 +31,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -650,6 +651,7 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
         evaluation.getPoints(),
+        evaluation.isArchived(),
         evaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
@@ -788,9 +790,50 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
         evaluation.getPoints(),
+        evaluation.isArchived(),
         evaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
+  }
+  
+  @DELETE
+  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/node/{WORKSPACENODEID}/assessment/{ASSESSMENTID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteWorkspaceNodeAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @PathParam("ASSESSMENTID") Long assessmentId) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // User entity
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace node
+
+    WorkspaceNode workspaceNode = workspaceNodeDAO.findById(workspaceNodeId);
+    if (workspaceNode == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Find workspace node evaluation
+    
+    WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluation(assessmentId);
+    if (evaluation == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Actual deletion permission only for administrators
+    
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+    } else {
+      evaluationController.archiveWorkspaceNodeEvaluation(evaluation);
+    }
+    
+    return Response.noContent().build();
   }
   
   @POST
