@@ -36,6 +36,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
+import PromptDialog from "~/components/general/prompt-dialog";
 
 /**
  * AssignmentEditorProps
@@ -392,6 +393,41 @@ class AssignmentEditor extends SessionStateComponent<
     }
   };
 
+  deleteAssignmentEvaluation = async () => {
+    const evaluationApi = MApi.getEvaluationApi();
+
+    this.setState({
+      locked: true,
+    });
+
+    const { t } = this.props;
+
+    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
+
+    try {
+      await evaluationApi.deleteWorkspaceNodeAssessment({
+        workspaceEntityId: workspaceEntityId,
+        userEntityId: userEntityId,
+        assessmentId: this.props.compositeReplies.evaluationInfo.id,
+      });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      notificationActions.displayNotification(
+        t("notifications.deleteError", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+          error: err.message,
+        }),
+        "error"
+      );
+
+      this.setState({ locked: false });
+    }
+  };
+
   /**
    * handleSaveAssignment
    * @param e e
@@ -600,6 +636,17 @@ class AssignmentEditor extends SessionStateComponent<
       renderGradingOptions.push(missingOption);
     }
 
+    const removeEvaluation = (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: t("content.removing", {
+            ns: "evaluation",
+            context: "assignmentEvaluation",
+            assignmentTitle: this.props.materialAssignment.title || "",
+          }),
+        }}
+      ></span>
+    );
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -768,6 +815,23 @@ class AssignmentEditor extends SessionStateComponent<
             >
               {t("actions.remove", { context: "draft" })}
             </Button>
+          )}
+          {this.props.materialEvaluation && (
+            <PromptDialog
+              title={t("actions.removeAssignmentEvaluation", {
+                ns: "evaluation",
+              })}
+              content={removeEvaluation}
+              onExecute={this.deleteAssignmentEvaluation}
+            >
+              <Button
+                buttonModifiers="dialog-delete"
+                disabled={this.state.locked || this.props.isRecording}
+                onClick={this.handleDeleteEditorDraft}
+              >
+                {t("actions.remove", { context: "assessment" })}
+              </Button>
+            </PromptDialog>
           )}
         </div>
 
