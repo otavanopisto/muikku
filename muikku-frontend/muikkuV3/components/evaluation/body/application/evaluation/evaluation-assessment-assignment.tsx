@@ -630,24 +630,22 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {this.props.assigment.assignmentType === "EVALUATED" ||
-            this.props.assigment.assignmentType === "EXERCISE" ? (
+            {((this.props.assigment.assignmentType === "EXERCISE" &&
               compositeReply &&
-              compositeReply.state !== "UNANSWERED" &&
-              compositeReply.state !== "WITHDRAWN" ? (
-                <ButtonPill
-                  aria-label={t("actions.evaluateAssignment", {
-                    ns: "evaluation",
-                  })}
-                  onClick={this.handleOpenSlideDrawer(
-                    this.props.assigment.id,
-                    this.props.assigment.assignmentType
-                  )}
-                  buttonModifiers={["evaluate"]}
-                  icon="evaluate"
-                />
-              ) : null
-            ) : null}
+              compositeReply.state !== "WITHDRAWN") ||
+              this.props.assigment.assignmentType === "EVALUATED") && (
+              <ButtonPill
+                aria-label={t("actions.evaluateAssignment", {
+                  ns: "evaluation",
+                })}
+                onClick={this.handleOpenSlideDrawer(
+                  this.props.assigment.id,
+                  this.props.assigment.assignmentType
+                )}
+                buttonModifiers={["evaluate"]}
+                icon="evaluate"
+              />
+            )}
           </div>
         </div>
         <SlideDrawer

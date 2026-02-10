@@ -44,7 +44,7 @@ interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: NodeEvaluation;
   materialAssignment: WorkspaceMaterial;
-  compositeReplies: MaterialCompositeReply;
+  compositeReplies?: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
@@ -118,7 +118,7 @@ class AssignmentEditor extends SessionStateComponent<
     const draftId = `${selectedAssessment.userEntityId}-${materialAssignment.id}`;
 
     const { evaluationGradeSystem } = props.evaluations;
-    const { evaluationInfo } = compositeReplies;
+    const { evaluationInfo } = compositeReplies || {};
 
     const activeGradeSystems = evaluationGradeSystem.filter(
       (gSystem) => gSystem.active
@@ -216,7 +216,7 @@ class AssignmentEditor extends SessionStateComponent<
   componentDidMount = () => {
     const { materialEvaluation, compositeReplies } = this.props;
     const { evaluationGradeSystem } = this.props.evaluations;
-    const { evaluationInfo } = compositeReplies;
+    const { evaluationInfo } = compositeReplies || {};
     const { activeGradeSystems } = this.state;
 
     // Default values
@@ -427,8 +427,8 @@ class AssignmentEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        identifier: compositeReplies.evaluationInfo
-          ? compositeReplies.evaluationInfo.id.toString()
+        identifier: compositeReplies?.evaluationInfo
+          ? compositeReplies?.evaluationInfo.id.toString()
           : undefined,
         evaluationType: this.state.evaluationType,
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -441,7 +441,7 @@ class AssignmentEditor extends SessionStateComponent<
       },
       materialId: this.props.materialAssignment.materialId,
       defaultGrade,
-      edit: !!compositeReplies.evaluationInfo,
+      edit: !!compositeReplies?.evaluationInfo || false,
     });
   };
 
