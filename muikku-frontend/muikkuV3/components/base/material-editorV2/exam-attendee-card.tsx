@@ -140,7 +140,7 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
 
   return (
     <div
-      className={`material-editor__attendee-card ${isEditing ? "material-editor__attendee-card--editing" : ""}`}
+      className={`material-editor__attendee-item ${isEditing ? "material-editor__attendee-item--editing" : ""}`}
     >
       {/* Card Header */}
       <div className="material-editor__attendee-header">

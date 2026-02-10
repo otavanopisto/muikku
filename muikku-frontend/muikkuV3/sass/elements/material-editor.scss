@@ -139,7 +139,7 @@
 
 .material-editor__producer {
   align-items: center;
-  border: 1px solid  lighten($color-material-page-admin-panel-main-color, 20%);
+  border: 1px solid lighten($color-material-page-admin-panel-main-color, 20%);
   border-radius: 2px;
   display: flex;
   flex-basis: auto;
@@ -169,7 +169,8 @@
 }
 
 .material-editor__category-header,
-.material-editor__attendee-header {
+.material-editor__attendee-header,
+.material-editor__smowl-header {
   align-items: center;
   border-bottom: 1px solid $color-default-separator-border;
   display: flex;
@@ -221,18 +222,20 @@
   justify-content: space-between;
 }
 
-.material-editor__attendee-header {
-  display: flex;
-  flex-flow: row nowrap;
+.material-editor__attendee-header,
+.material-editor__category-header,
+.material-editor__smowl-header {
   gap: 10px;
-  justify-content: space-between;
   width: 100%;
 }
 
-.material-editor__attendee-header-title {
+.material-editor__attendee-header-title,
+.material-editor__category-header-title,
+.material-editor__smowl-header-title {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 0;
+  padding: 8px 0;
 }
 
 .material-editor__attendee-line {
@@ -241,20 +244,21 @@
   flex-shrink: 1;
 }
 
-.material-editor__attendee-header-actions {
+.material-editor__attendee-header-actions,
+.material-editor__category-header-actions {
   display: flex;
   flex-flow: row nowrap;
   gap: 5px;
 }
 
-.material-editor__attendees-cards {
+.material-editor__attendees-items {
   display: flex;
   flex-flow: column nowrap;
   gap: 10px;
   justify-content: flex-start;
 }
 
-.material-editor__attendee-card {
+.material-editor__attendee-item {
   background: $color-default-lighter-generic-background;
   border-radius: 10px;
   padding: 10px;
@@ -280,7 +284,7 @@
   display: inline-flex;
   font-weight: 600;
   padding: 5px 10px;
-  width: auto;;
+  width: auto;
 }
 
 .material-editor__attendee-status--completed {
@@ -308,4 +312,119 @@
   gap: 10px;
   justify-content: center;
   padding: 10px;
+}
+
+.material-editor__smowl {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+  margin: 20px 0;
+}
+
+.material-editor__smowl-item {
+  background: $color-default-lighter-generic-background;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.material-editor__smowl-body {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.material-editor__smowl-option-container {
+  border-top: 1px solid $color-default-separator-border;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  padding: 10px 0 0;
+
+  &:first-child {
+    border-top: 0;
+    padding: 0;
+  }
+}
+
+.material-editor__smowl-option {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5px;
+  justify-content: flex-start;
+  padding: 10px 0;
+}
+
+.material-editor__smowl-expand-button {
+  background: transparent;
+  border: 0;
+  color: $color-primary;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 5px;
+}
+
+.material-editor__smowl-label {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 600;
+}
+
+.material-editor__smowl-alarms-list {
+  background: $color-default;
+  border-radius: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.material-editor__smowl-option-content {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.material-editor__smowl-alarms-section {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+  padding: 10px 0;
+}
+
+// Section label, used in the allowed actions and allowed programs sections.
+.material-editor__smowl-alarms-label {
+  font-weight: 600;
+  width: 100%;
+}
+
+// Single alarm item, used in the allowed actions and allowed programs sections.
+.material-editor__smowl-alarm-item {
+  align-items: center;
+  background: $color-default;
+  border-radius: 20px;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+  padding: 5px 5px 5px 10px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: darken($color-default, 5%);
+  }
+}
+
+// Single alarm label, used in the allowed actions and allowed programs sections.
+.material-editor__smowl-alarm-label {
+  cursor: pointer;
 }

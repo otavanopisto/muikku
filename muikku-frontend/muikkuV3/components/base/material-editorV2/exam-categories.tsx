@@ -185,24 +185,28 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
       {categories.map((category, index) => (
         <div key={index} className="material-editor__category-item">
           <div className="material-editor__category-header">
-            {t("labels.category", {
-              ns: "common",
-            })}{" "}
-            {index + 1}
-            <Dropdown
-              openByHover
-              key="frontpage"
-              content={t("actions.remove", {
+            <div className="material-editor__category-header-title">
+              {t("labels.category", {
                 ns: "common",
-              })}
-            >
-              <Button
-                icon="trash"
-                buttonModifiers={"remove-extra-row"}
-                onClick={() => removeCategory(index)}
-                disabled={disabled}
-              ></Button>
-            </Dropdown>
+              })}{" "}
+              {index + 1}
+            </div>
+            <div className="material-editor__category-header-actions">
+              <Dropdown
+                openByHover
+                key="frontpage"
+                content={t("actions.remove", {
+                  ns: "common",
+                })}
+              >
+                <Button
+                  icon="trash"
+                  buttonModifiers={"remove-extra-row"}
+                  onClick={() => removeCategory(index)}
+                  disabled={disabled}
+                ></Button>
+              </Dropdown>
+            </div>
           </div>
 
           <div className="material-editor__category-fields">

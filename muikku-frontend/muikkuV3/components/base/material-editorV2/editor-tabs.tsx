@@ -931,7 +931,7 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
                 ns: "exams",
               })}
             </h3>
-            <div className="material-editor__attendees-cards">
+            <div className="material-editor__attendees-items">
               {examAttendees.map((attendee) => (
                 <ExamAttendeeCard
                   key={attendee.id}
@@ -962,7 +962,7 @@ export const ExamSmowlIntegrationTab = (
   props: ExamSmowlIntegrationTabProps
   // eslint-disable-next-line arrow-body-style
 ) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div className="material-editor__content-wrapper">
@@ -972,7 +972,7 @@ export const ExamSmowlIntegrationTab = (
       />
       <div className="material-editor__sub-section">
         <h2 className="material-editor__sub-title">
-          Smowl Integration
+          Smowl asetukset
           <Instructions
             modifier="instructions"
             alignSelfVertically="top"
@@ -980,21 +980,12 @@ export const ExamSmowlIntegrationTab = (
             closeOnClick={true}
             closeOnOutsideClick={true}
             persistent
-            content={
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: t("content.examParticipantsInfo", {
-                    ns: "exams",
-                  }),
-                }}
-              />
-            }
+            content="Jotain jotain"
           />
         </h2>
-      </div>
-
-      <div className="material-editor__sub-section">
-        <SmowlActivity />
+        <div className="material-editor__smowl">
+          <SmowlActivity />
+        </div>
       </div>
     </div>
   );

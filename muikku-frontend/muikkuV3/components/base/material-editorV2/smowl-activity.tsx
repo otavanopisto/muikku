@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import "~/sass/elements/smowl.scss";
 import AnimateHeight from "react-animate-height";
 import {
   ActivityConfig,
@@ -299,64 +298,62 @@ const SmowlActivity = (props: SmowlActivityProps) => {
    * @returns The content of the smowl activity
    */
   const renderContent = () => (
-    <div className="smowl-activity">
-      <div className="smowl-activity__card">
-        <div className="smowl-activity_basic-info">
-          <h2 className="smowl-activity__title">
-            Activity: {smowlActivityDraft?.displayName}
-          </h2>
+    <div className="material-editor__smowl-item">
+      <div className="material-editor__smowl-header">
+        <div className="material-editor__smowl-header-title">
+          Activity: {smowlActivityDraft?.displayName}
         </div>
-        <div
-          className={`smowl-activity_monitoring-services ${
-            !smowlActivityDraft?.enabled
-              ? "smowl-activity_monitoring-services--disabled"
-              : ""
-          }`}
-        >
-          <div className="smowl-activity__option-container">
-            <div className="smowl-activity__option">
-              <span className="smowl-activity__icon icon-exams"></span>
-              <label
-                htmlFor="computer-monitoring-enabled"
-                className="smowl-activity__label"
-              >
-                Front Camera käytössä
-              </label>
-              <button
-                type="button"
-                id="computer-monitoring-enabled"
-                className={`button-pill button-pill--switch-horizontal ${
-                  smowlActivityDraft?.FrontCamera
-                    ? "button-pill--switch-horizontal-active"
-                    : ""
-                }`}
-                disabled={!smowlActivityDraft?.enabled}
-              />
-              <button
-                type="button"
-                className={`smowl-activity__expand-button ${
-                  expandedOptions["front-camera"]
-                    ? "icon-arrow-down"
-                    : "icon-arrow-right"
-                }`}
-                onClick={() => toggleOptionExpanded("front-camera")}
-                aria-expanded={expandedOptions["front-camera"]}
-              />
-            </div>
-            <AnimateHeight
-              duration={300}
-              height={expandedOptions["front-camera"] ? "auto" : 0}
+      </div>
+      <div
+        className={`material-editor__smowl-body ${
+          !smowlActivityDraft?.enabled
+            ? "material-editor__smowl-body--disabled"
+            : ""
+        }`}
+      >
+        <div className="material-editor__smowl-option-container">
+          <div className="material-editor__smowl-option">
+            <label
+              htmlFor="computer-monitoring-enabled"
+              className="material-editor__smowl-label"
             >
-              <div
-                className={`smowl-activity__option-content ${
-                  !smowlActivityDraft?.enabled ||
-                  !smowlActivityDraft?.FrontCamera
-                    ? "smowl-activity__option-content--disabled"
-                    : ""
-                }`}
-              >
-                {smowlFrontCameraAlarmDraft?.alarms ? (
-                  <div className="smowl-activity__alarms-list">
+              Webbi kamera vaadittuna
+            </label>
+            <button
+              type="button"
+              id="computer-monitoring-enabled"
+              className={`button-pill button-pill--switch-horizontal ${
+                smowlActivityDraft?.FrontCamera
+                  ? "button-pill--switch-horizontal-active"
+                  : ""
+              }`}
+              disabled={!smowlActivityDraft?.enabled}
+            />
+            <button
+              type="button"
+              className={`material-editor__smowl-expand-button ${
+                expandedOptions["front-camera"]
+                  ? "icon-arrow-down"
+                  : "icon-arrow-right"
+              }`}
+              onClick={() => toggleOptionExpanded("front-camera")}
+              aria-expanded={expandedOptions["front-camera"]}
+            />
+          </div>
+          <AnimateHeight
+            duration={300}
+            height={expandedOptions["front-camera"] ? "auto" : 0}
+          >
+            <div
+              className={`material-editor__smowl-option-content ${
+                !smowlActivityDraft?.enabled || !smowlActivityDraft?.FrontCamera
+                  ? "material-editor__smowl-option-content--disabled"
+                  : ""
+              }`}
+            >
+              {smowlFrontCameraAlarmDraft?.alarms ? (
+                <div className="material-editor__smowl-alarms-section">
+                  <div className="material-editor__smowl-alarms-list">
                     {(
                       Object.keys(smowlFrontCameraAlarmDraft.alarms) as Array<
                         keyof typeof smowlFrontCameraAlarmDraft.alarms
@@ -364,11 +361,11 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                     ).map((alarmKey) => (
                       <div
                         key={alarmKey}
-                        className="smowl-activity__alarm-item"
+                        className="material-editor__smowl-alarm-item"
                       >
                         <label
                           htmlFor={`alarm-${alarmKey}`}
-                          className="smowl-activity__alarm-label"
+                          className="material-editor__smowl-alarm-label"
                         >
                           {getFrontCameraAlarmLabel(alarmKey)}
                         </label>
@@ -390,191 +387,186 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="smowl-activity__option-placeholder">
-                    <p>No front camera alarms configuration available.</p>
-                  </div>
-                )}
-              </div>
-            </AnimateHeight>
-          </div>
-          <div className="smowl-activity__option-container">
-            <div className="smowl-activity__option">
-              <span className="smowl-activity__icon icon-exams"></span>
-              <label
-                htmlFor="computer-monitoring-enabled"
-                className="smowl-activity__label"
-              >
-                Computer Monitoring käytössä
-              </label>
-              <button
-                type="button"
-                id="computer-monitoring-enabled"
-                className={`button-pill button-pill--switch-horizontal ${
-                  smowlActivityDraft?.ComputerMonitoring
-                    ? "button-pill--switch-horizontal-active"
-                    : ""
-                }`}
-                onClick={toggleComputerMonitoringEnabled}
-                disabled={!smowlActivityDraft?.enabled}
-              />
-              <button
-                type="button"
-                className={`smowl-activity__expand-button ${
-                  expandedOptions["computer-monitoring"]
-                    ? "icon-arrow-down"
-                    : "icon-arrow-right"
-                }`}
-                onClick={() => toggleOptionExpanded("computer-monitoring")}
-                aria-expanded={expandedOptions["computer-monitoring"]}
-              />
+                </div>
+              ) : (
+                <div className="material-editor__smowl-option-placeholder">
+                  <p>No front camera alarms configuration available.</p>
+                </div>
+              )}
             </div>
-            <AnimateHeight
-              duration={300}
-              height={expandedOptions["computer-monitoring"] ? "auto" : 0}
+          </AnimateHeight>
+        </div>
+        <div className="material-editor__smowl-option-container">
+          <div className="material-editor__smowl-option">
+            <label
+              htmlFor="computer-monitoring-enabled"
+              className="material-editor__smowl-label"
             >
-              <div
-                className={`smowl-activity__option-content ${
-                  !smowlActivityDraft?.enabled ||
-                  !smowlActivityDraft?.ComputerMonitoring
-                    ? "smowl-activity__option-content--disabled"
-                    : ""
-                }`}
-              >
-                {smowlComputerMonitoringAlarmDraft?.alarms ? (
-                  <>
-                    {/* Allowed Actions Section */}
-                    <div className="smowl-activity__alarms-section">
-                      <h3 className="smowl-activity__alarms-section-title">
-                        Allowed actions
-                      </h3>
-                      <div className="smowl-activity__alarms-list">
-                        {(
-                          Object.keys(
-                            smowlComputerMonitoringAlarmDraft.alarms
-                              .allowed_actions
-                          ) as Array<ComputerMonitoringAllowedActions>
-                        ).map((alarmKey) => (
-                          <div
-                            key={alarmKey}
-                            className="smowl-activity__alarm-item"
-                          >
-                            <label
-                              htmlFor={`cm-action-${alarmKey}`}
-                              className="smowl-activity__alarm-label"
-                            >
-                              {getComputerMonitoringActionLabel(alarmKey)}
-                            </label>
-                            <button
-                              type="button"
-                              id={`cm-action-${alarmKey}`}
-                              className={`button-pill button-pill--switch-horizontal ${
-                                isComputerMonitoringAlarmAllowed(
-                                  "allowed_actions",
-                                  alarmKey
-                                )
-                                  ? "button-pill--switch-horizontal-active"
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                toggleComputerMonitoringAlarm(
-                                  "allowed_actions",
-                                  alarmKey
-                                )
-                              }
-                              disabled={
-                                !smowlActivityDraft?.enabled ||
-                                !smowlActivityDraft?.ComputerMonitoring
-                              }
-                              aria-label={`Toggle ${getComputerMonitoringActionLabel(alarmKey)}`}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Allowed Programs Section */}
-                    <div className="smowl-activity__alarms-section">
-                      <h3 className="smowl-activity__alarms-section-title">
-                        Allowed programs
-                      </h3>
-                      <div className="smowl-activity__alarms-list">
-                        {(
-                          Object.keys(
-                            smowlComputerMonitoringAlarmDraft.alarms
-                              .allowed_programs
-                          ) as Array<ComputerMonitoringAllowedPrograms>
-                        ).map((alarmKey) => (
-                          <div
-                            key={alarmKey}
-                            className="smowl-activity__alarm-item"
-                          >
-                            <label
-                              htmlFor={`cm-program-${alarmKey}`}
-                              className="smowl-activity__alarm-label"
-                            >
-                              {getComputerMonitoringProgramLabel(alarmKey)}
-                            </label>
-                            <button
-                              type="button"
-                              id={`cm-program-${alarmKey}`}
-                              className={`button-pill button-pill--switch-horizontal ${
-                                isComputerMonitoringAlarmAllowed(
-                                  "allowed_programs",
-                                  alarmKey
-                                )
-                                  ? "button-pill--switch-horizontal-active"
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                toggleComputerMonitoringAlarm(
-                                  "allowed_programs",
-                                  alarmKey
-                                )
-                              }
-                              disabled={
-                                !smowlActivityDraft?.enabled ||
-                                !smowlActivityDraft?.ComputerMonitoring
-                              }
-                              aria-label={`Toggle ${getComputerMonitoringProgramLabel(alarmKey)}`}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="smowl-activity__option-placeholder">
-                    <p>
-                      No computer monitoring alarms configuration available.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </AnimateHeight>
+              SMOWLCM sovellus vaadittuna
+            </label>
+            <button
+              type="button"
+              id="computer-monitoring-enabled"
+              className={`button-pill button-pill--switch-horizontal ${
+                smowlActivityDraft?.ComputerMonitoring
+                  ? "button-pill--switch-horizontal-active"
+                  : ""
+              }`}
+              onClick={toggleComputerMonitoringEnabled}
+              disabled={!smowlActivityDraft?.enabled}
+            />
+            <button
+              type="button"
+              className={`material-editor__smowl-expand-button ${
+                expandedOptions["computer-monitoring"]
+                  ? "icon-arrow-down"
+                  : "icon-arrow-right"
+              }`}
+              onClick={() => toggleOptionExpanded("computer-monitoring")}
+              aria-expanded={expandedOptions["computer-monitoring"]}
+            />
           </div>
-          <div className="smowl-activity__option-separator" />
-          <div className="smowl-activity__option-container">
-            <div className="smowl-activity__option">
-              <span className="smowl-activity__icon icon-tag"></span>
-              <label
-                htmlFor="test-exam-mode-enabled"
-                className="smowl-activity__label"
-              >
-                Test Exam Mode käytössä
-              </label>
-              <button
-                type="button"
-                id="test-exam-mode-enabled"
-                className={`button-pill button-pill--switch-horizontal ${
-                  smowlActivityDraft?.TestExamMode
-                    ? "button-pill--switch-horizontal-active"
-                    : ""
-                }`}
-                onClick={toggleTestExamModeEnabled}
-                disabled={!smowlActivityDraft?.enabled}
-              />
+          <AnimateHeight
+            duration={300}
+            height={expandedOptions["computer-monitoring"] ? "auto" : 0}
+          >
+            <div
+              className={`material-editor__smowl-option-content ${
+                !smowlActivityDraft?.enabled ||
+                !smowlActivityDraft?.ComputerMonitoring
+                  ? "material-editor__smowl-option-content--disabled"
+                  : ""
+              }`}
+            >
+              {smowlComputerMonitoringAlarmDraft?.alarms ? (
+                <>
+                  {/* Allowed Actions Section */}
+                  <div className="material-editor__smowl-alarms-section">
+                    <label className="material-editor__smowl-alarms-label">
+                      Allowed actions
+                    </label>
+                    <div className="material-editor__smowl-alarms-list">
+                      {(
+                        Object.keys(
+                          smowlComputerMonitoringAlarmDraft.alarms
+                            .allowed_actions
+                        ) as Array<ComputerMonitoringAllowedActions>
+                      ).map((alarmKey) => (
+                        <div
+                          key={alarmKey}
+                          className="material-editor__smowl-alarm-item"
+                        >
+                          <label
+                            htmlFor={`cm-action-${alarmKey}`}
+                            className="material-editor__smowl-alarm-label"
+                          >
+                            {getComputerMonitoringActionLabel(alarmKey)}
+                          </label>
+                          <button
+                            type="button"
+                            id={`cm-action-${alarmKey}`}
+                            className={`button-pill button-pill--switch-horizontal ${
+                              isComputerMonitoringAlarmAllowed(
+                                "allowed_actions",
+                                alarmKey
+                              )
+                                ? "button-pill--switch-horizontal-active"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              toggleComputerMonitoringAlarm(
+                                "allowed_actions",
+                                alarmKey
+                              )
+                            }
+                            disabled={
+                              !smowlActivityDraft?.enabled ||
+                              !smowlActivityDraft?.ComputerMonitoring
+                            }
+                            aria-label={`Toggle ${getComputerMonitoringActionLabel(alarmKey)}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Allowed Programs Section */}
+                  <div className="material-editor__smowl-alarms-section">
+                    <label className="material-editor__smowl-alarms-label">
+                      Allowed programs
+                    </label>
+                    <div className="material-editor__smowl-alarms-list">
+                      {(
+                        Object.keys(
+                          smowlComputerMonitoringAlarmDraft.alarms
+                            .allowed_programs
+                        ) as Array<ComputerMonitoringAllowedPrograms>
+                      ).map((alarmKey) => (
+                        <div
+                          key={alarmKey}
+                          className="material-editor__smowl-alarm-item"
+                        >
+                          <label
+                            htmlFor={`cm-program-${alarmKey}`}
+                            className="material-editor__smowl-alarm-label"
+                          >
+                            {getComputerMonitoringProgramLabel(alarmKey)}
+                          </label>
+                          <button
+                            type="button"
+                            id={`cm-program-${alarmKey}`}
+                            className={`button-pill button-pill--switch-horizontal ${
+                              isComputerMonitoringAlarmAllowed(
+                                "allowed_programs",
+                                alarmKey
+                              )
+                                ? "button-pill--switch-horizontal-active"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              toggleComputerMonitoringAlarm(
+                                "allowed_programs",
+                                alarmKey
+                              )
+                            }
+                            disabled={
+                              !smowlActivityDraft?.enabled ||
+                              !smowlActivityDraft?.ComputerMonitoring
+                            }
+                            aria-label={`Toggle ${getComputerMonitoringProgramLabel(alarmKey)}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="material-editor__smowl-option-placeholder">
+                  <p>No computer monitoring alarms configuration available.</p>
+                </div>
+              )}
             </div>
+          </AnimateHeight>
+        </div>
+        <div className="material-editor__smowl-option-container">
+          <div className="material-editor__smowl-option">
+            <label
+              htmlFor="test-exam-mode-enabled"
+              className="material-editor__smowl-label"
+            >
+              Kokeen testaus tila
+            </label>
+            <button
+              type="button"
+              id="test-exam-mode-enabled"
+              className={`button-pill button-pill--switch-horizontal ${
+                smowlActivityDraft?.TestExamMode
+                  ? "button-pill--switch-horizontal-active"
+                  : ""
+              }`}
+              onClick={toggleTestExamModeEnabled}
+              disabled={!smowlActivityDraft?.enabled}
+            />
           </div>
         </div>
       </div>
