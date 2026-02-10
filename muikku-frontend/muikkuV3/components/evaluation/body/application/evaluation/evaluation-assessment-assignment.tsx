@@ -580,25 +580,6 @@ class EvaluationAssessmentAssignment extends React.Component<
         )) ||
         this.props.compositeReply === undefined);
 
-    const removeEvaluation = (
-      <>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: t("content.removing", {
-              ns: "evaluation",
-              context: "assignmentEvaluation",
-              assignmentTitle: this.props.assigment.title,
-            }),
-          }}
-        ></span>
-        <EvaluationMaterial
-          material={this.state.materialNode}
-          workspace={this.props.workspace}
-          compositeReply={compositeReply}
-          userEntityId={this.props.selectedAssessment.userEntityId}
-        />
-      </>
-    );
     return (
       <div className={`evaluation-modal__item `}>
         <div
