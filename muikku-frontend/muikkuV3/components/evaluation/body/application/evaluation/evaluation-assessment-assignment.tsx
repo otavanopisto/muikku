@@ -701,7 +701,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 selectedAssessment={this.props.selectedAssessment}
                 editorLabel={t("labels.literalEvaluation", {
                   ns: "evaluation",
-                  context: "assignmentEvaluation",
+                  context: "assignment",
                 })}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}

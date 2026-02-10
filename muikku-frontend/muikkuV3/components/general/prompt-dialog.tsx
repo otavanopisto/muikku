@@ -65,7 +65,8 @@ const PromptDialog: React.FC<PromptDialogProps> = (props) => {
    * dialogContent content element
    * @param closeDialog closeDialog
    */
-  const dialogContent = () => <div>{content}</div>;
+  const dialogContent = () =>
+    typeof content === "string" ? <p>{content}</p> : content;
 
   /**
    * dialogFooter footer element
