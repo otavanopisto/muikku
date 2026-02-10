@@ -37,7 +37,7 @@ const PlannerActivityCard = React.forwardRef<
    */
   const getCourseState = () => {
     if (item.studyActivity) {
-      switch (item.studyActivity.status) {
+      switch (item.studyActivity.state) {
         case "GRADED":
           return item.studyActivity.passing
             ? {
@@ -96,7 +96,7 @@ const PlannerActivityCard = React.forwardRef<
     const date = localize.date(new Date(item.studyActivity.date));
     let dateString: string | null = null;
 
-    switch (item.studyActivity.status) {
+    switch (item.studyActivity.state) {
       case "GRADED":
         dateString = t("studyPlanCardActivity.graded", {
           ns: "hops_new",

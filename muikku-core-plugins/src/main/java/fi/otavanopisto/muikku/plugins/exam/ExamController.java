@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,10 +27,12 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamAssignmentRestModel;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendanceRestModel;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendeeRestModel;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsCategory;
@@ -393,6 +396,25 @@ public class ExamController {
     attendance.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntityId, workspaceFolderId));
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
+      // If exam has been evaluated, include a summary of points per assignment
+      if (attendance.getEvaluationInfo() != null) {
+        Set<Long> assignmentIds = new HashSet<>(); 
+        boolean randomInPlay = settingsJson.getRandom() != ExamSettingsRandom.NONE && !StringUtils.isEmpty(attendanceEntity.getWorkspaceMaterialIds());
+        if (randomInPlay) {
+          assignmentIds.addAll(Stream.of(attendanceEntity.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toSet()));
+        }
+        else {
+          assignmentIds.addAll(workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder));
+        }
+        for (Long id : assignmentIds) {
+          WorkspaceMaterial assignment = workspaceMaterialController.findWorkspaceMaterialById(id);
+          if (assignment == null) {
+            continue;
+          }
+          RestAssignmentEvaluation evaluation = evaluationController.getEvaluationInfo(userEntityId, id);
+          attendance.addAssignmentInfo(new ExamAssignmentRestModel(assignment.getTitle(), evaluation == null ? null : evaluation.getPoints()));
+        }
+      }
       if (attendance.getMinutes() > 0 && attendanceEntity.getExtraMinutes() != null) {
         attendance.setMinutes(attendance.getMinutes() + attendanceEntity.getExtraMinutes());
       }
@@ -443,6 +465,10 @@ public class ExamController {
           }
           attendance.setContents(contentNodes);
         }
+      }
+      // For ongoing exams, calculate minutes left
+      if (attendance.getStarted() != null && attendance.getEnded() == null && attendance.getMinutes() > 0) {
+        attendance.setMinutesLeft(Math.max(0, attendance.getMinutes() - ChronoUnit.MINUTES.between(attendance.getStarted(), toOffsetDateTime(new Date()))));
       }
     }
     return attendance;

@@ -31,6 +31,7 @@ import { HopsState } from "./hops";
 import { ExamsState } from "./workspaces/exams";
 import { LanguageProfileState } from "./main-function/language-profile";
 import { PedagogySupportState } from "./pedagogy-support";
+import { StudyActivityState } from "./study-activity";
 
 /**
  * StateType
@@ -68,4 +69,5 @@ export interface StateType {
   exams?: ExamsState;
   languageProfile?: LanguageProfileState;
   pedagogySupport?: PedagogySupportState;
+  studyActivity?: StudyActivityState;
 }

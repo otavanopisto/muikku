@@ -18,7 +18,11 @@ import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { suitabilityMapHelper } from "~/@shared/suitability";
-import { Curriculum, WorkspaceAssessmentState } from "~/generated/client";
+import {
+  Curriculum,
+  StudyActivityItem,
+  WorkspaceAssessmentState,
+} from "~/generated/client";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
@@ -32,6 +36,7 @@ interface CourseProps extends WithTranslation<["common"]> {
   status: StatusType;
   workspace: WorkspaceDataType;
   availableCurriculums: Curriculum[];
+  studyActivityItems: StudyActivityItem[];
 }
 
 /**
@@ -219,68 +224,76 @@ class Course extends React.Component<CourseProps, CourseState> {
   };
 
   /**
-   * Render assessment states
-   * @returns JSX.Element
+   * Renders assessment states
    */
   renderAssessmentStates = () => {
     // If there are no assessment states, there is nothing to show
-    if (this.state.assessmentStates.length === 0) return null;
+    if (this.props.studyActivityItems.length === 0) return null;
 
     // Checking if workspace has more than 1 module and therefore it is combination workspace
-    const isCombinationWorkspace = this.state.assessmentStates.length > 1;
+    const isCombinationWorkspace = this.props.studyActivityItems.length > 1;
 
     // Rendering goes differently if workspace is combination workspace and has assessments done for the modules
     if (isCombinationWorkspace) {
       // Checking if workspace is combination workspace and if any of it's modules
       // has been assessed as incomplete or any module has grade/passingGrade set
       const combinationWorkspaceModulesHasAssessment =
-        this.state.assessmentStates.find(
-          (assessment) =>
-            assessment.state === "pending" ||
-            assessment.state === "incomplete" ||
-            (assessment.grade && assessment.passingGrade)
+        this.props.studyActivityItems.find(
+          (studyActivityItem) =>
+            studyActivityItem.state === "PENDING" ||
+            studyActivityItem.state === "SUPPLEMENTATIONREQUEST" ||
+            (studyActivityItem.grade && studyActivityItem.passing)
         );
       if (combinationWorkspaceModulesHasAssessment === undefined) {
         return null;
       }
 
-      const elements = this.state.assessmentStates.map((assessment, index) => {
-        if (
-          assessment.state === "pending" ||
-          assessment.state === "incomplete" ||
-          (assessment.grade && assessment.passingGrade)
-        ) {
-          const subjectCodeString =
-            assessment.subject &&
-            `${assessment.subject.subjectCode}${
-              assessment.subject.courseNumber
-                ? assessment.subject.courseNumber
-                : ""
-            }`;
+      const elements = this.props.studyActivityItems.map(
+        (studyActivityItem, index) => {
+          if (
+            studyActivityItem.state === "PENDING" ||
+            studyActivityItem.state === "SUPPLEMENTATIONREQUEST" ||
+            (studyActivityItem.grade && studyActivityItem.passing)
+          ) {
+            const subjectCode = studyActivityItem.subject;
+            const courseNumber = studyActivityItem.courseNumber;
 
-          return (
-            <div
-              key={index}
-              className="application-list__item-content-single-item"
-            >
-              {subjectCodeString && (
-                <span className="application-list__item-content-single-item-primary">
-                  {subjectCodeString} -{" "}
-                  {this.props.t("labels.courseCompletionStatus", {
-                    ns: "workspace",
-                  })}
-                </span>
-              )}
+            let subjectCodeString = "";
 
-              <AssessmentRequestIndicator assessment={assessment} />
-              <RecordsAssessmentIndicator
-                assessment={assessment}
-                isCombinationWorkspace={true}
-              />
-            </div>
-          );
+            if (subjectCode) {
+              subjectCodeString += subjectCode;
+            }
+
+            if (courseNumber) {
+              subjectCodeString += courseNumber;
+            }
+
+            return (
+              <div
+                key={index}
+                className="application-list__item-content-single-item"
+              >
+                {subjectCodeString && (
+                  <span className="application-list__item-content-single-item-primary">
+                    {subjectCodeString} -{" "}
+                    {this.props.t("labels.courseCompletionStatus", {
+                      ns: "workspace",
+                    })}
+                  </span>
+                )}
+
+                <AssessmentRequestIndicator
+                  studyActivityItem={studyActivityItem}
+                />
+                <RecordsAssessmentIndicator
+                  studyActivityItem={studyActivityItem}
+                  isCombinationWorkspace={true}
+                />
+              </div>
+            );
+          }
         }
-      });
+      );
 
       return (
         <ApplicationListItemContentContainer modifiers="course-assessments">
@@ -290,11 +303,11 @@ class Course extends React.Component<CourseProps, CourseState> {
     }
 
     // For non-combination workspace
-    const workspaceAssessmentState = this.state.assessmentStates[0];
+    const studyActivityItem = this.props.studyActivityItems[0];
 
     if (
-      workspaceAssessmentState.state === "incomplete" ||
-      (workspaceAssessmentState.grade && workspaceAssessmentState.passingGrade)
+      studyActivityItem.state === "SUPPLEMENTATIONREQUEST" ||
+      (studyActivityItem.grade && studyActivityItem.passing)
     ) {
       return (
         <ApplicationListItemContentContainer modifiers="course-assessments">
@@ -304,10 +317,10 @@ class Course extends React.Component<CourseProps, CourseState> {
                 ns: "workspace",
               })}
             </span>
-            <AssessmentRequestIndicator assessment={workspaceAssessmentState} />
+            <AssessmentRequestIndicator studyActivityItem={studyActivityItem} />
 
             <RecordsAssessmentIndicator
-              assessment={workspaceAssessmentState}
+              studyActivityItem={studyActivityItem}
               isCombinationWorkspace={false}
             />
           </div>
@@ -440,6 +453,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     availableCurriculums: state.workspaces.availableFilters.curriculums,
+    studyActivities: state.studyActivity.userStudyActivity,
   };
 }
 

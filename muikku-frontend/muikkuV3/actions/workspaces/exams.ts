@@ -204,9 +204,9 @@ const loadExams: LoadExamsTriggerType = function loadExams(data) {
       // Start timers for exams that meet our conditions
       const timerRegistry = ExamTimerRegistry.getInstance();
       for (const exam of exams) {
-        // Start timer if exam has started, not marked as ended and has duration
-        if (!exam.ended && exam.started && exam.minutes > 0) {
-          timerRegistry.startTimer(exam.folderId, exam.started, exam.minutes);
+        // Start timer if exam has started, not marked as ended and has duration (minutesLeft)
+        if (!exam.ended && exam.started && exam.minutesLeft > 0) {
+          timerRegistry.startTimer(exam.folderId, exam.minutesLeft);
         }
       }
 
@@ -276,8 +276,7 @@ const startExam: StartExamTriggerType = function startExam(data) {
       if (!examTimerRegistry.hasTimer(updatedExam.folderId)) {
         examTimerRegistry.startTimer(
           updatedExam.folderId,
-          updatedExam.started,
-          updatedExam.minutes
+          updatedExam.minutesLeft
         );
       }
 

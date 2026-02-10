@@ -7,24 +7,28 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import WorkspaceAssignmentsAndDiaryDialog from "~/components/general/records-history/dialogs/workspace-assignments-and-diaries";
 import { localize } from "~/locales/i18n";
-import AssessmentRequestIndicator from "./assessment-request-indicator";
-import RecordsAssessmentIndicator from "./records-assessment-indicator";
-import ActivityIndicator from "./activity-indicator";
-import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { suitabilityMapHelper } from "~/@shared/suitability";
+import { StudyActivityItem } from "~/generated/client";
+import AssessmentRequestIndicator from "./assessment-request-indicator";
+import RecordsAssessmentIndicator from "./records-assessment-indicator";
+import ActivityIndicator from "./activity-indicator";
+import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 
 /**
  * RecordsGroupItemProps
  */
 interface RecordsGroupItemProps {
-  credit: RecordWorkspaceActivityByLine;
+  /**
+   * If credit contains more than one item, then it is combination workspace
+   */
+  studyActivityItems: StudyActivityItem[];
   isCombinationWorkspace: boolean;
+  educationType: string;
 }
 
 /**
@@ -33,9 +37,9 @@ interface RecordsGroupItemProps {
  * @returns JSX.Element
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
-  const { credit, isCombinationWorkspace } = props;
+  const { studyActivityItems, isCombinationWorkspace, educationType } = props;
 
-  const { identifier, userEntityId, displayNotification } =
+  const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
   const { t } = useTranslation([
@@ -49,7 +53,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const [showE, setShowE] = React.useState(false);
 
   const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
-    workspaceId: credit.activity.id,
+    workspaceId: studyActivityItems[0].courseId,
     userEntityId,
     enabled: showE, // Only load data when expanded
     displayNotification,
@@ -60,11 +64,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns JSX.Element
    */
   const renderAssessmentsInformations = () => {
-    const { credit } = props;
+    const { studyActivityItems } = props;
 
     return (
       <>
-        {credit.activity.assessmentStates.map((a, i) => {
+        {studyActivityItems.map((a, i) => {
           const {
             evalStateClassName,
             evalStateIcon,
@@ -76,18 +80,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           } = getAssessmentData(a);
 
           // Find subject data, that contains basic information about that subject
-          const subjectData = credit.activity.subjects.find(
-            (s) => s.identifier === a.subject.identifier
-          );
+          const subjectCode = a.subject;
+          const courseNumber = a.courseNumber;
+          const subjectName = a.subjectName;
 
-          // If not found, return nothing
-          if (!subjectData) {
-            return null;
-          }
-
-          const subjectCodeString = `(${subjectData.subjectName}, ${
-            subjectData.subjectCode ? subjectData.subjectCode : ""
-          }${subjectData.courseNumber ? subjectData.courseNumber : ""})`;
+          const subjectCodeString = `(${subjectName}, ${subjectCode}${courseNumber})`;
 
           // Interim assessments use same style as reqular assessment requests
           // Only changing factor is whether is it pending or not and its indicated by
@@ -95,7 +92,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           if (assessmentIsInterim) {
             return (
               <div
-                key={subjectData.identifier}
+                key={`${subjectCode}-${courseNumber}`}
                 className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
               >
                 <div
@@ -137,7 +134,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               !assessmentIsInterim
             ) {
               return (
-                <div key={subjectData.identifier}>
+                <div key={`${subjectCode}-${courseNumber}`}>
                   {/*
                    * If it's first assessment element, show loader until assignment info is loaded and then show assignment details if available
                    * This is to avoid showing multiple assignment details components as one assignment details is for whole workspace
@@ -221,7 +218,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             } else {
               return (
                 <div
-                  key={subjectData.identifier}
+                  key={`${subjectCode}-${courseNumber}`}
                   className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
                 >
                   <div
@@ -277,20 +274,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   };
 
   /**
-   * getSumOfCredits
+   * Calculate sum of credits. If sum is 0, return null.
    * @returns string
    */
   const getSumOfCredits = () => {
-    if (!credit.activity.subjects) {
-      return null;
-    }
-
-    const sumOfCredits = credit.activity.subjects.reduce(
-      (acc, curr) => acc + curr.courseLength,
+    const sumOfCredits = studyActivityItems.reduce(
+      (acc: number, curr) =>
+        acc + ((curr?.length && curr.lengthSymbol && curr.length) ?? 0),
       0
     );
 
-    return `${sumOfCredits} ${credit.activity.subjects[0].courseLengthSymbol}`;
+    if (sumOfCredits === 0) {
+      return null;
+    }
+
+    return `${sumOfCredits} ${studyActivityItems[0]?.lengthSymbol}`;
   };
 
   /**
@@ -301,21 +299,17 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const renderMandatorityDescription = () => {
     // Get first OPS from curriculums there should be only one OPS per workspace
     // Some old workspaces might have multiple OPS, but that is rare case
-    const OPS = credit.activity.curriculums[0];
+    const OPS = studyActivityItems[0].curriculums?.[0];
 
     // If OPS data and workspace mandatority property is present
-    if (
-      OPS &&
-      credit.activity.mandatority &&
-      credit.activity.educationTypeName
-    ) {
+    if (OPS && studyActivityItems[0].mandatority) {
       const suitabilityMap = suitabilityMapHelper(t);
 
       // Create map property from education type name and OPS name that was passed
       // Strings are changes to lowercase form and any empty spaces are removed
-      const education = `${credit.activity.educationTypeName
+      const education = `${educationType
         .toLowerCase()
-        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
+        .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
 
       // Check if our map contains data with just created education string
       // Otherwise just return null. There might not be all included values by every OPS created...
@@ -324,7 +318,8 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
       }
 
       // Then get correct local string from map by suitability enum value
-      let localString = suitabilityMap[education][credit.activity.mandatority];
+      let localString =
+        suitabilityMap[education][studyActivityItems[0].mandatority];
 
       const sumOfCredits = getSumOfCredits();
 
@@ -362,96 +357,101 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               })
         }
         aria-expanded={showE}
-        aria-controls={"record" + credit.activity.id}
+        aria-controls={"record" + studyActivityItems[0].courseId}
         tabIndex={0}
       >
         <span className="application-list__header-icon icon-books"></span>
         <div className="application-list__header-primary">
           <div className="application-list__header-primary-title">
-            {credit.activity.name}
+            {studyActivityItems[0].courseName}
           </div>
 
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
             <div className="label">
-              <div className="label__text">{credit.lineName}</div>
-            </div>
-            {credit.activity.curriculums.map((curriculum) => (
-              <div key={curriculum.identifier} className="label">
-                <div className="label__text">{curriculum.name} </div>
+              <div className="label__text">
+                {studyActivityItems[0].studyProgramme}
               </div>
-            ))}
+            </div>
+            {studyActivityItems[0].curriculums &&
+              studyActivityItems[0].curriculums.map((curriculum) => (
+                <div key={curriculum} className="label">
+                  <div className="label__text">{curriculum} </div>
+                </div>
+              ))}
 
             {renderMandatorityDescription()}
           </div>
         </div>
         <div className="application-list__header-secondary">
-          <span>
-            <WorkspaceAssignmentsAndDiaryDialog
-              credit={credit.activity}
-              userIdentifier={identifier}
-              userEntityId={userEntityId}
-            >
-              <Button buttonModifiers={["info", "assignments-and-exercises"]}>
-                {t("actions.assignments", {
-                  ns: "studies",
-                })}
-              </Button>
-            </WorkspaceAssignmentsAndDiaryDialog>
-          </span>
+          {config.showAssigmentsAndDiaries && (
+            <span>
+              <WorkspaceAssignmentsAndDiaryDialog
+                credit={studyActivityItems[0]}
+                userIdentifier={identifier}
+                userEntityId={userEntityId}
+              >
+                <Button buttonModifiers={["info", "assignments-and-exercises"]}>
+                  {t("actions.assignments", {
+                    ns: "studies",
+                  })}
+                </Button>
+              </WorkspaceAssignmentsAndDiaryDialog>
+            </span>
+          )}
 
           {!isCombinationWorkspace ? (
             // So "legasy" case where there is only one module, render indicator etc next to workspace name
             <>
               <AssessmentRequestIndicator
-                assessment={credit.activity.assessmentStates[0]}
+                studyActivityItem={studyActivityItems[0]}
               />
               <RecordsAssessmentIndicator
-                assessment={credit.activity.assessmentStates[0]}
+                studyActivityItem={studyActivityItems[0]}
                 isCombinationWorkspace={isCombinationWorkspace}
               />
             </>
           ) : null}
-          <ActivityIndicator credit={credit.activity} />
+          <ActivityIndicator studyActivityItem={studyActivityItems[0]} />
         </div>
       </ApplicationListItemHeader>
 
       {isCombinationWorkspace ? (
         // If combinatin workspace render module assessments below workspace name
         <ApplicationListItemContentContainer modifiers="combination-course">
-          {credit.activity.assessmentStates.map((a) => {
-            /**
-             * Find subject data, that contains basic information about that subject
-             */
-            const subjectData = credit.activity.subjects.find(
-              (s) => s.identifier === a.subject.identifier
-            );
+          {studyActivityItems.map((aItem) => {
+            const subjectCode = aItem.subject;
+            const subjectName = aItem.subjectName;
+            const courseNumber = aItem.courseNumber;
+            const courseLength = aItem.length;
+            const courseLengthSymbol = aItem.lengthSymbol;
 
-            /**
-             * If not found, return nothing
-             */
-            if (!subjectData) {
-              return;
+            let codeSubjectString = `${subjectCode}`;
+
+            if (courseNumber) {
+              codeSubjectString += `${courseNumber}`;
             }
 
-            const codeSubjectString = `${
-              subjectData.subjectCode ? subjectData.subjectCode : ""
-            }${subjectData.courseNumber ? subjectData.courseNumber : ""} (${
-              subjectData.courseLength
-            } ${subjectData.courseLengthSymbol}) - ${subjectData.subjectName}`;
+            if (courseLength && courseLengthSymbol) {
+              codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
+            }
+
+            if (subjectName) {
+              codeSubjectString += ` - ${subjectName}`;
+            }
 
             return (
               <div
-                key={subjectData.identifier}
+                key={`${subjectCode}-${courseNumber}`}
                 className="application-list__item-content-single-item"
               >
                 <span className="application-list__item-content-single-item-primary">
                   {codeSubjectString}
                 </span>
 
-                <AssessmentRequestIndicator assessment={a} />
+                <AssessmentRequestIndicator studyActivityItem={aItem} />
 
                 <RecordsAssessmentIndicator
-                  assessment={a}
+                  studyActivityItem={aItem}
                   isCombinationWorkspace={isCombinationWorkspace}
                 />
               </div>
@@ -459,7 +459,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           })}
         </ApplicationListItemContentContainer>
       ) : null}
-      <AnimateHeight height={animateOpen} id={"record" + credit.activity.id}>
+      <AnimateHeight
+        height={animateOpen}
+        id={"record" + studyActivityItems[0].courseId}
+      >
         {renderAssessmentsInformations()}
       </AnimateHeight>
     </ApplicationListItem>

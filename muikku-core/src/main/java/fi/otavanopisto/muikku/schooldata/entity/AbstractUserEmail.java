@@ -5,12 +5,11 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 public abstract class AbstractUserEmail implements UserEmail {
   
   public AbstractUserEmail(SchoolDataIdentifier identifier, SchoolDataIdentifier userIdentifier, String address,
-      String type, Boolean defaultAddress) {
+      Boolean defaultAddress) {
     super();
     this.identifier = identifier;
     this.userIdentifier = userIdentifier;
     this.address = address;
-    this.type = type;
     this.defaultAddress = defaultAddress;
   }
 
@@ -35,11 +34,6 @@ public abstract class AbstractUserEmail implements UserEmail {
   }
 
   @Override
-  public String getType() {
-    return type;
-  }
-
-  @Override
   public Boolean getDefaultAddress() {
     return defaultAddress;
   }
@@ -47,6 +41,5 @@ public abstract class AbstractUserEmail implements UserEmail {
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier userIdentifier;
   private String address;
-  private String type;
   private Boolean defaultAddress;
 }

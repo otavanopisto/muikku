@@ -420,6 +420,13 @@ class StateOfStudies extends React.Component<
                           className="item-list__item item-list__item--student-contact-info"
                           key={contactInfo.id}
                         >
+                          {contactInfo.contactType && (
+                            <div className="label label--guider-contact-type">
+                              <span className="label__text">
+                                {contactInfo.contactType}
+                              </span>
+                            </div>
+                          )}
                           <div className="item-list__text-body item-list__text-body--multiline">
                             {contactInfo.name && (
                               <div className="item-list__user-name">
@@ -452,6 +459,21 @@ class StateOfStudies extends React.Component<
                             {contactInfo.country && (
                               <div className="item-list__user-country">
                                 {contactInfo.country}
+                              </div>
+                            )}
+
+                            {contactInfo.allowStudyDiscussions && (
+                              <div className="item-list__user-consent-study-discussions">
+                                <div className="label label--guider-concent">
+                                  <span className="label__text">
+                                    {this.props.i18n.t(
+                                      "labels.concentToDiscussStudies",
+                                      {
+                                        ns: "users",
+                                      }
+                                    )}
+                                  </span>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -682,9 +704,6 @@ class StateOfStudies extends React.Component<
                     }
                     studyProgrammeName={
                       this.props.guider.currentStudent.basic.studyProgrammeName
-                    }
-                    studyProgress={
-                      this.props.guider.currentStudent.studyProgress
                     }
                   />
                 </ApplicationSubPanel.Body>

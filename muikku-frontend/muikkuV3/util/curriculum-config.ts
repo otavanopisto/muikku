@@ -1,5 +1,5 @@
 import { Course, SchoolCurriculumMatrix } from "~/@types/shared";
-import { StudentInfo, StudentStudyActivity } from "~/generated/client";
+import { StudentInfo, StudyActivityItem } from "~/generated/client";
 import {
   schoolCourseTableCompulsory2018,
   schoolCourseTableUppersecondary2021,
@@ -125,7 +125,7 @@ export interface CurriculumStrategy {
    * @returns statistics
    */
   calculateStatistics: (
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ) => Statistics;
 
@@ -138,7 +138,7 @@ export interface CurriculumStrategy {
    */
   calculatePlanStatistics: (
     plannedCourses: PlannedCourseWithIdentifier[],
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ) => PlanStatistics;
 
@@ -151,7 +151,7 @@ export interface CurriculumStrategy {
    */
   calculateEstimatedTimeToCompletion: (
     hoursPerWeek: number,
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ) => number;
 
@@ -262,7 +262,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    */
   calculateEstimatedTimeToCompletion(
     hoursPerWeek: number,
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ): number {
     const statistics = this.calculateStatistics(studyActivities, options);
@@ -330,7 +330,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    */
   calculatePlanStatistics(
     plannedCourses: PlannedCourseWithIdentifier[],
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ): PlanStatistics {
     const completedStats = this.calculateStatistics(studyActivities, options);
@@ -345,8 +345,8 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
         (activity) =>
           activity.subject === planned.subjectCode &&
           activity.courseNumber === planned.courseNumber &&
-          ((activity.status === "GRADED" && activity.passing) ||
-            activity.status === "TRANSFERRED")
+          ((activity.state === "GRADED" && activity.passing) ||
+            activity.state === "TRANSFERRED")
       );
 
       if (!isCompleted) {
@@ -425,7 +425,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    * @returns statistics
    */
   calculateStatistics(
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ): Statistics {
     const matrix = this.getCurriculumMatrix({ studyOptions: options });
@@ -434,8 +434,8 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
 
     const completedActivities = studyActivities.filter(
       (activity) =>
-        (activity.status === "GRADED" && activity.passing) ||
-        activity.status === "TRANSFERRED"
+        (activity.state === "GRADED" && activity.passing) ||
+        activity.state === "TRANSFERRED"
     );
 
     let mandatoryStudies = 0;
@@ -658,7 +658,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    */
   calculateEstimatedTimeToCompletion(
     hoursPerWeek: number,
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ): number {
     const statistics = this.calculateStatistics(studyActivities, options);
@@ -714,7 +714,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    */
   calculatePlanStatistics(
     plannedCourses: PlannedCourseWithIdentifier[],
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ): PlanStatistics {
     const completedStats = this.calculateStatistics(studyActivities, options);
@@ -729,8 +729,8 @@ class CompulsoryCurriculum implements CurriculumStrategy {
         (activity) =>
           activity.subject === planned.subjectCode &&
           activity.courseNumber === planned.courseNumber &&
-          ((activity.status === "GRADED" && activity.passing) ||
-            activity.status === "TRANSFERRED")
+          ((activity.state === "GRADED" && activity.passing) ||
+            activity.state === "TRANSFERRED")
       );
 
       if (!isCompleted) {
@@ -805,7 +805,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * @returns statistics
    */
   calculateStatistics(
-    studyActivities: StudentStudyActivity[],
+    studyActivities: StudyActivityItem[],
     options: string[]
   ): Statistics {
     const matrix = this.getCurriculumMatrix({ studyOptions: options });
@@ -814,8 +814,8 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     // Filter completed or transferred activities
     const completedActivities = studyActivities.filter(
       (activity) =>
-        (activity.status === "GRADED" && activity.passing) ||
-        activity.status === "TRANSFERRED"
+        (activity.state === "GRADED" && activity.passing) ||
+        activity.state === "TRANSFERRED"
     );
 
     let mandatoryCount = 0;

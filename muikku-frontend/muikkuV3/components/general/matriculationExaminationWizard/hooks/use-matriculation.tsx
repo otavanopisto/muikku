@@ -82,6 +82,7 @@ export const useMatriculation = (
       canPublishName: true,
       degreeStructure: "POST2022",
       enrollmentDate: new Date(),
+      opintopolkuUrl: "",
     },
   });
 
@@ -182,7 +183,10 @@ export const useMatriculation = (
               .filter(isOfStatus("FINISHED"))
               .map((fSubject) => ({
                 ...fSubject,
-                term: `${fSubject.term}${fSubject.year}`,
+                term:
+                  fSubject.term === null
+                    ? "OUTDATED"
+                    : `${fSubject.term}${fSubject.year}`,
               })),
           },
         }));

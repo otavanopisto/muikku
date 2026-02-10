@@ -5272,7 +5272,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StudentStudyActivity"
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudyActivityItem"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5725,6 +5727,49 @@ paths:
           required: true
           schema:
             type: string
+      responses:
+        "200":
+          description: UserContact
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserContact"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "500":
+          description: Internal server error
+
+  /rest/user/contacts/{userIdentifier}/contactInfos/{contactInfoId}:
+    put:
+      operationId: updateUserContactAllowStudyDiscussions
+      summary: Sets allowStudyDiscussions property of a contact info
+      description: Sets allowStudyDiscussions property of a contact info
+      tags:
+        - User
+      parameters:
+        - name: userIdentifier
+          in: path
+          description: User identifier
+          required: true
+          schema:
+            type: string
+        - name: contactInfoId
+          in: path
+          description: Id of the contact info
+          required: true
+          schema:
+            type: number
+            format: int64
+        - name: allowStudyDiscussions
+          in: query
+          description: allowStudyDiscussions
+          required: true
+          schema:
+            type: boolean
       responses:
         "200":
           description: UserContact
@@ -6201,34 +6246,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/hops/student/{studentIdentifier}/optionalSuggestion:
-    post:
-      operationId: createOptionalSuggestion
-      summary: Create optional suggestion for student
-      description: Create optional suggestion for student
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/OptionalSuggestionCreateRequestBody"
-      responses:
-        "200":
-          description: Student optional suggestion created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OptionalCourseSuggestion"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/hops/availableCourses:
     get:
       operationId: getAvailableCourses
@@ -6298,34 +6315,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/HopsOpsCourse"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/hops/student/{studentIdentifier}/optionalSuggestions:
-    get:
-      operationId: getStudentOptionalSuggestions
-      summary: Get student optional suggestions
-      description: Get student optional suggestions
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Student optional suggestions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/OptionalCourseSuggestion"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6436,7 +6425,7 @@ paths:
 
   /rest/hops/student/{studentIdentifier}/studyActivity:
     get:
-      operationId: getStudentStudyActivity
+      operationId: getStudyActivity
       summary: Get student study activity
       description: Get student study activity
       tags:
@@ -6448,15 +6437,19 @@ paths:
           required: true
           schema:
             type: string
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id, if we are only interested in the activity of a single workspace
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Student study activity
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudentStudyActivity"
+                $ref: "#/components/schemas/StudyActivity"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11597,7 +11590,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/workspace/last/{workspaceEntityId}:
     delete:
       operationId: deleteFromLatestWorkspaces
@@ -12666,22 +12659,6 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/AlternativeStudyOption"
-
-    OptionalSuggestionCreateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: OptionalSuggestionCreateRequestBody object
-            required:
-              - subject
-              - courseNumber
-            properties:
-              subject:
-                type: string
-              courseNumber:
-                type: integer
 
     StudentCourseChoiceSaveRequestBody:
       required: true
@@ -14847,8 +14824,13 @@ components:
           description: Is the student allowed to restart a once completed exam
           type: boolean
         minutes:
-          description: Number of minutes to complete the exam (0 if unlimited)
+          description: Total number of minutes to complete the exam (0 if unlimited)
           type: integer
+          format: int64
+        minutesLeft:
+          description: Number of minutes left to complete the exam
+          type: integer
+          format: int64
         contents:
           description: Exam contents for the student
           type: array
@@ -14857,6 +14839,24 @@ components:
         evaluationInfo:
           description: Exam evaluation info
           $ref: "#/components/schemas/NodeEvaluationInfo"
+        assignmentInfos:
+          description: Points summary for each assignment in the page, if the exam has been evaluated
+          type: array
+          items:
+            $ref: "#/components/schemas/ExamAssignmentInfo"
+
+    ExamAssignmentInfo:
+      type: object
+      description: Points information about a single exam assignment
+      properties:
+        name:
+          description: Title of the assignment page
+          type: string
+        points:
+          description: Points given for the assignment
+          type: number
+          format: double
+          nullable: true
 
     ExamAttendee:
       type: object
@@ -15325,6 +15325,9 @@ components:
           type: string
         defaultContact:
           type: boolean
+        allowStudyDiscussions:
+          type: boolean
+          description: Is the contact a Guardian etc who can be contacted for study discussions, null for other contacts
 
     Guardian:
       type: object
@@ -15713,6 +15716,7 @@ components:
         - canPublishName
         - state
         - attendances
+        - opintopolkuUrl
       properties:
         id:
           type: integer
@@ -15749,6 +15753,8 @@ components:
         enrollmentDate:
           type: string
           format: date-time
+        opintopolkuUrl:
+          type: string
 
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
@@ -15946,7 +15952,6 @@ components:
         - mandatory
         - repeat
         - status
-        - funding
       properties:
         id:
           type: integer
@@ -15984,9 +15989,11 @@ components:
         term:
           type: string
           description: Term of the exam. Example "AUTUMN" or "SPRING"
+          nullable: true
         year:
           type: integer
           description: Year of the exam.
+          nullable: true
         subject:
           type: string
           description: Subject code. Example "AI" etc...
@@ -17124,10 +17131,6 @@ components:
         email:
           type: string
 
-    OptionalCourseSuggestion:
-      allOf:
-        - $ref: "#/components/schemas/Course"
-
     HopsAvailableCourse:
       type: object
       description: Course that a user can sign up to
@@ -17804,9 +17807,33 @@ components:
         - UPPER_SECONDARY
         - COMPULSORY
 
-    StudentStudyActivity:
+    StudyActivity:
       type: object
-      description: StudentStudyActivity object
+      description: Representation of all study activity of student
+      required:
+        - educationType
+        - items
+        - completedCourseCredits
+        - mandatoryCourseCredits
+      properties:
+        educationType:
+          type: string
+          description: Student's education type, e.g. Lukio or Perusopetus
+        items:
+          type: array
+          description: Study activity items
+          items:
+            $ref: "#/components/schemas/StudyActivityItem"
+        completedCourseCredits:
+          type: integer
+          description: Student's total number of course credits
+        mandatoryCourseCredits:
+          type: integer
+          description: Student's number of mandatory course credits
+
+    StudyActivityItem:
+      type: object
+      description: Study activity item, e.g. a single transfer credit for student
       required:
         - subjectName
         - subject
@@ -17815,43 +17842,101 @@ components:
         - courseName
         - grade
         - passing
-        - status
+        - state
         - date
-        - transferCreditMandatory
-        - transferCreditLength
-        - id
+        - gradeDate
+        - length
+        - lengthSymbol
+        - mandatority
+        - curriculums
+        - text
+        - evaluatorName
+        - studyProgramme
+        - evaluablesTotal
+        - evaluablesDone
+        - exercisesTotal
+        - exercisesDone
       properties:
         subjectName:
           type: string
+          description: Subject human readable name, e.g. Biologia
           nullable: true
         subject:
           type: string
+          description: Subject code, e.g. BI
         courseId:
           type: integer
+          description: Course id in Muikku, i.e. workspaceEntityId
           format: int64
           nullable: true
         courseNumber:
           type: integer
+          description: Course number, e.g. 2
+          nullable: true
         courseName:
           type: string
+          description: Course name
         grade:
           type: string
+          description: Grade, e.g. 7
+          nullable: true
         passing:
           type: boolean
-        status:
-          $ref: "#/components/schemas/CourseStatus"
+          description: If there is a grade, is it a passing grade
+        state:
+          $ref: "#/components/schemas/StudyActivityItemState"
+          description: Study activity item state, e.g. ONGOING for a course that hasn't been graded yet
         date:
           type: string
+          description: Item date, depends on status, e.g. when an assessment request was made
           format: date-time
-        transferCreditMandatory:
-          type: boolean
+        gradeDate:
+          type: string
+          description: For graded courses, the date when the grade was given
+          format: date-time
           nullable: true
-        transferCreditLength:
-          type: boolean
-          nullable: true
-        id:
+        length:
           type: integer
-          format: int64
+          description: Course or transfer credit length, e.g. 2
+          nullable: true
+        lengthSymbol:
+          type: string
+          description: Course or transfer credit length symbol, e.g. op
+          nullable: true
+        mandatority:
+          description: The mandatority of the item
+          $ref: "#/components/schemas/WorkspaceMandatority"
+          nullable: true
+        curriculums:
+          description: Item curriculums, e.g. OPS 2021
+          type: array
+          items:
+            type: string
+          nullable: true
+        text:
+          type: string
+          description: Item text, e.g. supplementation request message or grade's verbal assesment
+          nullable: true
+        evaluatorName:
+          type: string
+          description: For graded courses, the name of the evaluator
+          nullable: true
+        studyProgramme:
+          type: string
+          description: Student's study programme this item belongs to, e.g. Nettilukio
+          nullable: true
+        evaluablesTotal:
+          type: integer
+          description: For course items, the total number of evaluable assignments in the course
+        evaluablesDone:
+          type: integer
+          description: For course items, the number of evaluable assignments in the course that the student has submitted
+        exercisesTotal:
+          type: integer
+          description: For course items, the total number of exercise assignments in the course
+        exercisesDone:
+          type: integer
+          description: For course items, the number of exercise assignments in the course that the student has submitted
 
     StudentCourseChoice:
       allOf:
@@ -18042,7 +18127,6 @@ components:
         - city
         - region
         - country
-        - type
         - defaultAddress
       properties:
         identifier:
@@ -18059,8 +18143,6 @@ components:
           type: string
         country:
           type: string
-        type:
-          type: string
         defaultAddress:
           type: boolean
 
@@ -18069,13 +18151,10 @@ components:
       description: UserStudentEmail object
       required:
         - studentIdentifier
-        - type
         - address
         - defaultAddress
       properties:
         studentIdentifier:
-          type: string
-        type:
           type: string
         address:
           type: string
@@ -18087,13 +18166,10 @@ components:
       description: UserStudentPhoneNumber object
       required:
         - studentIdentifier
-        - type
         - number
         - defaultNumber
       properties:
         studentIdentifier:
-          type: string
-        type:
           type: string
         number:
           type: string
@@ -19158,15 +19234,17 @@ components:
         - interim_evaluation_request
         - interim_evaluation
 
-    CourseStatus:
+    StudyActivityItemState:
       type: string
       enum:
         - ONGOING
         - GRADED
+        - PENDING
         - SUPPLEMENTATIONREQUEST
         - TRANSFERRED
         - SUGGESTED_NEXT
-        - SUGGESTED_OPTIONAL
+        - INTERIM_EVALUATION_REQUEST
+        - INTERIM_EVALUATION
 
     CourseType:
       type: string

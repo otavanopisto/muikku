@@ -27,6 +27,7 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import StudyProgress from "./study-progress";
 import { Instructions } from "~/components/general/instructions";
+import { StudyActivityState } from "~/reducers/study-activity";
 
 /**
  * SummaryProps
@@ -36,6 +37,7 @@ interface SummaryProps extends WithTranslation {
   contacts: ContactsState;
   summary: SummaryType;
   status: StatusType;
+  studyActivity: StudyActivityState;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -64,7 +66,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
     if (
       this.props.records.location !== "summary" ||
-      this.props.summary.status !== "READY"
+      this.props.summary.status !== "READY" ||
+      this.props.studyActivity.userStudyActivityStatus !== "READY" ||
+      this.props.studyActivity.courseMatrixStatus !== "READY"
     ) {
       return null;
     } else {
@@ -317,7 +321,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               studentUserEntityId={
                 this.props.summary.data.studentsDetails.userEntityId
               }
-              studyProgress={this.props.summary.data.studyProgress}
             />
           </div>
           {this.props.status.isActiveUser ? (
@@ -352,6 +355,7 @@ function mapStateToProps(state: StateType) {
     contacts: state.contacts,
     summary: state.summary,
     status: state.status,
+    studyActivity: state.studyActivity,
   };
 }
 
