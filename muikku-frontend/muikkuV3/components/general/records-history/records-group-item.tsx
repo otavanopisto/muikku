@@ -39,7 +39,7 @@ interface RecordsGroupItemProps {
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { studyActivityItems, isCombinationWorkspace, educationType } = props;
 
-  const { identifier, userEntityId, displayNotification } =
+  const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
   const { t } = useTranslation([
@@ -383,19 +383,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           </div>
         </div>
         <div className="application-list__header-secondary">
-          <span>
-            <WorkspaceAssignmentsAndDiaryDialog
-              credit={studyActivityItems[0]}
-              userIdentifier={identifier}
-              userEntityId={userEntityId}
-            >
-              <Button buttonModifiers={["info", "assignments-and-exercises"]}>
-                {t("actions.assignments", {
-                  ns: "studies",
-                })}
-              </Button>
-            </WorkspaceAssignmentsAndDiaryDialog>
-          </span>
+          {config.showAssigmentsAndDiaries && (
+            <span>
+              <WorkspaceAssignmentsAndDiaryDialog
+                credit={studyActivityItems[0]}
+                userIdentifier={identifier}
+                userEntityId={userEntityId}
+              >
+                <Button buttonModifiers={["info", "assignments-and-exercises"]}>
+                  {t("actions.assignments", {
+                    ns: "studies",
+                  })}
+                </Button>
+              </WorkspaceAssignmentsAndDiaryDialog>
+            </span>
+          )}
 
           {!isCombinationWorkspace ? (
             // So "legasy" case where there is only one module, render indicator etc next to workspace name

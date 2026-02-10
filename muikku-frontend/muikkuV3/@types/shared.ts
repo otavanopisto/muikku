@@ -333,7 +333,6 @@ export const courseFilter = [
   StudyActivityItemState.Supplementationrequest,
   StudyActivityItemState.Transferred,
   StudyActivityItemState.SuggestedNext,
-  StudyActivityItemState.SuggestedOptional,
 ] as const;
 
 export type CourseFilter = (typeof courseFilter)[number];
@@ -431,7 +430,6 @@ export type HopsWebsocketMessage =
   | "hops:workspace-suggested"
   | "hops:workspace-signup"
   | "hops:alternative-study-options"
-  | "hops:optional-suggestion-updated"
   | "hops:studentchoice-updated";
 
 export type LanguageCode =

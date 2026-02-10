@@ -74,7 +74,6 @@ export const getAssessmentData = (assessment: StudyActivityItem) => {
     case "ONGOING":
     case "TRANSFERRED":
     case "SUGGESTED_NEXT":
-    case "SUGGESTED_OPTIONAL":
     default:
       assessmentIsUnassessed = true;
       break;

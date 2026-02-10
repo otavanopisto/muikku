@@ -434,9 +434,11 @@ class EvaluationAssessmentAssignment extends React.Component<
         <div className="evaluation-modal__item-meta">
           {hasSubmitted === null ||
           (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
-            <div className="evaluation-modal__item-meta-item">
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
               <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.notDone", { ns: "evaluation" })}
+                {t("labels.withdrawnAssignment", { ns: "evaluation" })}
               </span>
             </div>
           ) : (
@@ -660,24 +662,22 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {this.props.assigment.assignmentType === "EVALUATED" ||
-            this.props.assigment.assignmentType === "EXERCISE" ? (
+            {((this.props.assigment.assignmentType === "EXERCISE" &&
               compositeReply &&
-              compositeReply.state !== "UNANSWERED" &&
-              compositeReply.state !== "WITHDRAWN" ? (
-                <ButtonPill
-                  aria-label={t("actions.evaluateAssignment", {
-                    ns: "evaluation",
-                  })}
-                  onClick={this.handleOpenSlideDrawer(
-                    this.props.assigment.id,
-                    this.props.assigment.assignmentType
-                  )}
-                  buttonModifiers={["evaluate"]}
-                  icon="evaluate"
-                />
-              ) : null
-            ) : null}
+              compositeReply.state !== "WITHDRAWN") ||
+              this.props.assigment.assignmentType === "EVALUATED") && (
+              <ButtonPill
+                aria-label={t("actions.evaluateAssignment", {
+                  ns: "evaluation",
+                })}
+                onClick={this.handleOpenSlideDrawer(
+                  this.props.assigment.id,
+                  this.props.assigment.assignmentType
+                )}
+                buttonModifiers={["evaluate"]}
+                icon="evaluate"
+              />
+            )}
           </div>
         </div>
         <SlideDrawer

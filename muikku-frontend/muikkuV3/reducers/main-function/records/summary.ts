@@ -4,7 +4,6 @@ import { Reducer } from "redux";
 import {
   ActivityLogEntry,
   CourseMatrix,
-  OptionalCourseSuggestion,
   StudentCourseChoice,
   UserWithSchoolData,
 } from "~/generated/client";
@@ -26,7 +25,6 @@ export interface SummaryStudyTime {
  */
 export interface SummaryStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
-  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
   courseMatrix: CourseMatrix;
 }
 
