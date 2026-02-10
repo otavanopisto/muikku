@@ -416,7 +416,7 @@ class AssignmentEditor extends SessionStateComponent<
         assessmentId: this.props.compositeReplies.evaluationInfo.id,
       });
       notificationActions.displayNotification(
-        t("notifications.deleteSuccess", {
+        t("notifications.removeSuccess", {
           context: "assignmentEvaluation",
           ns: "evaluation",
         }),
@@ -445,7 +445,7 @@ class AssignmentEditor extends SessionStateComponent<
       }
 
       notificationActions.displayNotification(
-        t("notifications.deleteError", {
+        t("notifications.removeError", {
           context: "assignmentEvaluation",
           ns: "evaluation",
           error: err.message,
