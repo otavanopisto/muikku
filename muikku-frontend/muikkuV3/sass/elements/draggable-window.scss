@@ -1,0 +1,25 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.draggable-window {
+  background: $color-default-body;
+  border: 1px solid $color-default-separator-border;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba($color-default-contrast, 0.2);
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 300px;
+  overflow: hidden;
+}
+
+.draggable-window__header {
+  cursor: grab;
+  min-height: 50px;
+  user-select: none;
+}
+
+.draggable-window__content {
+  background: $color-default;
+}

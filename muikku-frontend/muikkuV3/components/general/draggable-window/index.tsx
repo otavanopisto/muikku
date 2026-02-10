@@ -18,7 +18,11 @@ interface DraggableWindowProps {
  * @param props props
  */
 function DraggableWindow(props: DraggableWindowProps) {
-  const { className = "", initialPosition, dragHandleClassName } = props;
+  const {
+    className = "draggable-window",
+    initialPosition,
+    dragHandleClassName,
+  } = props;
 
   const [dragging, setDragging] = React.useState<boolean>(false);
   const dragControls = useDragControls();
@@ -88,12 +92,11 @@ function DraggableWindow(props: DraggableWindowProps) {
         transition={{ type: "tween", duration: 0.3 }}
         style={{
           position: "fixed",
-          left: 0,
-          top: 0,
+          left: "10px",
+          top: "10px",
           zIndex: 10000,
-          overflow: "unset",
           width: "220px",
-          height: "300px",
+          height: "350px",
           willChange: "transform",
           transform: "translateZ(0)",
         }}
@@ -111,12 +114,6 @@ function DraggableWindow(props: DraggableWindowProps) {
           }}
           onPointerCancel={() => {
             setDragging(false);
-          }}
-          style={{
-            height: "25px",
-            backgroundColor: "red",
-            cursor: "grab",
-            userSelect: "none",
           }}
         >
           {/* Optional: Add visual indicator that this is draggable */}
