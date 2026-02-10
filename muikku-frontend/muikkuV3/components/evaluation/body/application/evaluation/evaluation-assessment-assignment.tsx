@@ -724,33 +724,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         <AnimateHeight duration={400} height={contentOpen}>
           {this.state.isLoading ? (
             <div className="loader-empty" />
-          ) : this.props.workspace && this.state.materialNode ? (
-            <>
-              <div className="evaluation-modal__item-remove-evaluation">
-                <PromptDialog
-                  title={t("actions.removeAssignmentEvaluation", {
-                    ns: "evaluation",
-                  })}
-                  content={removeEvaluation}
-                  onExecute={() => console.log("häsremove")}
-                >
-                  <ButtonPill
-                    aria-label={t("actions.removeAssignmentEvaluation", {
-                      ns: "evaluation",
-                    })}
-                    buttonModifiers={["remove-evaluation"]}
-                    icon="trash"
-                  />
-                </PromptDialog>
-              </div>
+          ) : (
+            this.props.workspace &&
+            this.state.materialNode && (
               <EvaluationMaterial
                 material={this.state.materialNode}
                 workspace={this.props.workspace}
                 compositeReply={compositeReply}
                 userEntityId={this.props.selectedAssessment.userEntityId}
               />
-            </>
-          ) : null}
+            )
+          )}
         </AnimateHeight>
       </div>
     );
