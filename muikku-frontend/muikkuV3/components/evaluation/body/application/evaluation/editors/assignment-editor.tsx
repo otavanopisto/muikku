@@ -37,7 +37,6 @@ import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
 import PromptDialog from "~/components/general/prompt-dialog";
-import { on } from "events";
 
 /**
  * AssignmentEditorProps
