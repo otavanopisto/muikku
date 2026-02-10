@@ -1112,7 +1112,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
           waitForVisible(selector);
           String text = getWebDriver().findElement(By.cssSelector(selector)).getText();
           if(text != null) {
-            return StringUtils.isBlank(text) ? false : true; 
+            if(StringUtils.isBlank(text) == false) {
+              return true;
+            }
           }
         } catch (Exception e) {
         }
