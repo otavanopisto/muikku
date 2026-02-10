@@ -24,8 +24,8 @@ export class ExamTimerService {
   private interval: NodeJS.Timeout | null = null;
   private subscribers: Set<(value: TimerValue) => void> = new Set();
   private currentValue: TimerValue;
-  private startDate: string;
-  private durationMinutes: number;
+  /** Remaining time in ms, derived from durationMinutesLeft and decremented each second */
+  private remainingMs: number;
   private callbacks: TimerCallbacks;
   private warningThresholdMs: number = 300000; // 5 minutes warning
   private warningCallbackCalled: boolean = false; // Whether the warning callback has been called
@@ -33,38 +33,33 @@ export class ExamTimerService {
   /**
    * Exam timer service constructor
    * @param examId examId
-   * @param startDate startDate
-   * @param durationMinutes durationMinutes
+   * @param durationMinutesLeft durationMinutesLeft
    * @param callbacks callbacks
    */
   constructor(
     examId: number,
-    startDate: string,
-    durationMinutes: number,
+    durationMinutesLeft: number,
     callbacks?: TimerCallbacks
   ) {
     this.examId = examId;
-    this.startDate = startDate;
-    this.durationMinutes = durationMinutes;
+    this.remainingMs = durationMinutesLeft * 60 * 1000;
     this.callbacks = callbacks || {};
     this.currentValue = this.calculateTimeRemaining();
-    this.startTimer(startDate, durationMinutes);
+    this.startTimer(durationMinutesLeft);
   }
 
   /**
    * startTimer - Fixed to use parameters
-   * @param startDate startDate
-   * @param durationMinutes durationMinutes
+   * @param durationMinutesLeft durationMinutesLeft
    */
-  private startTimer(startDate: string, durationMinutes: number) {
+  private startTimer(durationMinutesLeft: number) {
     // Clear existing interval
     if (this.interval) {
       clearInterval(this.interval);
     }
 
     // Update instance properties with new values
-    this.startDate = startDate;
-    this.durationMinutes = durationMinutes;
+    this.remainingMs = durationMinutesLeft * 60 * 1000;
 
     // Recalculate current value with new parameters
     this.currentValue = this.calculateTimeRemaining();
@@ -107,7 +102,8 @@ export class ExamTimerService {
    * Update timer
    */
   private updateTimer() {
-    // Calculate new time
+    // Decrement remaining time by one second (no reliance on system clock)
+    this.remainingMs = Math.max(0, this.remainingMs - 1000);
     const newValue = this.calculateTimeRemaining();
 
     // Check if timer just expired
@@ -137,32 +133,26 @@ export class ExamTimerService {
   }
 
   /**
-   * Calculate time remaining
+   * Calculate time remaining based solely on durationMinutesLeft (server-authoritative).
+   * Countdown is driven by decrementing remainingMs each second, not by system clock.
    * @returns TimerValue
    */
   private calculateTimeRemaining(): TimerValue {
-    const startDate = new Date(this.startDate);
-    const durationMs = this.durationMinutes * 60 * 1000;
-    const endTime = startDate.getTime() + durationMs;
-    const now = Date.now();
-
-    if (now >= endTime) {
+    if (this.remainingMs <= 0) {
       return {
         timeRemainingMs: 0,
         formattedTime: "Aika umpeutunut",
         isExpired: true,
-        endTime,
+        endTime: 0,
       };
     }
 
-    const remainingMs = endTime - now;
-    const remainingMinutes = Math.ceil(remainingMs / (1000 * 60));
-
+    const remainingMinutes = Math.ceil(this.remainingMs / (1000 * 60));
     return {
-      timeRemainingMs: remainingMs,
+      timeRemainingMs: this.remainingMs,
       formattedTime: `${remainingMinutes}`,
       isExpired: false,
-      endTime,
+      endTime: 0,
     };
   }
 
@@ -220,26 +210,19 @@ export class ExamTimerRegistry {
   /**
    * Start timer for an exam or update existing timer
    * @param examId examId
-   * @param startDate startDate
-   * @param durationMinutes durationMinutes
+   * @param durationMinutesLeft durationMinutesLeft
    * @param callbacks callbacks
    */
   startTimer(
     examId: number,
-    startDate: string,
-    durationMinutes: number,
+    durationMinutesLeft: number,
     callbacks?: TimerCallbacks
   ) {
     if (this.timers.has(examId)) {
       this.timers.get(examId)?.stopTimer();
     }
 
-    const timer = new ExamTimerService(
-      examId,
-      startDate,
-      durationMinutes,
-      callbacks
-    );
+    const timer = new ExamTimerService(examId, durationMinutesLeft, callbacks);
     this.timers.set(examId, timer);
   }
 

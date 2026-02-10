@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -464,6 +465,10 @@ public class ExamController {
           }
           attendance.setContents(contentNodes);
         }
+      }
+      // For ongoing exams, calculate minutes left
+      if (attendance.getStarted() != null && attendance.getEnded() == null && attendance.getMinutes() > 0) {
+        attendance.setMinutesLeft(Math.max(0, attendance.getMinutes() - ChronoUnit.MINUTES.between(attendance.getStarted(), toOffsetDateTime(new Date()))));
       }
     }
     return attendance;
