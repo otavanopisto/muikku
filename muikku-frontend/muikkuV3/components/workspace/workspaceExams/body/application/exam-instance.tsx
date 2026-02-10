@@ -316,22 +316,22 @@ const ExamInstance = (props: ExamInstanceProps) => {
   return (
     <>
       {/* SMOWL monitoring iframe - persists throughout exam session */}
-      {/* {monitoringLink.link && ( */}
-      <DraggableWindow initialPosition={{ x: 0, y: 0 }}>
-        <iframe
-          src={monitoringLink.link}
-          title="SMOWL Monitoring"
-          aria-hidden="true"
-          allow="microphone; camera"
-          sandbox="allow-top-navigation allow-scripts allow-modals allow-same-origin allow-popups allow-downloads allow-popups-to-escape-sandbox"
-          width="220"
-          height="300"
-          frameBorder={0}
-          allowFullScreen
-          scrolling="no"
-        />
-      </DraggableWindow>
-      {/*    )} */}
+      {monitoringLink.link && (
+        <DraggableWindow initialPosition={{ x: 0, y: 0 }}>
+          <iframe
+            src={monitoringLink.link}
+            title="SMOWL Monitoring"
+            aria-hidden="true"
+            allow="microphone; camera"
+            sandbox="allow-top-navigation allow-scripts allow-modals allow-same-origin allow-popups allow-downloads allow-popups-to-escape-sandbox"
+            width="220"
+            height="300"
+            frameBorder={0}
+            allowFullScreen
+            scrolling="no"
+          />
+        </DraggableWindow>
+      )}
       <AnimatePresence exitBeforeEnter initial={false}>
         {renderContent()}
       </AnimatePresence>
