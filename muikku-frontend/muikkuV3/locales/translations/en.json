@@ -2496,6 +2496,8 @@
       "removeError_interimRequest": "Deleting interim evaluation request failed: {{error}}",
       "removeError_supplementationRequest": "Deleting supplementation request failed: {{error}}",
       "removeError_student": "Archiving student failed: {{error}}",
+      "removeSuccess": "$t(common:notifications.removeSuccess)",
+      "removeSuccess_nodeEvaluation": "Evaluation event deleted successfully",
       "saveError": "$t(common:notifications.saveError)",
       "saveError_evaluation": "Saving the evaluation failed: {{error}}",
       "saveError_assignmentEvaluation": "Saving the assignment evaluation failed: {{error}}",
