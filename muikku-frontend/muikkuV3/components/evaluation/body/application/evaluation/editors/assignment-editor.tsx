@@ -393,6 +393,10 @@ class AssignmentEditor extends SessionStateComponent<
     }
   };
 
+  /**
+   * deleteAssignmentEvaluation
+   * Deletes the assignment evaluation from server
+   */
   deleteAssignmentEvaluation = async () => {
     const evaluationApi = MApi.getEvaluationApi();
 
@@ -406,10 +410,35 @@ class AssignmentEditor extends SessionStateComponent<
 
     try {
       await evaluationApi.deleteWorkspaceNodeAssessment({
-        workspaceEntityId: workspaceEntityId,
+        workspaceId: workspaceEntityId,
         userEntityId: userEntityId,
+        workspaceNodeId: this.props.materialAssignment.id,
         assessmentId: this.props.compositeReplies.evaluationInfo.id,
       });
+      notificationActions.displayNotification(
+        t("notifications.deleteSuccess", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+        }),
+        "success"
+      );
+
+      this.props.updateCurrentStudentCompositeRepliesData({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceMaterialId: this.props.materialAssignment.id,
+      });
+
+      this.setState(
+        {
+          locked: false,
+        },
+        () => {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        }
+      );
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
@@ -424,7 +453,9 @@ class AssignmentEditor extends SessionStateComponent<
         "error"
       );
 
-      this.setState({ locked: false });
+      this.setState({
+        locked: false,
+      });
     }
   };
 

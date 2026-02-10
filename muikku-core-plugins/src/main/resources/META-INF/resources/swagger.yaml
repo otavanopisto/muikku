@@ -3031,8 +3031,6 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
-  
-  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/node/{workspaceNodeId}/assessment/{assessmentId}:
     delete:
       operationId: deleteWorkspaceNodeAssessment
       summary: Delete workspace node assessment
