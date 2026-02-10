@@ -51,6 +51,63 @@ const build = _build({
   tsconfigRaw: JSON.stringify({ tsConfig }),
   plugins: [
     {
+      name: "esbuild:cleanup",
+      setup(build) {
+        const options = build.initialOptions;
+        // Checks whether cleanup is possible to do, skip if not
+        if (!options.outdir) {
+          console.log(
+            "[esbuild cleanup] Not outdir configured - skipping the cleanup"
+          );
+          return;
+        }
+        if (!options.metafile) {
+          console.log(
+            "[esbuild cleanup] Metafile is not enabled - skipping the cleanup"
+          );
+          return;
+        }
+        // list of predefined files that not to clean up
+        // can be optionally used
+        const safelistSet = new Set([]);
+        build.onEnd(async (result) => {
+          try {
+            console.time("[esbuild cleanup] Cleaning up old assets");
+            // Add all output files to the safelist, these are the files that are not to be cleaned up
+            Object.keys(result.metafile.outputs).forEach((oPath) =>
+              safelistSet.add(path.join(options.outdir, oPath))
+            );
+            // Find old files in the output directory
+            // Use a glob pattern to match all files recursively (exclude directories)
+            const globPattern = `${path.join(options.outdir)}/**/*`;
+            const files = await glob.glob(globPattern, {
+              nodir: true, // Only return files, not directories
+              absolute: true, // Return absolute paths
+            });
+
+            // Iterate over the files and clean up the old files
+            // If the file is not in the safelist, clean it up
+            files.forEach((filePath) => {
+              if (!safelistSet.has(filePath)) {
+                fs.unlink(
+                  filePath,
+                  (err) =>
+                    process.env.NODE_ENV !== "production" &&
+                    console.log(
+                      err
+                        ? "[esbuild cleanup] " + err
+                        : "[esbuild cleanup] Removed old file: " + filePath
+                    )
+                );
+              }
+            });
+          } finally {
+            console.timeEnd("[esbuild cleanup] Cleaning up old assets");
+          }
+        });
+      },
+    },
+    {
       name: "css",
       setup(build) {
         // Redirect all paths css or scss
