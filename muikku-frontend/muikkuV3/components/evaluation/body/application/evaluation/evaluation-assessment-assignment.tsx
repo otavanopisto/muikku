@@ -30,7 +30,6 @@ import {
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
-import PromptDialog from "~/components/general/prompt-dialog";
 
 /**
  * EvaluationCardProps
@@ -161,6 +160,19 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       isLoading: false,
       materialNode: loadedMaterial,
+    });
+  };
+
+  /**
+   * Removes evaluation from material node in state, which is used when deleting evaluation from editor
+   */
+  removeEvaluationFromState = () => {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
+      ...this.state.materialNode,
+      evaluation: null,
+    };
+    this.setState({
+      materialNode: updatedMaterial,
     });
   };
 
@@ -698,6 +710,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
                 isRecording={this.state.isRecording}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -707,12 +720,13 @@ class EvaluationAssessmentAssignment extends React.Component<
                 selectedAssessment={this.props.selectedAssessment}
                 editorLabel={t("labels.literalEvaluation", {
                   ns: "evaluation",
-                  context: "assignment",
+                  context: "assignmentEvaluation",
                 })}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
                 isRecording={this.state.isRecording}
                 onIsRecordingChange={this.handleIsRecordingChange}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}

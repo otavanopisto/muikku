@@ -37,6 +37,7 @@ import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
 import PromptDialog from "~/components/general/prompt-dialog";
+import { on } from "events";
 
 /**
  * AssignmentEditorProps
@@ -52,6 +53,7 @@ interface AssignmentEditorProps extends WithTranslation {
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
+  onDeleteEvaluation?: () => void;
   updateMaterialEvaluationData: (
     assignmentWithAudio: AssessmentWithAudio
   ) => void;
@@ -439,6 +441,7 @@ class AssignmentEditor extends SessionStateComponent<
           }
         }
       );
+      this.props.onDeleteEvaluation && this.props.onDeleteEvaluation();
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
@@ -849,8 +852,9 @@ class AssignmentEditor extends SessionStateComponent<
           )}
           {this.props.materialEvaluation && (
             <PromptDialog
-              title={t("actions.removeAssignmentEvaluation", {
+              title={t("labels.remove", {
                 ns: "evaluation",
+                context: "assignmentEvaluation",
               })}
               content={removeEvaluation}
               onExecute={this.deleteAssignmentEvaluation}
@@ -858,9 +862,8 @@ class AssignmentEditor extends SessionStateComponent<
               <Button
                 buttonModifiers="dialog-delete"
                 disabled={this.state.locked || this.props.isRecording}
-                onClick={this.handleDeleteEditorDraft}
               >
-                {t("actions.remove", { context: "assessment" })}
+                {t("actions.remove", { context: "evaluation" })}
               </Button>
             </PromptDialog>
           )}
