@@ -1,8 +1,6 @@
 import { Reducer } from "redux";
 import { HopsForm } from "~/@types/hops";
-import { Course } from "~/@types/shared";
 import { ActionType } from "~/actions";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import {
   HopsLocked,
   MatriculationEligibilityStatus,
@@ -16,11 +14,11 @@ import {
   StudentInfo,
   HopsHistoryEntry,
   StudyActivityItem,
-  HopsOpsCourse,
   HopsGoals,
   StudyPlannerNote,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 
 /**
  * MatriculationSubjectWithEligibilityStatus
@@ -48,8 +46,6 @@ export type ReducerInitializeStatusType =
 interface HopsStudyPlanState {
   plannedCourses: PlannedCourseWithIdentifier[];
   planNotes: StudyPlannerNoteWithIdentifier[];
-  availableOPSCourses: HopsOpsCourse[];
-  studyActivity: StudyActivityItem[];
   studyOptions: string[];
   goals: HopsGoals;
 }
@@ -82,7 +78,7 @@ export interface PlannedCourseWithIdentifier extends PlannedCourse {
 /**
  * PlannedCourseNew
  */
-export interface PlannedCourseNew extends Course {
+export interface PlannedCourseNew extends CourseMatrixModuleEnriched {
   type: "planned-course-new";
   subjectCode: string;
 }
@@ -111,7 +107,7 @@ export interface StudyPlannerNoteNew {
  */
 export interface PlannerActivityItem {
   identifier: string;
-  course: Course & { subjectCode: string };
+  course: CourseMatrixModuleEnriched & { subjectCode: string };
   studyActivity: StudyActivityItem; // Required for activity-only items
 }
 
@@ -218,7 +214,9 @@ export interface HopsEditingState {
   goals: HopsGoals;
   selectedPlanItemIds: string[];
   timeContextSelection: TimeContextSelection;
-  waitingToBeAllocatedCourses: (Course & { subjectCode: string })[] | null;
+  waitingToBeAllocatedCourses:
+    | (CourseMatrixModuleEnriched & { subjectCode: string })[]
+    | null;
 }
 
 /**
@@ -234,10 +232,6 @@ export interface HopsState {
   // HOPS STUDY PLAN
   hopsStudyPlanStatus: ReducerStateType;
   hopsStudyPlanState: HopsStudyPlanState;
-
-  // HOPS CURRICULUM CONFIG
-  hopsCurriculumConfigStatus: ReducerStateType;
-  hopsCurriculumConfig: CurriculumConfig | null;
 
   // HOPS EXAMINATION
   hopsMatriculationStatus: ReducerStateType;
@@ -272,16 +266,12 @@ const initialHopsState: HopsState = {
   hopsStudyPlanState: {
     plannedCourses: [],
     planNotes: [],
-    studyActivity: [],
-    availableOPSCourses: [],
     studyOptions: [],
     goals: {
       graduationGoal: null,
       studyHours: 0,
     },
   },
-  hopsCurriculumConfigStatus: "IDLE",
-  hopsCurriculumConfig: null,
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
     exams: [],
@@ -529,14 +519,10 @@ export const hopsNew: Reducer<HopsState> = (
         hopsFormCanLoadMoreHistory: true,
         studentInfo: null,
         studentInfoStatus: "IDLE",
-        hopsCurriculumConfigStatus: "IDLE",
-        hopsCurriculumConfig: null,
         hopsStudyPlanStatus: "IDLE",
         hopsStudyPlanState: {
           plannedCourses: [],
           planNotes: [],
-          studyActivity: [],
-          availableOPSCourses: [],
           studyOptions: [],
           studyMatrix: null,
           goals: {
@@ -769,31 +755,6 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           goals: action.payload,
-        },
-      };
-
-    case "HOPS_UPDATE_CURRICULUM_CONFIG":
-      return {
-        ...state,
-        hopsCurriculumConfigStatus: action.payload.status,
-        hopsCurriculumConfig: action.payload.data || state.hopsCurriculumConfig,
-      };
-
-    case "HOPS_UPDATE_STUDY_ACTIVITY":
-      return {
-        ...state,
-        hopsStudyPlanState: {
-          ...state.hopsStudyPlanState,
-          studyActivity: action.payload,
-        },
-      };
-
-    case "HOPS_UPDATE_AVAILABLE_OPS_COURSES":
-      return {
-        ...state,
-        hopsStudyPlanState: {
-          ...state.hopsStudyPlanState,
-          availableOPSCourses: action.payload,
         },
       };
 

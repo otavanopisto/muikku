@@ -6,12 +6,12 @@ import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import PlannerCourseTray from "../planner-course-tray";
-import { Course } from "~/@types/shared";
 import { DndProvider, useDragDropManager } from "react-dnd";
 import PlannerAddNote from "../planner-add-note";
 import { updateSelectedPlanItem } from "~/actions/main-function/hops";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -43,7 +43,10 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
   );
 
   const [selectedMonthItems, setSelectedMonthItems] = useState<
-    (PlannedCourseWithIdentifier | (Course & { subjectCode: string }))[]
+    (
+      | PlannedCourseWithIdentifier
+      | (CourseMatrixModuleEnriched & { subjectCode: string })
+    )[]
   >(currentSelection.map((course) => course));
 
   const { t } = useTranslation(["hops_new", "common"]);
@@ -107,7 +110,9 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
    * Handles course click
    * @param course course
    */
-  const handleCourseClick = (course: Course & { subjectCode: string }) => {
+  const handleCourseClick = (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => {
     const index = selectedMonthItems.findIndex(
       (selected) =>
         selected.subjectCode === course.subjectCode &&

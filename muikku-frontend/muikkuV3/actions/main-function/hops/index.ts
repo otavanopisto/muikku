@@ -7,7 +7,6 @@ import {
   HopsGoals,
   HopsHistoryEntry,
   HopsLocked,
-  HopsOpsCourse,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
@@ -16,7 +15,6 @@ import {
   MatriculationSubject,
   PlannedCourse,
   StudentInfo,
-  StudyActivityItem,
   StudyPlannerNote,
 } from "~/generated/client";
 import {
@@ -46,11 +44,7 @@ import {
 } from "~/@types/hops";
 import _ from "lodash";
 import { getEditedHopsFields } from "~/components/hops/body/application/wizard/helpers";
-import {
-  CurriculumConfig,
-  getCurriculumConfig,
-} from "~/util/curriculum-config";
-import { Course } from "~/@types/shared";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 
 // Api instances
 const hopsApi = MApi.getHopsApi();
@@ -113,15 +107,10 @@ export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
   string[]
 >;
 
-export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
+/* export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
   "HOPS_UPDATE_STUDY_ACTIVITY",
   StudyActivityItem[]
->;
-
-export type HOPS_UPDATE_AVAILABLE_OPS_COURSES = SpecificActionType<
-  "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
-  HopsOpsCourse[]
->;
+>; */
 
 // HOPS CAREER PLAN ACTIONS TYPES
 
@@ -226,11 +215,6 @@ export type HOPS_UPDATE_EDITING = SpecificActionType<
   Partial<HopsEditingState>
 >;
 
-export type HOPS_UPDATE_CURRICULUM_CONFIG = SpecificActionType<
-  "HOPS_UPDATE_CURRICULUM_CONFIG",
-  { status: ReducerStateType; data?: CurriculumConfig | null }
->;
-
 export type HOPS_UPDATE_EDITING_STUDYPLAN = SpecificActionType<
   "HOPS_UPDATE_EDITING_STUDYPLAN",
   PlannedCourseWithIdentifier[]
@@ -271,7 +255,7 @@ export type HOPS_CLEAR_SELECTED_COURSES = SpecificActionType<
 
 export type HOPS_UPDATE_ADD_TO_PERIOD = SpecificActionType<
   "HOPS_UPDATE_ADD_TO_PERIOD",
-  (Course & { subjectCode: string })[]
+  (CourseMatrixModuleEnriched & { subjectCode: string })[]
 >;
 
 export type HOPS_CLEAR_ADD_TO_PERIOD = SpecificActionType<
@@ -2203,10 +2187,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       // 3. Load HOPS form history as they are part of the form data
       await initializeHopsFormHistory(studentIdentifier, dispatch, getState);
 
-      // 4. Initialize HOPS curriculum config
-      await initializeHopsCurriculumConfig(dispatch, getState);
-
-      // 5. Check lock status
+      // 4. Check lock status
       const hopsLocked = await initializeHopsLocked(
         studentIdentifier,
         dispatch,
@@ -2325,13 +2306,16 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
-      const planNotes = await hopsApi.getStudyPlannerNotes({
-        studentIdentifier,
-      });
+      /* const planNotes = await hopsApi
+        .getStudyPlannerNotes({
+          studentIdentifier,
+        })
+        .then((notes) => notes)
+        .catch(() => [] as StudyPlannerNote[]); */
 
-      const studyActivity = await hopsApi.getStudyActivity({
+      /* const studyActivity = await hopsApi.getStudyActivity({
         studentIdentifier,
-      });
+      }); */
 
       const studyOptions = await hopsApi.getStudentAlternativeStudyOptions({
         studentIdentifier,
@@ -2341,16 +2325,6 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
-      const educationTypeCode =
-        state.hopsNew.studentInfo.studyProgrammeEducationType;
-
-      const studentOps = state.hopsNew.studentInfo.curriculumName;
-
-      const availableOPSCourses = await hopsApi.getOpsCourses({
-        ops: studentOps,
-        educationTypeCode,
-      });
-
       // Add identifier to planned courses because
       const plannedCoursesWithIdentifier: PlannedCourseWithIdentifier[] =
         plannedCourses.map((course) => ({
@@ -2358,31 +2332,26 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
           identifier: "planned-course-" + course.id,
         }));
 
-      const planNotesWithIdentifier: StudyPlannerNoteWithIdentifier[] =
+      /* const planNotesWithIdentifier: StudyPlannerNoteWithIdentifier[] =
         planNotes.map((note) => ({
           ...note,
           identifier: "plan-note-" + note.id,
-        }));
+        })); */
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
         payload: plannedCoursesWithIdentifier,
       });
 
-      dispatch({
+      /* dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
         payload: planNotesWithIdentifier,
-      });
+      }); */
 
-      dispatch({
+      /* dispatch({
         type: "HOPS_UPDATE_STUDY_ACTIVITY",
         payload: studyActivity.items,
-      });
-
-      dispatch({
-        type: "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
-        payload: availableOPSCourses,
-      });
+      }); */
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
@@ -2727,36 +2696,6 @@ function initializeHopsForm(
     ...(baseForm as SecondaryStudiesHops),
     ...(existingDataForm as SecondaryStudiesHops),
   };
-}
-
-/**
- * Initialize HOPS curriculum config
- * @param dispatch dispatch
- * @param getState getState
- */
-async function initializeHopsCurriculumConfig(
-  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState: () => StateType
-) {
-  const state = getState();
-
-  if (state.hopsNew.hopsCurriculumConfigStatus !== "IDLE") {
-    return;
-  }
-
-  dispatch({
-    type: "HOPS_UPDATE_CURRICULUM_CONFIG",
-    payload: { status: "LOADING" },
-  });
-
-  const curriculumConfig: CurriculumConfig = getCurriculumConfig(
-    state.hopsNew.studentInfo
-  );
-
-  dispatch({
-    type: "HOPS_UPDATE_CURRICULUM_CONFIG",
-    payload: { status: "READY", data: curriculumConfig },
-  });
 }
 
 export {

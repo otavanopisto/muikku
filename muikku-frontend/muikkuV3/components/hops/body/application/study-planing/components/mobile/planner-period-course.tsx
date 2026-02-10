@@ -139,10 +139,10 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                     id="study-planner-specify-course"
                     subjectCode={course.subjectCode}
                     courseNumber={course.courseNumber}
-                    ops={
-                      curriculumConfig.strategy.getCurriculumMatrix()
-                        .curriculumName
-                    }
+                    // ops={
+                    //   curriculumConfig.strategy.getCurriculumMatrix()
+                    //     .curriculumName
+                    // }
                     curriculumType={curriculumConfig.type}
                   />
                 </div>

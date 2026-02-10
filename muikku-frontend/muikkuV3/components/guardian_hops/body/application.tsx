@@ -28,6 +28,15 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
+import {
+  LoadCourseMatrixTriggerType,
+  loadCourseMatrix,
+  LoadUserStudyActivityTriggerType,
+  loadUserStudyActivity,
+  ResetStudyActivityStateTriggerType,
+  resetStudyActivityState,
+} from "~/actions/study-activity";
+import { StudyActivityState } from "~/reducers/study-activity";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -50,8 +59,12 @@ type GuardianHopsTab = "MATRICULATION" | "STUDYPLAN";
  */
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
+  studyActivity: StudyActivityState;
   initializeHops: InitializeHopsTriggerType;
   resetHopsData: ResetHopsDataTriggerType;
+  loadCourseMatrix: LoadCourseMatrixTriggerType;
+  loadUserStudyActivity: LoadUserStudyActivityTriggerType;
+  resetStudyActivityState: ResetStudyActivityStateTriggerType;
 }
 
 /**
@@ -194,8 +207,11 @@ class GuardianHopsApplication extends React.Component<
     window.location.hash = option.value;
 
     // Resetting data and initializing HOPS with new user identifier
+    this.props.resetStudyActivityState();
     this.props.resetHopsData();
     this.props.initializeHops({ userIdentifier: option.value });
+    this.props.loadCourseMatrix({ userIdentifier: option.value });
+    this.props.loadUserStudyActivity({ userIdentifier: option.value });
 
     this.setState({
       activeTab: "STUDYPLAN",
@@ -272,6 +288,8 @@ class GuardianHopsApplication extends React.Component<
             identifier: selectedDependant?.identifier || "",
             studyStartDate: selectedDependant?.studyStartDate || new Date(),
           }}
+          curriculumConfig={this.props.studyActivity.curriculumConfig}
+          userStudyActivity={this.props.studyActivity.userStudyActivity}
         >
           <ApplicationPanel
             title="HOPS"
@@ -293,6 +311,7 @@ class GuardianHopsApplication extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     dependants: state.dependants,
+    studyActivity: state.studyActivity,
   };
 }
 
@@ -305,6 +324,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     {
       initializeHops,
       resetHopsData,
+      loadCourseMatrix,
+      loadUserStudyActivity,
+      resetStudyActivityState,
     },
     dispatch
   );

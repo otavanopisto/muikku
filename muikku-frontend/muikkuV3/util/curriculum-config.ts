@@ -1,20 +1,20 @@
-import { Course, SchoolCurriculumMatrix } from "~/@types/shared";
-import { StudentInfo, StudyActivityItem } from "~/generated/client";
 import {
-  schoolCourseTableCompulsory2018,
-  schoolCourseTableUppersecondary2021,
-} from "~/mock/mock-data";
+  CourseMatrix,
+  CourseMatrixType,
+  StudyActivityItem,
+} from "~/generated/client";
 import {
   PlannedCourseWithIdentifier,
   PlannedPeriod,
   PlannerActivityItem,
 } from "~/reducers/hops";
 import { v4 as uuidv4 } from "uuid";
-import {
-  filterCompulsorySubjects,
-  filterUpperSecondarySubjects,
-} from "~/helper-functions/study-matrix";
 import { TFunction } from "i18next";
+import {
+  CourseMatrixEnriched,
+  CourseMatrixModuleEnriched,
+  enrichCourseMatrixWithIdentifiers,
+} from "~/@types/course-matrix";
 
 // Uppersecondary curriculum has 88 credits required
 const UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES = 88;
@@ -88,7 +88,7 @@ export interface CurriculumStrategy {
    */
   getCurriculumMatrix: (
     options?: CurriculumMatrixOptions
-  ) => SchoolCurriculumMatrix;
+  ) => CourseMatrixEnriched;
 
   /**
    * Get current period
@@ -103,7 +103,7 @@ export interface CurriculumStrategy {
    * @returns planned course
    */
   createPlannedCourse: (
-    course: Course & { subjectCode: string },
+    course: CourseMatrixModuleEnriched & { subjectCode: string },
     startDate: Date
   ) => PlannedCourseWithIdentifier;
 
@@ -157,10 +157,10 @@ export interface CurriculumStrategy {
 
   /**
    * Get course displayed length
-   * @param course course
+   * @param courseLength course length
    * @returns displayed length
    */
-  getCourseDisplayedLength: (course: Course) => string;
+  getCourseDisplayedLength: (courseLength: number) => string;
 
   /**
    * Get empty period
@@ -177,7 +177,7 @@ export interface CurriculumStrategy {
    */
   findCourseByIdentifier: (
     identifier: string
-  ) => (Course & { subjectCode: string }) | undefined;
+  ) => (CourseMatrixModuleEnriched & { subjectCode: string }) | undefined;
 }
 
 /**
@@ -192,25 +192,19 @@ export interface CurriculumConfig {
  * Uppersecondary curriculum strategy
  */
 class UppersecondaryCurriculum implements CurriculumStrategy {
-  private matrix: SchoolCurriculumMatrix;
+  private matrix: CourseMatrixEnriched;
 
   /**
    * Constructor
+   * @param courseMatrix course matrix
+   * @param curriculumName curriculum name
    */
-  constructor() {
+  constructor(courseMatrix?: CourseMatrix, curriculumName?: string) {
     // Initialize the base matrix with identifiers
-    this.matrix = {
-      ...schoolCourseTableUppersecondary2021,
-      subjectsTable: schoolCourseTableUppersecondary2021.subjectsTable.map(
-        (subject) => ({
-          ...subject,
-          availableCourses: subject.availableCourses.map((c) => ({
-            ...c,
-            identifier: `ops-course-${uuidv4()}`,
-          })),
-        })
-      ),
-    };
+    this.matrix = enrichCourseMatrixWithIdentifiers(
+      courseMatrix,
+      curriculumName
+    );
   }
 
   /**
@@ -218,18 +212,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    * @param options options. Optional parameter to filter the matrix based on.
    * @returns curriculum matrix
    */
-  getCurriculumMatrix(
-    options?: CurriculumMatrixOptions
-  ): SchoolCurriculumMatrix {
-    if (options?.studyOptions) {
-      return {
-        ...this.matrix,
-        subjectsTable: filterUpperSecondarySubjects(
-          this.matrix.subjectsTable,
-          options.studyOptions
-        ),
-      };
-    }
+  getCurriculumMatrix(options?: CurriculumMatrixOptions): CourseMatrixEnriched {
     return this.matrix;
   }
 
@@ -240,13 +223,11 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    */
   findCourseByIdentifier(
     identifier: string
-  ): (Course & { subjectCode: string }) | undefined {
-    for (const subject of this.matrix.subjectsTable) {
-      const course = subject.availableCourses.find(
-        (c) => c.identifier === identifier
-      );
+  ): (CourseMatrixModuleEnriched & { subjectCode: string }) | undefined {
+    for (const subject of this.matrix.subjects) {
+      const course = subject.modules.find((c) => c.identifier === identifier);
       if (course) {
-        return { ...course, subjectCode: subject.subjectCode };
+        return { ...course, subjectCode: subject.code };
       }
     }
     return undefined;
@@ -399,12 +380,12 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     const requiredTotalStudies = UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES;
 
     const mandatoryStudies =
-      matrix.subjectsTable.reduce(
+      matrix.subjects.reduce(
         (sum, subject) =>
           sum +
-          subject.availableCourses
-            .filter((course) => course.mandatory)
-            .map((course) => course.length)
+          subject.modules
+            .filter((module) => module.mandatory)
+            .map((module) => module.length)
             .reduce((sum, length) => sum + length, 0),
         0
       ) + UPPER_SECONDARY_MANDATORY_OFFSET;
@@ -449,13 +430,13 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     > = {};
 
     completedActivities.forEach((activity) => {
-      const subject = matrix.subjectsTable.find(
-        (subject) => subject.subjectCode === activity.subject
+      const subject = matrix.subjects.find(
+        (subject) => subject.code === activity.subject
       );
 
       if (subject) {
-        const course = subject.availableCourses.find(
-          (course) => course.courseNumber === activity.courseNumber
+        const course = subject.modules.find(
+          (module) => module.courseNumber === activity.courseNumber
         );
 
         if (course) {
@@ -513,11 +494,11 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
 
   /**
    * Get course displayed length
-   * @param course course
+   * @param courseLength course length
    * @returns displayed length
    */
-  getCourseDisplayedLength(course: Course): string {
-    return `${course.length} op`;
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} op`;
   }
 
   /**
@@ -569,7 +550,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    * @returns planned course
    */
   createPlannedCourse(
-    course: Course & { subjectCode: string },
+    course: CourseMatrixModuleEnriched & { subjectCode: string },
     startDate: Date
   ): PlannedCourseWithIdentifier {
     return {
@@ -590,25 +571,19 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
  * Compulsory curriculum strategy
  */
 class CompulsoryCurriculum implements CurriculumStrategy {
-  private matrix: SchoolCurriculumMatrix;
+  private matrix: CourseMatrixEnriched;
 
   /**
    * Constructor
+   * @param courseMatrix course matrix
+   * @param curriculumName curriculum name
    */
-  constructor() {
+  constructor(courseMatrix?: CourseMatrix, curriculumName?: string) {
     // Initialize the base matrix with identifiers
-    this.matrix = {
-      ...schoolCourseTableCompulsory2018,
-      subjectsTable: schoolCourseTableCompulsory2018.subjectsTable.map(
-        (subject) => ({
-          ...subject,
-          availableCourses: subject.availableCourses.map((c) => ({
-            ...c,
-            identifier: `ops-course-${uuidv4()}`,
-          })),
-        })
-      ),
-    };
+    this.matrix = enrichCourseMatrixWithIdentifiers(
+      courseMatrix,
+      curriculumName
+    );
   }
 
   /**
@@ -617,15 +592,6 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * @returns curriculum matrix
    */
   getCurriculumMatrix(options?: CurriculumMatrixOptions) {
-    if (options?.studyOptions) {
-      return {
-        ...this.matrix,
-        subjectsTable: filterCompulsorySubjects(
-          this.matrix.subjectsTable,
-          options.studyOptions
-        ),
-      };
-    }
     return this.matrix;
   }
 
@@ -636,13 +602,11 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    */
   findCourseByIdentifier(
     identifier: string
-  ): (Course & { subjectCode: string }) | undefined {
-    for (const subject of this.matrix.subjectsTable) {
-      const course = subject.availableCourses.find(
-        (c) => c.identifier === identifier
-      );
+  ): (CourseMatrixModuleEnriched & { subjectCode: string }) | undefined {
+    for (const subject of this.matrix.subjects) {
+      const course = subject.modules.find((c) => c.identifier === identifier);
       if (course) {
-        return { ...course, subjectCode: subject.subjectCode };
+        return { ...course, subjectCode: subject.code };
       }
     }
     return undefined;
@@ -782,10 +746,9 @@ class CompulsoryCurriculum implements CurriculumStrategy {
 
     const requiredTotalStudies = COMPULSORY_TOTAL_REQUIRED_STUDIES;
 
-    const mandatoryStudies = matrix.subjectsTable.reduce(
+    const mandatoryStudies = matrix.subjects.reduce(
       (sum, subject) =>
-        sum +
-        subject.availableCourses.filter((course) => course.mandatory).length,
+        sum + subject.modules.filter((module) => module.mandatory).length,
       0
     );
 
@@ -824,13 +787,13 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     // Go through each completed activity and match with matrix courses
     completedActivities.forEach((activity) => {
       // Find matching subject and course in matrix
-      const subject = matrix.subjectsTable.find(
-        (subject) => subject.subjectCode === activity.subject
+      const subject = matrix.subjects.find(
+        (subject) => subject.code === activity.subject
       );
 
       if (subject) {
-        const course = subject.availableCourses.find(
-          (course) => course.courseNumber === activity.courseNumber
+        const course = subject.modules.find(
+          (module) => module.courseNumber === activity.courseNumber
         );
 
         if (course) {
@@ -861,11 +824,11 @@ class CompulsoryCurriculum implements CurriculumStrategy {
 
   /**
    * Get course displayed length
-   * @param course course
+   * @param courseLength course length
    * @returns displayed length
    */
-  getCourseDisplayedLength(course: Course): string {
-    return `${course.length} h`;
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} h`;
   }
 
   /**
@@ -917,7 +880,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * @returns planned course
    */
   createPlannedCourse(
-    course: Course & { subjectCode: string },
+    course: CourseMatrixModuleEnriched & { subjectCode: string },
     startDate: Date
   ): PlannedCourseWithIdentifier {
     return {
@@ -936,19 +899,25 @@ class CompulsoryCurriculum implements CurriculumStrategy {
 
 /**
  * Get curriculum config
- * @param studentInfo student info
+ * @param courseMatrixType course matrix type
+ * @param courseMatrix course matrix
+ * @param curriculumName curriculum name
  * @returns curriculum config
  */
-function getCurriculumConfig(studentInfo: StudentInfo): CurriculumConfig {
-  if (studentInfo.studyProgrammeEducationType === "lukio") {
+function getCurriculumConfig(
+  courseMatrixType: CourseMatrixType,
+  courseMatrix?: CourseMatrix,
+  curriculumName?: string
+): CurriculumConfig {
+  if (courseMatrixType === "UPPER_SECONDARY") {
     return {
       type: "uppersecondary",
-      strategy: new UppersecondaryCurriculum(),
+      strategy: new UppersecondaryCurriculum(courseMatrix, curriculumName),
     };
   }
   return {
     type: "compulsory",
-    strategy: new CompulsoryCurriculum(),
+    strategy: new CompulsoryCurriculum(courseMatrix, curriculumName),
   };
 }
 

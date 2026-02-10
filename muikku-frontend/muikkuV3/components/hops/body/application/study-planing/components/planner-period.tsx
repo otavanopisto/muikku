@@ -13,6 +13,7 @@ import {
 import { StudyActivityItem } from "~/generated/client";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 // Animate period to collapse
 const periodVariants: Variants = {
@@ -80,9 +81,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     const { t } = useTranslation(["common"]);
 
-    const curriculumStrategy = useSelector(
-      (state: StateType) => state.hopsNew.hopsCurriculumConfig.strategy
-    );
+    const { curriculumConfig } = useHopsBasicInfo();
 
     const studyActivities = useSelector(
       (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
@@ -171,7 +170,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
           });
 
     // Calculate workload
-    const workload = curriculumStrategy.calculatePeriodWorkload(
+    const workload = curriculumConfig.strategy.calculatePeriodWorkload(
       plannedCourses,
       activityCourses,
       t

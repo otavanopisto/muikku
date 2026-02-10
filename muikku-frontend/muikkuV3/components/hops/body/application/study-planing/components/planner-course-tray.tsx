@@ -4,7 +4,7 @@ import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
 import { useLocalStorage } from "usehooks-ts";
-import { Course, CourseFilter } from "~/@types/shared";
+import { CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { StudyActivityItem } from "~/generated/client";
@@ -20,14 +20,20 @@ import {
   PlannerCardLabel,
 } from "./planner-card";
 import { useTranslation } from "react-i18next";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * PlannerSidebarProps
  */
 interface PlannerCourseTrayProps {
   plannedCourses: PlannedCourseWithIdentifier[];
-  onCourseClick: (course: Course & { subjectCode: string }) => void;
-  isCourseSelected: (course: Course & { subjectCode: string }) => boolean;
+  onCourseClick: (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => void;
+  isCourseSelected: (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => boolean;
 }
 
 /**
@@ -53,23 +59,10 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
     []
   );
 
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
+
   const studyOptions = useSelector(
     (state: StateType) => state.hopsNew.hopsStudyPlanState.studyOptions
-  );
-
-  // Get curriculum config
-  const curriculumConfig = useSelector(
-    (state: StateType) => state.hopsNew.hopsCurriculumConfig
-  );
-
-  // Get available OPS courses
-  const availableOPSCourses = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.availableOPSCourses
-  );
-
-  // Get study activity
-  const studyActivity = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
   );
 
   // Disable course tray if in read mode
@@ -83,15 +76,6 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
         studyOptions,
       }),
     [curriculumConfig, studyOptions]
-  );
-
-  const availableOPSCoursesMap = useMemo(
-    () =>
-      availableOPSCourses.reduce((acc, course) => {
-        acc.set(course.subjectCode, course.courseNumbers);
-        return acc;
-      }, new Map<string, number[]>()),
-    [availableOPSCourses]
   );
 
   /**
@@ -124,19 +108,17 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const filteredSubjects = useMemo(
     () =>
       filterSubjectsAndCourses(
-        matrix.subjectsTable,
+        matrix.subjects,
         searchTerm,
         selectedFilters,
-        availableOPSCoursesMap,
-        studyActivity,
+        userStudyActivity?.items ?? [],
         plannedCourses
       ),
     [
       matrix,
       searchTerm,
       selectedFilters,
-      availableOPSCoursesMap,
-      studyActivity,
+      userStudyActivity?.items,
       plannedCourses,
     ]
   );
@@ -250,30 +232,25 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
       </div>
       <div className="study-planner__course-tray-groups">
         {filteredSubjects.map((subject) => (
-          <div
-            key={subject.subjectCode}
-            className="study-planner__course-tray-group"
-          >
+          <div key={subject.code} className="study-planner__course-tray-group">
             <Button
               icon={
-                expandedGroups.includes(subject.subjectCode)
+                expandedGroups.includes(subject.code)
                   ? "arrow-down"
                   : "arrow-right"
               }
               buttonModifiers={["planner-course-group-toggle"]}
-              onClick={() => handleGroupToggle(subject.subjectCode)}
+              onClick={() => handleGroupToggle(subject.code)}
             >
               {subject.name}
             </Button>
-            <AnimatedDrawer
-              isOpen={expandedGroups.includes(subject.subjectCode)}
-            >
+            <AnimatedDrawer isOpen={expandedGroups.includes(subject.code)}>
               <ol className="study-planner__course-tray-list">
                 {subject.availableCourses.map((course) => {
                   // Check if course tray item is selected
                   const selected = props.isCourseSelected({
                     ...course,
-                    subjectCode: subject.subjectCode,
+                    subjectCode: subject.code,
                   });
 
                   const isAssessed =
@@ -285,11 +262,11 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     <PlannerCourseTrayItem
                       key={
                         course.identifier ||
-                        `${subject.subjectCode}${course.courseNumber}`
+                        `${subject.code}${course.courseNumber}`
                       }
                       disabled={disabled || course.planned || isAssessed}
                       course={course}
-                      subjectCode={subject.subjectCode}
+                      subjectCode={subject.code}
                       isPlannedCourse={course.planned}
                       selected={selected}
                       studyActivity={course.studyActivity}
@@ -312,13 +289,15 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
  */
 interface PlannerCourseTrayItemProps {
   disabled: boolean;
-  course: Course;
+  course: CourseMatrixModuleEnriched;
   subjectCode: string;
   isPlannedCourse: boolean;
   selected: boolean;
   curriculumConfig: CurriculumConfig;
   studyActivity?: StudyActivityItem;
-  onSelectCourse: (course: Course & { subjectCode: string }) => void;
+  onSelectCourse: (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => void;
 }
 
 /**
@@ -448,7 +427,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         <PlannerCardHeader>
           <span className="study-planner__card-title">
             <b>{`${subjectCode}${course.courseNumber}`}</b>{" "}
-            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
           </span>
         </PlannerCardHeader>
 

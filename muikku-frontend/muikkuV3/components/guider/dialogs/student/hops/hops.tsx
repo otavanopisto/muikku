@@ -405,6 +405,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
           identifier: studentInfo.id,
           studyStartDate: studentInfo.studyStartDate,
         }}
+        curriculumConfig={null}
+        userStudyActivity={null}
       >
         {studentInfo.permissions.canEdit && (
           <div className="hops-edit__button-row">

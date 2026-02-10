@@ -274,6 +274,7 @@ export default class MainFunction extends React.Component<
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
 
+      this.loadUserEssentialData(identifier);
       this.loadHopsData(tab, identifier, true);
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
@@ -405,6 +406,19 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
     }
+  }
+
+  /**
+   * loadUserEssentialData
+   * @param userId userId
+   */
+  loadUserEssentialData(userId: string) {
+    this.props.store.dispatch(
+      loadUserStudyActivity({ userIdentifier: userId }) as Action
+    );
+    this.props.store.dispatch(
+      loadCourseMatrix({ userIdentifier: userId }) as Action
+    );
   }
 
   /**

@@ -33,6 +33,7 @@ import Button from "~/components/general/button";
 import PlannerActivityList from "../planner-activity-list";
 import PlannerNotesList from "../planner-notes-list";
 import { v4 as uuidv4 } from "uuid";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * PlannerPeriodMonthProps
@@ -78,10 +79,10 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     isPast,
   } = props;
 
+  const { curriculumConfig } = useHopsBasicInfo();
+
   // Selectors
-  const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
-    (state: StateType) => state.hopsNew
-  );
+  const { hopsMode } = useSelector((state: StateType) => state.hopsNew);
   const {
     plannedCourses: originalPlannedCourses,
     planNotes: originalPlanNotes,
