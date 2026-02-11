@@ -2498,7 +2498,7 @@
       "removeError_supplementationRequest": "Virhe täydennyspyynnön poistossa: {{error}}",
       "removeError_student": "Virhe opiskelijan arkistoinnissa: {{error}}",
       "removeSuccess": "$t(common:notifications.removeSuccess)",
-      "removeSuccess_nodeEvaluation": "Tehtäväarviointi poistettu onnistuneesti",
+      "removeSuccess_assignmentEvaluation": "Tehtäväarviointi poistettu onnistuneesti",
       "saveError": "$t(common:notifications.saveError)",
       "saveError_evaluation": "Virhe arvioinnin tallennuksessa: {{error}}",
       "saveError_assignmentEvaluation": "Virhe tehtävän arvioinnin tallennuksessa: {{error}}",
