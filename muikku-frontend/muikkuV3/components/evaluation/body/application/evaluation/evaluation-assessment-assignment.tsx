@@ -419,8 +419,15 @@ class EvaluationAssessmentAssignment extends React.Component<
 
       return (
         <div className="evaluation-modal__item-meta">
-          {hasSubmitted === null ||
-          (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
+          {hasSubmitted === null ? (
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
+              <span className="evaluation-modal__item-meta-item-data">
+                {t("labels.notDone", { ns: "evaluation" })}
+              </span>
+            </div>
+          ) : compositeReply.state === "WITHDRAWN" ? (
             <div
               className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
@@ -429,18 +436,16 @@ class EvaluationAssessmentAssignment extends React.Component<
               </span>
             </div>
           ) : (
-            hasSubmitted && (
-              <div
-                className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
-              >
-                <span className="evaluation-modal__item-meta-item-label">
-                  {t("labels.done", { ns: "evaluation" })}
-                </span>
-                <span className="evaluation-modal__item-meta-item-data">
-                  {localize.date(hasSubmitted)}
-                </span>
-              </div>
-            )
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.done", { ns: "evaluation" })}
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {localize.date(hasSubmitted)}
+              </span>
+            </div>
           )}
 
           {evaluationDate && (
