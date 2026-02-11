@@ -73,14 +73,13 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
 ) => {
   const { monthIndex, title, year, courses, activities, isPast, notes } = props;
 
-  const { curriculumConfig } = useHopsBasicInfo();
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
   // Selectors
   const { hopsMode } = useSelector((state: StateType) => state.hopsNew);
   const {
     plannedCourses: originalPlannedCourses,
     planNotes: originalPlanNotes,
-    studyActivity,
   } = useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
   const {
     plannedCourses: editedPlannedCourses,
@@ -528,7 +527,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
               courses={courses}
               selectedPlanItemIds={selectedPlanItemIds}
               originalPlannedCourses={originalPlannedCourses}
-              studyActivity={studyActivity}
+              studyActivity={userStudyActivity.items}
               curriculumConfig={curriculumConfig}
               onCourseChange={handleCourseChange}
               onSelectCourse={handleSelectCourse}

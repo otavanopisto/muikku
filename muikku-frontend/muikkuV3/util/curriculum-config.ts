@@ -203,7 +203,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     // Initialize the base matrix with identifiers
     this.matrix = enrichCourseMatrixWithIdentifiers(
       courseMatrix,
-      curriculumName
+      curriculumName ?? ""
     );
   }
 
@@ -582,7 +582,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     // Initialize the base matrix with identifiers
     this.matrix = enrichCourseMatrixWithIdentifiers(
       courseMatrix,
-      curriculumName
+      curriculumName ?? ""
     );
   }
 

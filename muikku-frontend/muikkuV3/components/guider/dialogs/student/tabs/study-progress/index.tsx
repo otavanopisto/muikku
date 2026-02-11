@@ -43,8 +43,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     useState<WorkspaceSuggestion | null>(null);
 
   const courseMatrix = useSelector(
-    (state: StateType) =>
-      state.guider.currentStudent?.studyProgress.courseMatrix
+    (state: StateType) => state.guider.currentStudent?.courseMatrix ?? null
   );
 
   const studyActivityItems = useSelector(
