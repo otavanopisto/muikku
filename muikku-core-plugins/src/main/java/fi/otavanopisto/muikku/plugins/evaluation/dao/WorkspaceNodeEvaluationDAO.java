@@ -102,11 +102,6 @@ public class WorkspaceNodeEvaluationDAO extends CorePluginsDAO<WorkspaceNodeEval
     );
     return entityManager.createQuery(criteria).getResultList();
   }
-  
-  public void archive(WorkspaceNodeEvaluation workspaceNodeEvaluation) {
-    workspaceNodeEvaluation.setArchived(Boolean.TRUE);
-    getEntityManager().persist(workspaceNodeEvaluation);
-  }
 
   public void delete(WorkspaceNodeEvaluation e) {
     super.delete(e);

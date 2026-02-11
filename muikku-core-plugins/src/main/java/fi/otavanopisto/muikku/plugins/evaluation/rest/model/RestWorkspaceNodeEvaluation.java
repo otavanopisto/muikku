@@ -22,7 +22,6 @@ public class RestWorkspaceNodeEvaluation {
       String gradingScale,
       String verbalAssessment,
       Boolean passed,
-      boolean archived,
       List<RestAssignmentEvaluationAudioClip> audioAssessments) {
     super();
     this.id = id;
@@ -38,7 +37,6 @@ public class RestWorkspaceNodeEvaluation {
     this.gradingScale = gradingScale;
     this.verbalAssessment = verbalAssessment;
     this.passed = passed;
-    this.archived = archived;
     this.audioAssessments = audioAssessments;
   }
 

@@ -76,14 +76,6 @@ public class RestAssignmentEvaluation {
     this.points = points;
   }
 
-  public boolean isArchived() {
-    return archived;
-  }
-
-  public void setArchived(boolean archived) {
-    this.archived = archived;
-  }
-
   private Long id;
   private RestAssignmentEvaluationType type;
   private WorkspaceNodeEvaluationType evaluationType;
@@ -91,6 +83,5 @@ public class RestAssignmentEvaluation {
   private Date date;
   private String grade;
   private Double points;
-  private boolean archived;
   private List<RestAssignmentEvaluationAudioClip> audioAssessments = new ArrayList<>();
 }

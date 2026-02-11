@@ -716,38 +716,6 @@ public class EvaluationController {
 
     return evaluation;
   }
-  
-  public void archiveWorkspaceNodeEvaluation(WorkspaceNodeEvaluation workspaceNodeEvaluation) {
-    workspaceNodeEvaluationDAO.archive(workspaceNodeEvaluation);
-  }
-  
-  public void deleteWorkspaceNodeEvaluation(WorkspaceNodeEvaluation workspaceNodeEvaluation) {
-    
-    // Remove audio clips first
-    List<WorkspaceNodeEvaluationAudioClip> audioClips = workspaceNodeEvaluationAudioClipDAO.listByEvaluation(workspaceNodeEvaluation);
-
-    if (audioClips != null) {
-      for (WorkspaceNodeEvaluationAudioClip audioClip : audioClips) {
-        if (audioClip != null) {
-          try {
-            // Remove file
-            Long userEntityId = audioClip.getEvaluation().getStudentEntityId();
-            if (file.isFileInFileSystem(userEntityId, audioClip.getClipId())) {
-              file.removeFileFromFileSystem(userEntityId, audioClip.getClipId());
-            }
-
-            // Remove db entry
-            workspaceNodeEvaluationAudioClipDAO.delete(audioClip);
-          }
-          catch (Exception e) {
-            throw new RuntimeException("Failed to remove audio data", e);
-          }
-        }
-      }
-    }
-    
-    workspaceNodeEvaluationDAO.delete(workspaceNodeEvaluation);
-  }
 
   public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
     supplementationRequestDAO.archive(supplementationRequest);
@@ -875,7 +843,6 @@ public class EvaluationController {
       evaluation.setDate(workspaceNodeEvaluation.getEvaluated());
       evaluation.setText(workspaceNodeEvaluation.getVerbalAssessment());
       evaluation.setPoints(workspaceNodeEvaluation.getPoints());
-      evaluation.setArchived(workspaceNodeEvaluation.isArchived());
       // Only assessments have grading info
       if (evaluationType == WorkspaceNodeEvaluationType.GRADED) {
         GradingScale gradingScale = gradingController.findGradingScale(

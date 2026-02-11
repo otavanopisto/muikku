@@ -169,6 +169,9 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
+  @Inject
+  private EvaluationDeleteController evaluationDeleteController;
+  
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -651,7 +654,6 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
         evaluation.getPoints(),
-        evaluation.isArchived(),
         evaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
@@ -790,7 +792,6 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
         evaluation.getPoints(),
-        evaluation.isArchived(),
         evaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
@@ -828,9 +829,7 @@ public class EvaluationRESTService extends PluginRESTService {
     // Actual deletion permission only for administrators
     
     if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
-    } else {
-      evaluationController.archiveWorkspaceNodeEvaluation(evaluation);
+      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     
     return Response.noContent().build();
@@ -1897,7 +1896,6 @@ public class EvaluationRESTService extends PluginRESTService {
         gradingScaleStr,
         evaluation.getVerbalAssessment(),
         passingGrade,
-        evaluation.isArchived(),
         audioAssessments);
   }
   
