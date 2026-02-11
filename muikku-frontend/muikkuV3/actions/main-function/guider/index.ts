@@ -1038,10 +1038,13 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       });
 
       /**
-       * Study progress promise
+       * Loads essential study information for the student
+       * - Study activity
+       * - Course matrix
+       * - Curriculum config
        * @param curriculumName curriculum name
        */
-      const studyActivityPromise = async (curriculumName?: string) => {
+      const studentStudyEssentialsPromise = async (curriculumName?: string) => {
         const studentStudyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: id,
         });
@@ -1114,7 +1117,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               });
 
-            studyActivityPromise(student.curriculumName);
+            // Doing this here because curriculum name is not available in the student object
+            studentStudyEssentialsPromise(student.curriculumName);
           }),
 
         userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {

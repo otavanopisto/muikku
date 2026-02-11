@@ -2306,16 +2306,20 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
-      /* const planNotes = await hopsApi
+      // There are exceptions for plan notes access, especially if user
+      // is student guardian which don't have access to plan notes
+      const planNotes = await hopsApi
         .getStudyPlannerNotes({
           studentIdentifier,
         })
         .then((notes) => notes)
-        .catch(() => [] as StudyPlannerNote[]); */
+        .catch((reason) => {
+          if (isResponseError(reason) && reason.response.status === 403) {
+            return [] as StudyPlannerNote[];
+          }
 
-      /* const studyActivity = await hopsApi.getStudyActivity({
-        studentIdentifier,
-      }); */
+          throw reason;
+        });
 
       const studyOptions = await hopsApi.getStudentAlternativeStudyOptions({
         studentIdentifier,
@@ -2332,26 +2336,21 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
           identifier: "planned-course-" + course.id,
         }));
 
-      /* const planNotesWithIdentifier: StudyPlannerNoteWithIdentifier[] =
+      const planNotesWithIdentifier: StudyPlannerNoteWithIdentifier[] =
         planNotes.map((note) => ({
           ...note,
           identifier: "plan-note-" + note.id,
-        })); */
+        }));
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
         payload: plannedCoursesWithIdentifier,
       });
 
-      /* dispatch({
+      dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
         payload: planNotesWithIdentifier,
-      }); */
-
-      /* dispatch({
-        type: "HOPS_UPDATE_STUDY_ACTIVITY",
-        payload: studyActivity.items,
-      }); */
+      });
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
