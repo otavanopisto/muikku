@@ -45,13 +45,14 @@ interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: NodeEvaluation;
   materialAssignment: WorkspaceMaterial;
-  compositeReplies: MaterialCompositeReply;
+  compositeReplies?: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
+  onDeleteEvaluation?: () => void;
   updateMaterialEvaluationData: (
     assignmentWithAudio: AssessmentWithAudio
   ) => void;
@@ -119,7 +120,7 @@ class AssignmentEditor extends SessionStateComponent<
     const draftId = `${selectedAssessment.userEntityId}-${materialAssignment.id}`;
 
     const { evaluationGradeSystem } = props.evaluations;
-    const { evaluationInfo } = compositeReplies;
+    const { evaluationInfo } = compositeReplies || {};
 
     const activeGradeSystems = evaluationGradeSystem.filter(
       (gSystem) => gSystem.active
@@ -217,7 +218,7 @@ class AssignmentEditor extends SessionStateComponent<
   componentDidMount = () => {
     const { materialEvaluation, compositeReplies } = this.props;
     const { evaluationGradeSystem } = this.props.evaluations;
-    const { evaluationInfo } = compositeReplies;
+    const { evaluationInfo } = compositeReplies || {};
     const { activeGradeSystems } = this.state;
 
     // Default values
@@ -416,7 +417,7 @@ class AssignmentEditor extends SessionStateComponent<
         assessmentId: this.props.compositeReplies.evaluationInfo.id,
       });
       notificationActions.displayNotification(
-        t("notifications.deleteSuccess", {
+        t("notifications.removeSuccess", {
           context: "assignmentEvaluation",
           ns: "evaluation",
         }),
@@ -439,13 +440,14 @@ class AssignmentEditor extends SessionStateComponent<
           }
         }
       );
+      this.props.onDeleteEvaluation && this.props.onDeleteEvaluation();
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
       }
 
       notificationActions.displayNotification(
-        t("notifications.deleteError", {
+        t("notifications.removeError", {
           context: "assignmentEvaluation",
           ns: "evaluation",
           error: err.message,
@@ -494,8 +496,8 @@ class AssignmentEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        identifier: compositeReplies.evaluationInfo
-          ? compositeReplies.evaluationInfo.id.toString()
+        identifier: compositeReplies?.evaluationInfo
+          ? compositeReplies?.evaluationInfo.id.toString()
           : undefined,
         evaluationType: this.state.evaluationType,
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
@@ -508,7 +510,7 @@ class AssignmentEditor extends SessionStateComponent<
       },
       materialId: this.props.materialAssignment.materialId,
       defaultGrade,
-      edit: !!compositeReplies.evaluationInfo,
+      edit: !!compositeReplies?.evaluationInfo || false,
     });
   };
 
@@ -849,8 +851,9 @@ class AssignmentEditor extends SessionStateComponent<
           )}
           {this.props.materialEvaluation && (
             <PromptDialog
-              title={t("actions.removeAssignmentEvaluation", {
+              title={t("labels.remove", {
                 ns: "evaluation",
+                context: "assignmentEvaluation",
               })}
               content={removeEvaluation}
               onExecute={this.deleteAssignmentEvaluation}
@@ -858,9 +861,8 @@ class AssignmentEditor extends SessionStateComponent<
               <Button
                 buttonModifiers="dialog-delete"
                 disabled={this.state.locked || this.props.isRecording}
-                onClick={this.handleDeleteEditorDraft}
               >
-                {t("actions.remove", { context: "assessment" })}
+                {t("actions.remove", { context: "evaluation" })}
               </Button>
             </PromptDialog>
           )}

@@ -30,7 +30,6 @@ import {
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
-import PromptDialog from "~/components/general/prompt-dialog";
 
 /**
  * EvaluationCardProps
@@ -161,6 +160,19 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       isLoading: false,
       materialNode: loadedMaterial,
+    });
+  };
+
+  /**
+   * Removes evaluation from material node in state, which is used when deleting evaluation from editor
+   */
+  removeEvaluationFromState = () => {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
+      ...this.state.materialNode,
+      evaluation: null,
+    };
+    this.setState({
+      materialNode: updatedMaterial,
     });
   };
 
@@ -422,9 +434,11 @@ class EvaluationAssessmentAssignment extends React.Component<
         <div className="evaluation-modal__item-meta">
           {hasSubmitted === null ||
           (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
-            <div className="evaluation-modal__item-meta-item">
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
               <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.notDone", { ns: "evaluation" })}
+                {t("labels.withdrawnAssignment", { ns: "evaluation" })}
               </span>
             </div>
           ) : (
@@ -566,25 +580,6 @@ class EvaluationAssessmentAssignment extends React.Component<
         )) ||
         this.props.compositeReply === undefined);
 
-    const removeEvaluation = (
-      <>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: t("content.removing", {
-              ns: "evaluation",
-              context: "assignmentEvaluation",
-              assignmentTitle: this.props.assigment.title,
-            }),
-          }}
-        ></span>
-        <EvaluationMaterial
-          material={this.state.materialNode}
-          workspace={this.props.workspace}
-          compositeReply={compositeReply}
-          userEntityId={this.props.selectedAssessment.userEntityId}
-        />
-      </>
-    );
     return (
       <div className={`evaluation-modal__item `}>
         <div
@@ -648,24 +643,22 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {this.props.assigment.assignmentType === "EVALUATED" ||
-            this.props.assigment.assignmentType === "EXERCISE" ? (
+            {((this.props.assigment.assignmentType === "EXERCISE" &&
               compositeReply &&
-              compositeReply.state !== "UNANSWERED" &&
-              compositeReply.state !== "WITHDRAWN" ? (
-                <ButtonPill
-                  aria-label={t("actions.evaluateAssignment", {
-                    ns: "evaluation",
-                  })}
-                  onClick={this.handleOpenSlideDrawer(
-                    this.props.assigment.id,
-                    this.props.assigment.assignmentType
-                  )}
-                  buttonModifiers={["evaluate"]}
-                  icon="evaluate"
-                />
-              ) : null
-            ) : null}
+              compositeReply.state !== "WITHDRAWN") ||
+              this.props.assigment.assignmentType === "EVALUATED") && (
+              <ButtonPill
+                aria-label={t("actions.evaluateAssignment", {
+                  ns: "evaluation",
+                })}
+                onClick={this.handleOpenSlideDrawer(
+                  this.props.assigment.id,
+                  this.props.assigment.assignmentType
+                )}
+                buttonModifiers={["evaluate"]}
+                icon="evaluate"
+              />
+            )}
           </div>
         </div>
         <SlideDrawer
@@ -698,6 +691,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
                 isRecording={this.state.isRecording}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -713,6 +707,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 isRecording={this.state.isRecording}
                 onIsRecordingChange={this.handleIsRecordingChange}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -724,33 +719,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         <AnimateHeight duration={400} height={contentOpen}>
           {this.state.isLoading ? (
             <div className="loader-empty" />
-          ) : this.props.workspace && this.state.materialNode ? (
-            <>
-              <div className="evaluation-modal__item-remove-evaluation">
-                <PromptDialog
-                  title={t("actions.removeAssignmentEvaluation", {
-                    ns: "evaluation",
-                  })}
-                  content={removeEvaluation}
-                  onExecute={() => console.log("häsremove")}
-                >
-                  <ButtonPill
-                    aria-label={t("actions.removeAssignmentEvaluation", {
-                      ns: "evaluation",
-                    })}
-                    buttonModifiers={["remove-evaluation"]}
-                    icon="trash"
-                  />
-                </PromptDialog>
-              </div>
+          ) : (
+            this.props.workspace &&
+            this.state.materialNode && (
               <EvaluationMaterial
                 material={this.state.materialNode}
                 workspace={this.props.workspace}
                 compositeReply={compositeReply}
                 userEntityId={this.props.selectedAssessment.userEntityId}
               />
-            </>
-          ) : null}
+            )
+          )}
         </AnimateHeight>
       </div>
     );

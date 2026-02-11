@@ -43,11 +43,11 @@ public class ExamAttendanceRestModel {
     this.contents = contents;
   }
 
-  public int getMinutes() {
+  public long getMinutes() {
     return minutes;
   }
 
-  public void setMinutes(int minutes) {
+  public void setMinutes(long minutes) {
     this.minutes = minutes;
   }
 
@@ -96,13 +96,22 @@ public class ExamAttendanceRestModel {
     this.assignmentInfos = assignmentInfos;
   }
 
+  public long getMinutesLeft() {
+    return minutesLeft;
+  }
+
+  public void setMinutesLeft(long minutesLeft) {
+    this.minutesLeft = minutesLeft;
+  }
+
   private Long folderId;
   private String name;
   private String description;
   private OffsetDateTime started;
   private OffsetDateTime ended;
   private boolean allowRestart;
-  private int minutes;
+  private long minutes;
+  private long minutesLeft;
   private List<ContentNode> contents;
   private RestAssignmentEvaluation evaluationInfo;
   private List<ExamAssignmentRestModel> assignmentInfos = new ArrayList<>();
