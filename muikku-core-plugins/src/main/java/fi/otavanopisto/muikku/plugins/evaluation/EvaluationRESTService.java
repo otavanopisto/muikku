@@ -826,11 +826,13 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    // Actual deletion permission only for administrators
+    // Actual deletion permission only for administrators or assessor itself
     
-    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR) && !evaluation.getAssessorEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
     }
+    
+    evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     
     return Response.noContent().build();
   }

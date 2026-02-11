@@ -143,15 +143,7 @@ public class RestWorkspaceNodeEvaluation {
   public void setGradingScale(String gradingScale) {
     this.gradingScale = gradingScale;
   }
-  
-  public boolean isArchived() {
-    return archived;
-  }
 
-  public void setArchived(boolean archived) {
-    this.archived = archived;
-  }
-  
   public void addAudioAssessment(RestAssignmentEvaluationAudioClip audioAssessment) {
     this.audioAssessments.add(audioAssessment);
   }
@@ -177,6 +169,5 @@ public class RestWorkspaceNodeEvaluation {
   private String gradingScale;
   private String verbalAssessment;
   private Boolean passed;
-  private boolean archived;
   private List<RestAssignmentEvaluationAudioClip> audioAssessments;
 }
