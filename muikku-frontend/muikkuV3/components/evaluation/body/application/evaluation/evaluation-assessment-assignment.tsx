@@ -646,9 +646,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {((this.props.assigment.assignmentType === "EXERCISE" &&
-              compositeReply &&
-              compositeReply.state !== "WITHDRAWN") ||
+            {(this.props.assigment.assignmentType === "EXERCISE" ||
               this.props.assigment.assignmentType === "EVALUATED") && (
               <ButtonPill
                 aria-label={t("actions.evaluateAssignment", {
