@@ -51,7 +51,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentReques
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluablesLock;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
