@@ -629,7 +629,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity((WorkspaceMaterial) workspaceNode, userEntity);
     if (reply == null) {
-      WorkspaceMaterialReplyState state = WorkspaceMaterialReplyState.UNANSWERED;
+      WorkspaceMaterialReplyState state = WorkspaceMaterialReplyState.ANSWERED;
       RestAssignmentEvaluation restEvaluation = evaluationController.getEvaluationInfo(userEntity.getId(), workspaceNode.getId());
       if (restEvaluation != null) { // well we just created it but just in case...
         switch (restEvaluation.getType()) {
