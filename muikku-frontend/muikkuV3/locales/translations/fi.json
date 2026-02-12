@@ -2456,6 +2456,7 @@
       "supplementationRequest_literal": "Opintojakson kirjallinen täydennyspyyntö",
       "noEvaluation": "Arvioimattomat",
       "notDone": "Ei tehty",
+      "notSubmitted": "Ei palautettu",
       "remove": "$t(common:actions.remove)",
       "remove_entry": "Poista merkintä",
       "remove_verbalEvaluation": "Poista äänitetty palaute",

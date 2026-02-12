@@ -341,6 +341,8 @@ class EvaluationAssessmentAssignment extends React.Component<
             return "state-ANSWERED";
           case "SUBMITTED":
             return "state-SUBMITTED";
+          default:
+            return "state-UNANSWERED";
         }
       }
     } else {
@@ -424,7 +426,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
               <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.notDone", { ns: "evaluation" })}
+                {t("labels.notSubmitted", { ns: "evaluation" })}
               </span>
             </div>
           ) : compositeReply.state === "WITHDRAWN" ? (
@@ -508,9 +510,18 @@ class EvaluationAssessmentAssignment extends React.Component<
           )}
         </div>
       );
+    } else {
+      return (
+        <div className="evaluation-modal__item-meta">
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-data">
+              {t("labels.notDone", { ns: "evaluation" })}
+            </span>
+          </div>
+        </div>
+      );
     }
   };
-
   /**
    * Handles is recoding on change
    * @param isRecording isRecording
