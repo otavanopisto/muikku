@@ -51,6 +51,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentReques
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluablesLock;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
@@ -629,9 +630,24 @@ public class EvaluationRESTService extends PluginRESTService {
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity((WorkspaceMaterial) workspaceNode, userEntity);
     if (reply == null) {
+      WorkspaceMaterialReplyState state = WorkspaceMaterialReplyState.UNANSWERED;
+      RestAssignmentEvaluation restEvaluation = evaluationController.getEvaluationInfo(userEntity.getId(), workspaceNode.getId());
+      if (restEvaluation != null) { // well we just created it but just in case...
+        switch (restEvaluation.getType()) {
+        case PASSED:
+          state = WorkspaceMaterialReplyState.PASSED;
+          break;
+        case FAILED:
+          state = WorkspaceMaterialReplyState.FAILED;
+          break;
+        case INCOMPLETE:
+          state = WorkspaceMaterialReplyState.INCOMPLETE;
+          break;
+        }
+      }
       reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(
           (WorkspaceMaterial) workspaceNode,
-          WorkspaceMaterialReplyState.UNANSWERED,
+          state,
           userEntity,
           false);
     }
