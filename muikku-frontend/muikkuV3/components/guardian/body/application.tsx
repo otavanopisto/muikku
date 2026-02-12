@@ -1,45 +1,38 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import Records from "./application/records";
-import Summary from "./application/summary";
+import { useParams, useHistory, useLocation } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
-import {
-  TranscriptOfRecordLocationType,
-  RecordsType,
-} from "../../../reducers/main-function/records/index";
-import { StatusType } from "../../../reducers/base/status";
-import { Tab } from "~/components/general/tabs";
-import "~/sass/elements/link.scss";
-import "~/sass/elements/application-list.scss";
-import "~/sass/elements/assignment.scss";
-import "~/sass/elements/rich-text.scss";
-import "~/sass/elements/application-list.scss";
-import "~/sass/elements/journal.scss";
-import "~/sass/elements/workspace-assessment.scss";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { getName } from "~/util/modifiers";
-import Select from "react-select";
+import { loadStudentPedagogyFormAccess } from "~/actions/main-function/guider";
+import { clearDependantState } from "~/actions/main-function/dependants";
+import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { DependantsState } from "~/reducers/main-function/dependants";
-import { GuiderState } from "~/reducers/main-function/guider";
-import {
-  clearDependantState,
-  clearDependantTriggerType,
-} from "~/actions/main-function/dependants";
-import {
-  loadStudentPedagogyFormAccess,
-  LoadStudentAccessTriggerType,
-} from "~/actions/main-function/guider";
-import { AnyActionType } from "~/actions";
+import ApplicationPanel from "~/components/general/application-panel/application-panel";
+import { useTranslation } from "react-i18next";
+import { Tab } from "~/components/general/tabs";
+import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
+import Summary from "./application/summary";
+import Records from "./application/records";
 import PedagogySupport from "~/components/pedagogy-support";
-import {
-  resetPedagogySupport,
-  ResetPedagogySupportTriggerType,
-} from "~/actions/main-function/pedagogy-support";
+import Select from "react-select";
+import { getName } from "~/util/modifiers";
 import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
+import {
+  setLocationToInfoInTranscriptOfRecords,
+  setLocationToPedagogyFormInTranscriptOfRecords,
+  setLocationToStatisticsInTranscriptOfRecords,
+  setLocationToSummaryInTranscriptOfRecords,
+  updateAllStudentUsersAndSetViewToRecords,
+} from "~/actions/main-function/records";
+import { loadContactGroup } from "~/actions/base/contacts";
+import { Action } from "redux";
+import { updateStatistics } from "~/actions/main-function/records/statistics";
+import { updateSummary } from "~/actions/main-function/records/summary";
+import {
+  loadCourseMatrix,
+  loadUserStudyActivity,
+} from "~/actions/study-activity";
+
 /**
  * StudiesTab
  */
@@ -53,342 +46,240 @@ type StudiesTab =
 /**
  * DependantApplicationProps
  */
-interface DependantApplicationProps extends WithTranslation {
-  location: TranscriptOfRecordLocationType;
-  status: StatusType;
-  records: RecordsType;
-  guider: GuiderState;
-  dependants: DependantsState;
-  loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType;
-  clearDependantState: clearDependantTriggerType;
-  resetPedagogySupport: ResetPedagogySupportTriggerType;
-  dispatch: Dispatch<Action<AnyActionType>>;
-}
-
-/**
- * DependantApplicationState
- */
-interface DependantApplicationState {
-  activeTab: StudiesTab;
-  loading: boolean;
-}
+interface DependantApplicationProps {}
 
 /**
  * DependantApplication
+ * @param props props
+ * @returns DependantApplication
  */
-class DependantApplication extends React.Component<
-  DependantApplicationProps,
-  DependantApplicationState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: DependantApplicationProps) {
-    super(props);
+const DependantApplication = (props: DependantApplicationProps) => {
+  const { t } = useTranslation(["common", "studies"]);
+  const { identifier } = useParams<{ identifier: string }>();
+  const history = useHistory();
+  const location = useLocation();
 
-    this.state = {
-      loading: false,
-      activeTab: "SUMMARY",
-    };
-    this.getCurrentDependantIdentifier =
-      this.getCurrentDependantIdentifier.bind(this);
-    this.onTabChange = this.onTabChange.bind(this);
-    this.handleDependantSelectChange =
-      this.handleDependantSelectChange.bind(this);
-  }
+  const [activeTab, setActiveTab] = useState<StudiesTab>("SUMMARY");
+  const [loading, setLoading] = useState(false);
 
-  /**
-   * getCurrentDependantIdentifier
-   * @returns a string identifier from hash
-   */
-  getCurrentDependantIdentifier = () =>
-    window.location.hash.replace("#", "").split("/")[0];
+  const dependants = useSelector((state: StateType) => state.dependants);
+  const guider = useSelector((state: StateType) => state.guider);
+  const dispatch = useDispatch();
 
-  /**
-   * getDependantStudyProgramme
-   * @param dependantId string user identifier
-   * @returns the study programme name of the dependant
-   */
-  getDependantStudyProgramme = (dependantId: string) => {
-    const dependant = this.props.dependants.list.find(
-      (dependant) => dependant.identifier === dependantId
-    );
-    return dependant?.studyProgrammeName;
-  };
+  // Get current dependant info
+  const selectedDependant = dependants.list.find(
+    (d) => d.identifier === identifier
+  );
 
-  /**
-   * getDependantUserEntityId
-   * @param dependantId string user identifier
-   * @returns the user entity id of the dependant
-   */
-  getDependantUserEntityId = (dependantId: string) => {
-    const dependant = this.props.dependants.list.find(
-      (dependant) => dependant.identifier === dependantId
-    );
-    return dependant?.userEntityId;
-  };
-
-  /**
-   * onTabChange
-   * @param id id
-   * @param hash hash
-   */
-  onTabChange = (id: StudiesTab, hash?: string | Tab) => {
-    if (hash) {
-      const user = window.location.hash.replace("#", "").split("/")[0];
-      if (typeof hash === "string" || hash instanceof String) {
-        window.location.hash = (user + "/" + hash) as string;
-      } else if (typeof hash === "object" && hash !== null) {
-        window.location.hash = user + "/" + hash.hash;
-      }
+  // Redirect if no identifier
+  useEffect(() => {
+    if (!identifier && dependants.list.length > 0) {
+      const firstDependant = dependants.list[0];
+      history.replace(`/guardian/${firstDependant.identifier}`);
     }
-    this.setState({
-      activeTab: id,
-    });
-  };
+  }, [identifier, dependants.list, history]);
 
-  /**
-   * handleSelectChange
-   * @param option selectedOptions
-   */
-  handleDependantSelectChange = async (option: OptionDefault<string>) => {
-    window.location.hash = option.value;
-    this.props.clearDependantState();
-    this.props.resetPedagogySupport();
-
-    const dependantIdentifier = this.props.dependants.list.find(
-      (dependant) => dependant.identifier === option.value
-    )?.identifier;
-
-    if (dependantIdentifier) {
-      // After clearing the state,
-      // we reset everything for the newly selected user
-      this.props.loadStudentPedagogyFormAccess(dependantIdentifier, true);
+  // Load data when identifier changes
+  useEffect(() => {
+    if (identifier) {
+      dispatch(loadStudentPedagogyFormAccess(identifier));
     }
+  }, [dispatch, identifier]);
 
-    this.setState({
-      activeTab: "SUMMARY",
-    });
-  };
-  /**
-   * componentDidUpdate
-   */
-  async componentDidUpdate() {
-    if (window.location.hash) {
-      const currentDependantIdentifier = this.getCurrentDependantIdentifier();
-      const dependantUserEntityId = this.getDependantUserEntityId(
-        currentDependantIdentifier
-      );
-
-      // If there's no pedagogy form state, we load it
-      if (!this.state.loading && dependantUserEntityId) {
-        this.setState({
-          loading: true,
-        });
-
-        this.props.loadStudentPedagogyFormAccess(
-          currentDependantIdentifier,
-          undefined,
-          () => {
-            this.setState({
-              loading: false,
-            });
-          }
-        );
-      }
-    }
-  }
-
-  /**
-   * componentDidMount
-   */
-  async componentDidMount() {
-    const tab = window.location.hash.replace("#", "").split("/")?.[1];
-
-    if (window.location.hash) {
-      // If we have a hash, we do this here.
-      // Otherwise the sorting out of the hash and loading this form
-      // will be done in the componendDidUpdate state
-      const currentDependantIdentifier = this.getCurrentDependantIdentifier();
-
-      if (currentDependantIdentifier) {
-        this.props.loadStudentPedagogyFormAccess(currentDependantIdentifier);
-      }
-    } else {
-      const firstDependant = this.props.dependants.list[0];
-
-      if (firstDependant) {
-        window.location.hash = firstDependant.identifier;
-      }
-    }
-
-    /**
-     * If page is refreshed, we need to check hash which
-     * tab was opened and set that at the start to state as
-     * opened tab again
-     */
+  // Handle tab from hash
+  useEffect(() => {
+    const tab = location.hash.replace("#", "");
     switch (tab) {
       case "summary":
-        this.setState({
-          activeTab: "SUMMARY",
-        });
+        setActiveTab("SUMMARY");
         break;
       case "records":
-        this.setState({
-          activeTab: "RECORDS",
-        });
+        setActiveTab("RECORDS");
         break;
-
       case "pedagogy-form":
-        this.setState({
-          activeTab: "PEDAGOGY_FORM",
-        });
+        setActiveTab("PEDAGOGY_FORM");
         break;
-
       default:
-        this.setState({
-          activeTab: "SUMMARY",
-        });
+        setActiveTab("SUMMARY");
         break;
     }
-  }
 
-  /**
-   * render
-   * @returns JSX.Element
-   */
-  render() {
-    const { t } = this.props;
-    const title = t("labels.dependant", {
-      count: this.props.dependants ? this.props.dependants.list.length : 0,
-    });
-    const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
+    if (identifier) {
+      const givenLocation = tab;
 
-    const dependants = this.props.dependants
-      ? this.props.dependants.list.map((student) => ({
-          label: getName(student, true),
-          value: student.identifier,
-        }))
-      : [];
-
-    const selectedDependant = dependants.find(
-      (dependant) => dependant.value === selectedDependantIdentifier
-    );
-
-    const dependantSelect =
-      dependants.length > 1 ? (
-        <Select
-          className="react-select-override"
-          classNamePrefix="react-select-override"
-          onChange={this.handleDependantSelectChange}
-          options={dependants}
-          isOptionDisabled={(option) =>
-            option.value === selectedDependantIdentifier
-          }
-          value={selectedDependant}
-          isSearchable={false}
-        ></Select>
-      ) : (
-        <span>{selectedDependant?.label}</span>
+      // IMPORTANT
+      // These two thunk calls are here only for reason, that guardian view has shared reducer logic
+      // with student view, which will have its own complications currently.
+      dispatch(
+        loadUserStudyActivity({
+          userIdentifier: identifier,
+        }) as Action
       );
 
-    const pedagogySupportPermissions = new PedagogySupportPermissions(
-      this.getDependantStudyProgramme(selectedDependantIdentifier)
-    );
+      dispatch(
+        loadCourseMatrix({
+          userIdentifier: identifier,
+        }) as Action
+      );
 
-    const panelTabs: Tab[] = [
-      {
-        id: "SUMMARY",
-        name: t("labels.summary", { ns: "studies" }),
-        hash: "summary",
-        type: "summary",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <Summary />
-          </ApplicationPanelBody>
-        ),
-      },
-      {
-        id: "RECORDS",
-        name: t("labels.records", { ns: "studies" }),
-        hash: "records",
-        type: "records",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <Records />
-          </ApplicationPanelBody>
-        ),
-      },
-    ];
-
-    if (pedagogySupportPermissions.hasAnyAccess()) {
-      panelTabs.push({
-        id: "PEDAGOGY_FORM",
-        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
-        hash: "pedagogy-form",
-        type: "pedagogy-form",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <PedagogySupport
-              userRole="STUDENT_PARENT"
-              studentIdentifier={selectedDependantIdentifier}
-              pedagogySupportStudentPermissions={pedagogySupportPermissions}
-              pedagogyFormAccess={
-                this.props.guider.currentStudent.pedagogyFormAvailable
-              }
-            />
-          </ApplicationPanelBody>
-        ),
-      });
+      if (givenLocation === "summary" || !givenLocation) {
+        dispatch(setLocationToSummaryInTranscriptOfRecords() as Action);
+        // Summary needs counselors
+        dispatch(loadContactGroup("counselors", identifier) as Action);
+        dispatch(updateSummary(identifier) as Action);
+      } else if (givenLocation === "records") {
+        dispatch(
+          updateAllStudentUsersAndSetViewToRecords(identifier) as Action
+        );
+      } else if (givenLocation === "pedagogy-form") {
+        dispatch(setLocationToPedagogyFormInTranscriptOfRecords() as Action);
+      } else if (givenLocation === "statistics") {
+        dispatch(setLocationToStatisticsInTranscriptOfRecords() as Action);
+        dispatch(updateStatistics() as Action);
+      } else if (givenLocation === "info") {
+        dispatch(setLocationToInfoInTranscriptOfRecords() as Action);
+        dispatch(updateSummary(identifier) as Action);
+      }
     }
+  }, [location.hash, dispatch, identifier]);
 
-    return (
-      <>
-        <ApplicationPanel
-          title={title}
-          panelOptions={dependantSelect}
-          onTabChange={this.onTabChange}
-          activeTab={this.state.activeTab}
-          panelTabs={panelTabs}
-        />
-      </>
-    );
+  // Handle pedagogy form loading
+  useEffect(() => {
+    if (identifier && selectedDependant?.userEntityId && !loading) {
+      setLoading(true);
+      dispatch(
+        loadStudentPedagogyFormAccess(identifier, undefined, () => {
+          setLoading(false);
+        })
+      );
+    }
+  }, [dispatch, identifier, selectedDependant, loading]);
+
+  // Navigation handlers
+  const handleDependantSelectChange = useCallback(
+    async (option: OptionDefault<string>) => {
+      history.push(`/guardian/${option.value}`);
+      dispatch(clearDependantState());
+      dispatch(resetPedagogySupport());
+
+      if (option.value) {
+        dispatch(loadStudentPedagogyFormAccess(option.value, true));
+      }
+      setActiveTab("SUMMARY");
+    },
+    [dispatch, history]
+  );
+
+  const onTabChange = useCallback(
+    (id: StudiesTab, hash?: string | Tab) => {
+      if (hash && identifier) {
+        const hashValue = typeof hash === "string" ? hash : hash.hash;
+        history.replace(`/guardian/${identifier}#${hashValue}`);
+      }
+      setActiveTab(id);
+    },
+    [identifier, history]
+  );
+
+  // Helper functions
+  const getDependantStudyProgramme = useCallback(
+    (dependantId: string) =>
+      dependants.list.find((d) => d.identifier === dependantId)
+        ?.studyProgrammeName,
+    [dependants.list]
+  );
+
+  const pedagogySupportPermissions = new PedagogySupportPermissions(
+    getDependantStudyProgramme(identifier)
+  );
+
+  const panelTabs: Tab[] = [
+    {
+      id: "SUMMARY",
+      name: t("labels.summary", { ns: "studies" }),
+      hash: "summary",
+      type: "summary",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Summary />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "RECORDS",
+      name: t("labels.records", { ns: "studies" }),
+      hash: "records",
+      type: "records",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Records />
+        </ApplicationPanelBody>
+      ),
+    },
+  ];
+
+  if (pedagogySupportPermissions.hasAnyAccess()) {
+    panelTabs.push({
+      id: "PEDAGOGY_FORM",
+      name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
+      hash: "pedagogy-form",
+      type: "pedagogy-form",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <PedagogySupport
+            userRole="STUDENT_PARENT"
+            studentIdentifier={identifier}
+            pedagogySupportStudentPermissions={pedagogySupportPermissions}
+            pedagogyFormAccess={guider.currentStudent.pedagogyFormAvailable}
+          />
+        </ApplicationPanelBody>
+      ),
+    });
   }
-}
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    location: state.records.location,
-    records: state.records,
-    guider: state.guider,
-    status: state.status,
-    dependants: state.dependants,
-  };
-}
+  // ... rest of render logic
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {
-    ...bindActionCreators(
-      {
-        clearDependantState,
-        loadStudentPedagogyFormAccess,
-        resetPedagogySupport,
-      },
-      dispatch
-    ),
-    dispatch,
-  };
-}
+  const title = t("labels.dependant", {
+    count: dependants.list.length,
+  });
 
-export default withTranslation(["studies", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(DependantApplication)
-);
+  const dependantsOptions = dependants.list
+    ? dependants.list.map((student) => ({
+        label: getName(student, true),
+        value: student.identifier,
+      }))
+    : ([] as OptionDefault<string>[]);
+
+  const selectedDependantOption = dependantsOptions.find(
+    (option) => option.value === identifier
+  );
+
+  const dependantSelect =
+    dependantsOptions.length > 1 ? (
+      <Select
+        className="react-select-override"
+        classNamePrefix="react-select-override"
+        onChange={handleDependantSelectChange}
+        options={dependantsOptions}
+        isOptionDisabled={(option) => option.value === identifier}
+        value={selectedDependantOption}
+        isSearchable={false}
+      ></Select>
+    ) : (
+      <span>{selectedDependantOption?.label}</span>
+    );
+
+  return (
+    <>
+      <ApplicationPanel
+        title={title}
+        panelOptions={dependantSelect}
+        onTabChange={onTabChange}
+        activeTab={activeTab}
+        panelTabs={panelTabs}
+      />
+    </>
+  );
+};
+
+export default DependantApplication;

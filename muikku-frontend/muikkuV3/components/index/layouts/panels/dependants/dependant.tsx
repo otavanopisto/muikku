@@ -11,7 +11,7 @@ import {
 } from "~/actions/main-function/dependants";
 import { Dependant } from "~/reducers/main-function/dependants"; // Dependant type
 import { getName } from "~/util/modifiers"; // getName function
-import Link from "~/components/general/link"; // Link component
+import { Link } from "react-router-dom"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
 import AnimateHeight from "react-animate-height"; // AnimateHeight
 import Button from "~/components/general/button"; // Button component
@@ -81,8 +81,8 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           </div>
           <div className="dependant__details-footer">
             <Link
+              to={`/guardian/${dependant.identifier}`}
               key={dependant.identifier}
-              href={`/guardian#${dependant.identifier}`}
             >
               {t("actions.dependantStudies", { ns: "frontPage" })}
             </Link>
