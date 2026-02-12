@@ -2455,6 +2455,7 @@
       "supplementationRequest": "Supplementation request",
       "supplementationRequest_literal": "Written supplementation request",
       "noEvaluation": "Not evaluated",
+      "notSubmitted": "Not submitted",
       "notDone": "Not done",
       "remove": "$t(common:actions.remove)",
       "remove_entry": "Delete entry",
