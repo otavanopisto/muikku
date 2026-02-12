@@ -625,13 +625,21 @@ public class EvaluationRESTService extends PluginRESTService {
       }
     }
     
+    // #7594: If assessing a page that the student has never even touched, it needs a reply object created on the fly
+    
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity((WorkspaceMaterial) workspaceNode, userEntity);
+    if (reply == null) {
+      reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(
+          (WorkspaceMaterial) workspaceNode,
+          WorkspaceMaterialReplyState.UNANSWERED,
+          userEntity,
+          false);
+    }
+    
     // #7352: If a page is evaluated as supplementation requested, make sure it becomes unlocked
     
-    if (payload.getEvaluationType() == WorkspaceNodeEvaluationType.SUPPLEMENTATIONREQUEST && workspaceNode instanceof WorkspaceMaterial) {
-      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity((WorkspaceMaterial) workspaceNode, userEntity);
-      if (reply != null && reply.getLocked()) {
-        workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
-      }
+    if (payload.getEvaluationType() == WorkspaceNodeEvaluationType.SUPPLEMENTATIONREQUEST && workspaceNode instanceof WorkspaceMaterial && reply.getLocked()) {
+      workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
     }
 
     // WorkspaceNodeEvaluation to RestAssessment
