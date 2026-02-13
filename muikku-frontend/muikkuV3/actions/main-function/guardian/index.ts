@@ -131,8 +131,17 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
     ) => {
       const state = getState();
 
-      const dependantWorkspaces =
+      let dependantWorkspaces =
         state.guardian.workspacesByDependantIdentifier[dependantIdentifier];
+
+      // If the dependant workspaces are not found, we initialize them
+      // with empty workspaces and IDLE status
+      if (!dependantWorkspaces) {
+        dependantWorkspaces = {
+          workspaces: [],
+          status: "IDLE",
+        };
+      }
 
       if (
         dependantWorkspaces.status === "READY" ||
