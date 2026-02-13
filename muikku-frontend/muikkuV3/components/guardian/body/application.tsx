@@ -3,8 +3,6 @@ import { useParams, useHistory, useLocation } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import { loadStudentPedagogyFormAccess } from "~/actions/main-function/guider";
-import { clearDependantState } from "~/actions/main-function/dependants";
 import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
 import { OptionDefault } from "~/components/general/react-select/types";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
@@ -18,20 +16,14 @@ import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 import {
-  setLocationToInfoInTranscriptOfRecords,
-  setLocationToPedagogyFormInTranscriptOfRecords,
-  setLocationToStatisticsInTranscriptOfRecords,
-  setLocationToSummaryInTranscriptOfRecords,
-  updateAllStudentUsersAndSetViewToRecords,
-} from "~/actions/main-function/records";
-import { loadContactGroup } from "~/actions/base/contacts";
-import { Action } from "redux";
-import { updateStatistics } from "~/actions/main-function/records/statistics";
-import { updateSummary } from "~/actions/main-function/records/summary";
-import {
-  loadCourseMatrix,
-  loadUserStudyActivity,
-} from "~/actions/study-activity";
+  loadCurrentDependantActivityGraphData,
+  loadCurrentDependantContactGroups,
+  loadCurrentDependantCourseMatrix,
+  loadCurrentDependantPedagogyFormAccess,
+  loadCurrentDependantStudentInfo,
+  loadCurrentDependantStudyActivity,
+  resetCurrentDependantState,
+} from "~/actions/main-function/guardian";
 
 /**
  * StudiesTab
@@ -60,29 +52,32 @@ const DependantApplication = (props: DependantApplicationProps) => {
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState<StudiesTab>("SUMMARY");
-  const [loading, setLoading] = useState(false);
 
-  const dependants = useSelector((state: StateType) => state.dependants);
-  const guider = useSelector((state: StateType) => state.guider);
-  const dispatch = useDispatch();
-
-  // Get current dependant info
-  const selectedDependant = dependants.list.find(
-    (d) => d.identifier === identifier
+  const dependants = useSelector(
+    (state: StateType) => state.guardian.dependants
   );
+  const currentDependant = useSelector(
+    (state: StateType) => state.guardian.currentDependant
+  );
+  const dispatch = useDispatch();
 
   // Redirect if no identifier
   useEffect(() => {
-    if (!identifier && dependants.list.length > 0) {
-      const firstDependant = dependants.list[0];
+    if (!identifier && dependants.length > 0) {
+      const firstDependant = dependants[0];
       history.replace(`/guardian/${firstDependant.identifier}`);
     }
-  }, [identifier, dependants.list, history]);
+  }, [identifier, dependants, history]);
 
   // Load data when identifier changes
   useEffect(() => {
     if (identifier) {
-      dispatch(loadStudentPedagogyFormAccess(identifier));
+      // Reset current dependant state
+      dispatch(resetCurrentDependantState());
+      // Load current dependant course matrix
+      dispatch(loadCurrentDependantCourseMatrix(identifier));
+      dispatch(loadCurrentDependantStudyActivity(identifier));
+      dispatch(loadCurrentDependantPedagogyFormAccess(identifier));
     }
   }, [dispatch, identifier]);
 
@@ -107,64 +102,20 @@ const DependantApplication = (props: DependantApplicationProps) => {
     if (identifier) {
       const givenLocation = tab;
 
-      // IMPORTANT
-      // These two thunk calls are here only for reason, that guardian view has shared reducer logic
-      // with student view, which will have its own complications currently.
-      dispatch(
-        loadUserStudyActivity({
-          userIdentifier: identifier,
-        }) as Action
-      );
-
-      dispatch(
-        loadCourseMatrix({
-          userIdentifier: identifier,
-        }) as Action
-      );
-
       if (givenLocation === "summary" || !givenLocation) {
-        dispatch(setLocationToSummaryInTranscriptOfRecords() as Action);
-        // Summary needs counselors
-        dispatch(loadContactGroup("counselors", identifier) as Action);
-        dispatch(updateSummary(identifier) as Action);
-      } else if (givenLocation === "records") {
-        dispatch(
-          updateAllStudentUsersAndSetViewToRecords(identifier) as Action
-        );
-      } else if (givenLocation === "pedagogy-form") {
-        dispatch(setLocationToPedagogyFormInTranscriptOfRecords() as Action);
-      } else if (givenLocation === "statistics") {
-        dispatch(setLocationToStatisticsInTranscriptOfRecords() as Action);
-        dispatch(updateStatistics() as Action);
-      } else if (givenLocation === "info") {
-        dispatch(setLocationToInfoInTranscriptOfRecords() as Action);
-        dispatch(updateSummary(identifier) as Action);
+        // Summary needs counselors and student info
+        dispatch(loadCurrentDependantContactGroups("counselors", identifier));
+        dispatch(loadCurrentDependantStudentInfo(identifier));
+        dispatch(loadCurrentDependantActivityGraphData(identifier));
       }
     }
   }, [location.hash, dispatch, identifier]);
-
-  // Handle pedagogy form loading
-  useEffect(() => {
-    if (identifier && selectedDependant?.userEntityId && !loading) {
-      setLoading(true);
-      dispatch(
-        loadStudentPedagogyFormAccess(identifier, undefined, () => {
-          setLoading(false);
-        })
-      );
-    }
-  }, [dispatch, identifier, selectedDependant, loading]);
 
   // Navigation handlers
   const handleDependantSelectChange = useCallback(
     async (option: OptionDefault<string>) => {
       history.push(`/guardian/${option.value}`);
-      dispatch(clearDependantState());
       dispatch(resetPedagogySupport());
-
-      if (option.value) {
-        dispatch(loadStudentPedagogyFormAccess(option.value, true));
-      }
       setActiveTab("SUMMARY");
     },
     [dispatch, history]
@@ -184,9 +135,8 @@ const DependantApplication = (props: DependantApplicationProps) => {
   // Helper functions
   const getDependantStudyProgramme = useCallback(
     (dependantId: string) =>
-      dependants.list.find((d) => d.identifier === dependantId)
-        ?.studyProgrammeName,
-    [dependants.list]
+      dependants.find((d) => d.identifier === dependantId)?.studyProgrammeName,
+    [dependants]
   );
 
   const pedagogySupportPermissions = new PedagogySupportPermissions(
@@ -230,21 +180,19 @@ const DependantApplication = (props: DependantApplicationProps) => {
             userRole="STUDENT_PARENT"
             studentIdentifier={identifier}
             pedagogySupportStudentPermissions={pedagogySupportPermissions}
-            pedagogyFormAccess={guider.currentStudent.pedagogyFormAvailable}
+            pedagogyFormAccess={currentDependant.dependantPedagogyFormAccess}
           />
         </ApplicationPanelBody>
       ),
     });
   }
 
-  // ... rest of render logic
-
   const title = t("labels.dependant", {
-    count: dependants.list.length,
+    count: dependants.length,
   });
 
-  const dependantsOptions = dependants.list
-    ? dependants.list.map((student) => ({
+  const dependantsOptions = dependants
+    ? dependants.map((student) => ({
         label: getName(student, true),
         value: student.identifier,
       }))
