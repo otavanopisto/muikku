@@ -7,18 +7,16 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class EvaluationDeleteController {
 
@@ -29,13 +27,10 @@ public class EvaluationDeleteController {
   private EvaluationFileStorageUtils file;
   
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
-  private WorkspaceMaterialController workspaceMaterialController;
+  private WorkspaceMaterialDAO workspaceMaterialDAO;
 
   @Inject
-  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
 
   @Inject
   private WorkspaceNodeEvaluationDAO workspaceNodeEvaluationDAO;
@@ -69,10 +64,9 @@ public class EvaluationDeleteController {
       
       // #7584: Adjust user's reply object accordingly
       
-      WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(evaluation.getWorkspaceNodeId());
-      UserEntity userEntity = userEntityController.findUserEntityById(evaluation.getStudentEntityId());
-      if (node != null && userEntity != null && node instanceof WorkspaceMaterial) {
-        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity((WorkspaceMaterial) node, userEntity);
+      WorkspaceNode node = workspaceMaterialDAO.findById(evaluation.getWorkspaceNodeId()); 
+      if (node != null && node instanceof WorkspaceMaterial) {
+        WorkspaceMaterialReply reply = workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId((WorkspaceMaterial) node, evaluation.getStudentEntityId()); 
         if (reply != null) {
           WorkspaceMaterialReplyState newState = null;
           switch (reply.getState()) {
@@ -88,7 +82,7 @@ public class EvaluationDeleteController {
               else {
                 newState = WorkspaceMaterialReplyState.ANSWERED;
               }
-              workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, newState);
+              workspaceMaterialReplyDAO.updateState(reply, newState);
               break;
             default:
               break;
