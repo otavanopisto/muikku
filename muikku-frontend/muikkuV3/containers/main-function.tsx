@@ -103,7 +103,7 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
-import { loadDependants } from "~/actions/main-function/dependants";
+import { loadDependants } from "~/actions/main-function/guardian";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import { DiscussionStatePatch } from "~/reducers/discussion";
@@ -1115,7 +1115,7 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.dependants.state === "WAIT") {
+      if (state.guardian.dependantsStatus === "IDLE") {
         this.props.store.dispatch(loadDependants() as Action);
       }
 
@@ -1151,7 +1151,7 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.dependants.state === "WAIT") {
+      if (state.guardian.dependantsStatus === "IDLE") {
         this.props.store.dispatch(loadDependants() as Action);
       }
 
@@ -1566,7 +1566,7 @@ const GuardianRedirectComponent: React.FC<GuardianRedirectComponentProps> = (
     <GenericRedirectComponent
       store={store}
       shouldRedirect={(state) => {
-        const dependants = state.dependants?.list || [];
+        const dependants = state.guardian.dependants || [];
         if (dependants.length > 0) {
           return `/guardian/${dependants[0].identifier}`;
         }
@@ -1574,15 +1574,17 @@ const GuardianRedirectComponent: React.FC<GuardianRedirectComponentProps> = (
       }}
       shouldDispatch={(state) => {
         const actions: Action[] = [];
-        if (state.dependants?.state === "WAIT") {
+        if (state.guardian.dependantsStatus === "IDLE") {
           actions.push(loadDependants() as Action);
         }
         return actions;
       }}
       shouldSubscribe={(state) => {
         // Keep subscribing until we have dependants or they're loaded
-        const dependants = state.dependants?.list || [];
-        return dependants.length === 0 && state.dependants?.state !== "ERROR";
+        const dependants = state.guardian.dependants || [];
+        return (
+          dependants.length === 0 && state.guardian.dependantsStatus !== "ERROR"
+        );
       }}
     />
   );
@@ -1608,7 +1610,7 @@ const GuardianHopsRedirectComponent: React.FC<
     <GenericRedirectComponent
       store={store}
       shouldRedirect={(state) => {
-        const dependants = state.dependants?.list || [];
+        const dependants = state.guardian.dependants || [];
         if (dependants.length > 0) {
           return `/guardian_hops/${dependants[0].identifier}`;
         }
@@ -1616,15 +1618,17 @@ const GuardianHopsRedirectComponent: React.FC<
       }}
       shouldDispatch={(state) => {
         const actions: Action[] = [];
-        if (state.dependants?.state === "WAIT") {
+        if (state.guardian.dependantsStatus === "IDLE") {
           actions.push(loadDependants() as Action);
         }
         return actions;
       }}
       shouldSubscribe={(state) => {
         // Keep subscribing until we have dependants or they're loaded
-        const dependants = state.dependants?.list || [];
-        return dependants.length === 0 && state.dependants?.state !== "ERROR";
+        const dependants = state.guardian.dependants || [];
+        return (
+          dependants.length === 0 && state.guardian.dependantsStatus !== "ERROR"
+        );
       }}
     />
   );

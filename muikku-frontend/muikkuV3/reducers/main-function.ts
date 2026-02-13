@@ -33,6 +33,7 @@ import { credentials } from "./base/credentials";
 import { exams } from "./workspaces/exams";
 import { pedagogySupport } from "./pedagogy-support";
 import { studyActivity } from "./study-activity";
+import { guardian } from "./main-function/guardian";
 
 export default combineReducers({
   announcements,
@@ -43,6 +44,7 @@ export default combineReducers({
   easyToUse,
   evaluations,
   guider,
+  guardian,
   locales,
   messages,
   notifications,

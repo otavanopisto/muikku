@@ -32,6 +32,7 @@ import { ExamsState } from "./workspaces/exams";
 import { LanguageProfileState } from "./main-function/language-profile";
 import { PedagogySupportState } from "./pedagogy-support";
 import { StudyActivityState } from "./study-activity";
+import { GuardianState } from "./main-function/guardian";
 
 /**
  * StateType
@@ -57,6 +58,7 @@ export interface StateType {
   discussion?: DiscussionState;
   organizationUsers?: UsersState;
   guider?: GuiderState;
+  guardian?: GuardianState;
   records?: RecordsType;
   error?: ErrorType;
   profile?: ProfileState;

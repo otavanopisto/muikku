@@ -2,26 +2,21 @@ import * as React from "react"; // React
 import "~/sass/elements/dependant.scss"; // Styles
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
-import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
-import {
-  loadDependantWorkspaces,
-  LoadDependantWorkspacesTriggerType,
-} from "~/actions/main-function/dependants";
-import { Dependant } from "~/reducers/main-function/dependants"; // Dependant type
+import { useDispatch, useSelector } from "react-redux";
+import { loadDependantWorkspaces } from "~/actions/main-function/guardian";
 import { getName } from "~/util/modifiers"; // getName function
 import { Link } from "react-router-dom"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
 import AnimateHeight from "react-animate-height"; // AnimateHeight
 import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
+import { UserGuardiansDependant } from "~/generated/client";
+import { StateType } from "~/reducers";
 /**
  * DependantProps
  */
 interface DependantComponentProps {
-  dependant: Dependant;
-  loadDependantWorkspaces: LoadDependantWorkspacesTriggerType;
+  dependant: UserGuardiansDependant;
 }
 
 /**
@@ -30,7 +25,13 @@ interface DependantComponentProps {
  * @returns  JSX.element
  */
 const DependantComponent: React.FC<DependantComponentProps> = (props) => {
-  const { dependant, loadDependantWorkspaces } = props;
+  const { dependant } = props;
+  const workspaces = useSelector(
+    (state: StateType) =>
+      state.guardian.workspacesByDependantIdentifier[dependant.identifier]
+        ?.workspaces || []
+  );
+  const dispatch = useDispatch();
   const { t } = useTranslation(["frontPage", "workspace"]);
   const [showWorkspaces, setShowWorkspaces] = React.useState(false);
   /**
@@ -38,7 +39,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
    */
   const toggleShowWorkspaces = () => {
     setShowWorkspaces(!showWorkspaces);
-    loadDependantWorkspaces(dependant.identifier);
+    dispatch(loadDependantWorkspaces(dependant.identifier));
   };
   return (
     <div className="dependant">
@@ -106,8 +107,8 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
             {t("labels.workspaces", { ns: "workspace", context: "active" })}
           </h3>
           <div className="item-list item-list--panel-workspaces">
-            {dependant.workspaces.length > 0 ? (
-              dependant.workspaces.map((workspace, index) => (
+            {workspaces.length > 0 ? (
+              workspaces.map((workspace, index) => (
                 <DependantWorkspace
                   key={workspace.name + index}
                   workspace={workspace}
@@ -139,12 +140,4 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   );
 };
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ loadDependantWorkspaces }, dispatch);
-}
-
-export default connect(null, mapDispatchToProps)(DependantComponent);
+export default DependantComponent;

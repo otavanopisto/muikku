@@ -1,17 +1,14 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { useTranslation } from "react-i18next";
 import DependantComponent from "./dependants/dependant";
-import { Dependant } from "~/reducers/main-function/dependants";
 
 /**
  * StudentsPanelProps
  */
-interface DependantsPanelProps {
-  dependants: Dependant[];
-}
+interface DependantsPanelProps {}
 
 /**
  * Workspace panel
@@ -19,7 +16,9 @@ interface DependantsPanelProps {
  * @returns  JSX.element
  */
 const DependantsPanel: React.FC<DependantsPanelProps> = (props) => {
-  const { dependants } = props;
+  const dependants = useSelector(
+    (state: StateType) => state.guardian.dependants
+  );
   const { t } = useTranslation(["frontPage", "common"]);
 
   return (
@@ -46,14 +45,4 @@ const DependantsPanel: React.FC<DependantsPanelProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    dependants: state.dependants.list,
-  };
-}
-
-export default connect(mapStateToProps)(DependantsPanel);
+export default DependantsPanel;
