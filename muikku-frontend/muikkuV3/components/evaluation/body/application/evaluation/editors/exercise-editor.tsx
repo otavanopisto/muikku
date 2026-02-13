@@ -101,9 +101,9 @@ class ExerciseEditor extends SessionStateComponent<
         draftId
       ),
       audioAssessments:
-        compositeReplies.evaluationInfo &&
-        compositeReplies.evaluationInfo.audioAssessments &&
-        compositeReplies.evaluationInfo.audioAssessments !== null
+        compositeReplies?.evaluationInfo &&
+        compositeReplies?.evaluationInfo.audioAssessments &&
+        compositeReplies?.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       locked: false,
@@ -128,9 +128,9 @@ class ExerciseEditor extends SessionStateComponent<
         this.state.draftId
       ),
       audioAssessments:
-        compositeReplies.evaluationInfo &&
-        compositeReplies.evaluationInfo.audioAssessments &&
-        compositeReplies.evaluationInfo.audioAssessments !== null
+        compositeReplies?.evaluationInfo &&
+        compositeReplies?.evaluationInfo.audioAssessments &&
+        compositeReplies?.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       showAudioAssessmentWarningOnClose: false,
@@ -250,7 +250,7 @@ class ExerciseEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        identifier: compositeReplies.evaluationInfo
+        identifier: compositeReplies?.evaluationInfo
           ? compositeReplies.evaluationInfo.id.toString()
           : undefined,
         evaluationType: "GRADED",
@@ -262,7 +262,7 @@ class ExerciseEditor extends SessionStateComponent<
         audioAssessments: this.state.audioAssessments,
       },
       materialId: this.props.materialAssignment.materialId,
-      edit: !!compositeReplies.evaluationInfo,
+      edit: !!compositeReplies?.evaluationInfo,
     });
   };
 

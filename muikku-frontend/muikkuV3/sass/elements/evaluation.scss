@@ -481,6 +481,7 @@
   display: flex;
   flex-flow: row wrap;
   font-size: 0.825rem;
+  padding: 5px 0;
 }
 
 .evaluation-modal__item-meta-item {
@@ -502,6 +503,23 @@
     height: 24px;
     padding: 0 9px;
   }
+
+  &.state-EVALUATED {
+    background-color: $color-passed;
+    border-radius: 12px;
+    color: $color-default;
+    height: 24px;
+    padding: 0 9px;
+  }
+
+  &.state-FAILED {
+    background-color: $color-failed;
+    border-radius: 12px;
+    color: $color-default;
+    height: 24px;
+    padding: 0 9px;
+  }
+
 
   &.state-WITHDRAWN {
     background-color: $color-disabled-background;

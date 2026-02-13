@@ -354,6 +354,8 @@ class EvaluationAssessmentAssignment extends React.Component<
             return "state-ANSWERED";
           case "SUBMITTED":
             return "state-SUBMITTED";
+          default:
+            return "state-UNANSWERED";
         }
       }
     } else {
@@ -432,8 +434,15 @@ class EvaluationAssessmentAssignment extends React.Component<
 
       return (
         <div className="evaluation-modal__item-meta">
-          {hasSubmitted === null ||
-          (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
+          {hasSubmitted === null ? (
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
+              <span className="evaluation-modal__item-meta-item-data">
+                {t("labels.notSubmitted", { ns: "evaluation" })}
+              </span>
+            </div>
+          ) : compositeReply.state === "WITHDRAWN" ? (
             <div
               className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
@@ -442,18 +451,16 @@ class EvaluationAssessmentAssignment extends React.Component<
               </span>
             </div>
           ) : (
-            hasSubmitted && (
-              <div
-                className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
-              >
-                <span className="evaluation-modal__item-meta-item-label">
-                  {t("labels.done", { ns: "evaluation" })}
-                </span>
-                <span className="evaluation-modal__item-meta-item-data">
-                  {localize.date(hasSubmitted)}
-                </span>
-              </div>
-            )
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.done", { ns: "evaluation" })}
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {localize.date(hasSubmitted)}
+              </span>
+            </div>
           )}
 
           {evaluationDate && (
@@ -516,9 +523,18 @@ class EvaluationAssessmentAssignment extends React.Component<
           )}
         </div>
       );
+    } else {
+      return (
+        <div className="evaluation-modal__item-meta">
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-data">
+              {t("labels.notDone", { ns: "evaluation" })}
+            </span>
+          </div>
+        </div>
+      );
     }
   };
-
   /**
    * Handles is recoding on change
    * @param isRecording isRecording
@@ -643,9 +659,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {((this.props.assigment.assignmentType === "EXERCISE" &&
-              compositeReply &&
-              compositeReply.state !== "WITHDRAWN") ||
+            {(this.props.assigment.assignmentType === "EXERCISE" ||
               this.props.assigment.assignmentType === "EVALUATED") && (
               <ButtonPill
                 aria-label={t("actions.evaluateAssignment", {
