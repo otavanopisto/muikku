@@ -36,6 +36,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
+import PromptDialog from "~/components/general/prompt-dialog";
 
 /**
  * AssignmentEditorProps
@@ -51,6 +52,7 @@ interface AssignmentEditorProps extends WithTranslation {
   editorLabel?: string;
   modifiers?: string[];
   isRecording: boolean;
+  onDeleteEvaluation?: () => void;
   updateMaterialEvaluationData: (
     assignmentWithAudio: AssessmentWithAudio
   ) => void;
@@ -393,6 +395,73 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
+   * deleteAssignmentEvaluation
+   * Deletes the assignment evaluation from server
+   */
+  deleteAssignmentEvaluation = async () => {
+    const evaluationApi = MApi.getEvaluationApi();
+
+    this.setState({
+      locked: true,
+    });
+
+    const { t } = this.props;
+
+    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
+
+    try {
+      await evaluationApi.deleteWorkspaceNodeAssessment({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceNodeId: this.props.materialAssignment.id,
+        assessmentId: this.props.compositeReplies.evaluationInfo.id,
+      });
+      notificationActions.displayNotification(
+        t("notifications.removeSuccess", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+        }),
+        "success"
+      );
+
+      this.props.updateCurrentStudentCompositeRepliesData({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceMaterialId: this.props.materialAssignment.id,
+      });
+
+      this.setState(
+        {
+          locked: false,
+        },
+        () => {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        }
+      );
+      this.props.onDeleteEvaluation && this.props.onDeleteEvaluation();
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      notificationActions.displayNotification(
+        t("notifications.removeError", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+          error: err.message,
+        }),
+        "error"
+      );
+
+      this.setState({
+        locked: false,
+      });
+    }
+  };
+
+  /**
    * handleSaveAssignment
    * @param e e
    */
@@ -600,6 +669,17 @@ class AssignmentEditor extends SessionStateComponent<
       renderGradingOptions.push(missingOption);
     }
 
+    const removeEvaluation = (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: t("content.removing", {
+            ns: "evaluation",
+            context: "assignmentEvaluation",
+            assignmentTitle: this.props.materialAssignment.title || "",
+          }),
+        }}
+      ></span>
+    );
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -768,6 +848,23 @@ class AssignmentEditor extends SessionStateComponent<
             >
               {t("actions.remove", { context: "draft" })}
             </Button>
+          )}
+          {this.props.materialEvaluation && (
+            <PromptDialog
+              title={t("labels.remove", {
+                ns: "evaluation",
+                context: "assignmentEvaluation",
+              })}
+              content={removeEvaluation}
+              onExecute={this.deleteAssignmentEvaluation}
+            >
+              <Button
+                buttonModifiers="dialog-delete"
+                disabled={this.state.locked || this.props.isRecording}
+              >
+                {t("actions.remove", { context: "evaluation" })}
+              </Button>
+            </PromptDialog>
           )}
         </div>
 

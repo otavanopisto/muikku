@@ -164,6 +164,19 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
+   * Removes evaluation from material node in state, which is used when deleting evaluation from editor
+   */
+  removeEvaluationFromState = () => {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
+      ...this.state.materialNode,
+      evaluation: null,
+    };
+    this.setState({
+      materialNode: updatedMaterial,
+    });
+  };
+
+  /**
    * updateMaterialEvaluationData
    * @param  assessmentWithAudio assessmentWithAudio
    */
@@ -678,6 +691,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
                 isRecording={this.state.isRecording}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -693,6 +707,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 isRecording={this.state.isRecording}
                 onIsRecordingChange={this.handleIsRecordingChange}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -704,14 +719,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         <AnimateHeight duration={400} height={contentOpen}>
           {this.state.isLoading ? (
             <div className="loader-empty" />
-          ) : this.props.workspace && this.state.materialNode ? (
-            <EvaluationMaterial
-              material={this.state.materialNode}
-              workspace={this.props.workspace}
-              compositeReply={compositeReply}
-              userEntityId={this.props.selectedAssessment.userEntityId}
-            />
-          ) : null}
+          ) : (
+            this.props.workspace &&
+            this.state.materialNode && (
+              <EvaluationMaterial
+                material={this.state.materialNode}
+                workspace={this.props.workspace}
+                compositeReply={compositeReply}
+                userEntityId={this.props.selectedAssessment.userEntityId}
+              />
+            )
+          )}
         </AnimateHeight>
       </div>
     );
