@@ -107,11 +107,6 @@ export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
   string[]
 >;
 
-/* export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
-  "HOPS_UPDATE_STUDY_ACTIVITY",
-  StudyActivityItem[]
->; */
-
 // HOPS CAREER PLAN ACTIONS TYPES
 
 export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
