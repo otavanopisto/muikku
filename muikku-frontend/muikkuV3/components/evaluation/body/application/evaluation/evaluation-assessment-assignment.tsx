@@ -434,7 +434,18 @@ class EvaluationAssessmentAssignment extends React.Component<
 
       return (
         <div className="evaluation-modal__item-meta">
-          {hasSubmitted === null ? (
+          {/*I will refactor this mess in a different branch. I promise.*/}
+
+          {compositeReply.state === "UNANSWERED" ? ( // If assignment has no typing in it, it is "UNANSWERED".
+            <div className="evaluation-modal__item-meta">
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-data">
+                  {t("labels.notDone", { ns: "evaluation" })}
+                </span>
+              </div>
+            </div>
+          ) : //If the assignment has not been submitted at all, show not submitted (hasSubmitted is null when its not submitted
+          hasSubmitted === null ? (
             <div
               className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
@@ -442,7 +453,8 @@ class EvaluationAssessmentAssignment extends React.Component<
                 {t("labels.notSubmitted", { ns: "evaluation" })}
               </span>
             </div>
-          ) : compositeReply.state === "WITHDRAWN" ? (
+          ) : // If assignment is submitted but withdrawn, show withdrawn, otherwise it is done with a submission date
+          compositeReply.state === "WITHDRAWN" ? (
             <div
               className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
