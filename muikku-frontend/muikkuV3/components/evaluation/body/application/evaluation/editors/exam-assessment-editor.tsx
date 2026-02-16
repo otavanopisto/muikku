@@ -36,7 +36,6 @@ import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
-import { SmowlActivityResults } from "~/components/general/smowl/smowl-activity-results";
 
 /**
  * ExamAssessmentEditorProps
@@ -582,27 +581,6 @@ class ExamAssessmentEditor extends SessionStateComponent<
 
     return (
       <div className="form" role="form">
-        {this.props.evaluations.evaluationExamsSmowlProctoringInfo && (
-          <div className="form__row">
-            <SmowlActivityResults
-              activityId={this.props.exam.folderId.toString()}
-              activityType="exam"
-              entityName={
-                this.props.evaluations.evaluationExamsSmowlProctoringInfo
-                  .entityName
-              }
-              swlAPIKey={
-                this.props.evaluations.evaluationExamsSmowlProctoringInfo
-                  .swlAPIKey
-              }
-              aNamesJson={JSON.stringify({
-                [this.props.selectedAssessment.userEntityId.toString()]: `${this.props.selectedAssessment.firstName} ${this.props.selectedAssessment.lastName}`,
-              })}
-              lang={this.props.locale.current}
-            />
-          </div>
-        )}
-
         <div className="form__row">
           <AssignmentDetails
             sectionTitle={t("labels.examAssignmentsPoints", { ns: "exams" })}

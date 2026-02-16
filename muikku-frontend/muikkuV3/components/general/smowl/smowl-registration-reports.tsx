@@ -53,7 +53,7 @@ const SmowlRegistrationReports = (props: SmowlRegistrationReportsProps) => {
         id="registerForm"
         style={{ display: "none" }}
         target="smowl"
-        action="https://front-results.smowltech.net/index.php/ActivityStatus"
+        action="https://front-results.smowltech.net/index.php/Register"
         method="POST"
       >
         <input type="hidden" name="entity_Name" value={entityName} />
@@ -67,7 +67,7 @@ const SmowlRegistrationReports = (props: SmowlRegistrationReportsProps) => {
         id="smowl"
         name="smowl"
         width="100%"
-        height={750}
+        height="100%"
         frameBorder={0}
         allowFullScreen
       />

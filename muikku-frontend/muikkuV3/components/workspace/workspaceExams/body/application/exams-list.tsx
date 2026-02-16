@@ -13,6 +13,12 @@ import { useTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
+import Button from "~/components/general/button";
+import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
+import MApi from "~/api/api";
+import SmowlRegistrationReportsDialog from "~/components/general/smowl/smowl-registration-reports-dialog";
+
+const examApi = MApi.getExamApi();
 
 /**
  * ExamsListProps
@@ -27,6 +33,7 @@ interface ExamsListProps {}
 const ExamsList = (props: ExamsListProps) => {
   const { t } = useTranslation(["exams", "evaluation", "common"]);
   const { exams, examsStatus } = useSelector((state: StateType) => state.exams);
+  const { isStudent } = useSelector((state: StateType) => state.status);
   const currentWorkspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
   );
@@ -52,7 +59,7 @@ const ExamsList = (props: ExamsListProps) => {
   return (
     <div className="exams">
       {exams.map((exam) => (
-        <ExamsListItem key={exam.folderId} exam={exam} />
+        <ExamsListItem key={exam.folderId} exam={exam} isStudent={isStudent} />
       ))}
     </div>
   );
@@ -63,6 +70,7 @@ const ExamsList = (props: ExamsListProps) => {
  */
 interface ExamsListItemProps {
   exam: ExamAttendance;
+  isStudent: boolean;
 }
 
 /**
@@ -71,9 +79,31 @@ interface ExamsListItemProps {
  * @returns ExamsListItem
  */
 const ExamsListItem = (props: ExamsListItemProps) => {
-  const { exam } = props;
+  const { exam, isStudent } = props;
   const { workspaceUrl } = useParams<{ workspaceUrl: string }>();
   const { t } = useTranslation(["evaluation", "common"]);
+
+  /**
+   * SMOWL data loader
+   * @param activityId activityId
+   * @returns SMOWL data
+   */
+  const smowlDataLoader = React.useCallback(async (activityId: number) => {
+    const attendees = await examApi.getExamAttendees({
+      workspaceFolderId: activityId,
+    });
+    return {
+      aNamesJson: JSON.stringify(
+        attendees.reduce(
+          (acc, attendee) => {
+            acc[attendee.id] = `${attendee.firstName} ${attendee.lastName}`;
+            return acc;
+          },
+          {} as Record<number, string>
+        )
+      ),
+    };
+  }, []);
 
   /**
    * Render assessment content
@@ -278,15 +308,42 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         </div>
       </div>
 
-      {restartAllowed || !isEnded ? (
+      {restartAllowed || !isEnded || !isStudent ? (
         <div className="exam__footer">
           <div className="exam__actions">
-            <Link
-              className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
-              to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
-            >
-              {t("actions.openExam", { ns: "exams" })}
-            </Link>
+            {(restartAllowed || !isEnded) && (
+              <Link
+                className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
+                to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
+              >
+                {t("actions.openExam", { ns: "exams" })}
+              </Link>
+            )}
+
+            {!isStudent && exam.proctored && (
+              <SmowlRegistrationReportsDialog
+                activityId={exam.folderId}
+                lang="fi"
+                dataLoader={smowlDataLoader}
+              >
+                <Button className="exam__actions-button">
+                  Näytä rekisteröitymisraportit
+                </Button>
+              </SmowlRegistrationReportsDialog>
+            )}
+
+            {!isStudent && exam.proctored && (
+              <SmowlActivityResultsDialog
+                activityId={exam.folderId}
+                activityType="exam"
+                lang="fi"
+                dataLoader={smowlDataLoader}
+              >
+                <Button className="exam__actions-button">
+                  Näytä proktorointitulokset
+                </Button>
+              </SmowlActivityResultsDialog>
+            )}
 
             {hasTimeLimit && isStarted && !isEnded && <ExamTimer exam={exam} />}
           </div>

@@ -1,4 +1,3 @@
-// components/evaluation/body/application/evaluation/evaluation-exam-proctoring-reports.tsx
 import * as React from "react";
 
 /**
@@ -79,7 +78,7 @@ const SmowlActivityResults = (props: SmowlActivityResultsProps) => {
         id="smowl"
         name="smowl"
         width="100%"
-        height={750}
+        height="100%"
         frameBorder={0}
         allowFullScreen
       />
