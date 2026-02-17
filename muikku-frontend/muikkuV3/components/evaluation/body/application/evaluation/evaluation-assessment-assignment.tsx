@@ -459,19 +459,17 @@ class EvaluationAssessmentAssignment extends React.Component<
 
       return (
         <div className="evaluation-modal__item-meta">
-          <div className="evaluation-modal__item-meta">
-            <div
-              className={` evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
-            >
-              <span className="evaluation-modal__item-meta-item-label">
-                {getAssignmentStateLabel()}
+          <div
+            className={` evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+          >
+            <span className="evaluation-modal__item-meta-item-label">
+              {getAssignmentStateLabel()}
+            </span>
+            {hasSubmitted && compositeReply.state !== "WITHDRAWN" && (
+              <span className="evaluation-modal__item-meta-item-data">
+                {localize.date(hasSubmitted)}
               </span>
-              {hasSubmitted && compositeReply.state !== "WITHDRAWN" && (
-                <span className="evaluation-modal__item-meta-item-data">
-                  {localize.date(hasSubmitted)}
-                </span>
-              )}
-            </div>
+            )}
           </div>
 
           {evaluationDate && (
