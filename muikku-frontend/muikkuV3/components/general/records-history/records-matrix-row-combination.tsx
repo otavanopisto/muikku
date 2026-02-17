@@ -36,7 +36,7 @@ const RecordsMatrixRowCombination: React.FC<
 > = (props) => {
   const { studyActivityItems, educationType } = props;
 
-  const { identifier, userEntityId, displayNotification } =
+  const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
   const { t } = useTranslation([
@@ -173,7 +173,7 @@ const RecordsMatrixRowCombination: React.FC<
           </div>
         </div>
         <div className="application-list__header-secondary">
-          {firstItem.courseId && (
+          {config.showAssigmentsAndDiaries && firstItem.courseId && (
             <span>
               <WorkspaceAssignmentsAndDiaryDialog
                 credit={firstItem}

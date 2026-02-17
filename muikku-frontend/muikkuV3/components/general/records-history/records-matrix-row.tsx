@@ -49,7 +49,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     showCredits = true,
   } = props;
 
-  const { identifier, userEntityId, displayNotification } =
+  const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
   const { t } = useTranslation([
@@ -213,7 +213,8 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
           </div>
         </div>
         <div className="application-list__header-secondary">
-          {hasActivity &&
+          {config.showAssigmentsAndDiaries &&
+            hasActivity &&
             subjectSpecificActivityItem.courseId &&
             !isCombinationWorkspace && (
               <span>
