@@ -432,48 +432,47 @@ class EvaluationAssessmentAssignment extends React.Component<
         show: this.props.compositeReply.evaluationInfo?.points !== undefined,
       };
 
+      /**
+       * Gets assignment state label based on composite reply state
+       * @returns string
+       */
+      const getAssignmentStateLabel = (): string => {
+        switch (compositeReply.state) {
+          case "UNANSWERED":
+            return t("labels.notDone", { ns: "evaluation" });
+          case "WITHDRAWN":
+            return t("labels.withdrawnAssignment", { ns: "evaluation" });
+          case "SUBMITTED":
+            return t("labels.done", { ns: "evaluation" });
+          case "ANSWERED":
+            return t("labels.notSubmitted", { ns: "evaluation" });
+          case "PASSED":
+          case "FAILED":
+          case "INCOMPLETE":
+            return hasSubmitted
+              ? t("labels.done", { ns: "evaluation" })
+              : t("labels.notSubmitted", { ns: "evaluation" });
+          default:
+            return t("labels.notDone", { ns: "evaluation" });
+        }
+      };
+
       return (
         <div className="evaluation-modal__item-meta">
-          {/*I will refactor this mess in a different branch. I promise.*/}
-
-          {compositeReply.state === "UNANSWERED" ? ( // If assignment has no typing in it, it is "UNANSWERED".
-            <div className="evaluation-modal__item-meta">
-              <div className="evaluation-modal__item-meta-item">
-                <span className="evaluation-modal__item-meta-item-data">
-                  {t("labels.notDone", { ns: "evaluation" })}
-                </span>
-              </div>
-            </div>
-          ) : //If the assignment has not been submitted at all, show not submitted (hasSubmitted is null when its not submitted
-          hasSubmitted === null ? (
+          <div className="evaluation-modal__item-meta">
             <div
-              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
-            >
-              <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.notSubmitted", { ns: "evaluation" })}
-              </span>
-            </div>
-          ) : // If assignment is submitted but withdrawn, show withdrawn, otherwise it is done with a submission date
-          compositeReply.state === "WITHDRAWN" ? (
-            <div
-              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
-            >
-              <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.withdrawnAssignment", { ns: "evaluation" })}
-              </span>
-            </div>
-          ) : (
-            <div
-              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+              className={` evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
               <span className="evaluation-modal__item-meta-item-label">
-                {t("labels.done", { ns: "evaluation" })}
+                {getAssignmentStateLabel()}
               </span>
-              <span className="evaluation-modal__item-meta-item-data">
-                {localize.date(hasSubmitted)}
-              </span>
+              {hasSubmitted && compositeReply.state !== "WITHDRAWN" && (
+                <span className="evaluation-modal__item-meta-item-data">
+                  {localize.date(hasSubmitted)}
+                </span>
+              )}
             </div>
-          )}
+          </div>
 
           {evaluationDate && (
             <div className="evaluation-modal__item-meta-item">
