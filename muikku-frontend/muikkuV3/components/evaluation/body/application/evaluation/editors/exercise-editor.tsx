@@ -28,6 +28,8 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
+import PromptDialog from "~/components/general/prompt-dialog";
+import notificationActions from "~/actions/base/notifications";
 
 /**
  * ExerciseEditorProps
@@ -47,6 +49,7 @@ interface ExerciseEditorProps extends WithTranslation {
    */
   onIsRecordingChange?: (isRecording: boolean) => void;
   isRecording: boolean;
+  onDeleteEvaluation?: () => void;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   displayNotification: DisplayNotificationTriggerType;
   editorLabel?: string;
@@ -98,9 +101,9 @@ class ExerciseEditor extends SessionStateComponent<
         draftId
       ),
       audioAssessments:
-        compositeReplies.evaluationInfo &&
-        compositeReplies.evaluationInfo.audioAssessments &&
-        compositeReplies.evaluationInfo.audioAssessments !== null
+        compositeReplies?.evaluationInfo &&
+        compositeReplies?.evaluationInfo.audioAssessments &&
+        compositeReplies?.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       locked: false,
@@ -125,9 +128,9 @@ class ExerciseEditor extends SessionStateComponent<
         this.state.draftId
       ),
       audioAssessments:
-        compositeReplies.evaluationInfo &&
-        compositeReplies.evaluationInfo.audioAssessments &&
-        compositeReplies.evaluationInfo.audioAssessments !== null
+        compositeReplies?.evaluationInfo &&
+        compositeReplies?.evaluationInfo.audioAssessments &&
+        compositeReplies?.evaluationInfo.audioAssessments !== null
           ? compositeReplies.evaluationInfo.audioAssessments
           : [],
       showAudioAssessmentWarningOnClose: false,
@@ -247,7 +250,7 @@ class ExerciseEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        identifier: compositeReplies.evaluationInfo
+        identifier: compositeReplies?.evaluationInfo
           ? compositeReplies.evaluationInfo.id.toString()
           : undefined,
         evaluationType: "GRADED",
@@ -259,7 +262,7 @@ class ExerciseEditor extends SessionStateComponent<
         audioAssessments: this.state.audioAssessments,
       },
       materialId: this.props.materialAssignment.materialId,
-      edit: !!compositeReplies.evaluationInfo,
+      edit: !!compositeReplies?.evaluationInfo,
     });
   };
 
@@ -314,10 +317,89 @@ class ExerciseEditor extends SessionStateComponent<
   };
 
   /**
+   * deleteAssignmentEvaluation
+   * Deletes the assignment evaluation from server
+   */
+  deleteAssignmentEvaluation = async () => {
+    const evaluationApi = MApi.getEvaluationApi();
+
+    this.setState({
+      locked: true,
+    });
+
+    const { t } = this.props;
+
+    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
+
+    try {
+      await evaluationApi.deleteWorkspaceNodeAssessment({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceNodeId: this.props.materialAssignment.id,
+        assessmentId: this.props.compositeReplies.evaluationInfo.id,
+      });
+      notificationActions.displayNotification(
+        t("notifications.removeSuccess", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+        }),
+        "success"
+      );
+
+      this.props.updateCurrentStudentCompositeRepliesData({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceMaterialId: this.props.materialAssignment.id,
+      });
+
+      this.setState(
+        {
+          locked: false,
+        },
+        () => {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        }
+      );
+      this.props.onDeleteEvaluation && this.props.onDeleteEvaluation();
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      notificationActions.displayNotification(
+        t("notifications.removeError", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+          error: err.message,
+        }),
+        "error"
+      );
+
+      this.setState({
+        locked: false,
+      });
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+    const removeEvaluation = (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: t("content.removing", {
+            ns: "evaluation",
+            context: "assignmentEvaluation",
+            assignmentTitle: this.props.materialAssignment.title || "",
+          }),
+        }}
+      ></span>
+    );
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -380,6 +462,23 @@ class ExerciseEditor extends SessionStateComponent<
               {this.props.t("actions.remove", { context: "draft" })}
             </Button>
           )}
+          {this.props.materialEvaluation && (
+            <PromptDialog
+              title={t("labels.remove", {
+                ns: "evaluation",
+                context: "assignmentEvaluation",
+              })}
+              content={removeEvaluation}
+              onExecute={this.deleteAssignmentEvaluation}
+            >
+              <Button
+                buttonModifiers="dialog-delete"
+                disabled={this.state.locked || this.props.isRecording}
+              >
+                {t("actions.remove", { context: "evaluation" })}
+              </Button>
+            </PromptDialog>
+          )}
         </div>
 
         {this.props.isRecording && (
@@ -416,6 +515,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   );
 }
 
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor)
-);
+export default withTranslation([
+  "evaluation",
+  "workspace",
+  "materials",
+  "common",
+])(connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor));

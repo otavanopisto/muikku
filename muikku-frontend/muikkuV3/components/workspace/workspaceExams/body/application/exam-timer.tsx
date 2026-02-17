@@ -22,7 +22,7 @@ const ExamTimer = (props: ExamTimerProps) => {
 
   React.useEffect(() => {
     // Only show timer if exam has minutes defined and has been started and not ended
-    if (!exam.minutes || !exam.started || exam.ended) {
+    if (!exam.minutesLeft || !exam.started || exam.ended) {
       return;
     }
 
@@ -30,7 +30,7 @@ const ExamTimer = (props: ExamTimerProps) => {
 
     // Check if timer already exists, if not start it
     if (!timerRegistry.hasTimer(exam.folderId)) {
-      timerRegistry.startTimer(exam.folderId, exam.started, exam.minutes);
+      timerRegistry.startTimer(exam.folderId, exam.minutesLeft);
     }
 
     const timer = timerRegistry.getTimer(exam.folderId);
@@ -47,7 +47,7 @@ const ExamTimer = (props: ExamTimerProps) => {
     return () => {
       unsubscribe();
     };
-  }, [exam.folderId, exam.started, exam.minutes, exam.ended]);
+  }, [exam.folderId, exam.started, exam.minutesLeft, exam.ended]);
 
   // Don't render timer if no minutes defined or exam not started or ended
   if (!exam.minutes || !exam.started || exam.ended || !timerValue) {
