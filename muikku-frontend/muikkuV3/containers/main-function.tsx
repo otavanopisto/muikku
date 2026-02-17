@@ -1104,9 +1104,6 @@ export default class MainFunction extends React.Component<
   renderGuardianBody(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      const hashArray = window.location.hash.replace("#", "").split("/");
-      const identifier = props.match.params.identifier;
-      const tab = hashArray[1];
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
@@ -1120,15 +1117,6 @@ export default class MainFunction extends React.Component<
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      // If there's an identifier, we can load records data, otherwise it's done in the hash change
-      if (identifier) {
-        if (tab) {
-          this.loadRecordsData(tab, identifier);
-        } else {
-          this.loadRecordsData("", identifier);
-        }
-      }
     }
     return <GuardianBody />;
   }
@@ -1140,9 +1128,6 @@ export default class MainFunction extends React.Component<
   renderGuardianHopsBody(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      const hashArray = window.location.hash.replace("#", "").split("/");
-      const identifier = props.match.params.identifier;
-      const tab = hashArray[1];
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
@@ -1156,9 +1141,6 @@ export default class MainFunction extends React.Component<
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      // If there's an identifier, we can load hops data, otherwise it's done in the hash change
-      this.loadHopsData(tab, identifier, true);
     }
     return <GuardianHopsBody />;
   }

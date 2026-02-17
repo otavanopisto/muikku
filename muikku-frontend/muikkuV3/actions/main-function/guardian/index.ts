@@ -221,10 +221,10 @@ export interface LoadCurrentDependantPedagogyFormAccessTriggerType {
 }
 
 /**
- * ResetCurrentDependantStateTriggerType
+ * UpdateCurrentDependantIdentifierTriggerType
  */
-export interface ResetCurrentDependantStateTriggerType {
-  (): AnyActionType;
+export interface UpdateCurrentDependantIdentifierTriggerType {
+  (dependantIdentifier: string): AnyActionType;
 }
 
 /**
@@ -372,15 +372,6 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
       getState: () => StateType
     ) => {
       const state = getState();
-      const currentDependantIdentifier =
-        state.guardian.currentDependantIdentifier;
-
-      if (!currentDependantIdentifier) {
-        dispatch({
-          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
-          payload: dependantIdentifier,
-        });
-      }
 
       if (
         state.guardian.currentDependant.dependantStudyActivityStatus === "READY"
@@ -432,15 +423,6 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
       getState: () => StateType
     ) => {
       const state = getState();
-      const currentDependantIdentifier =
-        state.guardian.currentDependantIdentifier;
-
-      if (!currentDependantIdentifier) {
-        dispatch({
-          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
-          payload: dependantIdentifier,
-        });
-      }
 
       if (
         state.guardian.currentDependant.dependantCourseMatrixStatus === "READY"
@@ -808,18 +790,19 @@ const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAc
   };
 
 /**
- * Reset current dependant state thunk function
- * @returns Thunk function to reset current dependant state
+ * Update current dependant identifier thunk function
+ * @param dependantIdentifier dependantIdentifier
+ * @returns Thunk function to update current dependant identifier
  */
-const resetCurrentDependantState: ResetCurrentDependantStateTriggerType =
-  function resetCurrentDependantState() {
+const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerType =
+  function updateCurrentDependantIdentifier(dependantIdentifier: string) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
-        type: "GUARDIAN_RESET_CURRENT_DEPENDANT_STATE",
-        payload: undefined,
+        type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
+        payload: dependantIdentifier,
       });
     };
   };
@@ -833,5 +816,5 @@ export {
   loadCurrentDependantContactGroups,
   loadCurrentDependantActivityGraphData,
   loadCurrentDependantPedagogyFormAccess,
-  resetCurrentDependantState,
+  updateCurrentDependantIdentifier,
 };

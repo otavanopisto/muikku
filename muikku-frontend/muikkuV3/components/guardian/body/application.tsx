@@ -22,7 +22,7 @@ import {
   loadCurrentDependantPedagogyFormAccess,
   loadCurrentDependantStudentInfo,
   loadCurrentDependantStudyActivity,
-  resetCurrentDependantState,
+  updateCurrentDependantIdentifier,
 } from "~/actions/main-function/guardian";
 
 /**
@@ -71,14 +71,13 @@ const DependantApplication = (props: DependantApplicationProps) => {
 
   // Load data when identifier changes
   useEffect(() => {
-    if (identifier) {
-      // Reset current dependant state
-      dispatch(resetCurrentDependantState());
-      // Load current dependant course matrix
-      dispatch(loadCurrentDependantCourseMatrix(identifier));
-      dispatch(loadCurrentDependantStudyActivity(identifier));
-      dispatch(loadCurrentDependantPedagogyFormAccess(identifier));
-    }
+    if (!identifier) return;
+    // Reset current dependant state
+    dispatch(updateCurrentDependantIdentifier(identifier));
+    // Load current dependant course matrix
+    dispatch(loadCurrentDependantCourseMatrix(identifier));
+    dispatch(loadCurrentDependantStudyActivity(identifier));
+    dispatch(loadCurrentDependantPedagogyFormAccess(identifier));
   }, [dispatch, identifier]);
 
   // Handle tab from hash

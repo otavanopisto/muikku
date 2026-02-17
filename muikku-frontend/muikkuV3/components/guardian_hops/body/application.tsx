@@ -11,7 +11,12 @@ import ApplicationPanelBody from "~/components/general/application-panel/compone
 import Matriculation from "~/components/hops/body/application/matriculation/matriculation";
 import Select from "react-select";
 import { getName } from "~/util/modifiers";
-import { initializeHops, resetHopsData } from "~/actions/main-function/hops/";
+import {
+  initializeHops,
+  loadMatriculationData,
+  loadStudyPlanData,
+  resetHopsData,
+} from "~/actions/main-function/hops/";
 import { Action } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
@@ -19,7 +24,7 @@ import StudyPlan from "~/components/hops/body/application/study-planing/study-pl
 import {
   loadCurrentDependantCourseMatrix,
   loadCurrentDependantStudyActivity,
-  resetCurrentDependantState,
+  updateCurrentDependantIdentifier,
 } from "~/actions/main-function/guardian";
 
 const UPPERSECONDARY_PROGRAMMES = [
@@ -62,6 +67,9 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
   const currentDependant = useSelector(
     (state: StateType) => state.guardian.currentDependant
   );
+  const currentDependantIdentifier = useSelector(
+    (state: StateType) => state.guardian.currentDependantIdentifier
+  );
   const dispatch = useDispatch();
 
   // Get current dependant info
@@ -78,22 +86,39 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
 
   // Initialize HOPS and load data when identifier changes
   useEffect(() => {
-    if (identifier) {
-      dispatch(resetCurrentDependantState());
-      dispatch(resetHopsData());
+    if (!identifier) return;
+    if (currentDependantIdentifier === identifier) return;
 
-      // Load essential data
-      dispatch(loadCurrentDependantCourseMatrix(identifier));
-      dispatch(loadCurrentDependantStudyActivity(identifier));
+    // Reset HOPS data if current dependant identifier has changed
+    // based on guardian context
+    dispatch(resetHopsData());
 
-      // Initialize HOPS
-      dispatch(
-        initializeHops({
-          userIdentifier: identifier,
-        }) as Action
-      );
-    }
-  }, [dispatch, identifier]);
+    // Update current dependant identifier
+    dispatch(updateCurrentDependantIdentifier(identifier));
+
+    // Load essential data
+    dispatch(loadCurrentDependantCourseMatrix(identifier));
+    dispatch(loadCurrentDependantStudyActivity(identifier));
+
+    // Initialize HOPS and load data based on student type
+    dispatch(
+      initializeHops({
+        userIdentifier: identifier,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: (
+          _currentUserIsEditing: boolean,
+          isUppersecondary: boolean
+        ) => {
+          if (isUppersecondary) {
+            dispatch(
+              loadMatriculationData({ userIdentifier: identifier }) as Action
+            );
+          }
+          dispatch(loadStudyPlanData({ userIdentifier: identifier }) as Action);
+        },
+      }) as Action
+    );
+  }, [dispatch, identifier, currentDependantIdentifier]);
 
   // Handle tab from hash
   useEffect(() => {

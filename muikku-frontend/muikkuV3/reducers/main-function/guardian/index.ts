@@ -166,12 +166,6 @@ export const guardian: Reducer<GuardianState> = (
         },
       };
 
-    case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER":
-      return {
-        ...state,
-        currentDependantIdentifier: action.payload,
-      };
-
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO_STATUS":
       return {
         ...state,
@@ -306,6 +300,42 @@ export const guardian: Reducer<GuardianState> = (
           dependantPedagogyFormAccessStatus: action.payload,
         },
       };
+
+    case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER": {
+      // If the current dependant identifier is the same as the action payload, return the state
+      if (state.currentDependantIdentifier === action.payload) {
+        return state;
+      }
+
+      // Update the current dependant identifier and reset the current dependant state
+      return {
+        ...state,
+        currentDependantIdentifier: action.payload,
+        currentDependant: {
+          dependantInfo: null,
+          dependantInfoStatus: "IDLE",
+          dependantCurriculumConfig: null,
+          dependantCurriculumConfigStatus: "IDLE",
+          dependantStudyActivity: null,
+          dependantStudyActivityStatus: "IDLE",
+          dependantCourseMatrix: null,
+          dependantCourseMatrixStatus: "IDLE",
+          dependantContactGroups: {
+            counselors: {
+              status: "IDLE",
+              list: [],
+            },
+          },
+          dependantActivityGraphData: {
+            activity: [],
+            workspaces: [],
+          },
+          dependantActivityGraphDataStatus: "IDLE",
+          dependantPedagogyFormAccess: null,
+          dependantPedagogyFormAccessStatus: "IDLE",
+        },
+      };
+    }
 
     case "GUARDIAN_RESET_CURRENT_DEPENDANT_STATE":
       return {
