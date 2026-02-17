@@ -167,6 +167,21 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<Long> sortIds(List<Long> ids) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root.get(WorkspaceMaterial_.id));
+    criteria.where(
+      root.get(WorkspaceMaterial_.id).in(ids)
+    );
+    criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceMaterial_.orderNumber)));
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public List<Long> listIdsByParentAndAssignmentTypesAndHidden(WorkspaceNode parent, Set<WorkspaceMaterialAssignmentType> assignmentTypes, boolean hidden) {
     EntityManager entityManager = getEntityManager();
     
@@ -181,6 +196,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
         criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden)
       )
     );
+    criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceMaterial_.orderNumber)));
    
     return entityManager.createQuery(criteria).getResultList();
   }

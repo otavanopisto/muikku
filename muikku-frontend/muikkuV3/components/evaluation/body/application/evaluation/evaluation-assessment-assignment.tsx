@@ -164,6 +164,19 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
+   * Removes evaluation from material node in state, which is used when deleting evaluation from editor
+   */
+  removeEvaluationFromState = () => {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
+      ...this.state.materialNode,
+      evaluation: null,
+    };
+    this.setState({
+      materialNode: updatedMaterial,
+    });
+  };
+
+  /**
    * updateMaterialEvaluationData
    * @param  assessmentWithAudio assessmentWithAudio
    */
@@ -341,6 +354,8 @@ class EvaluationAssessmentAssignment extends React.Component<
             return "state-ANSWERED";
           case "SUBMITTED":
             return "state-SUBMITTED";
+          default:
+            return "state-UNANSWERED";
         }
       }
     } else {
@@ -419,8 +434,27 @@ class EvaluationAssessmentAssignment extends React.Component<
 
       return (
         <div className="evaluation-modal__item-meta">
-          {hasSubmitted === null ||
-          (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
+          {/*I will refactor this mess in a different branch. I promise.*/}
+
+          {compositeReply.state === "UNANSWERED" ? ( // If assignment has no typing in it, it is "UNANSWERED".
+            <div className="evaluation-modal__item-meta">
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-data">
+                  {t("labels.notDone", { ns: "evaluation" })}
+                </span>
+              </div>
+            </div>
+          ) : //If the assignment has not been submitted at all, show not submitted (hasSubmitted is null when its not submitted
+          hasSubmitted === null ? (
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
+              <span className="evaluation-modal__item-meta-item-data">
+                {t("labels.notSubmitted", { ns: "evaluation" })}
+              </span>
+            </div>
+          ) : // If assignment is submitted but withdrawn, show withdrawn, otherwise it is done with a submission date
+          compositeReply.state === "WITHDRAWN" ? (
             <div
               className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
             >
@@ -429,18 +463,16 @@ class EvaluationAssessmentAssignment extends React.Component<
               </span>
             </div>
           ) : (
-            hasSubmitted && (
-              <div
-                className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
-              >
-                <span className="evaluation-modal__item-meta-item-label">
-                  {t("labels.done", { ns: "evaluation" })}
-                </span>
-                <span className="evaluation-modal__item-meta-item-data">
-                  {localize.date(hasSubmitted)}
-                </span>
-              </div>
-            )
+            <div
+              className={`evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+            >
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.done", { ns: "evaluation" })}
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {localize.date(hasSubmitted)}
+              </span>
+            </div>
           )}
 
           {evaluationDate && (
@@ -503,9 +535,18 @@ class EvaluationAssessmentAssignment extends React.Component<
           )}
         </div>
       );
+    } else {
+      return (
+        <div className="evaluation-modal__item-meta">
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-data">
+              {t("labels.notDone", { ns: "evaluation" })}
+            </span>
+          </div>
+        </div>
+      );
     }
   };
-
   /**
    * Handles is recoding on change
    * @param isRecording isRecording
@@ -630,9 +671,7 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {((this.props.assigment.assignmentType === "EXERCISE" &&
-              compositeReply &&
-              compositeReply.state !== "WITHDRAWN") ||
+            {(this.props.assigment.assignmentType === "EXERCISE" ||
               this.props.assigment.assignmentType === "EVALUATED") && (
               <ButtonPill
                 aria-label={t("actions.evaluateAssignment", {
@@ -678,6 +717,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
                 isRecording={this.state.isRecording}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -693,6 +733,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 isRecording={this.state.isRecording}
                 onIsRecordingChange={this.handleIsRecordingChange}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -704,14 +745,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         <AnimateHeight duration={400} height={contentOpen}>
           {this.state.isLoading ? (
             <div className="loader-empty" />
-          ) : this.props.workspace && this.state.materialNode ? (
-            <EvaluationMaterial
-              material={this.state.materialNode}
-              workspace={this.props.workspace}
-              compositeReply={compositeReply}
-              userEntityId={this.props.selectedAssessment.userEntityId}
-            />
-          ) : null}
+          ) : (
+            this.props.workspace &&
+            this.state.materialNode && (
+              <EvaluationMaterial
+                material={this.state.materialNode}
+                workspace={this.props.workspace}
+                compositeReply={compositeReply}
+                userEntityId={this.props.selectedAssessment.userEntityId}
+              />
+            )
+          )}
         </AnimateHeight>
       </div>
     );
