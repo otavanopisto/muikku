@@ -50,6 +50,7 @@ interface AnnouncementsProps extends WithTranslation {
   userIndex: UserIndexState;
   hasMore: boolean;
   state: AnnouncementsStateType;
+  cancelLoading: boolean;
   loadMoreAnnouncements: LoadMoreAnnouncementsTriggerType;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
@@ -76,6 +77,7 @@ class Announcements extends BodyScrollLoader<
     this.statePropertyLocation = "state";
     this.hasMorePropertyLocation = "hasMore";
     this.loadMoreTriggerFunctionLocation = "loadMoreAnnouncements";
+    this.cancellingLoadingPropertyLocation = "cancelLoading";
   }
 
   /**
@@ -83,8 +85,8 @@ class Announcements extends BodyScrollLoader<
    * @param announcement announcement
    */
   setCurrentAnnouncement(announcement: Announcement) {
-    window.location.hash =
-      window.location.hash.split("/")[0] + "/" + announcement.id;
+    const newHash = window.location.hash.split("/")[0] + "/" + announcement.id;
+    window.location.hash = newHash;
   }
 
   /**
@@ -261,6 +263,7 @@ function mapStateToProps(state: StateType) {
     userIndex: state.userIndex,
     hasMore: state.announcements.hasMore,
     state: state.announcements.state,
+    cancelLoading: !!state.announcements.current,
   };
 }
 
