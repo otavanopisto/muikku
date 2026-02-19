@@ -36,8 +36,22 @@ export async function loadAnnouncementsHelper(
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
+  console.log(
+    "Loading announcements with location",
+    location,
+    "workspaceId",
+    workspaceId,
+    "notOverrideCurrent",
+    notOverrideCurrent,
+    "force",
+    force,
+    "initial",
+    initial
+  );
   if (!notOverrideCurrent) {
-    console.log("Removing current announcement from state");
+    console.log(
+      "Removing current announcement from state because of location change"
+    );
     //Remove the current announcement
     dispatch({
       type: "SET_CURRENT_ANNOUNCEMENT",
