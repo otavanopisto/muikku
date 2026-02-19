@@ -440,7 +440,6 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
     );
     try {
       if (!announcement) {
-        console.log("Announcement not found in state, loading from server");
         // There is chance that user will try url with id that is not (anymore) available, then this try catch will take
         // care of it if that happens
         try {
