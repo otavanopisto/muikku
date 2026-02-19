@@ -3,6 +3,7 @@ import {
   CourseMatrix,
   CourseMatrixModule,
   CourseMatrixSubject,
+  StudyActivity,
   StudyActivityItem,
 } from "~/generated/client";
 import {} from "~/mock/mock-data";
@@ -366,4 +367,135 @@ export const getNonOPSTransferedActivities = (
   return transferedList.filter((tStudies) =>
     listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
   );
+};
+
+/**
+ * getNonOPSActivities
+ * @param matrix matrix
+ * @param items items
+ * @returns non OPS activities
+ */
+export const getNonOPSActivities = (
+  matrix: CourseMatrix,
+  items: StudyActivityItem[]
+) => {
+  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
+  const allSubjectsFromItems = items.map((item) => item.subject);
+
+  // Joined list of non OPS transfered subjects
+  const allNonOPSSubjects = allSubjectsFromItems
+    .filter((subject) => !allOPSSubjects.includes(subject))
+    .join(",");
+
+  // List of non OPS subjects without duplicates
+  const listOfallNonOPSSubjects = Array.from(
+    new Set(allNonOPSSubjects.split(","))
+  );
+
+  // Filter out non OPS subjects that have courseId (course instance exists)
+  return items.filter(
+    (item) =>
+      listOfallNonOPSSubjects.includes(item.subject) && item.courseId !== null
+  );
+};
+
+/**
+ * Row descriptor for the matrix-based records list.
+ * CourseMatrix provides the structure; StudyActivity is mapped onto each row.
+ */
+export interface RecordsMatrixRow {
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
+  studyActivityItems: StudyActivityItem[];
+}
+
+/**
+ * Builds the list of rows for the matrix-based records view.
+ * Structure comes from CourseMatrix; StudyActivity items are matched by subject code + course number.
+ * Transferred items that are not part of the matrix (e.g. Hyväksiluvut) are returned separately.
+ *
+ * @param matrix CourseMatrix (structure)
+ * @param studyActivity StudyActivity or null (student data; when null, rows have empty studyActivityItems)
+ * @returns rows and transferredItems for the list and Hyväksiluvut section
+ */
+export const buildRecordsRowsFromMatrix = (
+  matrix: CourseMatrix,
+  studyActivity: StudyActivity | null
+): {
+  rows: RecordsMatrixRow[];
+  transferedActivities: StudyActivityItem[];
+  nonOPSActivities: StudyActivityItem[];
+} => {
+  const items = studyActivity?.items ?? [];
+  const transferedList = items.filter((item) => item.state === "TRANSFERRED");
+  const transferedActivities = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
+  );
+
+  const nonOPSActivities = getNonOPSActivities(matrix, items);
+
+  const rows: RecordsMatrixRow[] = [];
+
+  for (const subject of matrix.subjects) {
+    for (const course of subject.modules) {
+      const studyActivityItems = items.filter(
+        (item) =>
+          item.subject === subject.code &&
+          item.courseNumber === course.courseNumber
+      );
+      rows.push({ subject, course, studyActivityItems });
+    }
+  }
+
+  return { rows, transferedActivities, nonOPSActivities };
+};
+
+/**
+ * Groups StudyActivityItems by courseId. Returns only groups that have 2+ items
+ * (combination workspaces).
+ * @param items items
+ * @returns combination workspaces
+ */
+export const getCombinationWorkspaces = (
+  items: StudyActivityItem[]
+): StudyActivityItem[][] => {
+  const byCourseId = new Map<number, StudyActivityItem[]>();
+  for (const item of items) {
+    if (item.courseId == null) continue;
+    const list = byCourseId.get(item.courseId) ?? [];
+    list.push(item);
+    byCourseId.set(item.courseId, list);
+  }
+  return Array.from(byCourseId.values()).filter((list) => list.length >= 2);
+};
+
+/**
+ * Enriches matrix rows so that any row whose matched items belong to a combination
+ * workspace (same courseId shared by 2+ items) gets the full set of studyActivityItems
+ * for that workspace. Call after buildRecordsRowsFromMatrix when you have all items.
+ * @param rows rows
+ * @param allItems all items
+ * @returns rows with combination workspace
+ */
+export const enrichMatrixRowsWithCombinationWorkspace = (
+  rows: RecordsMatrixRow[],
+  allItems: StudyActivityItem[]
+): RecordsMatrixRow[] => {
+  const byCourseId = new Map<number, StudyActivityItem[]>();
+  for (const item of allItems) {
+    if (item.courseId == null) continue;
+    const list = byCourseId.get(item.courseId) ?? [];
+    list.push(item);
+    byCourseId.set(item.courseId, list);
+  }
+
+  return rows.map((row) => {
+    if (row.studyActivityItems.length === 0) return row;
+    const courseId = row.studyActivityItems[0].courseId;
+    if (courseId == null) return row;
+    const fullList = byCourseId.get(courseId);
+    if (!fullList || fullList.length < 2) return row;
+    return { ...row, studyActivityItems: fullList };
+  });
 };

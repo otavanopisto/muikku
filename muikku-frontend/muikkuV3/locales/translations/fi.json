@@ -591,6 +591,10 @@
       "studyProgress": "Opintojen edistyminen",
       "transferCredits": "Hyväksiluvut"
     },
+    "instructions": {
+      "recordsCombinationWorkspaces": "Suoritustiedot yhdistelmäopintojaksossa",
+      "recordsTransferredAndOtherActivities": "Suoritustiedot hyväksiluvuissa ja muissa suorituksissa"
+    },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_studies": "Suoritusten lataus epäonnistui. Yritä ladata sivu uudelleen.",
