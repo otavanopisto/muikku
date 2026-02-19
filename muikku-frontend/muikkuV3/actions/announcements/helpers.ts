@@ -5,6 +5,7 @@ import {
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import notificationActions from "~/actions/base/notifications";
+import { loadUserGroupIndex } from "~/actions/user-index";
 import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
@@ -36,6 +37,7 @@ export async function loadAnnouncementsHelper(
   getState: () => StateType
 ) {
   if (!notOverrideCurrent) {
+    console.log("Removing current announcement from state");
     //Remove the current announcement
     dispatch({
       type: "SET_CURRENT_ANNOUNCEMENT",
@@ -139,7 +141,12 @@ export async function loadAnnouncementsHelper(
 
   try {
     const newAnnouncements = await announcerApi.getAnnouncements(params);
-
+    console.log(
+      "Getting all announcements with params",
+      params,
+      "and got response",
+      newAnnouncements
+    );
     const hasMore: boolean =
       newAnnouncements.announcements.length === MAX_LOADED_AT_ONCE + 1;
 
@@ -150,6 +157,12 @@ export async function loadAnnouncementsHelper(
       //we got to get rid of that extra loaded announcement
       actualResults.pop();
     }
+
+    actualResults.forEach((announcement) =>
+      announcement.userGroupEntityIds.forEach((id) =>
+        dispatch(loadUserGroupIndex(id))
+      )
+    );
 
     //Create the payload for updating all the announcer properties
     const properLocation = location || item.location;
