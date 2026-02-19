@@ -36,22 +36,7 @@ export async function loadAnnouncementsHelper(
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
-  console.log(
-    "Loading announcements with location",
-    location,
-    "workspaceId",
-    workspaceId,
-    "notOverrideCurrent",
-    notOverrideCurrent,
-    "force",
-    force,
-    "initial",
-    initial
-  );
   if (!notOverrideCurrent) {
-    console.log(
-      "Removing current announcement from state because of location change"
-    );
     //Remove the current announcement
     dispatch({
       type: "SET_CURRENT_ANNOUNCEMENT",
@@ -155,12 +140,7 @@ export async function loadAnnouncementsHelper(
 
   try {
     const newAnnouncements = await announcerApi.getAnnouncements(params);
-    console.log(
-      "Getting all announcements with params",
-      params,
-      "and got response",
-      newAnnouncements
-    );
+
     const hasMore: boolean =
       newAnnouncements.announcements.length === MAX_LOADED_AT_ONCE + 1;
 
