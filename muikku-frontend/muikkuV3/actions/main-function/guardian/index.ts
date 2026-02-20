@@ -268,7 +268,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
         )
       );
       dispatch({
-        type: "DEPENDANTS_STATUS_UPDATE",
+        type: "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
         payload: "ERROR",
       });
     }
