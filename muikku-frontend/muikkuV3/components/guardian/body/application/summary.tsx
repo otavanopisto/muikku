@@ -1,153 +1,127 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { Instructions } from "~/components/general/instructions";
 import { localize } from "~/locales/i18n";
-import "~/sass/elements/empty.scss";
-import "~/sass/elements/loaders.scss";
-import "~/sass/elements/glyph.scss";
-import "~/sass/elements/item-list.scss";
-import "~/sass/elements/application-sub-panel.scss";
-import { RecordsType } from "~/reducers/main-function/records";
-import { SummaryType } from "~/reducers/main-function/records/summary";
-import { ContactsState } from "~/reducers/base/contacts";
 import { StateType } from "~/reducers";
-import MainChart from "~/components/general/graph/main-chart";
+import moment from "moment";
+import UserAvatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import moment from "moment";
-import { StatusType } from "~/reducers/base/status";
-import Avatar from "~/components/general/avatar";
-import { getName } from "~/util/modifiers";
-import {
-  displayNotification,
-  DisplayNotificationTriggerType,
-} from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
-import { withTranslation, WithTranslation } from "react-i18next";
 import StudyProgress from "./study-progress";
-import { Instructions } from "~/components/general/instructions";
-import { StudyActivityState } from "~/reducers/study-activity";
+import MainChart from "~/components/general/graph/main-chart";
+import { getName } from "~/util/modifiers";
 
 /**
  * SummaryProps
  */
-interface SummaryProps extends WithTranslation {
-  records: RecordsType;
-  contacts: ContactsState;
-  summary: SummaryType;
-  status: StatusType;
-  studyActivity: StudyActivityState;
-  displayNotification: DisplayNotificationTriggerType;
-}
-
-/**
- * SummaryState
- */
-interface SummaryState {}
+interface SummaryProps {}
 
 /**
  * Summary
+ * @param props props
  */
-class Summary extends React.Component<SummaryProps, SummaryState> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: SummaryProps) {
-    super(props);
-  }
+const Summary = (props: SummaryProps) => {
+  const { t } = useTranslation([
+    "studies",
+    "users",
+    "messaging",
+    "tasks",
+    "materials",
+    "common",
+  ]);
+  const status = useSelector((state: StateType) => state.status);
+  const currentDependant = useSelector(
+    (state: StateType) => state.guardian.currentDependant
+  );
 
-  /**
-   * render
-   */
-  render() {
-    const { t } = this.props;
-
-    if (
-      this.props.records.location !== "summary" ||
-      this.props.summary.status !== "READY" ||
-      this.props.studyActivity.userStudyActivityStatus !== "READY" ||
-      this.props.studyActivity.courseMatrixStatus !== "READY"
-    ) {
-      return null;
-    } else {
-      const studentBasicInfo = (
-        <div className="application-sub-panel">
-          <div className="application-sub-panel__header">
-            {t("labels.studyInfo", { ns: "studies" })}
-          </div>
-          <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-            <div className="application-sub-panel__item">
-              <div className="application-sub-panel__item-title">
-                {t("labels.studyStartDate", { ns: "users" })}
-              </div>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
-                <span className="application-sub-panel__single-entry">
-                  {this.props.summary.data.studentsDetails.studyStartDate
-                    ? localize.date(
-                        this.props.summary.data.studentsDetails.studyStartDate
-                      )
-                    : t("content.empty", {
-                        ns: "studies",
-                        context: "studyTime",
-                      })}
-                </span>
-              </div>
+  if (
+    currentDependant.dependantInfoStatus !== "READY" ||
+    currentDependant.dependantStudyActivityStatus !== "READY" ||
+    currentDependant.dependantCourseMatrixStatus !== "READY" ||
+    currentDependant.dependantContactGroups.counselors.status !== "READY"
+  ) {
+    return null;
+  } else {
+    const studentBasicInfo = (
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__header">
+          {t("labels.studyInfo", { ns: "studies" })}
+        </div>
+        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+          <div className="application-sub-panel__item">
+            <div className="application-sub-panel__item-title">
+              {t("labels.studyStartDate", { ns: "users" })}
             </div>
-            <div className="application-sub-panel__item">
-              <div className="application-sub-panel__item-title">
-                {this.props.summary.data.studentsDetails.studyEndDate
-                  ? t("labels.studyEndDate", { ns: "users" })
-                  : t("labels.studyTimeEnd", { ns: "users" })}
-              </div>
-              <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
-                <span className="application-sub-panel__single-entry">
-                  {this.props.summary.data.studentsDetails.studyEndDate ||
-                  this.props.summary.data.studentsDetails.studyTimeEnd
-                    ? localize.date(
-                        this.props.summary.data.studentsDetails.studyEndDate ||
-                          this.props.summary.data.studentsDetails.studyTimeEnd
-                      )
-                    : t("content.empty", {
-                        ns: "studies",
-                        context: "studyTime",
-                      })}
-                </span>
-              </div>
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
+              <span className="application-sub-panel__single-entry">
+                {currentDependant.dependantInfo?.studyStartDate
+                  ? localize.date(
+                      currentDependant.dependantInfo?.studyStartDate
+                    )
+                  : t("content.empty", {
+                      ns: "studies",
+                      context: "studyTime",
+                    })}
+              </span>
+            </div>
+          </div>
+          <div className="application-sub-panel__item">
+            <div className="application-sub-panel__item-title">
+              {currentDependant.dependantInfo?.studyEndDate
+                ? t("labels.studyEndDate", { ns: "users" })
+                : t("labels.studyTimeEnd", { ns: "users" })}
+            </div>
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
+              <span className="application-sub-panel__single-entry">
+                {currentDependant.dependantInfo?.studyEndDate ||
+                currentDependant.dependantInfo?.studyTimeEnd
+                  ? localize.date(
+                      currentDependant.dependantInfo?.studyEndDate ||
+                        currentDependant.dependantInfo?.studyTimeEnd
+                    )
+                  : t("content.empty", {
+                      ns: "studies",
+                      context: "studyTime",
+                    })}
+              </span>
             </div>
           </div>
         </div>
-      );
+      </div>
+    );
 
-      const studentCounselors = (
-        <div className="application-sub-panel application-sub-panel--counselors">
-          <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
-            {t("labels.counselors", {
-              ns: "users",
-            })}
-            <Instructions
-              modifier="instructions"
-              alignSelfVertically="top"
-              openByHover={false}
-              closeOnClick={true}
-              closeOnOutsideClick={true}
-              persistent
-              content={
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: t("content.counselorsDescription", {
-                      ns: "studies",
-                    }),
-                  }}
-                />
-              }
-            />
-          </div>
-          <div className="application-sub-panel__body">
-            <div className="item-list item-list--student-counselors">
-              {this.props.contacts.counselors.list.length > 0 ? (
-                this.props.contacts.counselors.list.map((counselor) => {
+    const studentCounselors = (
+      <div className="application-sub-panel application-sub-panel--counselors">
+        <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
+          {t("labels.counselors", {
+            ns: "users",
+          })}
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: t("content.counselorsDescription", {
+                    ns: "studies",
+                  }),
+                }}
+              />
+            }
+          />
+        </div>
+        <div className="application-sub-panel__body">
+          <div className="item-list item-list--student-counselors">
+            {currentDependant.dependantContactGroups.counselors.list?.length >
+            0 ? (
+              currentDependant.dependantContactGroups.counselors.list?.map(
+                (counselor) => {
                   let displayVacationPeriod =
                     !!counselor.properties["profile-vacation-start"];
                   if (counselor.properties["profile-vacation-end"]) {
@@ -167,7 +141,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       key={counselor.userEntityId}
                     >
                       <div className="item-list__profile-picture">
-                        <Avatar
+                        <UserAvatar
                           id={counselor.userEntityId}
                           userCategory={3}
                           name={counselor.firstName}
@@ -282,96 +256,67 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       </div>
                     </div>
                   );
-                })
-              ) : (
-                <div className="empty">
-                  <span>
-                    {t("content.empty", {
-                      ns: "studies",
-                      context: "counselorsGuardian",
-                    })}
-                  </span>
-                </div>
-              )}
-            </div>
+                }
+              )
+            ) : (
+              <div className="empty">
+                <span>
+                  {t("content.empty", {
+                    ns: "studies",
+                    context: "counselorsGuardian",
+                  })}
+                </span>
+              </div>
+            )}
           </div>
         </div>
-      );
+      </div>
+    );
 
-      return (
-        <section>
-          {studentCounselors}
-          {studentBasicInfo}
+    return (
+      <section>
+        {studentCounselors}
+        {studentBasicInfo}
 
-          <div className="application-sub-panel">
-            <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
-              {t("labels.studyProgress", {
-                ns: "studies",
-              })}
-            </div>
-
-            <StudyProgress
-              curriculumName={
-                this.props.summary.data.studentsDetails.curriculumName
-              }
-              studyProgrammeName={
-                this.props.summary.data.studentsDetails.studyProgrammeName
-              }
-              studentIdentifier={this.props.summary.data.studentsDetails.id}
-              studentUserEntityId={
-                this.props.summary.data.studentsDetails.userEntityId
-              }
-            />
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
+            {t("labels.studyProgress", {
+              ns: "studies",
+            })}
           </div>
-          {this.props.status.isActiveUser ? (
-            <>
-              <div className="application-sub-panel">
-                <div className="application-sub-panel__header">
-                  {t("labels.stats")}
-                </div>
-                {this.props.summary.data.graphData.activity &&
-                this.props.summary.data.graphData.workspaces ? (
-                  <MainChart
-                    workspaces={this.props.summary.data.graphData.workspaces}
-                    activityLogs={this.props.summary.data.graphData.activity}
-                  />
-                ) : null}
+
+          <StudyProgress
+            curriculumName={currentDependant.dependantInfo.curriculumName}
+            studyProgrammeName={
+              currentDependant.dependantInfo.studyProgrammeName
+            }
+            studentIdentifier={currentDependant.dependantInfo.id}
+            studentUserEntityId={currentDependant.dependantInfo.userEntityId}
+          />
+        </div>
+        {status.isActiveUser ? (
+          <>
+            <div className="application-sub-panel">
+              <div className="application-sub-panel__header">
+                {t("labels.stats")}
               </div>
-            </>
-          ) : null}
-        </section>
-      );
-    }
+              {currentDependant.dependantActivityGraphData.activity &&
+              currentDependant.dependantActivityGraphData.workspaces ? (
+                <MainChart
+                  workspaces={
+                    currentDependant.dependantActivityGraphData.workspaces
+                  }
+                  activityLogs={
+                    currentDependant.dependantActivityGraphData.activity
+                  }
+                />
+              ) : null}
+            </div>
+          </>
+        ) : null}
+      </section>
+    );
   }
-}
+};
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    records: state.records,
-    contacts: state.contacts,
-    summary: state.summary,
-    status: state.status,
-    studyActivity: state.studyActivity,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ displayNotification }, dispatch);
-}
-
-export default withTranslation([
-  "studies",
-  "users",
-  "messaging",
-  "tasks",
-  "materials",
-  "common",
-])(connect(mapStateToProps, mapDispatchToProps)(Summary));
+export default Summary;

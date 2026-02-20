@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { LoadingState, StudentActivityByStatus } from "~/@types/shared";
+import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
   ContactLog,
@@ -18,11 +18,11 @@ import {
   HopsUppersecondary,
   ActivityLogEntry,
   Note,
-  StudentCourseChoice,
   UserContact,
   CourseMatrix,
   StudyActivity,
 } from "~/generated/client";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * GuiderFiltersType
@@ -85,14 +85,6 @@ export interface PedagogyFormAvailability {
 }
 
 /**
- * GuiderStudentStudyProgress
- */
-export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
-  studentChoices: StudentCourseChoice[];
-  courseMatrix: CourseMatrix;
-}
-
-/**
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
@@ -124,7 +116,8 @@ export interface GuiderStudentUserProfileType {
   hopsPhase?: string;
   pedagogyFormAvailable: PedagogyFormAccess;
   studyActivity: StudyActivity | null;
-  studyProgress: GuiderStudentStudyProgress;
+  courseMatrix: CourseMatrix | null;
+  curriculumConfig: CurriculumConfig | null;
 }
 
 /**
@@ -262,22 +255,8 @@ const initialGuiderState: GuiderState = {
       showCredits: false,
     },
     studyActivity: null,
-    studyProgress: {
-      onGoingList: [],
-      transferedList: [],
-      gradedList: [],
-      suggestedNextList: [],
-      skillsAndArt: {},
-      otherLanguageSubjects: {},
-      otherSubjects: {},
-      studentChoices: [],
-      needSupplementationList: [],
-      courseMatrix: {
-        subjects: [],
-        type: null,
-        problems: [],
-      },
-    },
+    courseMatrix: null,
+    curriculumConfig: null,
   },
 };
 

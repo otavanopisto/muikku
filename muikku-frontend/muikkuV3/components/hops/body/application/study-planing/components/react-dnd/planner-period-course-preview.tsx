@@ -1,7 +1,5 @@
 import * as React from "react";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
-import { StateType } from "~/reducers";
-import { useSelector } from "react-redux";
 import {
   PlannerCardContent,
   PlannerCardHeader,
@@ -10,6 +8,7 @@ import {
 
 import { PlannerCard } from "../planner-card";
 import { localize } from "~/locales/i18n";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * PlannerPeriodCourseCardPreviewProps
@@ -27,9 +26,7 @@ const PlannerPeriodCourseCardPreview: React.FC<
 > = (props) => {
   const { course } = props;
 
-  const curriculumConfig = useSelector(
-    (state: StateType) => state.hopsNew.hopsCurriculumConfig
-  );
+  const { curriculumConfig } = useHopsBasicInfo();
 
   const startDate = new Date(course.startDate);
 
@@ -52,7 +49,7 @@ const PlannerPeriodCourseCardPreview: React.FC<
       <PlannerCardHeader>
         <span className="study-planner__card-title">
           <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
-          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
         </span>
       </PlannerCardHeader>
 

@@ -24,7 +24,6 @@ import { evaluations } from "./main-function/evaluation/index";
 import { ceepos } from "./main-function/ceepos";
 import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
-import { dependants } from "./main-function/dependants";
 import { hopsNew } from "./hops/index";
 import { languageProfile } from "./main-function/language-profile";
 import { notebook } from "./notebook/notebook";
@@ -33,16 +32,17 @@ import { credentials } from "./base/credentials";
 import { exams } from "./workspaces/exams";
 import { pedagogySupport } from "./pedagogy-support";
 import { studyActivity } from "./study-activity";
+import { guardian } from "./main-function/guardian";
 
 export default combineReducers({
   announcements,
   ceepos,
   contacts,
-  dependants,
   discussion,
   easyToUse,
   evaluations,
   guider,
+  guardian,
   locales,
   messages,
   notifications,

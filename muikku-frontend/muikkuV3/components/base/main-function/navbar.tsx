@@ -10,7 +10,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
-import { Dependant } from "~/reducers/main-function/dependants";
+import { UserGuardiansDependant } from "~/generated/client";
 import { Action, Dispatch } from "redux";
 import Link from "~/components/general/link";
 import { Link as RouterLink } from "react-router-dom";
@@ -43,7 +43,7 @@ interface MainFunctionNavbarProps extends WithTranslation {
   announcementCount: number;
   messageCount: number;
   title: string;
-  dependants: Dependant[];
+  dependants: UserGuardiansDependant[];
 }
 
 /**
@@ -338,7 +338,7 @@ function mapStateToProps(state: StateType) {
     messageCount: state.messages.unreadThreadCount,
     announcementCount: state.announcements.unreadCount,
     announcements: state.announcements.announcements,
-    dependants: (state.dependants && state.dependants.list) || [],
+    dependants: (state.guardian && state.guardian.dependants) || [],
   };
 }
 

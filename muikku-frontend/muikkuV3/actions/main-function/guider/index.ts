@@ -6,7 +6,6 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
-  GuiderStudentStudyProgress,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import { UserFileType } from "reducers/user-index";
@@ -34,13 +33,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
-import {
-  filterActivity,
-  filterActivityBySubjects,
-  LANGUAGE_SUBJECTS_CS,
-  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-  SKILL_AND_ART_SUBJECTS_CS,
-} from "~/helper-functions/study-matrix";
+import { getCurriculumConfig } from "~/util/curriculum-config";
 
 const hopsApi = MApi.getHopsApi();
 
@@ -191,11 +184,6 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
 export type DELETE_CONTACT_EVENT = SpecificActionType<
   "DELETE_CONTACT_EVENT",
   number
->;
-
-export type GUIDER_UPDATE_STUDENT_STUDY_PROGRESS = SpecificActionType<
-  "GUIDER_UPDATE_STUDENT_STUDY_PROGRESS",
-  GuiderStudentStudyProgress
 >;
 
 export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
@@ -1050,9 +1038,13 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       });
 
       /**
-       * Study progress promise
+       * Loads essential study information for the student
+       * - Study activity
+       * - Course matrix
+       * - Curriculum config
+       * @param curriculumName curriculum name
        */
-      const studyActivityPromise = async () => {
+      const studentStudyEssentialsPromise = async (curriculumName?: string) => {
         const studentStudyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: id,
         });
@@ -1061,23 +1053,10 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           studentIdentifier: id,
         });
 
-        const skillAndArtCourses = filterActivityBySubjects(
-          SKILL_AND_ART_SUBJECTS_CS,
-          studentStudyActivity.items
-        );
-
-        const otherLanguageSubjects = filterActivityBySubjects(
-          LANGUAGE_SUBJECTS_CS,
-          studentStudyActivity.items
-        );
-
-        const otherSubjects = filterActivityBySubjects(
-          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
-          studentStudyActivity.items
-        );
-
-        const studentActivityByStatus = filterActivity(
-          studentStudyActivity.items
+        const curriculumConfig = getCurriculumConfig(
+          courseMatrix.type,
+          courseMatrix,
+          curriculumName
         );
 
         dispatch({
@@ -1091,14 +1070,16 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
-            property: "studyProgress",
-            value: {
-              skillsAndArt: skillAndArtCourses,
-              otherLanguageSubjects: otherLanguageSubjects,
-              otherSubjects: otherSubjects,
-              ...studentActivityByStatus,
-              courseMatrix: courseMatrix,
-            },
+            property: "courseMatrix",
+            value: courseMatrix,
+          },
+        });
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "curriculumConfig",
+            value: curriculumConfig,
           },
         });
       };
@@ -1135,9 +1116,10 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   },
                 });
               });
-          }),
 
-        studyActivityPromise(),
+            // Doing this here because curriculum name is not available in the student object
+            studentStudyEssentialsPromise(student.curriculumName);
+          }),
 
         userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {
           dispatch({

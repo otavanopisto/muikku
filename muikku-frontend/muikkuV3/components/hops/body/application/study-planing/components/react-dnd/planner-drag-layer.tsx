@@ -1,6 +1,5 @@
 import * as React from "react";
 import { XYCoord, useDragLayer } from "react-dnd";
-import { Course } from "~/@types/shared";
 import {
   PlannedCourseWithIdentifier,
   StudyPlannerNoteWithIdentifier,
@@ -9,6 +8,7 @@ import PlannerPeriodCourseCardPreview from "./planner-period-course-preview";
 import PlannerCourseTrayItemPreview from "./planner-course-tray-item-preview";
 import PlannerNoteNewPreview from "./planner-note-new-preview";
 import PlannerNotePreview from "./planner-note-preview";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",
@@ -65,7 +65,9 @@ const renderItem = (type: string, item: any) => {
       return <PlannerPeriodCourseCardPreview course={course} />;
     }
     case "planned-course-new": {
-      const course = item.info as Course & { subjectCode: string };
+      const course = item.info as CourseMatrixModuleEnriched & {
+        subjectCode: string;
+      };
       return (
         <PlannerCourseTrayItemPreview
           course={course}
