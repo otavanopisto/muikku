@@ -672,44 +672,30 @@ const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDa
         })) as WorkspaceDataType[];
 
         if (workspaces && workspaces.length) {
-          await Promise.all([
-            Promise.all(
-              workspaces.map(async (workspace, index) => {
-                const activity =
-                  await evaluationApi.getWorkspaceStudentActivity({
-                    workspaceId: workspace.id,
-                    studentEntityId: dependantIdentifier,
-                  });
-                workspaces[index].activity = activity;
-              })
-            ),
-            Promise.all(
-              workspaces.map(async (workspace, index) => {
-                const statistics =
-                  await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
-                    {
-                      workspaceEntityId: workspace.id,
-                      userIdentifier: dependantIdentifier,
-                    }
-                  );
+          await Promise.all(
+            workspaces.map(async (workspace, index) => {
+              const [activity, statistics, courseActivity] = await Promise.all([
+                evaluationApi.getWorkspaceStudentActivity({
+                  workspaceId: workspace.id,
+                  studentEntityId: dependantIdentifier,
+                }),
+                workspaceDiscussionApi.getWorkspaceDiscussionStatistics({
+                  workspaceEntityId: workspace.id,
+                  userIdentifier: dependantIdentifier,
+                }),
+                activitylogsApi.getWorkspaceActivityLogs({
+                  userIdentifier: dependantIdentifier,
+                  workspaceEntityId: workspace.id,
+                  from: new Date(new Date().getFullYear() - 2, 0),
+                  to: new Date(),
+                }),
+              ]);
 
-                workspaces[index].forumStatistics = statistics;
-              })
-            ),
-            Promise.all(
-              workspaces.map(async (workspace, index) => {
-                const courseActivity =
-                  await activitylogsApi.getWorkspaceActivityLogs({
-                    userIdentifier: dependantIdentifier,
-                    workspaceEntityId: workspace.id,
-                    from: new Date(new Date().getFullYear() - 2, 0),
-                    to: new Date(),
-                  });
-
-                workspaces[index].activityLogs = courseActivity;
-              })
-            ),
-          ]);
+              workspaces[index].activity = activity;
+              workspaces[index].forumStatistics = statistics;
+              workspaces[index].activityLogs = courseActivity;
+            })
+          );
         }
 
         dispatch({

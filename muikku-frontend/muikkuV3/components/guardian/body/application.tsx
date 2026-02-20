@@ -217,15 +217,13 @@ const DependantApplication = (props: DependantApplicationProps) => {
     );
 
   return (
-    <>
-      <ApplicationPanel
-        title={title}
-        panelOptions={dependantSelect}
-        onTabChange={onTabChange}
-        activeTab={activeTab}
-        panelTabs={panelTabs}
-      />
-    </>
+    <ApplicationPanel
+      title={title}
+      panelOptions={dependantSelect}
+      onTabChange={onTabChange}
+      activeTab={activeTab}
+      panelTabs={panelTabs}
+    />
   );
 };
 

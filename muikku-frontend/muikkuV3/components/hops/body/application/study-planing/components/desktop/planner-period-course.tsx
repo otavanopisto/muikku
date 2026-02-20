@@ -207,9 +207,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 subjectCode={course.subjectCode}
                 courseNumber={course.courseNumber}
                 curriculumType={curriculumConfig.type}
-                // ops={
-                //   curriculumConfig.strategy.getCurriculumMatrix().curriculumName
-                // }
+                ops={
+                  curriculumConfig.strategy.getCurriculumMatrix().curriculumName
+                }
               />
             </div>
 
