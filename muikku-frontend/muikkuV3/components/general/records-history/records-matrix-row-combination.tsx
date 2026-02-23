@@ -47,14 +47,14 @@ const RecordsMatrixRowCombination: React.FC<
     "common",
   ]);
 
-  const [showE, setShowE] = React.useState(false);
+  const [showEvaluation, setShowEvaluation] = React.useState(false);
 
   const firstItem = studyActivityItems[0];
 
   const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
     workspaceId: firstItem?.courseId,
     userEntityId,
-    enabled: showE && !!firstItem?.courseId,
+    enabled: showEvaluation && !!firstItem?.courseId,
     displayNotification,
   });
 
@@ -113,7 +113,7 @@ const RecordsMatrixRowCombination: React.FC<
    * handleShowEvaluationClick
    */
   const handleShowEvaluationClick = () => {
-    setShowE((prev) => !prev);
+    setShowEvaluation((prev) => !prev);
   };
 
   /**
@@ -125,11 +125,11 @@ const RecordsMatrixRowCombination: React.FC<
   ) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setShowE((prev) => !prev);
+      setShowEvaluation((prev) => !prev);
     }
   };
 
-  const animateOpen = showE ? "auto" : 0;
+  const animateOpen = showEvaluation ? "auto" : 0;
 
   const headerModifiers = React.useMemo(
     () =>
@@ -147,11 +147,11 @@ const RecordsMatrixRowCombination: React.FC<
         onKeyDown={assessmentExist ? handleShowEvaluationKeyDown : undefined}
         role="button"
         aria-label={
-          showE
+          showEvaluation
             ? t("wcag.collapseRecordInfo", { ns: "studies" })
             : t("wcag.expandRecordInfo", { ns: "studies" })
         }
-        aria-expanded={showE}
+        aria-expanded={showEvaluation}
         aria-controls={rowId}
         tabIndex={0}
       >
