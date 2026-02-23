@@ -50,12 +50,12 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
     "common",
   ]);
 
-  const [showE, setShowE] = React.useState(false);
+  const [showEvaluation, setShowEvaluation] = React.useState(false);
 
   const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
     workspaceId: studyActivityItems[0].courseId,
     userEntityId,
-    enabled: showE, // Only load data when expanded
+    enabled: showEvaluation, // Only load data when expanded
     displayNotification,
   });
 
@@ -76,7 +76,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
    * handleShowEvaluationClick
    */
   const handleShowEvaluationClick = () => {
-    setShowE((showE) => !showE);
+    setShowEvaluation((showEvaluation) => !showEvaluation);
   };
 
   /**
@@ -88,7 +88,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
   ) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setShowE((showE) => !showE);
+      setShowEvaluation((showEvaluation) => !showEvaluation);
     }
   };
 
@@ -155,7 +155,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
     }
   };
 
-  const animateOpen = showE ? "auto" : 0;
+  const animateOpen = showEvaluation ? "auto" : 0;
 
   const headerModifiers = React.useMemo(() => {
     const modifiers = ["course"];
@@ -176,7 +176,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
         onKeyDown={assessmentExist ? handleShowEvaluationKeyDown : undefined}
         role="button"
         aria-label={
-          showE
+          showEvaluation
             ? t("wcag.collapseRecordInfo", {
                 ns: "studies",
               })
@@ -184,7 +184,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
                 ns: "studies",
               })
         }
-        aria-expanded={showE}
+        aria-expanded={showEvaluation}
         aria-controls={"record" + studyActivityItems[0].courseId}
         tabIndex={0}
       >

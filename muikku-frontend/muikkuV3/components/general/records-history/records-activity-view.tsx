@@ -184,18 +184,17 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
         </h3>
         <div className={`icon-sort-alpha-${activitySortDirection}`}></div>
       </div>
-      {memoizedFilterActivity.nonTransferedActivities.length
-        ? memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
-            <RecordsActivityListItem
-              key={`record-activity-list-item-${i}`}
-              studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
-              isCombinationWorkspace={Array.isArray(ntItem)}
-              educationType={studyActivity.educationType}
-            />
-          ))
-        : null}
+      {memoizedFilterActivity.nonTransferedActivities.length > 0 &&
+        memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
+          <RecordsActivityListItem
+            key={`record-activity-list-item-${i}`}
+            studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
+            isCombinationWorkspace={Array.isArray(ntItem)}
+            educationType={studyActivity.educationType}
+          />
+        ))}
 
-      {memoizedFilterActivity.transferedActivities.length ? (
+      {memoizedFilterActivity.transferedActivities.length > 0 && (
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">Hyväksiluvut</h3>
@@ -207,7 +206,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
             />
           ))}
         </>
-      ) : null}
+      )}
     </ApplicationList>
   );
 };
