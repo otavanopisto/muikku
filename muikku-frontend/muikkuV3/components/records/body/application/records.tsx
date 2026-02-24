@@ -135,7 +135,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             {t("labels.files")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
-            {this.props.records.files.length ? (
+            {this.props.records.files && this.props.records.files.length ? (
               <ApplicationList>
                 {this.props.records.files.map((file) => (
                   <ApplicationListItem
