@@ -5,6 +5,7 @@ import {
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import notificationActions from "~/actions/base/notifications";
+import { loadUserGroupIndex } from "~/actions/user-index";
 import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
@@ -150,6 +151,12 @@ export async function loadAnnouncementsHelper(
       //we got to get rid of that extra loaded announcement
       actualResults.pop();
     }
+
+    actualResults.forEach((announcement) =>
+      announcement.userGroupEntityIds.forEach((id) =>
+        dispatch(loadUserGroupIndex(id))
+      )
+    );
 
     //Create the payload for updating all the announcer properties
     const properLocation = location || item.location;

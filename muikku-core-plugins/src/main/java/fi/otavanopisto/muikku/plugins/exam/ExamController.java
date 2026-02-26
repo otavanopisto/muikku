@@ -398,10 +398,14 @@ public class ExamController {
     if (attendanceEntity != null) {
       // If exam has been evaluated, include a summary of points per assignment
       if (attendance.getEvaluationInfo() != null) {
-        Set<Long> assignmentIds = new HashSet<>(); 
+        List<Long> assignmentIds = new ArrayList<>(); 
         boolean randomInPlay = settingsJson.getRandom() != ExamSettingsRandom.NONE && !StringUtils.isEmpty(attendanceEntity.getWorkspaceMaterialIds());
         if (randomInPlay) {
-          assignmentIds.addAll(Stream.of(attendanceEntity.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toSet()));
+          assignmentIds.addAll(
+            workspaceMaterialController.sortWorkspaceAssignmentIds(
+              Stream.of(attendanceEntity.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toList())
+            )
+          );
         }
         else {
           assignmentIds.addAll(workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder));

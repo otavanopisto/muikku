@@ -378,6 +378,11 @@
   margin: 0 0 0 15px;
 }
 
+.evaluation-modal__item-remove-evaluation {
+  display: flex;
+  justify-content: end;
+}
+
 .evaluation-modal__item-header {
   align-items: center;
   display: flex;
@@ -476,6 +481,7 @@
   display: flex;
   flex-flow: row wrap;
   font-size: 0.825rem;
+  padding: 5px 0;
 }
 
 .evaluation-modal__item-meta-item {
@@ -489,13 +495,31 @@
 
   &.state-SUPPLEMENTED,
   &.state-SUBMITTED,
-  &.state-INCOMPLETE {
+  &.state-INCOMPLETE,
+  &.state-EVALUATED {
     background-color: $color-submitted;
     border-radius: 12px;
     color: $color-default;
     height: 24px;
     padding: 0 9px;
   }
+
+  &.state-EVALUATED {
+    background-color: $color-passed;
+    border-radius: 12px;
+    color: $color-default;
+    height: 24px;
+    padding: 0 9px;
+  }
+
+  &.state-FAILED {
+    background-color: $color-failed;
+    border-radius: 12px;
+    color: $color-default;
+    height: 24px;
+    padding: 0 9px;
+  }
+
 
   &.state-WITHDRAWN {
     background-color: $color-disabled-background;
