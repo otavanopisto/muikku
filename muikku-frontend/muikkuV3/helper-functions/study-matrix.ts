@@ -184,7 +184,13 @@ export const filterActivity = (
   StudentActivityByStatus,
   "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
 > => {
-  const onGoingList = list.filter((item) => item.state === "ONGOING");
+  const onGoingList = list.filter(
+    (item) =>
+      item.state === "ONGOING" ||
+      item.state === "PENDING" ||
+      item.state === "INTERIM_EVALUATION" ||
+      item.state === "INTERIM_EVALUATION_REQUEST"
+  );
   const suggestedNextList = list.filter(
     (item) => item.state === "SUGGESTED_NEXT"
   );
