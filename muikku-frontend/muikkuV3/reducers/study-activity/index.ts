@@ -2,8 +2,7 @@ import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { CourseMatrix, StudyActivity } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
+import { ReducerStatusType } from "~/reducers/types";
 
 /**
  * StudyActivityState
@@ -11,15 +10,15 @@ export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 export interface StudyActivityState {
   // Current logged in user's study activity (student)
   userStudyActivity: StudyActivity | null;
-  userStudyActivityStatus: ReducerStateType;
+  userStudyActivityStatus: ReducerStatusType;
 
   // Current logged in user's course matrix
   courseMatrix: CourseMatrix | null;
-  courseMatrixStatus: ReducerStateType;
+  courseMatrixStatus: ReducerStatusType;
 
   // Current logged in user's curriculum config
   curriculumConfig: CurriculumConfig | null;
-  curriculumConfigStatus: ReducerStateType;
+  curriculumConfigStatus: ReducerStatusType;
 }
 
 const initialStudyActivityState: StudyActivityState = {

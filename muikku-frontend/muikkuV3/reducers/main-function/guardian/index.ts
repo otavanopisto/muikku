@@ -12,14 +12,13 @@ import {
 } from "~/generated/client/models";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
+import { ReducerStatusType } from "~/reducers/types";
 
 /**
  * Contact group interface
  */
 interface ContactGroup {
-  status: ReducerStateType;
+  status: ReducerStatusType;
   list: GuidanceCounselorContact[];
 }
 
@@ -45,18 +44,18 @@ export interface DependantActivityGraphData {
  */
 export interface CurrentDependant {
   dependantInfo: UserWithSchoolData | null;
-  dependantInfoStatus: ReducerStateType;
+  dependantInfoStatus: ReducerStatusType;
   dependantCurriculumConfig: CurriculumConfig | null;
-  dependantCurriculumConfigStatus: ReducerStateType;
+  dependantCurriculumConfigStatus: ReducerStatusType;
   dependantStudyActivity: StudyActivity | null;
-  dependantStudyActivityStatus: ReducerStateType;
+  dependantStudyActivityStatus: ReducerStatusType;
   dependantCourseMatrix: CourseMatrix | null;
-  dependantCourseMatrixStatus: ReducerStateType;
+  dependantCourseMatrixStatus: ReducerStatusType;
   dependantContactGroups: DependantContactGroups;
   dependantActivityGraphData: DependantActivityGraphData;
-  dependantActivityGraphDataStatus: ReducerStateType;
+  dependantActivityGraphDataStatus: ReducerStatusType;
   dependantPedagogyFormAccess: PedagogyFormAccess | null;
-  dependantPedagogyFormAccessStatus: ReducerStateType;
+  dependantPedagogyFormAccessStatus: ReducerStatusType;
 }
 
 /**
@@ -66,7 +65,7 @@ export type WorkspacesByDependantIdentifier = Record<
   string,
   {
     workspaces: UserGuardiansDependantWorkspace[];
-    status: ReducerStateType;
+    status: ReducerStatusType;
   }
 >;
 
@@ -75,7 +74,7 @@ export type WorkspacesByDependantIdentifier = Record<
  * Object that combines the results of the student and staff search
  */
 export interface GuardianState {
-  dependantsStatus: ReducerStateType;
+  dependantsStatus: ReducerStatusType;
   dependants: UserGuardiansDependant[];
   currentDependantIdentifier: string | null;
   currentDependant: CurrentDependant;

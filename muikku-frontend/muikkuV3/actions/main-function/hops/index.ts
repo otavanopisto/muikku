@@ -24,11 +24,13 @@ import {
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
   PlannedCourseWithIdentifier,
-  ReducerInitializeStatusType,
-  ReducerStateType,
   TimeContextSelection,
   StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
+import {
+  ReducerStatusType,
+  ReducerInitializeStatusType,
+} from "~/reducers/types";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
 import { displayNotification } from "~/actions/base/notifications";
@@ -60,12 +62,12 @@ export type HOPS_UPDATE_INITIALIZE_STATUS = SpecificActionType<
 // HOPS FORM ACTIONS TYPES
 export type HOPS_FORM_HISTORY_UPDATE = SpecificActionType<
   "HOPS_FORM_HISTORY_UPDATE",
-  { status: ReducerStateType; data?: HopsHistoryEntry[] | null }
+  { status: ReducerStatusType; data?: HopsHistoryEntry[] | null }
 >;
 
 export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
   "HOPS_FORM_HISTORY_ENTRY_UPDATE",
-  { status: ReducerStateType; data?: HopsHistoryEntry | null }
+  { status: ReducerStatusType; data?: HopsHistoryEntry | null }
 >;
 
 export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
@@ -75,7 +77,7 @@ export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
 
 export type HOPS_FORM_UPDATE = SpecificActionType<
   "HOPS_FORM_UPDATE",
-  { status: ReducerStateType; data?: HopsForm | null }
+  { status: ReducerStatusType; data?: HopsForm | null }
 >;
 
 export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
@@ -84,7 +86,7 @@ export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
 export type HOPS_STUDYPLAN_UPDATE_STATUS = SpecificActionType<
   "HOPS_STUDYPLAN_UPDATE_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 export type HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES = SpecificActionType<
@@ -111,14 +113,14 @@ export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
 
 export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
   "HOPS_CAREERPLAN_UPDATE_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 // HOPS MATRICULATION ACTIONS TYPES
 
 export type HOPS_MATRICULATION_UPDATE_STATUS = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 export type HOPS_MATRICULATION_UPDATE_EXAMS = SpecificActionType<
@@ -150,7 +152,7 @@ export type HOPS_MATRICULATION_UPDATE_EXAM_HISTORY = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
   {
     examId: number;
-    status: ReducerStateType;
+    status: ReducerStatusType;
     past: boolean;
     history: MatriculationExamChangeLogEntry[];
   }
@@ -158,7 +160,7 @@ export type HOPS_MATRICULATION_UPDATE_EXAM_HISTORY = SpecificActionType<
 
 export type HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
-  { examId: number; status: ReducerStateType }
+  { examId: number; status: ReducerStatusType }
 >;
 
 export type HOPS_MATRICULATION_UPDATE_PLAN = SpecificActionType<
@@ -192,7 +194,7 @@ export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
 export type HOPS_STUDENT_INFO_UPDATE = SpecificActionType<
   "HOPS_STUDENT_INFO_UPDATE",
-  { status: ReducerStateType; data?: StudentInfo | null }
+  { status: ReducerStatusType; data?: StudentInfo | null }
 >;
 
 export type HOPS_CANCEL_EDITING = SpecificActionType<
@@ -202,7 +204,7 @@ export type HOPS_CANCEL_EDITING = SpecificActionType<
 
 export type HOPS_UPDATE_LOCKED = SpecificActionType<
   "HOPS_UPDATE_LOCKED",
-  { status: ReducerStateType; data?: HopsLocked | null }
+  { status: ReducerStatusType; data?: HopsLocked | null }
 >;
 
 export type HOPS_UPDATE_EDITING = SpecificActionType<

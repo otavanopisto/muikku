@@ -19,6 +19,10 @@ import {
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
+import {
+  ReducerStatusType,
+  ReducerInitializeStatusType,
+} from "~/reducers/types";
 
 /**
  * MatriculationSubjectWithEligibilityStatus
@@ -31,14 +35,6 @@ export interface MatriculationSubjectWithEligibilityStatus {
   acceptedCount: number;
   loading: boolean;
 }
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
-
-export type ReducerInitializeStatusType =
-  | "INITIALIZING"
-  | "INITIALIZED"
-  | "INITIALIZATION_FAILED"
-  | "IDLE";
 
 /**
  * HopsStudyPlanState
@@ -154,7 +150,7 @@ export interface PlannedPeriod {
  * MatriculationExamWithHistory
  */
 export interface MatriculationExamWithHistory extends MatriculationExam {
-  status: ReducerStateType;
+  status: ReducerStatusType;
   changeLogs: MatriculationExamChangeLogEntry[];
 }
 
@@ -230,23 +226,23 @@ export interface HopsState {
   currentStudentStudyProgramme?: string;
 
   // HOPS STUDY PLAN
-  hopsStudyPlanStatus: ReducerStateType;
+  hopsStudyPlanStatus: ReducerStatusType;
   hopsStudyPlanState: HopsStudyPlanState;
 
   // HOPS EXAMINATION
-  hopsMatriculationStatus: ReducerStateType;
+  hopsMatriculationStatus: ReducerStatusType;
   hopsMatriculation: hopsMatriculation;
 
   // STUDENT INFO
-  studentInfoStatus: ReducerStateType;
+  studentInfoStatus: ReducerStatusType;
   studentInfo: StudentInfo | null;
 
   // HOPS FORM
-  hopsFormStatus: ReducerStateType;
+  hopsFormStatus: ReducerStatusType;
   hopsForm: HopsForm | null;
 
   // HOPS FORM HISTORY
-  hopsFormHistoryStatus: ReducerStateType;
+  hopsFormHistoryStatus: ReducerStatusType;
   hopsFormHistory: HopsHistoryEntry[] | null;
   hopsFormCanLoadMoreHistory: boolean;
   // HOPS MODE
@@ -254,7 +250,7 @@ export interface HopsState {
 
   // HOPS LOCKED STATE
   hopsLocked: HopsLocked | null;
-  hopsLockedStatus: ReducerStateType;
+  hopsLockedStatus: ReducerStatusType;
 
   // HOPS EDITING STATE
   hopsEditing: HopsEditingState;
