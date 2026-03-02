@@ -383,7 +383,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
       <PlannerCardHeader>
         <span className="study-planner__card-title">
           <b>{`${course.subjectCode}${course.courseNumber}`}</b>{" "}
-          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
           {hasChanges && (
             <span className="study-planner__course-unsaved">*</span>
           )}

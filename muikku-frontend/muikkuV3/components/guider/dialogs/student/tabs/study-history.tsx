@@ -65,7 +65,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     pastWorkspaces,
     activityLogState,
     studyActivity,
-    studyProgress,
+    courseMatrix,
   } = props.guider.currentStudent;
 
   /**
@@ -160,9 +160,9 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     >
       <ApplicationSubPanel>
         <ApplicationSubPanel.Body>
-          {studyActivity ? (
+          {studyActivity && courseMatrix ? (
             <RecordsListing
-              courseMatrix={studyProgress.courseMatrix}
+              courseMatrix={courseMatrix}
               studyActivity={studyActivity}
             />
           ) : (

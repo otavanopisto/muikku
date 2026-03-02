@@ -8,6 +8,10 @@ import { ReducerStateType } from "~/reducers/study-activity";
 import { Action, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
+import {
+  CurriculumConfig,
+  getCurriculumConfig,
+} from "~/util/curriculum-config";
 
 const hopsApi = MApi.getHopsApi();
 
@@ -38,6 +42,21 @@ export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS = SpecificActionType<
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
   CourseMatrix
+>;
+
+export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
+  ReducerStateType
+>;
+
+export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG",
+  CurriculumConfig
+>;
+
+export type STUDY_ACTIVITY_RESET_STATE = SpecificActionType<
+  "STUDY_ACTIVITY_RESET_STATE",
+  undefined
 >;
 
 // STUDYACTIVITY
@@ -103,6 +122,13 @@ export interface StudyActivityWorkspaceSuggestedWebsocketTriggerType {
  */
 export interface StudyActivityWorkspaceSignupWebsocketTriggerType {
   (data: { websocketData: StudyActivityItem[] }): AnyActionType;
+}
+
+/**
+ * Reset study activity state trigger type
+ */
+export interface ResetStudyActivityStateTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -226,6 +252,12 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
         studentIdentifier: identifierToUse,
       });
 
+      const curriculumConfig = getCurriculumConfig(
+        courseMatrix.type,
+        courseMatrix,
+        state.status.profile.curriculumName
+      );
+
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
         payload: "READY",
@@ -234,6 +266,16 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
         payload: courseMatrix,
+      });
+
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG",
+        payload: curriculumConfig,
+      });
+
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
+        payload: "READY",
       });
 
       onSuccess?.();
@@ -380,6 +422,23 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
       });
     };
   };
+
+/**
+ * Reset study activity state thunk function
+ */
+const resetStudyActivityState: ResetStudyActivityStateTriggerType =
+  function resetStudyActivityState() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "STUDY_ACTIVITY_RESET_STATE",
+        payload: undefined,
+      });
+    };
+  };
+
 export {
   loadUserStudyActivity,
   loadCourseMatrix,
@@ -387,4 +446,7 @@ export {
   // WEBSOCKET UPDATERS
   studyActivityWorkspaceSuggestedWebsocket,
   studyActivityWorkspaceSignupWebsocket,
+
+  // RESET STATE
+  resetStudyActivityState,
 };
