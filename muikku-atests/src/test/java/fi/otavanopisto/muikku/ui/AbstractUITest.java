@@ -2109,7 +2109,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
-    sleep(500);
+    sleep(1000);
     waitForPresent(".notification-queue__item--success");
     sleep(500);
   }
