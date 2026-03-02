@@ -5,7 +5,7 @@ import { displayNotification } from "~/actions/base/notifications";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
-import { RecordsGroup } from "~/components/general/records-history/records-group";
+import RecordsListing from "~/components/general/records-history/records";
 import { StateType } from "~/reducers";
 
 /**
@@ -27,10 +27,15 @@ const Records = (props: RecordsProps) => {
   const dispatch = useDispatch();
   if (
     currentDependant.dependantStudyActivityStatus === "LOADING" ||
-    currentDependant.dependantStudyActivityStatus === "IDLE"
+    currentDependant.dependantStudyActivityStatus === "IDLE" ||
+    currentDependant.dependantCourseMatrixStatus === "LOADING" ||
+    currentDependant.dependantCourseMatrixStatus === "IDLE"
   ) {
     return null;
-  } else if (currentDependant.dependantStudyActivityStatus === "ERROR") {
+  } else if (
+    currentDependant.dependantStudyActivityStatus === "ERROR" ||
+    currentDependant.dependantCourseMatrixStatus === "ERROR"
+  ) {
     return (
       <div className="empty">
         <span>
@@ -59,8 +64,10 @@ const Records = (props: RecordsProps) => {
     >
       <ApplicationSubPanel>
         <ApplicationSubPanel.Body>
-          {currentDependant.dependantStudyActivity ? (
-            <RecordsGroup
+          {currentDependant.dependantStudyActivity &&
+          currentDependant.dependantCourseMatrix ? (
+            <RecordsListing
+              courseMatrix={currentDependant.dependantCourseMatrix}
               studyActivity={currentDependant.dependantStudyActivity}
             />
           ) : (

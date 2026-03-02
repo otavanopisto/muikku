@@ -141,6 +141,9 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.ANSWERED, userEntity, false);
     }
     else {
+      if (reply.getState() == WorkspaceMaterialReplyState.UNANSWERED) {
+        workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.ANSWERED);
+      }
       workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
     }
 
