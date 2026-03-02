@@ -37,6 +37,7 @@ import {
   StudentCardsApi,
   ExamApi,
   LanguageProfileApi,
+  CalendarApi,
 } from "../generated/client";
 
 /**
@@ -108,6 +109,15 @@ const configuration = new Configuration({
  * Utility class for loading api with predefined configuration
  */
 export default class MApi {
+  /**
+   * Gets initialized calendar API
+   *
+   * @returns initialized calendar API
+   */
+  public static getCalendarApi() {
+    return new CalendarApi(configuration);
+  }
+
   /**
    * Gets initialized discussions API
    *

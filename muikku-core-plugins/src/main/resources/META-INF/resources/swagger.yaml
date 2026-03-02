@@ -871,6 +871,115 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
 
+  #CALENDAR
+  /rest/calendar/events:
+    get:
+      operationId: getCalendarEvents
+      summary: Get calendar events.
+      tags:
+        - Calendar
+      parameters:
+        - name: user
+          in: query
+          description: User identifier, e.g. user-123
+          required: true
+          schema:
+            type: number
+            format: int64
+        - name: start
+          in: query
+          description: Start date-time
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          description: End date-time
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: adjustTimes
+          in: query
+          description: Should timeframe start and end times be start and end of day. Default value is true.
+          schema:
+            type: boolean
+            default: true
+        - name: type
+          in: query
+          description: Event type
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Calendar events successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CalendarEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
+  /rest/calendar/event:
+    post:
+      operationId: createCalendarEvent
+      summary: Create calendar event.
+      tags:
+        - Calendar
+      requestBody:
+        $ref: "#/components/requestBodies/CalendarEventCreateRequestBody"
+      responses:
+        "204":
+          description: Calendar event created successfully
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+    put:
+      operationId: updateCalendarEvent
+      summary: Update calendar event.
+      tags:
+        - Calendar
+      requestBody:
+        $ref: "#/components/requestBodies/CalendarEventUpdateRequestBody"
+      responses:
+        "204":
+          description: Calendar event updated successfully
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Calendar event not found
+  /rest/calendar/event/{eventId}:
+    delete:
+      operationId: deleteCalendarEvent
+      summary: Delete calendar event. Doesn't return anything, look websocket for response with message "calendar:event-deleted" with JSON content CalendarEvent.
+      tags:
+        - Calendar
+      parameters:
+        - name: eventId
+          in: path
+          description: Calendar event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Calendar event deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Calendar event not found
+
   #CHAT
   /rest/chat/room:
     post:
@@ -11933,6 +12042,74 @@ components:
               requestText:
                 type: string
 
+    CalendarEventCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CalendarEventCreateRequestBody object
+            required:
+              - title
+              - description
+              - start
+              - end
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              start:
+                type: string
+                format: date-time
+              end:
+                type: string
+                format: date-time
+              allDay:
+                type: boolean
+              visibility:
+                type: string
+                enum: [PRIVATE, PUBLIC]
+              type:
+                type: string
+              participants:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+    CalendarEventUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CalendarEventUpdateRequestBody object
+            required:
+              - id
+            properties:
+              id:
+                type: integer
+                format: int64
+              title:
+                type: string
+              description:
+                type: string
+              start:
+                type: string
+                format: date-time
+              end:
+                type: string
+                format: date-time
+              allDay:
+                type: boolean
+              visibility:
+                type: string
+                enum: [PRIVATE, PUBLIC]
+              type:
+                type: string
+              participants:
+                type: array
+                items:
+                  type: integer
+                  format: int64
     ChatMessageCreateRequestBody:
       content:
         application/json:
@@ -14930,6 +15107,75 @@ components:
           type: integer
 
     #COMMON
+
+    CalendarEvent:
+      type: object
+      description: CalendarEvent object
+      required:
+        - id
+        - start
+        - end
+        - allDay
+        - title
+        - description
+        - visibility
+        - type
+        - userEntityId
+        - participants
+        - editable
+        - removable
+      properties:
+        id:
+          type: integer
+          format: int64
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        allDay:
+          type: boolean
+        title:
+          type: string
+        description:
+          type: string
+        visibility:
+          type: string
+          enum:
+            - PRIVATE
+            - PUBLIC
+        type:
+          type: string
+        userEntityId:
+          type: integer
+          format: int64
+        participants:
+          type: array
+          items:
+            $ref: "#/components/schemas/CalendarEventParticipant"
+        editable:
+          type: boolean
+        removable:
+          type: boolean
+
+    CalendarEventParticipant:
+      type: object
+      description: CalendarEventParticipant object
+      required:
+        - userEntityId
+        - status
+      properties:
+        userEntityId:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum:
+            - UNCONFIRMED
+            - YES
+            - NO
+            - MAYBE
 
     EducationType:
       type: object

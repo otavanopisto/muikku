@@ -8,6 +8,7 @@ import { StatusType } from "~/reducers/base/status";
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
 import { useTranslation } from "react-i18next";
+import CalendarApplication from "../calendar/body";
 import StudentComponent from "./layouts/student";
 import StaffComponent from "./layouts/staff";
 
@@ -29,16 +30,8 @@ const IndexBody: React.FC<IndexBodyProps> = (props) => {
     <div>
       <MainFunctionNavbar title={t("labels.site")} activeTrail="index" />
       <ScreenContainer viewModifiers="index">
-        <h1 className="visually-hidden">
-          {t("wcag.indexViewHeader", { ns: "frontPage" })}
-        </h1>
-        {status.isStudent ? (
-          <StudentComponent studiesEnded={!status.isActiveUser} />
-        ) : (
-          <StaffComponent />
-        )}
+        <CalendarApplication />
       </ScreenContainer>
-      <CheckContactInfoDialog />
     </div>
   );
 };
