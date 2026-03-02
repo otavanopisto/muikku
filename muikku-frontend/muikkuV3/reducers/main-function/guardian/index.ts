@@ -44,9 +44,6 @@ export interface DependantActivityGraphData {
  * Current dependant interface
  */
 export interface CurrentDependant {
-  /**
-   * dependant user with school data
-   */
   dependantInfo: UserWithSchoolData | null;
   dependantInfoStatus: ReducerStateType;
   dependantCurriculumConfig: CurriculumConfig | null;
