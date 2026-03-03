@@ -222,7 +222,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               {t("labels.proctored", { ns: "exams" })}:
             </span>
             <span className="evaluation-modal__item-meta-item-data">
-              ${t("labels.yes", { ns: "common" })}
+              {t("labels.yes", { ns: "common" })}
             </span>
           </div>
         )}
