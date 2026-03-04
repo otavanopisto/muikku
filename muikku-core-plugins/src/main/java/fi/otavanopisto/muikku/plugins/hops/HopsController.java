@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -81,6 +82,9 @@ public class HopsController {
   private UserController userController;
   
   @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
   private UserSchoolDataController userSchoolDataController;
   
   @Inject
@@ -99,7 +103,7 @@ public class HopsController {
         return true;
       }
       
-      if (sessionController.getLoggedUser().equals(studentIdentifier) || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      if (userEntityController.isThisMe(studentIdentifier) || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
         return true;
       }
       
