@@ -1698,7 +1698,7 @@ public class HopsRestService {
         studentEntity.getId(),
         student.getFirstName(),
         student.getLastName(),
-        student.getStudyProgrammeEducationType(),
+        student.getEducationTypeCode(),
         student.getStudyStartDate(),
         student.getStudyEndDate(),
         student.getStudyTimeEnd(),
@@ -1712,7 +1712,7 @@ public class HopsRestService {
       Long studentIdentifier,
       String firstName,
       String lastName,
-      String studyProgrammeEducationType,
+      String educationTypeCode,
       OffsetDateTime studyStartDate,
       OffsetDateTime studyEndDate,
       OffsetDateTime studyTimeEnd,
@@ -1722,7 +1722,7 @@ public class HopsRestService {
         studentIdentifier,
         firstName,
         lastName,
-        studyProgrammeEducationType,
+        educationTypeCode,
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
@@ -1886,7 +1886,7 @@ public class HopsRestService {
     if (userEntity == null || user == null) {
       return null;
     }
-    return new HopsStudent(userEntity.getId(), user.getStudyProgrammeEducationType());
+    return new HopsStudent(userEntity.getId(), user.getEducationTypeCode());
   }
   
   private HopsStudyPlannerNoteRestModel toRestModel(HopsStudyPlannerNote note) {

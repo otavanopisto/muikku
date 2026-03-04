@@ -17747,7 +17747,7 @@ components:
         - firstName
         - lastName
         - studyTimeEnd
-        - studyProgrammeEducationType
+        - educationTypeCode
         - curriculumName
       properties:
         id:
@@ -17766,8 +17766,9 @@ components:
         studyTimeEnd:
           nullable: true
           type: string
-        studyProgrammeEducationType:
+        educationTypeCode:
           type: string
+          description: Student's education type code, e.g. lukio or peruskoulu
         counselorList:
           nullable: true
           type: array
@@ -17855,14 +17856,14 @@ components:
       type: object
       description: Representation of all study activity of student
       required:
-        - educationType
+        - educationTypeCode
         - items
         - completedCourseCredits
         - mandatoryCourseCredits
       properties:
-        educationType:
+        educationTypeCode:
           type: string
-          description: Student's education type, e.g. Lukio or Perusopetus
+          description: Student's education type code, e.g. lukio or peruskoulu
         items:
           type: array
           description: Study activity items
@@ -18623,7 +18624,7 @@ components:
         - hasEvaluationFees
         - isDefaultOrganization
         - services
-        - studyLevel
+        - educationTypeCode
       properties:
         id:
           type: integer
@@ -18720,9 +18721,10 @@ components:
           nullable: true
         services:
           $ref: "#/components/schemas/UserWhoAmIServices"
-        studyLevel:
+        educationTypeCode:
           type: string
           nullable: true
+          description: Student's education type code, e.g. lukio or peruskoulu
 
     UserWhoAmIServices:
       type: object
