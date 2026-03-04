@@ -86,7 +86,7 @@
       "removing_room": "Are you sure you want to delete the room <b>{{room}}</b>? This action cannot be undone."
     },
     "labels": {
-      "aborted": "Keskeytetty",
+      "aborted": "Withdrawn",
       "active": "Active",
       "address": "Address",
       "announcer": "Announcer",
@@ -184,7 +184,7 @@
       "notSent": "Not sent",
       "notStarted": "Not started",
       "oldPassword": "Old password",
-      "inProgress": "In Progress",
+      "inProgress": "In progress",
       "opinvoimala": "Opinvoimala.fi",
       "optional": "Optional",
       "organizationManagament": "Organization management",
