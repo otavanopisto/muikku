@@ -564,7 +564,8 @@
       "empty_counselors": "Sinulla ei ole ohjaajia",
       "empty_counselorsGuardian": "Opiskelijalla ei ole ohjaajia",
       "empty_studyTime": "Ei asetettu",
-      "empty_records": "Ei suorituksia",
+      "empty_records": "Ei opintotietoja",
+      "empty_search": "Haulla ei löytynyt tuloksia. Kokeile toista hakusanaa tai muokkaa suodattimia.",
       "empty_workspaces": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla opiskelet, jotka olet suorittanut ja joista sinulle on tehty hyväksiluvut.",
       "empty_workspaces-guardian": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla huollettavasi opiskelee, jotka hän on suorittanut ja joista hänelle on tehty hyväksiluvut.",
       "logins": "kertaa viimeisen kuukauden aikana.",
@@ -576,6 +577,8 @@
     },
     "labels": {
       "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
+      "courseStatus": "Kurssin tila",
+      "courseType": "Kurssin tyyppi",
       "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "coursesForYou": "Kursseja sinulle",
@@ -584,7 +587,10 @@
       "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",
       "logins": "Olet kirjautunut yhteensä",
       "notifications": "Ilmoitukset",
+      "otherFilters": "Muut suodattimet",
+      "otherStudies": "Muut opinnot",
       "records": "Suoritukset",
+      "showFullSyllabus": "Näytä koko opppimäärä",
       "summary": "Opintojen yhteenveto",
       "studyInfo": "Opintojen tiedot",
       "studyEvents": "Opintotapahtumat",
@@ -592,8 +598,7 @@
       "transferCredits": "Hyväksiluvut"
     },
     "instructions": {
-      "recordsCombinationWorkspaces": "Suoritustiedot yhdistelmäopintojaksossa",
-      "recordsTransferredAndOtherActivities": "Suoritustiedot hyväksiluvuissa ja muissa suorituksissa"
+      "recordsCombinationWorkspaces": "Suoritustiedot yhdistelmäopintojaksossa"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

@@ -335,7 +335,11 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
 
   const filterCheckboxes = [
     <div key="filterTitle" className="filter-category">
-      <div className="filter-category__label">Kurssin tila</div>
+      <div className="filter-category__label">
+        {t("labels.courseStatus", {
+          ns: "studies",
+        })}
+      </div>
     </div>,
     <div key="transferred" className="filter-item">
       <input
@@ -346,7 +350,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-transferred"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-transferred">Hyväksiluettu</label>
+      <label htmlFor="filter-transferred">
+        {t("labels.transferredCredit")}
+      </label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -357,7 +363,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-graded"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-graded">Suoritettu</label>
+      <label htmlFor="filter-graded">{t("labels.completed")}</label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -368,7 +374,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-ongoing"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-ongoing">Keskeneräinen</label>
+      <label htmlFor="filter-ongoing">{t("labels.inProgress")}</label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -379,10 +385,16 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-supplementationrequest"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-supplementationrequest">Täydennettävä</label>
+      <label htmlFor="filter-supplementationrequest">
+        {t("labels.incomplete")}
+      </label>
     </div>,
     <div key="filterTitle" className="filter-category">
-      <div className="filter-category__label">Kurssityyppi</div>
+      <div className="filter-category__label">
+        {t("labels.courseType", {
+          ns: "studies",
+        })}
+      </div>
     </div>,
     <div key="mandatory" className="filter-item">
       <input
@@ -392,7 +404,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         value="mandatory"
         id="filter-mandatory"
       />
-      <label htmlFor="filter-mandatory">Pakollinen</label>
+      <label htmlFor="filter-mandatory">{t("labels.mandatory")}</label>
     </div>,
     <div key="optional" className="filter-item">
       <input
@@ -402,10 +414,14 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         value="optional"
         id="filter-optional"
       />
-      <label htmlFor="filter-optional">Valinnainen</label>
+      <label htmlFor="filter-optional">{t("labels.optional")}</label>
     </div>,
     <div key="filterTitle" className="filter-category">
-      <div className="filter-category__label">Kokonaisuus</div>
+      <div className="filter-category__label">
+        {t("labels.otherFilters", {
+          ns: "studies",
+        })}
+      </div>
     </div>,
     <div key="showMatrixStructure" className="filter-item">
       <input
@@ -415,7 +431,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-show-matrix-structure"
       />
       <label htmlFor="filter-show-matrix-structure">
-        Näytä opintokokonaisuus
+        {t("labels.showFullSyllabus", {
+          ns: "studies",
+        })}
       </label>
     </div>,
   ];
@@ -510,10 +528,18 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         <div className="application-list__subheader-container">
           {searchValue.trim() || activeStateFilters.length > 0 ? (
             <h3 className="application-list__subheader">
-              Ei suoritustietoja hakuehdon tai suodattimen mukaan
+              {t("content.empty", {
+                ns: "studies",
+                context: "search",
+              })}
             </h3>
           ) : (
-            <h3 className="application-list__subheader">Ei suoritustietoja</h3>
+            <h3 className="application-list__subheader">
+              {t("content.empty", {
+                ns: "studies",
+                context: "records",
+              })}
+            </h3>
           )}
         </div>
       )}
@@ -558,27 +584,11 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         filteredNonOPSActivities.length > 0) && (
         <>
           <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">Muut suoritustiedot</h3>
-            <Instructions
-              modifier="instructions"
-              alignSelfVertically="top"
-              openByHover={false}
-              closeOnClick={true}
-              closeOnOutsideClick={true}
-              persistent
-              content={
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: t(
-                      "instructions.recordsTransferredAndOtherActivities",
-                      {
-                        ns: "studies",
-                      }
-                    ),
-                  }}
-                />
-              }
-            />
+            <h3 className="application-list__subheader">
+              {t("labels.otherStudies", {
+                ns: "studies",
+              })}
+            </h3>
           </div>
           {filteredNonOPSActivities.length > 0 &&
             filteredNonOPSActivities.map((item) => (

@@ -563,7 +563,8 @@
       "empty": "$t(common:content.empty)",
       "empty_counselors": "You have no counselors",
       "empty_counselorsGuardian": "Student has no counselors",
-      "empty_records": "No records",
+      "empty_records": "No study information available",
+      "empty_search": "No results found. Try a different keyword or adjust the filters.",
       "empty_studyTime": "Not set",
       "empty_workspaces": "No courses. In the future, you will see in this list the courses you are studying, the courses you have completed and the courses you have received transfer credits.",
       "empty_workspaces-guardian": "No courses. In the future, you will see in this list the courses your dependant is studying, the courses your dependant have completed and the courses your dependant have received transfer credits.",
@@ -576,6 +577,8 @@
     },
     "labels": {
       "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
+      "courseStatus": "Course status",
+      "courseType": "Course type",
       "evaluated": "Evaluated {{date}}",
       "evaluablesDone": "{{percent}}% of assignments done",
       "coursesForYou": "Courses for you",
@@ -584,7 +587,10 @@
       "exercisesDone": "{{percent}}% exercises done",
       "logins": "You have logged in",
       "notifications": "Notifications",
+      "otherFilters": "Other filters",
+      "otherStudies": "Other studies",
       "records": "Studies",
+      "showFullSyllabus": "Show full syllabus",
       "summary": "Study summary",
       "studyInfo": "Study information",
       "studyEvents": "Study events",
@@ -592,8 +598,7 @@
       "transferCredits": "Transfer credits"
     },
     "instructions": {
-      "recordsCombinationWorkspaces": "Records in combination workspaces",
-      "recordsTransferredAndOtherActivities": "Records in transferred credits and other activities"
+      "recordsCombinationWorkspaces": "Records in combination workspaces"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
