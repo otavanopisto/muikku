@@ -576,6 +576,7 @@
       "transferCreditsDate": "Päiväys {{date}}"
     },
     "labels": {
+      "combinationCourses": "Yhdistelmäopintojaksot",
       "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
       "courseStatus": "Kurssin tila",
       "courseType": "Kurssin tyyppi",
@@ -590,6 +591,8 @@
       "otherFilters": "Muut suodattimet",
       "otherStudies": "Muut opinnot",
       "records": "Suoritukset",
+      "search": "$t(common:labels.search)",
+      "search_records": "Hae opintoja",
       "showFullSyllabus": "Näytä koko opppimäärä",
       "summary": "Opintojen yhteenveto",
       "studyInfo": "Opintojen tiedot",
@@ -598,7 +601,7 @@
       "transferCredits": "Hyväksiluvut"
     },
     "instructions": {
-      "recordsCombinationWorkspaces": "Suoritustiedot yhdistelmäopintojaksossa"
+      "recordsCombinationCourses": "Suoritustiedot yhdistelmäopintojaksossa"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

@@ -445,7 +445,10 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
           updateField={handleSearchFormElementChange}
           name="records-matrix-search"
           id="records-matrix-search"
-          placeholder="Hae suoritustietoja"
+          placeholder={t("labels.search", {
+            ns: "studies",
+            context: "records",
+          })}
           value={searchValue}
         />
         <Dropdown modifier="records-filters" items={filterCheckboxes}>
@@ -549,7 +552,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         <>
           <div className="application-list__subheader-container">
             <h3 className="application-list__subheader">
-              Yhdistelmäopintojaksot
+              {t("labels.combinationCourses", {
+                ns: "studies",
+              })}
             </h3>
             <Instructions
               modifier="instructions"
@@ -561,7 +566,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
               content={
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: t("instructions.recordsCombinationWorkspaces", {
+                    __html: t("instructions.recordsCombinationCourses", {
                       ns: "studies",
                     }),
                   }}

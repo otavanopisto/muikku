@@ -576,6 +576,7 @@
       "transferCreditsDate": "Date {{date}}"
     },
     "labels": {
+      "combinationCourses": "Combination courses",
       "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
       "courseStatus": "Course status",
       "courseType": "Course type",
@@ -590,6 +591,8 @@
       "otherFilters": "Other filters",
       "otherStudies": "Other studies",
       "records": "Studies",
+      "search": "$t(common:labels.search)",
+      "search_records": "Search courses",
       "showFullSyllabus": "Show full syllabus",
       "summary": "Study summary",
       "studyInfo": "Study information",
@@ -598,7 +601,7 @@
       "transferCredits": "Transfer credits"
     },
     "instructions": {
-      "recordsCombinationWorkspaces": "Records in combination workspaces"
+      "recordsCombinationCourses": "Records in combination courses"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
