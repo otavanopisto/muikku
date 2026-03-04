@@ -9444,6 +9444,33 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/user/students/{studentIdentifier}/educationTypes:
+    get:
+      operationId: getStudentEducationTypes
+      summary: Returns student identifiers for each education type the student has studied under
+      description: Returns student identifiers for each education type the student has studied under
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Map where key is education type code and value is student identifier
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                example:
+                  lukio: PYRAMUS-STUDENT-123
+                  peruskoulu: PYRAMUS-STUDENT-456
+  
   /rest/user/userInfo/{userEntityId}:
     get:
       operationId: getUserInfo

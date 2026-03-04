@@ -677,6 +677,28 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   @GET
+  @Path("/students/{STUDENTIDENTIFIER}/educationTypes")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentEducationTypes(@PathParam("STUDENTIDENTIFIER") String identifier) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(identifier);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", identifier)).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
+      if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    BridgeResponse<Map<String, String>> response = userController.listStudentEducationTypes(studentIdentifier);
+    if (response.ok()) {
+      return Response.ok(response.getEntity()).build();
+    }
+    else {
+      return Response.status(Status.fromStatusCode(response.getStatusCode())).build();
+    }
+  }
+  
+  @GET
   @Path("/students/{ID}/addresses")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listStudentAddressses(@PathParam("ID") String id) {

@@ -75,6 +75,7 @@ import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudentEducationType;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
@@ -2037,4 +2038,24 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return new BridgeResponse<UserContact>(response.getStatusCode(), null, response.getMessage());
   }
 
+  @Override
+  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      Map<String, String> eduTypes = new HashMap<>();
+      BridgeResponse<StudentEducationType[]> response = pyramusClient.responseGet(String.format("/students/students/%d/educationTypes", pyramusStudentId), StudentEducationType[].class);
+      if (response.getEntity() != null) {
+        for (int i = 0; i < response.getEntity().length; i++) {
+          eduTypes.put(response.getEntity()[i].getEducationTypeCode(), identifierMapper.getStudentIdentifier(response.getEntity()[i].getStudentId()).toId());
+        }
+      }
+      return new BridgeResponse<Map<String, String>>(response.getStatusCode(), eduTypes);
+    }
+    logger.warning(String.format("PyramusUserSchoolDataBridge.listStudentEducationTypes malformed user identifier %s\n%s",
+      studentIdentifier,
+      ExceptionUtils.getStackTrace(new Throwable())));
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", studentIdentifier));
+  }
+  
 }
+

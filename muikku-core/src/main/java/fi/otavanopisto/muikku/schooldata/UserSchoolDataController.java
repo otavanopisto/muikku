@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -379,6 +380,14 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
+  }
+  
+  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listStudentEducationTypes(studentIdentifier);
   }
 
   public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,

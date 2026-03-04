@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -599,6 +600,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier,
       Long contactInfoId, boolean allowStudyDiscussions) {
     throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

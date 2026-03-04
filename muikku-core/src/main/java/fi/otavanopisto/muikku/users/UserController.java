@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.users;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -117,6 +118,10 @@ public class UserController {
   
   public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserContacts(userIdentifier);
+  }
+  
+  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.listStudentEducationTypes(studentIdentifier);
   }
 
   /**
