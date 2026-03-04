@@ -323,7 +323,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     );
   }
 
-  const categoryName = `${studyActivity.educationType}${
+  const categoryName = `${studyActivity.educationTypeCode}${
     showCreditsInHeader
       ? ` - ${t("labels.courseCredits", {
           ns: "studies",
@@ -499,7 +499,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                     subject={row.subject}
                     course={row.course}
                     studyActivityItems={row.studyActivityItems}
-                    educationType={studyActivity.educationType}
+                    educationType={studyActivity.educationTypeCode}
                   />
                 ))}
               </AnimateHeight>
@@ -547,7 +547,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
             <RecordsMatrixRowCombination
               key={`combination-workspace-${row[0].courseId}`}
               studyActivityItems={row}
-              educationType={studyActivity.educationType}
+              educationType={studyActivity.educationTypeCode}
             />
           ))}
         </>
@@ -586,7 +586,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                 key={`non-ops-activity-item-${item.courseId}`}
                 studyActivityItems={[item]}
                 isCombinationWorkspace={false}
-                educationType={studyActivity.educationType}
+                educationType={studyActivity.educationTypeCode}
               />
             ))}
           {filteredTransferedActivities.length > 0 &&

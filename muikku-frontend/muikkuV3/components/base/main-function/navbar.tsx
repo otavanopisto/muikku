@@ -135,7 +135,7 @@ class MainFunctionNavbar extends React.Component<
         icon: "language",
         to: true,
         condition:
-          status.profile.studyLevel === "lukio" &&
+          status.profile.educationTypeCode === "lukio" &&
           status.permissions.LANGUAGE_PROFILE_VIEW,
       },
       {

@@ -149,7 +149,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
       <ApplicationList>
         <div className="application-list__header-container application-list__header-container--sorter">
           <h3 className="application-list__header application-list__header--sorter">
-            {studyActivity.educationType}
+            {studyActivity.educationTypeCode}
           </h3>
         </div>
         <div className="application-sub-panel__item">
@@ -163,7 +163,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
     );
   }
 
-  let categoryName = studyActivity.educationType;
+  let categoryName = studyActivity.educationTypeCode;
 
   categoryName += ` - ${t("labels.courseCredits", {
     ns: "studies",
@@ -190,7 +190,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
             key={`record-activity-list-item-${i}`}
             studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
             isCombinationWorkspace={Array.isArray(ntItem)}
-            educationType={studyActivity.educationType}
+            educationType={studyActivity.educationTypeCode}
           />
         ))}
 

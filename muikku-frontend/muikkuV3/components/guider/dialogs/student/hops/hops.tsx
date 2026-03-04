@@ -152,7 +152,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If study programme is not upper secondary, return false by default
-    if (hops.studentInfo.studyProgrammeEducationType !== "lukio") {
+    if (hops.studentInfo.educationTypeCode !== "lukio") {
       return false;
     }
 
@@ -168,7 +168,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   }, [
     hops.hopsEditing.matriculationPlan,
     hops.hopsMatriculation.plan,
-    hops.studentInfo.studyProgrammeEducationType,
+    hops.studentInfo.educationTypeCode,
   ]);
 
   // Check if any of the HOPS data has changes
