@@ -42,11 +42,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     React.useState<WorkspaceSuggestion | null>(null);
 
   const courseMatrix = useSelector(
-    (state: StateType) => state.studyActivity.courseMatrix
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByUserIdentifier[
+        state.studyActivity.defaultEducationIdentifier
+      ]?.courseMatrix ?? null
   );
 
   const studyActivityItems = useSelector(
-    (state: StateType) => state.studyActivity.userStudyActivity?.items
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByUserIdentifier[
+        state.studyActivity.defaultEducationIdentifier
+      ]?.studyActivity?.items ?? []
   );
 
   const skillAndArtCourses = useMemo(() => {

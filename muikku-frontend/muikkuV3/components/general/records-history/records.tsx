@@ -9,6 +9,7 @@ import RecordsActivityView from "./records-activity-view";
 interface RecordsListingProps {
   courseMatrix: CourseMatrix;
   studyActivity: StudyActivity;
+  educationTypeSelector?: React.ReactNode;
 }
 
 /**
@@ -17,16 +18,21 @@ interface RecordsListingProps {
  * @returns JSX.Element
  */
 const RecordsListing = (props: RecordsListingProps) => {
-  const { courseMatrix, studyActivity } = props;
-  if (!courseMatrix.problems.includes("INCOMPATIBLE_STUDENT")) {
-    return (
-      <RecordsMatrixView
-        courseMatrix={courseMatrix}
-        studyActivity={studyActivity}
-      />
-    );
-  }
-  return <RecordsActivityView studyActivity={studyActivity} />;
+  const { courseMatrix, studyActivity, educationTypeSelector } = props;
+
+  return (
+    <>
+      {educationTypeSelector}
+      {!courseMatrix.problems.includes("INCOMPATIBLE_STUDENT") ? (
+        <RecordsMatrixView
+          courseMatrix={courseMatrix}
+          studyActivity={studyActivity}
+        />
+      ) : (
+        <RecordsActivityView studyActivity={studyActivity} />
+      )}
+    </>
+  );
 };
 
 export default RecordsListing;

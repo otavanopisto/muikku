@@ -14,44 +14,66 @@ import {
 } from "~/util/curriculum-config";
 
 const hopsApi = MApi.getHopsApi();
+const userApi = MApi.getUserApi();
 
 // user study activity status actions types
 
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS =
   SpecificActionType<
     "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-    ReducerStateType
+    { userIdentifier: string; status: ReducerStateType }
   >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY",
-  StudyActivity
+  { userIdentifier: string; studyActivity: StudyActivity }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS =
   SpecificActionType<
     "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
-    StudyActivityItem[]
+    { userIdentifier: string; items: StudyActivityItem[] }
   >;
 
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-  ReducerStateType
+  { userIdentifier: string; status: ReducerStateType }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
-  CourseMatrix
+  { userIdentifier: string; courseMatrix: CourseMatrix }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
-  ReducerStateType
+  { userIdentifier: string; status: ReducerStateType }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG",
-  CurriculumConfig
+  { userIdentifier: string; curriculumConfig: CurriculumConfig }
+>;
+
+export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES",
+  Record<string, string>
+>;
+
+export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS =
+  SpecificActionType<
+    "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS",
+    ReducerStateType
+  >;
+
+export type STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER",
+  string
+>;
+
+export type STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER = SpecificActionType<
+  "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER",
+  string
 >;
 
 export type STUDY_ACTIVITY_RESET_STATE = SpecificActionType<
@@ -94,6 +116,26 @@ export interface LoadCourseMatrixTriggerType {
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
+}
+
+// EDUCATION TYPES
+
+/**
+ * Load user education types trigger type
+ */
+export interface LoadUserEducationTypesTriggerType {
+  (data: {
+    userIdentifier?: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Update selected education identifier trigger type
+ */
+export interface UpdateSelectedEducationIdentifierTriggerType {
+  (data: { userIdentifier: string }): AnyActionType;
 }
 
 // WEBSOCKET UPDATERS
@@ -145,48 +187,43 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
       const state = getState();
 
       const hasPermissions =
-        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
-        state.status.userSchoolDataIdentifier.startsWith(
-          "PYRAMUS-STUDENTPARENT-"
-        );
+        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-");
 
       if (!hasPermissions) {
         return;
       }
 
+      const entry =
+        state.studyActivity.userStudyDataByUserIdentifier[userIdentifier];
+
       if (
-        state.studyActivity.userStudyActivityStatus === "READY" ||
-        state.studyActivity.userStudyActivityStatus === "LOADING"
+        entry?.studyActivityStatus === "READY" ||
+        entry?.studyActivityStatus === "LOADING"
       ) {
         return;
-      }
-
-      const identifierToUse = userIdentifier
-        ? userIdentifier
-        : state.status.userSchoolDataIdentifier;
-
-      if (!identifierToUse.startsWith("PYRAMUS-STUDENT-")) {
-        throw new Error(`Invalid student identifier ${identifierToUse}`);
       }
 
       try {
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-          payload: "LOADING",
+          payload: { userIdentifier: userIdentifier, status: "LOADING" },
         });
 
         const studyActivity = await hopsApi.getStudyActivity({
-          studentIdentifier: identifierToUse,
+          studentIdentifier: userIdentifier,
         });
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-          payload: "READY",
+          payload: { userIdentifier: userIdentifier, status: "READY" },
         });
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY",
-          payload: studyActivity,
+          payload: {
+            userIdentifier: userIdentifier,
+            studyActivity: studyActivity,
+          },
         });
 
         onSuccess?.();
@@ -197,7 +234,7 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
         onFail?.();
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-          payload: "ERROR",
+          payload: { userIdentifier: userIdentifier, status: "ERROR" },
         });
       }
     };
@@ -217,39 +254,30 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
     const { userIdentifier, onSuccess, onFail } = data;
     const state = getState();
 
-    const hasPermissions =
-      state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
-      state.status.userSchoolDataIdentifier.startsWith(
-        "PYRAMUS-STUDENTPARENT-"
-      );
+    const hasPermissions = userIdentifier.startsWith("PYRAMUS-STUDENT-");
 
     if (!hasPermissions) {
       return;
     }
 
+    const entry =
+      state.studyActivity.userStudyDataByUserIdentifier[userIdentifier];
+
     if (
-      state.studyActivity.courseMatrixStatus === "READY" ||
-      state.studyActivity.courseMatrixStatus === "LOADING"
+      entry?.courseMatrixStatus === "READY" ||
+      entry?.courseMatrixStatus === "LOADING"
     ) {
       return;
-    }
-
-    const identifierToUse = userIdentifier
-      ? userIdentifier
-      : state.status.userSchoolDataIdentifier;
-
-    if (!identifierToUse.startsWith("PYRAMUS-STUDENT-")) {
-      throw new Error(`Invalid student identifier ${identifierToUse}`);
     }
 
     try {
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-        payload: "LOADING",
+        payload: { userIdentifier: userIdentifier, status: "LOADING" },
       });
 
       const courseMatrix = await hopsApi.getStudentCourseMatrix({
-        studentIdentifier: identifierToUse,
+        studentIdentifier: userIdentifier,
       });
 
       const curriculumConfig = getCurriculumConfig(
@@ -260,22 +288,25 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-        payload: "READY",
+        payload: { userIdentifier: userIdentifier, status: "READY" },
       });
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
-        payload: courseMatrix,
+        payload: { userIdentifier: userIdentifier, courseMatrix: courseMatrix },
       });
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG",
-        payload: curriculumConfig,
+        payload: {
+          userIdentifier: userIdentifier,
+          curriculumConfig: curriculumConfig,
+        },
       });
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
-        payload: "READY",
+        payload: { userIdentifier: userIdentifier, status: "READY" },
       });
 
       onSuccess?.();
@@ -286,11 +317,100 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
       onFail?.();
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-        payload: "ERROR",
+        payload: { userIdentifier: userIdentifier, status: "ERROR" },
       });
     }
   };
 };
+
+/**
+ * Load user education types thunk function
+ * @param data data
+ */
+const loadUserEducationTypes: LoadUserEducationTypesTriggerType =
+  function loadUserEducationTypes(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { onSuccess, onFail } = data;
+      const state = getState();
+
+      if (
+        state.studyActivity.userEducationTypesStatus === "READY" ||
+        state.studyActivity.userEducationTypesStatus === "LOADING"
+      ) {
+        return;
+      }
+
+      const identifierToUse = state.status.userSchoolDataIdentifier;
+
+      // Set default and selected user identifier to default user identifier which
+      // is the current logged in user's identifier
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER",
+        payload: identifierToUse,
+      });
+
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER",
+        payload: identifierToUse,
+      });
+
+      try {
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS",
+          payload: "LOADING",
+        });
+
+        const educationTypes = await userApi.getStudentEducationTypes({
+          studentIdentifier: identifierToUse,
+        });
+
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES",
+          payload: educationTypes,
+        });
+
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS",
+          payload: "READY",
+        });
+
+        onSuccess?.();
+      } catch (error) {
+        if (!isMApiError(error)) {
+          throw error;
+        }
+        onFail?.();
+        dispatch({
+          type: "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS",
+          payload: "ERROR",
+        });
+      }
+    };
+  };
+
+/**
+ * Update selected education identifier thunk action creator
+ * This action creator will update the selected education identifier and load the user study activity and course matrix
+ * @param data data
+ */
+const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType =
+  function updateSelectedEducationIdentifier(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER",
+        payload: data.userIdentifier,
+      });
+
+      dispatch(loadUserStudyActivity({ userIdentifier: data.userIdentifier }));
+      dispatch(loadCourseMatrix({ userIdentifier: data.userIdentifier }));
+    };
+  };
 
 /**
  * Study activity workspace suggested websocket thunk
@@ -306,16 +426,21 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
       const state = getState();
 
       const hasPermissions =
-        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
-        state.status.userSchoolDataIdentifier.startsWith(
-          "PYRAMUS-STUDENTPARENT-"
-        );
+        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-");
 
       if (!hasPermissions) {
         return;
       }
 
-      if (state.studyActivity.userStudyActivityStatus !== "READY") {
+      const defaultUserIdentifier =
+        state.studyActivity.defaultEducationIdentifier;
+
+      const entry =
+        state.studyActivity.userStudyDataByUserIdentifier[
+          defaultUserIdentifier
+        ];
+
+      if (entry?.studyActivityStatus !== "READY") {
         return;
       }
 
@@ -324,7 +449,7 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
       }
 
       const updatedStudyActivityByWorkspaceId = await hopsApi.getStudyActivity({
-        studentIdentifier: state.status.userSchoolDataIdentifier,
+        studentIdentifier: defaultUserIdentifier,
         workspaceEntityId: websocketData.courseId,
       });
 
@@ -333,7 +458,7 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
       // It is possible that there are multiple items with the same courseId, so we need to remove all of them
       if (updatedStudyActivityByWorkspaceId.items.length === 0) {
         let updatedStudyActivityItems: StudyActivityItem[] = [].concat(
-          state.studyActivity.userStudyActivity.items
+          entry?.studyActivity?.items ?? []
         );
 
         updatedStudyActivityItems = updatedStudyActivityItems.filter(
@@ -342,13 +467,16 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
-          payload: updatedStudyActivityItems,
+          payload: {
+            userIdentifier: defaultUserIdentifier,
+            items: updatedStudyActivityItems,
+          },
         });
       } else {
         // If there are items, meaning that add new activity course or update existing activity course
         // If there are multiple items with the same courseId, we need to update all of them
         const updatedStudyActivityItems: StudyActivityItem[] = [].concat(
-          state.studyActivity.userStudyActivity.items
+          entry?.studyActivity?.items ?? []
         );
 
         // Loop through all items and update matching items or add as new
@@ -366,7 +494,10 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
-          payload: updatedStudyActivityItems,
+          payload: {
+            userIdentifier: defaultUserIdentifier,
+            items: updatedStudyActivityItems,
+          },
         });
       }
     };
@@ -387,21 +518,26 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
       const state = getState();
 
       const hasPermissions =
-        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-") ||
-        state.status.userSchoolDataIdentifier.startsWith(
-          "PYRAMUS-STUDENTPARENT-"
-        );
+        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-");
 
       if (!hasPermissions) {
         return;
       }
 
-      if (state.studyActivity.userStudyActivityStatus !== "READY") {
+      const defaultUserIdentifier =
+        state.studyActivity.defaultEducationIdentifier;
+
+      const entry =
+        state.studyActivity.userStudyDataByUserIdentifier[
+          defaultUserIdentifier
+        ];
+
+      if (entry?.studyActivityStatus !== "READY") {
         return;
       }
 
       const updatedStudyActivityItems: StudyActivityItem[] = [].concat(
-        state.studyActivity.userStudyActivity.items
+        entry?.studyActivity?.items ?? []
       );
 
       websocketData.forEach((item) => {
@@ -418,7 +554,10 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
-        payload: updatedStudyActivityItems,
+        payload: {
+          userIdentifier: defaultUserIdentifier,
+          items: updatedStudyActivityItems,
+        },
       });
     };
   };
@@ -442,6 +581,8 @@ const resetStudyActivityState: ResetStudyActivityStateTriggerType =
 export {
   loadUserStudyActivity,
   loadCourseMatrix,
+  loadUserEducationTypes,
+  updateSelectedEducationIdentifier,
 
   // WEBSOCKET UPDATERS
   studyActivityWorkspaceSuggestedWebsocket,

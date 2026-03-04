@@ -12,6 +12,7 @@ import {
 } from "~/actions/base/status";
 import {
   loadCourseMatrix,
+  loadUserEducationTypes,
   loadUserStudyActivity,
 } from "~/actions/study-activity";
 
@@ -108,8 +109,29 @@ export default async function (
     if (!store.getState().status.isStudent) {
       return;
     }
-    store.dispatch(<Action>loadUserStudyActivity({}));
-    store.dispatch(<Action>loadCourseMatrix({}));
+    store.dispatch(
+      <Action>loadUserEducationTypes({
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: () => {
+          const state = store.getState();
+
+          const defaultUserIdentifier =
+            state.studyActivity.defaultEducationIdentifier;
+
+          if (!defaultUserIdentifier) {
+            return;
+          }
+          store.dispatch(
+            <Action>(
+              loadUserStudyActivity({ userIdentifier: defaultUserIdentifier })
+            )
+          );
+          store.dispatch(
+            <Action>loadCourseMatrix({ userIdentifier: defaultUserIdentifier })
+          );
+        },
+      })
+    );
   };
 
   const isWorkspace = window.location.pathname.includes("/workspace/");

@@ -25,6 +25,11 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import Link from "~/components/general/link";
+import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
+import {
+  updateSelectedEducationIdentifier,
+  UpdateSelectedEducationIdentifierTriggerType,
+} from "~/actions/study-activity";
 
 /**
  * RecordsProps
@@ -34,19 +39,13 @@ interface RecordsProps extends WithTranslation {
   studyActivity: StudyActivityState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
+  updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType;
 }
 
 /**
  * RecordsState
  */
 interface RecordsState {}
-
-/**
- * StoredCurriculum
- */
-export interface StoredCurriculum {
-  [identifier: string]: string;
-}
 
 /**
  * Records
@@ -61,22 +60,36 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   /**
+   * handleSelectEducationType
+   * @param userIdentifier userIdentifier
+   */
+  handleSelectEducationType = (userIdentifier: string) => {
+    this.props.updateSelectedEducationIdentifier({ userIdentifier });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const { t } = this.props;
 
+    const entry =
+      this.props.studyActivity.userStudyDataByUserIdentifier[
+        this.props.studyActivity.selectedEducationIdentifier
+      ];
+
     if (
-      this.props.studyActivity.userStudyActivityStatus === "LOADING" ||
-      this.props.studyActivity.userStudyActivityStatus === "IDLE" ||
-      this.props.studyActivity.courseMatrixStatus === "LOADING" ||
-      this.props.studyActivity.courseMatrixStatus === "IDLE"
+      !entry ||
+      entry.studyActivityStatus === "LOADING" ||
+      entry.studyActivityStatus === "IDLE" ||
+      entry.courseMatrixStatus === "LOADING" ||
+      entry.courseMatrixStatus === "IDLE"
     ) {
       return null;
     } else if (
-      this.props.studyActivity.userStudyActivityStatus === "ERROR" ||
-      this.props.studyActivity.courseMatrixStatus === "ERROR"
+      entry.studyActivityStatus === "ERROR" ||
+      entry.courseMatrixStatus === "ERROR"
     ) {
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
@@ -100,10 +113,24 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       >
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            {this.props.studyActivity.userStudyActivity ? (
+            {entry.studyActivity ? (
               <RecordsListing
-                courseMatrix={this.props.studyActivity.courseMatrix}
-                studyActivity={this.props.studyActivity.userStudyActivity}
+                courseMatrix={entry.courseMatrix}
+                studyActivity={entry.studyActivity}
+                educationTypeSelector={
+                  <RecordsEducationTypeSelector
+                    options={Object.entries(
+                      this.props.studyActivity.userEducationTypes
+                    ).map(([label, identifier]) => ({
+                      identifier,
+                      label: label,
+                    }))}
+                    selectedIdentifier={
+                      this.props.studyActivity.selectedEducationIdentifier
+                    }
+                    onSelect={this.handleSelectEducationType}
+                  />
+                }
               />
             ) : (
               <div className="application-sub-panel__item">
@@ -186,7 +213,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+  return bindActionCreators(
+    { displayNotification, updateSelectedEducationIdentifier },
+    dispatch
+  );
 }
 
 export default withTranslation(["studies"])(

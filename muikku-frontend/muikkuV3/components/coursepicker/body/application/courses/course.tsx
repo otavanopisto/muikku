@@ -453,7 +453,6 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     availableCurriculums: state.workspaces.availableFilters.curriculums,
-    studyActivities: state.studyActivity.userStudyActivity,
   };
 }
 

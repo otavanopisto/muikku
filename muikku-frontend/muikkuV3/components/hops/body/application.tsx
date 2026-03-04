@@ -85,8 +85,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const status = useSelector((state: StateType) => state.status);
   const hops = useSelector((state: StateType) => state.hopsNew);
-  const { curriculumConfig, userStudyActivity } = useSelector(
-    (state: StateType) => state.studyActivity
+  const { curriculumConfig, studyActivity } = useSelector(
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByUserIdentifier[
+        state.studyActivity.defaultEducationIdentifier
+      ]
   );
 
   // Note that this component is used by student, thats why
@@ -380,7 +383,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
           studyStartDate: new Date(status.profile.studyStartDate),
         }}
         curriculumConfig={curriculumConfig}
-        userStudyActivity={userStudyActivity}
+        userStudyActivity={studyActivity}
       >
         <ApplicationPanel
           title={showTitle ? "HOPS" : undefined}
