@@ -196,10 +196,7 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
       const entry =
         state.studyActivity.userStudyDataByUserIdentifier[userIdentifier];
 
-      if (
-        entry?.studyActivityStatus === "READY" ||
-        entry?.studyActivityStatus === "LOADING"
-      ) {
+      if (!entry || entry.studyActivityStatus !== "IDLE") {
         return;
       }
 
@@ -263,10 +260,7 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
     const entry =
       state.studyActivity.userStudyDataByUserIdentifier[userIdentifier];
 
-    if (
-      entry?.courseMatrixStatus === "READY" ||
-      entry?.courseMatrixStatus === "LOADING"
-    ) {
+    if (!entry || entry.courseMatrixStatus !== "IDLE") {
       return;
     }
 

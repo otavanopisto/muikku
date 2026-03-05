@@ -85,6 +85,19 @@ export interface PedagogyFormAvailability {
 }
 
 /**
+ * GuiderStudentStudyData
+ */
+export interface GuiderStudentStudyData {
+  educationTypeCode: string;
+  studyActivity: StudyActivity | null;
+  studyActivityStatus: LoadingState;
+  courseMatrix: CourseMatrix | null;
+  courseMatrixStatus: LoadingState;
+  curriculumConfig: CurriculumConfig | null;
+  curriculumConfigStatus: LoadingState;
+}
+
+/**
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
@@ -115,9 +128,9 @@ export interface GuiderStudentUserProfileType {
   };
   hopsPhase?: string;
   pedagogyFormAvailable: PedagogyFormAccess;
-  studyActivity: StudyActivity | null;
-  courseMatrix: CourseMatrix | null;
-  curriculumConfig: CurriculumConfig | null;
+  studyDataByUserIdentifier: Record<string, GuiderStudentStudyData>;
+  educationTypes: Record<string, string> | null;
+  selectedEducationIdentifier: string | null;
 }
 
 /**
@@ -249,14 +262,14 @@ const initialGuiderState: GuiderState = {
       specEdTeacher: false,
       guidanceCounselor: false,
     },
+    studyDataByUserIdentifier: {},
+    educationTypes: null,
+    selectedEducationIdentifier: null,
     courseCredits: {
       completedCourseCredits: 0,
       mandatoryCourseCredits: 0,
       showCredits: false,
     },
-    studyActivity: null,
-    courseMatrix: null,
-    curriculumConfig: null,
   },
 };
 

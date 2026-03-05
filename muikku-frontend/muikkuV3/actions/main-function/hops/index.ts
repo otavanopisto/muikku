@@ -102,11 +102,6 @@ export type HOPS_STUDYPLAN_UPDATE_GOALS = SpecificActionType<
   HopsGoals
 >;
 
-export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
-  "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
-  string[]
->;
-
 // HOPS CAREER PLAN ACTIONS TYPES
 
 export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
@@ -2315,10 +2310,6 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
           throw reason;
         });
 
-      const studyOptions = await hopsApi.getStudentAlternativeStudyOptions({
-        studentIdentifier,
-      });
-
       const goals = await hopsApi.getStudentHopsGoals({
         studentIdentifier,
       });
@@ -2344,11 +2335,6 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
         payload: planNotesWithIdentifier,
-      });
-
-      dispatch({
-        type: "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
-        payload: studyOptions,
       });
 
       dispatch({
