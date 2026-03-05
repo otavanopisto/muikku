@@ -12,9 +12,9 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import Navigation, { NavigationElement } from "~/components/general/navigation";
 import {
   AddFileToCurrentStudentTriggerType,
-  UpdateSelectedEducationIdentifierTriggerType,
+  UpdateSelectedEducationTypeCodeTriggerType,
   addFileToCurrentStudent,
-  updateSelectedEducationIdentifier,
+  updateSelectedEducationTypeCode,
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
@@ -36,7 +36,7 @@ type studyHistoryAside = "history" | "library";
 interface StudyHistoryProps {
   guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
-  updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType;
+  updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -62,7 +62,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const {
     addFileToCurrentStudent,
     displayNotification,
-    updateSelectedEducationIdentifier,
+    updateSelectedEducationTypeCode,
   } = props;
   const {
     activityLogs,
@@ -71,15 +71,15 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     currentWorkspaces,
     pastWorkspaces,
     activityLogState,
-    studyDataByUserIdentifier,
+    studyDataByEducationTypeCode,
     educationTypes,
-    selectedEducationIdentifier,
+    selectedEducationTypeCode,
   } = props.guider.currentStudent;
 
   const studyActivity =
-    studyDataByUserIdentifier[selectedEducationIdentifier]?.studyActivity;
+    studyDataByEducationTypeCode[selectedEducationTypeCode]?.studyActivity;
   const courseMatrix =
-    studyDataByUserIdentifier[selectedEducationIdentifier]?.courseMatrix;
+    studyDataByEducationTypeCode[selectedEducationTypeCode]?.courseMatrix;
 
   if (!studyActivity || !courseMatrix) {
     return null;
@@ -103,11 +103,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   };
 
   /**
-   * handleSelectEducationIdentifier
-   * @param identifier identifier
+   * Handles the selection of an education type code
+   * @param educationTypeCode education type code
    */
-  const handleSelectEducationIdentifier = (identifier: string) => {
-    updateSelectedEducationIdentifier({ userIdentifier: identifier });
+  const handleSelectEducationTypeCode = (educationTypeCode: string) => {
+    updateSelectedEducationTypeCode({ educationTypeCode });
   };
 
   const combinedWorkspaces = [...currentWorkspaces, ...pastWorkspaces];
@@ -189,18 +189,16 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
             <RecordsListing
               courseMatrix={courseMatrix}
               studyActivity={studyActivity}
-              /* educationTypeSelector={
+              educationTypeSelector={
                 <RecordsEducationTypeSelector
-                  options={Object.entries(educationTypes).map(
-                    ([label, identifier]) => ({
-                      identifier,
-                      label: label,
-                    })
-                  )}
-                  selectedIdentifier={selectedEducationIdentifier}
-                  onSelect={handleSelectEducationIdentifier}
+                  options={educationTypes.map((educationTypeCode) => ({
+                    educationTypeCode,
+                    label: educationTypeCode,
+                  }))}
+                  selectedEducationTypeCode={selectedEducationTypeCode}
+                  onSelect={handleSelectEducationTypeCode}
                 />
-              } */
+              }
             />
           ) : (
             <div className="application-sub-panel__item">
@@ -283,7 +281,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     {
       addFileToCurrentStudent,
       displayNotification,
-      updateSelectedEducationIdentifier,
+      updateSelectedEducationTypeCode,
     },
     dispatch
   );

@@ -530,8 +530,8 @@ export interface GuiderWorkspaceSuggestedWebsocketType {
 /**
  * UpdateSelectedEducationIdentifierTriggerType action creator type
  */
-export interface UpdateSelectedEducationIdentifierTriggerType {
-  (data: { userIdentifier: string }): AnyActionType;
+export interface UpdateSelectedEducationTypeCodeTriggerType {
+  (data: { educationTypeCode: string }): AnyActionType;
 }
 
 /**
@@ -1047,8 +1047,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
       /**
        * Loads essential study information for the student default education type
+       * @param educationTypeCode education type code
        */
-      const studentStudyEssentialsPromise = async () => {
+      const studentStudyEssentialsPromise = async (
+        educationTypeCode: string
+      ) => {
         const educationTypes = await userApi.getStudentEducationTypes({
           studentIdentifier: id,
         });
@@ -1064,35 +1067,31 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
-            property: "selectedEducationIdentifier",
-            value: id,
+            property: "selectedEducationTypeCode",
+            value: educationTypeCode,
           },
         });
 
         // Initialize student study data by education type code
-        const initializedStudentDataByIdentifier = Object.entries(
-          educationTypes
-        ).reduce<Record<string, GuiderStudentStudyData>>(
-          (acc, [educationTypeCode, educationTypeDescription]) => {
-            acc[educationTypeDescription] = {
-              educationTypeCode: educationTypeCode,
-              studyActivity: null,
-              studyActivityStatus: "WAITING",
-              courseMatrix: null,
-              courseMatrixStatus: "WAITING",
-              curriculumConfig: null,
-              curriculumConfigStatus: "WAITING",
-            };
-            return acc;
-          },
-          {}
-        );
+        const initializedStudentDataByEducationTypeCode = educationTypes.reduce<
+          Record<string, GuiderStudentStudyData>
+        >((acc, educationTypeCode) => {
+          acc[educationTypeCode] = {
+            studyActivity: null,
+            studyActivityStatus: "WAITING",
+            courseMatrix: null,
+            courseMatrixStatus: "WAITING",
+            curriculumConfig: null,
+            curriculumConfigStatus: "WAITING",
+          };
+          return acc;
+        }, {});
 
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
-            property: "studyDataByUserIdentifier",
-            value: initializedStudentDataByIdentifier,
+            property: "studyDataByEducationTypeCode",
+            value: initializedStudentDataByEducationTypeCode,
           },
         });
 
@@ -1110,11 +1109,12 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           courseMatrix
         );
 
-        const { studyDataByUserIdentifier } = getState().guider.currentStudent;
+        const { studyDataByEducationTypeCode } =
+          getState().guider.currentStudent;
 
         // Update study data for default education type
         const updatedEntry = {
-          ...studyDataByUserIdentifier[id],
+          ...studyDataByEducationTypeCode[educationTypeCode],
           studyActivity: studentStudyActivity,
           courseMatrix: courseMatrix,
           curriculumConfig: curriculumConfig,
@@ -1126,10 +1126,10 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
-            property: "studyDataByUserIdentifier",
+            property: "studyDataByEducationTypeCode",
             value: {
-              ...studyDataByUserIdentifier,
-              [id]: updatedEntry,
+              ...studyDataByEducationTypeCode,
+              [educationTypeCode]: updatedEntry,
             },
           },
         });
@@ -1154,6 +1154,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               dispatch(updateAvailablePurchaseProducts());
             }
 
+            studentStudyEssentialsPromise(student.educationTypeCode);
+
             pedagogyApi
               .getPedagogyFormAccess({
                 studentIdentifier: student.id,
@@ -1168,8 +1170,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               });
           }),
-
-        studentStudyEssentialsPromise(),
 
         userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {
           dispatch({
@@ -2772,8 +2772,8 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
  * @param data data
  * @returns a thunk function for updating the selected education identifier
  */
-const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType =
-  function updateSelectedEducationIdentifier(data) {
+const updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType =
+  function updateSelectedEducationTypeCode(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
@@ -2783,14 +2783,15 @@ const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTrigge
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          property: "selectedEducationIdentifier",
-          value: data.userIdentifier,
+          property: "selectedEducationTypeCode",
+          value: data.educationTypeCode,
         },
       });
 
-      const { studyDataByUserIdentifier } = state.guider.currentStudent;
+      const { studyDataByEducationTypeCode, basic } =
+        state.guider.currentStudent;
 
-      const entry = studyDataByUserIdentifier[data.userIdentifier];
+      const entry = studyDataByEducationTypeCode[data.educationTypeCode];
 
       // If there is no entry or the entry is already loaded or ready, just return
       if (
@@ -2802,13 +2803,14 @@ const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTrigge
         return;
       }
 
-      // Load study data for selected education identifier
       try {
         const studyActivity = await hopsApi.getStudyActivity({
-          studentIdentifier: data.userIdentifier,
+          studentIdentifier: basic.id,
+          educationTypeCode: data.educationTypeCode,
         });
         const courseMatrix = await hopsApi.getStudentCourseMatrix({
-          studentIdentifier: data.userIdentifier,
+          studentIdentifier: basic.id,
+          educationTypeCode: data.educationTypeCode,
         });
         const curriculumConfig = getCurriculumConfig(
           courseMatrix.type,
@@ -2828,10 +2830,10 @@ const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTrigge
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
-            property: "studyDataByUserIdentifier",
+            property: "studyDataByEducationTypeCode",
             value: {
-              ...studyDataByUserIdentifier,
-              [data.userIdentifier]: updatedEntry,
+              ...studyDataByEducationTypeCode,
+              [data.educationTypeCode]: updatedEntry,
             },
           },
         });
@@ -2853,7 +2855,8 @@ const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTrigge
   };
 
 /**
- * Thunk action creator for the suggested next websocket
+ * Thunk action creator for the suggested next websocket. Updates
+ * only default education type code related data
  * @param data data
  */
 const guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType =
@@ -2868,9 +2871,10 @@ const guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType =
 
       if (!currentStudent) return;
 
-      const defaultEducationIdentifier = currentStudent.basic.id;
-      const currentMap = currentStudent.studyDataByUserIdentifier;
-      const currentEntry = currentMap[defaultEducationIdentifier];
+      const studentIdentifier = currentStudent.basic.id;
+      const defaultEducationTypeCode = currentStudent.basic.educationTypeCode;
+      const currentMap = currentStudent.studyDataByEducationTypeCode;
+      const currentEntry = currentMap[defaultEducationTypeCode];
 
       if (!currentEntry || !currentEntry.studyActivity) {
         return;
@@ -2879,8 +2883,9 @@ const guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType =
       const { websocketData } = data;
 
       const updatedStudyActivityByWorkspaceId = await hopsApi.getStudyActivity({
-        studentIdentifier: defaultEducationIdentifier,
+        studentIdentifier: studentIdentifier,
         workspaceEntityId: websocketData.courseId,
+        educationTypeCode: defaultEducationTypeCode,
       });
 
       const copyOfOriginalItems: StudyActivityItem[] = [].concat(
@@ -2915,13 +2920,13 @@ const guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType =
 
       const newMap = {
         ...currentMap,
-        [defaultEducationIdentifier]: newEntry,
+        [defaultEducationTypeCode]: newEntry,
       };
 
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          property: "studyDataByUserIdentifier",
+          property: "studyDataByEducationTypeCode",
           value: newMap,
         },
       });
@@ -2929,7 +2934,8 @@ const guiderWorkspaceSuggestedWebsocket: GuiderWorkspaceSuggestedWebsocketType =
   };
 
 /**
- * Thunk action creator for the workspace signup websocket
+ * Thunk action creator for the workspace signup websocket. Updates only
+ * default education type code related data
  * @param data data
  */
 const guiderWorkspaceSignupWebsocket: GuiderWorkspaceSignupWebsocketType =
@@ -2945,9 +2951,9 @@ const guiderWorkspaceSignupWebsocket: GuiderWorkspaceSignupWebsocketType =
         return null;
       }
 
-      const defaultEducationIdentifier = currentStudent.basic.id;
-      const currentMap = currentStudent.studyDataByUserIdentifier;
-      const currentEntry = currentMap[defaultEducationIdentifier];
+      const defaultEducationTypeCode = currentStudent.basic.educationTypeCode;
+      const currentMap = currentStudent.studyDataByEducationTypeCode;
+      const currentEntry = currentMap[defaultEducationTypeCode];
 
       if (!currentEntry || !currentEntry.studyActivity) {
         return;
@@ -2984,13 +2990,13 @@ const guiderWorkspaceSignupWebsocket: GuiderWorkspaceSignupWebsocketType =
       // Build new map
       const newMap = {
         ...currentMap,
-        [defaultEducationIdentifier]: newEntry,
+        [defaultEducationTypeCode]: newEntry,
       };
 
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
-          property: "studyDataByUserIdentifier",
+          property: "studyDataByEducationTypeCode",
           value: newMap,
         },
       });
@@ -3035,7 +3041,7 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
-  updateSelectedEducationIdentifier,
+  updateSelectedEducationTypeCode,
   guiderWorkspaceSuggestedWebsocket,
   guiderWorkspaceSignupWebsocket,
 };
