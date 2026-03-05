@@ -61,21 +61,14 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
 
   const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
-  const studyOptions = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyOptions
-  );
-
   // Disable course tray if in read mode
   const disabled = useSelector(
     (state: StateType) => state.hopsNew.hopsMode === "READ"
   );
 
   const matrix = useMemo(
-    () =>
-      curriculumConfig.strategy.getCurriculumMatrix({
-        studyOptions,
-      }),
-    [curriculumConfig, studyOptions]
+    () => curriculumConfig.strategy.getCurriculumMatrix(),
+    [curriculumConfig]
   );
 
   /**

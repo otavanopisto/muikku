@@ -531,8 +531,14 @@ function mapStateToProps(state: StateType) {
     hops: state.hopsNew,
     status: state.status,
     studentInfo: state.guider.currentStudent.basic,
-    curriculumConfig: state.guider.currentStudent?.curriculumConfig ?? null,
-    studyActivity: state.guider.currentStudent?.studyActivity ?? null,
+    curriculumConfig:
+      state.guider.currentStudent.studyDataByUserIdentifier[
+        state.guider.currentStudent.basic.id
+      ]?.curriculumConfig ?? null,
+    studyActivity:
+      state.guider.currentStudent.studyDataByUserIdentifier[
+        state.guider.currentStudent.basic.id
+      ]?.studyActivity ?? null,
   };
 }
 

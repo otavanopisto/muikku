@@ -12,7 +12,9 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import Navigation, { NavigationElement } from "~/components/general/navigation";
 import {
   AddFileToCurrentStudentTriggerType,
+  UpdateSelectedEducationIdentifierTriggerType,
   addFileToCurrentStudent,
+  updateSelectedEducationIdentifier,
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
@@ -24,6 +26,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import RecordsListing from "~/components/general/records-history/records";
+import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
 
 type studyHistoryAside = "history" | "library";
 
@@ -33,6 +36,7 @@ type studyHistoryAside = "history" | "library";
 interface StudyHistoryProps {
   guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
+  updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -50,13 +54,16 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   if (
     !props.guider.currentStudent ||
     !props.guider.currentStudent.pastWorkspaces ||
-    !props.guider.currentStudent.activityLogs ||
-    !props.guider.currentStudent.studyActivity
+    !props.guider.currentStudent.activityLogs
   ) {
     return null;
   }
 
-  const { addFileToCurrentStudent, displayNotification } = props;
+  const {
+    addFileToCurrentStudent,
+    displayNotification,
+    updateSelectedEducationIdentifier,
+  } = props;
   const {
     activityLogs,
     basic,
@@ -64,9 +71,19 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     currentWorkspaces,
     pastWorkspaces,
     activityLogState,
-    studyActivity,
-    courseMatrix,
+    studyDataByUserIdentifier,
+    educationTypes,
+    selectedEducationIdentifier,
   } = props.guider.currentStudent;
+
+  const studyActivity =
+    studyDataByUserIdentifier[selectedEducationIdentifier]?.studyActivity;
+  const courseMatrix =
+    studyDataByUserIdentifier[selectedEducationIdentifier]?.courseMatrix;
+
+  if (!studyActivity || !courseMatrix) {
+    return null;
+  }
 
   /**
    * Switches the active navigaton state
@@ -83,6 +100,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         break;
       }
     }
+  };
+
+  /**
+   * handleSelectEducationIdentifier
+   * @param identifier identifier
+   */
+  const handleSelectEducationIdentifier = (identifier: string) => {
+    updateSelectedEducationIdentifier({ userIdentifier: identifier });
   };
 
   const combinedWorkspaces = [...currentWorkspaces, ...pastWorkspaces];
@@ -160,10 +185,22 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     >
       <ApplicationSubPanel>
         <ApplicationSubPanel.Body>
-          {studyActivity && courseMatrix ? (
+          {studyActivity && courseMatrix && educationTypes ? (
             <RecordsListing
               courseMatrix={courseMatrix}
               studyActivity={studyActivity}
+              educationTypeSelector={
+                <RecordsEducationTypeSelector
+                  options={Object.entries(educationTypes).map(
+                    ([label, identifier]) => ({
+                      identifier,
+                      label: label,
+                    })
+                  )}
+                  selectedIdentifier={selectedEducationIdentifier}
+                  onSelect={handleSelectEducationIdentifier}
+                />
+              }
             />
           ) : (
             <div className="application-sub-panel__item">
@@ -243,7 +280,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { addFileToCurrentStudent, displayNotification },
+    {
+      addFileToCurrentStudent,
+      displayNotification,
+      updateSelectedEducationIdentifier,
+    },
     dispatch
   );
 }

@@ -43,11 +43,15 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     useState<WorkspaceSuggestion | null>(null);
 
   const courseMatrix = useSelector(
-    (state: StateType) => state.guider.currentStudent?.courseMatrix ?? null
+    (state: StateType) =>
+      state.guider.currentStudent.studyDataByUserIdentifier[studentIdentifier]
+        ?.courseMatrix ?? null
   );
 
   const studyActivityItems = useSelector(
-    (state: StateType) => state.guider.currentStudent?.studyActivity?.items
+    (state: StateType) =>
+      state.guider.currentStudent.studyDataByUserIdentifier[studentIdentifier]
+        ?.studyActivity?.items ?? []
   );
 
   const skillAndArtCourses = useMemo(() => {
