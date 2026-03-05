@@ -17810,11 +17810,16 @@ components:
       description: OPS specific course matrix for a given student
       required:
         - type
+        - curriculum
         - subjects
         - problems
       properties:
         type:
           $ref: "#/components/schemas/CourseMatrixType"
+          nullable: true
+        curriculum:
+          type: string
+          description: Student's curriculum, e.g. OPS 2021
           nullable: true
         subjects:
           type: array
