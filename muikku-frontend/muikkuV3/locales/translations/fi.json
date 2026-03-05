@@ -105,11 +105,16 @@
       "comment": "Kommentoi",
       "comments": "Kommentit",
       "completed": "Suoritettu",
+      "completedStudies": "Suoritetut opinnot",
       "contactInfo": "Yhteystiedot",
       "content": "Sisältö",
       "content_vacationMessage": "Lomaviestin sisältö",
       "copy": "Kopioi",
       "course": "Kurssi",
+      "courseCredits": "Opintopisteet",
+      "courseCreditsMandatory": "Pakolliset:",
+      "courseCreditsOptional": "Valinnaiset:",
+      "courseCreditsTotal": "Yhteensä:",
       "courses": "Kurssia",
       "coursepicker": "Kurssipoimuri",
       "create": "Luo uusi",
@@ -382,6 +387,13 @@
       "Z": "Äidinkieli ja kirjallisuus, pohjoissaame",
       "I": "Äidinkieli ja kirjallisuus, inarinsaame",
       "W": "Äidinkieli ja kirjallisuus, koltansaame"
+    },
+    "educationType": {
+      "apa": "Aikuisten perusopetus, alkuvaihe",
+      "basicEducation": "Perusopetus",
+      "unknown": "Tuntematon koulutusaste",
+      "upperSecondaryEducation": "Lukio",
+      "vocational": "Ammatillinen"
     }
   },
   "profile": {
@@ -494,9 +506,6 @@
       "contactLog": "Yhteydenotot",
       "contactInfo_student": "Opiskelijan yhteystiedot",
       "contactInfo_guardian": "Huoltajan tai yhteyshenkilön yhteystiedot",
-      "courseCredits": "Opintopisteet",
-      "courseCreditsMandatory": "Pakolliset: {{mandatoryCredits}}",
-      "courseCreditsTotal": "Yhteensä: {{totalCredits}}",
       "created_interimEvaluation": "Välipalaute annettu",
       "discussionMessages": "Keskusteluviestit",
       "endDate": "Opintojen päättymispäivä",
@@ -577,7 +586,6 @@
     },
     "labels": {
       "combinationCourses": "Yhdistelmäopintojaksot",
-      "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
       "courseStatus": "Kurssin tila",
       "courseType": "Kurssin tyyppi",
       "evaluated": "Arvioitu {{date}}",
@@ -601,7 +609,7 @@
       "transferCredits": "Hyväksiluvut"
     },
     "instructions": {
-      "recordsCombinationCourses": "Suoritustiedot yhdistelmäopintojaksossa"
+      "recordsCombinationCourses": "Jos olet suorittanut opintoja yhdistelmäopintojaksolla, ne listataan tässä. Moduulit, joista yhdistelmäopintojakso koostuu (esim. RUB11 ja ENA1), on listattu myös oppiaineidensa alle. Näin näet aina sekä suorittamasi opintojakson tiedot että ajantasaisen tilanteen kunkin oppiaineen osalta."
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

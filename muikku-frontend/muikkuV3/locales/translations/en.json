@@ -105,11 +105,16 @@
       "comment": "Comment",
       "comments": "Comments",
       "completed": "Completed",
+      "completedStudies": "Credits earned",
       "contactInfo": "Contact info",
       "content": "Content",
       "content_vacationMessage": "Vacation message content",
       "copy": "Copy",
       "course": "Course",
+      "courseCredits": "Course credits",
+      "courseCreditsMandatory": "Mandatory:",
+      "courseCreditsOptional": "Optional:",
+      "courseCreditsTotal": "In total:",
       "courses": "Courses",
       "coursepicker": "Coursepicker",
       "create": "Create new",
@@ -382,6 +387,13 @@
       "Z": "Mother tongue and literature, Northern Sámi",
       "I": "Mother tongue and literature, Inari Sámi",
       "W": "Mother tongue and literature, Skolt Sámi"
+    },
+    "educationType": {
+      "apa": "Introductory phase to basic education for adults",
+      "basicEducation": "Basic education for adults",
+      "unknown": "Unknown level",
+      "upperSecondaryEducation": "General upper secondary education",
+      "vocational": "Vocational"
     }
   },
   "profile": {
@@ -494,9 +506,6 @@
       "contactLog": "Contact log",
       "contactInfo_student": "Student contact info",
       "contactInfo_guardian": "Guardian contact info",
-      "courseCredits": "Course credits",
-      "courseCreditsMandatory": "Mandatory: {{mandatoryCredits}}",
-      "courseCreditsTotal": "In total: {{totalCredits}}",
       "created_interimEvaluation": "Interim evaluation given",
       "discussionMessages": "Discussion messages",
       "endDate": "Studies end date",
@@ -576,8 +585,7 @@
       "transferCreditsDate": "Date {{date}}"
     },
     "labels": {
-      "combinationCourses": "Combination courses",
-      "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
+      "combinationCourses": "Combined study units",
       "courseStatus": "Course status",
       "courseType": "Course type",
       "evaluated": "Evaluated {{date}}",
@@ -601,7 +609,7 @@
       "transferCredits": "Transfer credits"
     },
     "instructions": {
-      "recordsCombinationCourses": "Records in combination courses"
+      "recordsCombinationCourses": "Any studies completed as part of a combined study unit are listed here. The individual modules within these units (e.g., RUB11 and ENA1) are also displayed under their specific subjects. This ensures you can see both the combined unit details and the current progress for each individual subject."
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

@@ -180,6 +180,40 @@
   }
 }
 
+.application-sub-panel__filters {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 0 20px;
+}
+
+.application-sub-panel__meta {
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 10px;
+}
+
+.application-sub-panel__meta-title {
+  font-weight: bold;
+}
+
+.application-sub-panel__meta-items {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.application-sub-panel__meta-item {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
@@ -1049,7 +1083,7 @@
 .application-sub-panel__item-title--counselors {
   flex-basis: auto;
   font-weight: 600;
-  width: 100%,
+  width: 100%;
 }
 
 .application-sub-panel__item-title--organization-summary,
@@ -1129,7 +1163,8 @@
   flex-direction: column;
 }
 
-.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
+.application-sub-panel__item-data-container--organization-summary
+  *:not(:first-child) {
   margin-left: 10px;
 }
 
@@ -1151,7 +1186,8 @@
 }
 
 // Removing single-enty background
-.application-sub-panel__item-data-content--no-bg .application-sub-panel__single-entry {
+.application-sub-panel__item-data-content--no-bg
+  .application-sub-panel__single-entry {
   background-color: transparent;
 }
 
@@ -1176,11 +1212,13 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date
+  .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date
+  .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }

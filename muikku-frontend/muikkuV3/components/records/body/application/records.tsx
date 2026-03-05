@@ -99,13 +99,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }}
       >
         <ApplicationSubPanel>
-          <ApplicationSubPanel.Body>
-            {this.props.studyActivity.userStudyActivity ? (
-              <RecordsListing
-                courseMatrix={this.props.studyActivity.courseMatrix}
-                studyActivity={this.props.studyActivity.userStudyActivity}
-              />
-            ) : (
+          {this.props.studyActivity.userStudyActivity ? (
+            <RecordsListing
+              courseMatrix={this.props.studyActivity.courseMatrix}
+              studyActivity={this.props.studyActivity.userStudyActivity}
+            />
+          ) : (
+            <ApplicationSubPanel.Body>
               <div className="application-sub-panel__item">
                 <div className="empty">
                   <span>
@@ -116,8 +116,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   </span>
                 </div>
               </div>
-            )}
-          </ApplicationSubPanel.Body>
+            </ApplicationSubPanel.Body>
+          )}
         </ApplicationSubPanel>
       </RecordsInfoProvider>
     );

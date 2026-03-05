@@ -166,7 +166,6 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
   let categoryName = studyActivity.educationType;
 
   categoryName += ` - ${t("labels.courseCredits", {
-    ns: "studies",
     mandatoryCredits: studyActivity.mandatoryCourseCredits,
     totalCredits: studyActivity.completedCourseCredits,
   })}`;
