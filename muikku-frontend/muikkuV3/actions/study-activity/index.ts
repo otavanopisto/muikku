@@ -276,8 +276,7 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
 
       const curriculumConfig = getCurriculumConfig(
         courseMatrix.type,
-        courseMatrix,
-        state.status.profile.curriculumName
+        courseMatrix
       );
 
       dispatch({

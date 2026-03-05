@@ -1107,8 +1107,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
         const curriculumConfig = getCurriculumConfig(
           courseMatrix.type,
-          courseMatrix,
-          courseMatrix.curriculum
+          courseMatrix
         );
 
         const { studyDataByUserIdentifier } = getState().guider.currentStudent;
@@ -2813,8 +2812,7 @@ const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTrigge
         });
         const curriculumConfig = getCurriculumConfig(
           courseMatrix.type,
-          courseMatrix,
-          courseMatrix.curriculum
+          courseMatrix
         );
 
         const updatedEntry = {

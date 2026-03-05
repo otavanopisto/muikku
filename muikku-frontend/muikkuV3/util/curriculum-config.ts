@@ -184,14 +184,10 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   /**
    * Constructor
    * @param courseMatrix course matrix
-   * @param curriculumName curriculum name
    */
-  constructor(courseMatrix?: CourseMatrix, curriculumName?: string) {
+  constructor(courseMatrix?: CourseMatrix) {
     // Initialize the base matrix with identifiers
-    this.matrix = enrichCourseMatrixWithIdentifiers(
-      courseMatrix,
-      curriculumName ?? ""
-    );
+    this.matrix = enrichCourseMatrixWithIdentifiers(courseMatrix);
   }
 
   /**
@@ -553,14 +549,10 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   /**
    * Constructor
    * @param courseMatrix course matrix
-   * @param curriculumName curriculum name
    */
-  constructor(courseMatrix?: CourseMatrix, curriculumName?: string) {
+  constructor(courseMatrix?: CourseMatrix) {
     // Initialize the base matrix with identifiers
-    this.matrix = enrichCourseMatrixWithIdentifiers(
-      courseMatrix,
-      curriculumName ?? ""
-    );
+    this.matrix = enrichCourseMatrixWithIdentifiers(courseMatrix);
   }
 
   /**
@@ -868,23 +860,21 @@ class CompulsoryCurriculum implements CurriculumStrategy {
  * Get curriculum config
  * @param courseMatrixType course matrix type
  * @param courseMatrix course matrix
- * @param curriculumName curriculum name
  * @returns curriculum config
  */
 function getCurriculumConfig(
   courseMatrixType: CourseMatrixType,
-  courseMatrix?: CourseMatrix,
-  curriculumName?: string
+  courseMatrix?: CourseMatrix
 ): CurriculumConfig {
   if (courseMatrixType === "UPPER_SECONDARY") {
     return {
       type: "uppersecondary",
-      strategy: new UppersecondaryCurriculum(courseMatrix, curriculumName),
+      strategy: new UppersecondaryCurriculum(courseMatrix),
     };
   }
   return {
     type: "compulsory",
-    strategy: new CompulsoryCurriculum(courseMatrix, curriculumName),
+    strategy: new CompulsoryCurriculum(courseMatrix),
   };
 }
 
