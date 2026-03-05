@@ -404,8 +404,8 @@ function mapStateToProps(state: StateType) {
     summary: state.summary,
     status: state.status,
     defaultUserStudyData:
-      state.studyActivity.userStudyDataByUserIdentifier[
-        state.studyActivity.defaultEducationIdentifier
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
       ],
   };
 }

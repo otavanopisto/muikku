@@ -9474,13 +9474,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
+                type: array
+                items:
                   type: string
-                example:
-                  lukio: PYRAMUS-STUDENT-123
-                  peruskoulu: PYRAMUS-STUDENT-456
-  
+
   /rest/user/userInfo/{userEntityId}:
     get:
       operationId: getUserInfo

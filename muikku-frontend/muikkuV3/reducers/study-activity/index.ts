@@ -9,7 +9,6 @@ export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
  * EducationTypeStudyData
  */
 export interface UserStudyData {
-  educationTypeCode: string;
   studyActivity: StudyActivity | null;
   studyActivityStatus: ReducerStateType;
   courseMatrix: CourseMatrix | null;
@@ -23,23 +22,23 @@ export interface UserStudyData {
  */
 export interface StudyActivityState {
   // Current logged in user's education types
-  userEducationTypes: Record<string, string> | null;
+  userEducationTypes: string[];
   userEducationTypesStatus: ReducerStateType;
   // Default education type code
-  defaultEducationIdentifier: string | null;
+  defaultEducationTypeCode: string | null;
   // Selected education type code, which data is currently being displayed in the records UI
-  selectedEducationIdentifier: string | null;
+  selectedEducationTypeCode: string | null;
 
   // Per-education cache
-  userStudyDataByUserIdentifier: Record<string, UserStudyData>;
+  userStudyDataByEducationTypeCode: Record<string, UserStudyData>;
 }
 
 const initialStudyActivityState: StudyActivityState = {
-  defaultEducationIdentifier: null,
-  selectedEducationIdentifier: null,
+  defaultEducationTypeCode: null,
+  selectedEducationTypeCode: null,
   userEducationTypes: null,
   userEducationTypesStatus: "IDLE",
-  userStudyDataByUserIdentifier: {},
+  userStudyDataByEducationTypeCode: {},
 };
 
 /**
@@ -55,12 +54,10 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             studyActivityStatus: action.payload.status,
           },
         },
@@ -68,12 +65,10 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             studyActivity: action.payload.studyActivity,
           },
         },
@@ -81,16 +76,13 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             studyActivity: {
-              ...state.userStudyDataByUserIdentifier[
-                action.payload.userIdentifier
-              ]?.studyActivity,
+              ...state.userStudyDataByEducationTypeCode[action.payload.key]
+                ?.studyActivity,
               items: action.payload.items,
             },
           },
@@ -100,12 +92,10 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             courseMatrix: action.payload.courseMatrix,
           },
         },
@@ -113,12 +103,10 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             courseMatrixStatus: action.payload.status,
           },
         },
@@ -127,12 +115,10 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             curriculumConfig: action.payload.curriculumConfig,
           },
         },
@@ -140,26 +126,21 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS":
       return {
         ...state,
-        userStudyDataByUserIdentifier: {
-          ...state.userStudyDataByUserIdentifier,
-          [action.payload.userIdentifier]: {
-            ...state.userStudyDataByUserIdentifier[
-              action.payload.userIdentifier
-            ],
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
             curriculumConfigStatus: action.payload.status,
           },
         },
       };
 
     case "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES": {
-      const listOfEducationTypes = Object.entries(action.payload);
-
       // Initialize new education type data based on the list of education types
-      const newUserStudyData = listOfEducationTypes.reduce<
+      const newUserStudyData = action.payload.reduce<
         Record<string, UserStudyData>
-      >((acc, [educationTypeCode, educationTypeDescription]) => {
-        acc[educationTypeDescription] = {
-          educationTypeCode: educationTypeCode,
+      >((acc, educationTypeCode) => {
+        acc[educationTypeCode] = {
           studyActivity: null,
           studyActivityStatus: "IDLE",
           courseMatrix: null,
@@ -173,7 +154,7 @@ export const studyActivity: Reducer<StudyActivityState> = (
       return {
         ...state,
         userEducationTypes: action.payload,
-        userStudyDataByUserIdentifier: newUserStudyData,
+        userStudyDataByEducationTypeCode: newUserStudyData,
       };
     }
     case "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS":
@@ -182,15 +163,16 @@ export const studyActivity: Reducer<StudyActivityState> = (
         userEducationTypesStatus: action.payload,
       };
 
-    case "STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER":
+    case "STUDY_ACTIVITY_UPDATE_DEFAULT_EDUCATION_TYPE_CODE":
       return {
         ...state,
-        defaultEducationIdentifier: action.payload,
+        defaultEducationTypeCode: action.payload,
       };
-    case "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER":
+
+    case "STUDY_ACTIVITY_UPDATE_SELECTED_EDUCATION_TYPE_CODE":
       return {
         ...state,
-        selectedEducationIdentifier: action.payload,
+        selectedEducationTypeCode: action.payload,
       };
 
     case "STUDY_ACTIVITY_RESET_STATE":

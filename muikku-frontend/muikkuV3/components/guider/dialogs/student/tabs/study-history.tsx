@@ -189,7 +189,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
             <RecordsListing
               courseMatrix={courseMatrix}
               studyActivity={studyActivity}
-              educationTypeSelector={
+              /* educationTypeSelector={
                 <RecordsEducationTypeSelector
                   options={Object.entries(educationTypes).map(
                     ([label, identifier]) => ({
@@ -200,7 +200,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
                   selectedIdentifier={selectedEducationIdentifier}
                   onSelect={handleSelectEducationIdentifier}
                 />
-              }
+              } */
             />
           ) : (
             <div className="application-sub-panel__item">

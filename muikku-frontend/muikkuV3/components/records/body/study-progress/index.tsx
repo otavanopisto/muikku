@@ -43,15 +43,15 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
 
   const courseMatrix = useSelector(
     (state: StateType) =>
-      state.studyActivity.userStudyDataByUserIdentifier[
-        state.studyActivity.defaultEducationIdentifier
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
       ]?.courseMatrix ?? null
   );
 
   const studyActivityItems = useSelector(
     (state: StateType) =>
-      state.studyActivity.userStudyDataByUserIdentifier[
-        state.studyActivity.defaultEducationIdentifier
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
       ]?.studyActivity?.items ?? []
   );
 

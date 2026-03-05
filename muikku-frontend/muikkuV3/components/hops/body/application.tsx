@@ -87,8 +87,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const hops = useSelector((state: StateType) => state.hopsNew);
   const { curriculumConfig, studyActivity } = useSelector(
     (state: StateType) =>
-      state.studyActivity.userStudyDataByUserIdentifier[
-        state.studyActivity.defaultEducationIdentifier
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
       ]
   );
 

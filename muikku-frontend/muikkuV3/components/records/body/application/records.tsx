@@ -27,8 +27,8 @@ import ApplicationList, {
 import Link from "~/components/general/link";
 import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
 import {
-  updateSelectedEducationIdentifier,
-  UpdateSelectedEducationIdentifierTriggerType,
+  updateSelectedEducationTypeCode,
+  UpdateSelectedEducationTypeCodeTriggerType,
 } from "~/actions/study-activity";
 
 /**
@@ -39,7 +39,7 @@ interface RecordsProps extends WithTranslation {
   studyActivity: StudyActivityState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
-  updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType;
+  updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType;
 }
 
 /**
@@ -61,10 +61,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
   /**
    * handleSelectEducationType
-   * @param userIdentifier userIdentifier
+   * @param educationTypeCode educationTypeCode
    */
-  handleSelectEducationType = (userIdentifier: string) => {
-    this.props.updateSelectedEducationIdentifier({ userIdentifier });
+  handleSelectEducationType = (educationTypeCode: string) => {
+    this.props.updateSelectedEducationTypeCode({ educationTypeCode });
   };
 
   /**
@@ -75,8 +75,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     const { t } = this.props;
 
     const entry =
-      this.props.studyActivity.userStudyDataByUserIdentifier[
-        this.props.studyActivity.selectedEducationIdentifier
+      this.props.studyActivity.userStudyDataByEducationTypeCode[
+        this.props.studyActivity.selectedEducationTypeCode
       ];
 
     if (
@@ -119,14 +119,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 studyActivity={entry.studyActivity}
                 educationTypeSelector={
                   <RecordsEducationTypeSelector
-                    options={Object.entries(
-                      this.props.studyActivity.userEducationTypes
-                    ).map(([label, identifier]) => ({
-                      identifier,
-                      label: label,
-                    }))}
-                    selectedIdentifier={
-                      this.props.studyActivity.selectedEducationIdentifier
+                    options={this.props.studyActivity.userEducationTypes.map(
+                      (educationTypeCode) => ({
+                        educationTypeCode,
+                        label: educationTypeCode,
+                      })
+                    )}
+                    selectedEducationTypeCode={
+                      this.props.studyActivity.selectedEducationTypeCode
                     }
                     onSelect={this.handleSelectEducationType}
                   />
@@ -214,7 +214,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { displayNotification, updateSelectedEducationIdentifier },
+    { displayNotification, updateSelectedEducationTypeCode },
     dispatch
   );
 }

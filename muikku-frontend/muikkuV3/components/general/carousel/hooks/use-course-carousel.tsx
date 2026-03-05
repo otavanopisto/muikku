@@ -52,8 +52,8 @@ export const useCourseCarousel = (
 
   const studyActivity = useSelector(
     (state: StateType) =>
-      state.studyActivity.userStudyDataByUserIdentifier[
-        state.studyActivity.defaultEducationIdentifier
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
       ]?.studyActivity
   );
 

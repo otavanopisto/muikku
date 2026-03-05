@@ -110,8 +110,8 @@ function mapStateToProps(state: StateType) {
     workspacesHasMore: state.workspaces.hasMore,
     workspaces: state.workspaces.availableWorkspaces,
     studyActivity:
-      state.studyActivity.userStudyDataByUserIdentifier[
-        state.studyActivity.defaultEducationIdentifier
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
       ]?.studyActivity,
   };
 }

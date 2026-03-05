@@ -21,43 +21,43 @@ const userApi = MApi.getUserApi();
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS =
   SpecificActionType<
     "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-    { userIdentifier: string; status: ReducerStateType }
+    { key: string; status: ReducerStateType }
   >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY",
-  { userIdentifier: string; studyActivity: StudyActivity }
+  { key: string; studyActivity: StudyActivity }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS =
   SpecificActionType<
     "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
-    { userIdentifier: string; items: StudyActivityItem[] }
+    { key: string; items: StudyActivityItem[] }
   >;
 
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-  { userIdentifier: string; status: ReducerStateType }
+  { key: string; status: ReducerStateType }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
-  { userIdentifier: string; courseMatrix: CourseMatrix }
+  { key: string; courseMatrix: CourseMatrix }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
-  { userIdentifier: string; status: ReducerStateType }
+  { key: string; status: ReducerStateType }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG",
-  { userIdentifier: string; curriculumConfig: CurriculumConfig }
+  { key: string; curriculumConfig: CurriculumConfig }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES",
-  Record<string, string>
+  string[]
 >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS =
@@ -66,15 +66,17 @@ export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS =
     ReducerStateType
   >;
 
-export type STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER = SpecificActionType<
-  "STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER",
-  string
->;
+export type STUDY_ACTIVITY_UPDATE_DEFAULT_EDUCATION_TYPE_CODE =
+  SpecificActionType<
+    "STUDY_ACTIVITY_UPDATE_DEFAULT_EDUCATION_TYPE_CODE",
+    string
+  >;
 
-export type STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER = SpecificActionType<
-  "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER",
-  string
->;
+export type STUDY_ACTIVITY_UPDATE_SELECTED_EDUCATION_TYPE_CODE =
+  SpecificActionType<
+    "STUDY_ACTIVITY_UPDATE_SELECTED_EDUCATION_TYPE_CODE",
+    string
+  >;
 
 export type STUDY_ACTIVITY_RESET_STATE = SpecificActionType<
   "STUDY_ACTIVITY_RESET_STATE",
@@ -88,7 +90,7 @@ export type STUDY_ACTIVITY_RESET_STATE = SpecificActionType<
  */
 export interface LoadUserStudyActivityTriggerType {
   (data: {
-    userIdentifier?: string;
+    educationTypeCode?: string;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -112,7 +114,7 @@ export interface UpdateUserStudyActivityItemsTriggerType {
  */
 export interface LoadCourseMatrixTriggerType {
   (data: {
-    userIdentifier?: string;
+    educationTypeCode?: string;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -134,8 +136,8 @@ export interface LoadUserEducationTypesTriggerType {
 /**
  * Update selected education identifier trigger type
  */
-export interface UpdateSelectedEducationIdentifierTriggerType {
-  (data: { userIdentifier: string }): AnyActionType;
+export interface UpdateSelectedEducationTypeCodeTriggerType {
+  (data: { educationTypeCode: string }): AnyActionType;
 }
 
 // WEBSOCKET UPDATERS
@@ -183,18 +185,19 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { userIdentifier, onSuccess, onFail } = data;
+      const { educationTypeCode, onSuccess, onFail } = data;
       const state = getState();
 
-      const hasPermissions =
-        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-");
+      const identifierToUse = state.status.userSchoolDataIdentifier;
+
+      const hasPermissions = identifierToUse.startsWith("PYRAMUS-STUDENT-");
 
       if (!hasPermissions) {
         return;
       }
 
       const entry =
-        state.studyActivity.userStudyDataByUserIdentifier[userIdentifier];
+        state.studyActivity.userStudyDataByEducationTypeCode[educationTypeCode];
 
       if (!entry || entry.studyActivityStatus !== "IDLE") {
         return;
@@ -203,22 +206,23 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
       try {
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-          payload: { userIdentifier: userIdentifier, status: "LOADING" },
+          payload: { key: educationTypeCode, status: "LOADING" },
         });
 
         const studyActivity = await hopsApi.getStudyActivity({
-          studentIdentifier: userIdentifier,
+          studentIdentifier: identifierToUse,
+          educationTypeCode: educationTypeCode,
         });
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-          payload: { userIdentifier: userIdentifier, status: "READY" },
+          payload: { key: educationTypeCode, status: "READY" },
         });
 
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY",
           payload: {
-            userIdentifier: userIdentifier,
+            key: educationTypeCode,
             studyActivity: studyActivity,
           },
         });
@@ -231,7 +235,7 @@ const loadUserStudyActivity: LoadUserStudyActivityTriggerType =
         onFail?.();
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-          payload: { userIdentifier: userIdentifier, status: "ERROR" },
+          payload: { key: educationTypeCode, status: "ERROR" },
         });
       }
     };
@@ -248,17 +252,19 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const { userIdentifier, onSuccess, onFail } = data;
+    const { educationTypeCode, onSuccess, onFail } = data;
     const state = getState();
 
-    const hasPermissions = userIdentifier.startsWith("PYRAMUS-STUDENT-");
+    const identifierToUse = state.status.userSchoolDataIdentifier;
+
+    const hasPermissions = identifierToUse.startsWith("PYRAMUS-STUDENT-");
 
     if (!hasPermissions) {
       return;
     }
 
     const entry =
-      state.studyActivity.userStudyDataByUserIdentifier[userIdentifier];
+      state.studyActivity.userStudyDataByEducationTypeCode[educationTypeCode];
 
     if (!entry || entry.courseMatrixStatus !== "IDLE") {
       return;
@@ -267,11 +273,12 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
     try {
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-        payload: { userIdentifier: userIdentifier, status: "LOADING" },
+        payload: { key: educationTypeCode, status: "LOADING" },
       });
 
       const courseMatrix = await hopsApi.getStudentCourseMatrix({
-        studentIdentifier: userIdentifier,
+        studentIdentifier: identifierToUse,
+        educationTypeCode: educationTypeCode,
       });
 
       const curriculumConfig = getCurriculumConfig(
@@ -281,25 +288,25 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-        payload: { userIdentifier: userIdentifier, status: "READY" },
+        payload: { key: educationTypeCode, status: "READY" },
       });
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX",
-        payload: { userIdentifier: userIdentifier, courseMatrix: courseMatrix },
+        payload: { key: educationTypeCode, courseMatrix: courseMatrix },
       });
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG",
         payload: {
-          userIdentifier: userIdentifier,
+          key: educationTypeCode,
           curriculumConfig: curriculumConfig,
         },
       });
 
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
-        payload: { userIdentifier: userIdentifier, status: "READY" },
+        payload: { key: educationTypeCode, status: "READY" },
       });
 
       onSuccess?.();
@@ -310,7 +317,7 @@ const loadCourseMatrix: LoadCourseMatrixTriggerType = function loadCourseMatrix(
       onFail?.();
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-        payload: { userIdentifier: userIdentifier, status: "ERROR" },
+        payload: { key: educationTypeCode, status: "ERROR" },
       });
     }
   };
@@ -337,17 +344,16 @@ const loadUserEducationTypes: LoadUserEducationTypesTriggerType =
       }
 
       const identifierToUse = state.status.userSchoolDataIdentifier;
+      const educationTypeCodeToUse = state.status.profile.educationTypeCode;
 
-      // Set default and selected user identifier to default user identifier which
-      // is the current logged in user's identifier
       dispatch({
-        type: "STUDY_ACTIVITY_UPDATE_DEFAULT_USER_IDENTIFIER",
-        payload: identifierToUse,
+        type: "STUDY_ACTIVITY_UPDATE_DEFAULT_EDUCATION_TYPE_CODE",
+        payload: educationTypeCodeToUse,
       });
 
       dispatch({
-        type: "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER",
-        payload: identifierToUse,
+        type: "STUDY_ACTIVITY_UPDATE_SELECTED_EDUCATION_TYPE_CODE",
+        payload: educationTypeCodeToUse,
       });
 
       try {
@@ -389,19 +395,29 @@ const loadUserEducationTypes: LoadUserEducationTypesTriggerType =
  * This action creator will update the selected education identifier and load the user study activity and course matrix
  * @param data data
  */
-const updateSelectedEducationIdentifier: UpdateSelectedEducationIdentifierTriggerType =
-  function updateSelectedEducationIdentifier(data) {
+const updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType =
+  function updateSelectedEducationTypeCode(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const { educationTypeCode } = data;
+
       dispatch({
-        type: "STUDY_ACTIVITY_UPDATE_SELECTED_USER_IDENTIFIER",
-        payload: data.userIdentifier,
+        type: "STUDY_ACTIVITY_UPDATE_SELECTED_EDUCATION_TYPE_CODE",
+        payload: educationTypeCode,
       });
 
-      dispatch(loadUserStudyActivity({ userIdentifier: data.userIdentifier }));
-      dispatch(loadCourseMatrix({ userIdentifier: data.userIdentifier }));
+      dispatch(
+        loadUserStudyActivity({
+          educationTypeCode,
+        })
+      );
+      dispatch(
+        loadCourseMatrix({
+          educationTypeCode,
+        })
+      );
     };
   };
 
@@ -418,19 +434,20 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
       const { websocketData } = data;
       const state = getState();
 
-      const hasPermissions =
-        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-");
+      const identifierToUse = state.status.userSchoolDataIdentifier;
+
+      const hasPermissions = identifierToUse.startsWith("PYRAMUS-STUDENT-");
 
       if (!hasPermissions) {
         return;
       }
 
-      const defaultUserIdentifier =
-        state.studyActivity.defaultEducationIdentifier;
+      const defaultEducationTypeCode =
+        state.studyActivity.defaultEducationTypeCode;
 
       const entry =
-        state.studyActivity.userStudyDataByUserIdentifier[
-          defaultUserIdentifier
+        state.studyActivity.userStudyDataByEducationTypeCode[
+          defaultEducationTypeCode
         ];
 
       if (entry?.studyActivityStatus !== "READY") {
@@ -442,8 +459,9 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
       }
 
       const updatedStudyActivityByWorkspaceId = await hopsApi.getStudyActivity({
-        studentIdentifier: defaultUserIdentifier,
+        studentIdentifier: identifierToUse,
         workspaceEntityId: websocketData.courseId,
+        educationTypeCode: defaultEducationTypeCode,
       });
 
       // If no items, meaning that delete existing activity course by
@@ -461,7 +479,7 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
           payload: {
-            userIdentifier: defaultUserIdentifier,
+            key: defaultEducationTypeCode,
             items: updatedStudyActivityItems,
           },
         });
@@ -488,7 +506,7 @@ const studyActivityWorkspaceSuggestedWebsocket: StudyActivityWorkspaceSuggestedW
         dispatch({
           type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
           payload: {
-            userIdentifier: defaultUserIdentifier,
+            key: defaultEducationTypeCode,
             items: updatedStudyActivityItems,
           },
         });
@@ -510,19 +528,20 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
 
       const state = getState();
 
-      const hasPermissions =
-        state.status.userSchoolDataIdentifier.startsWith("PYRAMUS-STUDENT-");
+      const identifierToUse = state.status.userSchoolDataIdentifier;
+
+      const hasPermissions = identifierToUse.startsWith("PYRAMUS-STUDENT-");
 
       if (!hasPermissions) {
         return;
       }
 
-      const defaultUserIdentifier =
-        state.studyActivity.defaultEducationIdentifier;
+      const defaultEducationTypeCode =
+        state.studyActivity.defaultEducationTypeCode;
 
       const entry =
-        state.studyActivity.userStudyDataByUserIdentifier[
-          defaultUserIdentifier
+        state.studyActivity.userStudyDataByEducationTypeCode[
+          defaultEducationTypeCode
         ];
 
       if (entry?.studyActivityStatus !== "READY") {
@@ -548,7 +567,7 @@ const studyActivityWorkspaceSignupWebsocket: StudyActivityWorkspaceSignupWebsock
       dispatch({
         type: "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS",
         payload: {
-          userIdentifier: defaultUserIdentifier,
+          key: defaultEducationTypeCode,
           items: updatedStudyActivityItems,
         },
       });
@@ -575,7 +594,7 @@ export {
   loadUserStudyActivity,
   loadCourseMatrix,
   loadUserEducationTypes,
-  updateSelectedEducationIdentifier,
+  updateSelectedEducationTypeCode,
 
   // WEBSOCKET UPDATERS
   studyActivityWorkspaceSuggestedWebsocket,

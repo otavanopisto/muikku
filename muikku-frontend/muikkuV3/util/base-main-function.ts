@@ -115,19 +115,21 @@ export default async function (
         onSuccess: () => {
           const state = store.getState();
 
-          const defaultUserIdentifier =
-            state.studyActivity.defaultEducationIdentifier;
+          const defaultEducationTypeCode =
+            state.studyActivity.defaultEducationTypeCode;
 
-          if (!defaultUserIdentifier) {
+          if (!defaultEducationTypeCode) {
             return;
           }
           store.dispatch(
-            <Action>(
-              loadUserStudyActivity({ userIdentifier: defaultUserIdentifier })
-            )
+            <Action>loadUserStudyActivity({
+              educationTypeCode: defaultEducationTypeCode,
+            })
           );
           store.dispatch(
-            <Action>loadCourseMatrix({ userIdentifier: defaultUserIdentifier })
+            <Action>(
+              loadCourseMatrix({ educationTypeCode: defaultEducationTypeCode })
+            )
           );
         },
       })
