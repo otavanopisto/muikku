@@ -453,6 +453,7 @@ public class UserRESTService extends AbstractRESTService {
         userEntity == null ? null : userEntity.getLastLogin(),
         user.getCurriculumIdentifier() != null ? user.getCurriculumIdentifier().toId() : null,
         courseMetaController.getCurriculumName(user.getCurriculumIdentifier()),
+        user.getEducationTypeCode(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         organizationRESTModel,

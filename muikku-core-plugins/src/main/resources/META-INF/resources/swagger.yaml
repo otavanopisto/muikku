@@ -17656,6 +17656,7 @@ components:
         - curriculumIdentifier
         - studyProgrammeIdentifier
         - studyProgrammeName
+        - educationTypeCode
         - studyStartDate
         - studyEndDate
         - studyTimeEnd
@@ -17699,6 +17700,9 @@ components:
           type: string
         studyProgrammeName:
           type: string
+        educationTypeCode:
+          type: string
+          nullable: true
         studyStartDate:
           nullable: true
           type: string

@@ -9,13 +9,13 @@ public class FlaggedStudentRestModel extends Student {
   }
 
   public FlaggedStudentRestModel(String id, String firstName, String lastName, String nickName, String studyProgrammeName,
-      String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
+      String studyProgrammeIdentifier, String educationTypeCode, Boolean hasImage, String nationality, String language, String municipality,
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, String curriculumName, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
       OrganizationRESTModel organization, Boolean hasPedagogyForm, boolean u18Compulsory) {
-    super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality, language, municipality,
-        school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
-        curriculumIdentifier, curriculumName, updatedByStudent, userEntityId, organization, hasPedagogyForm);
+    super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality,
+        language, municipality, school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
+        curriculumIdentifier, curriculumName, educationTypeCode, updatedByStudent, userEntityId, organization, hasPedagogyForm);
     this.flags = flags;
     this.u18Compulsory = u18Compulsory;
   }

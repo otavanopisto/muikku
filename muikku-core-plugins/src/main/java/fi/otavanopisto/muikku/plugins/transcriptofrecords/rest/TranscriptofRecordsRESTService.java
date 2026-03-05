@@ -259,6 +259,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
             o.get("curriculumIdentifier") == null ? null : courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId((String) o.get("curriculumIdentifier"))),
+            null, // educationTypeCode. Would need to be in Elastic as we don't want looped Pyramus calls :|
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             organizationRESTModel,

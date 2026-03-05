@@ -493,6 +493,7 @@ public class GuiderRESTService extends PluginRESTService {
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"),
             (String) o.get("studyProgrammeIdentifier"),
+            null, // educationTypeCode. Would need to be in Elastic as we don't want looped Pyramus calls :|
             hasImage,
             (String) o.get("nationality"),
             (String) o.get("language"),
@@ -583,6 +584,7 @@ public class GuiderRESTService extends PluginRESTService {
         user.getNickName(),
         user.getStudyProgrammeName(),
         user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
+        user.getEducationTypeCode(),
         hasImage,
         user.getNationality(),
         user.getLanguage(),
