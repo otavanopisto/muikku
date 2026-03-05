@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
@@ -53,8 +52,8 @@ public interface UserSchoolDataBridge {
   
   /* HOPS */
 
-  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier);
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId);
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier, String educationTypeCode);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId, String educationTypeCode);
   
   /* Worklist */
   
@@ -88,7 +87,7 @@ public interface UserSchoolDataBridge {
   public BridgeResponse<StudentPayload> createStudent(StudentPayload student);
   public BridgeResponse<StudentPayload> updateStudent(StudentPayload student);
   
-  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier);
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier);
     
   /**
    * Creates new user

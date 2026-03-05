@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -72,12 +71,12 @@ public class UserSchoolDataController {
 
   /* HOPS */
   
-  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String dataSource, String identifier) {
-    return getUserBridge(dataSource).getCourseMatrix(identifier);
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String dataSource, String identifier, String educationTypeCode) {
+    return getUserBridge(dataSource).getCourseMatrix(identifier, educationTypeCode);
   }
 
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier, Long courseId) {
-    return getUserBridge(dataSource).getStudyActivity(identifier, courseId);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier, Long courseId, String educationTypeCode) {
+    return getUserBridge(dataSource).getStudyActivity(identifier, courseId, educationTypeCode);
   }
 
   /* Worklist */
@@ -382,7 +381,7 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
   }
   
-  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));

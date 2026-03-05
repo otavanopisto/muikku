@@ -689,7 +689,7 @@ public class UserRESTService extends AbstractRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    BridgeResponse<Map<String, String>> response = userController.listStudentEducationTypes(studentIdentifier);
+    BridgeResponse<List<String>> response = userController.listStudentEducationTypes(studentIdentifier);
     if (response.ok()) {
       return Response.ok(response.getEntity()).build();
     }

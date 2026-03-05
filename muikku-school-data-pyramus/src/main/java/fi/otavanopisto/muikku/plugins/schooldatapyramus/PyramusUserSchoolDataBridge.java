@@ -75,7 +75,6 @@ import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudentEducationType;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
@@ -156,7 +155,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier) {
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier, String educationTypeCode) {
 
     // Convert identifier to Pyramus student id
 
@@ -166,16 +165,18 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     // Service call
+    
+    String url = StringUtils.isBlank(educationTypeCode)
+        ? String.format("/muikku/students/%d/courseMatrix", studentId)
+        : String.format("/muikku/students/%d/courseMatrix?educationTypeCode=%s", studentId, educationTypeCode);
 
-    BridgeResponse<CourseMatrixRestModel> response = pyramusClient.responseGet(
-        String.format("/muikku/students/%d/courseMatrix", studentId),
-        CourseMatrixRestModel.class);
+    BridgeResponse<CourseMatrixRestModel> response = pyramusClient.responseGet(url, CourseMatrixRestModel.class);
 
     return response;
   }
 
   @Override
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId) {
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId, String educationTypeCode) {
 
     // Convert identifier to Pyramus student id
 
@@ -193,10 +194,22 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Service call
 
-    String url = courseId == null
-        ? String.format("/muikku/students/%d/studyActivity", studentId)
-        : String.format("/muikku/students/%d/studyActivity?courseId=%d", studentId, courseId);
-    BridgeResponse<StudyActivityRestModel> response = pyramusClient.responseGet(url, StudyActivityRestModel.class);
+    boolean hasCourseId = courseId != null;
+    boolean hasEduType = !StringUtils.isBlank(educationTypeCode);
+    StringBuffer url = new StringBuffer(String.format("/muikku/students/%d/studyActivity", studentId));
+    if (hasCourseId || hasEduType) {
+      url.append('?');
+      if (hasCourseId) {
+        url.append(String.format("courseId=%d", courseId));
+      }
+      if (hasCourseId && hasEduType) {
+        url.append('&');
+      }
+      if (hasEduType) {
+        url.append(String.format("educationTypeCode=%s", educationTypeCode));
+      }
+    }
+    BridgeResponse<StudyActivityRestModel> response = pyramusClient.responseGet(url.toString(), StudyActivityRestModel.class);
 
     // Convert Pyramus course ids in response to Muikku workspace entity ids
 
@@ -2039,17 +2052,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<Map<String, String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
     Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     if (pyramusStudentId != null) {
-      Map<String, String> eduTypes = new HashMap<>();
-      BridgeResponse<StudentEducationType[]> response = pyramusClient.responseGet(String.format("/students/students/%d/educationTypes", pyramusStudentId), StudentEducationType[].class);
-      if (response.getEntity() != null) {
-        for (int i = 0; i < response.getEntity().length; i++) {
-          eduTypes.put(response.getEntity()[i].getEducationTypeCode(), identifierMapper.getStudentIdentifier(response.getEntity()[i].getStudentId()).toId());
-        }
-      }
-      return new BridgeResponse<Map<String, String>>(response.getStatusCode(), eduTypes);
+      BridgeResponse<String[]> response = pyramusClient.responseGet(String.format("/students/students/%d/educationTypes", pyramusStudentId), String[].class);
+      return new BridgeResponse<List<String>>(response.getStatusCode(), Arrays.asList(response.getEntity()));
     }
     logger.warning(String.format("PyramusUserSchoolDataBridge.listStudentEducationTypes malformed user identifier %s\n%s",
       studentIdentifier,

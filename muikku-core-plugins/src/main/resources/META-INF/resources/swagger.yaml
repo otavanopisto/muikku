@@ -6459,6 +6459,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: educationTypeCode
+          in: query
+          description: Optional education type, e.g. lukio
+          schema:
+            type: string
       responses:
         "200":
           description: Student's HOPS course matrix
@@ -6487,6 +6492,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: educationTypeCode
+          in: query
+          description: Optional education type, e.g. lukio
+          schema:
+            type: string
       responses:
         "200":
           description: Student study activity

@@ -563,7 +563,7 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/courseMatrix")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCourseMatrix(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+  public Response getCourseMatrix(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("educationTypeCode") String educationTypeCode) {
     
     // Payload validatiom
     
@@ -588,7 +588,7 @@ public class HopsRestService {
     // Service call
 
     BridgeResponse<CourseMatrixRestModel> response = userSchoolDataController.getCourseMatrix(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), educationTypeCode);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
@@ -600,7 +600,7 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studyActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("workspaceEntityId") Long workspaceEntityId) {
+  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("educationTypeCode") String educationTypeCode) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -630,7 +630,7 @@ public class HopsRestService {
     // Pyramus call for ongoing, transferred, and graded courses
 
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntityId);
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntityId, educationTypeCode);
     if (response.ok()) {
 
       for (StudyActivityItemRestModel item : response.getEntity().getItems()) {

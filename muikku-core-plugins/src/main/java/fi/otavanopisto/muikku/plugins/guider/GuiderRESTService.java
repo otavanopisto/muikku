@@ -1351,7 +1351,7 @@ public class GuiderRESTService extends PluginRESTService {
     // Websocket message
 
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId());
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId(), null);
     if (response.ok()) {
       // Ensure caller and student are added to the listeners interested in the student's HOPS changes
       hopsWebSocketMessenger.registerUser(studentEntity.getId(), sessionController.getLoggedUserEntity().getId());
