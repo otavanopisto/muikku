@@ -8442,40 +8442,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/students/{studentIdentifier}/students:
-    get:
-      operationId: getStudents
-      summary: Get students
-      description: Get students
-      tags:
-        - Records
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: includeInactiveStudents
-          in: query
-          description: Include inactive students
-          schema:
-            type: boolean
-            default: false
-      responses:
-        "200":
-          description: Students results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserWithSchoolData"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/records/users/{identifier}/workspaceActivity:
     get:
       operationId: getWorkspaceActivity
