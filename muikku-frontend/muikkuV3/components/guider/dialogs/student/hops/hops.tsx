@@ -532,12 +532,12 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     studentInfo: state.guider.currentStudent.basic,
     curriculumConfig:
-      state.guider.currentStudent.studyDataByUserIdentifier[
-        state.guider.currentStudent.basic.id
+      state.guider.currentStudent.studyDataByEducationTypeCode[
+        state.guider.currentStudent.basic.educationTypeCode
       ]?.curriculumConfig ?? null,
     studyActivity:
-      state.guider.currentStudent.studyDataByUserIdentifier[
-        state.guider.currentStudent.basic.id
+      state.guider.currentStudent.studyDataByEducationTypeCode[
+        state.guider.currentStudent.basic.educationTypeCode
       ]?.studyActivity ?? null,
   };
 }
