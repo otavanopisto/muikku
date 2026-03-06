@@ -2,10 +2,12 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { displayNotification } from "~/actions/base/notifications";
+import { updateCurrentDependantSelectedEducationTypeCode } from "~/actions/main-function/guardian";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import RecordsListing from "~/components/general/records-history/records";
+import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
 import { StateType } from "~/reducers";
 
 /**
@@ -25,16 +27,23 @@ const Records = (props: RecordsProps) => {
     (state: StateType) => state.guardian.currentDependant
   );
   const dispatch = useDispatch();
+
+  const currentDependantStudyData =
+    currentDependant.dependantStudyDataByEducationTypeCode[
+      currentDependant.dependantSelectedEducationTypeCode
+    ] ?? null;
+
   if (
-    currentDependant.dependantStudyActivityStatus === "LOADING" ||
-    currentDependant.dependantStudyActivityStatus === "IDLE" ||
-    currentDependant.dependantCourseMatrixStatus === "LOADING" ||
-    currentDependant.dependantCourseMatrixStatus === "IDLE"
+    currentDependantStudyData === null ||
+    currentDependantStudyData.studyActivityStatus === "LOADING" ||
+    currentDependantStudyData.studyActivityStatus === "IDLE" ||
+    currentDependantStudyData.courseMatrixStatus === "LOADING" ||
+    currentDependantStudyData.courseMatrixStatus === "IDLE"
   ) {
     return null;
   } else if (
-    currentDependant.dependantStudyActivityStatus === "ERROR" ||
-    currentDependant.dependantCourseMatrixStatus === "ERROR"
+    currentDependantStudyData.studyActivityStatus === "ERROR" ||
+    currentDependantStudyData.courseMatrixStatus === "ERROR"
   ) {
     return (
       <div className="empty">
@@ -47,6 +56,16 @@ const Records = (props: RecordsProps) => {
       </div>
     );
   }
+
+  /**
+   * Handles the selection of an education type
+   * @param educationTypeCode educationTypeCode
+   */
+  const handleSelectEducationType = (educationTypeCode: string) => {
+    dispatch(
+      updateCurrentDependantSelectedEducationTypeCode(educationTypeCode)
+    );
+  };
 
   /**
    * studentRecords
@@ -64,11 +83,25 @@ const Records = (props: RecordsProps) => {
     >
       <ApplicationSubPanel>
         <ApplicationSubPanel.Body>
-          {currentDependant.dependantStudyActivity &&
-          currentDependant.dependantCourseMatrix ? (
+          {currentDependantStudyData.studyActivity &&
+          currentDependantStudyData.courseMatrix ? (
             <RecordsListing
-              courseMatrix={currentDependant.dependantCourseMatrix}
-              studyActivity={currentDependant.dependantStudyActivity}
+              courseMatrix={currentDependantStudyData.courseMatrix}
+              studyActivity={currentDependantStudyData.studyActivity}
+              educationTypeSelector={
+                <RecordsEducationTypeSelector
+                  options={currentDependant.dependantEducationTypes.map(
+                    (educationTypeCode) => ({
+                      educationTypeCode,
+                      label: educationTypeCode,
+                    })
+                  )}
+                  selectedEducationTypeCode={
+                    currentDependant.dependantSelectedEducationTypeCode
+                  }
+                  onSelect={handleSelectEducationType}
+                />
+              }
             />
           ) : (
             <div className="application-sub-panel__item">

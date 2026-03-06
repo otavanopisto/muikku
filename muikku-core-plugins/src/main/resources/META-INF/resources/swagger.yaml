@@ -8442,40 +8442,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/students/{studentIdentifier}/students:
-    get:
-      operationId: getStudents
-      summary: Get students
-      description: Get students
-      tags:
-        - Records
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: includeInactiveStudents
-          in: query
-          description: Include inactive students
-          schema:
-            type: boolean
-            default: false
-      responses:
-        "200":
-          description: Students results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserWithSchoolData"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/records/users/{identifier}/workspaceActivity:
     get:
       operationId: getWorkspaceActivity
@@ -9041,7 +9007,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/StudentBasicInfo"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9067,7 +9033,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9093,7 +9059,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9183,7 +9149,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/StudentBasicInfo"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -13291,17 +13257,19 @@ components:
                 type: string
               studyProgrammeIdentifier:
                 type: string
-              role:
+              gender:
                 type: string
+                nullable: true
               ssn:
                 type: string
+                nullable: true
 
     UserStudentUpdateRequestBody:
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/UserWithSchoolData"
+              - $ref: "#/components/schemas/Student"
 
     UserStudentBasicInfoUpdateRequestBody:
       content:
@@ -13314,6 +13282,7 @@ components:
               - firstName
               - lastName
               - email
+              - studyProgrammeIdentifier
             properties:
               identifier:
                 type: string
@@ -13323,12 +13292,14 @@ components:
                 type: string
               email:
                 type: string
-              ssn:
-                type: string
-              role:
-                type: string
               studyProgrammeIdentifier:
                 type: string
+              ssn:
+                type: string
+                nullable: true
+              gender:
+                type: string
+                nullable: true
 
     UserStudentAddressUpdateRequestBody:
       content:
@@ -17642,6 +17613,32 @@ components:
         code:
           type: string
 
+    StudentBasicInfo:
+      type: object
+      required:
+        - identifier
+        - firstName
+        - lastName
+        - email
+        - studyProgrammeIdentifier
+      properties:
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        studyProgrammeIdentifier:
+          type: string
+        gender:
+          type: string
+          nullable: true
+        ssn:
+          type: string
+          nullable: true
+
     Student:
       type: object
       required:
@@ -18578,64 +18575,6 @@ components:
           type: string
           format: date-time
           nullable: true
-
-    UserWithSchoolData:
-      type: object
-      description: UserWithSchoolData object
-      required:
-        - id
-        - firstName
-        - email
-        - hasImage
-        - updatedByStudent
-        - userEntityId
-        - matriculationEligibility
-        - ceeposLine
-      properties:
-        id:
-          type: string
-        userEntityId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-        nickName:
-          type: string
-        email:
-          type: string
-        hasImage:
-          type: boolean
-        updatedByStudent:
-          type: boolean
-        matriculationEligibility:
-          type: string
-        ceeposLine:
-          type: string
-          nullable: true
-        curriculumName:
-          type: string
-        curriculumIdentifier:
-          type: string
-        language:
-          type: string
-        municipality:
-          type: string
-        nationality:
-          type: string
-        school:
-          type: string
-        studyEndDate:
-          type: string
-        studyStartDate:
-          type: string
-        studyTimeEnd:
-          type: string
-        lastLogin:
-          type: string
-        studyProgrammeName:
-          type: string
 
     UserWhoAmI:
       type: object

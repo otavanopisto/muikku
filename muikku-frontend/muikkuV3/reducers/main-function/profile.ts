@@ -3,9 +3,9 @@ import { Reducer } from "redux";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import {
   CeeposOrder,
+  Student,
   StudentCard,
   UserStudentAddress,
-  UserWithSchoolData,
   WorklistItem,
   WorklistSummary,
   WorklistTemplate,
@@ -42,7 +42,7 @@ export interface ProfileState {
   properties: ProfileProperty;
   username?: string;
   addresses?: UserStudentAddress[];
-  student?: UserWithSchoolData;
+  student?: Student;
   chatSettings?: UserChatSettingsType;
   worklistTemplates?: WorklistTemplate[];
   worklist?: Array<WorklistSection>;

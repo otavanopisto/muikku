@@ -72,13 +72,29 @@ const DependantApplication = (props: DependantApplicationProps) => {
   // Load data when identifier changes
   useEffect(() => {
     if (!identifier) return;
+
     // Reset current dependant state
     dispatch(updateCurrentDependantIdentifier(identifier));
-    // Load current dependant course matrix
-    dispatch(loadCurrentDependantCourseMatrix(identifier));
-    dispatch(loadCurrentDependantStudyActivity(identifier));
+    // Load current dependant course matrix and study activity
+    // based on current identfier and selected education type code
+    dispatch(
+      loadCurrentDependantCourseMatrix({
+        dependantIdentifier: identifier,
+        educationTypeCode: currentDependant.dependantSelectedEducationTypeCode,
+      })
+    );
+    dispatch(
+      loadCurrentDependantStudyActivity({
+        dependantIdentifier: identifier,
+        educationTypeCode: currentDependant.dependantSelectedEducationTypeCode,
+      })
+    );
     dispatch(loadCurrentDependantPedagogyFormAccess(identifier));
-  }, [dispatch, identifier]);
+  }, [
+    dispatch,
+    identifier,
+    currentDependant.dependantSelectedEducationTypeCode,
+  ]);
 
   // Handle tab from hash
   useEffect(() => {
@@ -100,11 +116,11 @@ const DependantApplication = (props: DependantApplicationProps) => {
 
     if (identifier) {
       const givenLocation = tab;
+      dispatch(loadCurrentDependantStudentInfo(identifier));
 
       if (givenLocation === "summary" || !givenLocation) {
         // Summary needs counselors and student info
         dispatch(loadCurrentDependantContactGroups("counselors", identifier));
-        dispatch(loadCurrentDependantStudentInfo(identifier));
         dispatch(loadCurrentDependantActivityGraphData(identifier));
       }
     }
