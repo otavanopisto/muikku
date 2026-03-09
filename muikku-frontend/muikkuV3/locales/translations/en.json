@@ -577,6 +577,7 @@
       "empty_studyTime": "Not set",
       "empty_workspaces": "No courses. In the future, you will see in this list the courses you are studying, the courses you have completed and the courses you have received transfer credits.",
       "empty_workspaces-guardian": "No courses. In the future, you will see in this list the courses your dependant is studying, the courses your dependant have completed and the courses your dependant have received transfer credits.",
+      "filtersDescription": "Filters help you narrow down your view: select a course status or type to see only the matching studies. Choosing “Show full syllabus” will display all courses required for the degree, even those you haven’t started yet.",
       "logins": "times last month.",
       "notEvaluated": "No evaluations",
       "sent": "Sent",

@@ -468,6 +468,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
           <ButtonPill icon="filter" buttonModifiers={["filter"]} />
         </Dropdown>
       </div>
+      <div className="application-sub-panel__description">
+        {t("content.filtersDescription", { ns: "studies" })}
+      </div>
       <ApplicationSubPanel.Header>
         {educationTypeName()}
       </ApplicationSubPanel.Header>

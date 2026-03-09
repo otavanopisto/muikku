@@ -184,7 +184,6 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  margin: 0 0 20px;
 }
 
 .application-sub-panel__meta {
@@ -337,12 +336,13 @@
 
 // Subpanel description
 .application-sub-panel__description {
+  font-style: italic;
   font-weight: 300;
   line-height: 1.375rem;
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
+    padding: 10px 0 20px;
   }
 }
 
