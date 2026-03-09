@@ -2,7 +2,6 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   ContactGroupNames,
   DependantActivityGraphData,
-  DependantStudyData,
   ReducerStateType,
 } from "~/reducers/main-function/guardian";
 import {
@@ -204,6 +203,13 @@ export interface LoadDependantWorkspacesTriggerType {
 }
 
 /**
+ * InitializeCurrentDependantEssentialsTriggerType
+ */
+export interface InitializeCurrentDependantEssentialsTriggerType {
+  (dependantIdentifier: string): AnyActionType;
+}
+
+/**
  * LoadCurrentDependantEssentialsTriggerType
  */
 export interface LoadCurrentDependantStudyActivityTriggerType {
@@ -277,10 +283,7 @@ export interface UpdateCurrentDependantSelectedEducationTypeCodeTriggerType {
  * @returns Thunk function to load dependants
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
@@ -327,10 +330,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
  */
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   function loadDependantWorkspaces(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       let dependantWorkspaces =
@@ -413,10 +413,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
 const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTriggerType =
   function loadCurrentDependantStudyActivity(data) {
     const { dependantIdentifier, educationTypeCode } = data;
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const entry =
         state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
@@ -430,7 +427,7 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
       try {
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS",
-          payload: { key: dependantIdentifier, status: "LOADING" },
+          payload: { key: educationTypeCode, status: "LOADING" },
         });
 
         const studyActivity = await hopsApi.getStudyActivity({
@@ -468,17 +465,12 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
 const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerType =
   function loadCurrentDependantCourseMatrix(data) {
     const { dependantIdentifier, educationTypeCode } = data;
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const entry =
         state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
           educationTypeCode
         ];
-
-      console.log("entry", entry);
 
       if (!entry || entry.courseMatrixStatus !== "IDLE") {
         return;
@@ -487,7 +479,7 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
       try {
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-          payload: { key: dependantIdentifier, status: "LOADING" },
+          payload: { key: educationTypeCode, status: "LOADING" },
         });
 
         const courseMatrix = await hopsApi.getStudentCourseMatrix({
@@ -529,12 +521,12 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-          payload: { key: dependantIdentifier, status: "ERROR" },
+          payload: { key: educationTypeCode, status: "ERROR" },
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS",
-          payload: { key: dependantIdentifier, status: "ERROR" },
+          payload: { key: educationTypeCode, status: "ERROR" },
         });
       }
     };
@@ -547,10 +539,7 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
  */
 const loadCurrentDependantStudentInfo: LoadCurrentDependantStudentInfoTriggerType =
   function loadCurrentDependantStudentInfo(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (state.guardian.currentDependant.dependantInfoStatus === "READY") {
@@ -630,10 +619,7 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
     groupName: ContactGroupNames,
     dependantIdentifier: string
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const isActiveUser = state.status.isActiveUser;
 
@@ -708,10 +694,7 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
  */
 const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDataTriggerType =
   function loadCurrentDependantActivityGraphData(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (
@@ -817,10 +800,7 @@ const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDa
  */
 const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAccessTriggerType =
   function loadCurrentDependantPedagogyFormAccess(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (
@@ -869,10 +849,7 @@ const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAc
  */
 const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerType =
   function updateCurrentDependantIdentifier(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
         payload: dependantIdentifier,
@@ -922,10 +899,7 @@ const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSel
  */
 const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTriggerType =
   function loadCurrentDependantEducationTypes(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const educationTypes = await userApi.getStudentEducationTypes({
         studentIdentifier: dependantIdentifier,
       });
@@ -937,7 +911,45 @@ const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTrig
     };
   };
 
+/**
+ * Initialize current dependant essentials thunk function
+ * @param dependantIdentifier dependantIdentifier
+ * @returns Thunk function to initialize current dependant essentials
+ */
+const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentialsTriggerType =
+  function initializeCurrentDependantEssentials(dependantIdentifier: string) {
+    return async (dispatch, getState) => {
+      // Update the current dependant identifier.
+      // This will reset the current dependant state so we will wait for it to complete.
+      await dispatch(updateCurrentDependantIdentifier(dependantIdentifier));
+
+      // Then load the current dependant student info.
+      await dispatch(loadCurrentDependantStudentInfo(dependantIdentifier));
+
+      // Get the default education type code.
+      const defaultEducationTypeCode =
+        getState().guardian.currentDependant.dependantInfo.educationTypeCode;
+
+      // Load the current dependant course matrix.
+      dispatch(
+        loadCurrentDependantCourseMatrix({
+          dependantIdentifier: dependantIdentifier,
+          educationTypeCode: defaultEducationTypeCode,
+        })
+      );
+
+      // Load the current dependant study activity.
+      dispatch(
+        loadCurrentDependantStudyActivity({
+          dependantIdentifier: dependantIdentifier,
+          educationTypeCode: defaultEducationTypeCode,
+        })
+      );
+    };
+  };
+
 export {
+  initializeCurrentDependantEssentials,
   loadDependants,
   loadDependantWorkspaces,
   loadCurrentDependantStudyActivity,

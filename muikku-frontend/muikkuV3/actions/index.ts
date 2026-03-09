@@ -8,14 +8,13 @@ export interface SpecificActionType<ActionType, PayloadType> {
   payload: PayloadType | null;
 }
 
-type AsyncDeferredAction = (
-  dispatch: (arg: AnyActionType) => any,
-  getState: () => any
+export type AppDispatch = ThunkDispatch<StateType, undefined, ActionType>;
+
+export type AsyncDeferredAction = (
+  dispatch: AppDispatch,
+  getState: () => StateType
 ) => Promise<void>;
-type DeferredAction = (
-  dispatch: (arg: AnyActionType) => any,
-  getState: () => any
-) => any;
+type DeferredAction = (dispatch: AppDispatch, getState: () => StateType) => any;
 
 import { LOCALE_SET, LOCALE_UPDATE } from "./base/locales";
 import {
@@ -452,6 +451,8 @@ import {
   GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES,
   GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS,
 } from "./main-function/guardian";
+import { StateType } from "~/reducers";
+import { ThunkDispatch } from "redux-thunk";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD

@@ -16,13 +16,10 @@ import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 import {
+  initializeCurrentDependantEssentials,
   loadCurrentDependantActivityGraphData,
   loadCurrentDependantContactGroups,
-  loadCurrentDependantCourseMatrix,
   loadCurrentDependantPedagogyFormAccess,
-  loadCurrentDependantStudentInfo,
-  loadCurrentDependantStudyActivity,
-  updateCurrentDependantIdentifier,
 } from "~/actions/main-function/guardian";
 
 /**
@@ -73,28 +70,9 @@ const DependantApplication = (props: DependantApplicationProps) => {
   useEffect(() => {
     if (!identifier) return;
 
-    // Reset current dependant state
-    dispatch(updateCurrentDependantIdentifier(identifier));
-    // Load current dependant course matrix and study activity
-    // based on current identfier and selected education type code
-    dispatch(
-      loadCurrentDependantCourseMatrix({
-        dependantIdentifier: identifier,
-        educationTypeCode: currentDependant.dependantSelectedEducationTypeCode,
-      })
-    );
-    dispatch(
-      loadCurrentDependantStudyActivity({
-        dependantIdentifier: identifier,
-        educationTypeCode: currentDependant.dependantSelectedEducationTypeCode,
-      })
-    );
+    dispatch(initializeCurrentDependantEssentials(identifier));
     dispatch(loadCurrentDependantPedagogyFormAccess(identifier));
-  }, [
-    dispatch,
-    identifier,
-    currentDependant.dependantSelectedEducationTypeCode,
-  ]);
+  }, [dispatch, identifier]);
 
   // Handle tab from hash
   useEffect(() => {
@@ -116,7 +94,6 @@ const DependantApplication = (props: DependantApplicationProps) => {
 
     if (identifier) {
       const givenLocation = tab;
-      dispatch(loadCurrentDependantStudentInfo(identifier));
 
       if (givenLocation === "summary" || !givenLocation) {
         // Summary needs counselors and student info
