@@ -653,6 +653,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                   <RecordsActivityRowTransfered
                     key={`transfered-activity-item-${i}`}
                     studyActivityItem={tItem}
+                    educationType={studyActivity.educationType}
                   />
                 ))}
             </>

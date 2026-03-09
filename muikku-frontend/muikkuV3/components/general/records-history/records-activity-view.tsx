@@ -253,6 +253,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
                 <RecordsActivityRowTransfered
                   key={`transfered-activity-item-${i}`}
                   studyActivityItem={tItem}
+                  educationType={studyActivity.educationType}
                 />
               ))}
             </>
