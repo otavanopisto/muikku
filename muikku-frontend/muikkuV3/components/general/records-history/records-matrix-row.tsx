@@ -30,6 +30,7 @@ export interface RecordsMatrixRowProps {
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
   educationType: string;
+  isCombinationWorkspace: boolean;
   /** Show credits in the course title (e.g. "2 op"). Default true for upper secondary. */
   showCredits?: boolean;
 }
@@ -45,6 +46,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     course,
     studyActivityItems,
     educationType,
+    isCombinationWorkspace,
     showCredits = true,
   } = props;
 
@@ -71,7 +73,6 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   );
 
   const hasActivity = studyActivityItems.length > 0;
-  const isCombinationWorkspace = studyActivityItems.length > 1;
 
   const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
     workspaceId: subjectSpecificActivityItem?.courseId,

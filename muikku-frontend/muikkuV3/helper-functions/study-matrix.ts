@@ -413,6 +413,7 @@ export interface RecordsMatrixRow {
   subject: CourseMatrixSubject;
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
+  isCombinationWorkspace: boolean;
 }
 
 /**
@@ -450,7 +451,12 @@ export const buildRecordsRowsFromMatrix = (
           item.subject === subject.code &&
           item.courseNumber === course.courseNumber
       );
-      rows.push({ subject, course, studyActivityItems });
+      rows.push({
+        subject,
+        course,
+        studyActivityItems,
+        isCombinationWorkspace: false,
+      });
     }
   }
 
@@ -502,6 +508,10 @@ export const enrichMatrixRowsWithCombinationWorkspace = (
     if (courseId == null) return row;
     const fullList = byCourseId.get(courseId);
     if (!fullList || fullList.length < 2) return row;
-    return { ...row, studyActivityItems: fullList };
+    return {
+      ...row,
+      studyActivityItems: fullList,
+      isCombinationWorkspace: true,
+    };
   });
 };

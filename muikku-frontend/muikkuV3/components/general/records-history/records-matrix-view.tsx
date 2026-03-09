@@ -565,6 +565,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                         course={row.course}
                         studyActivityItems={row.studyActivityItems}
                         educationType={studyActivity.educationType}
+                        isCombinationWorkspace={row.isCombinationWorkspace}
                       />
                     ))}
                   </AnimateHeight>
