@@ -1055,6 +1055,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         const educationTypes = await userApi.getStudentEducationTypes({
           studentIdentifier: id,
         });
+
         // Update raw education types to state
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -1098,10 +1099,12 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         // Load study data for default education type
         const studentStudyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: id,
+          educationTypeCode: educationTypeCode,
         });
 
         const courseMatrix = await hopsApi.getStudentCourseMatrix({
           studentIdentifier: id,
+          educationTypeCode: educationTypeCode,
         });
 
         const curriculumConfig = getCurriculumConfig(
@@ -1135,40 +1138,40 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         });
       };
 
-      await Promise.all([
-        guiderApi
-          .getGuiderStudent({
-            studentId: id,
+      // Let's load the current student first to ensure that student basic data is accessible
+      // for the next promises
+      const currentStudent = await guiderApi.getGuiderStudent({
+        studentId: id,
+      });
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: { property: "basic", value: currentStudent },
+      });
+
+      // If user has LIST_USER_ORDERS permission AND student has ceeposLine set then dispatchin is possible
+      if (
+        getState().status.permissions.LIST_USER_ORDERS &&
+        currentStudent.ceeposLine !== null
+      ) {
+        dispatch(updateAvailablePurchaseProducts());
+      }
+
+      // Other promises
+      const promises = [
+        studentStudyEssentialsPromise(currentStudent.educationTypeCode),
+        pedagogyApi
+          .getPedagogyFormAccess({
+            studentIdentifier: currentStudent.id,
           })
-          .then((student) => {
+          .then((pedagogyFormAvaibility) => {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "basic", value: student },
+              payload: {
+                property: "pedagogyFormAvailable",
+                value: pedagogyFormAvaibility,
+              },
             });
-
-            // If user has LIST_USER_ORDERS permission AND student has ceeposLine set then dispatchin is possible
-            if (
-              getState().status.permissions.LIST_USER_ORDERS &&
-              getState().guider.currentStudent.basic.ceeposLine !== null
-            ) {
-              dispatch(updateAvailablePurchaseProducts());
-            }
-
-            studentStudyEssentialsPromise(student.educationTypeCode);
-
-            pedagogyApi
-              .getPedagogyFormAccess({
-                studentIdentifier: student.id,
-              })
-              .then((pedagogyFormAvaibility) => {
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "pedagogyFormAvailable",
-                    value: pedagogyFormAvaibility,
-                  },
-                });
-              });
           }),
 
         userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {
@@ -1303,7 +1306,10 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 payload: { property: "purchases", value: orders },
               });
             }),
-      ]);
+      ];
+
+      // ... promises all at once
+      await Promise.all(promises);
 
       dispatch({
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
