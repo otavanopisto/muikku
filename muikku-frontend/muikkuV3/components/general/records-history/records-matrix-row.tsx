@@ -7,7 +7,6 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
-import { getCourseDropdownName } from "~/helper-functions/study-matrix";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import {
@@ -49,8 +48,13 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     showCredits = true,
   } = props;
 
-  const { identifier, userEntityId, config, displayNotification } =
-    useRecordsInfoContext();
+  const {
+    identifier,
+    userEntityId,
+    curriculumConfig,
+    config,
+    displayNotification,
+  } = useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -148,7 +152,17 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     }
   };
 
-  const title = getCourseDropdownName(subject, course, showCredits);
+  let title = subject.code + course.courseNumber + " - " + course.name;
+
+  // Add asterisk to optional courses
+  if (!course.mandatory) {
+    title += "*";
+  }
+
+  // Add credits to uppersecondary courses
+  if (showCredits) {
+    title += ` (${curriculumConfig.strategy.getCourseDisplayedLength(course.length)})`;
+  }
 
   const animateOpen = showE ? "auto" : 0;
 
@@ -196,7 +210,11 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
             {hasActivity && renderMandatorityDescription()}
             {!hasActivity && showCredits && course.length != null && (
               <div className="label">
-                <div className="label__text">{course.length} op</div>
+                <div className="label__text">
+                  {curriculumConfig.strategy.getCourseDisplayedLength(
+                    course.length
+                  )}
+                </div>
               </div>
             )}
 

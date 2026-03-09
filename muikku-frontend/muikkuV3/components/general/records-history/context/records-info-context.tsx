@@ -1,5 +1,6 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * RecordsInfo
@@ -13,6 +14,10 @@ interface RecordsInfo {
    * Users entity id
    */
   userEntityId: number;
+  /**
+   * Curriculum config
+   */
+  curriculumConfig: CurriculumConfig;
   /**
    * Display notification trigger
    */
