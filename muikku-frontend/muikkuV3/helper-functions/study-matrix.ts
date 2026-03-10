@@ -464,19 +464,32 @@ export const buildRecordsRowsFromMatrix = (
 };
 
 /**
+ * StudyActivityItem with CourseMatrixModule
+ */
+export interface StudyActivityItemWithCourseModule extends StudyActivityItem {
+  courseModule?: CourseMatrixModule;
+}
+
+/**
  * Groups StudyActivityItems by courseId. Returns only groups that have 2+ items
  * (combination workspaces).
  * @param items items
+ * @param courseMatrixModulesBySubjectCode courseMatrixModulesBySubjectCode
  * @returns combination workspaces
  */
 export const getCombinationWorkspaces = (
-  items: StudyActivityItem[]
-): StudyActivityItem[][] => {
-  const byCourseId = new Map<number, StudyActivityItem[]>();
+  items: StudyActivityItem[],
+  courseMatrixModulesBySubjectCode?: Record<string, CourseMatrixModule>
+): StudyActivityItemWithCourseModule[][] => {
+  const byCourseId = new Map<number, StudyActivityItemWithCourseModule[]>();
   for (const item of items) {
     if (item.courseId == null) continue;
     const list = byCourseId.get(item.courseId) ?? [];
-    list.push(item);
+    list.push({
+      ...item,
+      courseModule:
+        courseMatrixModulesBySubjectCode?.[item.subject + item.courseNumber],
+    });
     byCourseId.set(item.courseId, list);
   }
   return Array.from(byCourseId.values()).filter((list) => list.length >= 2);

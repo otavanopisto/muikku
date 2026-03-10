@@ -4,7 +4,10 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 import { StudyActivity, StudyActivityItem } from "~/generated/client";
 import RecordsActivityListItem from "./records-activity-row";
-import { getCombinationWorkspaces } from "~/helper-functions/study-matrix";
+import {
+  getCombinationWorkspaces,
+  StudyActivityItemWithCourseModule,
+} from "~/helper-functions/study-matrix";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
@@ -16,7 +19,7 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
  */
 function parseActivityItems(
   activityItems: StudyActivityItem[]
-): (StudyActivityItem | StudyActivityItem[])[] {
+): (StudyActivityItemWithCourseModule | StudyActivityItemWithCourseModule[])[] {
   const combinationGroups = getCombinationWorkspaces(activityItems);
   const combinationWorkspaceIds = new Set(
     combinationGroups.map((g) => g[0].courseId!)

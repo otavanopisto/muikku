@@ -6,6 +6,7 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import "~/sass/elements/label.scss";
 import {
   CourseMatrix,
+  CourseMatrixModule,
   StudyActivity,
   StudyActivityItemState,
 } from "~/generated/client";
@@ -92,6 +93,20 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
 
   const { t } = useTranslation(["studies", "common"]);
 
+  const courseMatrixModulesBySubjectCode = React.useMemo(
+    () =>
+      courseMatrix?.subjects.reduce<Record<string, CourseMatrixModule>>(
+        (acc, subject) => {
+          subject.modules.map((module) => {
+            acc[subject.code + module.courseNumber] = module;
+          });
+          return acc;
+        },
+        {}
+      ) ?? {},
+    [courseMatrix]
+  );
+
   // Build records rows from matrix and study activity
   const { rows, transferedActivities, nonOPSActivities } = React.useMemo(() => {
     if (!courseMatrix)
@@ -101,8 +116,12 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
 
   // Get combination workspace rows
   const combinationWorkspaceRows = React.useMemo(
-    () => getCombinationWorkspaces(studyActivity.items),
-    [studyActivity]
+    () =>
+      getCombinationWorkspaces(
+        studyActivity.items,
+        courseMatrixModulesBySubjectCode
+      ),
+    [studyActivity, courseMatrixModulesBySubjectCode]
   );
 
   const filteredCombinationWorkspaceRows = React.useMemo(() => {
