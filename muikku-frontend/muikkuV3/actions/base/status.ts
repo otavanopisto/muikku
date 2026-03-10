@@ -155,6 +155,8 @@ async function loadWhoAMI(
         WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {
+        firstName: whoAmI.firstName,
+        lastName: whoAmI.lastName,
         addresses: whoAmI.addresses,
         emails: whoAmI.emails,
         displayName: whoAmI.displayName,

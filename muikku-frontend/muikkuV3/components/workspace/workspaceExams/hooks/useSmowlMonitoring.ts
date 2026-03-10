@@ -102,7 +102,7 @@ export const useSmowlMonitoringStatus = (
             isMonitoring: isMonitoring ? 1 : 0,
           },
           {
-            userName: status.profile.loggedUserName,
+            userName: `${status.profile.firstName} ${status.profile.lastName}`,
             userEmail: status.profile.emails[0],
             lang: localize.lang,
             type: 0,
@@ -132,6 +132,8 @@ export const useSmowlMonitoringStatus = (
     workspaces.currentWorkspace,
     examId,
     isMonitoring,
+    status.profile.firstName,
+    status.profile.lastName,
   ]);
 
   return {

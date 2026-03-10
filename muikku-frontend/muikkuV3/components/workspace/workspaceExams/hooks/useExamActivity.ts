@@ -48,7 +48,7 @@ export const useExamActivity = (props: UseExamActivityProps) => {
             activityType: "exam",
           },
           {
-            userName: status.profile.loggedUserName,
+            userName: `${status.profile.firstName} ${status.profile.lastName}`,
             userEmail: status.profile.emails[0],
             lang: localize.lang,
             type: 0,
@@ -75,6 +75,8 @@ export const useExamActivity = (props: UseExamActivityProps) => {
     status.profile.loggedUserName,
     status.profile.emails,
     workspaces.currentWorkspace,
+    status.profile.firstName,
+    status.profile.lastName,
   ]);
 
   return {
