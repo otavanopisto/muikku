@@ -69,7 +69,7 @@ const OPSMatrixProblems = (props: OPSMatrixProblemsProps) => {
     );
   };
 
-  if (matrixProblems.length === 0) {
+  if (!matrixProblems || matrixProblems.length === 0) {
     return null;
   }
 

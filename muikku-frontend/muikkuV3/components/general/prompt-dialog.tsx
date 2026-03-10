@@ -24,7 +24,7 @@ interface PromptDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   title: string;
-  content: string;
+  content: string | React.ReactElement;
   onExecute: () => void;
   isOpen?: boolean;
   onOpen?: () => void;
@@ -65,7 +65,8 @@ const PromptDialog: React.FC<PromptDialogProps> = (props) => {
    * dialogContent content element
    * @param closeDialog closeDialog
    */
-  const dialogContent = () => <div>{content}</div>;
+  const dialogContent = () =>
+    typeof content === "string" ? <p>{content}</p> : content;
 
   /**
    * dialogFooter footer element

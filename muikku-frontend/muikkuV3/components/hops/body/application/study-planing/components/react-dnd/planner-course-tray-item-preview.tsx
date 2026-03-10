@@ -1,13 +1,12 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
 import { Course } from "~/@types/shared";
-import { StateType } from "~/reducers";
 import {
   PlannerCard,
   PlannerCardContent,
   PlannerCardHeader,
   PlannerCardLabel,
 } from "../planner-card";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * PlannerCourseTrayItemPreview props
@@ -26,9 +25,7 @@ const PlannerCourseTrayItemPreview: React.FC<
 > = (props) => {
   const { course, subjectCode } = props;
 
-  const curriculumConfig = useSelector(
-    (state: StateType) => state.hopsNew.hopsCurriculumConfig
-  );
+  const { curriculumConfig } = useHopsBasicInfo();
 
   const typeModifiers = course.mandatory ? ["mandatory"] : ["optional"];
 
@@ -41,7 +38,7 @@ const PlannerCourseTrayItemPreview: React.FC<
         <PlannerCardHeader modifiers={["course-tray-item"]}>
           <span className="planner-course-tray-item__name">
             <b>{`${subjectCode} ${course.courseNumber}. `}</b>
-            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
           </span>
         </PlannerCardHeader>
 

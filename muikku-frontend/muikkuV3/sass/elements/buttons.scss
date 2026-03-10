@@ -1627,6 +1627,16 @@
   }
 }
 
+.button--dialog-delete {
+  background-color: $color-button-fatal-background;
+  color: $color-button-fatal-text;
+  order: 1;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+}
+
 .button--dialog-cancel,
 .button--form-element-cancel {
   background-color: $color-button-cancel-background;
@@ -1801,6 +1811,7 @@
 .button-pill--archive-request,
 .button-pill--archive-student,
 .button-pill--evaluate,
+.button-pill--remove-evaluation,
 .button-icon--important,
 .button-icon--unimportant,
 .button-pill--assignment-locked,
@@ -1861,6 +1872,15 @@
 
   &:hover {
     background: darken($color-info, 10%);
+  }
+}
+
+.button-pill--remove-evaluation {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
   }
 }
 

@@ -1,7 +1,7 @@
 import MainFunctionNavbar from "../base/main-function/navbar";
 import * as React from "react";
 import ScreenContainer from "~/components/general/screen-container";
-import Application from "../guardian_hops/body/application";
+import Application from "./body/application";
 
 /**
  * RecordsBody

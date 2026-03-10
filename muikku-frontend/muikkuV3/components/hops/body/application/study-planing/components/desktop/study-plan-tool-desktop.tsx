@@ -5,13 +5,13 @@ import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { motion, Variants } from "framer-motion";
 import PlannerCourseTray from "../planner-course-tray";
 import { updateSelectedPlanItem } from "~/actions/main-function/hops";
-import { Course } from "~/@types/shared";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerTimeline from "./planner-timeline";
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { ActivePeriodProvider } from "../../context/active-period-context";
 import PlannerAddNote from "../planner-add-note";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 
 /**
  * DesktopStudyPlannerProps
@@ -84,7 +84,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    * @param course course
    */
   const handleCourseSelectClick = useCallback(
-    (course: Course & { subjectCode: string }) => {
+    (course: CourseMatrixModuleEnriched & { subjectCode: string }) => {
       if (!disabled) {
         dispatch(
           updateSelectedPlanItem({ planItemIdentifier: course.identifier })
@@ -109,7 +109,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    * @returns boolean
    */
   const isSelected = useCallback(
-    (course: Course & { subjectCode: string }) =>
+    (course: CourseMatrixModuleEnriched & { subjectCode: string }) =>
       selectedPlanItemIds.some(
         (courseIdentifier) => courseIdentifier === course.identifier
       ),

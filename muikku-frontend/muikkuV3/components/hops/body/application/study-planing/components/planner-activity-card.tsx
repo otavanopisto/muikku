@@ -147,7 +147,7 @@ const PlannerActivityCard = React.forwardRef<
       <PlannerCardHeader>
         <span className="study-planner__card-title">
           <b>{`${item.course.subjectCode}${item.course.courseNumber}`}</b>{" "}
-          {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course)}`}
+          {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course.length)}`}
         </span>
       </PlannerCardHeader>
 

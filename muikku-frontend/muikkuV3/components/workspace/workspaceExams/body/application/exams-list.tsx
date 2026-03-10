@@ -146,7 +146,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
     const assignmentInfoList = exam.assignmentInfos.map<AssignmentInfo>(
       (aInfo) => ({
         title: aInfo.name,
-        points: aInfo.points,
+        points: aInfo.points ?? null,
         maxPoints: null,
         grade: null,
       })

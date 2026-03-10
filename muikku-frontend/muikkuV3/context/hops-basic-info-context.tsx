@@ -1,4 +1,6 @@
 import React, { createContext, useContext, ReactNode } from "react";
+import { StudyActivity } from "~/generated/client";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 export type UseCase = "STUDENT" | "GUARDIAN" | "GUIDER";
 
@@ -21,6 +23,10 @@ interface HopsBasicInfoContextType {
   useCase: UseCase;
   /** Current student information */
   studentInfo: StudentBasicInfo | null;
+  /** Curriculum config */
+  curriculumConfig: CurriculumConfig | null;
+  /** User study activity */
+  userStudyActivity: StudyActivity | null;
 }
 
 /**
@@ -39,6 +45,10 @@ interface HopsBasicInfoProviderProps {
   useCase: UseCase;
   /** Student information */
   studentInfo: StudentBasicInfo | null;
+  /** Curriculum config */
+  curriculumConfig: CurriculumConfig | null;
+  /** User study activity */
+  userStudyActivity: StudyActivity | null;
   /** Child components that will have access to the context */
   children: ReactNode;
 }
@@ -56,10 +66,18 @@ interface HopsBasicInfoProviderProps {
  * ```
  */
 export function HopsBasicInfoProvider(props: HopsBasicInfoProviderProps) {
-  const { children, studentInfo, useCase } = props;
+  const {
+    children,
+    studentInfo,
+    useCase,
+    curriculumConfig,
+    userStudyActivity,
+  } = props;
 
   return (
-    <HopsBasicInfoContext.Provider value={{ studentInfo, useCase }}>
+    <HopsBasicInfoContext.Provider
+      value={{ studentInfo, useCase, curriculumConfig, userStudyActivity }}
+    >
       {children}
     </HopsBasicInfoContext.Provider>
   );

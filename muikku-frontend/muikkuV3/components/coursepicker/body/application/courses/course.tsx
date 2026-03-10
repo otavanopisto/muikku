@@ -26,7 +26,7 @@ import {
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
-import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
+import AssessmentIndicator from "~/components/general/records-history/assessment-indicator";
 import { Action, Dispatch } from "redux";
 
 /**
@@ -285,7 +285,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                 <AssessmentRequestIndicator
                   studyActivityItem={studyActivityItem}
                 />
-                <RecordsAssessmentIndicator
+                <AssessmentIndicator
                   studyActivityItem={studyActivityItem}
                   isCombinationWorkspace={true}
                 />
@@ -319,7 +319,7 @@ class Course extends React.Component<CourseProps, CourseState> {
             </span>
             <AssessmentRequestIndicator studyActivityItem={studyActivityItem} />
 
-            <RecordsAssessmentIndicator
+            <AssessmentIndicator
               studyActivityItem={studyActivityItem}
               isCombinationWorkspace={false}
             />
