@@ -387,6 +387,11 @@ public class UserEntityController implements Serializable {
     return null;
   }
 
+  public boolean isStaffMember(UserEntity userEntity) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+    return userSchoolDataIdentifier != null && userSchoolDataIdentifier.isStaff();
+  }
+  
   public boolean isStudent(UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
     return userSchoolDataIdentifier == null || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT);

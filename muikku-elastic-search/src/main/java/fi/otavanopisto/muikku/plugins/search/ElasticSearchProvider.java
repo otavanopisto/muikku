@@ -79,6 +79,7 @@ import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -97,6 +98,9 @@ public class ElasticSearchProvider implements SearchProvider {
   @Inject
   private SessionController sessionController;
 
+  @Inject
+  private UserEntityController userEntityController;
+  
   @Override
   public void init() {
     String portNumberProperty = System.getProperty("elasticsearch.node.port");
@@ -963,79 +967,99 @@ public class ElasticSearchProvider implements SearchProvider {
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     Long loggedUserId = loggedUser.getId();
     String loggedUserIdStr = String.valueOf(loggedUserId);
+    boolean isStaff = userEntityController.isStaffMember(loggedUser);
 
     queryString = sanitizeSearchString(queryString);
     queryString = prepareQueryString(queryString);
 
-    query.must(boolQuery()
-        .must(
-            boolQuery()
-              .should(
-                  QueryBuilders.queryStringQuery(queryString)
+    /*
+     * Setup the query with fields that are visible to all users
+     * Note on nestedQuery instances: if the field is defined as nested in 
+     * the index, it has to be wrapped in nestedQuery here in order to find
+     * anything from the fields below them.
+     */
+    
+    BoolQueryBuilder baseQuery = boolQuery()
+        .should(
+            // Search from caption and message
+            QueryBuilders.queryStringQuery(queryString)
+                .defaultOperator(Operator.AND)
+                .field("caption")
+                .field("message")
+        )
+        .should(
+            // Always search from the sender as it is always visible to the recipient
+            nestedQuery("sender", 
+                QueryBuilders.queryStringQuery(queryString)
+                    .defaultOperator(Operator.AND)
+                    .field("sender.firstName")
+                    .field("sender.nickName")
+                    .field("sender.lastName")
+                , ScoreMode.Avg
+            )
+        )
+        .should(
+            // Search from the labels set by the sender, if the sender is the logged user
+            nestedQuery("sender", 
+                boolQuery()
+                  .must(QueryBuilders.queryStringQuery(queryString)
                       .defaultOperator(Operator.AND)
-                      .field("caption")
-                      .field("message")
-                      .field("sender.firstName")
-                      .field("sender.nickName")
-                      .field("sender.lastName")
+                      .field("sender.labels.label")
+                  )
+                  .must(termsQuery("sender.userEntityId", loggedUserIdStr))
+                , ScoreMode.Avg)
+        )
+        .should(
+            // Allow the logged user to find themselves in the recipients
+            nestedQuery("recipients",
+                boolQuery()
+                  .must(QueryBuilders.queryStringQuery(queryString)
+                      .defaultOperator(Operator.AND)
                       .field("recipients.firstName")
                       .field("recipients.nickName")
                       .field("recipients.lastName")
-                      .field("groupRecipients.groupName")
-              )
-              .should(
-                  boolQuery()
-                    .must(QueryBuilders.queryStringQuery(queryString)
-                        .defaultOperator(Operator.AND)
-                        .field("caption")
-                        .field("message")
-                        .field("sender.firstName")
-                        .field("sender.nickName")
-                        .field("sender.lastName")
-                        .field("recipients.firstName")
-                        .field("recipients.nickName")
-                        .field("recipients.lastName")
-                        .field("groupRecipients.groupName")
-                        .field("sender.labels.label")
-                    )
-                    .must(termsQuery("sender.userEntityId", loggedUserIdStr))
-              )
-              .should(
-                  boolQuery()
-                    .must(QueryBuilders.queryStringQuery(queryString)
-                        .defaultOperator(Operator.AND)
-                        .field("caption")
-                        .field("message")
-                        .field("sender.firstName")
-                        .field("sender.nickName")
-                        .field("sender.lastName")
-                        .field("recipients.firstName")
-                        .field("recipients.nickName")
-                        .field("recipients.lastName")
-                        .field("groupRecipients.groupName")
-                        .field("recipients.labels.label")
-                    )
-                    .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
-              )
-              .should(
-                  boolQuery()
-                    .must(QueryBuilders.queryStringQuery(queryString)
-                        .defaultOperator(Operator.AND)
-                        .field("caption")
-                        .field("message")
-                        .field("sender.firstName")
-                        .field("sender.nickName")
-                        .field("sender.lastName")
-                        .field("recipients.firstName")
-                        .field("recipients.nickName")
-                        .field("recipients.lastName")
-                        .field("groupRecipients.groupName")
-                        .field("groupRecipients.recipients.labels.label")
-                    )
-                    .must(termsQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
-              )
-              .minimumShouldMatch(1)
+                      .field("recipients.labels.label")
+                  )
+                  .must(termsQuery("recipients.userEntityId", loggedUserIdStr))
+                , ScoreMode.Avg)
         )
+        .should(
+            // Search from the groupRecipients recipients label
+            // Covers the case where the recipient has received the message as a member of a user group
+            // and has since added a label to it
+            nestedQuery("groupRecipients.recipients",
+                boolQuery()
+                  .must(QueryBuilders.queryStringQuery(queryString)
+                      .defaultOperator(Operator.AND)
+                      .field("groupRecipients.recipients.labels.label")
+                  )
+                  .must(termsQuery("groupRecipients.recipients.userEntityId", loggedUserIdStr))
+                , ScoreMode.Avg)
+        );
+    
+    // If the logged user is staff, there's additional fields to search from
+    if (isStaff) {
+      baseQuery
+          .should(
+              // Staff can search from all recipients' names
+              nestedQuery("recipients",
+                  QueryBuilders.queryStringQuery(queryString)
+                      .defaultOperator(Operator.AND)
+                      .field("recipients.firstName")
+                      .field("recipients.nickName")
+                      .field("recipients.lastName")
+                  , ScoreMode.Avg)
+          )
+          .should(
+              // Staff can search by the group names
+              QueryBuilders.queryStringQuery(queryString)
+                  .defaultOperator(Operator.AND)
+                  .field("groupRecipients.groupName")
+          );
+    }
+    
+    query.must(
+        baseQuery.minimumShouldMatch(1)
     )
     .filter(
         boolQuery()

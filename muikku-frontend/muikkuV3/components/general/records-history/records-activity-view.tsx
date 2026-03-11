@@ -4,8 +4,12 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 import { StudyActivity, StudyActivityItem } from "~/generated/client";
 import RecordsActivityListItem from "./records-activity-row";
-import { getCombinationWorkspaces } from "~/helper-functions/study-matrix";
+import {
+  getCombinationWorkspaces,
+  StudyActivityItemWithCourseModule,
+} from "~/helper-functions/study-matrix";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
 /**
  * Parses activity items into a flat list of combination workspaces and single items.
@@ -15,7 +19,7 @@ import RecordsActivityRowTransfered from "./records-activity-row-transfered";
  */
 function parseActivityItems(
   activityItems: StudyActivityItem[]
-): (StudyActivityItem | StudyActivityItem[])[] {
+): (StudyActivityItemWithCourseModule | StudyActivityItemWithCourseModule[])[] {
   const combinationGroups = getCombinationWorkspaces(activityItems);
   const combinationWorkspaceIds = new Set(
     combinationGroups.map((g) => g[0].courseId!)
@@ -119,6 +123,29 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
   );
 
   /**
+   * educationTypeName
+   * @returns localized name of the education type
+   */
+  const educationTypeName = () => {
+    switch (studyActivity.educationType) {
+      case "Lukio":
+        return t("educationType.upperSecondaryEducation");
+
+      case "Perusopetus":
+        return t("educationType.basicEducation");
+
+      case "APA":
+        return t("educationType.apa");
+
+      case "ammatillinen":
+        return t("educationType.vocational");
+
+      default:
+        return t("educationType.unknown");
+    }
+  };
+
+  /**
    * sortWorkspaces
    */
   const handleWorkspaceSortDirectionClick = () => {
@@ -163,16 +190,40 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
     );
   }
 
-  let categoryName = studyActivity.educationTypeCode;
-
-  categoryName += ` - ${t("labels.courseCredits", {
-    ns: "studies",
-    mandatoryCredits: studyActivity.mandatoryCourseCredits,
-    totalCredits: studyActivity.completedCourseCredits,
-  })}`;
-
   return (
-    <ApplicationList>
+    <>
+      <ApplicationSubPanel.Header>
+        {educationTypeName()}
+      </ApplicationSubPanel.Header>
+      <div className="application-sub-panel__meta">
+        <div className="application-sub-panel__meta-title">
+          {t("labels.completedStudies")}
+        </div>
+
+        <div className="application-sub-panel__meta-items">
+          <div className="application-sub-panel__meta-item">
+            {t("labels.courseCreditsMandatory")}
+            <span className="label label--mandatory">
+              {studyActivity.mandatoryCourseCredits}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {t("labels.courseCreditsOptional")}
+            <span className="label label--optional">
+              {studyActivity.completedCourseCredits -
+                studyActivity.mandatoryCourseCredits}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {t("labels.courseCreditsTotal")}
+            <span className="label label--total">
+              {studyActivity.completedCourseCredits}
+            </span>
+          </div>
+        </div>
+      </div>
       <div
         tabIndex={0}
         onClick={handleWorkspaceSortDirectionClick}
@@ -180,34 +231,39 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">
-          {categoryName}
+          {t("labels.courses")}
         </h3>
         <div className={`icon-sort-alpha-${activitySortDirection}`}></div>
       </div>
-      {memoizedFilterActivity.nonTransferedActivities.length > 0 &&
-        memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
-          <RecordsActivityListItem
-            key={`record-activity-list-item-${i}`}
-            studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
-            isCombinationWorkspace={Array.isArray(ntItem)}
-            educationType={studyActivity.educationTypeCode}
-          />
-        ))}
+      <ApplicationSubPanel.Body>
+        <ApplicationList>
+          {memoizedFilterActivity.nonTransferedActivities.length > 0 &&
+            memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
+              <RecordsActivityListItem
+                key={`record-activity-list-item-${i}`}
+                studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
+                isCombinationWorkspace={Array.isArray(ntItem)}
+                educationType={studyActivity.educationType}
+              />
+            ))}
 
-      {memoizedFilterActivity.transferedActivities.length > 0 && (
-        <>
-          <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">Hyväksiluvut</h3>
-          </div>
-          {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
-            <RecordsActivityRowTransfered
-              key={`transfered-activity-item-${i}`}
-              studyActivityItem={tItem}
-            />
-          ))}
-        </>
-      )}
-    </ApplicationList>
+          {memoizedFilterActivity.transferedActivities.length > 0 && (
+            <>
+              <div className="application-list__subheader-container">
+                <h3 className="application-list__subheader">Hyväksiluvut</h3>
+              </div>
+              {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
+                <RecordsActivityRowTransfered
+                  key={`transfered-activity-item-${i}`}
+                  studyActivityItem={tItem}
+                  educationType={studyActivity.educationType}
+                />
+              ))}
+            </>
+          )}
+        </ApplicationList>
+      </ApplicationSubPanel.Body>
+    </>
   );
 };
 

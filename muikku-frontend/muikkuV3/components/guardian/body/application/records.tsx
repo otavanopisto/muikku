@@ -76,6 +76,7 @@ const Records = (props: RecordsProps) => {
         identifier: status.userSchoolDataIdentifier,
         userEntityId: status.userId,
         displayNotification: dispatch(displayNotification),
+        curriculumConfig: currentDependant.dependantCurriculumConfig,
         config: {
           showAssigmentsAndDiaries: false,
         },

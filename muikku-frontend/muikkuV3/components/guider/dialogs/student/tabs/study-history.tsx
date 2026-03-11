@@ -80,6 +80,8 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     studyDataByEducationTypeCode[selectedEducationTypeCode]?.studyActivity;
   const courseMatrix =
     studyDataByEducationTypeCode[selectedEducationTypeCode]?.courseMatrix;
+  const curriculumConfig =
+    studyDataByEducationTypeCode[selectedEducationTypeCode]?.curriculumConfig;
 
   if (!studyActivity || !courseMatrix) {
     return null;
@@ -181,6 +183,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         identifier: basic.id,
         userEntityId: basic.userEntityId,
         displayNotification,
+        curriculumConfig: curriculumConfig,
       }}
     >
       <ApplicationSubPanel>

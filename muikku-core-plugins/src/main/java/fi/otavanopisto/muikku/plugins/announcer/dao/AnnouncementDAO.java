@@ -214,15 +214,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
           .when(criteriaBuilder.isTrue(announcementRecipientJoin.get(AnnouncementRecipient_.pinned)), 1)
           .otherwise(0);
     
-    Expression<Integer> unreadOrder =
-        criteriaBuilder.<Integer>selectCase()
-          .when(criteriaBuilder.isNull(announcementRecipientJoin.get(AnnouncementRecipient_.id)), 1)
-          .otherwise(0);
-    
     criteria.orderBy(
         criteriaBuilder.desc(root.get(Announcement_.pinned)),
         criteriaBuilder.desc(recipientPinnedOrder),
-        criteriaBuilder.desc(unreadOrder),
         criteriaBuilder.desc(root.get(Announcement_.startDate)),
         criteriaBuilder.desc(root.get(Announcement_.id))
     );

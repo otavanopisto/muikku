@@ -109,6 +109,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           identifier: this.props.status.userSchoolDataIdentifier,
           userEntityId: this.props.status.userId,
           displayNotification: this.props.displayNotification,
+          curriculumConfig: entry.curriculumConfig,
         }}
       >
         <ApplicationSubPanel>
@@ -143,7 +144,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   </span>
                 </div>
               </div>
-            )}
+          )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </RecordsInfoProvider>

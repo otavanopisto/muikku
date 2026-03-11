@@ -413,6 +413,7 @@ export interface RecordsMatrixRow {
   subject: CourseMatrixSubject;
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
+  isCombinationWorkspace: boolean;
 }
 
 /**
@@ -450,7 +451,12 @@ export const buildRecordsRowsFromMatrix = (
           item.subject === subject.code &&
           item.courseNumber === course.courseNumber
       );
-      rows.push({ subject, course, studyActivityItems });
+      rows.push({
+        subject,
+        course,
+        studyActivityItems,
+        isCombinationWorkspace: false,
+      });
     }
   }
 
@@ -458,19 +464,32 @@ export const buildRecordsRowsFromMatrix = (
 };
 
 /**
+ * StudyActivityItem with CourseMatrixModule
+ */
+export interface StudyActivityItemWithCourseModule extends StudyActivityItem {
+  courseModule?: CourseMatrixModule;
+}
+
+/**
  * Groups StudyActivityItems by courseId. Returns only groups that have 2+ items
  * (combination workspaces).
  * @param items items
+ * @param courseMatrixModulesBySubjectCode courseMatrixModulesBySubjectCode
  * @returns combination workspaces
  */
 export const getCombinationWorkspaces = (
-  items: StudyActivityItem[]
-): StudyActivityItem[][] => {
-  const byCourseId = new Map<number, StudyActivityItem[]>();
+  items: StudyActivityItem[],
+  courseMatrixModulesBySubjectCode?: Record<string, CourseMatrixModule>
+): StudyActivityItemWithCourseModule[][] => {
+  const byCourseId = new Map<number, StudyActivityItemWithCourseModule[]>();
   for (const item of items) {
     if (item.courseId == null) continue;
     const list = byCourseId.get(item.courseId) ?? [];
-    list.push(item);
+    list.push({
+      ...item,
+      courseModule:
+        courseMatrixModulesBySubjectCode?.[item.subject + item.courseNumber],
+    });
     byCourseId.set(item.courseId, list);
   }
   return Array.from(byCourseId.values()).filter((list) => list.length >= 2);
@@ -502,6 +521,10 @@ export const enrichMatrixRowsWithCombinationWorkspace = (
     if (courseId == null) return row;
     const fullList = byCourseId.get(courseId);
     if (!fullList || fullList.length < 2) return row;
-    return { ...row, studyActivityItems: fullList };
+    return {
+      ...row,
+      studyActivityItems: fullList,
+      isCombinationWorkspace: true,
+    };
   });
 };
