@@ -17925,7 +17925,9 @@ components:
         - courseId
         - courseNumber
         - courseName
+        - courseNameExtension
         - grade
+        - raisedGrade
         - passing
         - state
         - date
@@ -17961,10 +17963,17 @@ components:
         courseName:
           type: string
           description: Course name
+        courseNameExtension:
+          type: string
+          description: Course name extension
+          nullable: true
         grade:
           type: string
           description: Grade, e.g. 7
           nullable: true
+        raisedGrade:
+          type: boolean
+          description: If there is a grade, is it a raised grade
         passing:
           type: boolean
           description: If there is a grade, is it a passing grade
