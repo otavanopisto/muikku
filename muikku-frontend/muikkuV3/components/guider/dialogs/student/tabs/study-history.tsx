@@ -64,6 +64,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     currentWorkspaces,
     pastWorkspaces,
     activityLogState,
+    curriculumConfig,
     studyActivity,
     courseMatrix,
   } = props.guider.currentStudent;
@@ -156,6 +157,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         identifier: basic.id,
         userEntityId: basic.userEntityId,
         displayNotification,
+        curriculumConfig: curriculumConfig,
       }}
     >
       <ApplicationSubPanel>

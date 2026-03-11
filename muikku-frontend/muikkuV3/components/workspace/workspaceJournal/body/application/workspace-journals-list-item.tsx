@@ -159,7 +159,7 @@ class WorkspaceJournalsListItem extends React.Component<
               )}
 
               {isMandatory && (
-                <span className="label label--mandatory">
+                <span className="label label--journal-mandatory">
                   <span className="label__text">
                     {t("labels.mandatory", { ns: "workspace" })}
                   </span>
