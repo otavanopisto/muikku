@@ -202,8 +202,12 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     // Filter rows depending on search value
     const searchTrimmed = searchValue.trim().toLowerCase();
     if (searchTrimmed) {
-      filtered = filtered.filter((row) =>
-        row.course.name.toLowerCase().includes(searchTrimmed)
+      filtered = filtered.filter(
+        (row) =>
+          row.course.name.toLowerCase().includes(searchTrimmed) ||
+          `${row.subject.code}${row.course.courseNumber}`
+            .toLowerCase()
+            .includes(searchTrimmed)
       );
     }
 
