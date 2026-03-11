@@ -144,7 +144,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   </span>
                 </div>
               </div>
-          )}
+            )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </RecordsInfoProvider>

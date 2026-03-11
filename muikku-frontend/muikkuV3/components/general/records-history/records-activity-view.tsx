@@ -127,7 +127,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
    * @returns localized name of the education type
    */
   const educationTypeName = () => {
-    switch (studyActivity.educationType) {
+    switch (studyActivity.educationTypeCode) {
       case "Lukio":
         return t("educationType.upperSecondaryEducation");
 
@@ -243,7 +243,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
                 key={`record-activity-list-item-${i}`}
                 studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
                 isCombinationWorkspace={Array.isArray(ntItem)}
-                educationType={studyActivity.educationType}
+                educationType={studyActivity.educationTypeCode}
               />
             ))}
 
@@ -256,7 +256,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
                 <RecordsActivityRowTransfered
                   key={`transfered-activity-item-${i}`}
                   studyActivityItem={tItem}
-                  educationType={studyActivity.educationType}
+                  educationType={studyActivity.educationTypeCode}
                 />
               ))}
             </>

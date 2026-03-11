@@ -351,11 +351,11 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
    * @returns localized name of the education type
    */
   const educationTypeName = () => {
-    switch (studyActivity.educationType) {
-      case "Lukio":
+    switch (studyActivity.educationTypeCode) {
+      case "lukio":
         return t("educationType.upperSecondaryEducation");
 
-      case "Perusopetus":
+      case "perusopetus":
         return t("educationType.basicEducation");
 
       case "apa":
@@ -587,7 +587,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                         subject={row.subject}
                         course={row.course}
                         studyActivityItems={row.studyActivityItems}
-                        educationType={studyActivity.educationType}
+                        educationType={studyActivity.educationTypeCode}
                         isCombinationWorkspace={row.isCombinationWorkspace}
                       />
                     ))}
@@ -646,7 +646,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                 <RecordsMatrixRowCombination
                   key={`combination-workspace-${row[0].courseId}`}
                   studyActivityItems={row}
-                  educationType={studyActivity.educationType}
+                  educationType={studyActivity.educationTypeCode}
                 />
               ))}
             </>
@@ -669,7 +669,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                     key={`non-ops-activity-item-${item.courseId}`}
                     studyActivityItems={[item]}
                     isCombinationWorkspace={false}
-                    educationType={studyActivity.educationType}
+                    educationType={studyActivity.educationTypeCode}
                   />
                 ))}
               {filteredTransferedActivities.length > 0 &&
@@ -677,7 +677,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                   <RecordsActivityRowTransfered
                     key={`transfered-activity-item-${i}`}
                     studyActivityItem={tItem}
-                    educationType={studyActivity.educationType}
+                    educationType={studyActivity.educationTypeCode}
                   />
                 ))}
             </>
