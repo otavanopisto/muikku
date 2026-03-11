@@ -28,6 +28,7 @@ import {
   createFrontAlarmHashMap,
   isSmowlApiError,
 } from "~/api_smowl/index";
+import { ActivityConfigResult } from "~/api_smowl/types";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -860,10 +861,13 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           }
 
           // Smowl data update is done in one batch
-          await updateSmowlData({
-            material: data.material,
-            update: data.update,
-          });
+          await updateSmowlData(
+            {
+              material: data.material,
+              update: data.update,
+            },
+            dispatch
+          );
 
           // if the title changed we need to update the path, sadly only the server knows
           if (
@@ -1558,11 +1562,15 @@ async function getSmowlDataForExam(
  * @param data data
  * @param data.material material
  * @param data.update update
+ * @param dispatch dispatch
  */
-async function updateSmowlData(data: {
-  material: MaterialContentNodeWithIdAndLogic;
-  update: Partial<MaterialContentNodeWithIdAndLogic>;
-}) {
+async function updateSmowlData(
+  data: {
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
+  },
+  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>
+) {
   const promises = [];
 
   // If the smowl activity changed, we need to update the smowl activity
@@ -1570,7 +1578,60 @@ async function updateSmowlData(data: {
     data.material.type === "folder" &&
     !_.isEqual(data.material.smowlActivity, data.update.smowlActivity)
   ) {
-    promises.push(updateSmowlTestExamMode(data));
+    promises.push(
+      updateSmowlTestExamMode({
+        material: data.material,
+        update: data.update,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: (testExamMode) => {
+          // Status false tells that update was unsuccessful and reason is QUIZ_HAS_DATA which means that the quiz has data and we need to show the notification
+          if (!testExamMode.status && testExamMode.reason === "QUIZ_HAS_DATA") {
+            dispatch(
+              displayNotification(
+                "Test exam mode activation failed because the quiz has data.",
+                "info"
+              )
+            );
+
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                isDraft: false,
+                material: data.material,
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                update: {
+                  smowlActivity: {
+                    ...data.material.smowlActivity,
+                    TestExamMode: testExamMode.status,
+                  },
+                },
+              },
+            });
+
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                isDraft: true,
+                material: data.material,
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                update: {
+                  smowlActivity: {
+                    ...data.material.smowlActivity,
+                    TestExamMode: testExamMode.status,
+                  },
+                },
+              },
+            });
+          }
+        },
+      })
+    );
   }
 
   // If the smowl front camera alarm changed, we need to update the smowl front camera alarm
@@ -1626,10 +1687,12 @@ async function updateSmowlData(data: {
  * @param data data
  * @param data.material material
  * @param data.update update
+ * @param data.onSuccess onSuccess
  */
 async function updateSmowlTestExamMode(data: {
   material: MaterialContentNodeWithIdAndLogic;
   update: Partial<MaterialContentNodeWithIdAndLogic>;
+  onSuccess?: (testExamMode: ActivityConfigResult) => void;
 }) {
   // If there is not data for test exam mode to update, we don't need to do anything
   if (data.update.smowlActivity.TestExamMode === undefined) {
@@ -1645,14 +1708,19 @@ async function updateSmowlTestExamMode(data: {
 
   // If test exam mode is being enabled, we need to activate it
   if (testModeHasChanged && data.update.smowlActivity.TestExamMode) {
-    await smowlApi.activateTestExamMode({
+    const response = await smowlApi.activateTestExamMode({
       // eslint-disable-next-line camelcase
       activityList_json: createActivityListJson(
         [data.material.workspaceMaterialId.toString()],
         "exam"
       ),
     });
+
+    const testExamMode = response.ActivityConfigList_TestExams[0];
+
+    data.onSuccess?.(testExamMode);
   }
+
   // If test exam mode is being disabled, we need to deactivate it
   else if (testModeHasChanged && !data.update.smowlActivity.TestExamMode) {
     await smowlApi.deactivateTestExamMode({
