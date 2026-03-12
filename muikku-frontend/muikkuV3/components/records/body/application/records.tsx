@@ -13,7 +13,6 @@ import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   DisplayNotificationTriggerType,
@@ -104,50 +103,34 @@ class Records extends React.Component<RecordsProps, RecordsState> {
      * studentRecords
      */
     const studentRecords = (
-      <RecordsInfoProvider
-        value={{
-          identifier: this.props.status.userSchoolDataIdentifier,
-          userEntityId: this.props.status.userId,
-          displayNotification: this.props.displayNotification,
-          curriculumConfig: entry.curriculumConfig,
-        }}
-      >
-        <ApplicationSubPanel>
-          <ApplicationSubPanel.Body>
-            {entry.studyActivity ? (
-              <RecordsListing
-                courseMatrix={entry.courseMatrix}
-                studyActivity={entry.studyActivity}
-                educationTypeSelector={
-                  <RecordsEducationTypeSelector
-                    options={this.props.studyActivity.userEducationTypes.map(
-                      (educationTypeCode) => ({
-                        educationTypeCode,
-                        label: educationTypeCode,
-                      })
-                    )}
-                    selectedEducationTypeCode={
-                      this.props.studyActivity.selectedEducationTypeCode
-                    }
-                    onSelect={this.handleSelectEducationType}
-                  />
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Body>
+          <RecordsListing
+            recordsInfo={{
+              identifier: this.props.status.userSchoolDataIdentifier,
+              userEntityId: this.props.status.userId,
+              displayNotification: this.props.displayNotification,
+              curriculumConfig: entry.curriculumConfig,
+              studyActivity: entry.studyActivity,
+              courseMatrix: entry.courseMatrix,
+            }}
+            educationTypeSelector={
+              <RecordsEducationTypeSelector
+                options={this.props.studyActivity.userEducationTypes.map(
+                  (educationTypeCode) => ({
+                    educationTypeCode,
+                    label: educationTypeCode,
+                  })
+                )}
+                selectedEducationTypeCode={
+                  this.props.studyActivity.selectedEducationTypeCode
                 }
+                onSelect={this.handleSelectEducationType}
               />
-            ) : (
-              <div className="application-sub-panel__item">
-                <div className="empty">
-                  <span>
-                    {t("content.empty", {
-                      ns: "studies",
-                      context: "workspaces",
-                    })}
-                  </span>
-                </div>
-              </div>
-            )}
-          </ApplicationSubPanel.Body>
-        </ApplicationSubPanel>
-      </RecordsInfoProvider>
+            }
+          />
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
     );
 
     return (

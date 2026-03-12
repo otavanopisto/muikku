@@ -103,18 +103,15 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
   // Calculate the statistics
   const statistics = useMemo(
-    () =>
-      curriculumConfig.strategy.calculateStatistics(
-        userStudyActivity?.items ?? []
-      ),
-    [curriculumConfig.strategy, userStudyActivity?.items]
+    () => curriculumConfig.strategy.calculateStatistics(userStudyActivity),
+    [curriculumConfig.strategy, userStudyActivity]
   );
 
   // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
       usedGoalInfo.studyHours,
-      userStudyActivity?.items ?? []
+      userStudyActivity
     );
 
   /**

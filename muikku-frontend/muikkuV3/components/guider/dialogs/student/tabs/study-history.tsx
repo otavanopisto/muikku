@@ -20,7 +20,6 @@ import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
 import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
-import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
@@ -178,45 +177,33 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   );
 
   const studentRecords = (
-    <RecordsInfoProvider
-      value={{
-        identifier: basic.id,
-        userEntityId: basic.userEntityId,
-        displayNotification,
-        curriculumConfig: curriculumConfig,
-      }}
-    >
-      <ApplicationSubPanel>
-        <ApplicationSubPanel.Body>
-          {studyActivity && courseMatrix && educationTypes ? (
-            <RecordsListing
-              courseMatrix={courseMatrix}
-              studyActivity={studyActivity}
-              educationTypeSelector={
-                <RecordsEducationTypeSelector
-                  options={educationTypes.map((educationTypeCode) => ({
-                    educationTypeCode,
-                    label: educationTypeCode,
-                  }))}
-                  selectedEducationTypeCode={selectedEducationTypeCode}
-                  onSelect={handleSelectEducationTypeCode}
-                />
-              }
+    <ApplicationSubPanel>
+      <ApplicationSubPanel.Body>
+        <RecordsListing
+          recordsInfo={{
+            identifier: basic.id,
+            userEntityId: basic.userEntityId,
+            displayNotification,
+            curriculumConfig: curriculumConfig,
+            studyActivity: studyActivity,
+            courseMatrix: courseMatrix,
+          }}
+          emptyMessage={t("content.notInWorkspaces", {
+            ns: "guider",
+          })}
+          educationTypeSelector={
+            <RecordsEducationTypeSelector
+              options={educationTypes.map((educationTypeCode) => ({
+                educationTypeCode,
+                label: educationTypeCode,
+              }))}
+              selectedEducationTypeCode={selectedEducationTypeCode}
+              onSelect={handleSelectEducationTypeCode}
             />
-          ) : (
-            <div className="application-sub-panel__item">
-              <div className="empty">
-                <span>
-                  {t("content.notInWorkspaces", {
-                    ns: "guider",
-                  })}
-                </span>
-              </div>
-            </div>
-          )}
-        </ApplicationSubPanel.Body>
-      </ApplicationSubPanel>
-    </RecordsInfoProvider>
+          }
+        />
+      </ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
   );
 
   const historyComponent = (

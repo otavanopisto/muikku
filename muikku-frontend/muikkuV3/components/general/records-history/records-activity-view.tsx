@@ -2,7 +2,7 @@ import * as React from "react";
 import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
-import { StudyActivity, StudyActivityItem } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import RecordsActivityListItem from "./records-activity-row";
 import {
   getCombinationWorkspaces,
@@ -10,6 +10,7 @@ import {
 } from "~/helper-functions/study-matrix";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import { useRecordsInfoContext } from "./context/records-info-context";
 
 /**
  * Parses activity items into a flat list of combination workspaces and single items.
@@ -95,9 +96,7 @@ const filterAndSortActivity = (
 /**
  * RecordsListProps
  */
-interface RecordsActivityViewProps {
-  studyActivity: StudyActivity;
-}
+interface RecordsActivityViewProps {}
 
 /**
  * RecordsListItem
@@ -105,12 +104,19 @@ interface RecordsActivityViewProps {
  * @returns JSX.Element
  */
 const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
-  const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
   const [activitySortDirection, setActivitySortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
+
+  const { curriculumConfig, studyActivity } = useRecordsInfoContext();
+
+  // Calculate the statistics
+  const statistics = React.useMemo(
+    () => curriculumConfig.strategy.calculateStatistics(studyActivity),
+    [curriculumConfig.strategy, studyActivity]
+  );
 
   const memoizedActivityItems = React.useMemo(
     () => parseActivityItems(studyActivity.items),
@@ -204,22 +210,21 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
           <div className="application-sub-panel__meta-item">
             {t("labels.courseCreditsMandatory")}
             <span className="label label--mandatory">
-              {studyActivity.mandatoryCourseCredits}
+              {statistics.mandatoryStudies}
             </span>
           </div>
 
           <div className="application-sub-panel__meta-item">
             {t("labels.courseCreditsOptional")}
             <span className="label label--optional">
-              {studyActivity.completedCourseCredits -
-                studyActivity.mandatoryCourseCredits}
+              {statistics.optionalStudies}
             </span>
           </div>
 
           <div className="application-sub-panel__meta-item">
             {t("labels.courseCreditsTotal")}
             <span className="label label--total">
-              {studyActivity.completedCourseCredits}
+              {statistics.totalStudies}
             </span>
           </div>
         </div>

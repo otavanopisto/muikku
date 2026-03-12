@@ -5,7 +5,6 @@ import { displayNotification } from "~/actions/base/notifications";
 import { updateCurrentDependantSelectedEducationTypeCode } from "~/actions/main-function/guardian";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
-import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import RecordsListing from "~/components/general/records-history/records";
 import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
 import { StateType } from "~/reducers";
@@ -38,7 +37,9 @@ const Records = (props: RecordsProps) => {
     currentDependantStudyData.studyActivityStatus === "LOADING" ||
     currentDependantStudyData.studyActivityStatus === "IDLE" ||
     currentDependantStudyData.courseMatrixStatus === "LOADING" ||
-    currentDependantStudyData.courseMatrixStatus === "IDLE"
+    currentDependantStudyData.courseMatrixStatus === "IDLE" ||
+    currentDependantStudyData.curriculumConfigStatus === "LOADING" ||
+    currentDependantStudyData.curriculumConfigStatus === "IDLE"
   ) {
     return null;
   } else if (
@@ -71,54 +72,41 @@ const Records = (props: RecordsProps) => {
    * studentRecords
    */
   const studentRecords = (
-    <RecordsInfoProvider
-      value={{
-        identifier: status.userSchoolDataIdentifier,
-        userEntityId: status.userId,
-        displayNotification: dispatch(displayNotification),
-        curriculumConfig: currentDependantStudyData.curriculumConfig,
-        config: {
-          showAssigmentsAndDiaries: false,
-        },
-      }}
-    >
-      <ApplicationSubPanel>
-        <ApplicationSubPanel.Body>
-          {currentDependantStudyData.studyActivity &&
-          currentDependantStudyData.courseMatrix ? (
-            <RecordsListing
-              courseMatrix={currentDependantStudyData.courseMatrix}
-              studyActivity={currentDependantStudyData.studyActivity}
-              educationTypeSelector={
-                <RecordsEducationTypeSelector
-                  options={currentDependant.dependantEducationTypes.map(
-                    (educationTypeCode) => ({
-                      educationTypeCode,
-                      label: educationTypeCode,
-                    })
-                  )}
-                  selectedEducationTypeCode={
-                    currentDependant.dependantSelectedEducationTypeCode
-                  }
-                  onSelect={handleSelectEducationType}
-                />
+    <ApplicationSubPanel>
+      <ApplicationSubPanel.Body>
+        <RecordsListing
+          recordsInfo={{
+            identifier: status.userSchoolDataIdentifier,
+            userEntityId: status.userId,
+            displayNotification: dispatch(displayNotification),
+            studyActivity: currentDependantStudyData.studyActivity,
+            courseMatrix: currentDependantStudyData.courseMatrix,
+            curriculumConfig: currentDependantStudyData.curriculumConfig,
+            config: {
+              showAssigmentsAndDiaries: false,
+            },
+          }}
+          emptyMessage={t("content.empty", {
+            ns: "studies",
+            context: "workspaces-guardian",
+          })}
+          educationTypeSelector={
+            <RecordsEducationTypeSelector
+              options={currentDependant.dependantEducationTypes.map(
+                (educationTypeCode) => ({
+                  educationTypeCode,
+                  label: educationTypeCode,
+                })
+              )}
+              selectedEducationTypeCode={
+                currentDependant.dependantSelectedEducationTypeCode
               }
+              onSelect={handleSelectEducationType}
             />
-          ) : (
-            <div className="application-sub-panel__item">
-              <div className="empty">
-                <span>
-                  {t("content.empty", {
-                    ns: "studies",
-                    context: "workspaces-guardian",
-                  })}
-                </span>
-              </div>
-            </div>
-          )}
-        </ApplicationSubPanel.Body>
-      </ApplicationSubPanel>
-    </RecordsInfoProvider>
+          }
+        />
+      </ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
   );
 
   return (
