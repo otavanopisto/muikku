@@ -32,10 +32,10 @@ interface RecordsListingProps {
  */
 const RecordsListing = (props: RecordsListingProps) => {
   const { recordsInfo, educationTypeSelector, emptyMessage } = props;
-  const { courseMatrix, studyActivity, curriculumConfig } = recordsInfo;
+  const { courseMatrix, studyActivity } = recordsInfo;
   const { t } = useTranslation(["studies"]);
 
-  if (!studyActivity || !courseMatrix || !curriculumConfig) {
+  if (!studyActivity) {
     return (
       <div className="application-sub-panel__item">
         <div className="empty">
@@ -54,7 +54,8 @@ const RecordsListing = (props: RecordsListingProps) => {
   return (
     <RecordsInfoProvider value={recordsInfo}>
       {educationTypeSelector}
-      {!courseMatrix.problems.includes("INCOMPATIBLE_STUDENT") ? (
+      {courseMatrix &&
+      !courseMatrix.problems.includes("INCOMPATIBLE_STUDENT") ? (
         <RecordsMatrixView />
       ) : (
         <RecordsActivityView />
