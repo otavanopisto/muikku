@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.payload;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -206,7 +207,7 @@ public class StudyActivityItemRestModel {
   private StudyActivityItemState state;
   private Date date;
   private Date gradeDate;
-  private List<String> curriculums;
+  private List<String> curriculums = new ArrayList<>();
   private String text;
   private String evaluatorName;
   private String studyProgramme;
