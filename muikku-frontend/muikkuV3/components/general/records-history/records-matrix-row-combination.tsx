@@ -94,6 +94,8 @@ const RecordsMatrixRowCombination: React.FC<
   const renderMandatorityDescription = () => {
     if (!firstItem.curriculums?.[0] || !firstItem.mandatority) return null;
     const OPS = firstItem.curriculums[0];
+
+    if (!OPS) return null;
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()

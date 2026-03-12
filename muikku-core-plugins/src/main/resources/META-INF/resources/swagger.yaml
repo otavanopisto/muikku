@@ -18014,7 +18014,6 @@ components:
           type: array
           items:
             type: string
-          nullable: true
         text:
           type: string
           description: Item text, e.g. supplementation request message or grade's verbal assesment

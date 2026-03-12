@@ -51,6 +51,8 @@ const RecordsActivityRowTransfered = (
 
     const OPS = studyActivityItem.curriculums[0];
 
+    if (!OPS) return null;
+
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()

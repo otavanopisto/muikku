@@ -117,6 +117,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
       return null;
     }
     const OPS = subjectSpecificActivityItem.curriculums[0];
+    if (!OPS) return null;
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()
