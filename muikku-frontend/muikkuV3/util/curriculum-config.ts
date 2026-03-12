@@ -533,11 +533,11 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   calculateStatistics(studyActivity?: StudyActivity): Statistics {
     const requiredStudies = this.getRequiredStudyValues();
 
-    const completedCourseCredits = studyActivity?.completedCourseCredits ?? 0;
-    const mandatoryCourseCredits = studyActivity?.mandatoryCourseCredits ?? 0;
+    const completedCourses = studyActivity?.completedCourses ?? 0;
+    const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
 
-    const mandatoryStudies = mandatoryCourseCredits;
-    const optionalStudies = completedCourseCredits - mandatoryCourseCredits;
+    const mandatoryStudies = mandatoryCourses;
+    const optionalStudies = completedCourses - mandatoryCourses;
 
     return {
       mandatoryStudies,
