@@ -27,15 +27,14 @@ const RecordsEducationTypeSelector = (
   props: RecordsEducationTypeSelectorProps
 ) => {
   const { options, selectedEducationTypeCode, onSelect } = props;
-  if (!options.length) return null;
+  if (options.length <= 1) return null;
 
   return (
-    <div className="application-list__actions-container">
+    <div className="application-sub-panel__actions-container">
       {options.map((opt) => (
         <Link
           key={opt.educationTypeCode}
-          className="link link--application-list"
-          disabled={opt.educationTypeCode === selectedEducationTypeCode}
+          className={`link link--select-education-type ${opt.educationTypeCode === selectedEducationTypeCode ? "selected" : ""}`}
           onClick={() => onSelect(opt.educationTypeCode)}
         >
           {opt.label}
