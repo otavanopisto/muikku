@@ -128,13 +128,13 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
    */
   const educationTypeName = () => {
     switch (studyActivity.educationTypeCode) {
-      case "Lukio":
+      case "lukio":
         return t("educationType.upperSecondaryEducation");
 
-      case "Perusopetus":
+      case "perusopetus":
         return t("educationType.basicEducation");
 
-      case "APA":
+      case "apa":
         return t("educationType.apa");
 
       case "ammatillinen":

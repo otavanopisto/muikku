@@ -160,6 +160,12 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     title += "*";
   }
 
+  // Course name extension exist only in workspace embodiment (aka workspace).
+  // So if it exists, add it to the title from activity item.
+  if (subjectSpecificActivityItem.courseNameExtension) {
+    title += ` (${subjectSpecificActivityItem.courseNameExtension})`;
+  }
+
   // Add credits to uppersecondary courses
   if (showCredits) {
     title += ` (${curriculumConfig.strategy.getCourseDisplayedLength(course.length)})`;
