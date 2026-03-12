@@ -581,16 +581,34 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                     duration={200}
                   >
                     {/* Normal rows related to matrix, so using RecordsMatrixRow */}
-                    {courseRows.map((row, i) => (
-                      <RecordsMatrixRow
-                        key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
-                        subject={row.subject}
-                        course={row.course}
-                        studyActivityItems={row.studyActivityItems}
-                        educationType={studyActivity.educationTypeCode}
-                        isCombinationWorkspace={row.isCombinationWorkspace}
-                      />
-                    ))}
+                    {courseRows.map((row, i) => {
+                      if (row.isCombinationWorkspace) {
+                        return (
+                          <RecordsMatrixRow
+                            key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
+                            subject={row.subject}
+                            course={row.course}
+                            studyActivityItems={row.studyActivityItems}
+                            educationType={studyActivity.educationTypeCode}
+                            isCombinationWorkspace={row.isCombinationWorkspace}
+                          />
+                        );
+                      }
+
+                      // If the row is not specifically a combination workspace, we want to
+                      // split the row into multiple rows, one for each study activity item.
+                      // This is for showing actual history of the different embodiments of the course.
+                      return row.studyActivityItems.map((item, j) => (
+                        <RecordsMatrixRow
+                          key={`${row.subject.code}-${row.course.courseNumber}-${item.courseId ?? j}`}
+                          subject={row.subject}
+                          course={row.course}
+                          studyActivityItems={[item]}
+                          educationType={studyActivity.educationTypeCode}
+                          isCombinationWorkspace={row.isCombinationWorkspace}
+                        />
+                      ));
+                    })}
                   </AnimateHeight>
                 </React.Fragment>
               );
