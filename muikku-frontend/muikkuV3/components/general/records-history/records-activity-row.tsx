@@ -259,12 +259,12 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
               codeSubjectString += `${courseNumber}`;
             }
 
-            if (courseLength && courseLengthSymbol) {
-              codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
-            }
-
             if (subjectName) {
               codeSubjectString += ` - ${subjectName}`;
+            }
+
+            if (courseLength && courseLengthSymbol) {
+              codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
             }
 
             return (

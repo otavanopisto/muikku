@@ -199,9 +199,9 @@ const RecordsMatrixRowCombination: React.FC<
           const courseLengthSymbol = aItem.lengthSymbol;
           let codeSubjectString = `${subjectCode}`;
           if (courseNumber) codeSubjectString += `${courseNumber}`;
+          if (courseModule) codeSubjectString += ` - ${courseModule.name}`;
           if (courseLength && courseLengthSymbol)
             codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
-          if (courseModule) codeSubjectString += ` - ${courseModule.name}`;
           return (
             <div
               key={`${subjectCode}-${courseNumber}`}
