@@ -17900,6 +17900,8 @@ components:
         - items
         - completedCourseCredits
         - mandatoryCourseCredits
+        - completedCourses
+        - mandatoryCourses
       properties:
         educationTypeCode:
           type: string
@@ -17915,6 +17917,12 @@ components:
         mandatoryCourseCredits:
           type: integer
           description: Student's number of mandatory course credits
+        completedCourses:
+          type: integer
+          description: Student's total number of completed courses
+        mandatoryCourses:
+          type: integer
+          description: Student's number of completed mandatory courses
 
     StudyActivityItem:
       type: object
