@@ -602,7 +602,7 @@
       "records": "Suoritukset",
       "search": "$t(common:labels.search)",
       "search_records": "Hae opintoja",
-      "showFullSyllabus": "Näytä koko opppimäärä",
+      "showFullSyllabus": "Näytä koko oppimäärä",
       "summary": "Opintojen yhteenveto",
       "studyInfo": "Opintojen tiedot",
       "studyEvents": "Opintotapahtumat",
