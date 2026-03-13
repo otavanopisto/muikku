@@ -1026,7 +1026,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
 
         const payload = summaries.map((s) => ({
           summary: s,
-          items: null as any,
+          items: null,
         }));
         dispatch({
           type: "SET_WORKLIST",
