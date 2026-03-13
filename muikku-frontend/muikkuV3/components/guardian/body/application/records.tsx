@@ -7,6 +7,7 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import RecordsListing from "~/components/general/records-history/records";
 import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
+import { getEducationTypeName } from "~/helper-functions/locale";
 import { StateType } from "~/reducers";
 
 /**
@@ -95,7 +96,7 @@ const Records = (props: RecordsProps) => {
               options={currentDependant.dependantEducationTypes.map(
                 (educationTypeCode) => ({
                   educationTypeCode,
-                  label: educationTypeCode,
+                  label: getEducationTypeName(educationTypeCode, t),
                 })
               )}
               selectedEducationTypeCode={

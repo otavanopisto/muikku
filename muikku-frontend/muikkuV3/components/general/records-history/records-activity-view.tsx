@@ -11,6 +11,7 @@ import {
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { useRecordsInfoContext } from "./context/records-info-context";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * Parses activity items into a flat list of combination workspaces and single items.
@@ -129,29 +130,6 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
   );
 
   /**
-   * educationTypeName
-   * @returns localized name of the education type
-   */
-  const educationTypeName = () => {
-    switch (studyActivity.educationTypeCode) {
-      case "lukio":
-        return t("educationType.upperSecondaryEducation");
-
-      case "perusopetus":
-        return t("educationType.basicEducation");
-
-      case "apa":
-        return t("educationType.apa");
-
-      case "ammatillinen":
-        return t("educationType.vocational");
-
-      default:
-        return t("educationType.unknown");
-    }
-  };
-
-  /**
    * sortWorkspaces
    */
   const handleWorkspaceSortDirectionClick = () => {
@@ -199,7 +177,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
   return (
     <>
       <ApplicationSubPanel.Header>
-        {educationTypeName()}
+        {getEducationTypeName(studyActivity.educationTypeCode, t)}
       </ApplicationSubPanel.Header>
       <div className="application-sub-panel__meta">
         <div className="application-sub-panel__meta-title">

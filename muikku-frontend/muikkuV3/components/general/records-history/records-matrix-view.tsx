@@ -24,6 +24,7 @@ import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import { Instructions } from "../instructions";
 import Link from "../link";
 import { useRecordsInfoContext } from "./context/records-info-context";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
@@ -342,29 +343,6 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     );
   }
 
-  /**
-   * educationTypeName
-   * @returns localized name of the education type
-   */
-  const educationTypeName = () => {
-    switch (studyActivity.educationTypeCode) {
-      case "lukio":
-        return t("educationType.upperSecondaryEducation");
-
-      case "perusopetus":
-        return t("educationType.basicEducation");
-
-      case "apa":
-        return t("educationType.apa");
-
-      case "ammatillinen":
-        return t("educationType.vocational");
-
-      default:
-        return t("educationType.unknown");
-    }
-  };
-
   const filterCheckboxes = [
     <div key="filterTitle" className="filter-category">
       <div className="filter-category__label">
@@ -538,7 +516,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         {t("content.filtersDescription", { ns: "studies" })}
       </div>
       <ApplicationSubPanel.Header>
-        {educationTypeName()}
+        {getEducationTypeName(studyActivity.educationTypeCode, t)}
       </ApplicationSubPanel.Header>
       {renderStatisticMeta()}
       <ApplicationSubPanel.Body>

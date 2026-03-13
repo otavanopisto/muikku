@@ -26,6 +26,7 @@ import {
 } from "~/actions/base/notifications";
 import RecordsListing from "~/components/general/records-history/records";
 import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 type studyHistoryAside = "history" | "library";
 
@@ -195,7 +196,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
             <RecordsEducationTypeSelector
               options={educationTypes.map((educationTypeCode) => ({
                 educationTypeCode,
-                label: educationTypeCode,
+                label: getEducationTypeName(educationTypeCode, t),
               }))}
               selectedEducationTypeCode={selectedEducationTypeCode}
               onSelect={handleSelectEducationTypeCode}

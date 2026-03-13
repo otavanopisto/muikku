@@ -29,6 +29,7 @@ import {
   updateSelectedEducationTypeCode,
   UpdateSelectedEducationTypeCodeTriggerType,
 } from "~/actions/study-activity";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * RecordsProps
@@ -121,7 +122,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 options={this.props.studyActivity.userEducationTypes.map(
                   (educationTypeCode) => ({
                     educationTypeCode,
-                    label: educationTypeCode,
+                    label: getEducationTypeName(educationTypeCode, t),
                   })
                 )}
                 selectedEducationTypeCode={
