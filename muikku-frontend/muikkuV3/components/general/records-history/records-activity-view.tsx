@@ -137,7 +137,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
       case "lukio":
         return t("educationType.upperSecondaryEducation");
 
-      case "perusopetus":
+      case "peruskoulu":
         return t("educationType.basicEducation");
 
       case "apa":
