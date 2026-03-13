@@ -295,7 +295,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "BACKGROUND":
       case "POSTGRADUATE":
       case "STUDYPLAN":
-        return true;
+        return curriculumConfig?.isMatrixAvailable ?? false;
       case "MATRICULATION":
         return [
           "Nettilukio",

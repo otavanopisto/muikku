@@ -165,12 +165,15 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
             selectUserStudyProgramme || ""
           );
         case "STUDYPLAN":
-          return true;
+          return (
+            currentDependantStudyData?.curriculumConfig?.isMatrixAvailable ??
+            false
+          );
         default:
           return false;
       }
     },
-    [selectedDependant]
+    [selectedDependant, currentDependantStudyData]
   );
 
   // Prepare dependants options

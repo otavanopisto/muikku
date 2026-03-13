@@ -12,6 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { HopsAvailableCourse } from "~/generated/client";
 import { Action, Dispatch } from "redux";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * WorkspaceSelectProps
@@ -40,7 +41,7 @@ interface WorkspaceSelectProps {
   /**
    * Curriculum type
    */
-  curriculumType: "uppersecondary" | "compulsory";
+  curriculumType: CurriculumConfig["type"];
   /**
    * OPS. E.g "OPS 2021"
    */

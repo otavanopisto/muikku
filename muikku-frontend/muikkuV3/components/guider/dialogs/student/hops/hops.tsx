@@ -321,8 +321,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "BACKGROUND":
       case "POSTGRADUATE":
       case "STUDYPLAN":
-        return studentInfo.permissions.canViewDetails;
-
+        return (
+          studentInfo.permissions.canViewDetails &&
+          (curriculumConfig?.isMatrixAvailable ?? false)
+        );
       case "MATRICULATION":
         return [
           "Nettilukio",

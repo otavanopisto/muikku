@@ -83,7 +83,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       entry.studyActivityStatus === "LOADING" ||
       entry.studyActivityStatus === "IDLE" ||
       entry.courseMatrixStatus === "LOADING" ||
-      entry.courseMatrixStatus === "IDLE"
+      entry.courseMatrixStatus === "IDLE" ||
+      entry.curriculumConfigStatus === "LOADING" ||
+      entry.curriculumConfigStatus === "IDLE"
     ) {
       return null;
     } else if (

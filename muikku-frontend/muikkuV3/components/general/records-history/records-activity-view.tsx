@@ -207,20 +207,22 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
         </div>
 
         <div className="application-sub-panel__meta-items">
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsMandatory")}
-            <span className="label label--mandatory">
-              {statistics.mandatoryStudies}
-            </span>
-          </div>
-
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsOptional")}
-            <span className="label label--optional">
-              {statistics.optionalStudies}
-            </span>
-          </div>
-
+          {curriculumConfig.type !== "unknown" && (
+            <div className="application-sub-panel__meta-item">
+              {t("labels.courseCreditsMandatory")}
+              <span className="label label--mandatory">
+                {statistics.mandatoryStudies}
+              </span>
+            </div>
+          )}
+          {curriculumConfig.type !== "unknown" && (
+            <div className="application-sub-panel__meta-item">
+              {t("labels.courseCreditsOptional")}
+              <span className="label label--optional">
+                {statistics.optionalStudies}
+              </span>
+            </div>
+          )}
           <div className="application-sub-panel__meta-item">
             {t("labels.courseCreditsTotal")}
             <span className="label label--total">

@@ -200,6 +200,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       filtered = filtered.filter(
         (row) =>
           row.course.name.toLowerCase().includes(searchTrimmed) ||
+          row.subject.name.toLowerCase().includes(searchTrimmed) ||
           `${row.subject.code}${row.course.courseNumber}`
             .toLowerCase()
             .includes(searchTrimmed)
@@ -469,6 +470,53 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     </div>,
   ];
 
+  /**
+   * Render statistic meta
+   * @returns statistic meta
+   */
+  const renderStatisticMeta = () => {
+    let title = t("labels.completedStudies");
+    let mandatoryLabel = t("labels.courseCreditsMandatory");
+    let optionalLabel = t("labels.courseCreditsOptional");
+    let totalLabel = t("labels.courseCreditsTotal");
+
+    if (curriculumConfig.type === "compulsory") {
+      title = t("labels.courses");
+      mandatoryLabel = t("labels.courseCreditsMandatory");
+      optionalLabel = t("labels.courseCreditsOptional");
+      totalLabel = t("labels.courseCreditsTotal");
+    }
+
+    return (
+      <div className="application-sub-panel__meta">
+        <div className="application-sub-panel__meta-title">{title}</div>
+
+        <div className="application-sub-panel__meta-items">
+          <div className="application-sub-panel__meta-item">
+            {mandatoryLabel}
+            <span className="label label--mandatory">
+              {statistics.mandatoryStudies}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {optionalLabel}
+            <span className="label label--optional">
+              {statistics.optionalStudies}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {totalLabel}
+            <span className="label label--total">
+              {statistics.totalStudies}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="application-sub-panel__filters">
@@ -492,34 +540,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       <ApplicationSubPanel.Header>
         {educationTypeName()}
       </ApplicationSubPanel.Header>
-      <div className="application-sub-panel__meta">
-        <div className="application-sub-panel__meta-title">
-          {t("labels.completedStudies")}
-        </div>
-
-        <div className="application-sub-panel__meta-items">
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsMandatory")}
-            <span className="label label--mandatory">
-              {statistics.mandatoryStudies}
-            </span>
-          </div>
-
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsOptional")}
-            <span className="label label--optional">
-              {statistics.optionalStudies}
-            </span>
-          </div>
-
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsTotal")}
-            <span className="label label--total">
-              {statistics.totalStudies}
-            </span>
-          </div>
-        </div>
-      </div>
+      {renderStatisticMeta()}
       <ApplicationSubPanel.Body>
         <ApplicationList>
           <div className="application-list__actions-container">

@@ -80,13 +80,13 @@ export interface CurriculumStrategy {
    * @param options options. Optional parameter to filter the matrix based on.
    * @returns curriculum matrix
    */
-  getCurriculumMatrix: () => CourseMatrixEnriched;
+  getCurriculumMatrix?: () => CourseMatrixEnriched;
 
   /**
    * Get current period
    * @returns current period
    */
-  getCurrentPeriod: () => PlannedPeriod;
+  getCurrentPeriod?: () => PlannedPeriod;
 
   /**
    * Create planned course
@@ -94,7 +94,7 @@ export interface CurriculumStrategy {
    * @param startDate start date
    * @returns planned course
    */
-  createPlannedCourse: (
+  createPlannedCourse?: (
     course: CourseMatrixModuleEnriched & { subjectCode: string },
     startDate: Date
   ) => PlannedCourseWithIdentifier;
@@ -104,7 +104,7 @@ export interface CurriculumStrategy {
    * @param courses courses
    * @returns workload
    */
-  calculatePeriodWorkload: (
+  calculatePeriodWorkload?: (
     courses: PlannedCourseWithIdentifier[],
     activityCourses: PlannerActivityItem[],
     t: TFunction
@@ -125,7 +125,7 @@ export interface CurriculumStrategy {
    * @param options options
    * @returns estimated time to completion
    */
-  calculateEstimatedTimeToCompletion: (
+  calculateEstimatedTimeToCompletion?: (
     hoursPerWeek: number,
     studyActivity?: StudyActivity
   ) => number;
@@ -143,14 +143,14 @@ export interface CurriculumStrategy {
    * @param year period year
    * @returns empty period
    */
-  getEmptyPeriod: (type: "SPRING" | "AUTUMN", year: number) => PlannedPeriod;
+  getEmptyPeriod?: (type: "SPRING" | "AUTUMN", year: number) => PlannedPeriod;
 
   /**
    * Find course by identifier
    * @param identifier course identifier
    * @returns course with subject code or undefined if not found
    */
-  findCourseByIdentifier: (
+  findCourseByIdentifier?: (
     identifier: string
   ) => (CourseMatrixModuleEnriched & { subjectCode: string }) | undefined;
 }
@@ -159,7 +159,8 @@ export interface CurriculumStrategy {
  * Curriculum config
  */
 export interface CurriculumConfig {
-  type: "uppersecondary" | "compulsory";
+  type: "uppersecondary" | "compulsory" | "unknown";
+  isMatrixAvailable: boolean;
   strategy: CurriculumStrategy;
 }
 
@@ -624,25 +625,206 @@ class CompulsoryCurriculum implements CurriculumStrategy {
 }
 
 /**
- * Get curriculum config
+ * Matrix unavailable curriculum strategy
+ */
+class UpperSecondaryMatrixUnavailableCurriculum implements CurriculumStrategy {
+  /**
+   * Get required study values when no curriculum config is available
+   * @returns required study values in credits
+   */
+  getRequiredStudyValues(): {
+    mandatoryStudies: number | null;
+    optionalStudies: number | null;
+    totalStudies: number;
+  } {
+    return {
+      mandatoryStudies: null,
+      optionalStudies: null,
+      totalStudies: UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES,
+    };
+  }
+
+  /**
+   * Calculate statistics when no curriculum config is available
+   * @param studyActivity study activity
+   * @returns statistics
+   */
+  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+    const requiredStudies = this.getRequiredStudyValues();
+
+    // Values from study activity, with set default values if not present
+    const completedCourseCredits = studyActivity?.completedCourseCredits ?? 0;
+    const mandatoryCourseCredits = studyActivity?.mandatoryCourseCredits ?? 0;
+
+    const mandatoryStudies = mandatoryCourseCredits;
+    const optionalStudies = completedCourseCredits - mandatoryCourseCredits;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
+      unit: "credits",
+      requiredStudies,
+    };
+  }
+
+  /**
+   * Get course displayed length
+   * @param courseLength course length
+   * @returns displayed length
+   */
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} op`;
+  }
+}
+
+/**
+ * Matrix unavailable curriculum strategy
+ */
+class CompulsoryMatrixUnavailableCurriculum implements CurriculumStrategy {
+  /**
+   * Get required study values when no curriculum config is available
+   * @returns required study values
+   */
+  getRequiredStudyValues(): {
+    mandatoryStudies: number | null;
+    optionalStudies: number | null;
+    totalStudies: number;
+  } {
+    return {
+      mandatoryStudies: null,
+      optionalStudies: null,
+      totalStudies: COMPULSORY_TOTAL_REQUIRED_STUDIES,
+    };
+  }
+
+  /**
+   * Calculate statistics when no curriculum config is available
+   * @param studyActivity study activity
+   * @returns statistics
+   */
+  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+    const requiredStudies = this.getRequiredStudyValues();
+
+    const completedCourses = studyActivity?.completedCourses ?? 0;
+    const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
+
+    const mandatoryStudies = mandatoryCourses;
+    const optionalStudies = completedCourses - mandatoryCourses;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
+      unit: "courses",
+      requiredStudies: requiredStudies,
+    };
+  }
+
+  /**
+   * Get course displayed length
+   * @param courseLength course length
+   * @returns displayed length
+   */
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} h`;
+  }
+}
+
+/**
+ * Unknown curriculum strategy
+ */
+class UnknownCurriculum implements CurriculumStrategy {
+  /**
+   * Calculate statistics when no curriculum config is available
+   * @param studyActivity study activity
+   * @returns statistics
+   */
+  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+    const completedCourses = studyActivity?.completedCourses ?? 0;
+    const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
+
+    const mandatoryStudies = mandatoryCourses;
+    const optionalStudies = completedCourses - mandatoryCourses;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
+      unit: "courses",
+      requiredStudies: {
+        mandatoryStudies: null,
+        optionalStudies: null,
+        totalStudies: null,
+      },
+    };
+  }
+
+  /**
+   * Get course displayed length
+   * @param courseLength course length
+   * @returns displayed length
+   */
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} h`;
+  }
+}
+
+/**
+ * Get curriculum config.
+ * If no matching curriculum config is found, the default strategy will be set to "unknown".
  * @param courseMatrixType course matrix type
  * @param courseMatrix course matrix
  * @returns curriculum config
  */
 function getCurriculumConfig(
-  courseMatrixType: CourseMatrixType,
-  courseMatrix?: CourseMatrix
+  courseMatrixType: CourseMatrixType | null,
+  courseMatrix: CourseMatrix
 ): CurriculumConfig {
   if (courseMatrixType === "UPPER_SECONDARY") {
+    if (noCurriculumConfigAvailable(courseMatrix.problems)) {
+      return {
+        type: "uppersecondary",
+        isMatrixAvailable: false,
+        strategy: new UpperSecondaryMatrixUnavailableCurriculum(),
+      };
+    }
     return {
       type: "uppersecondary",
+      isMatrixAvailable: true,
       strategy: new UppersecondaryCurriculum(courseMatrix),
     };
   }
+  if (courseMatrixType === "COMPULSORY") {
+    if (noCurriculumConfigAvailable(courseMatrix.problems)) {
+      return {
+        type: "compulsory",
+        isMatrixAvailable: false,
+        strategy: new CompulsoryMatrixUnavailableCurriculum(),
+      };
+    }
+    return {
+      type: "compulsory",
+      isMatrixAvailable: true,
+      strategy: new CompulsoryCurriculum(courseMatrix),
+    };
+  }
   return {
-    type: "compulsory",
-    strategy: new CompulsoryCurriculum(courseMatrix),
+    type: "unknown",
+    isMatrixAvailable: false,
+    strategy: new UnknownCurriculum(),
   };
+}
+
+/**
+ * Check if no curriculum config is available
+ * @param courseMatrixProblems course matrix problems
+ * @returns true if no curriculum config is available, false otherwise
+ */
+function noCurriculumConfigAvailable(
+  courseMatrixProblems: CourseMatrix["problems"]
+): boolean {
+  return courseMatrixProblems.includes("INCOMPATIBLE_STUDENT");
 }
 
 export { UppersecondaryCurriculum, CompulsoryCurriculum, getCurriculumConfig };

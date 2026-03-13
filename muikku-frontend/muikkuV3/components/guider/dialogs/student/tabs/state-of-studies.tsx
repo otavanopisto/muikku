@@ -107,12 +107,16 @@ class StateOfStudies extends React.Component<
 
     return (
       <ApplicationSubPanelItem title={title} modifier="guider-course-credits">
-        <ApplicationSubPanelItem.Content>
-          {`${mandatoryLabel} ${statistics.mandatoryStudies}`}
-        </ApplicationSubPanelItem.Content>
-        <ApplicationSubPanelItem.Content>
-          {`${optionalLabel} ${statistics.optionalStudies}`}
-        </ApplicationSubPanelItem.Content>
+        {curriculumConfig.type !== "unknown" && (
+          <ApplicationSubPanelItem.Content>
+            {`${mandatoryLabel} ${statistics.mandatoryStudies}`}
+          </ApplicationSubPanelItem.Content>
+        )}
+        {curriculumConfig.type !== "unknown" && (
+          <ApplicationSubPanelItem.Content>
+            {`${optionalLabel} ${statistics.optionalStudies}`}
+          </ApplicationSubPanelItem.Content>
+        )}
         <ApplicationSubPanelItem.Content>
           {`${totalLabel} ${statistics.totalStudies}`}
         </ApplicationSubPanelItem.Content>
