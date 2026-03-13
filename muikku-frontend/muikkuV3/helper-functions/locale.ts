@@ -52,7 +52,7 @@ export const getEducationTypeName = (
     case "lukio":
       return t("educationType.upperSecondaryEducation");
 
-    case "perusopetus":
+    case "peruskoulu":
       return t("educationType.basicEducation");
 
     case "apa":
