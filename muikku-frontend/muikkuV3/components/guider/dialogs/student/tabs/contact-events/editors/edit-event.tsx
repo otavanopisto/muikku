@@ -180,7 +180,10 @@ class EditContactLogEventEvent extends SessionStateComponent<
               id="contactEventdate"
               onChange={this.onDateChange}
               locale={outputCorrectDatePickerLocale(localize.language)}
-              dateFormat="P"
+              dateFormat="P HH:mm"
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={5}
               selected={this.state.date}
             ></DatePicker>
           </div>

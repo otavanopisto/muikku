@@ -1,0 +1,44 @@
+{
+  "resources": [
+    {
+      "id": 2001,
+      "title": "Kurssi 1",
+      "description": "Kurssi kurssinen"
+    },
+    {
+      "id": 2002,
+      "title": "Kurssi 2",
+      "description": "Kurssin 2 kuvaus"
+    },
+    {
+      "id": 2003,
+      "title": "Kurssi 3",
+      "description": "Kurssin 3 kuvaus"
+    },
+    {
+      "id": 2004,
+      "title": "Kurssi 4",
+      "description": "Kurssin 4 kuvaus"
+    },
+    {
+      "id": 2005,
+      "title": "Kurssi 5",
+      "description": "Kurssin 5 kuvaus"
+    },
+    {
+      "id": 2006,
+      "title": "Hupu Ankka",
+      "description": "Opiskelija Hupu Ankka."
+    },
+    {
+      "id": 2008,
+      "title": "Tupu Ankka",
+      "description": "Opiskelija Tupu Ankka."
+    },
+    {
+      "id": 2009,
+      "title": "Lupu Ankka",
+      "description": "Opiskelija Lupu Ankka."
+    }
+  ]
+}

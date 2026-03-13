@@ -1,0 +1,52 @@
+.calendar {
+  width: 100%;
+  padding: 0;
+}
+.calendar__resources-container {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    background: aliceblue;
+}
+.calendar__resource {
+  padding: 5px 10px;
+  background: #eee;
+  border-radius: 10px;
+  cursor: pointer;
+  &.active {
+    color: #fff;
+    background: blueviolet;
+  }
+}
+
+
+.calendar__new-event-container {
+  display: none;
+  margin-top: 1rem;
+
+  &.visible {
+    display: block;
+  }
+}
+
+.calendar__calendar-component {
+  padding: 20px;
+}
+
+
+
+.event  {
+  padding: 5px;
+  border-radius: 5px;
+  color: #fff;
+
+  &--hupu {
+    background: #00f635;
+  }
+  &--tupu {
+    background: #0408ff;
+  }
+    &--lupu {
+    background: #d80000;
+  }
+}

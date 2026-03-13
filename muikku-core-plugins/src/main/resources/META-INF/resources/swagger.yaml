@@ -936,6 +936,10 @@ paths:
       responses:
         "204":
           description: Calendar event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarEvent"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -15158,6 +15162,10 @@ components:
           type: boolean
         removable:
           type: boolean
+        resourceId:
+          type: integer
+          format: int64
+          nullable: true
 
     CalendarEventParticipant:
       type: object
