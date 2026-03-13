@@ -98,7 +98,10 @@ class StateOfStudies extends React.Component<
     let optionalLabel = this.props.t("labels.courseCreditsOptional");
     let totalLabel = this.props.t("labels.courseCreditsTotal");
 
-    if (curriculumConfig.type === "compulsory") {
+    if (
+      curriculumConfig.type === "compulsory" ||
+      curriculumConfig.type === "unknown"
+    ) {
       title = this.props.i18n.t("labels.courses");
       mandatoryLabel = this.props.t("labels.courseCreditsMandatory");
       optionalLabel = this.props.t("labels.courseCreditsOptional");
