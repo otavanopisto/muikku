@@ -1054,9 +1054,6 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
-      );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
       this.loadRecordsData(window.location.hash.replace("#", ""));
