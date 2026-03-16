@@ -116,7 +116,9 @@ export interface CurriculumStrategy {
    * @param options options
    * @returns statistics
    */
-  calculateStatistics: (studyActivities?: StudyActivity) => Statistics;
+  calculateStatistics: (
+    studyActivities: StudyActivity | null | undefined
+  ) => Statistics;
 
   /**
    * Calculate estimated time to completion
@@ -127,7 +129,7 @@ export interface CurriculumStrategy {
    */
   calculateEstimatedTimeToCompletion?: (
     hoursPerWeek: number,
-    studyActivity?: StudyActivity
+    studyActivity: StudyActivity | null | undefined
   ) => number;
 
   /**
@@ -213,7 +215,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    */
   calculateEstimatedTimeToCompletion(
     hoursPerWeek: number,
-    studyActivity?: StudyActivity
+    studyActivity: StudyActivity | null | undefined
   ): number {
     const statistics = this.calculateStatistics(studyActivity);
 
@@ -309,7 +311,9 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    * @param studyActivity study activity
    * @returns statistics
    */
-  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
     const requiredStudies = this.getRequiredStudyValues();
 
     // Values from study activity, with set default values if not present
@@ -452,7 +456,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    */
   calculateEstimatedTimeToCompletion(
     hoursPerWeek: number,
-    studyActivity?: StudyActivity
+    studyActivity: StudyActivity | null | undefined
   ): number {
     const statistics = this.calculateStatistics(studyActivity);
 
@@ -531,7 +535,9 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * @param studyActivity study activity
    * @returns statistics
    */
-  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
     const requiredStudies = this.getRequiredStudyValues();
 
     const completedCourses = studyActivity?.completedCourses ?? 0;
@@ -649,7 +655,9 @@ class UpperSecondaryMatrixUnavailableCurriculum implements CurriculumStrategy {
    * @param studyActivity study activity
    * @returns statistics
    */
-  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
     const requiredStudies = this.getRequiredStudyValues();
 
     // Values from study activity, with set default values if not present
@@ -703,7 +711,9 @@ class CompulsoryMatrixUnavailableCurriculum implements CurriculumStrategy {
    * @param studyActivity study activity
    * @returns statistics
    */
-  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
     const requiredStudies = this.getRequiredStudyValues();
 
     const completedCourses = studyActivity?.completedCourses ?? 0;
@@ -740,7 +750,9 @@ class UnknownCurriculum implements CurriculumStrategy {
    * @param studyActivity study activity
    * @returns statistics
    */
-  calculateStatistics(studyActivity?: StudyActivity): Statistics {
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
     const completedCourses = studyActivity?.completedCourses ?? 0;
     const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
 
