@@ -76,8 +76,7 @@ export interface PlanStatistics {
  */
 export interface CurriculumStrategy {
   /**
-   * Get curriculum matrix. Can be filtered with provided options parameter.
-   * @param options options. Optional parameter to filter the matrix based on.
+   * Get curriculum matrix.
    * @returns curriculum matrix
    */
   getCurriculumMatrix?: () => CourseMatrixEnriched;
@@ -113,7 +112,6 @@ export interface CurriculumStrategy {
   /**
    * Calculate statistics
    * @param studyActivities study activities
-   * @param options options
    * @returns statistics
    */
   calculateStatistics: (
@@ -124,7 +122,6 @@ export interface CurriculumStrategy {
    * Calculate estimated time to completion
    * @param hoursPerWeek hours per week
    * @param studyActivity study activity
-   * @param options options
    * @returns estimated time to completion
    */
   calculateEstimatedTimeToCompletion?: (
