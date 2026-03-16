@@ -417,7 +417,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".button-pill__icon.icon-trash");
         assertGoesAway(".application-list__item-content-aside .message__select-container .message__selector", 5);
         navigate("/communicator#trash", false);
-        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        waitForElementToAppear(".application-list__item-body--communicator-message .application-list__header-item-body", 3, 500);
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test caption");
       }finally{
         deleteCommunicatorMessages();
