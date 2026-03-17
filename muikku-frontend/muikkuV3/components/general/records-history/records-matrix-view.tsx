@@ -4,7 +4,11 @@ import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import "~/sass/elements/label.scss";
-import { CourseMatrixModule, StudyActivityItemState } from "~/generated/client";
+import {
+  CourseMatrixModule,
+  CourseMatrixModuleMandatorityEnum,
+  StudyActivityItemState,
+} from "~/generated/client";
 import {
   buildRecordsRowsFromMatrix,
   enrichMatrixRowsWithCombinationWorkspace,
@@ -25,6 +29,15 @@ import { Instructions } from "../instructions";
 import Link from "../link";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { getEducationTypeName } from "~/helper-functions/locale";
+
+export const MANDATORY_FILTER_VALUES: CourseMatrixModuleMandatorityEnum[] = [
+  "MANDATORY",
+];
+export const OPTIONAL_FILTER_VALUES: CourseMatrixModuleMandatorityEnum[] = [
+  "SCHOOL_LEVEL_OPTIONAL",
+  "NATIONAL_LEVEL_OPTIONAL",
+  "UNSPECIFIED_OPTIONAL",
+];
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
@@ -185,10 +198,16 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     // and the course is optional if "optional" is in the courseTypeFilters
     if (courseTypeFilters.length > 0) {
       filtered = filtered.filter((row) => {
-        if (row.course.mandatory && courseTypeFilters.includes("mandatory")) {
+        if (
+          MANDATORY_FILTER_VALUES.includes(row.course.mandatority) &&
+          courseTypeFilters.includes("mandatory")
+        ) {
           return true;
         }
-        if (!row.course.mandatory && courseTypeFilters.includes("optional")) {
+        if (
+          OPTIONAL_FILTER_VALUES.includes(row.course.mandatority) &&
+          courseTypeFilters.includes("optional")
+        ) {
           return true;
         }
         return false;

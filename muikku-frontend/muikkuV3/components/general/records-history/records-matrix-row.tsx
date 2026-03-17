@@ -20,6 +20,7 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import Dropdown from "../dropdown";
 import { AssessmentInformation } from "./assessment-information";
+import { OPTIONAL_FILTER_VALUES } from "./records-matrix-view";
 
 /**
  * Props for the matrix-based records row.
@@ -109,11 +110,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    if (
-      !hasActivity ||
-      !subjectSpecificActivityItem?.curriculums?.[0] ||
-      !subjectSpecificActivityItem.mandatority
-    ) {
+    if (!hasActivity || !subjectSpecificActivityItem?.curriculums?.[0]) {
       return null;
     }
     const OPS = subjectSpecificActivityItem.curriculums[0];
@@ -123,8 +120,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
       .toLowerCase()
       .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
     if (!suitabilityMap[education]) return null;
-    let localString =
-      suitabilityMap[education][subjectSpecificActivityItem.mandatority];
+    let localString = suitabilityMap[education][course.mandatority];
     const creditsString = getCreditsString();
     if (creditsString) localString = `${localString}, ${creditsString}`;
     return (
@@ -157,7 +153,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   let title = subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
-  if (!course.mandatory) {
+  if (OPTIONAL_FILTER_VALUES.includes(course.mandatority)) {
     title += "*";
   }
 
