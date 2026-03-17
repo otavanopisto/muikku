@@ -15,6 +15,7 @@ import {
   CourseMatrixModuleEnriched,
   enrichCourseMatrixWithIdentifiers,
 } from "~/@types/course-matrix";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 // Uppersecondary curriculum has 88 credits required
 const UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES = 88;
@@ -288,7 +289,9 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
         (sum, subject) =>
           sum +
           subject.modules
-            .filter((module) => module.mandatory)
+            .filter((module) =>
+              MANDATORITY_MANDATORY_VALUES.includes(module.mandatority)
+            )
             .map((module) => module.length)
             .reduce((sum, length) => sum + length, 0),
         0
@@ -398,7 +401,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
       length: course.length,
       lengthSymbol: "op", // Credits for upper secondary
       subjectCode: course.subjectCode,
-      mandatory: course.mandatory,
+      mandatory: MANDATORITY_MANDATORY_VALUES.includes(course.mandatority),
       startDate: startDate,
     };
   }
@@ -514,7 +517,10 @@ class CompulsoryCurriculum implements CurriculumStrategy {
 
     const mandatoryStudies = matrix.subjects.reduce(
       (sum, subject) =>
-        sum + subject.modules.filter((module) => module.mandatory).length,
+        sum +
+        subject.modules.filter((module) =>
+          MANDATORITY_MANDATORY_VALUES.includes(module.mandatority)
+        ).length,
       0
     );
 
@@ -621,7 +627,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       length: course.length,
       lengthSymbol: "h",
       subjectCode: course.subjectCode,
-      mandatory: course.mandatory,
+      mandatory: MANDATORITY_MANDATORY_VALUES.includes(course.mandatority),
       startDate: startDate,
     };
   }

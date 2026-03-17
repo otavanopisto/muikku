@@ -9,8 +9,7 @@ import {
   UpdateSuggestionParams,
   useSuggestionList,
 } from "./hooks/useSuggestedList";
-import { WorkspaceSuggestion } from "~/generated/client";
-import { Course } from "~/@types/shared";
+import { CourseMatrixModule, WorkspaceSuggestion } from "~/generated/client";
 import { Action, Dispatch } from "redux";
 
 /**
@@ -21,7 +20,7 @@ export interface SuggestionItemContext {
   handleSuggestionNextClick: (
     params: UpdateSuggestionParams
   ) => (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-  course: Course;
+  course: CourseMatrixModule;
   subjectCode: string;
   studentId: string;
 }
@@ -32,7 +31,7 @@ export interface SuggestionItemContext {
 interface HopsSuggestionListProps {
   studentId: string;
   studentsUserEntityId: number;
-  course: Course;
+  course: CourseMatrixModule;
   subjectCode: string;
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;

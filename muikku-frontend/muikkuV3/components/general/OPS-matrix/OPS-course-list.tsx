@@ -13,7 +13,10 @@ import {
   CourseMatrixModule,
   CourseMatrixSubject,
 } from "~/generated/client";
-import { getNonOPSTransferedActivities } from "~/helper-functions/study-matrix";
+import {
+  getNonOPSTransferedActivities,
+  MANDATORITY_MANDATORY_VALUES,
+} from "~/helper-functions/study-matrix";
 
 /**
  * Interface for parameters passed to the course item renderer
@@ -67,7 +70,7 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     const courses = sSubject.modules.map((course) => {
       const listItemIndicatormodifiers = ["course"];
 
-      if (course.mandatory) {
+      if (MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)) {
         listItemIndicatormodifiers.push("MANDATORY");
         !course.available && listItemIndicatormodifiers.push("NOT-AVAILABLE");
         return renderCourseItem ? (
@@ -215,13 +218,17 @@ const DefaultCourseItem = (props: DefaultCourseItemProps) => {
           content={
             <div className="hops-container__study-tool-dropdown-container">
               <div className="hops-container__study-tool-dropdow-title">
-                {course.mandatory ? course.name : `${course.name}*`}
+                {MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
+                  ? course.name
+                  : `${course.name}*`}
               </div>
             </div>
           }
         >
           <span tabIndex={0} className="list__indicator-data-wapper">
-            {course.mandatory ? course.courseNumber : `${course.courseNumber}*`}
+            {MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
+              ? course.courseNumber
+              : `${course.courseNumber}*`}
           </span>
         </Dropdown>
       </ListItemIndicator>

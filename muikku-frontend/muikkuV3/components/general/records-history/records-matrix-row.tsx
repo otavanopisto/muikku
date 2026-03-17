@@ -20,7 +20,7 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import Dropdown from "../dropdown";
 import { AssessmentInformation } from "./assessment-information";
-import { OPTIONAL_FILTER_VALUES } from "./records-matrix-view";
+import { MANDATORITY_OPTIONAL_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * Props for the matrix-based records row.
@@ -153,7 +153,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   let title = subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
-  if (OPTIONAL_FILTER_VALUES.includes(course.mandatority)) {
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
     title += "*";
   }
 
