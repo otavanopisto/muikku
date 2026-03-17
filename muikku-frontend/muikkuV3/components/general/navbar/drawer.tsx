@@ -343,17 +343,19 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     </Link>
                   </li>
                 ) : null}
-                <li className="menu__item menu__item--main">
-                  <Link
-                    className="menu__item-link menu__item-link--helpdesk"
-                    onClick={this.props.openReadingRuler}
-                  >
-                    <span className="menu__item-link-icon icon-cogs"></span>
-                    <span className="menu__item-link-text">
-                      {this.props.t("labels.readingRuler")}
-                    </span>
-                  </Link>
-                </li>
+                {this.props.status.loggedIn ? (
+                  <li className="menu__item menu__item--main">
+                    <Link
+                      className="menu__item-link menu__item-link--helpdesk"
+                      onClick={this.props.openReadingRuler}
+                    >
+                      <span className="menu__item-link-icon icon-cogs"></span>
+                      <span className="menu__item-link-text">
+                        {this.props.t("labels.readingRuler")}
+                      </span>
+                    </Link>
+                  </li>
+                ) : null}
                 {this.props.status.loggedIn ? (
                   <li className="menu__item menu__item--main">
                     <Link

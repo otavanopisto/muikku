@@ -13,6 +13,7 @@ import {
 import { StudyActivityItem } from "~/generated/client";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 // Animate period to collapse
 const periodVariants: Variants = {
@@ -80,13 +81,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     const { t } = useTranslation(["common"]);
 
-    const curriculumStrategy = useSelector(
-      (state: StateType) => state.hopsNew.hopsCurriculumConfig.strategy
-    );
+    const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
-    const studyActivities = useSelector(
-      (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
-    );
     const hopsMode = useSelector((state: StateType) => state.hopsNew.hopsMode);
 
     const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -111,8 +107,11 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
     // Check if the period has planned courses
     const hasMovablePlannedCourses = React.useMemo(
       () =>
-        hasPlannedCoursesOrOngoingActivities(plannedCourses, studyActivities),
-      [plannedCourses, studyActivities]
+        hasPlannedCoursesOrOngoingActivities(
+          plannedCourses,
+          userStudyActivity.items
+        ),
+      [plannedCourses, userStudyActivity]
     );
 
     /**
@@ -121,7 +120,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
      */
     const getPlannedCoursesByMonth = (monthName: string) =>
       plannedCourses.filter((course) => {
-        const studyActivity = studyActivities.find(
+        const studyActivity = userStudyActivity.items.find(
           (sa) =>
             sa.courseNumber === course.courseNumber &&
             sa.subject === course.subjectCode
@@ -171,7 +170,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
           });
 
     // Calculate workload
-    const workload = curriculumStrategy.calculatePeriodWorkload(
+    const workload = curriculumConfig.strategy.calculatePeriodWorkload(
       plannedCourses,
       activityCourses,
       t

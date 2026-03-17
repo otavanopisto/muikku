@@ -17,6 +17,7 @@ import { updateEditingGoals } from "~/actions/main-function/hops";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * MatriculationPlanProps
@@ -28,17 +29,17 @@ interface StudyPlanToolProps {}
  * @param props props
  */
 const StudyPlanTool = (props: StudyPlanToolProps) => {
-  const {
-    hopsMode,
-    hopsCurriculumConfig: curriculumConfig,
-    studentInfo,
-    hopsStudyPlanStatus,
-  } = useSelector((state: StateType) => state.hopsNew);
+  const { hopsMode, studentInfo, hopsStudyPlanStatus } = useSelector(
+    (state: StateType) => state.hopsNew
+  );
+
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
   const dispatch = useDispatch();
 
-  const { plannedCourses, planNotes, studyActivity, studyOptions, goals } =
-    useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
+  const { plannedCourses, planNotes, studyOptions, goals } = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState
+  );
 
   const {
     plannedCourses: editingPlan,
@@ -86,7 +87,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             ? new Date(studentInfo.studyTimeEnd)
             : null,
         },
-        studyActivity,
+        userStudyActivity?.items ?? [],
         usedPlannedCourses,
         usedPlanNotes,
         curriculumConfig.strategy
@@ -96,7 +97,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
       usedPlanNotes,
       curriculumConfig,
       studentInfo,
-      studyActivity,
+      userStudyActivity,
     ]
   );
 
@@ -104,17 +105,17 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   const statistics = useMemo(
     () =>
       curriculumConfig.strategy.calculateStatistics(
-        studyActivity,
+        userStudyActivity?.items ?? [],
         studyOptions
       ),
-    [curriculumConfig.strategy, studyActivity, studyOptions]
+    [curriculumConfig.strategy, userStudyActivity?.items, studyOptions]
   );
 
   // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
       usedGoalInfo.studyHours,
-      studyActivity,
+      userStudyActivity?.items ?? [],
       studyOptions
     );
 

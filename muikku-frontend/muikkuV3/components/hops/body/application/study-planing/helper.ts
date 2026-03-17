@@ -1,5 +1,9 @@
 import { TFunction } from "i18next";
-import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
+import {
+  CourseMatrixModuleEnriched,
+  CourseMatrixSubjectEnriched,
+} from "~/@types/course-matrix";
+import { CourseFilter } from "~/@types/shared";
 import { StudyActivityItemState, StudyActivityItem } from "~/generated/client";
 import {
   PeriodCourseItem,
@@ -280,13 +284,11 @@ const createActivityOnlyCourseItem = (
 ): PlannerActivityItem | null => {
   const matrix = curriculumStrategy.getCurriculumMatrix();
   // Find course in matrix
-  const subject = matrix.subjectsTable.find(
-    (s) => s.subjectCode === studyActivity.subject
-  );
+  const subject = matrix.subjects.find((s) => s.code === studyActivity.subject);
 
   if (!subject) return null;
 
-  const course = subject.availableCourses.find(
+  const course = subject.modules.find(
     (c) => c.courseNumber === studyActivity.courseNumber
   );
 
@@ -296,7 +298,7 @@ const createActivityOnlyCourseItem = (
     identifier: "activity-course-" + studyActivity.courseId,
     course: {
       ...course,
-      subjectCode: subject.subjectCode,
+      subjectCode: subject.code,
     },
     studyActivity,
   };
@@ -305,7 +307,7 @@ const createActivityOnlyCourseItem = (
 /**
  * Filtered course
  */
-interface FilteredCourse extends Course {
+interface FilteredCourse extends CourseMatrixModuleEnriched {
   state?: StudyActivityItemState;
   planned: boolean;
   studyActivity?: StudyActivityItem;
@@ -316,34 +318,32 @@ interface FilteredCourse extends Course {
  * @param subjects subjects
  * @param searchTerm search term
  * @param selectedFilters selected filters
- * @param availableOPSCoursesMap available OPS courses map
  * @param studyActivities study activities
  * @param plannedCourses planned courses
  * @returns filtered subjects and courses
  */
 const filterSubjectsAndCourses = (
-  subjects: SchoolSubject[],
+  subjects: CourseMatrixSubjectEnriched[],
   searchTerm: string,
   selectedFilters: CourseFilter[],
-  availableOPSCoursesMap: Map<string, number[]>,
   studyActivities: StudyActivityItem[],
   plannedCourses: PlannedCourseWithIdentifier[]
 ) =>
   subjects
     .map((subject, i) => {
       let filteredCoursesWithStudyActivity = [
-        ...subject.availableCourses,
+        ...subject.modules,
       ].map<FilteredCourse>((course) => {
         const studyActivity = studyActivities.find(
           (sa) =>
             sa.courseNumber === course.courseNumber &&
-            sa.subject === subject.subjectCode
+            sa.subject === subject.code
         );
 
         const plannedCourse = plannedCourses.find(
           (pc) =>
             pc.courseNumber === course.courseNumber &&
-            pc.subjectCode === subject.subjectCode
+            pc.subjectCode === subject.code
         );
 
         let state: StudyActivityItemState = undefined;
@@ -380,14 +380,7 @@ const filterSubjectsAndCourses = (
       // Filter available OPS courses
       if (selectedFilters.includes("available")) {
         filteredCoursesWithStudyActivity =
-          filteredCoursesWithStudyActivity.filter((course) => {
-            const availableCourseNumbers = availableOPSCoursesMap.get(
-              subject.subjectCode
-            );
-            return (
-              availableCourseNumbers?.includes(course.courseNumber) ?? false
-            );
-          });
+          filteredCoursesWithStudyActivity.filter((course) => course.available);
       }
 
       filteredCoursesWithStudyActivity =
