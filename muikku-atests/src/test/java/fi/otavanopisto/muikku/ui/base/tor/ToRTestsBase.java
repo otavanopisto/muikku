@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.hops.Mandatority;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
@@ -32,7 +33,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-import fi.otavanopisto.pyramus.rest.model.hops.Mandatority;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
 

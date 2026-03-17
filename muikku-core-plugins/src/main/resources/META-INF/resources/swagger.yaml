@@ -17862,7 +17862,7 @@ components:
         - name
         - courseNumber
         - length
-        - mandatory
+        - mandatority
         - available
       properties:
         name:
@@ -17871,8 +17871,13 @@ components:
           type: integer
         length:
           type: integer
-        mandatory:
-          type: boolean
+        mandatority:
+          type: string
+          enum:
+            - MANDATORY
+            - SCHOOL_LEVEL_OPTIONAL
+            - NATIONAL_LEVEL_OPTIONAL
+            - UNSPECIFIED_OPTIONAL
         available:
           type: boolean
 
