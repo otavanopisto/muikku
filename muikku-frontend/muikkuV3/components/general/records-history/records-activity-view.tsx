@@ -2,7 +2,7 @@ import * as React from "react";
 import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
-import { StudyActivity, StudyActivityItem } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import RecordsActivityListItem from "./records-activity-row";
 import {
   getCombinationWorkspaces,
@@ -10,6 +10,8 @@ import {
 } from "~/helper-functions/study-matrix";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import { useRecordsInfoContext } from "./context/records-info-context";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * Parses activity items into a flat list of combination workspaces and single items.
@@ -95,9 +97,7 @@ const filterAndSortActivity = (
 /**
  * RecordsListProps
  */
-interface RecordsActivityViewProps {
-  studyActivity: StudyActivity;
-}
+interface RecordsActivityViewProps {}
 
 /**
  * RecordsListItem
@@ -105,12 +105,19 @@ interface RecordsActivityViewProps {
  * @returns JSX.Element
  */
 const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
-  const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
   const [activitySortDirection, setActivitySortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
+
+  const { curriculumConfig, studyActivity } = useRecordsInfoContext();
+
+  // Calculate the statistics
+  const statistics = React.useMemo(
+    () => curriculumConfig.strategy.calculateStatistics(studyActivity),
+    [curriculumConfig.strategy, studyActivity]
+  );
 
   const memoizedActivityItems = React.useMemo(
     () => parseActivityItems(studyActivity.items),
@@ -121,29 +128,6 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
     () => filterAndSortActivity(memoizedActivityItems, activitySortDirection),
     [memoizedActivityItems, activitySortDirection]
   );
-
-  /**
-   * educationTypeName
-   * @returns localized name of the education type
-   */
-  const educationTypeName = () => {
-    switch (studyActivity.educationType) {
-      case "Lukio":
-        return t("educationType.upperSecondaryEducation");
-
-      case "Perusopetus":
-        return t("educationType.basicEducation");
-
-      case "APA":
-        return t("educationType.apa");
-
-      case "ammatillinen":
-        return t("educationType.vocational");
-
-      default:
-        return t("educationType.unknown");
-    }
-  };
 
   /**
    * sortWorkspaces
@@ -176,7 +160,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
       <ApplicationList>
         <div className="application-list__header-container application-list__header-container--sorter">
           <h3 className="application-list__header application-list__header--sorter">
-            {studyActivity.educationType}
+            {studyActivity.educationTypeCode}
           </h3>
         </div>
         <div className="application-sub-panel__item">
@@ -193,7 +177,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
   return (
     <>
       <ApplicationSubPanel.Header>
-        {educationTypeName()}
+        {getEducationTypeName(studyActivity.educationTypeCode, t)}
       </ApplicationSubPanel.Header>
       <div className="application-sub-panel__meta">
         <div className="application-sub-panel__meta-title">
@@ -201,25 +185,26 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
         </div>
 
         <div className="application-sub-panel__meta-items">
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsMandatory")}
-            <span className="label label--mandatory">
-              {studyActivity.mandatoryCourseCredits}
-            </span>
-          </div>
-
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsOptional")}
-            <span className="label label--optional">
-              {studyActivity.completedCourseCredits -
-                studyActivity.mandatoryCourseCredits}
-            </span>
-          </div>
-
+          {curriculumConfig.type !== "unknown" && (
+            <div className="application-sub-panel__meta-item">
+              {t("labels.courseCreditsMandatory")}
+              <span className="label label--mandatory">
+                {statistics.mandatoryStudies}
+              </span>
+            </div>
+          )}
+          {curriculumConfig.type !== "unknown" && (
+            <div className="application-sub-panel__meta-item">
+              {t("labels.courseCreditsOptional")}
+              <span className="label label--optional">
+                {statistics.optionalStudies}
+              </span>
+            </div>
+          )}
           <div className="application-sub-panel__meta-item">
             {t("labels.courseCreditsTotal")}
             <span className="label label--total">
-              {studyActivity.completedCourseCredits}
+              {statistics.totalStudies}
             </span>
           </div>
         </div>
@@ -243,7 +228,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
                 key={`record-activity-list-item-${i}`}
                 studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
                 isCombinationWorkspace={Array.isArray(ntItem)}
-                educationType={studyActivity.educationType}
+                educationType={studyActivity.educationTypeCode}
               />
             ))}
 
@@ -256,7 +241,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
                 <RecordsActivityRowTransfered
                   key={`transfered-activity-item-${i}`}
                   studyActivityItem={tItem}
-                  educationType={studyActivity.educationType}
+                  educationType={studyActivity.educationTypeCode}
                 />
               ))}
             </>

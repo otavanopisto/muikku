@@ -11,10 +11,10 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 public class LocalUserImpl  extends AbstractUser implements User {
 
   public LocalUserImpl(String identifier, String firstName, String lastName, String nickName, String displayName,
-      String studyProgrammeName, String studyProgrammeEducationType, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
+      String studyProgrammeName, String educationTypeCode, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, SchoolDataIdentifier curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
       Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
-    super(identifier, firstName, lastName, nickName, displayName, studyProgrammeName, studyProgrammeEducationType, studyProgrammeIdentifier, nationality, language, municipality, school,
+    super(identifier, firstName, lastName, nickName, displayName, studyProgrammeName, educationTypeCode, studyProgrammeIdentifier, nationality, language, municipality, school,
         studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier, organizationIdentifier, matriculationEligibility, studyProgrammeIdentifiers);
   }
 

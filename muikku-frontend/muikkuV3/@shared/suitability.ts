@@ -55,3 +55,17 @@ export const suitabilityMapHelper = (
     SCHOOL_LEVEL_OPTIONAL: t("schoolLevelOptional", { ns: "ops" }),
   },
 });
+
+/**
+ * This function returns map containing all localizations for workspace mandatority property values without OPS
+ * @param t i18n translation function
+ * @returns suitability map without OPS
+ */
+export const suitabilityMapHelperWithoutOPS = (
+  t: TFunction
+): OPSsuitability => ({
+  MANDATORY: t("mandatory", { ns: "ops" }),
+  UNSPECIFIED_OPTIONAL: t("unspecifiedOptional", { ns: "ops" }),
+  NATIONAL_LEVEL_OPTIONAL: t("nationalLevelOptional", { ns: "ops" }),
+  SCHOOL_LEVEL_OPTIONAL: t("schoolLevelOptional", { ns: "ops" }),
+});

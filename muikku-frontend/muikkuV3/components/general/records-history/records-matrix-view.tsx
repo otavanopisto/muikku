@@ -4,12 +4,11 @@ import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import "~/sass/elements/label.scss";
+import { CourseMatrixModule, StudyActivityItemState } from "~/generated/client";
 import {
-  CourseMatrix,
-  CourseMatrixModule,
-  StudyActivity,
-  StudyActivityItemState,
-} from "~/generated/client";
+  MANDATORITY_MANDATORY_VALUES,
+  MANDATORITY_OPTIONAL_VALUES,
+} from "~/helper-functions/study-matrix";
 import {
   buildRecordsRowsFromMatrix,
   enrichMatrixRowsWithCombinationWorkspace,
@@ -28,6 +27,8 @@ import RecordsActivityRow from "./records-activity-row";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import { Instructions } from "../instructions";
 import Link from "../link";
+import { useRecordsInfoContext } from "./context/records-info-context";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
@@ -41,12 +42,6 @@ interface SubjectGroup {
  * RecordsListMatrixViewProps
  */
 interface RecordsMatrixViewProps {
-  /** CourseMatrix (structure). When null, nothing is rendered. */
-  courseMatrix: CourseMatrix | null;
-  /** StudyActivity (student data). When null, rows still render with empty activity. */
-  studyActivity: StudyActivity;
-  /** Optional: show credits in section header. Uses studyActivity if provided. */
-  showCreditsInHeader?: boolean;
   /**
    * If true, show all matrix courses including those with no study activity.
    * Default false: only show courses that have at least one study activity item.
@@ -61,13 +56,12 @@ interface RecordsMatrixViewProps {
  * @param props props
  */
 const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
-  const {
-    courseMatrix,
-    studyActivity,
-    showCoursesWithoutActivity = false,
-  } = props;
+  const { showCoursesWithoutActivity = false } = props;
 
   const status = useSelector((state: StateType) => state.status);
+
+  const { curriculumConfig, studyActivity, courseMatrix } =
+    useRecordsInfoContext();
 
   const [searchValue, setSearchValue] = useLocalStorage(
     `${status.userId}-records-matrix-search`,
@@ -92,6 +86,12 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     showCoursesWithoutActivity || showMatrixStructure;
 
   const { t } = useTranslation(["studies", "common"]);
+
+  // Calculate the statistics
+  const statistics = React.useMemo(
+    () => curriculumConfig.strategy.calculateStatistics(studyActivity),
+    [curriculumConfig.strategy, studyActivity]
+  );
 
   const courseMatrixModulesBySubjectCode = React.useMemo(
     () =>
@@ -189,10 +189,16 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     // and the course is optional if "optional" is in the courseTypeFilters
     if (courseTypeFilters.length > 0) {
       filtered = filtered.filter((row) => {
-        if (row.course.mandatory && courseTypeFilters.includes("mandatory")) {
+        if (
+          MANDATORITY_MANDATORY_VALUES.includes(row.course.mandatority) &&
+          courseTypeFilters.includes("mandatory")
+        ) {
           return true;
         }
-        if (!row.course.mandatory && courseTypeFilters.includes("optional")) {
+        if (
+          MANDATORITY_OPTIONAL_VALUES.includes(row.course.mandatority) &&
+          courseTypeFilters.includes("optional")
+        ) {
           return true;
         }
         return false;
@@ -205,6 +211,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       filtered = filtered.filter(
         (row) =>
           row.course.name.toLowerCase().includes(searchTrimmed) ||
+          row.subject.name.toLowerCase().includes(searchTrimmed) ||
           `${row.subject.code}${row.course.courseNumber}`
             .toLowerCase()
             .includes(searchTrimmed)
@@ -346,29 +353,6 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     );
   }
 
-  /**
-   * educationTypeName
-   * @returns localized name of the education type
-   */
-  const educationTypeName = () => {
-    switch (studyActivity.educationType) {
-      case "Lukio":
-        return t("educationType.upperSecondaryEducation");
-
-      case "Perusopetus":
-        return t("educationType.basicEducation");
-
-      case "apa":
-        return t("educationType.apa");
-
-      case "ammatillinen":
-        return t("educationType.vocational");
-
-      default:
-        return t("educationType.unknown");
-    }
-  };
-
   const filterCheckboxes = [
     <div key="filterTitle" className="filter-category">
       <div className="filter-category__label">
@@ -474,6 +458,53 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     </div>,
   ];
 
+  /**
+   * Render statistic meta
+   * @returns statistic meta
+   */
+  const renderStatisticMeta = () => {
+    let title = t("labels.completedStudies");
+    let mandatoryLabel = t("labels.courseCreditsMandatory");
+    let optionalLabel = t("labels.courseCreditsOptional");
+    let totalLabel = t("labels.courseCreditsTotal");
+
+    if (curriculumConfig.type === "compulsory") {
+      title = t("labels.courses");
+      mandatoryLabel = t("labels.courseCreditsMandatory");
+      optionalLabel = t("labels.courseCreditsOptional");
+      totalLabel = t("labels.courseCreditsTotal");
+    }
+
+    return (
+      <div className="application-sub-panel__meta">
+        <div className="application-sub-panel__meta-title">{title}</div>
+
+        <div className="application-sub-panel__meta-items">
+          <div className="application-sub-panel__meta-item">
+            {mandatoryLabel}
+            <span className="label label--mandatory">
+              {statistics.mandatoryStudies}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {optionalLabel}
+            <span className="label label--optional">
+              {statistics.optionalStudies}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {totalLabel}
+            <span className="label label--total">
+              {statistics.totalStudies}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="application-sub-panel__filters">
@@ -495,37 +526,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         {t("content.filtersDescription", { ns: "studies" })}
       </div>
       <ApplicationSubPanel.Header>
-        {educationTypeName()}
+        {getEducationTypeName(studyActivity.educationTypeCode, t)}
       </ApplicationSubPanel.Header>
-      <div className="application-sub-panel__meta">
-        <div className="application-sub-panel__meta-title">
-          {t("labels.completedStudies")}
-        </div>
-
-        <div className="application-sub-panel__meta-items">
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsMandatory")}
-            <span className="label label--mandatory">
-              {studyActivity.mandatoryCourseCredits}
-            </span>
-          </div>
-
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsOptional")}
-            <span className="label label--optional">
-              {studyActivity.completedCourseCredits -
-                studyActivity.mandatoryCourseCredits}
-            </span>
-          </div>
-
-          <div className="application-sub-panel__meta-item">
-            {t("labels.courseCreditsTotal")}
-            <span className="label label--total">
-              {studyActivity.completedCourseCredits}
-            </span>
-          </div>
-        </div>
-      </div>
+      {renderStatisticMeta()}
       <ApplicationSubPanel.Body>
         <ApplicationList>
           <div className="application-list__actions-container">
@@ -581,16 +584,34 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                     duration={200}
                   >
                     {/* Normal rows related to matrix, so using RecordsMatrixRow */}
-                    {courseRows.map((row, i) => (
-                      <RecordsMatrixRow
-                        key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
-                        subject={row.subject}
-                        course={row.course}
-                        studyActivityItems={row.studyActivityItems}
-                        educationType={studyActivity.educationType}
-                        isCombinationWorkspace={row.isCombinationWorkspace}
-                      />
-                    ))}
+                    {courseRows.map((row, i) => {
+                      if (row.isCombinationWorkspace) {
+                        return (
+                          <RecordsMatrixRow
+                            key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
+                            subject={row.subject}
+                            course={row.course}
+                            studyActivityItems={row.studyActivityItems}
+                            educationType={studyActivity.educationTypeCode}
+                            isCombinationWorkspace={row.isCombinationWorkspace}
+                          />
+                        );
+                      }
+
+                      // If the row is not specifically a combination workspace, we want to
+                      // split the row into multiple rows, one for each study activity item.
+                      // This is for showing actual history of the different embodiments of the course.
+                      return row.studyActivityItems.map((item, j) => (
+                        <RecordsMatrixRow
+                          key={`${row.subject.code}-${row.course.courseNumber}-${item.courseId ?? j}`}
+                          subject={row.subject}
+                          course={row.course}
+                          studyActivityItems={[item]}
+                          educationType={studyActivity.educationTypeCode}
+                          isCombinationWorkspace={row.isCombinationWorkspace}
+                        />
+                      ));
+                    })}
                   </AnimateHeight>
                 </React.Fragment>
               );
@@ -646,7 +667,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                 <RecordsMatrixRowCombination
                   key={`combination-workspace-${row[0].courseId}`}
                   studyActivityItems={row}
-                  educationType={studyActivity.educationType}
+                  educationType={studyActivity.educationTypeCode}
                 />
               ))}
             </>
@@ -669,7 +690,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                     key={`non-ops-activity-item-${item.courseId}`}
                     studyActivityItems={[item]}
                     isCombinationWorkspace={false}
-                    educationType={studyActivity.educationType}
+                    educationType={studyActivity.educationTypeCode}
                   />
                 ))}
               {filteredTransferedActivities.length > 0 &&
@@ -677,7 +698,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                   <RecordsActivityRowTransfered
                     key={`transfered-activity-item-${i}`}
                     studyActivityItem={tItem}
-                    educationType={studyActivity.educationType}
+                    educationType={studyActivity.educationTypeCode}
                   />
                 ))}
             </>

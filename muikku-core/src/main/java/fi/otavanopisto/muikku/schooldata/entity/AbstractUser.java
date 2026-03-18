@@ -8,7 +8,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 public abstract class AbstractUser implements User {
   
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
-      String studyProgrammeName, String studyProgrammeEducationType, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
+      String studyProgrammeName, String educationTypeCode, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
       boolean evaluationFees, SchoolDataIdentifier curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
       Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
@@ -19,7 +19,7 @@ public abstract class AbstractUser implements User {
     this.nickName = nickName;
     this.displayName = displayName;
     this.studyProgrammeName = studyProgrammeName;
-    this.studyProgrammeEducationType = studyProgrammeEducationType;
+    this.educationTypeCode = educationTypeCode;
     this.studyProgrammeIdentifier = studyProgrammeIdentifier;
     this.nationality = nationality;
     this.language = language;
@@ -72,8 +72,8 @@ public abstract class AbstractUser implements User {
   }
 
   @Override
-  public String getStudyProgrammeEducationType() {
-    return studyProgrammeEducationType;
+  public String getEducationTypeCode() {
+    return educationTypeCode;
   }
 
   @Override
@@ -205,7 +205,7 @@ public abstract class AbstractUser implements User {
   private String lastName;
   private String displayName;
   private String studyProgrammeName;
-  private String studyProgrammeEducationType;
+  private String educationTypeCode;
   private SchoolDataIdentifier studyProgrammeIdentifier;
   private String nationality;
   private String language;

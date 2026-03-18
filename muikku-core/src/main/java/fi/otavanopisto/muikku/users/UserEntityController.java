@@ -455,6 +455,14 @@ public class UserEntityController implements Serializable {
   public UserEntity updateLocale(UserEntity userEntity, Locale locale) {
     return userEntityDAO.updateLocale(userEntity, locale != null ? locale.toString() : null);
   }
+  
+  public boolean isThisMe(SchoolDataIdentifier identifier) {
+    if (sessionController.isLoggedIn()) {
+      UserSchoolDataIdentifier usdi = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(identifier);
+      return usdi != null && usdi.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId());
+    }
+    return false;
+  }
 
   public UserEntity archiveUserEntity(UserEntity userEntity) {
     return userEntityDAO.updateArchived(userEntity, Boolean.TRUE);

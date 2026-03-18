@@ -1,7 +1,7 @@
 import {
   CourseMatrix,
   CourseMatrixType,
-  StudyActivityItem,
+  StudyActivity,
 } from "~/generated/client";
 import {
   PlannedCourseWithIdentifier,
@@ -15,6 +15,7 @@ import {
   CourseMatrixModuleEnriched,
   enrichCourseMatrixWithIdentifiers,
 } from "~/@types/course-matrix";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 // Uppersecondary curriculum has 88 credits required
 const UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES = 88;
@@ -24,6 +25,7 @@ const UPPER_SECONDARY_MANDATORY_OFFSET = 2;
 
 // One of these subjects is required to have 2 + 2 credits, which is calculated as 4 mandatory credits
 // when calculating total studies.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const UPPER_SECONDARY_REQUIRED_EXCEPTION = ["BI", "FY", "KE", "GE"];
 
 // Compulsory curriculum has 45 courses required
@@ -71,30 +73,20 @@ export interface PlanStatistics {
 }
 
 /**
- * Curriculum matrix options
- */
-interface CurriculumMatrixOptions {
-  studyOptions: string[];
-}
-
-/**
  * Curriculum strategy
  */
 export interface CurriculumStrategy {
   /**
-   * Get curriculum matrix. Can be filtered with provided options parameter.
-   * @param options options. Optional parameter to filter the matrix based on.
+   * Get curriculum matrix.
    * @returns curriculum matrix
    */
-  getCurriculumMatrix: (
-    options?: CurriculumMatrixOptions
-  ) => CourseMatrixEnriched;
+  getCurriculumMatrix?: () => CourseMatrixEnriched;
 
   /**
    * Get current period
    * @returns current period
    */
-  getCurrentPeriod: () => PlannedPeriod;
+  getCurrentPeriod?: () => PlannedPeriod;
 
   /**
    * Create planned course
@@ -102,7 +94,7 @@ export interface CurriculumStrategy {
    * @param startDate start date
    * @returns planned course
    */
-  createPlannedCourse: (
+  createPlannedCourse?: (
     course: CourseMatrixModuleEnriched & { subjectCode: string },
     startDate: Date
   ) => PlannedCourseWithIdentifier;
@@ -112,7 +104,7 @@ export interface CurriculumStrategy {
    * @param courses courses
    * @returns workload
    */
-  calculatePeriodWorkload: (
+  calculatePeriodWorkload?: (
     courses: PlannedCourseWithIdentifier[],
     activityCourses: PlannerActivityItem[],
     t: TFunction
@@ -121,38 +113,21 @@ export interface CurriculumStrategy {
   /**
    * Calculate statistics
    * @param studyActivities study activities
-   * @param options options
    * @returns statistics
    */
   calculateStatistics: (
-    studyActivities: StudyActivityItem[],
-    options: string[]
+    studyActivities: StudyActivity | null | undefined
   ) => Statistics;
-
-  /**
-   * Calculate plan statistics
-   * @param plannedCourses planned courses
-   * @param studyActivities study activities
-   * @param options options
-   * @returns statistics
-   */
-  calculatePlanStatistics: (
-    plannedCourses: PlannedCourseWithIdentifier[],
-    studyActivities: StudyActivityItem[],
-    options: string[]
-  ) => PlanStatistics;
 
   /**
    * Calculate estimated time to completion
    * @param hoursPerWeek hours per week
-   * @param studyActivities study activities
-   * @param options options
+   * @param studyActivity study activity
    * @returns estimated time to completion
    */
-  calculateEstimatedTimeToCompletion: (
+  calculateEstimatedTimeToCompletion?: (
     hoursPerWeek: number,
-    studyActivities: StudyActivityItem[],
-    options: string[]
+    studyActivity: StudyActivity | null | undefined
   ) => number;
 
   /**
@@ -168,14 +143,14 @@ export interface CurriculumStrategy {
    * @param year period year
    * @returns empty period
    */
-  getEmptyPeriod: (type: "SPRING" | "AUTUMN", year: number) => PlannedPeriod;
+  getEmptyPeriod?: (type: "SPRING" | "AUTUMN", year: number) => PlannedPeriod;
 
   /**
    * Find course by identifier
    * @param identifier course identifier
    * @returns course with subject code or undefined if not found
    */
-  findCourseByIdentifier: (
+  findCourseByIdentifier?: (
     identifier: string
   ) => (CourseMatrixModuleEnriched & { subjectCode: string }) | undefined;
 }
@@ -184,7 +159,8 @@ export interface CurriculumStrategy {
  * Curriculum config
  */
 export interface CurriculumConfig {
-  type: "uppersecondary" | "compulsory";
+  type: "uppersecondary" | "compulsory" | "unknown";
+  isMatrixAvailable: boolean;
   strategy: CurriculumStrategy;
 }
 
@@ -197,22 +173,17 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   /**
    * Constructor
    * @param courseMatrix course matrix
-   * @param curriculumName curriculum name
    */
-  constructor(courseMatrix?: CourseMatrix, curriculumName?: string) {
+  constructor(courseMatrix?: CourseMatrix) {
     // Initialize the base matrix with identifiers
-    this.matrix = enrichCourseMatrixWithIdentifiers(
-      courseMatrix,
-      curriculumName ?? ""
-    );
+    this.matrix = enrichCourseMatrixWithIdentifiers(courseMatrix);
   }
 
   /**
    * Get curriculum matrix
-   * @param options options. Optional parameter to filter the matrix based on.
    * @returns curriculum matrix
    */
-  getCurriculumMatrix(options?: CurriculumMatrixOptions): CourseMatrixEnriched {
+  getCurriculumMatrix(): CourseMatrixEnriched {
     return this.matrix;
   }
 
@@ -237,16 +208,14 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    * Calculate estimated time to completion. Uppersecondary calculates credits
    * which are converted to hours using 19 hours per credit.
    * @param hoursPerWeek hours per week
-   * @param studyActivities study activities
-   * @param options options
+   * @param studyActivity study activity
    * @returns estimated time to completion in months
    */
   calculateEstimatedTimeToCompletion(
     hoursPerWeek: number,
-    studyActivities: StudyActivityItem[],
-    options: string[]
+    studyActivity: StudyActivity | null | undefined
   ): number {
-    const statistics = this.calculateStatistics(studyActivities, options);
+    const statistics = this.calculateStatistics(studyActivity);
 
     // Calculate remaining credits needed
     const remainingCredits = Math.max(
@@ -303,79 +272,15 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   }
 
   /**
-   * Calculate plan statistics
-   * @param plannedCourses planned courses
-   * @param studyActivities study activities
-   * @param options options
-   * @returns statistics
-   */
-  calculatePlanStatistics(
-    plannedCourses: PlannedCourseWithIdentifier[],
-    studyActivities: StudyActivityItem[],
-    options: string[]
-  ): PlanStatistics {
-    const completedStats = this.calculateStatistics(studyActivities, options);
-
-    // Calculate planned studies (excluding completed ones)
-    let plannedMandatory = 0;
-    let plannedOptional = 0;
-
-    plannedCourses.forEach((planned) => {
-      // Skip if this course is already completed
-      const isCompleted = studyActivities.some(
-        (activity) =>
-          activity.subject === planned.subjectCode &&
-          activity.courseNumber === planned.courseNumber &&
-          ((activity.state === "GRADED" && activity.passing) ||
-            activity.state === "TRANSFERRED")
-      );
-
-      if (!isCompleted) {
-        if (planned.mandatory) {
-          plannedMandatory += 1;
-        } else {
-          plannedOptional += 1;
-        }
-      }
-    });
-
-    // Calculate remaining required studies
-    const remainingMandatory = Math.max(
-      completedStats.requiredStudies.mandatoryStudies -
-        (completedStats.mandatoryStudies + plannedMandatory),
-      0
-    );
-
-    const remainingOptional = Math.max(
-      completedStats.requiredStudies.optionalStudies -
-        (completedStats.optionalStudies + plannedOptional),
-      0
-    );
-
-    return {
-      plannedMandatoryStudies: plannedMandatory,
-      plannedOptionalStudies: plannedOptional,
-      plannedTotalStudies: plannedMandatory + plannedOptional,
-      unit: "credits",
-      requiredStudies: {
-        plannedMandatoryStudies: remainingMandatory,
-        plannedOptionalStudies: remainingOptional,
-        plannedTotalStudies: remainingMandatory + remainingOptional,
-      },
-    };
-  }
-
-  /**
    * Get required study values. Uppersecondary curriculum has 88 credits required.
-   * @param options options
    * @returns required study values in credits
    */
-  getRequiredStudyValues(options: string[]): {
+  getRequiredStudyValues(): {
     mandatoryStudies: number;
     optionalStudies: number;
     totalStudies: number;
   } {
-    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+    const matrix = this.getCurriculumMatrix();
 
     const requiredTotalStudies = UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES;
 
@@ -384,7 +289,9 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
         (sum, subject) =>
           sum +
           subject.modules
-            .filter((module) => module.mandatory)
+            .filter((module) =>
+              MANDATORITY_MANDATORY_VALUES.includes(module.mandatority)
+            )
             .map((module) => module.length)
             .reduce((sum, length) => sum + length, 0),
         0
@@ -401,87 +308,20 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
 
   /**
    * Calculate statistics
-   * @param studyActivities study activities
-   * @param options options
+   * @param studyActivity study activity
    * @returns statistics
    */
   calculateStatistics(
-    studyActivities: StudyActivityItem[],
-    options: string[]
+    studyActivity: StudyActivity | null | undefined
   ): Statistics {
-    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+    const requiredStudies = this.getRequiredStudyValues();
 
-    const requiredStudies = this.getRequiredStudyValues(options);
+    // Values from study activity, with set default values if not present
+    const completedCourseCredits = studyActivity?.completedCourseCredits ?? 0;
+    const mandatoryCourseCredits = studyActivity?.mandatoryCourseCredits ?? 0;
 
-    const completedActivities = studyActivities.filter(
-      (activity) =>
-        (activity.state === "GRADED" && activity.passing) ||
-        activity.state === "TRANSFERRED"
-    );
-
-    let mandatoryStudies = 0;
-    let optionalStudies = 0;
-    let exceptionRuleApplied = false; // Track if we've already applied the 2+2 rule
-
-    // Track credits for exception subjects
-    const exceptionSubjectCredits: Record<
-      string,
-      { mandatory: number; optional: number }
-    > = {};
-
-    completedActivities.forEach((activity) => {
-      const subject = matrix.subjects.find(
-        (subject) => subject.code === activity.subject
-      );
-
-      if (subject) {
-        const course = subject.modules.find(
-          (module) => module.courseNumber === activity.courseNumber
-        );
-
-        if (course) {
-          if (UPPER_SECONDARY_REQUIRED_EXCEPTION.includes(activity.subject)) {
-            // Initialize tracking for this exception subject if needed
-            if (!exceptionSubjectCredits[activity.subject]) {
-              exceptionSubjectCredits[activity.subject] = {
-                mandatory: 0,
-                optional: 0,
-              };
-            }
-
-            // Track credits for this exception subject
-            if (course.mandatory) {
-              exceptionSubjectCredits[activity.subject].mandatory +=
-                course.length;
-            } else {
-              exceptionSubjectCredits[activity.subject].optional +=
-                course.length;
-            }
-          }
-
-          // Normal credit calculation
-          if (course.mandatory) {
-            mandatoryStudies += course.length;
-          } else {
-            optionalStudies += course.length;
-          }
-        }
-      }
-    });
-
-    // Check if any exception subject has 2 mandatory + 2 optional credits
-    if (!exceptionRuleApplied) {
-      for (const subject of UPPER_SECONDARY_REQUIRED_EXCEPTION) {
-        const credits = exceptionSubjectCredits[subject];
-        if (credits && credits.mandatory >= 2 && credits.optional >= 2) {
-          // Move 4 credits to mandatory studies (2 were already there, so add 2 more)
-          mandatoryStudies += 2;
-          optionalStudies -= 2;
-          exceptionRuleApplied = true;
-          break;
-        }
-      }
-    }
+    const mandatoryStudies = mandatoryCourseCredits;
+    const optionalStudies = completedCourseCredits - mandatoryCourseCredits;
 
     return {
       mandatoryStudies,
@@ -561,7 +401,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
       length: course.length,
       lengthSymbol: "op", // Credits for upper secondary
       subjectCode: course.subjectCode,
-      mandatory: course.mandatory,
+      mandatory: MANDATORITY_MANDATORY_VALUES.includes(course.mandatority),
       startDate: startDate,
     };
   }
@@ -576,22 +416,17 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   /**
    * Constructor
    * @param courseMatrix course matrix
-   * @param curriculumName curriculum name
    */
-  constructor(courseMatrix?: CourseMatrix, curriculumName?: string) {
+  constructor(courseMatrix?: CourseMatrix) {
     // Initialize the base matrix with identifiers
-    this.matrix = enrichCourseMatrixWithIdentifiers(
-      courseMatrix,
-      curriculumName ?? ""
-    );
+    this.matrix = enrichCourseMatrixWithIdentifiers(courseMatrix);
   }
 
   /**
    * Get curriculum matrix
-   * @param options options. Optional parameter to filter the matrix based on.
    * @returns curriculum matrix
    */
-  getCurriculumMatrix(options?: CurriculumMatrixOptions) {
+  getCurriculumMatrix() {
     return this.matrix;
   }
 
@@ -616,16 +451,14 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * Calculate estimated time to completion. Compulsory calculates courses instead of credits which
    * are converted to hours using 38 hours per course.
    * @param hoursPerWeek hours per week
-   * @param studyActivities study activities
-   * @param options options
+   * @param studyActivity study activity
    * @returns estimated time to completion in months
    */
   calculateEstimatedTimeToCompletion(
     hoursPerWeek: number,
-    studyActivities: StudyActivityItem[],
-    options: string[]
+    studyActivity: StudyActivity | null | undefined
   ): number {
-    const statistics = this.calculateStatistics(studyActivities, options);
+    const statistics = this.calculateStatistics(studyActivity);
 
     // Calculate remaining courses needed
     const remainingCourses = Math.max(
@@ -670,85 +503,24 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   }
 
   /**
-   * Calculate plan statistics
-   * @param plannedCourses planned courses
-   * @param studyActivities study activities
-   * @param options options
-   * @returns statistics
-   */
-  calculatePlanStatistics(
-    plannedCourses: PlannedCourseWithIdentifier[],
-    studyActivities: StudyActivityItem[],
-    options: string[]
-  ): PlanStatistics {
-    const completedStats = this.calculateStatistics(studyActivities, options);
-
-    // Calculate planned studies (excluding completed ones)
-    let plannedMandatory = 0;
-    let plannedOptional = 0;
-
-    plannedCourses.forEach((planned) => {
-      // Skip if this course is already completed
-      const isCompleted = studyActivities.some(
-        (activity) =>
-          activity.subject === planned.subjectCode &&
-          activity.courseNumber === planned.courseNumber &&
-          ((activity.state === "GRADED" && activity.passing) ||
-            activity.state === "TRANSFERRED")
-      );
-
-      if (!isCompleted) {
-        if (planned.mandatory) {
-          plannedMandatory += 1;
-        } else {
-          plannedOptional += 1;
-        }
-      }
-    });
-
-    // Calculate remaining required studies
-    const remainingMandatory = Math.max(
-      completedStats.requiredStudies.mandatoryStudies -
-        completedStats.mandatoryStudies,
-      0
-    );
-
-    const remainingOptional = Math.max(
-      completedStats.requiredStudies.optionalStudies -
-        completedStats.optionalStudies,
-      0
-    );
-
-    return {
-      plannedMandatoryStudies: plannedMandatory,
-      plannedOptionalStudies: plannedOptional,
-      plannedTotalStudies: plannedMandatory + plannedOptional,
-      unit: "courses",
-      requiredStudies: {
-        plannedMandatoryStudies: remainingMandatory,
-        plannedOptionalStudies: remainingOptional,
-        plannedTotalStudies: remainingMandatory + remainingOptional,
-      },
-    };
-  }
-
-  /**
    * Get required study values
-   * @param options options
    * @returns required study values
    */
-  getRequiredStudyValues(options: string[]): {
+  getRequiredStudyValues(): {
     mandatoryStudies: number;
     optionalStudies: number;
     totalStudies: number;
   } {
-    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+    const matrix = this.getCurriculumMatrix();
 
     const requiredTotalStudies = COMPULSORY_TOTAL_REQUIRED_STUDIES;
 
     const mandatoryStudies = matrix.subjects.reduce(
       (sum, subject) =>
-        sum + subject.modules.filter((module) => module.mandatory).length,
+        sum +
+        subject.modules.filter((module) =>
+          MANDATORITY_MANDATORY_VALUES.includes(module.mandatority)
+        ).length,
       0
     );
 
@@ -763,60 +535,24 @@ class CompulsoryCurriculum implements CurriculumStrategy {
 
   /**
    * Calculate statistics
-   * @param studyActivities study activities
-   * @param options options
+   * @param studyActivity study activity
    * @returns statistics
    */
   calculateStatistics(
-    studyActivities: StudyActivityItem[],
-    options: string[]
+    studyActivity: StudyActivity | null | undefined
   ): Statistics {
-    const matrix = this.getCurriculumMatrix({ studyOptions: options });
-    const requiredStudies = this.getRequiredStudyValues(options);
+    const requiredStudies = this.getRequiredStudyValues();
 
-    // Filter completed or transferred activities
-    const completedActivities = studyActivities.filter(
-      (activity) =>
-        (activity.state === "GRADED" && activity.passing) ||
-        activity.state === "TRANSFERRED"
-    );
+    const completedCourses = studyActivity?.completedCourses ?? 0;
+    const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
 
-    let mandatoryCount = 0;
-    let optionalCount = 0;
-
-    // Go through each completed activity and match with matrix courses
-    completedActivities.forEach((activity) => {
-      // Find matching subject and course in matrix
-      const subject = matrix.subjects.find(
-        (subject) => subject.code === activity.subject
-      );
-
-      if (subject) {
-        const course = subject.modules.find(
-          (module) => module.courseNumber === activity.courseNumber
-        );
-
-        if (course) {
-          // Increment appropriate counter based on whether the course is mandatory
-          if (course.mandatory) {
-            mandatoryCount++;
-          } else {
-            optionalCount++;
-          }
-        }
-      }
-    });
-
-    // If optional studies are more than required, just show required amount
-    const optionalStudies =
-      optionalCount >= requiredStudies.optionalStudies
-        ? requiredStudies.optionalStudies
-        : optionalCount;
+    const mandatoryStudies = mandatoryCourses;
+    const optionalStudies = completedCourses - mandatoryCourses;
 
     return {
-      mandatoryStudies: mandatoryCount,
+      mandatoryStudies,
       optionalStudies,
-      totalStudies: mandatoryCount + optionalCount,
+      totalStudies: mandatoryStudies + optionalStudies,
       unit: "courses",
       requiredStudies: requiredStudies,
     };
@@ -891,34 +627,219 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       length: course.length,
       lengthSymbol: "h",
       subjectCode: course.subjectCode,
-      mandatory: course.mandatory,
+      mandatory: MANDATORITY_MANDATORY_VALUES.includes(course.mandatority),
       startDate: startDate,
     };
   }
 }
 
 /**
- * Get curriculum config
+ * Matrix unavailable curriculum strategy
+ */
+class UpperSecondaryMatrixUnavailableCurriculum implements CurriculumStrategy {
+  /**
+   * Get required study values when no curriculum config is available
+   * @returns required study values in credits
+   */
+  getRequiredStudyValues(): {
+    mandatoryStudies: number | null;
+    optionalStudies: number | null;
+    totalStudies: number;
+  } {
+    return {
+      mandatoryStudies: null,
+      optionalStudies: null,
+      totalStudies: UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES,
+    };
+  }
+
+  /**
+   * Calculate statistics when no curriculum config is available
+   * @param studyActivity study activity
+   * @returns statistics
+   */
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
+    const requiredStudies = this.getRequiredStudyValues();
+
+    // Values from study activity, with set default values if not present
+    const completedCourseCredits = studyActivity?.completedCourseCredits ?? 0;
+    const mandatoryCourseCredits = studyActivity?.mandatoryCourseCredits ?? 0;
+
+    const mandatoryStudies = mandatoryCourseCredits;
+    const optionalStudies = completedCourseCredits - mandatoryCourseCredits;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
+      unit: "credits",
+      requiredStudies,
+    };
+  }
+
+  /**
+   * Get course displayed length
+   * @param courseLength course length
+   * @returns displayed length
+   */
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} op`;
+  }
+}
+
+/**
+ * Matrix unavailable curriculum strategy
+ */
+class CompulsoryMatrixUnavailableCurriculum implements CurriculumStrategy {
+  /**
+   * Get required study values when no curriculum config is available
+   * @returns required study values
+   */
+  getRequiredStudyValues(): {
+    mandatoryStudies: number | null;
+    optionalStudies: number | null;
+    totalStudies: number;
+  } {
+    return {
+      mandatoryStudies: null,
+      optionalStudies: null,
+      totalStudies: COMPULSORY_TOTAL_REQUIRED_STUDIES,
+    };
+  }
+
+  /**
+   * Calculate statistics when no curriculum config is available
+   * @param studyActivity study activity
+   * @returns statistics
+   */
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
+    const requiredStudies = this.getRequiredStudyValues();
+
+    const completedCourses = studyActivity?.completedCourses ?? 0;
+    const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
+
+    const mandatoryStudies = mandatoryCourses;
+    const optionalStudies = completedCourses - mandatoryCourses;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
+      unit: "courses",
+      requiredStudies: requiredStudies,
+    };
+  }
+
+  /**
+   * Get course displayed length
+   * @param courseLength course length
+   * @returns displayed length
+   */
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} h`;
+  }
+}
+
+/**
+ * Unknown curriculum strategy
+ */
+class UnknownCurriculum implements CurriculumStrategy {
+  /**
+   * Calculate statistics when no curriculum config is available
+   * @param studyActivity study activity
+   * @returns statistics
+   */
+  calculateStatistics(
+    studyActivity: StudyActivity | null | undefined
+  ): Statistics {
+    const completedCourses = studyActivity?.completedCourses ?? 0;
+    const mandatoryCourses = studyActivity?.mandatoryCourses ?? 0;
+
+    const mandatoryStudies = mandatoryCourses;
+    const optionalStudies = completedCourses - mandatoryCourses;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
+      unit: "courses",
+      requiredStudies: {
+        mandatoryStudies: null,
+        optionalStudies: null,
+        totalStudies: null,
+      },
+    };
+  }
+
+  /**
+   * Get course displayed length
+   * @param courseLength course length
+   * @returns displayed length
+   */
+  getCourseDisplayedLength(courseLength: number): string {
+    return `${courseLength} h`;
+  }
+}
+
+/**
+ * Get curriculum config.
+ * If no matching curriculum config is found, the default strategy will be set to "unknown".
  * @param courseMatrixType course matrix type
  * @param courseMatrix course matrix
- * @param curriculumName curriculum name
  * @returns curriculum config
  */
 function getCurriculumConfig(
-  courseMatrixType: CourseMatrixType,
-  courseMatrix?: CourseMatrix,
-  curriculumName?: string
+  courseMatrixType: CourseMatrixType | null,
+  courseMatrix: CourseMatrix
 ): CurriculumConfig {
   if (courseMatrixType === "UPPER_SECONDARY") {
+    if (noCurriculumConfigAvailable(courseMatrix.problems)) {
+      return {
+        type: "uppersecondary",
+        isMatrixAvailable: false,
+        strategy: new UpperSecondaryMatrixUnavailableCurriculum(),
+      };
+    }
     return {
       type: "uppersecondary",
-      strategy: new UppersecondaryCurriculum(courseMatrix, curriculumName),
+      isMatrixAvailable: true,
+      strategy: new UppersecondaryCurriculum(courseMatrix),
+    };
+  }
+  if (courseMatrixType === "COMPULSORY") {
+    if (noCurriculumConfigAvailable(courseMatrix.problems)) {
+      return {
+        type: "compulsory",
+        isMatrixAvailable: false,
+        strategy: new CompulsoryMatrixUnavailableCurriculum(),
+      };
+    }
+    return {
+      type: "compulsory",
+      isMatrixAvailable: true,
+      strategy: new CompulsoryCurriculum(courseMatrix),
     };
   }
   return {
-    type: "compulsory",
-    strategy: new CompulsoryCurriculum(courseMatrix, curriculumName),
+    type: "unknown",
+    isMatrixAvailable: false,
+    strategy: new UnknownCurriculum(),
   };
+}
+
+/**
+ * Check if no curriculum config is available
+ * @param courseMatrixProblems course matrix problems
+ * @returns true if no curriculum config is available, false otherwise
+ */
+function noCurriculumConfigAvailable(
+  courseMatrixProblems: CourseMatrix["problems"]
+): boolean {
+  return courseMatrixProblems.includes("INCOMPATIBLE_STUDENT");
 }
 
 export { UppersecondaryCurriculum, CompulsoryCurriculum, getCurriculumConfig };

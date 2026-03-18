@@ -2,11 +2,16 @@ import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
   CourseMatrix,
   CourseMatrixModule,
+  CourseMatrixModuleMandatorityEnum,
   CourseMatrixSubject,
   StudyActivity,
   StudyActivityItem,
 } from "~/generated/client";
-import {} from "~/mock/mock-data";
+
+export const MANDATORITY_MANDATORY_VALUES: CourseMatrixModuleMandatorityEnum[] =
+  ["MANDATORY"];
+export const MANDATORITY_OPTIONAL_VALUES: CourseMatrixModuleMandatorityEnum[] =
+  ["SCHOOL_LEVEL_OPTIONAL", "NATIONAL_LEVEL_OPTIONAL", "UNSPECIFIED_OPTIONAL"];
 
 export const SKILL_AND_ART_SUBJECTS_CS: string[] = [
   "mu",
@@ -129,7 +134,7 @@ export const getCourseDropdownName = (
     subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
-  if (!course.mandatory) {
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
     courseDropdownName += "*";
   }
 

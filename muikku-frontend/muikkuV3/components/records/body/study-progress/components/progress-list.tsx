@@ -4,6 +4,8 @@ import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
   getCourseDropdownName,
   getCourseInfo,
+  MANDATORITY_MANDATORY_VALUES,
+  MANDATORITY_OPTIONAL_VALUES,
 } from "~/helper-functions/study-matrix";
 import OPSCourseList, {
   OPSCourseListProps,
@@ -102,7 +104,9 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     );
 
     // By default content is mandatory or option shorthand
-    let courseTdContent = course.mandatory
+    let courseTdContent = MANDATORITY_MANDATORY_VALUES.includes(
+      course.mandatority
+    )
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
       : t("labels.optionalShorthand", { ns: "studyMatrix" });
 
@@ -140,7 +144,9 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
           >
             <span tabIndex={0} className="list__indicator-data-wapper">
               {courseTdContent}
-              {!course.mandatory ? <sup>*</sup> : null}
+              {MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority) ? (
+                <sup>*</sup>
+              ) : null}
             </span>
           </Dropdown>
         </ListItemIndicator>

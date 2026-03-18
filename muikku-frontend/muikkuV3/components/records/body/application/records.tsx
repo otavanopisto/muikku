@@ -13,7 +13,6 @@ import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   DisplayNotificationTriggerType,
@@ -25,6 +24,12 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import Link from "~/components/general/link";
+import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
+import {
+  updateSelectedEducationTypeCode,
+  UpdateSelectedEducationTypeCodeTriggerType,
+} from "~/actions/study-activity";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * RecordsProps
@@ -34,19 +39,13 @@ interface RecordsProps extends WithTranslation {
   studyActivity: StudyActivityState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
+  updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType;
 }
 
 /**
  * RecordsState
  */
 interface RecordsState {}
-
-/**
- * StoredCurriculum
- */
-export interface StoredCurriculum {
-  [identifier: string]: string;
-}
 
 /**
  * Records
@@ -61,22 +60,38 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   /**
+   * handleSelectEducationType
+   * @param educationTypeCode educationTypeCode
+   */
+  handleSelectEducationType = (educationTypeCode: string) => {
+    this.props.updateSelectedEducationTypeCode({ educationTypeCode });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const { t } = this.props;
 
+    const entry =
+      this.props.studyActivity.userStudyDataByEducationTypeCode[
+        this.props.studyActivity.selectedEducationTypeCode
+      ];
+
     if (
-      this.props.studyActivity.userStudyActivityStatus === "LOADING" ||
-      this.props.studyActivity.userStudyActivityStatus === "IDLE" ||
-      this.props.studyActivity.courseMatrixStatus === "LOADING" ||
-      this.props.studyActivity.courseMatrixStatus === "IDLE"
+      !entry ||
+      entry.studyActivityStatus === "LOADING" ||
+      entry.studyActivityStatus === "IDLE" ||
+      entry.courseMatrixStatus === "LOADING" ||
+      entry.courseMatrixStatus === "IDLE" ||
+      entry.curriculumConfigStatus === "LOADING" ||
+      entry.curriculumConfigStatus === "IDLE"
     ) {
       return null;
     } else if (
-      this.props.studyActivity.userStudyActivityStatus === "ERROR" ||
-      this.props.studyActivity.courseMatrixStatus === "ERROR"
+      entry.studyActivityStatus === "ERROR" ||
+      entry.courseMatrixStatus === "ERROR"
     ) {
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
@@ -91,36 +106,34 @@ class Records extends React.Component<RecordsProps, RecordsState> {
      * studentRecords
      */
     const studentRecords = (
-      <RecordsInfoProvider
-        value={{
-          identifier: this.props.status.userSchoolDataIdentifier,
-          userEntityId: this.props.status.userId,
-          displayNotification: this.props.displayNotification,
-          curriculumConfig: this.props.studyActivity.curriculumConfig,
-        }}
-      >
-        <ApplicationSubPanel>
-          {this.props.studyActivity.userStudyActivity ? (
-            <RecordsListing
-              courseMatrix={this.props.studyActivity.courseMatrix}
-              studyActivity={this.props.studyActivity.userStudyActivity}
-            />
-          ) : (
-            <ApplicationSubPanel.Body>
-              <div className="application-sub-panel__item">
-                <div className="empty">
-                  <span>
-                    {t("content.empty", {
-                      ns: "studies",
-                      context: "workspaces",
-                    })}
-                  </span>
-                </div>
-              </div>
-            </ApplicationSubPanel.Body>
-          )}
-        </ApplicationSubPanel>
-      </RecordsInfoProvider>
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Body>
+          <RecordsListing
+            recordsInfo={{
+              identifier: this.props.status.userSchoolDataIdentifier,
+              userEntityId: this.props.status.userId,
+              displayNotification: this.props.displayNotification,
+              curriculumConfig: entry.curriculumConfig,
+              studyActivity: entry.studyActivity,
+              courseMatrix: entry.courseMatrix,
+            }}
+            educationTypeSelector={
+              <RecordsEducationTypeSelector
+                options={this.props.studyActivity.userEducationTypes.map(
+                  (educationTypeCode) => ({
+                    educationTypeCode,
+                    label: getEducationTypeName(educationTypeCode, t),
+                  })
+                )}
+                selectedEducationTypeCode={
+                  this.props.studyActivity.selectedEducationTypeCode
+                }
+                onSelect={this.handleSelectEducationType}
+              />
+            }
+          />
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
     );
 
     return (
@@ -187,7 +200,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+  return bindActionCreators(
+    { displayNotification, updateSelectedEducationTypeCode },
+    dispatch
+  );
 }
 
 export default withTranslation(["studies"])(

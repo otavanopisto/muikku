@@ -1,8 +1,7 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
-import { WorkspaceSuggestion } from "~/generated/client";
-import { Course } from "~/@types/shared";
+import { CourseMatrixModule, WorkspaceSuggestion } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
 /**
@@ -45,7 +44,7 @@ const hopsApi = MApi.getHopsApi();
  */
 export const useSuggestionList = (
   subjectCode: string,
-  course: Course,
+  course: CourseMatrixModule,
   userEntityId: number,
   displayNotification: DisplayNotificationTriggerType,
   loadData?: boolean
@@ -62,7 +61,7 @@ export const useSuggestionList = (
      */
     const loadSuggestionListData = async (
       subjectCode: string,
-      course: Course
+      course: CourseMatrixModule
     ) => {
       setSuggestions((suggestions) => ({ ...suggestions, isLoading: true }));
 
