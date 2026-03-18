@@ -125,7 +125,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     if (creditsString) localString = `${localString}, ${creditsString}`;
     return (
       <div className="label">
-        <div className="label__text">{localString} </div>
+        <div className="label__text">{localString}</div>
       </div>
     );
   };
@@ -199,11 +199,13 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
             {hasActivity && (
               <>
-                <div className="label">
-                  <div className="label__text">
-                    {subjectSpecificActivityItem.studyProgramme}
+                {subjectSpecificActivityItem.studyProgramme && (
+                  <div className="label">
+                    <div className="label__text">
+                      {subjectSpecificActivityItem.studyProgramme}
+                    </div>
                   </div>
-                </div>
+                )}
                 {subjectSpecificActivityItem.curriculums?.map((curriculum) => (
                   <div key={curriculum} className="label">
                     <div className="label__text">{curriculum} </div>

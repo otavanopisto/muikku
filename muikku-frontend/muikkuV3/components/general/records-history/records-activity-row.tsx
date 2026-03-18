@@ -9,7 +9,10 @@ import {
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import {
+  suitabilityMapHelper,
+  suitabilityMapHelperWithoutOPS,
+} from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import AssessmentIndicator from "./assessment-indicator";
@@ -120,36 +123,58 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
     // Some old workspaces might have multiple OPS, but that is rare case
     const OPS = studyActivityItems[0].curriculums?.[0];
 
-    // If OPS data and workspace mandatority property is present
-    if (OPS && studyActivityItems[0].mandatority) {
-      const suitabilityMap = suitabilityMapHelper(t);
+    // Mandatority exist and...
+    if (studyActivityItems[0].mandatority) {
+      // If OPS data is present
+      if (OPS) {
+        const suitabilityMap = suitabilityMapHelper(t);
 
-      // Create map property from education type name and OPS name that was passed
-      // Strings are changes to lowercase form and any empty spaces are removed
-      const education = `${educationType
-        .toLowerCase()
-        .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
+        // Create map property from education type name and OPS name that was passed
+        // Strings are changes to lowercase form and any empty spaces are removed
+        const education = `${educationType
+          .toLowerCase()
+          .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
 
-      // Check if our map contains data with just created education string
-      // Otherwise just return null. There might not be all included values by every OPS created...
-      if (!suitabilityMap[education]) {
-        return null;
+        // Check if our map contains data with just created education string
+        // Otherwise just return null. There might not be all included values by every OPS created...
+        if (!suitabilityMap[education]) {
+          return null;
+        }
+
+        // Then get correct local string from map by suitability enum value
+        let localString =
+          suitabilityMap[education][studyActivityItems[0].mandatority];
+
+        const sumOfCredits = getSumOfCredits();
+
+        // If there is sum of credits, return it with local string
+        if (sumOfCredits) {
+          localString = `${localString}, ${sumOfCredits}`;
+        }
+
+        return (
+          <div className="label">
+            <div className="label__text">{localString} </div>
+          </div>
+        );
       }
 
-      // Then get correct local string from map by suitability enum value
+      // If OPS data is not present, use suitability map without OPS
+      // Then options for localization are "mandatory" and "optional"
+      const suitabilityMapWithoutOPS = suitabilityMapHelperWithoutOPS(t);
+
       let localString =
-        suitabilityMap[education][studyActivityItems[0].mandatority];
+        suitabilityMapWithoutOPS[studyActivityItems[0].mandatority];
 
       const sumOfCredits = getSumOfCredits();
 
-      // If there is sum of credits, return it with local string
       if (sumOfCredits) {
         localString = `${localString}, ${sumOfCredits}`;
       }
 
       return (
         <div className="label">
-          <div className="label__text">{localString} </div>
+          <div className="label__text">{localString}</div>
         </div>
       );
     }
@@ -195,11 +220,14 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
           </div>
 
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
-            <div className="label">
-              <div className="label__text">
-                {studyActivityItems[0].studyProgramme}
+            {studyActivityItems[0].studyProgramme && (
+              <div className="label">
+                <div className="label__text">
+                  {studyActivityItems[0].studyProgramme}
+                </div>
               </div>
-            </div>
+            )}
+
             {studyActivityItems[0].curriculums &&
               studyActivityItems[0].curriculums.map((curriculum) => (
                 <div key={curriculum} className="label">
