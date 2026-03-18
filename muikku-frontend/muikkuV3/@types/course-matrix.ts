@@ -31,16 +31,14 @@ export interface CourseMatrixEnriched extends Omit<CourseMatrix, "subjects"> {
 /**
  * Enriches a CourseMatrix with potential identifiers
  * @param courseMatrix CourseMatrix
- * @param curriculumName Curriculum name
  * @returns CourseMatrixEnriched
  */
 export function enrichCourseMatrixWithIdentifiers(
-  courseMatrix: CourseMatrix,
-  curriculumName: string
+  courseMatrix: CourseMatrix
 ): CourseMatrixEnriched {
   return {
     ...courseMatrix,
-    curriculumName,
+    curriculumName: courseMatrix.curriculum,
     subjects: courseMatrix.subjects.map((subject) => ({
       ...subject,
       modules: subject.modules.map((module) => ({

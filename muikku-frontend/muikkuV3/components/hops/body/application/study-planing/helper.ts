@@ -5,6 +5,7 @@ import {
 } from "~/@types/course-matrix";
 import { CourseFilter } from "~/@types/shared";
 import { StudyActivityItemState, StudyActivityItem } from "~/generated/client";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 import {
   PeriodCourseItem,
   PlannedCourseNew,
@@ -367,13 +368,16 @@ const filterSubjectsAndCourses = (
       // Apply filters
       if (!skipMandatoryChecking && selectedFilters.includes("mandatory")) {
         filteredCoursesWithStudyActivity =
-          filteredCoursesWithStudyActivity.filter((course) => course.mandatory);
+          filteredCoursesWithStudyActivity.filter((course) =>
+            MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
+          );
       }
 
       if (!skipMandatoryChecking && selectedFilters.includes("optional")) {
         filteredCoursesWithStudyActivity =
           filteredCoursesWithStudyActivity.filter(
-            (course) => !course.mandatory
+            (course) =>
+              !MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
           );
       }
 

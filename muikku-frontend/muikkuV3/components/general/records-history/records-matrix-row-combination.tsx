@@ -94,6 +94,8 @@ const RecordsMatrixRowCombination: React.FC<
   const renderMandatorityDescription = () => {
     if (!firstItem.curriculums?.[0] || !firstItem.mandatority) return null;
     const OPS = firstItem.curriculums[0];
+
+    if (!OPS) return null;
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()
@@ -199,9 +201,9 @@ const RecordsMatrixRowCombination: React.FC<
           const courseLengthSymbol = aItem.lengthSymbol;
           let codeSubjectString = `${subjectCode}`;
           if (courseNumber) codeSubjectString += `${courseNumber}`;
+          if (courseModule) codeSubjectString += ` - ${courseModule.name}`;
           if (courseLength && courseLengthSymbol)
             codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
-          if (courseModule) codeSubjectString += ` - ${courseModule.name}`;
           return (
             <div
               key={`${subjectCode}-${courseNumber}`}

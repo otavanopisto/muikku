@@ -833,22 +833,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     }
   }
-
-  protected void findElementOrReloadAndFind(String elementToAppear, int timesToTry, int interval) {
-    List<WebElement> elements = findElements(elementToAppear);
-    int i = 0;
-    while(elements.isEmpty()) {
-      reloadCurrentPage();
-      if (i > timesToTry) {
-        break;
-      }
-      i++;
-      sleep(interval);
-      elements = findElements(elementToAppear);
-    }
-    if(elements.isEmpty())
-      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
-  }
   
   protected void waitForElementToAppear(String elementToAppear, int timesToTry, int interval) {
     List<WebElement> elements = findElements(elementToAppear);

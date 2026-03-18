@@ -85,8 +85,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const status = useSelector((state: StateType) => state.status);
   const hops = useSelector((state: StateType) => state.hopsNew);
-  const { curriculumConfig, userStudyActivity } = useSelector(
-    (state: StateType) => state.studyActivity
+  const { curriculumConfig, studyActivity } = useSelector(
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
+      ]
   );
 
   // Note that this component is used by student, thats why
@@ -102,10 +105,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If the student info is not loaded or the study programme is not upper secondary, return false by default
-    if (
-      !hops.studentInfo ||
-      hops.studentInfo.studyProgrammeEducationType !== "lukio"
-    ) {
+    if (!hops.studentInfo || hops.studentInfo.educationTypeCode !== "lukio") {
       return false;
     }
 
@@ -295,7 +295,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "BACKGROUND":
       case "POSTGRADUATE":
       case "STUDYPLAN":
-        return true;
+        return curriculumConfig?.isMatrixAvailable ?? false;
       case "MATRICULATION":
         return [
           "Nettilukio",
@@ -383,7 +383,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
           studyStartDate: new Date(status.profile.studyStartDate),
         }}
         curriculumConfig={curriculumConfig}
-        userStudyActivity={userStudyActivity}
+        userStudyActivity={studyActivity}
       >
         <ApplicationPanel
           title={showTitle ? "HOPS" : undefined}

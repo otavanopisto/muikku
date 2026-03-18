@@ -168,7 +168,7 @@ async function loadWhoAMI(
         studyProgrammeName: whoAmI.studyProgrammeName,
         studyProgrammeIdentifier: whoAmI.studyProgrammeIdentifier,
         curriculumName: whoAmI.curriculumName,
-        studyLevel: whoAmI.studyLevel,
+        educationTypeCode: whoAmI.educationTypeCode,
       },
     },
   });

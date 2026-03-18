@@ -18,9 +18,9 @@ import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { Dispatch, Action } from "redux";
 import {
   CeeposOrder,
+  Student,
   StudentCard,
   UserStudentAddress,
-  UserWithSchoolData,
   WorklistBillingStateType,
   WorklistItem,
   WorklistSummary,
@@ -254,7 +254,7 @@ export type SET_PROFILE_ADDRESSES = SpecificActionType<
 >;
 export type SET_PROFILE_STUDENT = SpecificActionType<
   "SET_PROFILE_STUDENT",
-  UserWithSchoolData
+  Student
 >;
 export type SET_PROFILE_CHAT_SETTINGS = SpecificActionType<
   "SET_PROFILE_CHAT_SETTINGS",
@@ -438,7 +438,7 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
 
           const updatedStudent = await userApi.updateStudent({
             studentId: student.id,
-            userWithSchoolData: student,
+            student: student,
           });
 
           dispatch({
@@ -1145,7 +1145,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
               );
               // we merge the data in case, as there had been issues with incomplete data from
               // the update that is partial
-              return { ...i, ...foundInUpdate } || i;
+              return { ...i, ...foundInUpdate };
             });
           }
           return newWorklistGroup;

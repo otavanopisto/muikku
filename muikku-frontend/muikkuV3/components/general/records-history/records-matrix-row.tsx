@@ -20,6 +20,7 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import Dropdown from "../dropdown";
 import { AssessmentInformation } from "./assessment-information";
+import { MANDATORITY_OPTIONAL_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * Props for the matrix-based records row.
@@ -109,26 +110,22 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    if (
-      !hasActivity ||
-      !subjectSpecificActivityItem?.curriculums?.[0] ||
-      !subjectSpecificActivityItem.mandatority
-    ) {
+    if (!hasActivity || !subjectSpecificActivityItem?.curriculums?.[0]) {
       return null;
     }
     const OPS = subjectSpecificActivityItem.curriculums[0];
+    if (!OPS) return null;
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()
       .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
     if (!suitabilityMap[education]) return null;
-    let localString =
-      suitabilityMap[education][subjectSpecificActivityItem.mandatority];
+    let localString = suitabilityMap[education][course.mandatority];
     const creditsString = getCreditsString();
     if (creditsString) localString = `${localString}, ${creditsString}`;
     return (
       <div className="label">
-        <div className="label__text">{localString} </div>
+        <div className="label__text">{localString}</div>
       </div>
     );
   };
@@ -156,8 +153,14 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   let title = subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
-  if (!course.mandatory) {
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
     title += "*";
+  }
+
+  // Course name extension exist only in workspace embodiment (aka workspace).
+  // So if it exists, add it to the title from activity item.
+  if (subjectSpecificActivityItem.courseNameExtension) {
+    title += ` (${subjectSpecificActivityItem.courseNameExtension})`;
   }
 
   // Add credits to uppersecondary courses
@@ -196,11 +199,13 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
             {hasActivity && (
               <>
-                <div className="label">
-                  <div className="label__text">
-                    {subjectSpecificActivityItem.studyProgramme}
+                {subjectSpecificActivityItem.studyProgramme && (
+                  <div className="label">
+                    <div className="label__text">
+                      {subjectSpecificActivityItem.studyProgramme}
+                    </div>
                   </div>
-                </div>
+                )}
                 {subjectSpecificActivityItem.curriculums?.map((curriculum) => (
                   <div key={curriculum} className="label">
                     <div className="label__text">{curriculum} </div>
