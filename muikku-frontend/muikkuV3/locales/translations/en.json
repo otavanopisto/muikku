@@ -2709,6 +2709,35 @@
     "unspecifiedOptional_lukioOPS2016": "Other",
     "unspecifiedOptional_lukioOPS2021": "Local optional"
   },
+  "mandatority": {
+    "default": {
+      "MANDATORY": "$t(common:labels.mandatory)",
+      "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "SCHOOL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+    },
+    "perusopetus": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+        "SCHOOL_LEVEL_OPTIONAL": "Local optional",
+        "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+      }
+    },
+    "lukio": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "National optional",
+        "SCHOOL_LEVEL_OPTIONAL": "Local optional",
+        "UNSPECIFIED_OPTIONAL": "Local optional"
+      },
+      "OPS2016": {
+        "NATIONAL_LEVEL_OPTIONAL": "National advanced",
+        "SCHOOL_LEVEL_OPTIONAL": "Local advanced",
+        "UNSPECIFIED_OPTIONAL": "Other"
+      }
+    }
+  },
   "readSpeaker": {
     "messages": {
       "assignment": "Assignment",

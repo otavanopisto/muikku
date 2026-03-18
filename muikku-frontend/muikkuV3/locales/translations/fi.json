@@ -2710,6 +2710,35 @@
     "unspecifiedOptional_lukioOPS2016": "Muu",
     "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
   },
+  "mandatority": {
+    "default": {
+      "MANDATORY": "$t(common:labels.mandatory)",
+      "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "SCHOOL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+    },
+    "perusopetus": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen valinnainen",
+        "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+      }
+    },
+    "lukio": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "Valtakunnallinen valinnainen",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen valinnainen",
+        "UNSPECIFIED_OPTIONAL": "Paikallinen valinnainen"
+      },
+      "OPS2016": {
+        "NATIONAL_LEVEL_OPTIONAL": "Valtakunnallinen syventävä",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen syventävä",
+        "UNSPECIFIED_OPTIONAL": "Muu"
+      }
+    }
+  },
   "readSpeaker": {
     "messages": {
       "assignment": "Tehtävä",

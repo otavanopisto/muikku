@@ -9,7 +9,7 @@ import {
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
@@ -39,7 +39,7 @@ const RecordsMatrixRowCombination: React.FC<
   const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
-  const { t } = useTranslation([
+  const { t, i18n } = useTranslation([
     "studies",
     "evaluation",
     "materials",
@@ -92,16 +92,14 @@ const RecordsMatrixRowCombination: React.FC<
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    if (!firstItem.curriculums?.[0] || !firstItem.mandatority) return null;
-    const OPS = firstItem.curriculums[0];
-
-    if (!OPS) return null;
-    const suitabilityMap = suitabilityMapHelper(t);
-    const education = `${educationType
-      .toLowerCase()
-      .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
-    if (!suitabilityMap[education]) return null;
-    let localString = suitabilityMap[education][firstItem.mandatority];
+    if (!firstItem.mandatority) return null;
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: firstItem.mandatority,
+      educationType,
+      curriculums: firstItem.curriculums,
+    });
     const sumOfCredits = getSumOfCredits();
     if (sumOfCredits) localString = `${localString}, ${sumOfCredits}`;
     return (
