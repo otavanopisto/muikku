@@ -5,29 +5,39 @@ import { CurriculumConfig } from "~/util/curriculum-config";
 import { ReducerStatusType } from "~/reducers/types";
 
 /**
- * StudyActivityState
+ * EducationTypeStudyData
  */
-export interface StudyActivityState {
-  // Current logged in user's study activity (student)
-  userStudyActivity: StudyActivity | null;
-  userStudyActivityStatus: ReducerStatusType;
-
-  // Current logged in user's course matrix
+export interface UserStudyData {
+  studyActivity: StudyActivity | null;
+  studyActivityStatus: ReducerStatusType;
   courseMatrix: CourseMatrix | null;
   courseMatrixStatus: ReducerStatusType;
-
-  // Current logged in user's curriculum config
   curriculumConfig: CurriculumConfig | null;
   curriculumConfigStatus: ReducerStatusType;
 }
 
+/**
+ * StudyActivityState
+ */
+export interface StudyActivityState {
+  // Current logged in user's education types
+  userEducationTypes: string[];
+  userEducationTypesStatus: ReducerStatusType;
+  // Default education type code
+  defaultEducationTypeCode: string | null;
+  // Selected education type code, which data is currently being displayed in the records UI
+  selectedEducationTypeCode: string | null;
+
+  // Per-education cache
+  userStudyDataByEducationTypeCode: Record<string, UserStudyData>;
+}
+
 const initialStudyActivityState: StudyActivityState = {
-  userStudyActivity: null,
-  userStudyActivityStatus: "IDLE",
-  courseMatrix: null,
-  courseMatrixStatus: "IDLE",
-  curriculumConfig: null,
-  curriculumConfigStatus: "IDLE",
+  defaultEducationTypeCode: null,
+  selectedEducationTypeCode: null,
+  userEducationTypes: null,
+  userEducationTypesStatus: "IDLE",
+  userStudyDataByEducationTypeCode: {},
 };
 
 /**
@@ -43,42 +53,125 @@ export const studyActivity: Reducer<StudyActivityState> = (
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS":
       return {
         ...state,
-        userStudyActivityStatus: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            studyActivityStatus: action.payload.status,
+          },
+        },
       };
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY":
       return {
         ...state,
-        userStudyActivity: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            studyActivity: action.payload.studyActivity,
+          },
+        },
       };
     case "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS":
       return {
         ...state,
-        userStudyActivity: {
-          ...state.userStudyActivity,
-          items: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            studyActivity: {
+              ...state.userStudyDataByEducationTypeCode[action.payload.key]
+                ?.studyActivity,
+              items: action.payload.items,
+            },
+          },
         },
       };
 
     case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX":
       return {
         ...state,
-        courseMatrix: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            courseMatrix: action.payload.courseMatrix,
+          },
+        },
       };
     case "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS":
       return {
         ...state,
-        courseMatrixStatus: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            courseMatrixStatus: action.payload.status,
+          },
+        },
       };
 
     case "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG":
       return {
         ...state,
-        curriculumConfig: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            curriculumConfig: action.payload.curriculumConfig,
+          },
+        },
       };
     case "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS":
       return {
         ...state,
-        curriculumConfigStatus: action.payload,
+        userStudyDataByEducationTypeCode: {
+          ...state.userStudyDataByEducationTypeCode,
+          [action.payload.key]: {
+            ...state.userStudyDataByEducationTypeCode[action.payload.key],
+            curriculumConfigStatus: action.payload.status,
+          },
+        },
+      };
+
+    case "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES": {
+      // Initialize new education type data based on the list of education types
+      const newUserStudyData = action.payload.reduce<
+        Record<string, UserStudyData>
+      >((acc, educationTypeCode) => {
+        acc[educationTypeCode] = {
+          studyActivity: null,
+          studyActivityStatus: "IDLE",
+          courseMatrix: null,
+          courseMatrixStatus: "IDLE",
+          curriculumConfig: null,
+          curriculumConfigStatus: "IDLE",
+        };
+        return acc;
+      }, {});
+
+      return {
+        ...state,
+        userEducationTypes: action.payload,
+        userStudyDataByEducationTypeCode: newUserStudyData,
+      };
+    }
+    case "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS":
+      return {
+        ...state,
+        userEducationTypesStatus: action.payload,
+      };
+
+    case "STUDY_ACTIVITY_UPDATE_DEFAULT_EDUCATION_TYPE_CODE":
+      return {
+        ...state,
+        defaultEducationTypeCode: action.payload,
+      };
+
+    case "STUDY_ACTIVITY_UPDATE_SELECTED_EDUCATION_TYPE_CODE":
+      return {
+        ...state,
+        selectedEducationTypeCode: action.payload,
       };
 
     case "STUDY_ACTIVITY_RESET_STATE":

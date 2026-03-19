@@ -8,7 +8,10 @@ import {
   CourseMatrixModule,
   CourseMatrixSubject,
 } from "~/generated/client";
-import { getNonOPSTransferedActivities } from "~/helper-functions/study-matrix";
+import {
+  getNonOPSTransferedActivities,
+  MANDATORITY_MANDATORY_VALUES,
+} from "~/helper-functions/study-matrix";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
@@ -102,7 +105,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         const courseDropdownName =
           sSubject.code + course.courseNumber + " - " + course.name;
 
-        if (course.mandatory) {
+        if (MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)) {
           modifiers.push("MANDATORY");
           !course.available && modifiers.push("NOT-AVAILABLE");
           return renderCourseCell ? (

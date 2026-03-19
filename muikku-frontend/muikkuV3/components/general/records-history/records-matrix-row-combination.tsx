@@ -10,19 +10,19 @@ import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import { suitabilityMapHelper } from "~/@shared/suitability";
-import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import { AssessmentInformation } from "./assessment-information";
+import { StudyActivityItemWithCourseModule } from "~/helper-functions/study-matrix";
 
 /**
  * Props for the combination-workspace (Yhdistelmäopintojaksot) row.
  * Expects two or more StudyActivityItems that share the same courseId.
  */
 interface RecordsMatrixRowCombinationProps {
-  studyActivityItems: StudyActivityItem[];
+  studyActivityItems: StudyActivityItemWithCourseModule[];
   educationType: string;
 }
 
@@ -94,6 +94,8 @@ const RecordsMatrixRowCombination: React.FC<
   const renderMandatorityDescription = () => {
     if (!firstItem.curriculums?.[0] || !firstItem.mandatority) return null;
     const OPS = firstItem.curriculums[0];
+
+    if (!OPS) return null;
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()
@@ -193,15 +195,15 @@ const RecordsMatrixRowCombination: React.FC<
       <ApplicationListItemContentContainer modifiers="combination-course">
         {studyActivityItems.map((aItem) => {
           const subjectCode = aItem.subject;
-          const subjectName = aItem.subjectName;
+          const courseModule = aItem.courseModule;
           const courseNumber = aItem.courseNumber;
           const courseLength = aItem.length;
           const courseLengthSymbol = aItem.lengthSymbol;
           let codeSubjectString = `${subjectCode}`;
           if (courseNumber) codeSubjectString += `${courseNumber}`;
+          if (courseModule) codeSubjectString += ` - ${courseModule.name}`;
           if (courseLength && courseLengthSymbol)
             codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
-          if (subjectName) codeSubjectString += ` - ${subjectName}`;
           return (
             <div
               key={`${subjectCode}-${courseNumber}`}

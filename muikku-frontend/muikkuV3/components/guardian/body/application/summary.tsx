@@ -36,10 +36,16 @@ const Summary = (props: SummaryProps) => {
     (state: StateType) => state.guardian.currentDependant
   );
 
+  const currentDependantStudyData =
+    currentDependant.dependantStudyDataByEducationTypeCode[
+      currentDependant.dependantSelectedEducationTypeCode
+    ] ?? null;
+
   if (
     currentDependant.dependantInfoStatus !== "READY" ||
-    currentDependant.dependantStudyActivityStatus !== "READY" ||
-    currentDependant.dependantCourseMatrixStatus !== "READY" ||
+    currentDependantStudyData === null ||
+    currentDependantStudyData.studyActivityStatus !== "READY" ||
+    currentDependantStudyData.courseMatrixStatus !== "READY" ||
     currentDependant.dependantContactGroups.counselors.status !== "READY"
   ) {
     return null;
@@ -286,7 +292,7 @@ const Summary = (props: SummaryProps) => {
           </div>
 
           <StudyProgress
-            curriculumName={currentDependant.dependantInfo.curriculumName}
+            curriculumName={currentDependantStudyData.courseMatrix.curriculum}
             studyProgrammeName={
               currentDependant.dependantInfo.studyProgrammeName
             }

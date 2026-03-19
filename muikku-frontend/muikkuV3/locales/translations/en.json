@@ -86,7 +86,7 @@
       "removing_room": "Are you sure you want to delete the room <b>{{room}}</b>? This action cannot be undone."
     },
     "labels": {
-      "aborted": "Keskeytetty",
+      "aborted": "Withdrawn",
       "active": "Active",
       "address": "Address",
       "announcer": "Announcer",
@@ -105,11 +105,16 @@
       "comment": "Comment",
       "comments": "Comments",
       "completed": "Completed",
+      "completedStudies": "Credits earned",
       "contactInfo": "Contact info",
       "content": "Content",
       "content_vacationMessage": "Vacation message content",
       "copy": "Copy",
       "course": "Course",
+      "courseCredits": "Course credits",
+      "courseCreditsMandatory": "Mandatory:",
+      "courseCreditsOptional": "Optional:",
+      "courseCreditsTotal": "In total:",
       "courses": "Courses",
       "coursepicker": "Coursepicker",
       "create": "Create new",
@@ -184,7 +189,7 @@
       "notSent": "Not sent",
       "notStarted": "Not started",
       "oldPassword": "Old password",
-      "inProgress": "In Progress",
+      "inProgress": "In progress",
       "opinvoimala": "Opinvoimala.fi",
       "optional": "Optional",
       "organizationManagament": "Organization management",
@@ -382,6 +387,13 @@
       "Z": "Mother tongue and literature, Northern Sámi",
       "I": "Mother tongue and literature, Inari Sámi",
       "W": "Mother tongue and literature, Skolt Sámi"
+    },
+    "educationType": {
+      "apa": "Introductory phase to basic education for adults",
+      "basicEducation": "Basic education for adults",
+      "unknown": "Unknown level",
+      "upperSecondaryEducation": "General upper secondary education",
+      "vocational": "Vocational"
     }
   },
   "profile": {
@@ -494,9 +506,6 @@
       "contactLog": "Contact log",
       "contactInfo_student": "Student contact info",
       "contactInfo_guardian": "Guardian contact info",
-      "courseCredits": "Course credits",
-      "courseCreditsMandatory": "Mandatory: {{mandatoryCredits}}",
-      "courseCreditsTotal": "In total: {{totalCredits}}",
       "created_interimEvaluation": "Interim evaluation given",
       "discussionMessages": "Discussion messages",
       "endDate": "Studies end date",
@@ -563,10 +572,12 @@
       "empty": "$t(common:content.empty)",
       "empty_counselors": "You have no counselors",
       "empty_counselorsGuardian": "Student has no counselors",
-      "empty_records": "No records",
+      "empty_records": "No study information available",
+      "empty_search": "No results found. Try a different keyword or adjust the filters.",
       "empty_studyTime": "Not set",
       "empty_workspaces": "No courses. In the future, you will see in this list the courses you are studying, the courses you have completed and the courses you have received transfer credits.",
       "empty_workspaces-guardian": "No courses. In the future, you will see in this list the courses your dependant is studying, the courses your dependant have completed and the courses your dependant have received transfer credits.",
+      "filtersDescription": "You can search for studies by the course or subject name (or part of it) as well as by the course code (e.g., RUB, RUB11). Filters help you narrow down your view: select a course status or type to see only the matching studies. Choosing “Show full syllabus” will display all courses required for the degree, even those you haven’t started yet.",
       "logins": "times last month.",
       "notEvaluated": "No evaluations",
       "sent": "Sent",
@@ -575,7 +586,9 @@
       "transferCreditsDate": "Date {{date}}"
     },
     "labels": {
-      "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
+      "combinationCourses": "Combined study units",
+      "courseStatus": "Course status",
+      "courseType": "Course type",
       "evaluated": "Evaluated {{date}}",
       "evaluablesDone": "{{percent}}% of assignments done",
       "coursesForYou": "Courses for you",
@@ -584,7 +597,12 @@
       "exercisesDone": "{{percent}}% exercises done",
       "logins": "You have logged in",
       "notifications": "Notifications",
+      "otherFilters": "Other filters",
+      "otherStudies": "Other studies",
       "records": "Studies",
+      "search": "$t(common:labels.search)",
+      "search_records": "Search courses",
+      "showFullSyllabus": "Show full syllabus",
       "summary": "Study summary",
       "studyInfo": "Study information",
       "studyEvents": "Study events",
@@ -592,8 +610,7 @@
       "transferCredits": "Transfer credits"
     },
     "instructions": {
-      "recordsCombinationWorkspaces": "Records in combination workspaces",
-      "recordsTransferredAndOtherActivities": "Records in transferred credits and other activities"
+      "recordsCombinationCourses": "Any studies completed as part of a combined study unit are listed here. The individual modules within these units (e.g., RUB11 and ENA1) are also displayed under their specific subjects. This ensures you can see both the combined unit details and the current progress for each individual subject."
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

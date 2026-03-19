@@ -29,7 +29,16 @@ public class CourseMatrixRestModel {
     this.type = type;
   }
 
+  public String getCurriculum() {
+    return curriculum;
+  }
+
+  public void setCurriculum(String curriculum) {
+    this.curriculum = curriculum;
+  }
+
   private CourseMatrixType type;
+  private String curriculum;
   private List<CourseMatrixSubject> subjects;
   private Set<CourseMatrixProblem> problems;
 

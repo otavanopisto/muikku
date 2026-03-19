@@ -18,7 +18,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String nickName, 
               String studyProgrammeName,
               String studyProgrammeIdentifier,
-              String studyLevel,
+              String educationTypeCode,
               boolean hasImage, 
               boolean hasEvaluationFees,
               String curriculumIdentifier,
@@ -59,7 +59,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.setStudyEndDate(studyEndDate);
     this.setStudyTimeEnd(studyTimeEnd);
     this.setServices(services);
-    this.studyLevel = studyLevel;
+    this.educationTypeCode = educationTypeCode;
   }
 
   public String getStudyProgrammeName() {
@@ -222,12 +222,12 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.services = services;
   }
 
-  public String getStudyLevel() {
-    return studyLevel;
+  public String getEducationTypeCode() {
+    return educationTypeCode;
   }
 
-  public void setStudyLevel(String studyLevel) {
-    this.studyLevel = studyLevel;
+  public void setEducationTypeCode(String educationTypeCode) {
+    this.educationTypeCode = educationTypeCode;
   }
 
   private String studyProgrammeName;
@@ -250,6 +250,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private String locale;
   private Set<EnvironmentRoleArchetype> roles;
   private UserWhoAmIInfoServices services;
-  private String studyLevel; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
+  private String educationTypeCode; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
 
 }

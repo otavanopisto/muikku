@@ -12,18 +12,21 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import Navigation, { NavigationElement } from "~/components/general/navigation";
 import {
   AddFileToCurrentStudentTriggerType,
+  UpdateSelectedEducationTypeCodeTriggerType,
   addFileToCurrentStudent,
+  updateSelectedEducationTypeCode,
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
 import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
-import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
 import RecordsListing from "~/components/general/records-history/records";
+import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 type studyHistoryAside = "history" | "library";
 
@@ -33,6 +36,7 @@ type studyHistoryAside = "history" | "library";
 interface StudyHistoryProps {
   guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
+  updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -50,13 +54,16 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   if (
     !props.guider.currentStudent ||
     !props.guider.currentStudent.pastWorkspaces ||
-    !props.guider.currentStudent.activityLogs ||
-    !props.guider.currentStudent.studyActivity
+    !props.guider.currentStudent.activityLogs
   ) {
     return null;
   }
 
-  const { addFileToCurrentStudent, displayNotification } = props;
+  const {
+    addFileToCurrentStudent,
+    displayNotification,
+    updateSelectedEducationTypeCode,
+  } = props;
   const {
     activityLogs,
     basic,
@@ -64,9 +71,21 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     currentWorkspaces,
     pastWorkspaces,
     activityLogState,
-    studyActivity,
-    courseMatrix,
+    studyDataByEducationTypeCode,
+    educationTypes,
+    selectedEducationTypeCode,
   } = props.guider.currentStudent;
+
+  const studyActivity =
+    studyDataByEducationTypeCode[selectedEducationTypeCode]?.studyActivity;
+  const courseMatrix =
+    studyDataByEducationTypeCode[selectedEducationTypeCode]?.courseMatrix;
+  const curriculumConfig =
+    studyDataByEducationTypeCode[selectedEducationTypeCode]?.curriculumConfig;
+
+  if (!studyActivity || !courseMatrix) {
+    return null;
+  }
 
   /**
    * Switches the active navigaton state
@@ -83,6 +102,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         break;
       }
     }
+  };
+
+  /**
+   * Handles the selection of an education type code
+   * @param educationTypeCode education type code
+   */
+  const handleSelectEducationTypeCode = (educationTypeCode: string) => {
+    updateSelectedEducationTypeCode({ educationTypeCode });
   };
 
   const combinedWorkspaces = [...currentWorkspaces, ...pastWorkspaces];
@@ -151,34 +178,33 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   );
 
   const studentRecords = (
-    <RecordsInfoProvider
-      value={{
-        identifier: basic.id,
-        userEntityId: basic.userEntityId,
-        displayNotification,
-      }}
-    >
-      <ApplicationSubPanel>
-        <ApplicationSubPanel.Body>
-          {studyActivity && courseMatrix ? (
-            <RecordsListing
-              courseMatrix={courseMatrix}
-              studyActivity={studyActivity}
+    <ApplicationSubPanel>
+      <ApplicationSubPanel.Body>
+        <RecordsListing
+          recordsInfo={{
+            identifier: basic.id,
+            userEntityId: basic.userEntityId,
+            displayNotification,
+            curriculumConfig: curriculumConfig,
+            studyActivity: studyActivity,
+            courseMatrix: courseMatrix,
+          }}
+          emptyMessage={t("content.notInWorkspaces", {
+            ns: "guider",
+          })}
+          educationTypeSelector={
+            <RecordsEducationTypeSelector
+              options={educationTypes.map((educationTypeCode) => ({
+                educationTypeCode,
+                label: getEducationTypeName(educationTypeCode, t),
+              }))}
+              selectedEducationTypeCode={selectedEducationTypeCode}
+              onSelect={handleSelectEducationTypeCode}
             />
-          ) : (
-            <div className="application-sub-panel__item">
-              <div className="empty">
-                <span>
-                  {t("content.notInWorkspaces", {
-                    ns: "guider",
-                  })}
-                </span>
-              </div>
-            </div>
-          )}
-        </ApplicationSubPanel.Body>
-      </ApplicationSubPanel>
-    </RecordsInfoProvider>
+          }
+        />
+      </ApplicationSubPanel.Body>
+    </ApplicationSubPanel>
   );
 
   const historyComponent = (
@@ -243,7 +269,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { addFileToCurrentStudent, displayNotification },
+    {
+      addFileToCurrentStudent,
+      displayNotification,
+      updateSelectedEducationTypeCode,
+    },
     dispatch
   );
 }

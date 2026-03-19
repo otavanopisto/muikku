@@ -42,7 +42,6 @@ export interface MatriculationSubjectWithEligibilityStatus {
 interface HopsStudyPlanState {
   plannedCourses: PlannedCourseWithIdentifier[];
   planNotes: StudyPlannerNoteWithIdentifier[];
-  studyOptions: string[];
   goals: HopsGoals;
 }
 
@@ -262,7 +261,6 @@ const initialHopsState: HopsState = {
   hopsStudyPlanState: {
     plannedCourses: [],
     planNotes: [],
-    studyOptions: [],
     goals: {
       graduationGoal: null,
       studyHours: 0,
@@ -519,8 +517,6 @@ export const hopsNew: Reducer<HopsState> = (
         hopsStudyPlanState: {
           plannedCourses: [],
           planNotes: [],
-          studyOptions: [],
-          studyMatrix: null,
           goals: {
             graduationGoal: null,
             studyHours: 0,
@@ -751,15 +747,6 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           goals: action.payload,
-        },
-      };
-
-    case "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS":
-      return {
-        ...state,
-        hopsStudyPlanState: {
-          ...state.hopsStudyPlanState,
-          studyOptions: action.payload,
         },
       };
 

@@ -4,8 +4,8 @@ import { Reducer } from "redux";
 import {
   ActivityLogEntry,
   CourseMatrix,
+  Student,
   StudentCourseChoice,
-  UserWithSchoolData,
 } from "~/generated/client";
 import { StudentActivityByStatus } from "~/@types/shared";
 
@@ -37,7 +37,7 @@ export interface SummaryDataType {
   returnedExercises: number;
   graphData: GraphDataType;
   coursesDone: number;
-  studentsDetails: UserWithSchoolData;
+  studentsDetails: Student;
 }
 
 /**

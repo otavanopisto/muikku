@@ -5,10 +5,10 @@ import {
   CourseMatrix,
   GuidanceCounselorContact,
   PedagogyFormAccess,
+  Student,
   StudyActivity,
   UserGuardiansDependant,
   UserGuardiansDependantWorkspace,
-  UserWithSchoolData,
 } from "~/generated/client/models";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
@@ -20,6 +20,18 @@ import { ReducerStatusType } from "~/reducers/types";
 interface ContactGroup {
   status: ReducerStatusType;
   list: GuidanceCounselorContact[];
+}
+
+/**
+ * Dependant study data interface
+ */
+export interface DependantStudyData {
+  studyActivity: StudyActivity | null;
+  studyActivityStatus: ReducerStatusType;
+  courseMatrix: CourseMatrix | null;
+  courseMatrixStatus: ReducerStatusType;
+  curriculumConfig: CurriculumConfig | null;
+  curriculumConfigStatus: ReducerStatusType;
 }
 
 /**
@@ -43,19 +55,18 @@ export interface DependantActivityGraphData {
  * Current dependant interface
  */
 export interface CurrentDependant {
-  dependantInfo: UserWithSchoolData | null;
+  dependantInfo: Student | null;
   dependantInfoStatus: ReducerStatusType;
-  dependantCurriculumConfig: CurriculumConfig | null;
-  dependantCurriculumConfigStatus: ReducerStatusType;
-  dependantStudyActivity: StudyActivity | null;
-  dependantStudyActivityStatus: ReducerStatusType;
-  dependantCourseMatrix: CourseMatrix | null;
-  dependantCourseMatrixStatus: ReducerStatusType;
   dependantContactGroups: DependantContactGroups;
   dependantActivityGraphData: DependantActivityGraphData;
   dependantActivityGraphDataStatus: ReducerStatusType;
   dependantPedagogyFormAccess: PedagogyFormAccess | null;
   dependantPedagogyFormAccessStatus: ReducerStatusType;
+  dependantEducationTypes: string[] | null;
+  dependantEducationTypesStatus: ReducerStatusType;
+  dependantDefaultEducationTypeCode: string | null;
+  dependantSelectedEducationTypeCode: string | null;
+  dependantStudyDataByEducationTypeCode: Record<string, DependantStudyData>;
 }
 
 /**
@@ -91,12 +102,6 @@ const initializeGuardianState: GuardianState = {
   currentDependant: {
     dependantInfo: null,
     dependantInfoStatus: "IDLE",
-    dependantCurriculumConfig: null,
-    dependantCurriculumConfigStatus: "IDLE",
-    dependantStudyActivity: null,
-    dependantStudyActivityStatus: "IDLE",
-    dependantCourseMatrix: null,
-    dependantCourseMatrixStatus: "IDLE",
     dependantContactGroups: {
       counselors: {
         status: "IDLE",
@@ -110,6 +115,12 @@ const initializeGuardianState: GuardianState = {
     dependantActivityGraphDataStatus: "IDLE",
     dependantPedagogyFormAccess: null,
     dependantPedagogyFormAccessStatus: "IDLE",
+
+    dependantEducationTypes: null,
+    dependantEducationTypesStatus: "IDLE",
+    dependantDefaultEducationTypeCode: null,
+    dependantSelectedEducationTypeCode: null,
+    dependantStudyDataByEducationTypeCode: {},
   },
   workspacesByDependantIdentifier: {},
 };
@@ -180,12 +191,73 @@ export const guardian: Reducer<GuardianState> = (
         },
       };
 
+    case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS":
+      return {
+        ...state,
+        currentDependant: {
+          ...state.currentDependant,
+          dependantEducationTypesStatus: action.payload,
+        },
+      };
+
+    case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES": {
+      const newDependantStudyDataByEducationTypeCode = action.payload.reduce<
+        Record<string, DependantStudyData>
+      >((acc, educationTypeCode) => {
+        acc[educationTypeCode] = {
+          studyActivity: null,
+          studyActivityStatus: "IDLE",
+          courseMatrix: null,
+          courseMatrixStatus: "IDLE",
+          curriculumConfig: null,
+          curriculumConfigStatus: "IDLE",
+        };
+        return acc;
+      }, {});
+
+      return {
+        ...state,
+        currentDependant: {
+          ...state.currentDependant,
+          dependantEducationTypes: action.payload,
+          dependantStudyDataByEducationTypeCode:
+            newDependantStudyDataByEducationTypeCode,
+        },
+      };
+    }
+
+    case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_DEFAULT_EDUCATION_TYPE_CODE":
+      return {
+        ...state,
+        currentDependant: {
+          ...state.currentDependant,
+          dependantDefaultEducationTypeCode: action.payload,
+        },
+      };
+
+    case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_SELECTED_EDUCATION_TYPE_CODE":
+      return {
+        ...state,
+        currentDependant: {
+          ...state.currentDependant,
+          dependantSelectedEducationTypeCode: action.payload,
+        },
+      };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS":
       return {
         ...state,
         currentDependant: {
           ...state.currentDependant,
-          dependantCurriculumConfigStatus: action.payload,
+          dependantStudyDataByEducationTypeCode: {
+            ...state.currentDependant.dependantStudyDataByEducationTypeCode,
+            [action.payload.key]: {
+              ...state.currentDependant.dependantStudyDataByEducationTypeCode[
+                action.payload.key
+              ],
+              curriculumConfigStatus: action.payload.status,
+            },
+          },
         },
       };
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG":
@@ -193,7 +265,15 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         currentDependant: {
           ...state.currentDependant,
-          dependantCurriculumConfig: action.payload,
+          dependantStudyDataByEducationTypeCode: {
+            ...state.currentDependant.dependantStudyDataByEducationTypeCode,
+            [action.payload.key]: {
+              ...state.currentDependant.dependantStudyDataByEducationTypeCode[
+                action.payload.key
+              ],
+              curriculumConfig: action.payload.curriculumConfig,
+            },
+          },
         },
       };
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS":
@@ -201,7 +281,15 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         currentDependant: {
           ...state.currentDependant,
-          dependantStudyActivityStatus: action.payload,
+          dependantStudyDataByEducationTypeCode: {
+            ...state.currentDependant.dependantStudyDataByEducationTypeCode,
+            [action.payload.key]: {
+              ...state.currentDependant.dependantStudyDataByEducationTypeCode[
+                action.payload.key
+              ],
+              studyActivityStatus: action.payload.status,
+            },
+          },
         },
       };
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY":
@@ -209,7 +297,15 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         currentDependant: {
           ...state.currentDependant,
-          dependantStudyActivity: action.payload,
+          dependantStudyDataByEducationTypeCode: {
+            ...state.currentDependant.dependantStudyDataByEducationTypeCode,
+            [action.payload.key]: {
+              ...state.currentDependant.dependantStudyDataByEducationTypeCode[
+                action.payload.key
+              ],
+              studyActivity: action.payload.studyActivity,
+            },
+          },
         },
       };
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS":
@@ -217,7 +313,15 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         currentDependant: {
           ...state.currentDependant,
-          dependantCourseMatrixStatus: action.payload,
+          dependantStudyDataByEducationTypeCode: {
+            ...state.currentDependant.dependantStudyDataByEducationTypeCode,
+            [action.payload.key]: {
+              ...state.currentDependant.dependantStudyDataByEducationTypeCode[
+                action.payload.key
+              ],
+              courseMatrixStatus: action.payload.status,
+            },
+          },
         },
       };
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX":
@@ -225,7 +329,15 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         currentDependant: {
           ...state.currentDependant,
-          dependantCourseMatrix: action.payload,
+          dependantStudyDataByEducationTypeCode: {
+            ...state.currentDependant.dependantStudyDataByEducationTypeCode,
+            [action.payload.key]: {
+              ...state.currentDependant.dependantStudyDataByEducationTypeCode[
+                action.payload.key
+              ],
+              courseMatrix: action.payload.courseMatrix,
+            },
+          },
         },
       };
 
@@ -310,12 +422,6 @@ export const guardian: Reducer<GuardianState> = (
         currentDependant: {
           dependantInfo: null,
           dependantInfoStatus: "IDLE",
-          dependantCurriculumConfig: null,
-          dependantCurriculumConfigStatus: "IDLE",
-          dependantStudyActivity: null,
-          dependantStudyActivityStatus: "IDLE",
-          dependantCourseMatrix: null,
-          dependantCourseMatrixStatus: "IDLE",
           dependantContactGroups: {
             counselors: {
               status: "IDLE",
@@ -329,6 +435,12 @@ export const guardian: Reducer<GuardianState> = (
           dependantActivityGraphDataStatus: "IDLE",
           dependantPedagogyFormAccess: null,
           dependantPedagogyFormAccessStatus: "IDLE",
+
+          dependantEducationTypes: null,
+          dependantEducationTypesStatus: "IDLE",
+          dependantDefaultEducationTypeCode: null,
+          dependantSelectedEducationTypeCode: null,
+          dependantStudyDataByEducationTypeCode: {},
         },
       };
     }
@@ -340,12 +452,6 @@ export const guardian: Reducer<GuardianState> = (
         currentDependant: {
           dependantInfo: null,
           dependantInfoStatus: "IDLE",
-          dependantCurriculumConfig: null,
-          dependantCurriculumConfigStatus: "IDLE",
-          dependantStudyActivity: null,
-          dependantStudyActivityStatus: "IDLE",
-          dependantCourseMatrix: null,
-          dependantCourseMatrixStatus: "IDLE",
           dependantContactGroups: {
             counselors: {
               status: "IDLE",
@@ -359,6 +465,12 @@ export const guardian: Reducer<GuardianState> = (
           dependantActivityGraphDataStatus: "IDLE",
           dependantPedagogyFormAccess: null,
           dependantPedagogyFormAccessStatus: "IDLE",
+
+          dependantEducationTypes: null,
+          dependantEducationTypesStatus: "IDLE",
+          dependantDefaultEducationTypeCode: null,
+          dependantSelectedEducationTypeCode: null,
+          dependantStudyDataByEducationTypeCode: {},
         },
       };
     default:

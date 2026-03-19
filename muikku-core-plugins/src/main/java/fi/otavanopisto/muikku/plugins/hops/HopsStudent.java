@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.plugins.hops;
 
 public class HopsStudent {
   
-  public HopsStudent(Long userEntityId, String category) {
+  public HopsStudent(Long userEntityId, String educationTypeCode) {
     this.userEntityId = userEntityId;
-    this.category = category;
+    this.educationTypeCode = educationTypeCode;
   }
 
   public Long getUserEntityId() {
@@ -15,15 +15,15 @@ public class HopsStudent {
     this.userEntityId = userEntityId;
   }
 
-  public String getCategory() {
-    return category;
+  public String getEducationTypeCode() {
+    return educationTypeCode;
   }
 
-  public void setCategory(String category) {
-    this.category = category;
+  public void setEducationTypeCode(String educationTypeCode) {
+    this.educationTypeCode = educationTypeCode;
   }
 
   private Long userEntityId;
-  private String category; // studyProgramme.getCategory().getEducationType().getCode()
+  private String educationTypeCode; // studyProgramme.getCategory().getEducationType().getCode()
 
 }

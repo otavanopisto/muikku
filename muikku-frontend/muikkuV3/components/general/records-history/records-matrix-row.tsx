@@ -7,7 +7,6 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
-import { getCourseDropdownName } from "~/helper-functions/study-matrix";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import {
@@ -21,6 +20,7 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import Dropdown from "../dropdown";
 import { AssessmentInformation } from "./assessment-information";
+import { MANDATORITY_OPTIONAL_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * Props for the matrix-based records row.
@@ -31,6 +31,7 @@ export interface RecordsMatrixRowProps {
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
   educationType: string;
+  isCombinationWorkspace: boolean;
   /** Show credits in the course title (e.g. "2 op"). Default true for upper secondary. */
   showCredits?: boolean;
 }
@@ -46,11 +47,17 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     course,
     studyActivityItems,
     educationType,
+    isCombinationWorkspace,
     showCredits = true,
   } = props;
 
-  const { identifier, userEntityId, config, displayNotification } =
-    useRecordsInfoContext();
+  const {
+    identifier,
+    userEntityId,
+    curriculumConfig,
+    config,
+    displayNotification,
+  } = useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -67,7 +74,6 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
   );
 
   const hasActivity = studyActivityItems.length > 0;
-  const isCombinationWorkspace = studyActivityItems.length > 1;
 
   const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
     workspaceId: subjectSpecificActivityItem?.courseId,
@@ -104,26 +110,22 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    if (
-      !hasActivity ||
-      !subjectSpecificActivityItem?.curriculums?.[0] ||
-      !subjectSpecificActivityItem.mandatority
-    ) {
+    if (!hasActivity || !subjectSpecificActivityItem?.curriculums?.[0]) {
       return null;
     }
     const OPS = subjectSpecificActivityItem.curriculums[0];
+    if (!OPS) return null;
     const suitabilityMap = suitabilityMapHelper(t);
     const education = `${educationType
       .toLowerCase()
       .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
     if (!suitabilityMap[education]) return null;
-    let localString =
-      suitabilityMap[education][subjectSpecificActivityItem.mandatority];
+    let localString = suitabilityMap[education][course.mandatority];
     const creditsString = getCreditsString();
     if (creditsString) localString = `${localString}, ${creditsString}`;
     return (
       <div className="label">
-        <div className="label__text">{localString} </div>
+        <div className="label__text">{localString}</div>
       </div>
     );
   };
@@ -148,7 +150,23 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     }
   };
 
-  const title = getCourseDropdownName(subject, course, showCredits);
+  let title = subject.code + course.courseNumber + " - " + course.name;
+
+  // Add asterisk to optional courses
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
+    title += "*";
+  }
+
+  // Course name extension exist only in workspace embodiment (aka workspace).
+  // So if it exists, add it to the title from activity item.
+  if (subjectSpecificActivityItem.courseNameExtension) {
+    title += ` (${subjectSpecificActivityItem.courseNameExtension})`;
+  }
+
+  // Add credits to uppersecondary courses
+  if (showCredits) {
+    title += ` (${curriculumConfig.strategy.getCourseDisplayedLength(course.length)})`;
+  }
 
   const animateOpen = showE ? "auto" : 0;
 
@@ -181,11 +199,13 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
             {hasActivity && (
               <>
-                <div className="label">
-                  <div className="label__text">
-                    {subjectSpecificActivityItem.studyProgramme}
+                {subjectSpecificActivityItem.studyProgramme && (
+                  <div className="label">
+                    <div className="label__text">
+                      {subjectSpecificActivityItem.studyProgramme}
+                    </div>
                   </div>
-                </div>
+                )}
                 {subjectSpecificActivityItem.curriculums?.map((curriculum) => (
                   <div key={curriculum} className="label">
                     <div className="label__text">{curriculum} </div>
@@ -196,7 +216,11 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
             {hasActivity && renderMandatorityDescription()}
             {!hasActivity && showCredits && course.length != null && (
               <div className="label">
-                <div className="label__text">{course.length} op</div>
+                <div className="label__text">
+                  {curriculumConfig.strategy.getCourseDisplayedLength(
+                    course.length
+                  )}
+                </div>
               </div>
             )}
 

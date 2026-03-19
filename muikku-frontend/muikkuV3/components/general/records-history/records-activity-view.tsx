@@ -2,10 +2,16 @@ import * as React from "react";
 import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
-import { StudyActivity, StudyActivityItem } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import RecordsActivityListItem from "./records-activity-row";
-import { getCombinationWorkspaces } from "~/helper-functions/study-matrix";
+import {
+  getCombinationWorkspaces,
+  StudyActivityItemWithCourseModule,
+} from "~/helper-functions/study-matrix";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import { useRecordsInfoContext } from "./context/records-info-context";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * Parses activity items into a flat list of combination workspaces and single items.
@@ -15,7 +21,7 @@ import RecordsActivityRowTransfered from "./records-activity-row-transfered";
  */
 function parseActivityItems(
   activityItems: StudyActivityItem[]
-): (StudyActivityItem | StudyActivityItem[])[] {
+): (StudyActivityItemWithCourseModule | StudyActivityItemWithCourseModule[])[] {
   const combinationGroups = getCombinationWorkspaces(activityItems);
   const combinationWorkspaceIds = new Set(
     combinationGroups.map((g) => g[0].courseId!)
@@ -91,9 +97,7 @@ const filterAndSortActivity = (
 /**
  * RecordsListProps
  */
-interface RecordsActivityViewProps {
-  studyActivity: StudyActivity;
-}
+interface RecordsActivityViewProps {}
 
 /**
  * RecordsListItem
@@ -101,12 +105,19 @@ interface RecordsActivityViewProps {
  * @returns JSX.Element
  */
 const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
-  const { studyActivity } = props;
   const { t } = useTranslation(["studies", "common"]);
 
   const [activitySortDirection, setActivitySortDirection] = React.useState<
     "asc" | "desc"
   >("asc");
+
+  const { curriculumConfig, studyActivity } = useRecordsInfoContext();
+
+  // Calculate the statistics
+  const statistics = React.useMemo(
+    () => curriculumConfig.strategy.calculateStatistics(studyActivity),
+    [curriculumConfig.strategy, studyActivity]
+  );
 
   const memoizedActivityItems = React.useMemo(
     () => parseActivityItems(studyActivity.items),
@@ -149,7 +160,7 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
       <ApplicationList>
         <div className="application-list__header-container application-list__header-container--sorter">
           <h3 className="application-list__header application-list__header--sorter">
-            {studyActivity.educationType}
+            {studyActivity.educationTypeCode}
           </h3>
         </div>
         <div className="application-sub-panel__item">
@@ -163,16 +174,41 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
     );
   }
 
-  let categoryName = studyActivity.educationType;
-
-  categoryName += ` - ${t("labels.courseCredits", {
-    ns: "studies",
-    mandatoryCredits: studyActivity.mandatoryCourseCredits,
-    totalCredits: studyActivity.completedCourseCredits,
-  })}`;
-
   return (
-    <ApplicationList>
+    <>
+      <ApplicationSubPanel.Header>
+        {getEducationTypeName(studyActivity.educationTypeCode, t)}
+      </ApplicationSubPanel.Header>
+      <div className="application-sub-panel__meta">
+        <div className="application-sub-panel__meta-title">
+          {t("labels.completedStudies")}
+        </div>
+
+        <div className="application-sub-panel__meta-items">
+          {curriculumConfig.type !== "unknown" && (
+            <div className="application-sub-panel__meta-item">
+              {t("labels.courseCreditsMandatory")}
+              <span className="label label--mandatory">
+                {statistics.mandatoryStudies}
+              </span>
+            </div>
+          )}
+          {curriculumConfig.type !== "unknown" && (
+            <div className="application-sub-panel__meta-item">
+              {t("labels.courseCreditsOptional")}
+              <span className="label label--optional">
+                {statistics.optionalStudies}
+              </span>
+            </div>
+          )}
+          <div className="application-sub-panel__meta-item">
+            {t("labels.courseCreditsTotal")}
+            <span className="label label--total">
+              {statistics.totalStudies}
+            </span>
+          </div>
+        </div>
+      </div>
       <div
         tabIndex={0}
         onClick={handleWorkspaceSortDirectionClick}
@@ -180,34 +216,39 @@ const RecordsActivityView: React.FC<RecordsActivityViewProps> = (props) => {
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">
-          {categoryName}
+          {t("labels.courses")}
         </h3>
         <div className={`icon-sort-alpha-${activitySortDirection}`}></div>
       </div>
-      {memoizedFilterActivity.nonTransferedActivities.length > 0 &&
-        memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
-          <RecordsActivityListItem
-            key={`record-activity-list-item-${i}`}
-            studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
-            isCombinationWorkspace={Array.isArray(ntItem)}
-            educationType={studyActivity.educationType}
-          />
-        ))}
+      <ApplicationSubPanel.Body>
+        <ApplicationList>
+          {memoizedFilterActivity.nonTransferedActivities.length > 0 &&
+            memoizedFilterActivity.nonTransferedActivities.map((ntItem, i) => (
+              <RecordsActivityListItem
+                key={`record-activity-list-item-${i}`}
+                studyActivityItems={Array.isArray(ntItem) ? ntItem : [ntItem]}
+                isCombinationWorkspace={Array.isArray(ntItem)}
+                educationType={studyActivity.educationTypeCode}
+              />
+            ))}
 
-      {memoizedFilterActivity.transferedActivities.length > 0 && (
-        <>
-          <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">Hyväksiluvut</h3>
-          </div>
-          {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
-            <RecordsActivityRowTransfered
-              key={`transfered-activity-item-${i}`}
-              studyActivityItem={tItem}
-            />
-          ))}
-        </>
-      )}
-    </ApplicationList>
+          {memoizedFilterActivity.transferedActivities.length > 0 && (
+            <>
+              <div className="application-list__subheader-container">
+                <h3 className="application-list__subheader">Hyväksiluvut</h3>
+              </div>
+              {memoizedFilterActivity.transferedActivities.map((tItem, i) => (
+                <RecordsActivityRowTransfered
+                  key={`transfered-activity-item-${i}`}
+                  studyActivityItem={tItem}
+                  educationType={studyActivity.educationTypeCode}
+                />
+              ))}
+            </>
+          )}
+        </ApplicationList>
+      </ApplicationSubPanel.Body>
+    </>
   );
 };
 

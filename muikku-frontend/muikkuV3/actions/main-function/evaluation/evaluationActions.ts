@@ -1280,7 +1280,7 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
           maxResults: 512,
         });
 
-        const obj: EvaluationJournalCommentsByJournal = studyDiaryEvents.reduce(
+        const obj = studyDiaryEvents.reduce<EvaluationJournalCommentsByJournal>(
           (o, key) => ({ ...o, [key.id]: [] }),
           {}
         );

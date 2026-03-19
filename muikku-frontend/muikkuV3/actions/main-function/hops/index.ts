@@ -104,11 +104,6 @@ export type HOPS_STUDYPLAN_UPDATE_GOALS = SpecificActionType<
   HopsGoals
 >;
 
-export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
-  "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
-  string[]
->;
-
 // HOPS CAREER PLAN ACTIONS TYPES
 
 export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
@@ -1210,7 +1205,7 @@ const startEditing: StartEditingTriggerType = function startEditing() {
     // Check matriculation data
     if (
       state.hopsNew.hopsMatriculationStatus === "IDLE" &&
-      studentInfo.studyProgrammeEducationType === "lukio"
+      studentInfo.educationTypeCode === "lukio"
     ) {
       dispatch(
         loadMatriculationData({
@@ -1338,7 +1333,7 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
     const state = getState();
 
     const isUpperSecondary =
-      state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
+      state.hopsNew.studentInfo.educationTypeCode === "lukio";
 
     // Filter out empty subjects
     const updatedPlan = {
@@ -2137,7 +2132,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
         state.status.userId === state.hopsNew.hopsLocked.userEntityId;
 
       const isUppersecondary =
-        state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
+        state.hopsNew.studentInfo.educationTypeCode === "lukio";
 
       data.onSuccess && data.onSuccess(currentUserIsEditing, isUppersecondary);
 
@@ -2176,7 +2171,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       studentInfo &&
         (await initializeHopsForms(
           studentIdentifier,
-          studentInfo.studyProgrammeEducationType === "lukio",
+          studentInfo.educationTypeCode === "lukio",
           dispatch,
           getState
         ));
@@ -2194,8 +2189,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       const currentUserIsEditing =
         hopsLocked && state.status.userId === hopsLocked.userEntityId;
 
-      const isUppersecondary =
-        studentInfo.studyProgrammeEducationType === "lukio";
+      const isUppersecondary = studentInfo.educationTypeCode === "lukio";
 
       // 5. Handle edit mode if user is the one who has locked HOPS
       // Here is loaded any missing data that is needed for edit mode
@@ -2318,10 +2312,6 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
           throw reason;
         });
 
-      const studyOptions = await hopsApi.getStudentAlternativeStudyOptions({
-        studentIdentifier,
-      });
-
       const goals = await hopsApi.getStudentHopsGoals({
         studentIdentifier,
       });
@@ -2347,11 +2337,6 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLAN_NOTES",
         payload: planNotesWithIdentifier,
-      });
-
-      dispatch({
-        type: "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
-        payload: studyOptions,
       });
 
       dispatch({

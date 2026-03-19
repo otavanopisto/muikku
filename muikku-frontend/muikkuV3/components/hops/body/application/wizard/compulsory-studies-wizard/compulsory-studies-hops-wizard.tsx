@@ -101,9 +101,7 @@ const CompulsoryStudiesHopsWizard: React.FC<
                 <AnimatedStep previousStep={previousStep}>
                   <Step1
                     studentName={`${hops.studentInfo.firstName} ${hops.studentInfo.lastName}`}
-                    educationalLevel={
-                      hops.studentInfo.studyProgrammeEducationType
-                    }
+                    educationalLevel={hops.studentInfo.educationTypeCode}
                     guidanceCounselors={hops.studentInfo.counselorList}
                     canLoadMoreHistory={hopsFormCanLoadMoreHistory}
                     loadMoreHopsEvents={loadMoreHopsFormHistory}

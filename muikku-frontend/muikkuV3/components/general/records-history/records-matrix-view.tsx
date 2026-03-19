@@ -2,12 +2,13 @@ import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import ApplicationList from "~/components/general/application-list";
 import { useTranslation } from "react-i18next";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import "~/sass/elements/label.scss";
+import { CourseMatrixModule, StudyActivityItemState } from "~/generated/client";
 import {
-  CourseMatrix,
-  StudyActivity,
-  StudyActivityItemState,
-} from "~/generated/client";
+  MANDATORITY_MANDATORY_VALUES,
+  MANDATORITY_OPTIONAL_VALUES,
+} from "~/helper-functions/study-matrix";
 import {
   buildRecordsRowsFromMatrix,
   enrichMatrixRowsWithCombinationWorkspace,
@@ -26,6 +27,8 @@ import RecordsActivityRow from "./records-activity-row";
 import RecordsActivityRowTransfered from "./records-activity-row-transfered";
 import { Instructions } from "../instructions";
 import Link from "../link";
+import { useRecordsInfoContext } from "./context/records-info-context";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * One subject with its course rows (only those that pass the activity filter).
@@ -39,12 +42,6 @@ interface SubjectGroup {
  * RecordsListMatrixViewProps
  */
 interface RecordsMatrixViewProps {
-  /** CourseMatrix (structure). When null, nothing is rendered. */
-  courseMatrix: CourseMatrix | null;
-  /** StudyActivity (student data). When null, rows still render with empty activity. */
-  studyActivity: StudyActivity;
-  /** Optional: show credits in section header. Uses studyActivity if provided. */
-  showCreditsInHeader?: boolean;
   /**
    * If true, show all matrix courses including those with no study activity.
    * Default false: only show courses that have at least one study activity item.
@@ -59,14 +56,12 @@ interface RecordsMatrixViewProps {
  * @param props props
  */
 const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
-  const {
-    courseMatrix,
-    studyActivity,
-    showCreditsInHeader = true,
-    showCoursesWithoutActivity = false,
-  } = props;
+  const { showCoursesWithoutActivity = false } = props;
 
   const status = useSelector((state: StateType) => state.status);
+
+  const { curriculumConfig, studyActivity, courseMatrix } =
+    useRecordsInfoContext();
 
   const [searchValue, setSearchValue] = useLocalStorage(
     `${status.userId}-records-matrix-search`,
@@ -92,6 +87,26 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
 
   const { t } = useTranslation(["studies", "common"]);
 
+  // Calculate the statistics
+  const statistics = React.useMemo(
+    () => curriculumConfig.strategy.calculateStatistics(studyActivity),
+    [curriculumConfig.strategy, studyActivity]
+  );
+
+  const courseMatrixModulesBySubjectCode = React.useMemo(
+    () =>
+      courseMatrix?.subjects.reduce<Record<string, CourseMatrixModule>>(
+        (acc, subject) => {
+          subject.modules.map((module) => {
+            acc[subject.code + module.courseNumber] = module;
+          });
+          return acc;
+        },
+        {}
+      ) ?? {},
+    [courseMatrix]
+  );
+
   // Build records rows from matrix and study activity
   const { rows, transferedActivities, nonOPSActivities } = React.useMemo(() => {
     if (!courseMatrix)
@@ -101,8 +116,12 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
 
   // Get combination workspace rows
   const combinationWorkspaceRows = React.useMemo(
-    () => getCombinationWorkspaces(studyActivity.items),
-    [studyActivity]
+    () =>
+      getCombinationWorkspaces(
+        studyActivity.items,
+        courseMatrixModulesBySubjectCode
+      ),
+    [studyActivity, courseMatrixModulesBySubjectCode]
   );
 
   const filteredCombinationWorkspaceRows = React.useMemo(() => {
@@ -170,10 +189,16 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     // and the course is optional if "optional" is in the courseTypeFilters
     if (courseTypeFilters.length > 0) {
       filtered = filtered.filter((row) => {
-        if (row.course.mandatory && courseTypeFilters.includes("mandatory")) {
+        if (
+          MANDATORITY_MANDATORY_VALUES.includes(row.course.mandatority) &&
+          courseTypeFilters.includes("mandatory")
+        ) {
           return true;
         }
-        if (!row.course.mandatory && courseTypeFilters.includes("optional")) {
+        if (
+          MANDATORITY_OPTIONAL_VALUES.includes(row.course.mandatority) &&
+          courseTypeFilters.includes("optional")
+        ) {
           return true;
         }
         return false;
@@ -183,8 +208,13 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     // Filter rows depending on search value
     const searchTrimmed = searchValue.trim().toLowerCase();
     if (searchTrimmed) {
-      filtered = filtered.filter((row) =>
-        row.course.name.toLowerCase().includes(searchTrimmed)
+      filtered = filtered.filter(
+        (row) =>
+          row.course.name.toLowerCase().includes(searchTrimmed) ||
+          row.subject.name.toLowerCase().includes(searchTrimmed) ||
+          `${row.subject.code}${row.course.courseNumber}`
+            .toLowerCase()
+            .includes(searchTrimmed)
       );
     }
 
@@ -323,19 +353,13 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
     );
   }
 
-  const categoryName = `${studyActivity.educationType}${
-    showCreditsInHeader
-      ? ` - ${t("labels.courseCredits", {
-          ns: "studies",
-          mandatoryCredits: studyActivity.mandatoryCourseCredits,
-          totalCredits: studyActivity.completedCourseCredits,
-        })}`
-      : ""
-  }`;
-
   const filterCheckboxes = [
     <div key="filterTitle" className="filter-category">
-      <div className="filter-category__label">Kurssin tila</div>
+      <div className="filter-category__label">
+        {t("labels.courseStatus", {
+          ns: "studies",
+        })}
+      </div>
     </div>,
     <div key="transferred" className="filter-item">
       <input
@@ -346,7 +370,9 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-transferred"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-transferred">Hyväksiluettu</label>
+      <label htmlFor="filter-transferred">
+        {t("labels.transferredCredit")}
+      </label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -357,7 +383,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-graded"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-graded">Suoritettu</label>
+      <label htmlFor="filter-graded">{t("labels.completed")}</label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -368,7 +394,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-ongoing"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-ongoing">Keskeneräinen</label>
+      <label htmlFor="filter-ongoing">{t("labels.inProgress")}</label>
     </div>,
     <div key="ongoing" className="filter-item">
       <input
@@ -379,10 +405,16 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-supplementationrequest"
         disabled={showMatrixStructure}
       />
-      <label htmlFor="filter-supplementationrequest">Täydennettävä</label>
+      <label htmlFor="filter-supplementationrequest">
+        {t("labels.incomplete")}
+      </label>
     </div>,
     <div key="filterTitle" className="filter-category">
-      <div className="filter-category__label">Kurssityyppi</div>
+      <div className="filter-category__label">
+        {t("labels.courseType", {
+          ns: "studies",
+        })}
+      </div>
     </div>,
     <div key="mandatory" className="filter-item">
       <input
@@ -392,7 +424,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         value="mandatory"
         id="filter-mandatory"
       />
-      <label htmlFor="filter-mandatory">Pakollinen</label>
+      <label htmlFor="filter-mandatory">{t("labels.mandatory")}</label>
     </div>,
     <div key="optional" className="filter-item">
       <input
@@ -402,10 +434,14 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         value="optional"
         id="filter-optional"
       />
-      <label htmlFor="filter-optional">Valinnainen</label>
+      <label htmlFor="filter-optional">{t("labels.optional")}</label>
     </div>,
     <div key="filterTitle" className="filter-category">
-      <div className="filter-category__label">Kokonaisuus</div>
+      <div className="filter-category__label">
+        {t("labels.otherFilters", {
+          ns: "studies",
+        })}
+      </div>
     </div>,
     <div key="showMatrixStructure" className="filter-item">
       <input
@@ -415,190 +451,261 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         id="filter-show-matrix-structure"
       />
       <label htmlFor="filter-show-matrix-structure">
-        Näytä opintokokonaisuus
+        {t("labels.showFullSyllabus", {
+          ns: "studies",
+        })}
       </label>
     </div>,
   ];
 
+  /**
+   * Render statistic meta
+   * @returns statistic meta
+   */
+  const renderStatisticMeta = () => {
+    let title = t("labels.completedStudies");
+    let mandatoryLabel = t("labels.courseCreditsMandatory");
+    let optionalLabel = t("labels.courseCreditsOptional");
+    let totalLabel = t("labels.courseCreditsTotal");
+
+    if (curriculumConfig.type === "compulsory") {
+      title = t("labels.courses");
+      mandatoryLabel = t("labels.courseCreditsMandatory");
+      optionalLabel = t("labels.courseCreditsOptional");
+      totalLabel = t("labels.courseCreditsTotal");
+    }
+
+    return (
+      <div className="application-sub-panel__meta">
+        <div className="application-sub-panel__meta-title">{title}</div>
+
+        <div className="application-sub-panel__meta-items">
+          <div className="application-sub-panel__meta-item">
+            {mandatoryLabel}
+            <span className="label label--mandatory">
+              {statistics.mandatoryStudies}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {optionalLabel}
+            <span className="label label--optional">
+              {statistics.optionalStudies}
+            </span>
+          </div>
+
+          <div className="application-sub-panel__meta-item">
+            {totalLabel}
+            <span className="label label--total">
+              {statistics.totalStudies}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <ApplicationList>
-      <div className="application-list__header application-list__header--filters">
+    <>
+      <div className="application-sub-panel__filters">
         <SearchFormElement
           updateField={handleSearchFormElementChange}
           name="records-matrix-search"
           id="records-matrix-search"
-          placeholder="Hae suoritustietoja"
+          placeholder={t("labels.search", {
+            ns: "studies",
+            context: "records",
+          })}
           value={searchValue}
         />
         <Dropdown modifier="records-filters" items={filterCheckboxes}>
           <ButtonPill icon="filter" buttonModifiers={["filter"]} />
         </Dropdown>
       </div>
-
-      <div className="application-list__description-container">
-        {categoryName}
+      <div className="application-sub-panel__description">
+        {t("content.filtersDescription", { ns: "studies" })}
       </div>
+      <ApplicationSubPanel.Header>
+        {getEducationTypeName(studyActivity.educationTypeCode, t)}
+      </ApplicationSubPanel.Header>
+      {renderStatisticMeta()}
+      <ApplicationSubPanel.Body>
+        <ApplicationList>
+          <div className="application-list__actions-container">
+            <Link
+              className="link link--application-list"
+              onClick={handleCloseAllSubjectsClick}
+            >
+              {t("actions.closeAll")}
+            </Link>
+            <Link
+              className="link link--application-list"
+              onClick={handleOpenAllSubjectsClick}
+            >
+              {t("actions.openAll")}
+            </Link>
+          </div>
+          {subjectGroups.length > 0 ? (
+            subjectGroups.map((group) => {
+              const { subject, courseRows } = group;
+              const subjectCode = subject.code;
+              const isExpanded = expandedSubjects.has(subjectCode);
+              const contentId = `records-matrix-subject-${subjectCode}`;
 
-      <div className="application-list__actions-container">
-        <Link
-          className="link link--application-list"
-          onClick={handleCloseAllSubjectsClick}
-        >
-          {t("actions.closeAll")}
-        </Link>
-        <Link
-          className="link link--application-list"
-          onClick={handleOpenAllSubjectsClick}
-        >
-          {t("actions.openAll")}
-        </Link>
-      </div>
+              return (
+                <React.Fragment key={subjectCode}>
+                  <div
+                    className="application-list__subheader-container"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleSubject(subjectCode)}
+                    onKeyDown={(e) => handleSubjectKeyDown(e, subjectCode)}
+                    aria-expanded={isExpanded}
+                    aria-controls={contentId}
+                    aria-label={
+                      isExpanded
+                        ? t("wcag.collapseRecordInfo", { ns: "studies" })
+                        : t("wcag.expandRecordInfo", { ns: "studies" })
+                    }
+                  >
+                    <span
+                      className={`application-list__subheader-icon icon-arrow-${
+                        isExpanded ? "down" : "right"
+                      }`}
+                      aria-hidden
+                    />
+                    <h3 className="application-list__subheader">
+                      {subject.name} ({subject.code})
+                    </h3>
+                  </div>
+                  <AnimateHeight
+                    id={contentId}
+                    height={isExpanded ? "auto" : 0}
+                    duration={200}
+                  >
+                    {/* Normal rows related to matrix, so using RecordsMatrixRow */}
+                    {courseRows.map((row, i) => {
+                      if (row.isCombinationWorkspace) {
+                        return (
+                          <RecordsMatrixRow
+                            key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
+                            subject={row.subject}
+                            course={row.course}
+                            studyActivityItems={row.studyActivityItems}
+                            educationType={studyActivity.educationTypeCode}
+                            isCombinationWorkspace={row.isCombinationWorkspace}
+                          />
+                        );
+                      }
 
-      {subjectGroups.length > 0 ? (
-        subjectGroups.map((group) => {
-          const { subject, courseRows } = group;
-          const subjectCode = subject.code;
-          const isExpanded = expandedSubjects.has(subjectCode);
-          const contentId = `records-matrix-subject-${subjectCode}`;
-
-          return (
-            <React.Fragment key={subjectCode}>
-              <div
-                className="application-list__subheader-container"
-                role="button"
-                tabIndex={0}
-                onClick={() => toggleSubject(subjectCode)}
-                onKeyDown={(e) => handleSubjectKeyDown(e, subjectCode)}
-                aria-expanded={isExpanded}
-                aria-controls={contentId}
-                aria-label={
-                  isExpanded
-                    ? t("wcag.collapseRecordInfo", { ns: "studies" })
-                    : t("wcag.expandRecordInfo", { ns: "studies" })
-                }
-              >
-                <span
-                  className={`application-list__subheader-icon icon-arrow-${
-                    isExpanded ? "down" : "right"
-                  }`}
-                  aria-hidden
-                />
+                      // If the row is not specifically a combination workspace, we want to
+                      // split the row into multiple rows, one for each study activity item.
+                      // This is for showing actual history of the different embodiments of the course.
+                      return row.studyActivityItems.map((item, j) => (
+                        <RecordsMatrixRow
+                          key={`${row.subject.code}-${row.course.courseNumber}-${item.courseId ?? j}`}
+                          subject={row.subject}
+                          course={row.course}
+                          studyActivityItems={[item]}
+                          educationType={studyActivity.educationTypeCode}
+                          isCombinationWorkspace={row.isCombinationWorkspace}
+                        />
+                      ));
+                    })}
+                  </AnimateHeight>
+                </React.Fragment>
+              );
+            })
+          ) : (
+            <div className="application-list__subheader-container">
+              {searchValue.trim() || activeStateFilters.length > 0 ? (
                 <h3 className="application-list__subheader">
-                  {subject.name} ({subject.code})
+                  {t("content.empty", {
+                    ns: "studies",
+                    context: "search",
+                  })}
+                </h3>
+              ) : (
+                <h3 className="application-list__subheader">
+                  {t("content.empty", {
+                    ns: "studies",
+                    context: "records",
+                  })}
+                </h3>
+              )}
+            </div>
+          )}
+
+          {/* Combination workspace rows related to matrix, so using RecordsMatrixRowCombination */}
+          {filteredCombinationWorkspaceRows.length > 0 && (
+            <>
+              <div className="application-list__subheader-container">
+                <h3 className="application-list__subheader">
+                  {t("labels.combinationCourses", {
+                    ns: "studies",
+                  })}
+                </h3>
+                <Instructions
+                  modifier="instructions"
+                  alignSelfVertically="top"
+                  openByHover={false}
+                  closeOnClick={true}
+                  closeOnOutsideClick={true}
+                  persistent
+                  content={
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: t("instructions.recordsCombinationCourses", {
+                          ns: "studies",
+                        }),
+                      }}
+                    />
+                  }
+                />
+              </div>
+              {filteredCombinationWorkspaceRows.map((row) => (
+                <RecordsMatrixRowCombination
+                  key={`combination-workspace-${row[0].courseId}`}
+                  studyActivityItems={row}
+                  educationType={studyActivity.educationTypeCode}
+                />
+              ))}
+            </>
+          )}
+
+          {/* Transfered activities and non OPS activities, so using RecordsActivityRow and RecordsActivityRowTransfered */}
+          {(filteredTransferedActivities.length > 0 ||
+            filteredNonOPSActivities.length > 0) && (
+            <>
+              <div className="application-list__subheader-container">
+                <h3 className="application-list__subheader">
+                  {t("labels.otherStudies", {
+                    ns: "studies",
+                  })}
                 </h3>
               </div>
-              <AnimateHeight
-                id={contentId}
-                height={isExpanded ? "auto" : 0}
-                duration={200}
-              >
-                {/* Normal rows related to matrix, so using RecordsMatrixRow */}
-                {courseRows.map((row, i) => (
-                  <RecordsMatrixRow
-                    key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
-                    subject={row.subject}
-                    course={row.course}
-                    studyActivityItems={row.studyActivityItems}
-                    educationType={studyActivity.educationType}
+              {filteredNonOPSActivities.length > 0 &&
+                filteredNonOPSActivities.map((item) => (
+                  <RecordsActivityRow
+                    key={`non-ops-activity-item-${item.courseId}`}
+                    studyActivityItems={[item]}
+                    isCombinationWorkspace={false}
+                    educationType={studyActivity.educationTypeCode}
                   />
                 ))}
-              </AnimateHeight>
-            </React.Fragment>
-          );
-        })
-      ) : (
-        <div className="application-list__subheader-container">
-          {searchValue.trim() || activeStateFilters.length > 0 ? (
-            <h3 className="application-list__subheader">
-              Ei suoritustietoja hakuehdon tai suodattimen mukaan
-            </h3>
-          ) : (
-            <h3 className="application-list__subheader">Ei suoritustietoja</h3>
+              {filteredTransferedActivities.length > 0 &&
+                filteredTransferedActivities.map((tItem, i) => (
+                  <RecordsActivityRowTransfered
+                    key={`transfered-activity-item-${i}`}
+                    studyActivityItem={tItem}
+                    educationType={studyActivity.educationTypeCode}
+                  />
+                ))}
+            </>
           )}
-        </div>
-      )}
-
-      {/* Combination workspace rows related to matrix, so using RecordsMatrixRowCombination */}
-      {filteredCombinationWorkspaceRows.length > 0 && (
-        <>
-          <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">
-              Yhdistelmäopintojaksot
-            </h3>
-            <Instructions
-              modifier="instructions"
-              alignSelfVertically="top"
-              openByHover={false}
-              closeOnClick={true}
-              closeOnOutsideClick={true}
-              persistent
-              content={
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: t("instructions.recordsCombinationWorkspaces", {
-                      ns: "studies",
-                    }),
-                  }}
-                />
-              }
-            />
-          </div>
-          {filteredCombinationWorkspaceRows.map((row) => (
-            <RecordsMatrixRowCombination
-              key={`combination-workspace-${row[0].courseId}`}
-              studyActivityItems={row}
-              educationType={studyActivity.educationType}
-            />
-          ))}
-        </>
-      )}
-
-      {/* Transfered activities and non OPS activities, so using RecordsActivityRow and RecordsActivityRowTransfered */}
-      {(filteredTransferedActivities.length > 0 ||
-        filteredNonOPSActivities.length > 0) && (
-        <>
-          <div className="application-list__subheader-container">
-            <h3 className="application-list__subheader">Muut suoritustiedot</h3>
-            <Instructions
-              modifier="instructions"
-              alignSelfVertically="top"
-              openByHover={false}
-              closeOnClick={true}
-              closeOnOutsideClick={true}
-              persistent
-              content={
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: t(
-                      "instructions.recordsTransferredAndOtherActivities",
-                      {
-                        ns: "studies",
-                      }
-                    ),
-                  }}
-                />
-              }
-            />
-          </div>
-          {filteredNonOPSActivities.length > 0 &&
-            filteredNonOPSActivities.map((item) => (
-              <RecordsActivityRow
-                key={`non-ops-activity-item-${item.courseId}`}
-                studyActivityItems={[item]}
-                isCombinationWorkspace={false}
-                educationType={studyActivity.educationType}
-              />
-            ))}
-          {filteredTransferedActivities.length > 0 &&
-            filteredTransferedActivities.map((tItem, i) => (
-              <RecordsActivityRowTransfered
-                key={`transfered-activity-item-${i}`}
-                studyActivityItem={tItem}
-              />
-            ))}
-        </>
-      )}
-    </ApplicationList>
+        </ApplicationList>
+      </ApplicationSubPanel.Body>
+    </>
   );
 };
 
