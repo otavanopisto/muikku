@@ -22,11 +22,14 @@ import { getEducationTypeName } from "~/helper-functions/locale";
 function parseActivityItems(
   activityItems: StudyActivityItem[]
 ): (StudyActivityItemWithCourseModule | StudyActivityItemWithCourseModule[])[] {
-  const combinationGroups = getCombinationWorkspaces(activityItems);
+  const preFilteredActivityItems = activityItems.filter(
+    (item) => item.state !== "SUGGESTED_NEXT"
+  );
+  const combinationGroups = getCombinationWorkspaces(preFilteredActivityItems);
   const combinationWorkspaceIds = new Set(
     combinationGroups.map((g) => g[0].courseId!)
   );
-  const singleItems = activityItems.filter(
+  const singleItems = preFilteredActivityItems.filter(
     (item) =>
       item.courseId == null || !combinationWorkspaceIds.has(item.courseId)
   );
