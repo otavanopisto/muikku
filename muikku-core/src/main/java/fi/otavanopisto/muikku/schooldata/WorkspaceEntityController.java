@@ -39,6 +39,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 
@@ -47,6 +49,12 @@ public class WorkspaceEntityController {
 
   @Inject
   private Logger logger;
+  
+  @Inject
+  private SessionController sessionController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -289,6 +297,25 @@ public class WorkspaceEntityController {
       logger.severe("Search provider not present in application");
       return false;
     }
+  }
+  
+  public boolean canAccessMaterials(WorkspaceEntity workspaceEntity) {
+    if (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE) {
+      if (!sessionController.isLoggedIn()) {
+        return false;
+      }
+      if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+        if (Boolean.FALSE.equals(workspaceEntity.getPublished())) {
+          return false;
+        }
+        if (workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
+          if (!workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
   
   public boolean canSignup(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity) {
