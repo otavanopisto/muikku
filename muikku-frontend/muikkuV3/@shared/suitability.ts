@@ -3,7 +3,6 @@ import { WorkspaceMandatority } from "~/generated/client";
 
 /**
  * Decide one canonical educationTypeId.
- * This can start simple and be improved later.
  * @param educationType education type
  */
 function normalizeEducationTypeId(
@@ -17,7 +16,6 @@ function normalizeEducationTypeId(
 
 /**
  * Decide one canonical curriculumId from curriculums array.
- * Prefer backend-provided canonical IDs if/when available.
  * @param curriculums curriculums
  * @returns curriculum id
  */
