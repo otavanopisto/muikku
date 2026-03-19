@@ -126,7 +126,7 @@ public class UserSchoolDataIdentifier {
   @ManyToOne
   private UserEntity userEntity;
 
-  @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinTable (name = "UserSchoolDataIdentifierRoles", joinColumns = @JoinColumn(name = "userSchoolDataIdentifier_id"), inverseJoinColumns = @JoinColumn(name = "role"))
   private List<EnvironmentRoleEntity> roles;
 

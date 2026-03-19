@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 
 @WebServlet(urlPatterns = "/workspaceBinaryMaterialsServlet/*")
 public class WorkspaceBinaryMaterialServlet extends HttpServlet {
@@ -32,6 +33,9 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   @Override
   public void init() throws ServletException {
@@ -56,6 +60,11 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrl);
     if (workspaceEntity == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    
+    if (!workspaceEntityController.canAccessMaterials(workspaceEntity)) {
+      response.sendError(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
 
