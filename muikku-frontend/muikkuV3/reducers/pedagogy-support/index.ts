@@ -11,16 +11,12 @@ import {
   PedagogyFormImplementedActions,
   PedagogyFormLocked,
 } from "~/generated/client";
+import {
+  ReducerStatusType,
+  ReducerInitializeStatusType,
+} from "~/reducers/types";
 
 export type PedagogyMode = "READ" | "EDIT";
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
-
-export type ReducerInitializeStatusType =
-  | "INITIALIZING"
-  | "INITIALIZED"
-  | "INITIALIZATION_FAILED"
-  | "IDLE";
 
 /**
  * PedagogyEditingState
@@ -39,14 +35,14 @@ export interface PedagogySupportState {
   // Initialization
   initialized: ReducerInitializeStatusType;
   permissions: PedagogySupportPermissions | null;
-  pedagogyLockedStatus: ReducerStateType;
+  pedagogyLockedStatus: ReducerStatusType;
   pedagogyLocked: PedagogyFormLocked | null;
 
   // Current student context
   currentStudentIdentifier?: string;
 
   // Pedagogy Form State
-  pedagogyFormStatus: ReducerStateType;
+  pedagogyFormStatus: ReducerStatusType;
   pedagogyForm: PedagogyForm | null;
   pedagogyFormData: PedagogyFormData | null;
   pedagogyFormExtraDetails: string;
@@ -55,7 +51,7 @@ export interface PedagogySupportState {
   pedagogyFormAccess: Partial<PedagogyFormAccess> | null;
 
   // Implemented Actions State
-  implementedActionsStatus: ReducerStateType;
+  implementedActionsStatus: ReducerStatusType;
   implementedActions: PedagogyFormImplementedActions | null;
   implementedActionsFormData: PedagogySupportActionImplemented[];
 

@@ -5,8 +5,7 @@ import {
   WorkspaceJournalComment,
   EvaluationJournalFeedback,
 } from "~/generated/client";
-
-export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+import { ReducerStatusType } from "~/reducers/types";
 
 /**
  * WorkspaceJournalWithComments
@@ -40,7 +39,7 @@ export interface JournalsState {
   commentsLoaded: number[];
   commentsSaving: number[];
   filters: WorkspaceJournalFilters;
-  state: ReducerStateType;
+  state: ReducerStatusType;
 }
 
 const initialJournalsState: JournalsState = {

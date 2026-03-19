@@ -1,14 +1,13 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { ExamAttendance, MaterialCompositeReply } from "~/generated/client";
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
+import { ReducerStatusType } from "~/reducers/types";
 
 /**
  * ReducerStateTypeWithMessage
  */
 export interface ReducerStateInfo {
-  status: ReducerStateType;
+  status: ReducerStatusType;
   statusCode?: number;
   message?: string;
 }
@@ -17,8 +16,8 @@ export interface ReducerStateInfo {
  * WorkspaceExamsState
  */
 export interface ExamsState {
-  initializeStatus: ReducerStateType;
-  examsStatus: ReducerStateType;
+  initializeStatus: ReducerStatusType;
+  examsStatus: ReducerStatusType;
   exams: ExamAttendance[];
   currentExam: ExamAttendance | null;
   currentExamStatusInfo: ReducerStateInfo;
