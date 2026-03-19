@@ -34,6 +34,8 @@ import { MobileOnlyTabs } from "~/components/general/tabs";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import Button from "~/components/general/button";
+import { CreateAbsenceDialog } from "./dialogs/create-absence";
 
 /**
  * WorkspaceUsersProps
@@ -300,6 +302,19 @@ class WorkspaceUsers extends React.Component<
         name: getName(this.state.studentCurrentlyBeingSentMessage, true),
       },
     };
+    const primaryOption = (
+      <CreateAbsenceDialog
+        workspaceId={this.props.workspace.id}
+        onClose={() => {}}
+        onConfirm={() => {}}
+      >
+        <Button buttonModifiers="primary-function">
+          {this.props.t("actions.createAbsence", {
+            ns: "events",
+          })}
+        </Button>
+      </CreateAbsenceDialog>
+    );
     const staffPager =
       this.allStaffPages > 1 ? (
         <PagerV2
@@ -381,6 +396,7 @@ class WorkspaceUsers extends React.Component<
     return (
       <ApplicationPanel
         modifier="workspace-users"
+        primaryOption={primaryOption}
         title={t("labels.users", { ns: "users" })}
       >
         <ApplicationSubPanel modifier="workspace-users">

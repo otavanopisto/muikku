@@ -2606,7 +2606,14 @@
       "durationRunningOut": "Huomio! Sinulla on alle {{timeLeft}} minuuttia aikaa jäljellä!"
     }
   },
-  "calendar": {
+
+  "events": {
+    "actions": {
+      "createAbsence": "Luo poissaolo",
+      "create": "Luo tapahtuma",
+      "edit": "Muokkaa tapahtumaa",
+      "remove": "Poista tapahtuma"
+    },
     "notifications": {
       "createError": "Tapahtuman luonti epäonnistui",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",

@@ -52,6 +52,41 @@
   flex-flow: row wrap;
 }
 
+.form__row--absence-event {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+
+  input {
+    background-color: $color-default;
+    border: 2px solid $color-env-dialog-form-element-border;
+    border-radius: 3px;
+    display: inline-block;
+    height: $input-height-mobile;
+    padding: 4px 8px;
+    width: 100%;
+
+    @include breakpoint($breakpoint-pad) {
+      height: $input-height-desktop;
+    }
+    @include form-focus;
+  }
+
+  textarea {
+    background-color: $color-default;
+    border: 2px solid $color-env-dialog-form-element-border;
+    border-radius: 3px;
+    display: inline-block;
+    height: auto;
+    padding: 4px 8px;
+    width: 100%;
+
+    @include breakpoint($breakpoint-pad) {
+      height: auto;
+    }
+    @include form-focus;
+  }
+}
 .form__row-header {
   display: flex;
   justify-content: space-between;

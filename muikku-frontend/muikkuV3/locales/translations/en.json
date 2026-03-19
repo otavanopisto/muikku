@@ -2605,7 +2605,13 @@
       "durationRunningOut": "Attention! You have less than {{timeLeft}} minutes remaining!"
     }
   },
-  "calendar": {
+  "events": {
+    "actions": {
+      "createAbsence": "Create absence",
+      "create": "Create event",
+      "edit": "Edit event",
+      "remove": "Remove event"
+    },
     "notifications": {
       "createError": "Creating the event failed",
       "removeError": "Removing the event failed. Please try again.",
