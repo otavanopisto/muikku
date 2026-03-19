@@ -416,16 +416,6 @@ export interface ActivityBySubject {
   [key: string]: StudyActivityItem[];
 }
 
-/**
- * OPSsuitability
- */
-export interface OPSsuitability {
-  MANDATORY: string;
-  UNSPECIFIED_OPTIONAL: string;
-  NATIONAL_LEVEL_OPTIONAL: string;
-  SCHOOL_LEVEL_OPTIONAL: string;
-}
-
 export type HopsWebsocketMessage =
   | "hops:workspace-suggested"
   | "hops:workspace-signup"
