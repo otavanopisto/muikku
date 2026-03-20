@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>create table MuikkuEvent (
+       id bigint not null auto_increment,
+        allDay bit not null,
+        creatorEntityId bigint not null,
+        description longtext,
+        editableByUser bit not null,
+        end datetime not null,
+        eventContainerId bigint not null,
+        eventId bigint,
+        isPrivate bit not null,
+        removableByUser bit not null,
+        start datetime not null,
+        title varchar(255) not null,
+        type integer not null,
+        userEntityId bigint not null,
+        primary key (id)
+    );</sql>
+    <sql>create table MuikkuEventContainer (
+       id bigint not null auto_increment,
+        name varchar(255),
+        type varchar(255),
+        userEntityId bigint,
+        workspaceEntityId bigint,
+        primary key (id)
+    );</sql>
+    <sql>create table MuikkuEventParticipant (
+       id bigint not null auto_increment,
+        attendance varchar(255) not null,
+        userEntityId bigint not null,
+        muikkuEvent_id bigint,
+        primary key (id)
+    );</sql>
+    <sql>create table MuikkuEventProperty (
+       id bigint not null auto_increment,
+        date datetime not null,
+        name varchar(255),
+        userEntityId bigint not null,
+        value varchar(255),
+        muikkuEvent_id bigint,
+        primary key (id)
+    );</sql>
+    <sql>alter table MuikkuEventParticipant 
+       add constraint FK71b91rs6y627rfjd8reh2xub9 
+       foreign key (muikkuEvent_id) 
+       references MuikkuEvent (id);
+    </sql>
+    <sql>alter table MuikkuEventProperty 
+       add constraint FKojy3nv8kxrw5erqpi8q6raxrn 
+       foreign key (muikkuEvent_id) 
+       references MuikkuEvent (id);
+    </sql>
+
+</update>

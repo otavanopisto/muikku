@@ -1,12 +1,10 @@
-package fi.otavanopisto.muikku.plugins.calendar.rest;
+package fi.otavanopisto.muikku.plugins.event.rest;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.calendar.model.CalendarEventVisibility;
-
-public class CalendarEventRestModel {
+public class MuikkuEventRestModel {
 
   public Long getId() {
     return id;
@@ -14,6 +12,30 @@ public class CalendarEventRestModel {
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(Long eventId) {
+    this.eventId = eventId;
+  }
+
+  public Long getEventContainerId() {
+    return eventContainerId;
+  }
+
+  public void setEventContainerId(Long eventContainerId) {
+    this.eventContainerId = eventContainerId;
+  }
+
+  public boolean isInvitation() {
+    return invitation;
+  }
+
+  public void setInvitation(boolean invitation) {
+    this.invitation = invitation;
   }
 
   public boolean isAllDay() {
@@ -40,14 +62,6 @@ public class CalendarEventRestModel {
     this.description = description;
   }
 
-  public CalendarEventVisibility getVisibility() {
-    return visibility;
-  }
-
-  public void setVisibility(CalendarEventVisibility visibility) {
-    this.visibility = visibility;
-  }
-
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -56,16 +70,32 @@ public class CalendarEventRestModel {
     this.userEntityId = userEntityId;
   }
 
-  public List<CalendarEventParticipantRestModel> getParticipants() {
+  public Long getCreator() {
+    return creator;
+  }
+
+  public void setCreator(Long creator) {
+    this.creator = creator;
+  }
+
+  public List<MuikkuEventParticipantRestModel> getParticipants() {
     return participants;
   }
 
-  public void setParticipants(List<CalendarEventParticipantRestModel> participants) {
+  public void setParticipants(List<MuikkuEventParticipantRestModel> participants) {
     this.participants = participants;
   }
   
-  public void addParticipant(CalendarEventParticipantRestModel participant) {
+  public void addParticipant(MuikkuEventParticipantRestModel participant) {
     this.participants.add(participant);
+  }
+
+  public List<MuikkuEventPropertyRestModel> getProperties() {
+    return properties;
+  }
+
+  public void setProperties(List<MuikkuEventPropertyRestModel> properties) {
+    this.properties = properties;
   }
 
   public boolean isEditable() {
@@ -108,16 +138,29 @@ public class CalendarEventRestModel {
     this.type = type;
   }
 
+  public boolean isPrivate() {
+    return isPrivate;
+  }
+
+  public void setPrivate(boolean isPrivate) {
+    this.isPrivate = isPrivate;
+  }
+
   private Long id;
+  private Long eventId;
+  private Long eventContainerId;
+  private boolean invitation;
   private OffsetDateTime start;
   private OffsetDateTime end;
   private boolean allDay;
   private String title;
   private String description;
-  private CalendarEventVisibility visibility;
   private String type;
+  private boolean isPrivate;
   private Long userEntityId;
-  private List<CalendarEventParticipantRestModel> participants = new ArrayList<>();
+  private Long creator;
+  private List<MuikkuEventParticipantRestModel> participants = new ArrayList<>();
+  private List<MuikkuEventPropertyRestModel> properties = new ArrayList<>();
   private boolean editable;
   private boolean removable;
 
