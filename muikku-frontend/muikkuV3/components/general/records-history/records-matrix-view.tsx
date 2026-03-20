@@ -374,7 +374,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
         {t("labels.transferredCredit")}
       </label>
     </div>,
-    <div key="ongoing" className="filter-item">
+    <div key="graded" className="filter-item">
       <input
         onChange={handleFilterClick}
         checked={activeStateFilters.includes("GRADED")}
@@ -396,7 +396,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       />
       <label htmlFor="filter-ongoing">{t("labels.inProgress")}</label>
     </div>,
-    <div key="ongoing" className="filter-item">
+    <div key="supplementationrequest" className="filter-item">
       <input
         onChange={handleFilterClick}
         checked={activeStateFilters.includes("SUPPLEMENTATIONREQUEST")}
@@ -407,6 +407,32 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       />
       <label htmlFor="filter-supplementationrequest">
         {t("labels.incomplete")}
+      </label>
+    </div>,
+    <div key="interim-evaluation-request" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeStateFilters.includes("INTERIM_EVALUATION_REQUEST")}
+        type="checkbox"
+        value="INTERIM_EVALUATION_REQUEST"
+        id="filter-interim-evaluation-request"
+        disabled={showMatrixStructure}
+      />
+      <label htmlFor="filter-interim-evaluation-request">
+        {t("labels.interimEvaluationRequest")}
+      </label>
+    </div>,
+    <div key="interim-evaluation" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeStateFilters.includes("INTERIM_EVALUATION")}
+        type="checkbox"
+        value="INTERIM_EVALUATION"
+        id="filter-interim-evaluation"
+        disabled={showMatrixStructure}
+      />
+      <label htmlFor="filter-interim-evaluation">
+        {t("labels.interimEvaluation")}
       </label>
     </div>,
     <div key="filterTitle" className="filter-category">
@@ -594,6 +620,21 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                             studyActivityItems={row.studyActivityItems}
                             educationType={studyActivity.educationTypeCode}
                             isCombinationWorkspace={row.isCombinationWorkspace}
+                          />
+                        );
+                      }
+
+                      // Row may not have any activity if showAllMatrixCourses is true
+                      // This means that we want to show the row even if it has no activity.
+                      if (row.studyActivityItems.length === 0) {
+                        return (
+                          <RecordsMatrixRow
+                            key={`${row.subject.code}-${row.course.courseNumber}-${i}`}
+                            subject={row.subject}
+                            course={row.course}
+                            studyActivityItems={[]}
+                            educationType={studyActivity.educationTypeCode}
+                            isCombinationWorkspace={false}
                           />
                         );
                       }
