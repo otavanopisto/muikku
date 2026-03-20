@@ -8,7 +8,7 @@ import {
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import {
   CourseMatrixModule,
   CourseMatrixSubject,
@@ -59,7 +59,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     displayNotification,
   } = useRecordsInfoContext();
 
-  const { t } = useTranslation([
+  const { t, i18n } = useTranslation([
     "studies",
     "evaluation",
     "materials",
@@ -110,17 +110,15 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    if (!hasActivity || !subjectSpecificActivityItem?.curriculums?.[0]) {
-      return null;
-    }
-    const OPS = subjectSpecificActivityItem.curriculums[0];
-    if (!OPS) return null;
-    const suitabilityMap = suitabilityMapHelper(t);
-    const education = `${educationType
-      .toLowerCase()
-      .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
-    if (!suitabilityMap[education]) return null;
-    let localString = suitabilityMap[education][course.mandatority];
+    if (!hasActivity || !subjectSpecificActivityItem.mandatority) return null;
+
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: course.mandatority,
+      educationType,
+      curriculums: subjectSpecificActivityItem.curriculums,
+    });
     const creditsString = getCreditsString();
     if (creditsString) localString = `${localString}, ${creditsString}`;
     return (

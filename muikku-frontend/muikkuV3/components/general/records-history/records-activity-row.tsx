@@ -9,10 +9,7 @@ import {
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import {
-  suitabilityMapHelper,
-  suitabilityMapHelperWithoutOPS,
-} from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import AssessmentIndicator from "./assessment-indicator";
@@ -45,7 +42,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
   const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
-  const { t } = useTranslation([
+  const { t, i18n } = useTranslation([
     "studies",
     "evaluation",
     "materials",
@@ -119,65 +116,27 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    // Get first OPS from curriculums there should be only one OPS per workspace
-    // Some old workspaces might have multiple OPS, but that is rare case
-    const OPS = studyActivityItems[0].curriculums?.[0];
+    if (!studyActivityItems[0].mandatority) return null;
 
-    // Mandatority exist and...
-    if (studyActivityItems[0].mandatority) {
-      // If OPS data is present
-      if (OPS) {
-        const suitabilityMap = suitabilityMapHelper(t);
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: studyActivityItems[0].mandatority,
+      educationType,
+      curriculums: studyActivityItems[0].curriculums,
+    });
 
-        // Create map property from education type name and OPS name that was passed
-        // Strings are changes to lowercase form and any empty spaces are removed
-        const education = `${educationType
-          .toLowerCase()
-          .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
+    const sumOfCredits = getSumOfCredits();
 
-        // Check if our map contains data with just created education string
-        // Otherwise just return null. There might not be all included values by every OPS created...
-        if (!suitabilityMap[education]) {
-          return null;
-        }
-
-        // Then get correct local string from map by suitability enum value
-        let localString =
-          suitabilityMap[education][studyActivityItems[0].mandatority];
-
-        const sumOfCredits = getSumOfCredits();
-
-        // If there is sum of credits, return it with local string
-        if (sumOfCredits) {
-          localString = `${localString}, ${sumOfCredits}`;
-        }
-
-        return (
-          <div className="label">
-            <div className="label__text">{localString} </div>
-          </div>
-        );
-      }
-
-      // If OPS data is not present, use suitability map without OPS
-      // Then options for localization are "mandatory" and "optional"
-      const suitabilityMapWithoutOPS = suitabilityMapHelperWithoutOPS(t);
-
-      let localString =
-        suitabilityMapWithoutOPS[studyActivityItems[0].mandatority];
-
-      const sumOfCredits = getSumOfCredits();
-
-      if (sumOfCredits) {
-        localString = `${localString}, ${sumOfCredits}`;
-      }
-
-      return (
-        <div className="label">
-          <div className="label__text">{localString}</div>
-        </div>
-      );
+    if (sumOfCredits) {
+      localString = `${localString}, ${sumOfCredits}`;
     }
+
+    return (
+      <div className="label">
+        <div className="label__text">{localString}</div>
+      </div>
+    );
   };
 
   const animateOpen = showEvaluation ? "auto" : 0;
