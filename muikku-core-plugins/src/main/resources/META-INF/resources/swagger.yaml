@@ -12209,7 +12209,6 @@ components:
             description: InterimEvaluationRequestCreateRequestBody object
             required:
               - workspaceMaterialId
-              - requestText
             properties:
               workspaceMaterialId:
                 type: integer
