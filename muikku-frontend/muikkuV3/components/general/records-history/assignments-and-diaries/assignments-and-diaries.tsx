@@ -21,9 +21,10 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 import { useTranslation } from "react-i18next";
 import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
-import { WorkspaceActivity } from "~/generated/client";
 import Material from "./material";
 import Journal from "./journal";
+import { useExams } from "./hooks/useExams";
+import ExamsList from "./exams-list";
 
 /**
  * AssignmentsAndDiariesProps
@@ -37,7 +38,7 @@ interface AssignmentsAndDiariesProps {
    * Users entity id
    */
   userEntityId: number;
-  credit: WorkspaceActivity;
+  courseId: number;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -52,7 +53,7 @@ export type AssignmentsTabType =
  * @returns JSX.Element
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
-  const { userIdentifier, credit, userEntityId, displayNotification } = props;
+  const { userIdentifier, courseId, userEntityId, displayNotification } = props;
 
   const { t } = useTranslation([
     "studies",
@@ -72,26 +73,26 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   const recordWorkspace = useRecordWorkspace(
     userIdentifier,
-    credit.id,
+    courseId,
     displayNotification
   );
 
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
-    credit.id,
+    courseId,
     userEntityId,
     activeTab,
     displayNotification
   );
 
   const { exerciseAssignmentsData } = useExerciseAssignments(
-    credit.id,
+    courseId,
     userEntityId,
     activeTab,
     displayNotification
   );
 
   const { interimEvaluationeAssignmentsData } = useInterimEvaluationAssigments(
-    credit.id,
+    courseId,
     userEntityId,
     activeTab,
     displayNotification
@@ -99,15 +100,17 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   const { compositeReplyData } = useCompositeReply(
     userEntityId,
-    credit.id,
+    courseId,
     displayNotification
   );
 
   const { journalsData } = useJournals(
     userEntityId,
-    credit.id,
+    courseId,
     displayNotification
   );
+
+  const { examsData } = useExams(courseId, displayNotification);
 
   /**
    * onTabChange
@@ -631,6 +634,26 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               <div className="loader-empty" />
             ) : (
               renderInterminEvaluationMaterialsList
+            )}
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
+      ),
+    },
+    {
+      id: "EXAMS",
+      name: t("labels.exams", { ns: "exams" }),
+      type: "exams",
+      component: (
+        <ApplicationSubPanel modifier="studies-exams">
+          <ApplicationSubPanel.Header modifier="studies-exams">
+            <span>{t("labels.exams", { ns: "exams" })}</span>
+          </ApplicationSubPanel.Header>
+
+          <ApplicationSubPanel.Body>
+            {examsData.isLoading ? (
+              <div className="loader-empty" />
+            ) : (
+              <ExamsList exams={examsData.exams} />
             )}
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>

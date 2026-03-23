@@ -1,4 +1,4 @@
-import { WorkspaceAssessmentState } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * sleep
@@ -29,10 +29,10 @@ export const isStringHTML = (str: string) => {
 };
 
 /**
- * getAssessmentData
+ * getAssessmentDataNew
  * @param assessment assessment
  */
-export const getAssessmentData = (assessment: WorkspaceAssessmentState) => {
+export const getAssessmentData = (assessment: StudyActivityItem) => {
   let evalStateClassName = "";
   let evalStateIcon = "";
   let assessmentIsPending = false;
@@ -41,41 +41,42 @@ export const getAssessmentData = (assessment: WorkspaceAssessmentState) => {
   let assessmentIsInterim = false;
 
   switch (assessment.state) {
-    case "pass":
-      evalStateClassName = "workspace-assessment--passed";
-      evalStateIcon = "icon-thumb-up";
+    case "GRADED":
+      // For graded items, check if passing to determine pass or fail
+      if (assessment.passing) {
+        evalStateClassName = "workspace-assessment--passed";
+        evalStateIcon = "icon-thumb-up";
+      } else {
+        evalStateClassName = "workspace-assessment--failed";
+        evalStateIcon = "icon-thumb-down";
+      }
       break;
-    case "pending":
-    case "pending_pass":
-    case "pending_fail":
+    case "PENDING":
       evalStateClassName = "workspace-assessment--pending";
       evalStateIcon = "icon-assessment-pending";
       assessmentIsPending = true;
       break;
-    case "fail":
-      evalStateClassName = "workspace-assessment--failed";
-      evalStateIcon = "icon-thumb-down";
-      break;
-    case "incomplete":
+    case "SUPPLEMENTATIONREQUEST":
       evalStateClassName = "workspace-assessment--incomplete";
       assessmentIsIncomplete = true;
       break;
-
-    case "interim_evaluation_request":
+    case "INTERIM_EVALUATION_REQUEST":
       assessmentIsPending = true;
       assessmentIsInterim = true;
       evalStateClassName = "workspace-assessment--interim-evaluation-request";
       evalStateIcon = "icon-assessment-pending";
       break;
-    case "interim_evaluation":
+    case "INTERIM_EVALUATION":
       assessmentIsInterim = true;
       evalStateClassName = "workspace-assessment--interim-evaluation";
       evalStateIcon = "icon-thumb-up";
       break;
-
-    case "unassessed":
+    case "ONGOING":
+    case "TRANSFERRED":
+    case "SUGGESTED_NEXT":
     default:
       assessmentIsUnassessed = true;
+      break;
   }
 
   const literalAssessment =

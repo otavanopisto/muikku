@@ -62,7 +62,8 @@ public class UserGroupEntityController {
         return new UserGroupEntityName((String) match.get("name"), (Boolean) match.get("isGuidanceGroup"));
       }
       else {
-        throw new RuntimeException(String.format("Search provider couldn't find a unique user group. %d results.", searchResult.getTotalHitCount()));
+        // TODO Lokalisaatio jos olisi plugin eikä core :|
+        return new UserGroupEntityName("Poistettu ryhmä", false);
       }
     }
     else {

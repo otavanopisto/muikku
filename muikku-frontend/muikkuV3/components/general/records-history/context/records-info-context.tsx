@@ -1,10 +1,12 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { CourseMatrix, StudyActivity } from "~/generated/client";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * RecordsInfo
  */
-interface RecordsInfo {
+export interface RecordsInfo {
   /**
    * Users data school identifier "PYRAMUS-STUDENT-XX" or "PYRAMUS-STAFF-XX"
    */
@@ -14,9 +16,31 @@ interface RecordsInfo {
    */
   userEntityId: number;
   /**
+   * Study activity
+   */
+  studyActivity: StudyActivity;
+  /**
+   * Course matrix
+   */
+  courseMatrix: CourseMatrix;
+  /**
+   * Curriculum config
+   */
+  curriculumConfig: CurriculumConfig;
+  /**
    * Display notification trigger
    */
   displayNotification: DisplayNotificationTriggerType;
+  /**
+   * Configuration
+   */
+  config?: {
+    /**
+     * Show assigments and diaries button in records group item
+     * @default true
+     */
+    showAssigmentsAndDiaries: boolean;
+  };
 }
 
 /**
@@ -39,8 +63,16 @@ export const RecordsInfoContext = React.createContext<RecordsInfo | undefined>(
 function RecordsInfoProvider(props: RecordsInfoProviderProps) {
   const { children, value } = props;
 
+  const memoizedConfig = React.useMemo(
+    () =>
+      value.config || {
+        showAssigmentsAndDiaries: true,
+      },
+    [value.config]
+  );
+
   return (
-    <RecordsInfoContext.Provider value={value}>
+    <RecordsInfoContext.Provider value={{ ...value, config: memoizedConfig }}>
       {children}
     </RecordsInfoContext.Provider>
   );

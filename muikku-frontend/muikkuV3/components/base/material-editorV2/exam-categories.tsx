@@ -110,14 +110,14 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
    * @param pageId - Page id
    */
   const addPageToCategory = (categoryIndex: number, pageId: number) => {
-    const updatedCategories = [...categories];
-    const category = updatedCategories[categoryIndex];
+    const category = categories[categoryIndex];
 
     if (!category.workspaceMaterialIds.includes(pageId)) {
-      category.workspaceMaterialIds = [
-        ...category.workspaceMaterialIds,
-        pageId,
-      ];
+      const updatedCategories = [...categories];
+      updatedCategories[categoryIndex] = {
+        ...category,
+        workspaceMaterialIds: [...category.workspaceMaterialIds, pageId],
+      };
       onUpdate(updatedCategories);
     }
   };
@@ -128,12 +128,14 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
    * @param pageId - Page id
    */
   const removePageFromCategory = (categoryIndex: number, pageId: number) => {
+    const category = categories[categoryIndex];
     const updatedCategories = [...categories];
-    const category = updatedCategories[categoryIndex];
-
-    category.workspaceMaterialIds = category.workspaceMaterialIds.filter(
-      (id) => id !== pageId
-    );
+    updatedCategories[categoryIndex] = {
+      ...category,
+      workspaceMaterialIds: category.workspaceMaterialIds.filter(
+        (id) => id !== pageId
+      ),
+    };
     onUpdate(updatedCategories);
   };
 

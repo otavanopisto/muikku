@@ -17,14 +17,9 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
   private static final long serialVersionUID = 8315904028267869957L;
   
   public ExamAttendance create(Long workspaceFolderId, Long userEntityId) {
-    return create(workspaceFolderId, userEntityId, null);
-  }
-  
-  public ExamAttendance create(Long workspaceFolderId, Long userEntityId, String workspaceMaterialIds) {
     ExamAttendance attendance = new ExamAttendance();
     attendance.setWorkspaceFolderId(workspaceFolderId);
     attendance.setUserEntityId(userEntityId);
-    attendance.setWorkspaceMaterialIds(workspaceMaterialIds);
     return persist(attendance);
   }
   

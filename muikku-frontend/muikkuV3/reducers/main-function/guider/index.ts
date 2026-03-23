@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { LoadingState, StudentActivityByStatus } from "~/@types/shared";
+import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
   ContactLog,
@@ -18,11 +18,11 @@ import {
   HopsUppersecondary,
   ActivityLogEntry,
   Note,
-  StudentCourseChoice,
-  OptionalCourseSuggestion,
   UserContact,
+  CourseMatrix,
+  StudyActivity,
 } from "~/generated/client";
-import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * GuiderFiltersType
@@ -85,12 +85,15 @@ export interface PedagogyFormAvailability {
 }
 
 /**
- * GuiderStudentStudyProgress
+ * GuiderStudentStudyData
  */
-export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
-  studentChoices: StudentCourseChoice[];
-  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
-  options: string[];
+export interface GuiderStudentStudyData {
+  studyActivity: StudyActivity | null;
+  studyActivityStatus: LoadingState;
+  courseMatrix: CourseMatrix | null;
+  courseMatrixStatus: LoadingState;
+  curriculumConfig: CurriculumConfig | null;
+  curriculumConfigStatus: LoadingState;
 }
 
 /**
@@ -114,18 +117,14 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceDataType[];
-  pastStudies: RecordWorkspaceActivitiesWithLineCategory[];
   pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
-  courseCredits: {
-    completedCourseCredits: number;
-    mandatoryCourseCredits: number;
-    showCredits: boolean;
-  };
   hopsPhase?: string;
   pedagogyFormAvailable: PedagogyFormAccess;
-  studyProgress: GuiderStudentStudyProgress;
+  studyDataByEducationTypeCode: Record<string, GuiderStudentStudyData>;
+  educationTypes: string[] | null;
+  selectedEducationTypeCode: string | null;
 }
 
 /**
@@ -248,7 +247,6 @@ const initialGuiderState: GuiderState = {
     notifications: null,
     contactLogs: null,
     currentWorkspaces: [],
-    pastStudies: [],
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],
@@ -258,24 +256,9 @@ const initialGuiderState: GuiderState = {
       specEdTeacher: false,
       guidanceCounselor: false,
     },
-    courseCredits: {
-      completedCourseCredits: 0,
-      mandatoryCourseCredits: 0,
-      showCredits: false,
-    },
-    studyProgress: {
-      onGoingList: [],
-      transferedList: [],
-      gradedList: [],
-      suggestedNextList: [],
-      skillsAndArt: {},
-      otherLanguageSubjects: {},
-      otherSubjects: {},
-      supervisorOptionalSuggestions: [],
-      studentChoices: [],
-      options: [],
-      needSupplementationList: [],
-    },
+    studyDataByEducationTypeCode: {},
+    educationTypes: null,
+    selectedEducationTypeCode: null,
   },
 };
 

@@ -125,6 +125,14 @@ public class MatriculationExamEnrollment {
     this.contactInfoChange = contactInfoChange;
   }
 
+  public String getOpintopolkuUrl() {
+    return opintopolkuUrl;
+  }
+
+  public void setOpintopolkuUrl(String opintopolkuUrl) {
+    this.opintopolkuUrl = opintopolkuUrl;
+  }
+
   private Long id;
   private Long examId;
   private String enrollAs;
@@ -140,4 +148,5 @@ public class MatriculationExamEnrollment {
   private List<MatriculationExamAttendance> attendances;
   private String degreeStructure;
   private OffsetDateTime enrollmentDate;
+  private String opintopolkuUrl;
 }

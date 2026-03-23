@@ -1,7 +1,5 @@
 import * as React from "react";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
-import { StateType } from "~/reducers";
-import { useSelector } from "react-redux";
 import {
   PlannerCardContent,
   PlannerCardHeader,
@@ -10,6 +8,7 @@ import {
 
 import { PlannerCard } from "../planner-card";
 import { localize } from "~/locales/i18n";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * PlannerPeriodCourseCardPreviewProps
@@ -27,9 +26,7 @@ const PlannerPeriodCourseCardPreview: React.FC<
 > = (props) => {
   const { course } = props;
 
-  const curriculumConfig = useSelector(
-    (state: StateType) => state.hopsNew.hopsCurriculumConfig
-  );
+  const { curriculumConfig } = useHopsBasicInfo();
 
   const startDate = new Date(course.startDate);
 
@@ -46,25 +43,25 @@ const PlannerPeriodCourseCardPreview: React.FC<
 
   return (
     <PlannerCard
-      modifiers={["planned-course-card", "preview"]}
+      modifiers={["preview"]}
       innerContainerModifiers={innerContainerModifiers}
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
-        <span className="study-planner__course-name">
+      <PlannerCardHeader>
+        <span className="study-planner__card-title">
           <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
-          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <div className="study-planner__course-labels">
+      <PlannerCardContent>
+        <div className="study-planner__card-labels">
           <PlannerCardLabel
             modifiers={[course.mandatory ? "mandatory" : "optional"]}
           >
             {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
         </div>
-        <div className="study-planner__course-dates">
+        <div className="study-planner__card-dates">
           {calculatedEndDate ? (
             <>
               {localize.date(startDate)} - {localize.date(calculatedEndDate)}

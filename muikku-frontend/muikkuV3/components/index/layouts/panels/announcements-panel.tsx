@@ -10,6 +10,8 @@ import { Panel } from "~/components/general/panel";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import AnnouncementOptions from "~/components/announcements/general/announcement-options";
+import { colorIntToHex } from "~/util/modifiers";
 
 /**
  * AnnouncementsPanelProps
@@ -32,6 +34,7 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
     announcements: state.announcements.announcements,
     unreadCount: state.announcements.unreadCount,
   }));
+
   const pageCount = Math.ceil(announcements.length / itemsPerPage);
 
   /**
@@ -64,7 +67,7 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
   const renderAnnouncements = paginatedAnnouncements.map(
     (announcement: Announcement) => {
       const extraWorkspaces =
-        announcement.workspaces && announcement.workspaces.length
+        announcement.workspaces && announcement.workspaces.length > 1
           ? announcement.workspaces.length - 1
           : 0;
       return (
@@ -79,31 +82,64 @@ const AnnouncementsPanel: React.FC<AnnouncementsPanelProps> = (props) => {
           to={`/announcements#${announcement.id}`}
         >
           <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
+
           <span className="item-list__text-body item-list__text-body--multiline">
-            <span className="item-list__announcement-caption">
-              {announcement.caption}
+            <span>
+              {announcement.pinnedToSelf && (
+                <span
+                  title={t("labels.pinnedToSelf", { ns: "messaging" })}
+                  className="icon announcement__icon--pinned-to-self icon-pin"
+                ></span>
+              )}
+              {announcement.pinned ? (
+                <span
+                  title={t("labels.pinned", { ns: "messaging" })}
+                  className="icon icon-pin"
+                ></span>
+              ) : null}
+              <span className="item-list__announcement-caption">
+                {announcement.caption}
+              </span>
             </span>
             <span className="item-list__announcement-date">
               {localize.date(announcement.startDate)}
             </span>
-            {announcement.workspaces && announcement.workspaces.length ? (
-              <div className="labels item-list__announcement-workspaces">
-                <span className="label">
-                  <span className="label__icon label__icon--workspace icon-books"></span>
-                  <span className="label__text label__text--workspace">
-                    {announcement.workspaces[0].name}{" "}
-                    {announcement.workspaces[0].nameExtension
-                      ? "(" + announcement.workspaces[0].nameExtension + ")"
-                      : null}
+            <div className="labels ">
+              {announcement.categories.length !== 0 &&
+                announcement.categories.map((category) => (
+                  <span className="label" key={category.id}>
+                    <span
+                      style={{ color: colorIntToHex(category.color) }}
+                      className="label__icon label__icon--announcement-usergroup icon-tag"
+                    ></span>
+                    <span className="label__text label__text--announcement-usergroup">
+                      {category.category}
+                    </span>
                   </span>
-                </span>
-                {extraWorkspaces ? (
-                  <span className="label">{"(+" + extraWorkspaces + ")"}</span>
-                ) : null}
-              </div>
-            ) : null}
+                ))}
+              {announcement.workspaces &&
+                announcement.workspaces.length !== 0 && (
+                  <>
+                    <span className="label">
+                      <span className="label__icon label__icon--workspace icon-books"></span>
+                      <span className="label__text label__text--workspace">
+                        {announcement.workspaces[0].name}{" "}
+                        {announcement.workspaces[0].nameExtension
+                          ? "(" + announcement.workspaces[0].nameExtension + ")"
+                          : null}
+                      </span>
+                    </span>
+                    {extraWorkspaces > 0 && (
+                      <span className="label">
+                        {"(+" + extraWorkspaces + ")"}
+                      </span>
+                    )}
+                  </>
+                )}
+            </div>
           </span>
-          {announcement.pinned ? <span className="icon icon-pin"></span> : null}
+
+          <AnnouncementOptions announcement={announcement} />
         </Link>
       );
     }

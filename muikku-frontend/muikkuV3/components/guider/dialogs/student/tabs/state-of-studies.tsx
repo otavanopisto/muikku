@@ -70,6 +70,63 @@ class StateOfStudies extends React.Component<
     super(props);
   }
 
+  /**
+   * Render statistics
+   */
+  renderStatistics = () => {
+    const { studyDataByEducationTypeCode, selectedEducationTypeCode } =
+      this.props.guider.currentStudent;
+
+    if (!studyDataByEducationTypeCode || !selectedEducationTypeCode) {
+      return null;
+    }
+
+    const studyActivity =
+      studyDataByEducationTypeCode[selectedEducationTypeCode]?.studyActivity;
+    const curriculumConfig =
+      studyDataByEducationTypeCode[selectedEducationTypeCode]?.curriculumConfig;
+
+    if (!studyActivity || !curriculumConfig) {
+      return null;
+    }
+
+    const statistics =
+      curriculumConfig.strategy.calculateStatistics(studyActivity);
+
+    let title = this.props.i18n.t("labels.courseCredits");
+    let mandatoryLabel = this.props.t("labels.courseCreditsMandatory");
+    let optionalLabel = this.props.t("labels.courseCreditsOptional");
+    let totalLabel = this.props.t("labels.courseCreditsTotal");
+
+    if (
+      curriculumConfig.type === "compulsory" ||
+      curriculumConfig.type === "unknown"
+    ) {
+      title = this.props.i18n.t("labels.courses");
+      mandatoryLabel = this.props.t("labels.courseCreditsMandatory");
+      optionalLabel = this.props.t("labels.courseCreditsOptional");
+      totalLabel = this.props.t("labels.courseCreditsTotal");
+    }
+
+    return (
+      <ApplicationSubPanelItem title={title} modifier="guider-course-credits">
+        {curriculumConfig.type !== "unknown" && (
+          <ApplicationSubPanelItem.Content>
+            {`${mandatoryLabel} ${statistics.mandatoryStudies}`}
+          </ApplicationSubPanelItem.Content>
+        )}
+        {curriculumConfig.type !== "unknown" && (
+          <ApplicationSubPanelItem.Content>
+            {`${optionalLabel} ${statistics.optionalStudies}`}
+          </ApplicationSubPanelItem.Content>
+        )}
+        <ApplicationSubPanelItem.Content>
+          {`${totalLabel} ${statistics.totalStudies}`}
+        </ApplicationSubPanelItem.Content>
+      </ApplicationSubPanelItem>
+    );
+  };
+
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
    * render
@@ -255,32 +312,7 @@ class StateOfStudies extends React.Component<
             }
           )}
 
-        {this.props.guider.currentStudent.courseCredits &&
-          this.props.guider.currentStudent.courseCredits.showCredits && (
-            <ApplicationSubPanelItem
-              title={this.props.i18n.t("labels.courseCredits", {
-                ns: "guider",
-              })}
-              modifier="guider-course-credits"
-            >
-              <ApplicationSubPanelItem.Content>
-                {this.props.t("labels.courseCreditsMandatory", {
-                  ns: "guider",
-                  mandatoryCredits:
-                    this.props.guider.currentStudent.courseCredits
-                      .mandatoryCourseCredits,
-                })}
-              </ApplicationSubPanelItem.Content>
-              <ApplicationSubPanelItem.Content>
-                {this.props.t("labels.courseCreditsTotal", {
-                  ns: "guider",
-                  totalCredits:
-                    this.props.guider.currentStudent.courseCredits
-                      .completedCourseCredits,
-                })}
-              </ApplicationSubPanelItem.Content>
-            </ApplicationSubPanelItem>
-          )}
+        {this.renderStatistics()}
       </ApplicationSubPanel.Body>
     );
 
@@ -420,6 +452,13 @@ class StateOfStudies extends React.Component<
                           className="item-list__item item-list__item--student-contact-info"
                           key={contactInfo.id}
                         >
+                          {contactInfo.contactType && (
+                            <div className="label label--guider-contact-type">
+                              <span className="label__text">
+                                {contactInfo.contactType}
+                              </span>
+                            </div>
+                          )}
                           <div className="item-list__text-body item-list__text-body--multiline">
                             {contactInfo.name && (
                               <div className="item-list__user-name">
@@ -452,6 +491,21 @@ class StateOfStudies extends React.Component<
                             {contactInfo.country && (
                               <div className="item-list__user-country">
                                 {contactInfo.country}
+                              </div>
+                            )}
+
+                            {contactInfo.allowStudyDiscussions && (
+                              <div className="item-list__user-consent-study-discussions">
+                                <div className="label label--guider-concent">
+                                  <span className="label__text">
+                                    {this.props.i18n.t(
+                                      "labels.concentToDiscussStudies",
+                                      {
+                                        ns: "users",
+                                      }
+                                    )}
+                                  </span>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -682,9 +736,6 @@ class StateOfStudies extends React.Component<
                     }
                     studyProgrammeName={
                       this.props.guider.currentStudent.basic.studyProgrammeName
-                    }
-                    studyProgress={
-                      this.props.guider.currentStudent.studyProgress
                     }
                   />
                 </ApplicationSubPanel.Body>

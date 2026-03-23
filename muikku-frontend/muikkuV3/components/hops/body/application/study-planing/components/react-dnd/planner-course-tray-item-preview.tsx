@@ -1,19 +1,19 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { Course } from "~/@types/shared";
-import { StateType } from "~/reducers";
 import {
   PlannerCard,
   PlannerCardContent,
   PlannerCardHeader,
   PlannerCardLabel,
 } from "../planner-card";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * PlannerCourseTrayItemPreview props
  */
 interface PlannerCourseTrayItemPreviewProps {
-  course: Course;
+  course: CourseMatrixModuleEnriched;
   subjectCode: string;
 }
 
@@ -26,11 +26,11 @@ const PlannerCourseTrayItemPreview: React.FC<
 > = (props) => {
   const { course, subjectCode } = props;
 
-  const curriculumConfig = useSelector(
-    (state: StateType) => state.hopsNew.hopsCurriculumConfig
-  );
+  const { curriculumConfig } = useHopsBasicInfo();
 
-  const typeModifiers = course.mandatory ? ["mandatory"] : ["optional"];
+  const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(course.mandatority);
+
+  const typeModifiers = isMandatory ? ["mandatory"] : ["optional"];
 
   return (
     <div className="study-planner__course-tray-item">
@@ -41,14 +41,14 @@ const PlannerCourseTrayItemPreview: React.FC<
         <PlannerCardHeader modifiers={["course-tray-item"]}>
           <span className="planner-course-tray-item__name">
             <b>{`${subjectCode} ${course.courseNumber}. `}</b>
-            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
           </span>
         </PlannerCardHeader>
 
-        <PlannerCardContent modifiers={["planned-course-card"]}>
-          <div className="study-planner__course-labels">
+        <PlannerCardContent>
+          <div className="study-planner__card-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
-              {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
+              {isMandatory ? "PAKOLLINEN" : "VALINNAINEN"}
             </PlannerCardLabel>
           </div>
         </PlannerCardContent>

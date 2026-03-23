@@ -119,6 +119,23 @@ public class UserController {
     return userSchoolDataController.listUserContacts(userIdentifier);
   }
   
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.listStudentEducationTypes(studentIdentifier);
+  }
+
+  /**
+   * Sets allowStudyDiscussions on a given Contact Info
+   * 
+   * @param studentIdentifier
+   * @param contactInfoId
+   * @param allowStudyDiscussions
+   * @return 
+   */
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,
+      boolean allowStudyDiscussions) {
+    return userSchoolDataController.updateContactInfoAllowStudyDiscussions(studentIdentifier, contactInfoId, allowStudyDiscussions);
+  }
+
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listStudentStudyPeriods(userIdentifier);
   }

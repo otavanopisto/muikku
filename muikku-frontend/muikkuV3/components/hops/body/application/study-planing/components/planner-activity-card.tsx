@@ -10,6 +10,7 @@ import {
 } from "./planner-card";
 import { useTranslation } from "react-i18next";
 import { CurriculumConfig } from "~/util/curriculum-config";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * Base planner period course props
@@ -37,7 +38,7 @@ const PlannerActivityCard = React.forwardRef<
    */
   const getCourseState = () => {
     if (item.studyActivity) {
-      switch (item.studyActivity.status) {
+      switch (item.studyActivity.state) {
         case "GRADED":
           return item.studyActivity.passing
             ? {
@@ -96,7 +97,7 @@ const PlannerActivityCard = React.forwardRef<
     const date = localize.date(new Date(item.studyActivity.date));
     let dateString: string | null = null;
 
-    switch (item.studyActivity.status) {
+    switch (item.studyActivity.state) {
       case "GRADED":
         dateString = t("studyPlanCardActivity.graded", {
           ns: "hops_new",
@@ -126,37 +127,39 @@ const PlannerActivityCard = React.forwardRef<
       return null;
     }
 
-    return <div className="study-planner__course-dates-item">{dateString}</div>;
+    return <div className="study-planner__card-dates-item">{dateString}</div>;
   };
 
   const cardModifiers = [];
   courseState.state && cardModifiers.push(courseState.state);
 
-  const innerContainerModifiers = item.course.mandatory
-    ? ["mandatory"]
-    : ["optional"];
+  const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
+    item.course.mandatority
+  );
+
+  const innerContainerModifiers = isMandatory ? ["mandatory"] : ["optional"];
 
   const activityDate = renderStudyActivityDate();
 
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned", ...cardModifiers]}
+      modifiers={[...cardModifiers]}
       innerContainerModifiers={innerContainerModifiers}
     >
-      <PlannerCardHeader modifiers={["planned-course-card"]}>
-        <span className="study-planner__course-name">
+      <PlannerCardHeader>
+        <span className="study-planner__card-title">
           <b>{`${item.course.subjectCode}${item.course.courseNumber}`}</b>{" "}
-          {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course)}`}
+          {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course.length)}`}
         </span>
       </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <div className="study-planner__course-labels">
+      <PlannerCardContent>
+        <div className="study-planner__card-labels">
           <PlannerCardLabel
-            modifiers={[item.course.mandatory ? "mandatory" : "optional"]}
+            modifiers={[isMandatory ? "mandatory" : "optional"]}
           >
-            {item.course.mandatory
+            {isMandatory
               ? t("labels.mandatory", {
                   ns: "common",
                 })
@@ -166,14 +169,14 @@ const PlannerActivityCard = React.forwardRef<
           </PlannerCardLabel>
 
           {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+            <PlannerCardLabel modifiers={[courseState.state]}>
               {courseState.label}
             </PlannerCardLabel>
           )}
         </div>
 
         {activityDate && (
-          <div className="study-planner__course-dates">{activityDate}</div>
+          <div className="study-planner__card-dates">{activityDate}</div>
         )}
       </PlannerCardContent>
     </PlannerCard>

@@ -110,7 +110,6 @@ export default class c extends React.Component<
       selectedItems: props.selectedItems || [],
       textInput: "",
       autocompleteOpened: false,
-
       isFocused: this.props.autofocus === true,
     };
 

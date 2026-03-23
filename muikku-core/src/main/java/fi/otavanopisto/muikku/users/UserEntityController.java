@@ -387,6 +387,11 @@ public class UserEntityController implements Serializable {
     return null;
   }
 
+  public boolean isStaffMember(UserEntity userEntity) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+    return userSchoolDataIdentifier != null && userSchoolDataIdentifier.isStaff();
+  }
+  
   public boolean isStudent(UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
     return userSchoolDataIdentifier == null || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT);
@@ -449,6 +454,14 @@ public class UserEntityController implements Serializable {
 
   public UserEntity updateLocale(UserEntity userEntity, Locale locale) {
     return userEntityDAO.updateLocale(userEntity, locale != null ? locale.toString() : null);
+  }
+  
+  public boolean isThisMe(SchoolDataIdentifier identifier) {
+    if (sessionController.isLoggedIn()) {
+      UserSchoolDataIdentifier usdi = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(identifier);
+      return usdi != null && usdi.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId());
+    }
+    return false;
   }
 
   public UserEntity archiveUserEntity(UserEntity userEntity) {

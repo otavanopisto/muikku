@@ -1,14 +1,17 @@
+import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
-  Course,
-  SchoolCurriculumMatrix,
-  SchoolSubject,
-  StudentActivityByStatus,
-} from "~/@types/shared";
-import { StudentStudyActivity } from "~/generated/client";
-import {
-  schoolCourseTableUppersecondary2021,
-  schoolCourseTableCompulsory2018,
-} from "~/mock/mock-data";
+  CourseMatrix,
+  CourseMatrixModule,
+  CourseMatrixModuleMandatorityEnum,
+  CourseMatrixSubject,
+  StudyActivity,
+  StudyActivityItem,
+} from "~/generated/client";
+
+export const MANDATORITY_MANDATORY_VALUES: CourseMatrixModuleMandatorityEnum[] =
+  ["MANDATORY"];
+export const MANDATORITY_OPTIONAL_VALUES: CourseMatrixModuleMandatorityEnum[] =
+  ["SCHOOL_LEVEL_OPTIONAL", "NATIONAL_LEVEL_OPTIONAL", "UNSPECIFIED_OPTIONAL"];
 
 export const SKILL_AND_ART_SUBJECTS_CS: string[] = [
   "mu",
@@ -49,42 +52,6 @@ const LANGUAGE_SUBJECTS_B3_US = [
   "ENB3",
   "KIB3",
   "POB3",
-];
-
-const SUBJECTS_NOT_INCLUDED = [
-  "ÄIM",
-  "EAA",
-  "RAA",
-  "RUA",
-  "SAA",
-  "VEA",
-  "RAB2",
-  "SAB2",
-  "ARB3",
-  "ENB3",
-  "IAB3",
-  "KIB3",
-  "KXB3",
-  "KOB3",
-  "LAB3",
-  "POB3",
-  "RAB3",
-  "RUB3",
-  "SMB3",
-  "UK",
-  "UI",
-  "UJ",
-  "UX",
-  "MU",
-  "KT",
-];
-
-export const ALL_LANGUAGE_SUBJECTS = [
-  ...NATIVE_LANGUAGE_SUBJECTS_CS,
-  ...LANGUAGE_SUBJECTS_A1_US,
-  ...LANGUAGE_SUBJECTS_B1_US,
-  ...LANGUAGE_SUBJECTS_B2_US,
-  ...LANGUAGE_SUBJECTS_B3_US,
 ];
 
 /**
@@ -153,55 +120,21 @@ export const filterUpperSecondarySubjects = (
 };
 
 /**
- * Simple method to check if the subject should be shown by default.
- *
- * @param studyProgrammeName studyProgrammeName
- * @param subject subject
- * @returns boolean
- */
-export const showSubject = (
-  studyProgrammeName: string,
-  subject: SchoolSubject
-) => {
-  switch (studyProgrammeName) {
-    // Nettiperuskoulu shows all subjects without exceptions
-    case "Nettiperuskoulu":
-      return true;
-
-    // Nettiperuskoulu shows all subjects that are not in the list (Not teaching in Otavia)
-    case "Nettilukio":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return !SUBJECTS_NOT_INCLUDED.includes(subject.subjectCode);
-
-    // Same as above but also removes OP (Opinto-ohjaus)
-    case "Aineopiskelu/lukio":
-    case "Aineopiskelu/lukio (oppivelvolliset)":
-    case "Kahden tutkinnon opinnot":
-      return ![...SUBJECTS_NOT_INCLUDED, "OP"].includes(subject.subjectCode);
-
-    default:
-      return true;
-  }
-};
-
-/**
  * Gets the course dropdown name
  * @param subject subject
  * @param course course
  * @param showCredits boolean
  */
 export const getCourseDropdownName = (
-  subject: SchoolSubject,
-  course: Course,
+  subject: CourseMatrixSubject,
+  course: CourseMatrixModule,
   showCredits: boolean
 ) => {
   let courseDropdownName =
-    subject.subjectCode + course.courseNumber + " - " + course.name;
+    subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
-  if (!course.mandatory) {
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
     courseDropdownName += "*";
   }
 
@@ -214,96 +147,12 @@ export const getCourseDropdownName = (
 };
 
 /**
- * Selects the correct school course table based on the study programme name
- *
- * @param studyProgrammeName studyProgrammeName
- * @param curriculumName curriculumName
- */
-export const compulsoryOrUpperSecondary = (
-  studyProgrammeName: string,
-  curriculumName: string
-) => {
-  if (!studyProgrammeName || !curriculumName) {
-    return null;
-  }
-
-  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
-  const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
-
-  /**
-   * Finds and returns OPS based matrix
-   *
-   * @param matrices list of matrices
-   * @returns OPS based matrix or null if OPS based matrix is not found
-   */
-  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
-    const matrix = matrices.find(
-      (matrix) => matrix.curriculumName === curriculumName
-    );
-
-    if (matrix) {
-      return matrix;
-    }
-    return null;
-  };
-
-  switch (studyProgrammeName) {
-    case "Nettiperuskoulu":
-    case "Nettiperuskoulu/yksityisopiskelu":
-    case "Aineopiskelu/perusopetus":
-    case "Aineopiskelu/perusopetus (oppilaitos ilmoittaa)":
-    case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
-      return matrixTableBasedOnOPS(compulsoryMatrices);
-
-    case "Nettilukio":
-    case "Aineopiskelu/lukio":
-    case "Aineopiskelu/lukio (oppivelvolliset)":
-    case "Kahden tutkinnon opinnot":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return matrixTableBasedOnOPS(uppersecondaryMatrices);
-
-    default:
-      return null;
-  }
-};
-
-/**
- * Filter matrix based on study programme name and selected course options
- *
- * @param studyProgrammeName studyProgrammeName of the student
- * @param matrix matrix to be filtered
- * @param options options selected by student
- * @returns filtered matrix
- */
-export const filterMatrix = (
-  studyProgrammeName: string,
-  matrix: SchoolSubject[],
-  options: string[]
-) => {
-  switch (studyProgrammeName) {
-    case "Nettiperuskoulu":
-      return filterCompulsorySubjects(matrix, options);
-
-    case "Nettilukio":
-    case "Aikuislukio":
-    case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu/yo-tutkinto":
-      return filterUpperSecondarySubjects(matrix, options);
-
-    default:
-      return matrix;
-  }
-};
-
-/**
  * gets highest of course number available or if under 9, then default 9
  * @param matrix list of school sucjests
  * @returns number of highest course or default 9
  */
 export const getHighestCourseNumber = (
-  matrix: SchoolCurriculumMatrix | null
+  matrix: CourseMatrix | null
 ): number | null => {
   if (matrix === null) {
     return null;
@@ -311,8 +160,8 @@ export const getHighestCourseNumber = (
 
   let highestCourseNumber = 1;
 
-  for (const sSubject of matrix.subjectsTable) {
-    for (const aCourse of sSubject.availableCourses) {
+  for (const sSubject of matrix.subjects) {
+    for (const aCourse of sSubject.modules) {
       if (aCourse.courseNumber <= highestCourseNumber) {
         continue;
       } else {
@@ -336,20 +185,26 @@ export const getHighestCourseNumber = (
  * Lists are Ongoing, Suggested next, Suggested optional, Transfered and graded
  */
 export const filterActivity = (
-  list: StudentStudyActivity[]
+  list: StudyActivityItem[]
 ): Omit<
   StudentActivityByStatus,
   "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
 > => {
-  const onGoingList = list.filter((item) => item.status === "ONGOING");
+  const onGoingList = list.filter(
+    (item) =>
+      item.state === "ONGOING" ||
+      item.state === "PENDING" ||
+      item.state === "INTERIM_EVALUATION" ||
+      item.state === "INTERIM_EVALUATION_REQUEST"
+  );
   const suggestedNextList = list.filter(
-    (item) => item.status === "SUGGESTED_NEXT"
+    (item) => item.state === "SUGGESTED_NEXT"
   );
 
-  const transferedList = list.filter((item) => item.status === "TRANSFERRED");
-  const gradedList = list.filter((item) => item.status === "GRADED");
+  const transferedList = list.filter((item) => item.state === "TRANSFERRED");
+  const gradedList = list.filter((item) => item.state === "GRADED");
   const needSupplementationList = list.filter(
-    (item) => item.status === "SUPPLEMENTATIONREQUEST"
+    (item) => item.state === "SUPPLEMENTATIONREQUEST"
   );
 
   return {
@@ -368,7 +223,7 @@ export const filterActivity = (
  */
 export const filterActivityBySubjects = (
   subjectsList: string[],
-  list: StudentStudyActivity[]
+  list: StudyActivityItem[]
 ) =>
   subjectsList.reduce(
     (a, v) => ({
@@ -394,17 +249,17 @@ export const filterActivityBySubjects = (
  */
 export const getCourseInfo = (
   modifiers: string[],
-  subject: SchoolSubject,
-  course: Course,
-  suggestedNextList: StudentStudyActivity[],
-  transferedList: StudentStudyActivity[],
-  gradedList: StudentStudyActivity[],
-  onGoingList: StudentStudyActivity[],
-  needSupplementationList: StudentStudyActivity[]
+  subject: CourseMatrixSubject,
+  course: CourseMatrixModule,
+  suggestedNextList: StudyActivityItem[],
+  transferedList: StudyActivityItem[],
+  gradedList: StudyActivityItem[],
+  onGoingList: StudyActivityItem[],
+  needSupplementationList: StudyActivityItem[]
 ) => {
   const updatedModifiers = [...modifiers];
 
-  let courseSuggestions: StudentStudyActivity[] = [];
+  let courseSuggestions: StudyActivityItem[] = [];
   let canBeSelected = true;
   let needsSupplementation = false;
   let grade: string | undefined = undefined;
@@ -412,12 +267,12 @@ export const getCourseInfo = (
   if (
     suggestedNextList.find(
       (sCourse) =>
-        sCourse.subject === subject.subjectCode &&
+        sCourse.subject === subject.code &&
         sCourse.courseNumber === course.courseNumber
     )
   ) {
     const suggestedCourseDataNext = suggestedNextList.filter(
-      (sCourse) => sCourse.subject === subject.subjectCode
+      (sCourse) => sCourse.subject === subject.code
     );
 
     courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
@@ -426,7 +281,7 @@ export const getCourseInfo = (
   } else if (
     transferedList.find(
       (tCourse) =>
-        tCourse.subject === subject.subjectCode &&
+        tCourse.subject === subject.code &&
         tCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -435,7 +290,7 @@ export const getCourseInfo = (
   } else if (
     gradedList.find(
       (gCourse) =>
-        gCourse.subject === subject.subjectCode &&
+        gCourse.subject === subject.code &&
         gCourse.courseNumber === course.courseNumber &&
         gCourse.grade !== "K"
     )
@@ -445,7 +300,7 @@ export const getCourseInfo = (
   } else if (
     needSupplementationList.find(
       (nCourse) =>
-        nCourse.subject === subject.subjectCode &&
+        nCourse.subject === subject.code &&
         nCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -455,7 +310,7 @@ export const getCourseInfo = (
   } else if (
     onGoingList.find(
       (oCourse) =>
-        oCourse.subject === subject.subjectCode &&
+        oCourse.subject === subject.code &&
         oCourse.courseNumber === course.courseNumber
     )
   ) {
@@ -467,7 +322,7 @@ export const getCourseInfo = (
   // and holds grade value
   const evaluatedCourse = [...gradedList, ...transferedList].find(
     (gCourse) =>
-      gCourse.subject === subject.subjectCode &&
+      gCourse.subject === subject.code &&
       gCourse.courseNumber === course.courseNumber
   );
 
@@ -494,4 +349,189 @@ export const getCourseInfo = (
     grade,
     needsSupplementation,
   };
+};
+
+/**
+ * getNonOPSTransferedActivities
+ * @param matrix matrix
+ * @param transferedList transfered list
+ * @returns non OPS transfered activities
+ */
+export const getNonOPSTransferedActivities = (
+  matrix: CourseMatrix,
+  transferedList: StudyActivityItem[]
+) => {
+  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
+
+  const allTransferedSubjects = transferedList.map((item) => item.subject);
+
+  // Joined list of non OPS transfered subjects
+  const allNonOPSTransferedSubjects = allTransferedSubjects
+    .filter((subject) => !allOPSSubjects.includes(subject))
+    .join(",");
+
+  // List of non OPS transfered subjects without duplicates
+  const listOfallNonOPSTransferedSubjects = Array.from(
+    new Set(allNonOPSTransferedSubjects.split(","))
+  );
+
+  return transferedList.filter((tStudies) =>
+    listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
+  );
+};
+
+/**
+ * getNonOPSActivities
+ * @param matrix matrix
+ * @param items items
+ * @returns non OPS activities
+ */
+export const getNonOPSActivities = (
+  matrix: CourseMatrix,
+  items: StudyActivityItem[]
+) => {
+  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
+  const allSubjectsFromItems = items.map((item) => item.subject);
+
+  // Joined list of non OPS transfered subjects
+  const allNonOPSSubjects = allSubjectsFromItems
+    .filter((subject) => !allOPSSubjects.includes(subject))
+    .join(",");
+
+  // List of non OPS subjects without duplicates
+  const listOfallNonOPSSubjects = Array.from(
+    new Set(allNonOPSSubjects.split(","))
+  );
+
+  // Filter out non OPS subjects that have courseId (course instance exists)
+  return items.filter(
+    (item) =>
+      listOfallNonOPSSubjects.includes(item.subject) && item.courseId !== null
+  );
+};
+
+/**
+ * Row descriptor for the matrix-based records list.
+ * CourseMatrix provides the structure; StudyActivity is mapped onto each row.
+ */
+export interface RecordsMatrixRow {
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
+  studyActivityItems: StudyActivityItem[];
+  isCombinationWorkspace: boolean;
+}
+
+/**
+ * Builds the list of rows for the matrix-based records view.
+ * Structure comes from CourseMatrix; StudyActivity items are matched by subject code + course number.
+ * Transferred items that are not part of the matrix (e.g. Hyväksiluvut) are returned separately.
+ *
+ * @param matrix CourseMatrix (structure)
+ * @param studyActivity StudyActivity or null (student data; when null, rows have empty studyActivityItems)
+ * @returns rows and transferredItems for the list and Hyväksiluvut section
+ */
+export const buildRecordsRowsFromMatrix = (
+  matrix: CourseMatrix,
+  studyActivity: StudyActivity | null
+): {
+  rows: RecordsMatrixRow[];
+  transferedActivities: StudyActivityItem[];
+  nonOPSActivities: StudyActivityItem[];
+} => {
+  const items = (studyActivity?.items ?? []).filter(
+    (item) => item.state !== "SUGGESTED_NEXT"
+  );
+  const transferedList = items.filter((item) => item.state === "TRANSFERRED");
+  const transferedActivities = getNonOPSTransferedActivities(
+    matrix,
+    transferedList
+  );
+
+  const nonOPSActivities = getNonOPSActivities(matrix, items);
+
+  const rows: RecordsMatrixRow[] = [];
+
+  for (const subject of matrix.subjects) {
+    for (const course of subject.modules) {
+      const studyActivityItems = items.filter(
+        (item) =>
+          item.subject === subject.code &&
+          item.courseNumber === course.courseNumber
+      );
+      rows.push({
+        subject,
+        course,
+        studyActivityItems,
+        isCombinationWorkspace: false,
+      });
+    }
+  }
+
+  return { rows, transferedActivities, nonOPSActivities };
+};
+
+/**
+ * StudyActivityItem with CourseMatrixModule
+ */
+export interface StudyActivityItemWithCourseModule extends StudyActivityItem {
+  courseModule?: CourseMatrixModule;
+}
+
+/**
+ * Groups StudyActivityItems by courseId. Returns only groups that have 2+ items
+ * (combination workspaces).
+ * @param items items
+ * @param courseMatrixModulesBySubjectCode courseMatrixModulesBySubjectCode
+ * @returns combination workspaces
+ */
+export const getCombinationWorkspaces = (
+  items: StudyActivityItem[],
+  courseMatrixModulesBySubjectCode?: Record<string, CourseMatrixModule>
+): StudyActivityItemWithCourseModule[][] => {
+  const byCourseId = new Map<number, StudyActivityItemWithCourseModule[]>();
+  for (const item of items) {
+    if (item.courseId == null) continue;
+    const list = byCourseId.get(item.courseId) ?? [];
+    list.push({
+      ...item,
+      courseModule:
+        courseMatrixModulesBySubjectCode?.[item.subject + item.courseNumber],
+    });
+    byCourseId.set(item.courseId, list);
+  }
+  return Array.from(byCourseId.values()).filter((list) => list.length >= 2);
+};
+
+/**
+ * Enriches matrix rows so that any row whose matched items belong to a combination
+ * workspace (same courseId shared by 2+ items) gets the full set of studyActivityItems
+ * for that workspace. Call after buildRecordsRowsFromMatrix when you have all items.
+ * @param rows rows
+ * @param allItems all items
+ * @returns rows with combination workspace
+ */
+export const enrichMatrixRowsWithCombinationWorkspace = (
+  rows: RecordsMatrixRow[],
+  allItems: StudyActivityItem[]
+): RecordsMatrixRow[] => {
+  const byCourseId = new Map<number, StudyActivityItem[]>();
+  for (const item of allItems) {
+    if (item.courseId == null) continue;
+    const list = byCourseId.get(item.courseId) ?? [];
+    list.push(item);
+    byCourseId.set(item.courseId, list);
+  }
+
+  return rows.map((row) => {
+    if (row.studyActivityItems.length === 0) return row;
+    const courseId = row.studyActivityItems[0].courseId;
+    if (courseId == null) return row;
+    const fullList = byCourseId.get(courseId);
+    if (!fullList || fullList.length < 2) return row;
+    return {
+      ...row,
+      studyActivityItems: fullList,
+      isCombinationWorkspace: true,
+    };
+  });
 };

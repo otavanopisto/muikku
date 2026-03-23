@@ -71,6 +71,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
@@ -78,6 +79,7 @@ import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -88,7 +90,6 @@ import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.pyramus.rest.model.Address;
-import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Language;
 import fi.otavanopisto.pyramus.rest.model.Municipality;
@@ -147,13 +148,14 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private UserEntityController userEntityController;
+
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
   }
 
   @Override
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier, String educationTypeCode) {
 
     // Convert identifier to Pyramus student id
 
@@ -163,17 +165,56 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     // Service call
+    
+    String url = StringUtils.isBlank(educationTypeCode)
+        ? String.format("/muikku/students/%d/courseMatrix", studentId)
+        : String.format("/muikku/students/%d/courseMatrix?educationTypeCode=%s", studentId, educationTypeCode);
 
-    BridgeResponse<StudyActivityItemRestModel[]> response = pyramusClient.responseGet(
-        String.format("/muikku/students/%d/studyActivity", studentId),
-        StudyActivityItemRestModel[].class);
+    BridgeResponse<CourseMatrixRestModel> response = pyramusClient.responseGet(url, CourseMatrixRestModel.class);
+
+    return response;
+  }
+
+  @Override
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId, String educationTypeCode) {
+
+    // Convert identifier to Pyramus student id
+
+    Long studentId = identifierMapper.getPyramusStudentId(identifier);
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
+    }
+    
+    // Convert course id to Pyramus course id
+    
+    if (courseId != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(courseId);
+      courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
+    }
+
+    // Service call
+
+    boolean hasCourseId = courseId != null;
+    boolean hasEduType = !StringUtils.isBlank(educationTypeCode);
+    StringBuffer url = new StringBuffer(String.format("/muikku/students/%d/studyActivity", studentId));
+    if (hasCourseId || hasEduType) {
+      url.append('?');
+      if (hasCourseId) {
+        url.append(String.format("courseId=%d", courseId));
+      }
+      if (hasCourseId && hasEduType) {
+        url.append('&');
+      }
+      if (hasEduType) {
+        url.append(String.format("educationTypeCode=%s", educationTypeCode));
+      }
+    }
+    BridgeResponse<StudyActivityRestModel> response = pyramusClient.responseGet(url.toString(), StudyActivityRestModel.class);
 
     // Convert Pyramus course ids in response to Muikku workspace entity ids
 
-    List<StudyActivityItemRestModel> items = null;
     if (response.getEntity() != null) {
-      items = new ArrayList<>();
-      for (StudyActivityItemRestModel item : response.getEntity()) {
+      for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
         if (item.getCourseId() != null) {
           WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
               getSchoolDataSource(),
@@ -186,10 +227,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             item.setCourseId(workspaceEntity.getId());
           }
         }
-        items.add(item);
       }
     }
-    return new BridgeResponse<List<StudyActivityItemRestModel>>(response.getStatusCode(), items);
+    return new BridgeResponse<StudyActivityRestModel>(response.getStatusCode(), response.getEntity());
   }
 
   @Override
@@ -575,8 +615,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       List<UserEmail> result = new ArrayList<>(emails.length);
 
       for (Email email : emails) {
-        ContactType contactType = email != null ? pyramusClient.get("/common/contactTypes/" + email.getContactTypeId(), ContactType.class) : null;
-        UserEmail userEmail = entityFactory.createEntity(new SchoolDataIdentifier(userIdentifier, getSchoolDataSource()), email, contactType);
+        UserEmail userEmail = entityFactory.createEntity(new SchoolDataIdentifier(userIdentifier, getSchoolDataSource()), email);
         if (userEmail != null) {
           result.add(userEmail);
         }
@@ -1090,10 +1129,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     List<UserAddress> result = new ArrayList<>(addresses.length);
     for (Address address : addresses) {
-      ContactType contactType = address.getContactTypeId() != null
-        ? pyramusClient.get(String.format("/common/contactTypes/%d", address.getContactTypeId()), ContactType.class)
-        : null;
-      result.add(entityFactory.createEntity(userIdentifier, address, contactType));
+      result.add(entityFactory.createEntity(userIdentifier, address));
     }
 
     return result;
@@ -1142,11 +1178,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     if (phoneNumbers != null) {
       for (PhoneNumber phoneNumber : phoneNumbers) {
-        ContactType contactType = phoneNumber.getContactTypeId() != null
-            ? pyramusClient.get(String.format("/common/contactTypes/%d", phoneNumber.getContactTypeId()), ContactType.class)
-            : null;
-  
-        result.add(entityFactory.createEntity(userIdentifier, phoneNumber, contactType));
+        result.add(entityFactory.createEntity(userIdentifier, phoneNumber));
       }
     }
 
@@ -1985,7 +2017,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       for (fi.otavanopisto.pyramus.rest.model.UserContact userContact : userContacts.getEntity()) {
 
         UserContact contact = new UserContact(userContact.getId() ,userContact.getName(), userContact.getPhoneNumber(),
-            userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact());
+            userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), 
+            userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact(), userContact.getAllowStudyDiscussions());
         
         result.add(contact);
       }
@@ -1995,4 +2028,41 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     return Collections.emptyList();
   }
+
+  @Override
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,
+      boolean allowStudyDiscussions) {
+    
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.UserContact> response = pyramusClient.responsePut(
+        String.format("/contacts/users/%d/contacts/%d/allowStudyDiscussions", pyramusStudentId, contactInfoId),
+        Entity.entity(allowStudyDiscussions, MediaType.APPLICATION_JSON),
+        fi.otavanopisto.pyramus.rest.model.UserContact.class);
+
+    if (response.ok()) {
+      fi.otavanopisto.pyramus.rest.model.UserContact userContact = response.getEntity();
+      UserContact contact = new UserContact(userContact.getId() ,userContact.getName(), userContact.getPhoneNumber(),
+          userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), 
+          userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact(), userContact.getAllowStudyDiscussions());
+      return new BridgeResponse<UserContact>(response.getStatusCode(), contact, response.getMessage());
+    }
+    
+    return new BridgeResponse<UserContact>(response.getStatusCode(), null, response.getMessage());
+  }
+
+  @Override
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      BridgeResponse<String[]> response = pyramusClient.responseGet(String.format("/students/students/%d/educationTypes", pyramusStudentId), String[].class);
+      return new BridgeResponse<List<String>>(response.getStatusCode(), Arrays.asList(response.getEntity()));
+    }
+    logger.warning(String.format("PyramusUserSchoolDataBridge.listStudentEducationTypes malformed user identifier %s\n%s",
+      studentIdentifier,
+      ExceptionUtils.getStackTrace(new Throwable())));
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", studentIdentifier));
+  }
+  
 }
+

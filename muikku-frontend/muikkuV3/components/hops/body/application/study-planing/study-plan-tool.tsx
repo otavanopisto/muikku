@@ -17,6 +17,7 @@ import { updateEditingGoals } from "~/actions/main-function/hops";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * MatriculationPlanProps
@@ -28,22 +29,23 @@ interface StudyPlanToolProps {}
  * @param props props
  */
 const StudyPlanTool = (props: StudyPlanToolProps) => {
-  const {
-    hopsMode,
-    hopsCurriculumConfig: curriculumConfig,
-    studentInfo,
-    hopsStudyPlanStatus,
-  } = useSelector((state: StateType) => state.hopsNew);
+  const { hopsMode, studentInfo, hopsStudyPlanStatus } = useSelector(
+    (state: StateType) => state.hopsNew
+  );
+
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
   const dispatch = useDispatch();
 
-  const { plannedCourses, studyActivity, studyOptions, goals } = useSelector(
+  const { plannedCourses, planNotes, goals } = useSelector(
     (state: StateType) => state.hopsNew.hopsStudyPlanState
   );
 
-  const { plannedCourses: editingPlan, goals: editingGoals } = useSelector(
-    (state: StateType) => state.hopsNew.hopsEditing
-  );
+  const {
+    plannedCourses: editingPlan,
+    planNotes: editingPlanNotes,
+    goals: editingGoals,
+  } = useSelector((state: StateType) => state.hopsNew.hopsEditing);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { t } = useTranslation(["hops_new"]);
@@ -67,6 +69,14 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     }
   }, [hopsMode, goals, editingGoals]);
 
+  const usedPlanNotes = useMemo(() => {
+    if (hopsMode === "READ") {
+      return planNotes;
+    } else {
+      return editingPlanNotes;
+    }
+  }, [hopsMode, planNotes, editingPlanNotes]);
+
   // Calculate the periods
   const calculatedPeriods = useMemo(
     () =>
@@ -77,29 +87,31 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             ? new Date(studentInfo.studyTimeEnd)
             : null,
         },
-        studyActivity,
+        userStudyActivity?.items ?? [],
         usedPlannedCourses,
+        usedPlanNotes,
         curriculumConfig.strategy
       ),
-    [usedPlannedCourses, curriculumConfig, studentInfo, studyActivity]
+    [
+      usedPlannedCourses,
+      usedPlanNotes,
+      curriculumConfig,
+      studentInfo,
+      userStudyActivity,
+    ]
   );
 
   // Calculate the statistics
   const statistics = useMemo(
-    () =>
-      curriculumConfig.strategy.calculateStatistics(
-        studyActivity,
-        studyOptions
-      ),
-    [curriculumConfig.strategy, studyActivity, studyOptions]
+    () => curriculumConfig.strategy.calculateStatistics(userStudyActivity),
+    [curriculumConfig.strategy, userStudyActivity]
   );
 
   // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
       usedGoalInfo.studyHours,
-      studyActivity,
-      studyOptions
+      userStudyActivity
     );
 
   /**

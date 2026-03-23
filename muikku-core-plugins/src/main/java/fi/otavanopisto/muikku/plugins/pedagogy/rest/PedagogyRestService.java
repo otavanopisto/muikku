@@ -172,10 +172,10 @@ public class PedagogyRestService {
   public Response getForm(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
     UserEntity userEntity = toUserEntity(studentIdentifier);
-    
     if (userEntity == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Student %s not found", studentIdentifier)).build();
     }
+
     // Access check
     
     PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
@@ -185,20 +185,19 @@ public class PedagogyRestService {
     
     PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntity.getId());
     
-    // UI wants a skeleton return object for the student even if they don't yet have a form at all...
-    if (form == null) {
-      return Response.ok(toRestModel(form, userEntity.getId())).build();
+    // If the form doesn't exist (or exists but isn't yet published to the student), return an empty object
+    
+    if (form == null || (form.getPublished() == null && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
+      return Response.ok(toRestModel((PedagogyForm) null, userEntity.getId())).build();
     }
     else {
-
-      // PedagogyFormHistory creation
-      pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
       
-      // User registration for websocket
+      // Add history item about the caller having viewed the form and add them to receive websocket messages about it
+      
+      pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
       pedagogyFormWebSocketMessenger.registerUser(studentIdentifier, sessionController.getLoggedUserEntity().getId());
-
-      return Response.ok(toRestModel(form)).build();
     }
+    return Response.ok(toRestModel(form)).build();
   }
 
   /**

@@ -97,6 +97,10 @@ public class AnnouncementController {
     return announcement;
   }
   
+  public Announcement updateCategories(Announcement announcement, List<AnnouncementCategory> categories) {
+    return announcementDAO.updateCategories(announcement, categories);
+  }
+  
   public List<Announcement> listAnnouncements(Collection<SchoolDataIdentifier> userIdentifiers, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
       AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyUnread, Long loggedUser,  boolean onlyArchived, Integer firstResult, Integer maxResults, List<AnnouncementCategory> categories) {
 
@@ -142,6 +146,10 @@ public class AnnouncementController {
   
   public List<Announcement> listAll() {
     return announcementDAO.listAll();
+  }
+  
+  public List<Announcement> listByAnnouncementCategory(AnnouncementCategory category) {
+    return announcementDAO.listAnnouncementsByCategory(category);
   }
   
   public Announcement findById(Long id) {
@@ -252,8 +260,12 @@ public class AnnouncementController {
     return announcementRecipientDAO.findByAnnouncementAndUserEntityId(announcement, userEntityId);
   }
   
-  public AnnouncementRecipient createAnnouncementRecipient(Announcement announcement, Long userEntityId) {
-    return announcementRecipientDAO.create(announcement, userEntityId);
+  public AnnouncementRecipient createAnnouncementRecipient(Announcement announcement, Long userEntityId, Date readDate, boolean pinned) {
+    return announcementRecipientDAO.create(announcement, userEntityId, readDate, pinned);
+  }
+  
+  public AnnouncementRecipient updateAnnouncementRecipient(AnnouncementRecipient announcementRecipient, Date readDate, boolean pinned) {
+    return announcementRecipientDAO.update(announcementRecipient, pinned, readDate);
   }
   
   public AnnouncementCategory createCategory(String category, Long color) {
@@ -277,6 +289,15 @@ public class AnnouncementController {
   }
   
   public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
+
+    // Remove the category first from the announcements where it is in use
+    List<Announcement> announcements = listByAnnouncementCategory(announcementCategory);
+    
+    for (Announcement announcement : announcements) {
+      List<AnnouncementCategory> categories = announcement.getCategories();
+      categories.removeIf(c -> c.getId().equals(announcementCategory.getId()));
+      updateCategories(announcement, categories);
+    }
     announcementCategoryDAO.delete(announcementCategory);
   }
 }

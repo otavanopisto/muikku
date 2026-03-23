@@ -5,6 +5,7 @@ import {
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import notificationActions from "~/actions/base/notifications";
+import { loadUserGroupIndex } from "~/actions/user-index";
 import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
@@ -46,9 +47,9 @@ export async function loadAnnouncementsHelper(
   const state = getState();
   const navigation = state.announcements.navigation;
   const announcements = state.announcements;
+  const categories = state.announcements.categories;
   const status = state.status;
   const actualLocation: string = location || announcements.location;
-
   const isForceDefined = typeof force === "boolean";
   const isForceEnforced = force;
 
@@ -81,7 +82,11 @@ export async function loadAnnouncementsHelper(
   const item: AnnouncerNavigationItemType = navigation.find(
     (item) => item.location === actualLocation
   );
-  if (!item) {
+  const category = categories.find(
+    (cat) => `category-${cat.id}` === actualLocation
+  );
+
+  if (!item && !actualLocation.includes("category-")) {
     return dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
       payload: <AnnouncementsStateType>"ERROR",
@@ -105,25 +110,32 @@ export async function loadAnnouncementsHelper(
     params.workspaceEntityId = workspaceId;
   }
 
-  switch (item.id) {
-    case "expired":
-      params.timeFrame = "EXPIRED";
-      break;
-    case "unread":
-      params.timeFrame = "ALL";
-      params.onlyUnread = true;
-      break;
-    case "archived":
-      params.timeFrame = "ALL";
-      params.onlyArchived = true;
-      break;
-    case "own":
-      params.timeFrame = "ALL";
-      params.onlyMine = true;
-      break;
-    default:
-      params.timeFrame = "CURRENTANDUPCOMING";
-      break;
+  if (item) {
+    switch (item.id) {
+      case "expired":
+        params.timeFrame = "EXPIRED";
+        break;
+      case "unread":
+        params.timeFrame = "ALL";
+        params.onlyUnread = true;
+        break;
+      case "archived":
+        params.timeFrame = "ALL";
+        params.onlyArchived = true;
+        break;
+      case "own":
+        params.timeFrame = "ALL";
+        params.onlyMine = true;
+        break;
+      default:
+        params.timeFrame = "CURRENTANDUPCOMING";
+        break;
+    }
+  }
+
+  if (category) {
+    params.timeFrame = "ALL";
+    params.categoryIds = [category.id];
   }
 
   try {
@@ -139,6 +151,12 @@ export async function loadAnnouncementsHelper(
       //we got to get rid of that extra loaded announcement
       actualResults.pop();
     }
+
+    actualResults.forEach((announcement) =>
+      announcement.userGroupEntityIds.forEach((id) =>
+        dispatch(loadUserGroupIndex(id))
+      )
+    );
 
     //Create the payload for updating all the announcer properties
     const properLocation = location || item.location;
@@ -158,6 +176,7 @@ export async function loadAnnouncementsHelper(
       payload.unreadCount = newAnnouncements.unreadCount;
       payload.selected = [];
       payload.selectedIds = [];
+      payload.categories = await announcerApi.listAnnouncementCategories();
     }
 
     //And there it goes

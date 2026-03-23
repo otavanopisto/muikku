@@ -2,7 +2,6 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
-import LabelUpdateDialog from "../../../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
@@ -14,12 +13,15 @@ import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
 
+import GuiderLabel from "./students/label";
+
 /**
  * NavigationAside
  */
 const StudentNavigationAside = () => {
   const { view, setView } = React.useContext(GuiderContext);
   const { guider } = useSelector((state: StateType) => state);
+
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
 
@@ -27,6 +29,7 @@ const StudentNavigationAside = () => {
     document.location.hash.split("?")[1] || "",
     { arrayFormat: "bracket" }
   );
+
   return (
     <Navigation>
       {isMobileWidth && (
@@ -53,37 +56,31 @@ const StudentNavigationAside = () => {
             const isActive = guider.activeFilters.labelFilters.includes(
               label.id
             );
-            const hash = isActive
-              ? queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    l: (locationData.l || []).filter(
-                      (i: string) => parseInt(i) !== label.id
-                    ),
-                  }),
-                  { arrayFormat: "bracket" }
-                )
-              : queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    l: (locationData.l || []).concat(label.id),
-                  }),
-                  { arrayFormat: "bracket" }
-                );
             return (
-              <NavigationElement
-                modifiers="aside-navigation-guider-flag"
-                icon="flag"
+              <GuiderLabel
                 key={label.id}
-                iconColor={label.color}
+                label={label}
                 isActive={isActive}
-                hash={"?" + hash}
-                editableWrapper={LabelUpdateDialog}
-                editableWrapperArgs={{ label: label }}
-                isEditable
-              >
-                {label.name}
-              </NavigationElement>
+                hash={
+                  guider.activeFilters.labelFilters.includes(label.id)
+                    ? queryString.stringify(
+                        Object.assign({}, locationData, {
+                          c: "",
+                          l: (locationData.l || []).filter(
+                            (i: string) => parseInt(i) !== label.id
+                          ),
+                        }),
+                        { arrayFormat: "bracket" }
+                      )
+                    : queryString.stringify(
+                        Object.assign({}, locationData, {
+                          c: "",
+                          l: (locationData.l || []).concat(label.id),
+                        }),
+                        { arrayFormat: "bracket" }
+                      )
+                }
+              />
             );
           })}
         </NavigationTopic>

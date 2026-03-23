@@ -1,4 +1,5 @@
-import { Route, Switch } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Route, RouteComponentProps, Switch } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
@@ -102,7 +103,7 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
-import { loadDependants } from "~/actions/main-function/dependants";
+import { loadDependants } from "~/actions/main-function/guardian";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import { DiscussionStatePatch } from "~/reducers/discussion";
@@ -133,6 +134,7 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
+import GenericRedirectComponent from "~/routes/generic-redirect";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let loadAnnouncementsTimer: ReturnType<typeof setTimeout> | null = null;
@@ -266,20 +268,6 @@ export default class MainFunction extends React.Component<
       this.loadRecordsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/hops")) {
       this.loadHopsData(window.location.hash.replace("#", ""));
-    } else if (window.location.pathname.includes("/guardian_hops")) {
-      const hashArray = window.location.hash.replace("#", "").split("/");
-      const [identifier, tab] = hashArray;
-
-      this.loadHopsData(tab, identifier, true);
-    } else if (window.location.pathname.includes("/guardian")) {
-      const hashArray = window.location.hash.replace("#", "").split("/");
-      const [identifier, tab] = hashArray;
-
-      if (tab) {
-        this.loadRecordsData(tab, identifier);
-      } else {
-        this.loadRecordsData("", identifier);
-      }
     } else if (window.location.pathname.includes("/organization")) {
       this.loadCoursePickerData(
         queryString.parse(window.location.hash.split("?")[1] || "", {
@@ -1066,9 +1054,6 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
-      );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
       this.loadRecordsData(window.location.hash.replace("#", ""));
@@ -1079,12 +1064,11 @@ export default class MainFunction extends React.Component<
 
   /**
    * renderGuardianBody
+   * @param props props
    */
-  renderGuardianBody() {
+  renderGuardianBody(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      const hashArray = window.location.hash.replace("#", "").split("/");
-      const [identifier, tab] = hashArray;
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
@@ -1093,33 +1077,22 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.dependants.state === "WAIT") {
+      if (state.guardian.dependantsStatus === "IDLE") {
         this.props.store.dispatch(loadDependants() as Action);
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      // If there's an identifier, we can load records data, otherwise it's done in the hash change
-      if (identifier) {
-        if (tab) {
-          this.loadRecordsData(tab, identifier);
-        } else {
-          this.loadRecordsData("", identifier);
-        }
-      }
     }
     return <GuardianBody />;
   }
 
   /**
-   * renderGuardianBody
+   * renderGuardianHopsBody
+   * @param props props
    */
-  renderGuardianHopsBody() {
+  renderGuardianHopsBody(props: RouteComponentProps<any>) {
     this.updateFirstTime();
     if (this.itsFirstTime) {
-      const hashArray = window.location.hash.replace("#", "").split("/");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [identifier, tab] = hashArray;
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
@@ -1128,14 +1101,11 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.dependants.state === "WAIT") {
+      if (state.guardian.dependantsStatus === "IDLE") {
         this.props.store.dispatch(loadDependants() as Action);
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      // If there's an identifier, we can load hops data, otherwise it's done in the hash change
-      this.loadHopsData(tab, identifier, true);
     }
     return <GuardianHopsBody />;
   }
@@ -1282,11 +1252,9 @@ export default class MainFunction extends React.Component<
                 path="/coursepicker"
                 render={this.renderCoursePickerBody}
               />
-
               {/* Note that discussion is not used anymore, but because for testing purposes we need to keep it
             Can be removed after test are reworked */}
               <Route path="/discussion" render={this.renderDiscussionBody} />
-
               <Route
                 path="/ceepos/pay"
                 render={() => (
@@ -1300,7 +1268,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/ceepos/done"
                 render={() => (
@@ -1314,12 +1281,10 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/forgotpassword/reset"
                 render={this.renderUserCredentials}
               />
-
               {/* PROTECTED ROUTES */}
               <Route
                 path="/organization"
@@ -1333,7 +1298,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/communicator"
                 render={() => (
@@ -1346,7 +1310,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/announcements"
                 render={() => (
@@ -1359,7 +1322,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/announcer"
                 render={() => (
@@ -1372,7 +1334,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/guider"
                 render={() => (
@@ -1385,7 +1346,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/language-profile"
                 render={() => (
@@ -1400,6 +1360,7 @@ export default class MainFunction extends React.Component<
               />
 
               <Route
+                exact
                 path="/guardian"
                 render={() => (
                   <ProtectedRoute
@@ -1407,12 +1368,27 @@ export default class MainFunction extends React.Component<
                     hasPermission={permissions.GUARDIAN_VIEW}
                     isAuthenticated={isAuthenticated}
                   >
+                    <GuardianRedirectComponent store={this.props.store} />
+                  </ProtectedRoute>
+                )}
+              />
+
+              <Route
+                path="/guardian/:identifier"
+                render={(routeProps) => (
+                  <ProtectedRoute
+                    requireAuth
+                    hasPermission={permissions.GUARDIAN_VIEW}
+                    isAuthenticated={isAuthenticated}
+                    routeProps={routeProps}
+                  >
                     {this.renderGuardianBody}
                   </ProtectedRoute>
                 )}
               />
 
               <Route
+                exact
                 path="/guardian_hops"
                 render={() => (
                   <ProtectedRoute
@@ -1420,11 +1396,24 @@ export default class MainFunction extends React.Component<
                     hasPermission={permissions.GUARDIAN_VIEW}
                     isAuthenticated={isAuthenticated}
                   >
-                    {this.renderGuardianHopsBody}
+                    <GuardianHopsRedirectComponent store={this.props.store} />
                   </ProtectedRoute>
                 )}
               />
 
+              <Route
+                path="/guardian_hops/:identifier"
+                render={(routeProps) => (
+                  <ProtectedRoute
+                    requireAuth
+                    hasPermission={permissions.GUARDIAN_VIEW}
+                    isAuthenticated={isAuthenticated}
+                    routeProps={routeProps}
+                  >
+                    {this.renderGuardianHopsBody}
+                  </ProtectedRoute>
+                )}
+              />
               <Route
                 path="/profile"
                 render={() => (
@@ -1437,7 +1426,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/records"
                 render={() => (
@@ -1450,7 +1438,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/hops"
                 render={() => (
@@ -1466,7 +1453,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               <Route
                 path="/evaluation"
                 render={() => (
@@ -1479,7 +1465,6 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-
               {/* <Route
               path="/error/:status"
               render={() => {
@@ -1489,7 +1474,6 @@ export default class MainFunction extends React.Component<
                 return <ErrorBody />;
               }}
             /> */}
-
               {/* Fallback route */}
               <Route
                 path="*"
@@ -1507,3 +1491,92 @@ export default class MainFunction extends React.Component<
     );
   }
 }
+
+/**
+ * GuardianRedirectComponentProps
+ */
+interface GuardianRedirectComponentProps {
+  store: Store<StateType>;
+}
+
+/**
+ * GuardianRedirectComponent2
+ * @param props props
+ * @returns JSX.Element
+ */
+const GuardianRedirectComponent: React.FC<GuardianRedirectComponentProps> = (
+  props
+) => {
+  const { store } = props;
+
+  return (
+    <GenericRedirectComponent
+      store={store}
+      shouldRedirect={(state) => {
+        const dependants = state.guardian.dependants || [];
+        if (dependants.length > 0) {
+          return `/guardian/${dependants[0].identifier}`;
+        }
+        return null; // Not ready yet
+      }}
+      shouldDispatch={(state) => {
+        const actions: Action[] = [];
+        if (state.guardian.dependantsStatus === "IDLE") {
+          actions.push(loadDependants() as Action);
+        }
+        return actions;
+      }}
+      shouldSubscribe={(state) => {
+        // Keep subscribing until we have dependants or they're loaded
+        const dependants = state.guardian.dependants || [];
+        return (
+          dependants.length === 0 && state.guardian.dependantsStatus !== "ERROR"
+        );
+      }}
+    />
+  );
+};
+
+/**
+ * GuardianHopsRedirectComponentProps
+ */
+interface GuardianHopsRedirectComponentProps {
+  store: Store<StateType>;
+}
+
+/**
+ * GuardianHopsRedirectComponent
+ * @param props props
+ * @returns JSX.Element
+ */
+const GuardianHopsRedirectComponent: React.FC<
+  GuardianHopsRedirectComponentProps
+> = (props) => {
+  const { store } = props;
+  return (
+    <GenericRedirectComponent
+      store={store}
+      shouldRedirect={(state) => {
+        const dependants = state.guardian.dependants || [];
+        if (dependants.length > 0) {
+          return `/guardian_hops/${dependants[0].identifier}`;
+        }
+        return null; // Not ready yet
+      }}
+      shouldDispatch={(state) => {
+        const actions: Action[] = [];
+        if (state.guardian.dependantsStatus === "IDLE") {
+          actions.push(loadDependants() as Action);
+        }
+        return actions;
+      }}
+      shouldSubscribe={(state) => {
+        // Keep subscribing until we have dependants or they're loaded
+        const dependants = state.guardian.dependants || [];
+        return (
+          dependants.length === 0 && state.guardian.dependantsStatus !== "ERROR"
+        );
+      }}
+    />
+  );
+};

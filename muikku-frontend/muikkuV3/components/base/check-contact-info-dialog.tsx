@@ -10,7 +10,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import "~/sass/elements/buttons.scss";
-import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
+import { Student, UserStudentAddress } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
@@ -27,7 +27,7 @@ interface CheckContactInfoDialogProps extends WithTranslation {
  * CheckContactInfoDialogState
  */
 interface CheckContactInfoDialogState {
-  user: UserWithSchoolData;
+  user: Student;
   address: UserStudentAddress;
   isOpen: boolean;
 }

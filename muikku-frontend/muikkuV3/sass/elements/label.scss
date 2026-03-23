@@ -33,6 +33,37 @@
   padding: 2px 10px;
 }
 
+.label--mandatory {
+  background: $color-mandatory;
+  border-radius: 5px;
+  padding: 5px 8px;
+}
+
+.label--optional {
+  background: $color-optional;
+  border-radius: 5px;
+  padding: 5px 8px;
+}
+
+.label--total {
+  background: $color-completed;
+  border-radius: 5px;
+  padding: 5px 8px;
+}
+
+.label--guider-concent {
+  background-color: lighten($color-info, 40%);
+  width: fit-content;
+}
+
+.label--guider-contact-type {
+  background-color: lighten($color-notice, 20%);
+  position: absolute;
+  right: 5px;
+  top: -13px;
+  width: fit-content;
+}
+
 .label--ENDING {
   background-color: $color-label-background-highlight;
 }
@@ -47,7 +78,7 @@
   width: fit-content;
 }
 
-.label--mandatory {
+.label--journal-mandatory {
   background-color: lighten($color-journal-page, 30%);
   width: fit-content;
 }

@@ -10,6 +10,8 @@ import java.lang.annotation.ElementType;
 public @interface IndexableSubObject {
 
   String name();
+  IndexableSubObjectType type() default IndexableSubObjectType.EMBEDDED;
   IndexableFieldOption[] options() default {};
+  IndexableSubObjectLevel2[] subObjects() default {};
   
 }

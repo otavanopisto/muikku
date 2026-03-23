@@ -10,6 +10,11 @@ import {
   loadWorkspaceStatus,
   updateStatusChatSettings,
 } from "~/actions/base/status";
+import {
+  loadCourseMatrix,
+  loadUserEducationTypes,
+  loadUserStudyActivity,
+} from "~/actions/study-activity";
 
 /**
  * getOptionValue
@@ -97,6 +102,40 @@ export default async function (
   const loadAreaPermissions = () =>
     store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
 
+  /**
+   * Loads user study activity for student user after succesful login
+   */
+  const loadUserStudyData = () => {
+    if (!store.getState().status.isStudent) {
+      return;
+    }
+    store.dispatch(
+      <Action>loadUserEducationTypes({
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: () => {
+          const state = store.getState();
+
+          const defaultEducationTypeCode =
+            state.studyActivity.defaultEducationTypeCode;
+
+          if (!defaultEducationTypeCode) {
+            return;
+          }
+          store.dispatch(
+            <Action>loadUserStudyActivity({
+              educationTypeCode: defaultEducationTypeCode,
+            })
+          );
+          store.dispatch(
+            <Action>(
+              loadCourseMatrix({ educationTypeCode: defaultEducationTypeCode })
+            )
+          );
+        },
+      })
+    );
+  };
+
   const isWorkspace = window.location.pathname.includes("/workspace/");
   const workspaceUrl = window.location.pathname.split("/")[2];
 
@@ -111,6 +150,7 @@ export default async function (
         loadAreaPermissions();
         updateUnreadThreadMessagesCount();
         loadChatSettings();
+        loadUserStudyData();
         resolve(initializeWebsocket(actionsAndCallbacks));
       };
       store.dispatch(<Action>loadStatus(resolveFn));

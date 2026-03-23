@@ -46,13 +46,14 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -510,7 +511,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier) {
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId, String educationTypeCode) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
@@ -587,6 +588,23 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public BridgeResponse<Guardian> updateStudentsGuardianContinuedViewPermission(SchoolDataIdentifier studentIdentifier,
       SchoolDataIdentifier guardianIdentifier, boolean continuedViewPermission) {
     throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier, String educationTypeCode) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier,
+      Long contactInfoId, boolean allowStudyDiscussions) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

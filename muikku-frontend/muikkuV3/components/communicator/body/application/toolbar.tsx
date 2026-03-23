@@ -28,6 +28,10 @@ import {
   ToggleMessageThreadReadStatusTriggerType,
   loadMessageThreads,
   LoadMessageThreadsTriggerType,
+  updateMessagesNavigationLabel,
+  removeMessagesNavigationLabel,
+  UpdateMessagesNavigationLabelTriggerType,
+  RemoveMessagesNavigationLabelTriggerType,
 } from "~/actions/main-function/messages";
 import {
   filterMatch,
@@ -36,7 +40,6 @@ import {
   difference,
   flatten,
 } from "~/util/modifiers";
-import LabelUpdateDialog from "../../dialogs/label-update";
 import { MessagesState } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -58,12 +61,16 @@ import {
 } from "~/actions/main-function/messages/index";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
-
+import { NavigationDropdown } from "~/components/general/navigation";
+import { translateNavigationItemToGenericTag } from "../../utils";
+import { GenericTag } from "~/components/general/tag-update-dialog";
 /**
  * CommunicatorToolbarProps
  */
 interface CommunicatorToolbarProps extends WithTranslation {
   messages: MessagesState;
+  updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType;
+  removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType;
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType;
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType;
   removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType;
@@ -253,6 +260,39 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
+   * handles update label
+   * @param tag generic tag
+   * @param success success callback
+   * @param fail fail callback
+   */
+  handleUpdate = (tag: GenericTag, success?: () => void, fail?: () => void) => {
+    const data = {
+      id: tag.id,
+      label: tag.label,
+      color: tag.color,
+      success,
+      fail,
+    };
+    this.props.updateMessagesNavigationLabel(data);
+  };
+
+  /**
+   * handles delete label
+   * @param tag generic tag
+   * @param success success callback
+   * @param fail fail callback
+   */
+  handleDelete = (tag: GenericTag, success?: () => void, fail?: () => void) => {
+    const data = {
+      id: tag.id,
+      location: this.props.messages.location,
+      success,
+      fail,
+    };
+    this.props.removeMessagesNavigationLabel(data);
+  };
+
+  /**
    * render
    */
   render() {
@@ -288,12 +328,30 @@ class CommunicatorToolbar extends React.Component<
                 {"  " + currentLocation.text}
               </span>
               {currentLocation.type === "label" ? (
-                <LabelUpdateDialog label={currentLocation}>
+                <NavigationDropdown
+                  tag={translateNavigationItemToGenericTag(currentLocation)}
+                  onDelete={this.handleDelete}
+                  onUpdate={this.handleUpdate}
+                  deleteDialogTitle={this.props.t("labels.remove", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                  deleteDialogContent={this.props.t("content.removing", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                  updateDialogTitle={this.props.t("labels.edit", {
+                    ns: "messaging",
+                    context: "label",
+                  })}
+                  editLabel={this.props.t("labels.edit")}
+                  deleteLabel={this.props.t("labels.remove")}
+                >
                   <ButtonPill
                     buttonModifiers="toolbar-edit-label"
-                    icon="pencil"
+                    icon="more_vert"
                   />
-                </LabelUpdateDialog>
+                </NavigationDropdown>
               ) : null}
             </div>
             {this.props.messages.location === "trash" ? (
@@ -400,9 +458,8 @@ class CommunicatorToolbar extends React.Component<
             <ButtonPill
               buttonModifiers="next-page"
               icon="arrow-left"
-              disabled={
-                this.props.messages.currentThread.newerThreadId === null
-              }
+              // Somehow the null turns into undefined in props, so if we chect exactly null, the button is never disabled
+              disabled={this.props.messages.currentThread.newerThreadId == null}
               onClick={this.loadMessage.bind(
                 this,
                 this.props.messages.currentThread.newerThreadId
@@ -411,9 +468,8 @@ class CommunicatorToolbar extends React.Component<
             <ButtonPill
               buttonModifiers="prev-page"
               icon="arrow-right"
-              disabled={
-                this.props.messages.currentThread.olderThreadId === null
-              }
+              // Somehow the null turns into undefined in props, so if we chect exactly null, the button is never disabled
+              disabled={this.props.messages.currentThread.olderThreadId == null}
               onClick={this.loadMessage.bind(
                 this,
                 this.props.messages.currentThread.olderThreadId
@@ -447,10 +503,32 @@ class CommunicatorToolbar extends React.Component<
           <span className="application-panel__mobile-current-folder-title">
             {"  " + currentLocation.text}
           </span>
+
           {currentLocation.type === "label" ? (
-            <LabelUpdateDialog label={currentLocation}>
-              <ButtonPill buttonModifiers="toolbar-edit-label" icon="pencil" />
-            </LabelUpdateDialog>
+            <NavigationDropdown
+              tag={translateNavigationItemToGenericTag(currentLocation)}
+              onDelete={this.handleDelete}
+              onUpdate={this.handleUpdate}
+              deleteDialogTitle={this.props.t("labels.remove", {
+                ns: "messaging",
+                context: "label",
+              })}
+              deleteDialogContent={this.props.t("content.removing", {
+                ns: "messaging",
+                context: "label",
+              })}
+              updateDialogTitle={this.props.t("labels.edit", {
+                ns: "messaging",
+                context: "label",
+              })}
+              editLabel={this.props.t("labels.edit")}
+              deleteLabel={this.props.t("labels.remove")}
+            >
+              <ButtonPill
+                buttonModifiers="toolbar-edit-label"
+                icon="more_vert"
+              />
+            </NavigationDropdown>
           ) : null}
         </div>
 
@@ -626,6 +704,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       restoreSelectedMessageThreads,
       loadMessageThreads,
       toggleAllMessageItems,
+      updateMessagesNavigationLabel,
+      removeMessagesNavigationLabel,
     },
     dispatch
   );

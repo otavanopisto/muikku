@@ -27,13 +27,14 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -51,7 +52,8 @@ public interface UserSchoolDataBridge {
   
   /* HOPS */
 
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String identifier);
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier, String educationTypeCode);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId, String educationTypeCode);
   
   /* Worklist */
   
@@ -84,6 +86,8 @@ public interface UserSchoolDataBridge {
                     
   public BridgeResponse<StudentPayload> createStudent(StudentPayload student);
   public BridgeResponse<StudentPayload> updateStudent(StudentPayload student);
+  
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier);
     
   /**
    * Creates new user
@@ -316,5 +320,15 @@ public interface UserSchoolDataBridge {
    * @return
    */
   public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier);
+
+  /**
+   * Updates Contact Info's Allow Study Discussions property for Contact Infos that have it.
+   * 
+   * @param studentIdentifier
+   * @param contactInfoId
+   * @param allowStudyDiscussions
+   * @return
+   */
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId, boolean allowStudyDiscussions);
 
 }

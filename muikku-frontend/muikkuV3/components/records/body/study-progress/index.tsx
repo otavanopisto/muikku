@@ -1,10 +1,20 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import { WorkspaceSuggestion } from "~/generated/client";
-import { SummaryStudyProgress } from "~/reducers/main-function/records/summary";
 import ProgressList from "./components/progress-list";
 import ProgressTable from "./components/progress-table";
+import OPSMatrixProblems from "~/components/general/OPS-matrix/OPS-matrix-problems";
+import OPSMatrixIndicators from "~/components/general/OPS-matrix/OPS-matrix-indicators";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
+import { useMemo } from "react";
+import {
+  filterActivity,
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+} from "~/helper-functions/study-matrix";
 /**
  * StudyProgressProps
  */
@@ -13,7 +23,6 @@ interface StudyProgressProps {
   studentUserEntityId: number;
   studyProgrammeName: string;
   curriculumName: string;
-  studyProgress: SummaryStudyProgress;
 }
 
 /**
@@ -27,13 +36,57 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     studentUserEntityId,
     studyProgrammeName,
     curriculumName,
-    studyProgress,
   } = props;
 
   const [workspaceToSignUp, setWorkspaceToSignUp] =
     React.useState<WorkspaceSuggestion | null>(null);
 
-  const { t } = useTranslation(["studyMatrix"]);
+  const courseMatrix = useSelector(
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
+      ]?.courseMatrix ?? null
+  );
+
+  const studyActivityItems = useSelector(
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
+      ]?.studyActivity?.items ?? []
+  );
+
+  const skillAndArtCourses = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(
+      SKILL_AND_ART_SUBJECTS_CS,
+      studyActivityItems
+    );
+  }, [studyActivityItems]);
+
+  const otherLanguageSubjects = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(LANGUAGE_SUBJECTS_CS, studyActivityItems);
+  }, [studyActivityItems]);
+
+  const otherSubjects = useMemo(() => {
+    if (!studyActivityItems) return {};
+    return filterActivityBySubjects(
+      OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+      studyActivityItems
+    );
+  }, [studyActivityItems]);
+
+  const studentActivityByStatus = useMemo(() => {
+    if (!studyActivityItems)
+      return {
+        needSupplementationList: [],
+        onGoingList: [],
+        suggestedNextList: [],
+        transferedList: [],
+        gradedList: [],
+      };
+    return filterActivity(studyActivityItems);
+  }, [studyActivityItems]);
 
   /**
    * Handles open sign up dialog
@@ -45,68 +98,12 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
 
   return (
     <>
-      <div className="hops-container__study-tool-indicators">
-        <div className="hops-container__study-tool-indicator-container--legend-title">
-          {t("labels.legendDescriptions", { ns: "studyMatrix" })}
-        </div>
-        <div className="hops-container__study-tool-indicator-container">
-          <div className="hops-container__indicator-item hops-container__indicator-item--mandatory">
-            {t("labels.mandatoryShorthand", { ns: "studyMatrix" })}
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.mandatory", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--optional">
-            {t("labels.optionalShorthand", { ns: "studyMatrix" })}
-            <sup>*</sup>
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.optional", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--approval"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.transferred", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--completed"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.completed", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--aborted">
-            {t("labels.abortedShorthand", { ns: "studyMatrix" })}
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.aborted", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--supplementationrequest">
-            {t("labels.supplementationRequestShorthand", { ns: "studyMatrix" })}
-          </div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.supplementationRequest", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.inProgress", { ns: "studyMatrix" })}
-          </div>
-        </div>
-        <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
-          <div className="hops-container__indicator-item-label">
-            {t("labels.suggestedNext", { ns: "studyMatrix" })}
-          </div>
-        </div>
-      </div>
+      <OPSMatrixProblems
+        matrixType={courseMatrix?.type}
+        matrixProblems={courseMatrix?.problems}
+      />
+
+      <OPSMatrixIndicators />
 
       <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
         <div className="list">
@@ -115,15 +112,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             studentUserEntityId={studentUserEntityId}
             studyProgrammeName={studyProgrammeName}
             curriculumName={curriculumName}
-            suggestedNextList={studyProgress.suggestedNextList}
-            onGoingList={studyProgress.onGoingList}
-            transferedList={studyProgress.transferedList}
-            gradedList={studyProgress.gradedList}
-            needSupplementationList={studyProgress.needSupplementationList}
-            skillsAndArt={studyProgress.skillsAndArt}
-            otherLanguageSubjects={studyProgress.otherLanguageSubjects}
-            otherSubjects={studyProgress.otherSubjects}
-            studentOptions={studyProgress.options}
+            suggestedNextList={studentActivityByStatus.suggestedNextList}
+            onGoingList={studentActivityByStatus.onGoingList}
+            transferedList={studentActivityByStatus.transferedList}
+            gradedList={studentActivityByStatus.gradedList}
+            needSupplementationList={
+              studentActivityByStatus.needSupplementationList
+            }
+            skillsAndArt={skillAndArtCourses}
+            otherLanguageSubjects={otherLanguageSubjects}
+            otherSubjects={otherSubjects}
+            matrix={courseMatrix}
             onSignUp={handleOpenSignUpDialog}
           />
         </div>
@@ -136,15 +135,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             studentUserEntityId={studentUserEntityId}
             curriculumName={curriculumName}
             studyProgrammeName={studyProgrammeName}
-            suggestedNextList={studyProgress.suggestedNextList}
-            onGoingList={studyProgress.onGoingList}
-            transferedList={studyProgress.transferedList}
-            gradedList={studyProgress.gradedList}
-            needSupplementationList={studyProgress.needSupplementationList}
-            skillsAndArt={studyProgress.skillsAndArt}
-            otherLanguageSubjects={studyProgress.otherLanguageSubjects}
-            otherSubjects={studyProgress.otherSubjects}
-            studentOptions={studyProgress.options}
+            suggestedNextList={studentActivityByStatus.suggestedNextList}
+            onGoingList={studentActivityByStatus.onGoingList}
+            transferedList={studentActivityByStatus.transferedList}
+            gradedList={studentActivityByStatus.gradedList}
+            needSupplementationList={
+              studentActivityByStatus.needSupplementationList
+            }
+            skillsAndArt={skillAndArtCourses}
+            otherLanguageSubjects={otherLanguageSubjects}
+            otherSubjects={otherSubjects}
+            matrix={courseMatrix}
             onSignUp={handleOpenSignUpDialog}
           />
         </div>

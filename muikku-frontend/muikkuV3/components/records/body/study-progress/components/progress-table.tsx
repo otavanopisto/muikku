@@ -11,10 +11,11 @@ import SuggestionList from "~/components/general/suggestion-list/suggestion-list
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import { WorkspaceSuggestion } from "~/generated/client";
 import {
-  compulsoryOrUpperSecondary,
   getCourseDropdownName,
   getCourseInfo,
   getHighestCourseNumber,
+  MANDATORITY_OPTIONAL_VALUES,
+  MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
 
 /**
@@ -27,7 +28,6 @@ interface ProgressTableProps
     | "renderMandatoryCourseCellContent"
     | "renderOptionalCourseCellContent"
     | "currentMaxCourses"
-    | "matrix"
   > {
   /** Callback function to handle student sign-up for a workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
@@ -41,6 +41,7 @@ interface ProgressTableProps
  */
 const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const {
+    matrix,
     studentIdentifier,
     studentUserEntityId,
     suggestedNextList,
@@ -52,11 +53,6 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   } = props;
 
   const { t } = useTranslation(["studyMatrix"]);
-
-  const matrix = compulsoryOrUpperSecondary(
-    props.studyProgrammeName,
-    props.curriculumName
-  );
 
   const currentMaxCourses = getHighestCourseNumber(matrix);
 
@@ -84,7 +80,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       <SuggestionList
         studentId={studentIdentifier}
         studentsUserEntityId={studentUserEntityId}
-        subjectCode={subject.subjectCode}
+        subjectCode={subject.code}
         course={course}
       >
         {(context) => {
@@ -113,7 +109,9 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     );
 
     // By default content is mandatory or option shorthand
-    let courseTdContent = course.mandatory
+    let courseTdContent = MANDATORITY_MANDATORY_VALUES.includes(
+      course.mandatority
+    )
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
       : t("labels.optionalShorthand", { ns: "studyMatrix" });
 
@@ -130,10 +128,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     }
 
     return (
-      <Td
-        key={`${subject.subjectCode}-${course.courseNumber}`}
-        modifiers={modifiers}
-      >
+      <Td key={`${subject.code}-${course.courseNumber}`} modifiers={modifiers}>
         <Dropdown
           content={
             <div className="hops-container__study-tool-dropdown-container">
@@ -141,7 +136,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                 {getCourseDropdownName(
                   subject,
                   course,
-                  matrix.type === "uppersecondary"
+                  matrix.type === "UPPER_SECONDARY"
                 )}
               </div>
               {canBeSelected && suggestionList}
@@ -153,7 +148,9 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
             className="table__data-content-wrapper table__data-content-wrapper--course"
           >
             {courseTdContent}
-            {!course.mandatory ? <sup>*</sup> : null}
+            {MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority) ? (
+              <sup>*</sup>
+            ) : null}
           </span>
         </Dropdown>
       </Td>

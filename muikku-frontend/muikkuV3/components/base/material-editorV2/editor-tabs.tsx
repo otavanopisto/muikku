@@ -1363,29 +1363,6 @@ export const EditorButtonSet = (props: EditorButtonSetProps) => {
   };
 
   /**
-   * handleCycleCorrectAnswers
-   */
-  const handleCycleCorrectAnswers = () => {
-    dispatch(
-      updateWorkspaceMaterialContentNode({
-        workspace: editorState.currentNodeWorkspace,
-        material: editorState.currentDraftNodeValue,
-        update: {
-          correctAnswers:
-            !editorState.currentDraftNodeValue.correctAnswers ||
-            editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
-              ? "ON_REQUEST"
-              : editorState.currentDraftNodeValue.correctAnswers ===
-                  "ON_REQUEST"
-                ? "NEVER"
-                : "ALWAYS",
-        },
-        isDraft: true,
-      })
-    );
-  };
-
-  /**
    * handlePublish
    */
   const handlePublish = () => {
@@ -1558,7 +1535,6 @@ export const EditorButtonSet = (props: EditorButtonSetProps) => {
                 "material-editor-" + answersTypeValue,
               ]}
               icon="lightbulb"
-              onClick={handleCycleCorrectAnswers}
             />
           </Dropdown>
         ) : null}

@@ -10,6 +10,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,16 +37,22 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.hops.Mandatority;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
+import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
+import fi.otavanopisto.pyramus.rest.model.Curriculum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
+import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityRestModel;
 
 public class GuiderTestsBase extends AbstractUITest {
   
@@ -155,6 +162,8 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockMatriculationEligibility(student.getId(), false)
     .mockIAmCounselor()
     .mockUserContact(student)
+    .mockEmptyStudyActivity()
+    .mockCourseMatrix()
     .build();
     login();
     
@@ -235,6 +244,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addCourseStudent(course1.getId(), courseStudent)
         .mockEmptyStudyActivity()
         .mockUserContact(student)
+        .mockCourseMatrix()
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -295,11 +305,37 @@ public class GuiderTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(admin);
         login();
         
+        List<StudyActivityItemRestModel> sairmList = new ArrayList<StudyActivityItemRestModel>();
+        StudyActivityItemRestModel sairm = new StudyActivityItemRestModel();
+        sairm.setCourseId(courseId);
+        sairm.setCourseName(mockCourse.getName());
+        CourseModule cm = course1.getCourseModules().iterator().next();
+        sairm.setCourseNumber(cm.getCourseNumber());
+        
+        String ops21 = "OPS 2021";
+        List<String> curriculums = new ArrayList<String>();
+        curriculums.add(ops21);
+        sairm.setCurriculums(curriculums);
+        sairm.setDate(new Date(java.lang.System.currentTimeMillis()));
+        sairm.setEvaluatorName("Admin User");
+        sairm.setGrade(caa.getGrade());
+        sairm.setGradeDate(caa.getDate());
+        sairm.setLength(3);
+        sairm.setLengthSymbol("op");
+        sairm.setMandatority(Mandatority.MANDATORY);
+        sairm.setPassing(true);
+        sairm.setState(StudyActivityItemState.GRADED);
+        sairm.setStudyProgramme("Nettilukio");
+        sairm.setSubject("AI");
+        sairm.setSubjectName("Äidinkieli");
+        sairm.setText(caa.getText());
+        sairmList.add(sairm);
+        
         mockBuilder
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
-      
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date)
+        .mockStudyActivity(sairmList);
         // First test the course listing in the "situation"-tab
         mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
         navigate("/guider", false);
@@ -318,7 +354,7 @@ public class GuiderTestsBase extends AbstractUITest {
         // Then test the history - tab
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");
-        waitAndClick("#tabControl-STUDY_HISTORY");      
+        waitAndClick("#tabControl-STUDY_HISTORY");            
         waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
         assertText(".application-list__header-secondary .application-list__indicator-badge", "E");
         
@@ -328,7 +364,7 @@ public class GuiderTestsBase extends AbstractUITest {
       }
     }finally {
       archiveUserByEmail(student.getEmail());
-      mockBuilder.wiremockReset();  
+      mockBuilder.resetBuilder();  
     }
   }
 
@@ -351,6 +387,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
       .mockUserContact(student)
+      .mockCourseMatrix()
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -489,6 +526,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
         .mockUserContact(student)
+        .mockCourseMatrix()
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -590,6 +628,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
       .mockUserContact(student)
+      .mockCourseMatrix()
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -650,6 +689,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
         .mockUserContact(student)
+        .mockCourseMatrix()
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -805,6 +845,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockEmptyStudyActivity()
     .mockIAmCounselor()
     .mockUserContact(student)
+    .mockCourseMatrix()
     .build();
     login();
     

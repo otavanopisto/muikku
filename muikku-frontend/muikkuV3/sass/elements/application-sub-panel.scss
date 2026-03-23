@@ -180,6 +180,44 @@
   }
 }
 
+.application-sub-panel__filters {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.application-sub-panel__meta {
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  margin: 0 0 10px;
+  padding: 10px;
+}
+
+.application-sub-panel__actions-container {
+  margin: 0 0 10px;
+  padding: 0 0 5px;
+}
+
+.application-sub-panel__meta-title {
+  font-weight: bold;
+}
+
+.application-sub-panel__meta-items {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.application-sub-panel__meta-item {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
@@ -218,6 +256,7 @@
   padding: 5px;
 }
 
+.application-sub-panel__header--studies-exams,
 .application-sub-panel__header--studies-assignments,
 .application-sub-panel__header--studies-exercises,
 .application-sub-panel__header--studies-journal-entries {
@@ -302,12 +341,13 @@
 
 // Subpanel description
 .application-sub-panel__description {
+  font-style: italic;
   font-weight: 300;
   line-height: 1.375rem;
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
+    padding: 10px 0 20px;
   }
 }
 
@@ -1048,7 +1088,7 @@
 .application-sub-panel__item-title--counselors {
   flex-basis: auto;
   font-weight: 600;
-  width: 100%,
+  width: 100%;
 }
 
 .application-sub-panel__item-title--organization-summary,
@@ -1128,7 +1168,8 @@
   flex-direction: column;
 }
 
-.application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
+.application-sub-panel__item-data-container--organization-summary
+  *:not(:first-child) {
   margin-left: 10px;
 }
 
@@ -1150,7 +1191,8 @@
 }
 
 // Removing single-enty background
-.application-sub-panel__item-data-content--no-bg .application-sub-panel__single-entry {
+.application-sub-panel__item-data-content--no-bg
+  .application-sub-panel__single-entry {
   background-color: transparent;
 }
 
@@ -1175,11 +1217,13 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date
+  .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date
+  .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }

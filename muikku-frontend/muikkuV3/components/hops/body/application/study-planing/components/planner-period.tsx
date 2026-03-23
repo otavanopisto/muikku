@@ -1,18 +1,19 @@
 import * as React from "react";
-import {
-  isPeriodCourseItemActivityCourse,
-  isPeriodCourseItemPlannedCourse,
-  PlannedCourseWithIdentifier,
-  PlannedPeriod,
-} from "~/reducers/hops";
+import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import PlannerPeriodMonth from "./desktop/planner-period-month";
 import MobilePlannerPeriodMonth from "./mobile/planner-period-month";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { getPeriodMonthNames } from "../helper";
-import { StudentStudyActivity } from "~/generated/client";
+import {
+  getPeriodMonthNames,
+  isPeriodCourseItemActivityCourse,
+  isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
+} from "../helper";
+import { StudyActivityItem } from "~/generated/client";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 // Animate period to collapse
 const periodVariants: Variants = {
@@ -43,7 +44,7 @@ const periodVariants: Variants = {
  */
 const hasPlannedCoursesOrOngoingActivities = (
   plannedCourses: PlannedCourseWithIdentifier[],
-  studyActivity: StudentStudyActivity[]
+  studyActivity: StudyActivityItem[]
 ) =>
   plannedCourses.some((course) => {
     const activity = studyActivity.find(
@@ -52,7 +53,7 @@ const hasPlannedCoursesOrOngoingActivities = (
         sa.subject === course.subjectCode
     );
 
-    return activity === undefined || activity.status === "ONGOING";
+    return activity === undefined || activity.state === "ONGOING";
   });
 
 /**
@@ -80,13 +81,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     const { t } = useTranslation(["common"]);
 
-    const curriculumStrategy = useSelector(
-      (state: StateType) => state.hopsNew.hopsCurriculumConfig.strategy
-    );
+    const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
-    const studyActivities = useSelector(
-      (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
-    );
     const hopsMode = useSelector((state: StateType) => state.hopsNew.hopsMode);
 
     const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -98,6 +94,11 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
       [items]
     );
 
+    const planNotes = React.useMemo(
+      () => items.filter(isPeriodCourseItemStudyPlannerNote),
+      [items]
+    );
+
     const activityCourses = React.useMemo(
       () => items.filter(isPeriodCourseItemActivityCourse),
       [items]
@@ -106,8 +107,11 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
     // Check if the period has planned courses
     const hasMovablePlannedCourses = React.useMemo(
       () =>
-        hasPlannedCoursesOrOngoingActivities(plannedCourses, studyActivities),
-      [plannedCourses, studyActivities]
+        hasPlannedCoursesOrOngoingActivities(
+          plannedCourses,
+          userStudyActivity.items
+        ),
+      [plannedCourses, userStudyActivity]
     );
 
     /**
@@ -116,7 +120,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
      */
     const getPlannedCoursesByMonth = (monthName: string) =>
       plannedCourses.filter((course) => {
-        const studyActivity = studyActivities.find(
+        const studyActivity = userStudyActivity.items.find(
           (sa) =>
             sa.courseNumber === course.courseNumber &&
             sa.subject === course.subjectCode
@@ -124,13 +128,24 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
         const useStudyActivityData =
           studyActivity &&
-          (studyActivity.status === "GRADED" ||
-            studyActivity.status === "SUPPLEMENTATIONREQUEST");
+          (studyActivity.state === "GRADED" ||
+            studyActivity.state === "SUPPLEMENTATIONREQUEST");
 
         const startDate = useStudyActivityData
           ? new Date(studyActivity.date)
           : new Date(course.startDate);
         const monthIndex = startDate.getMonth();
+        return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
+      });
+
+    /**
+     * Gets plan notes by month
+     * @param monthName month name
+     * @returns plan notes by month
+     */
+    const getPlanNotesByMonth = (monthName: string) =>
+      planNotes.filter((note) => {
+        const monthIndex = new Date(note.startDate).getMonth();
         return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
       });
 
@@ -141,8 +156,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
      */
     const getActivityCoursesByMonth = (monthName: string) =>
       activityCourses.filter((aCourse) => {
-        const activityDate = new Date(aCourse.studyActivity.date);
-        const monthIndex = activityDate.getMonth();
+        const monthIndex = new Date(aCourse.studyActivity.date).getMonth();
         return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
       });
 
@@ -156,7 +170,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
           });
 
     // Calculate workload
-    const workload = curriculumStrategy.calculatePeriodWorkload(
+    const workload = curriculumConfig.strategy.calculatePeriodWorkload(
       plannedCourses,
       activityCourses,
       t
@@ -257,6 +271,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                       getPlannedCoursesByMonth(monthName);
                     const monthActivityCourses =
                       getActivityCoursesByMonth(monthName);
+                    const monthPlanNotes = getPlanNotesByMonth(monthName);
 
                     const monthKey = `${monthName}-${year}-${type}`;
 
@@ -268,6 +283,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                         year={year}
                         courses={monthPlannedCourses}
                         activities={monthActivityCourses}
+                        notes={monthPlanNotes}
                         isPast={isPastPeriod}
                       />
                     ) : (
@@ -278,6 +294,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                         year={year}
                         courses={monthPlannedCourses}
                         activities={monthActivityCourses}
+                        notes={monthPlanNotes}
                         isPast={isPastPeriod}
                         disabled={
                           (isPastPeriod && !hasMovablePlannedCourses) ||

@@ -3,9 +3,9 @@ import { WorkspaceDataType } from "~/reducers/workspaces";
 import { Reducer } from "redux";
 import {
   ActivityLogEntry,
-  OptionalCourseSuggestion,
+  CourseMatrix,
+  Student,
   StudentCourseChoice,
-  UserWithSchoolData,
 } from "~/generated/client";
 import { StudentActivityByStatus } from "~/@types/shared";
 
@@ -25,8 +25,7 @@ export interface SummaryStudyTime {
  */
 export interface SummaryStudyProgress extends StudentActivityByStatus {
   studentChoices: StudentCourseChoice[];
-  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
-  options: string[];
+  courseMatrix: CourseMatrix;
 }
 
 /**
@@ -38,8 +37,7 @@ export interface SummaryDataType {
   returnedExercises: number;
   graphData: GraphDataType;
   coursesDone: number;
-  studentsDetails: UserWithSchoolData;
-  studyProgress: SummaryStudyProgress;
+  studentsDetails: Student;
 }
 
 /**

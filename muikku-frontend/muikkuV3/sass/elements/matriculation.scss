@@ -136,6 +136,16 @@
   margin: 15px 5px;
 }
 
+.matriculation-container__info-item--instructions ol {
+  list-style-type: decimal;
+  margin: 15px 30px;
+}
+
+.matriculation-container__info-item--instructions li {
+  display: list-item;
+  text-align: left;
+}
+
 .matriculation-container__info-list {
   list-style-type: disc;
   margin: 15px 30px;

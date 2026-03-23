@@ -1,11 +1,22 @@
 import { TFunction } from "i18next";
-import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
-import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import {
+  CourseMatrixModuleEnriched,
+  CourseMatrixSubjectEnriched,
+} from "~/@types/course-matrix";
+import { CourseFilter } from "~/@types/shared";
+import { StudyActivityItemState, StudyActivityItem } from "~/generated/client";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
+import {
+  PeriodCourseItem,
+  PlannedCourseNew,
   PlannedCourseWithIdentifier,
   PlannedPeriod,
   PlannerActivityItem,
+  SelectedItem,
   StudentDateInfo,
+  StudyPlannerNoteNew,
+  StudyPlannerNoteWithIdentifier,
+  TimeContextSelection,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
@@ -127,13 +138,15 @@ const createPeriods = (
  * @param studentDateInfo student date info
  * @param studyActivities study activities
  * @param plannedCourses List of planned courses to allocate
+ * @param planNotes List of plan notes to allocate
  * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
   studentDateInfo: StudentDateInfo,
-  studyActivities: StudentStudyActivity[],
+  studyActivities: StudyActivityItem[],
   plannedCourses: PlannedCourseWithIdentifier[],
+  planNotes: StudyPlannerNoteWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
@@ -157,8 +170,8 @@ const createAndAllocateCoursesToPeriods = (
     // affect the plan.
     const useStudyActivityData =
       studyActivity &&
-      (studyActivity.status === "GRADED" ||
-        studyActivity.status === "SUPPLEMENTATIONREQUEST");
+      (studyActivity.state === "GRADED" ||
+        studyActivity.state === "SUPPLEMENTATIONREQUEST");
 
     const courseStartYear = useStudyActivityData
       ? new Date(studyActivity.date).getFullYear()
@@ -191,8 +204,8 @@ const createAndAllocateCoursesToPeriods = (
         !plannedCourseKeys.has(
           `${activity.subject}-${activity.courseNumber}`
         ) &&
-        (activity.status === "GRADED" ||
-          activity.status === "SUPPLEMENTATIONREQUEST")
+        (activity.state === "GRADED" ||
+          activity.state === "SUPPLEMENTATIONREQUEST")
     )
     .forEach((activity) => {
       const activityItem = createActivityOnlyCourseItem(
@@ -218,6 +231,27 @@ const createAndAllocateCoursesToPeriods = (
         period.items.push(activityItem);
       }
     });
+
+  planNotes.forEach((note) => {
+    const noteStartDate = new Date(note.startDate);
+    const noteStartDateYear = noteStartDate.getFullYear();
+    const noteStartDateMonth = noteStartDate.getMonth();
+
+    const period = periods.find(
+      (p) =>
+        noteStartDateYear === p.year &&
+        ((p.type === "SPRING" &&
+          noteStartDateMonth >= 0 &&
+          noteStartDateMonth <= 6) ||
+          (p.type === "AUTUMN" &&
+            noteStartDateMonth >= 7 &&
+            noteStartDateMonth <= 11))
+    );
+
+    if (period) {
+      period.items.push(note);
+    }
+  });
 
   // Only trim empty periods from the start
   const trimmedPeriods = [...periods];
@@ -246,18 +280,16 @@ const createAndAllocateCoursesToPeriods = (
  * @returns activity-only course item
  */
 const createActivityOnlyCourseItem = (
-  studyActivity: StudentStudyActivity,
+  studyActivity: StudyActivityItem,
   curriculumStrategy: CurriculumStrategy
 ): PlannerActivityItem | null => {
   const matrix = curriculumStrategy.getCurriculumMatrix();
   // Find course in matrix
-  const subject = matrix.subjectsTable.find(
-    (s) => s.subjectCode === studyActivity.subject
-  );
+  const subject = matrix.subjects.find((s) => s.code === studyActivity.subject);
 
   if (!subject) return null;
 
-  const course = subject.availableCourses.find(
+  const course = subject.modules.find(
     (c) => c.courseNumber === studyActivity.courseNumber
   );
 
@@ -267,7 +299,7 @@ const createActivityOnlyCourseItem = (
     identifier: "activity-course-" + studyActivity.courseId,
     course: {
       ...course,
-      subjectCode: subject.subjectCode,
+      subjectCode: subject.code,
     },
     studyActivity,
   };
@@ -276,10 +308,10 @@ const createActivityOnlyCourseItem = (
 /**
  * Filtered course
  */
-interface FilteredCourse extends Course {
-  state?: CourseStatus;
+interface FilteredCourse extends CourseMatrixModuleEnriched {
+  state?: StudyActivityItemState;
   planned: boolean;
-  studyActivity?: StudentStudyActivity;
+  studyActivity?: StudyActivityItem;
 }
 
 /**
@@ -287,40 +319,38 @@ interface FilteredCourse extends Course {
  * @param subjects subjects
  * @param searchTerm search term
  * @param selectedFilters selected filters
- * @param availableOPSCoursesMap available OPS courses map
  * @param studyActivities study activities
  * @param plannedCourses planned courses
  * @returns filtered subjects and courses
  */
 const filterSubjectsAndCourses = (
-  subjects: SchoolSubject[],
+  subjects: CourseMatrixSubjectEnriched[],
   searchTerm: string,
   selectedFilters: CourseFilter[],
-  availableOPSCoursesMap: Map<string, number[]>,
-  studyActivities: StudentStudyActivity[],
+  studyActivities: StudyActivityItem[],
   plannedCourses: PlannedCourseWithIdentifier[]
 ) =>
   subjects
     .map((subject, i) => {
       let filteredCoursesWithStudyActivity = [
-        ...subject.availableCourses,
+        ...subject.modules,
       ].map<FilteredCourse>((course) => {
         const studyActivity = studyActivities.find(
           (sa) =>
             sa.courseNumber === course.courseNumber &&
-            sa.subject === subject.subjectCode
+            sa.subject === subject.code
         );
 
         const plannedCourse = plannedCourses.find(
           (pc) =>
             pc.courseNumber === course.courseNumber &&
-            pc.subjectCode === subject.subjectCode
+            pc.subjectCode === subject.code
         );
 
-        let state: CourseStatus = undefined;
+        let state: StudyActivityItemState = undefined;
 
         if (studyActivity) {
-          state = studyActivity.status;
+          state = studyActivity.state;
         }
 
         return {
@@ -338,27 +368,23 @@ const filterSubjectsAndCourses = (
       // Apply filters
       if (!skipMandatoryChecking && selectedFilters.includes("mandatory")) {
         filteredCoursesWithStudyActivity =
-          filteredCoursesWithStudyActivity.filter((course) => course.mandatory);
+          filteredCoursesWithStudyActivity.filter((course) =>
+            MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
+          );
       }
 
       if (!skipMandatoryChecking && selectedFilters.includes("optional")) {
         filteredCoursesWithStudyActivity =
           filteredCoursesWithStudyActivity.filter(
-            (course) => !course.mandatory
+            (course) =>
+              !MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
           );
       }
 
       // Filter available OPS courses
       if (selectedFilters.includes("available")) {
         filteredCoursesWithStudyActivity =
-          filteredCoursesWithStudyActivity.filter((course) => {
-            const availableCourseNumbers = availableOPSCoursesMap.get(
-              subject.subjectCode
-            );
-            return (
-              availableCourseNumbers?.includes(course.courseNumber) ?? false
-            );
-          });
+          filteredCoursesWithStudyActivity.filter((course) => course.available);
       }
 
       filteredCoursesWithStudyActivity =
@@ -429,28 +455,122 @@ export const getCurrentActivePeriodDateRange = (periods: PlannedPeriod[]) => {
 };
 
 /**
- * Checks if the course is a planned course
- * @param course course
- * @returns true if the course is a planned course
+ * Type guard for planned course item
+ * @param item item
+ * @returns true if the item is a planned course item
  */
-const isPlannedCourse = (
-  course: PlannedCourseWithIdentifier | Course
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+const isPeriodCourseItemPlannedCourse = (
+  item: PeriodCourseItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
 
 /**
- * Checks if the selected course is a planned course
- * @param course selected course
- * @returns true if the selected course is a planned course
+ * Type guard for study planner note item
+ * @param item item
+ * @returns true if the item is a study planner note item
  */
-const selectedIsPlannedCourse = (
-  course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+const isPeriodCourseItemStudyPlannerNote = (
+  item: PeriodCourseItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
+
+/**
+ * Type guard for activity course item
+ * @param item item
+ * @returns true if the item is an activity course item
+ */
+const isPeriodCourseItemActivityCourse = (
+  item: PeriodCourseItem
+): item is PlannerActivityItem =>
+  "identifier" in item && item.identifier.startsWith("activity-");
+
+/**
+ * Type guard for check selected item is planned course
+ * @param item item
+ */
+const isSelectedItemPlannedCourse = (
+  item: SelectedItem
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for check selected item is study planner note
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isSelectedItemStudyPlannerNote = (
+  item: SelectedItem
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
+
+/**
+ * Type guard for check selected item is study planner note new
+ * @param item item
+ * @returns true if the item is a study planner note new item
+ */
+const isSelectedItemStudyPlannerNoteNew = (
+  item: SelectedItem
+): item is StudyPlannerNoteNew => "type" in item && item.type === "note-new";
+
+/**
+ * Type guard for check selected item is planned course new
+ * @param item item
+ * @returns true if the item is a planned course new item
+ */
+const isSelectedItemPlannedCourseNew = (
+  item: SelectedItem
+): item is PlannedCourseNew =>
+  "type" in item && item.type === "planned-course-new";
+
+/**
+ * Type guard for no selection
+ * @param selection Selection
+ */
+const isNoTimeContextSelection = (
+  selection: TimeContextSelection
+): selection is { type: null } => selection.type === null;
+
+/**
+ * Checks if the item is a planned course or study planner note
+ * @param item item
+ * @returns true if the course is a planned course
+ */
+const isDragDropItemPlannedCourse = (
+  item:
+    | PlannedCourseWithIdentifier
+    | StudyPlannerNoteWithIdentifier
+    | PlannedCourseNew
+    | StudyPlannerNoteNew
+): item is PlannedCourseWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("planned-");
+
+/**
+ * Type guard for check drag drop item is study planner note
+ * @param item item
+ * @returns true if the item is a study planner note item
+ */
+const isDragDropItemStudyPlannerNote = (
+  item:
+    | PlannedCourseWithIdentifier
+    | StudyPlannerNoteWithIdentifier
+    | PlannedCourseNew
+    | StudyPlannerNoteNew
+): item is StudyPlannerNoteWithIdentifier =>
+  "identifier" in item && item.identifier.startsWith("plan-note-");
 
 export {
   createAndAllocateCoursesToPeriods,
   filterSubjectsAndCourses,
-  isPlannedCourse,
-  selectedIsPlannedCourse,
+  isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
+  isPeriodCourseItemActivityCourse,
+  isDragDropItemPlannedCourse,
+  isDragDropItemStudyPlannerNote,
+  isSelectedItemPlannedCourse,
+  isSelectedItemStudyPlannerNote,
+  isSelectedItemStudyPlannerNoteNew,
+  isSelectedItemPlannedCourseNew,
+  isNoTimeContextSelection,
   getPeriodMonthNames,
   getPeriodTypeByMonthNumber,
 };

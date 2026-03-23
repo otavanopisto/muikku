@@ -1,10 +1,9 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import { Tab } from "~/components/general/tabs";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
@@ -15,19 +14,13 @@ import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
-import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
-import { StatusType } from "~/reducers/base/status";
 import {
-  StartEditingTriggerType,
   startEditing,
-  SaveHopsTriggerType,
   saveHops,
-  CancelEditingTriggerType,
   cancelEditing,
 } from "~/actions/main-function/hops/";
 import { useState, useCallback, useEffect } from "react";
-import { HopsState } from "~/reducers/hops";
 import Button from "~/components/general/button";
 import WebsocketWatcher from "./application/helper/websocket-watcher";
 import _ from "lodash";
@@ -46,6 +39,7 @@ import {
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
 import "~/sass/elements/react-datepicker-override.scss";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * Represents the available tabs in the HOPS application.
@@ -57,18 +51,7 @@ type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE" | "STUDYPLAN";
  * Props for the HopsApplication component.
  */
 interface HopsApplicationProps {
-  /** The current state of the HOPS application */
-  hops: HopsState;
-  /** The current status information including user data */
-  status: StatusType;
-  /** Whether to show the HOPS title in the panel */
   showTitle?: boolean;
-  /** Function to trigger edit mode */
-  startEditing: StartEditingTriggerType;
-  /** Function to exit edit mode */
-  saveHops: SaveHopsTriggerType;
-  /** Function to cancel editing */
-  cancelEditing: CancelEditingTriggerType;
 }
 
 const defaultProps: Partial<HopsApplicationProps> = {
@@ -82,7 +65,7 @@ const defaultProps: Partial<HopsApplicationProps> = {
  * @returns The rendered HopsApplication component
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { showTitle, status, hops, startEditing, saveHops, cancelEditing } = {
+  const { showTitle } = {
     ...defaultProps,
     ...props,
   };
@@ -98,6 +81,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ] = React.useState(false);
   const [pendingDetailsContent, setPendingDetailsContent] = useState("");
 
+  const dispatch = useDispatch();
+
+  const status = useSelector((state: StateType) => state.status);
+  const hops = useSelector((state: StateType) => state.hopsNew);
+  const { curriculumConfig, studyActivity } = useSelector(
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
+      ]
+  );
+
   // Note that this component is used by student, thats why
   // we need to check the study programme name from profile
   const studyProgrammeName = status.profile.studyProgrammeName;
@@ -111,10 +105,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If the student info is not loaded or the study programme is not upper secondary, return false by default
-    if (
-      !hops.studentInfo ||
-      hops.studentInfo.studyProgrammeEducationType !== "lukio"
-    ) {
+    if (!hops.studentInfo || hops.studentInfo.educationTypeCode !== "lukio") {
       return false;
     }
 
@@ -139,12 +130,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
       !_.isEqual(
         hops.hopsEditing.plannedCourses,
         hops.hopsStudyPlanState.plannedCourses
-      ) || !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals),
+      ) ||
+      !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals) ||
+      !_.isEqual(hops.hopsEditing.planNotes, hops.hopsStudyPlanState.planNotes),
     [
       hops.hopsEditing.goals,
       hops.hopsEditing.plannedCourses,
       hops.hopsStudyPlanState.goals,
       hops.hopsStudyPlanState.plannedCourses,
+      hops.hopsEditing.planNotes,
+      hops.hopsStudyPlanState.planNotes,
     ]
   );
 
@@ -221,7 +216,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
    * Handles the start editing button click
    */
   const handleStartEditing = () => {
-    startEditing();
+    dispatch(startEditing());
     setPendingDetailsContent("");
   };
 
@@ -229,7 +224,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
    * Handles the cancel editing button click
    */
   const handleCancelEditing = () => {
-    cancelEditing();
+    dispatch(cancelEditing());
     setPendingDetailsContent("");
   };
 
@@ -244,7 +239,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
    * Handles the confirm button click in the pending changes warning dialog
    */
   const handlePendingChangesWarningDialogConfirm = () => {
-    cancelEditing();
+    dispatch(cancelEditing());
     setIsPendingChangesWarningDialogOpen(false);
   };
 
@@ -266,17 +261,19 @@ const HopsApplication = (props: HopsApplicationProps) => {
    * Handles the save button click in the pending changes details dialog
    */
   const handleSaveHops = () => {
-    saveHops({
-      details: pendingDetailsContent,
-      // eslint-disable-next-line jsdoc/require-jsdoc
-      onSuccess: () => {
-        unstable_batchedUpdates(() => {
-          // On success, reset the pending details content and close the dialog
-          setPendingDetailsContent("");
-          setIsPendingChangesDetailsDialogOpen(false);
-        });
-      },
-    });
+    dispatch(
+      saveHops({
+        details: pendingDetailsContent,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: () => {
+          unstable_batchedUpdates(() => {
+            // On success, reset the pending details content and close the dialog
+            setPendingDetailsContent("");
+            setIsPendingChangesDetailsDialogOpen(false);
+          });
+        },
+      })
+    );
   };
 
   /**
@@ -298,7 +295,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "BACKGROUND":
       case "POSTGRADUATE":
       case "STUDYPLAN":
-        return true;
+        return curriculumConfig?.isMatrixAvailable ?? false;
       case "MATRICULATION":
         return [
           "Nettilukio",
@@ -367,12 +364,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
     : [];
 
   let editingDisabled = false;
+  let currentUserIsEditing = undefined;
 
   if (
     status.userId !== hops.hopsLocked?.userEntityId &&
     hops.hopsLocked?.locked
   ) {
     editingDisabled = true;
+    currentUserIsEditing = hops.hopsLocked.userName;
   }
 
   return (
@@ -383,19 +382,35 @@ const HopsApplication = (props: HopsApplicationProps) => {
           identifier: status.userSchoolDataIdentifier,
           studyStartDate: new Date(status.profile.studyStartDate),
         }}
+        curriculumConfig={curriculumConfig}
+        userStudyActivity={studyActivity}
       >
         <ApplicationPanel
           title={showTitle ? "HOPS" : undefined}
           panelOptions={
             <div className="hops-edit__button-row">
               {hops.hopsMode === "READ" ? (
-                <Button
-                  onClick={handleStartEditing}
-                  disabled={editingDisabled}
-                  buttonModifiers={["info", "standard-ok"]}
+                <Dropdown
+                  openByHover
+                  content={
+                    editingDisabled && (
+                      <p>
+                        {t("labels.editing", {
+                          ns: "common",
+                          user: currentUserIsEditing,
+                        })}
+                      </p>
+                    )
+                  }
                 >
-                  {t("actions.edit", { ns: "common" })}
-                </Button>
+                  <Button
+                    onClick={handleStartEditing}
+                    disabled={editingDisabled}
+                    buttonModifiers={["info", "standard-ok"]}
+                  >
+                    {t("actions.edit", { ns: "common" })}
+                  </Button>
+                </Dropdown>
               ) : (
                 <Button
                   onClick={handleOpenPendingChangesDetailsDialog}
@@ -469,32 +484,4 @@ const HopsApplication = (props: HopsApplicationProps) => {
   );
 };
 
-/**
- * Maps Redux state to component props.
- * @param state - The Redux state
- * @returns The props derived from state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    hops: state.hopsNew,
-    status: state.status,
-  };
-}
-
-/**
- * Maps Redux dispatch actions to component props.
- * @param dispatch - The Redux dispatch function
- * @returns The mapped action creators
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      startEditing,
-      saveHops,
-      cancelEditing,
-    },
-    dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HopsApplication);
+export default HopsApplication;

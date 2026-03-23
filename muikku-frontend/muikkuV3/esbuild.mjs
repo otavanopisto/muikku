@@ -5,6 +5,8 @@ import { readFileSync } from "fs";
 import { sassPlugin } from "esbuild-sass-plugin";
 import { TsconfigPathsPlugin } from "@esbuild-plugins/tsconfig-paths";
 import moment from "moment";
+import * as glob from "glob";
+import fs from "fs";
 
 // the tsconfig to use in here will be slightly modified the reason is that we want
 // to affect the typescript compiler not to import from nodejs folders
@@ -29,6 +31,7 @@ const build = _build({
   outdir: path.resolve(path.join("../dist")),
   publicPath: "../dist",
   external: ["/gfx/*", "/sounds/*"],
+  metafile: true,
   loader: {
     ".png": "dataurl",
     ".jpg": "dataurl",
@@ -47,6 +50,63 @@ const build = _build({
   // modified tsconfig
   tsconfigRaw: JSON.stringify({ tsConfig }),
   plugins: [
+    {
+      name: "esbuild:cleanup",
+      setup(build) {
+        const options = build.initialOptions;
+        // Checks whether cleanup is possible to do, skip if not
+        if (!options.outdir) {
+          console.log(
+            "[esbuild cleanup] Not outdir configured - skipping the cleanup"
+          );
+          return;
+        }
+        if (!options.metafile) {
+          console.log(
+            "[esbuild cleanup] Metafile is not enabled - skipping the cleanup"
+          );
+          return;
+        }
+        // list of predefined files that not to clean up
+        // can be optionally used
+        const safelistSet = new Set([]);
+        build.onEnd(async (result) => {
+          try {
+            console.time("[esbuild cleanup] Cleaning up old assets");
+            // Add all output files to the safelist, these are the files that are not to be cleaned up
+            Object.keys(result.metafile.outputs).forEach((oPath) =>
+              safelistSet.add(path.join(options.outdir, oPath))
+            );
+            // Find old files in the output directory
+            // Use a glob pattern to match all files recursively (exclude directories)
+            const globPattern = `${path.join(options.outdir)}/**/*`;
+            const files = await glob.glob(globPattern, {
+              nodir: true, // Only return files, not directories
+              absolute: true, // Return absolute paths
+            });
+
+            // Iterate over the files and clean up the old files
+            // If the file is not in the safelist, clean it up
+            files.forEach((filePath) => {
+              if (!safelistSet.has(filePath)) {
+                fs.unlink(
+                  filePath,
+                  (err) =>
+                    process.env.NODE_ENV !== "production" &&
+                    console.log(
+                      err
+                        ? "[esbuild cleanup] " + err
+                        : "[esbuild cleanup] Removed old file: " + filePath
+                    )
+                );
+              }
+            });
+          } finally {
+            console.timeEnd("[esbuild cleanup] Cleaning up old assets");
+          }
+        });
+      },
+    },
     {
       name: "css",
       setup(build) {

@@ -310,7 +310,7 @@ const EvaluationJournalEvent = React.forwardRef<
 
   const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
-    "h:mm"
+    "LT"
   )}`;
 
   const arrowClasses = !showComments

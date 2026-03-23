@@ -36,9 +36,17 @@ public class AnnouncementRecipientRESTModel {
     this.readDate = readDate;
   }
 
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
 
   private Long id;
   private Long announcementId;
   private Long userEntityId;
   private Date readDate;
+  private boolean pinned;
 }

@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
+import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
@@ -73,7 +74,6 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -93,8 +93,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -222,7 +221,7 @@ public class GuiderRESTService extends PluginRESTService {
   private Instance<SearchProvider> searchProviders;
   
   @Inject
-  private WebSocketMessenger webSocketMessenger;
+  private HopsWebsocketMessenger hopsWebSocketMessenger;
   
   @Inject
   private CourseMetaController courseMetaController;
@@ -494,6 +493,7 @@ public class GuiderRESTService extends PluginRESTService {
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"),
             (String) o.get("studyProgrammeIdentifier"),
+            null, // educationTypeCode. Would need to be in Elastic as we don't want looped Pyramus calls :|
             hasImage,
             (String) o.get("nationality"),
             (String) o.get("language"),
@@ -584,6 +584,7 @@ public class GuiderRESTService extends PluginRESTService {
         user.getNickName(),
         user.getStudyProgrammeName(),
         user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
+        user.getEducationTypeCode(),
         hasImage,
         user.getNationality(),
         user.getLanguage(),
@@ -693,7 +694,6 @@ public class GuiderRESTService extends PluginRESTService {
   public Response listWorkspaceActivities(
       @PathParam("USERIDENTIFIER") String userIdentifier,
       @QueryParam("workspaceIdentifier") String wsIdentifier,
-      @QueryParam("includeTransferCredits") boolean includeTransferCredits,
       @QueryParam("includeAssignmentStatistics") boolean includeAssignmentStatistics) {
 
     // Access check
@@ -722,7 +722,7 @@ public class GuiderRESTService extends PluginRESTService {
     WorkspaceActivityInfo activityInfo = evaluationController.getWorkspaceActivityInfoWithSummary(
         studentIdentifier, 
         workspaceIdentifier, 
-        includeTransferCredits, 
+        true,
         includeAssignmentStatistics);
     return Response.ok(activityInfo).build();
   }
@@ -1349,42 +1349,19 @@ public class GuiderRESTService extends PluginRESTService {
     if (!recipientEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
     }
-
-    List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
     
-    SearchProvider searchProvider = getProvider("elastic-search");
-    if (searchProvider != null) {
-      SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
-      
-      if (searchResult.getTotalHitCount() > 0) {
-        List<Map<String, Object>> results = searchResult.getResults();
-        Map<String, Object> match = results.get(0);
+    // Websocket message
 
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
-        for (Map<String, Object> s : subjectList) {
-          StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
-          item.setCourseName(workspaceName);
-          item.setCourseId(workspaceEntity.getId());
-          item.setCourseNumber((Integer) s.get("courseNumber"));
-          item.setSubject((String) s.get("subjectCode"));
-          item.setStatus(StudyActivityItemStatus.ONGOING);
-          item.setSubjectName((String) s.get("subjectName"));
-          item.setDate(new Date());
-          
-          restItems.add(item);
-        }
-        
-        webSocketMessenger.sendMessage("hops:workspace-signup", restItems, Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
-
-        return Response.ok(restItems).build();
-      }
-      else {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount())).build();
-      }
-    } else {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Elastic search provider not found.", searchProvider)).build();
+    BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId(), null);
+    if (response.ok()) {
+      // Ensure caller and student are added to the listeners interested in the student's HOPS changes
+      hopsWebSocketMessenger.registerUser(studentEntity.getId(), sessionController.getLoggedUserEntity().getId());
+      hopsWebSocketMessenger.sendMessage(studentEntity.getId(), "hops:workspace-signup", response.getEntity().getItems());
+      return Response.ok(response.getEntity().getItems()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build(); 
     }
   }
 

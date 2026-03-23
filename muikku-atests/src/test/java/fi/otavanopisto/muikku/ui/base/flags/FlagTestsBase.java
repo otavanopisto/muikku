@@ -147,20 +147,20 @@ public class FlagTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
 
-      waitForPresent(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
-      click(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
+      waitAndClick(".application-panel__content-aside .icon-more_vert");
+      waitAndClick(".menu__item-dropdown-list #editOption");
       
-      waitForVisible("input.form-element__input--guider-label-name");
-      click("input.form-element__input--guider-label-name");
-      selectAllAndClear("input.form-element__input--guider-label-name");
-      sendKeys("input.form-element__input--guider-label-name", "Edited title");
-      waitForVisible("textarea.form-element__textarea");
-      click("textarea.form-element__textarea");
-      selectAllAndClear("textarea.form-element__textarea");
-      sendKeys("textarea.form-element__textarea", "Edited description");
+      waitForVisible("input#tagCategoryName");
+      click("input#tagCategoryName");
+      selectAllAndClear("input#tagCategoryName");
+      sendKeys("input#tagCategoryName", "Edited title");
+      waitForVisible("textarea#guiderLabelDescription");
+      click("textarea#guiderLabelDescription");
+      selectAllAndClear("textarea#guiderLabelDescription");
+      sendKeys("textarea#guiderLabelDescription", "Edited description");
       click(".button--standard-ok");
       
-      waitForNotVisible(".dialog--guider-edit-label");
+      waitForNotVisible(".dialog--visible");
       waitForVisible(".application-panel__content-aside .icon-flag");
       waitForVisible(".application-panel__content-aside .icon-flag + span.menu__item-link-text");
       assertTextIgnoreCase(".application-panel__content-aside .icon-flag + span.menu__item-link-text", "Edited title");
@@ -256,22 +256,20 @@ public class FlagTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
 
-      waitForPresent(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
-      waitAndClick(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
-      waitUntilAnimationIsDone(".dialog--guider-edit-label");
-      sleep(1000);
-      waitForVisible(".autocomplete__input input.tag-input__input--guider");
-      click(".autocomplete__input input.tag-input__input--guider");
-
-      sendKeys(".autocomplete__input input.tag-input__input--guider", "test");
+      waitAndClick(".application-panel__content-aside .icon-more_vert");
+      waitAndClick(".menu__item-dropdown-list #editOption");
+      waitForVisible("input#guiderLabelShare");
+      waitForVisible("input#guiderLabelShare");
+      click("input#guiderLabelShare");
+      sendKeys("input#guiderLabelShare", "test");
       waitForVisible(".glyph--autocomplete-recipient");
 
       waitAndClick(".glyph--autocomplete-recipient");
 
-      click(".dialog--guider-edit-label .button--standard-ok");
+      click(".button--standard-ok");
       
-      waitForNotVisible(".dialog--guider-edit-label");
-      waitForPresent(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
+      waitForNotVisible(".dialog--visible");
+      waitForClickable(".application-panel__content-aside .icon-more_vert");
       
       logout();
       mockBuilder.mockLogin(testPerson);
@@ -321,23 +319,12 @@ public class FlagTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       selectFinnishLocale();
-      waitForPresent(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
-      waitAndClick(".application-panel__content-aside a > span.button-pill.button-pill--navigation-edit-label > span");
-
-      waitUntilAnimationIsDone(".dialog--guider-edit-label");
-      sleep(1000);
-
-      waitAndClick(".button--guider-remove-label");
-      waitClassPresent(".button--guider-remove-label", "disabled");
-      waitUntilAnimationIsDone(".button--guider-remove-label");
-      waitUntilAnimationIsDone(".icon-flag");
-      assertTextIgnoreCase(".button--guider-remove-label", "Poisto tallennuksessa");
-      sleep(500);
-      waitAndClick(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
-      waitForNotVisible(".dialog--guider-edit-label");
-      waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+      waitAndClick(".application-panel__content-aside .icon-more_vert");
+      waitAndClick(".menu__item-dropdown-list #deleteOption");
+      waitAndClick(".button--fatal.button--standard-ok");
+      waitForNotVisible(".application-panel__content-aside .icon-more_vert");
       
-      assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+      assertNotPresent(".application-panel__content-aside .icon-more_vert");
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());

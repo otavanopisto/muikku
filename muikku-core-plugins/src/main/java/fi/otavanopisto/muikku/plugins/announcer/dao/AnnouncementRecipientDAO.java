@@ -17,11 +17,20 @@ public class AnnouncementRecipientDAO extends CorePluginsDAO<AnnouncementRecipie
 	
   private static final long serialVersionUID = -5945129760014248759L;
 
-  public AnnouncementRecipient create(Announcement announcement, Long userEntityId) {
+  public AnnouncementRecipient create(Announcement announcement, Long userEntityId, Date readDate, boolean pinned) {
     AnnouncementRecipient announcementRecipient = new AnnouncementRecipient();
     announcementRecipient.setAnnouncement(announcement);
     announcementRecipient.setUserEntityId(userEntityId);
-    announcementRecipient.setReadDate(new Date());
+    announcementRecipient.setPinned(pinned);
+    announcementRecipient.setReadDate(readDate);
+    
+    return persist(announcementRecipient);
+ }
+  
+  public AnnouncementRecipient update(AnnouncementRecipient announcementRecipient, boolean pinned, Date readDate) {
+
+    announcementRecipient.setPinned(pinned);
+    announcementRecipient.setReadDate(readDate);
     
     return persist(announcementRecipient);
  }

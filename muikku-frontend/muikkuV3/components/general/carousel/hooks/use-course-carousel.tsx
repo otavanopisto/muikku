@@ -1,10 +1,10 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { SchoolCurriculumMatrix, SuggestedCourse } from "~/@types/shared";
+import { SuggestedCourse } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
-import { WorkspaceSuggestion } from "~/generated/client";
-import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
-import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
+import { CourseMatrix, WorkspaceSuggestion } from "~/generated/client";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
 
 /**
  * UseCourseCarousel
@@ -29,16 +29,14 @@ const hopsApi = MApi.getHopsApi();
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
- * @param studyProgrammeName studyProgrammeName
- * @param curriculumName curriculumName
+ * @param matrix matrix
  * @param displayNotification displayNotification
  * @returns array of course carousel items
  */
 export const useCourseCarousel = (
   studentId: string,
   userEntityId: number,
-  studyProgrammeName: string,
-  curriculumName: string,
+  matrix: CourseMatrix,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   // This hook cannot be called for anyone else but students (without an error)
@@ -52,19 +50,20 @@ export const useCourseCarousel = (
     }
   );
 
+  const studyActivity = useSelector(
+    (state: StateType) =>
+      state.studyActivity.userStudyDataByEducationTypeCode[
+        state.studyActivity.defaultEducationTypeCode
+      ]?.studyActivity
+  );
+
   React.useEffect(() => {
     /**
      * Loads student activity data
-     * @param studentId of student
      */
-    const loadStudentActivityListData = async (studentId: string) => {
-      const matrix = carouselMatrixByStudyProgrammeAndCurriculum(
-        studyProgrammeName,
-        curriculumName
-      );
-
+    const loadStudentActivityListData = async () => {
       // If matrix is not found, cancel function and return
-      if (!matrix) {
+      if (!matrix || !studyActivity) {
         setCourseCarousel((courseCarousel) => ({
           ...courseCarousel,
           carouselItems: null,
@@ -82,17 +81,6 @@ export const useCourseCarousel = (
         // Loadeds course carousel data
         const [loadedCourseCarouselData] = await Promise.all([
           (async () => {
-            // Student subject options
-            const loadedStudentAlternativeOptions =
-              await hopsApi.getStudentAlternativeStudyOptions({
-                studentIdentifier: studentId,
-              });
-
-            //Loaded student activity list
-            const studentActivityList = await hopsApi.getStudentStudyActivity({
-              studentIdentifier: studentId,
-            });
-
             // Initialized with empty array. This list will be looped
             // with server calls that returns suggested courses which will eventually go
             // to course carousel. For now there is atleast one course per subject. Might be changed later.
@@ -105,23 +93,18 @@ export const useCourseCarousel = (
             // Ids of supervisor suggestions
             const suggestedNextIdList: number[] = [];
 
-            const filteredSchoolCourseTable = filterCompulsorySubjects(
-              matrix,
-              loadedStudentAlternativeOptions
-            );
-
             // Iterate course matrix
-            for (const sCourseItem of filteredSchoolCourseTable) {
-              for (const aCourse of sCourseItem.availableCourses) {
+            for (const sCourseItem of matrix.subjects) {
+              for (const aCourse of sCourseItem.modules) {
                 // If transfered, graded, ongoing
                 if (
-                  studentActivityList.find(
+                  studyActivity.items.find(
                     (sItem) =>
-                      sItem.subject === sCourseItem.subjectCode &&
+                      sItem.subject === sCourseItem.code &&
                       sItem.courseNumber === aCourse.courseNumber &&
-                      (sItem.status === "TRANSFERRED" ||
-                        sItem.status === "GRADED" ||
-                        sItem.status === "ONGOING")
+                      (sItem.state === "TRANSFERRED" ||
+                        sItem.state === "GRADED" ||
+                        sItem.state === "ONGOING")
                   )
                 ) {
                   // Skip
@@ -129,7 +112,7 @@ export const useCourseCarousel = (
                 } else {
                   // Otherwise push to courses list
                   courses.push({
-                    subjectCode: sCourseItem.subjectCode,
+                    subjectCode: sCourseItem.code,
                     courseNumber: aCourse.courseNumber,
                   });
                   break;
@@ -138,8 +121,8 @@ export const useCourseCarousel = (
             }
 
             // Iterate studentActivity and pick only suggested next courses
-            for (const a of studentActivityList) {
-              if (a.status === "SUGGESTED_NEXT") {
+            for (const a of studyActivity.items) {
+              if (a.state === "SUGGESTED_NEXT") {
                 suggestedNextIdList.push(a.courseId);
 
                 coursesAsNext.push({
@@ -237,14 +220,8 @@ export const useCourseCarousel = (
       }
     };
 
-    loadStudentActivityListData(studentId);
-  }, [
-    studentId,
-    userEntityId,
-    displayNotification,
-    studyProgrammeName,
-    curriculumName,
-  ]);
+    loadStudentActivityListData();
+  }, [userEntityId, displayNotification, matrix, studyActivity]);
 
   return {
     courseCarousel,
@@ -264,40 +241,19 @@ const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
 /**
  * carouselMatrixByStudyProgrammeAndCurriculum
  * @param studyProgrammeName studyProgrammeName
- * @param curriculumName curriculumName
+ * @param matrix matrix
  * @returns Matrix or null if matrix is not found
  */
-export const carouselMatrixByStudyProgrammeAndCurriculum = (
+export const carouselMatrixByStudyProgramme = (
   studyProgrammeName: string,
-  curriculumName: string
+  matrix: CourseMatrix
 ) => {
-  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
-  // Will be enabled later
-  //const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
-
-  /**
-   * Finds and returns OPS based matrix
-   *
-   * @param matrices list of matrices
-   * @returns OPS based matrix or null if OPS based matrix is not found
-   */
-  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
-    const matrix = matrices.find(
-      (matrix) => matrix.curriculumName === curriculumName
-    );
-
-    if (matrix) {
-      return matrix.subjectsTable;
-    }
-    return null;
-  };
-
   switch (studyProgrammeName) {
     case "Nettiperuskoulu":
     case "Nettiperuskoulu/yksityisopiskelu":
     case "Aineopiskelu/perusopetus":
     case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
-      return matrixTableBasedOnOPS(compulsoryMatrices);
+      return matrix;
 
     default:
       return null;

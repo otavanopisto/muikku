@@ -240,31 +240,37 @@ public class WorkspaceUserEntityController {
   public WorkspaceUserEntity updateActive(WorkspaceUserEntity workspaceUserEntity, Boolean active) {
     if (Boolean.FALSE.equals(active)) {
       // #6620: Remove past workspaces from the list of student's last workspaces
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-      UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
-      
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
+          workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(),
+          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+      UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity,
+          "last-workspaces");
+
       if (lastWorkspaces != null) {
         if (StringUtils.isNotEmpty(lastWorkspaces.getValue())) {
           ObjectMapper objectMapper = new ObjectMapper();
           List<LastWorkspace> lastWorkspaceList = null;
           String lastWorkspaceJson = lastWorkspaces.getValue();
-          
+
           try {
-            lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
-            
-            int lastWorkspaceListSize = lastWorkspaceList.size();
-            
-            if(lastWorkspaceList != null) {
+            lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson,
+                new TypeReference<ArrayList<LastWorkspace>>() {
+                });
+
+            if (lastWorkspaceList != null) {
+              int lastWorkspaceListSize = lastWorkspaceList.size();
               Long workspaceEntityId = workspaceUserEntity.getWorkspaceEntity().getId();
               lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
-            
+
               if (lastWorkspaceListSize != lastWorkspaceList.size()) {
-              userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(lastWorkspaceList));
+                userEntityController.setUserEntityProperty(userEntity, "last-workspaces",
+                    objectMapper.writeValueAsString(lastWorkspaceList));
               }
             }
           }
           catch (JsonProcessingException e) {
-            logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
+            logger.log(Level.WARNING,
+                String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
           }
         }
       }

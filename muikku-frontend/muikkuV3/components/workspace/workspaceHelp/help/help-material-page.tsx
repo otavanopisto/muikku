@@ -18,10 +18,6 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
-import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
-import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -102,11 +98,7 @@ class WorkspaceMaterial extends React.Component<
    * render
    */
   render() {
-    const isAssignment =
-      this.props.materialContentNode.assignmentType === "EVALUATED";
     const isBinary = this.props.materialContentNode.type === "binary";
-    const evalStateClassName = "";
-    const evalStateIcon = "";
 
     return (
       <LazyLoader
@@ -162,19 +154,6 @@ class WorkspaceMaterial extends React.Component<
                   stateConfiguration={stateConfiguration}
                 />
                 <div className="material-page__de-floater"></div>
-                <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
-                {isAssignment ? (
-                  <div
-                    className={`material-page__assignment-assessment ${evalStateClassName}`}
-                  >
-                    <div
-                      className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
-                    ></div>
-                    <MaterialLoaderDate {...props} {...state} />
-                    <MaterialLoaderGrade {...props} {...state} />
-                    <MaterialLoaderAssesment {...props} {...state} />
-                  </div>
-                ) : null}
                 <MaterialLoaderProducersLicense {...props} {...state} />
               </div>
             )}

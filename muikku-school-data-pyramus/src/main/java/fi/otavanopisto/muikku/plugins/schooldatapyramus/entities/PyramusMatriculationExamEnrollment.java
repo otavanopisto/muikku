@@ -162,6 +162,16 @@ public class PyramusMatriculationExamEnrollment
     this.contactInfoChange = contactInfoChange;
   }
 
+  @Override
+  public String getOpintopolkuUrl() {
+    return opintopolkuUrl;
+  }
+
+  @Override
+  public void setOpintopolkuUrl(String opintopolkuUrl) {
+    this.opintopolkuUrl = opintopolkuUrl;
+  }
+
   public Long id;
   public Long examId;
   public String enrollAs;
@@ -177,4 +187,5 @@ public class PyramusMatriculationExamEnrollment
   public List<MatriculationExamAttendance> attendances;
   private String degreeStructure;
   private OffsetDateTime enrollmentDate;
+  private String opintopolkuUrl;
 }

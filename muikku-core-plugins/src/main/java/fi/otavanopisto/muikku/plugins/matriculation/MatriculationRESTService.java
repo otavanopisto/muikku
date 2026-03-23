@@ -1,13 +1,12 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -96,9 +95,6 @@ public class MatriculationRESTService {
   
   @Inject
   private SavedMatriculationEnrollmentDAO savedMatriculationEnrollmentDAO;
-  
-  @Inject
-  private MatriculationNotificationController matriculationNotificationController;
   
   @Inject
   private TranscriptOfRecordsController transcriptOfRecordsController;
@@ -363,7 +359,8 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Exam ids do not match").build();
     }
 
-    List<String> validAttendanceStatus = Arrays.asList("FINISHED", "PLANNED", "ENROLLED");
+    final Set<String> validAttendanceStatus = Set.of("FINISHED", "PLANNED", "ENROLLED");
+    final Set<String> validTerms = Set.of("SPRING", "AUTUMN");
     
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       if (!validAttendanceStatus.contains(attendance.getStatus())) {
@@ -373,13 +370,17 @@ public class MatriculationRESTService {
       /*
        * Validate term and year.
        */
-      if (StringUtils.equals(attendance.getStatus(), "FINISHED") || StringUtils.equals(attendance.getStatus(), "PLANNED")) {
+      if (StringUtils.equals(attendance.getStatus(), "PLANNED")) {
         if (attendance.getTerm() == null) {
           return Response.status(Status.BAD_REQUEST).entity("Attendance missing term").build();
         }
         if (attendance.getYear() == null) {
           return Response.status(Status.BAD_REQUEST).entity("Attendance missing year").build();
         }
+      }
+      
+      if (attendance.getTerm() != null && !validTerms.contains(attendance.getTerm())) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Attendance has invalid term (%s)", attendance.getTerm())).build();
       }
     }
     
@@ -399,6 +400,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setStudentId(studentId);
     schoolDataEntity.setState(enrollment.getState());
     schoolDataEntity.setDegreeStructure(enrollment.getDegreeStructure());
+    schoolDataEntity.setOpintopolkuUrl(enrollment.getOpintopolkuUrl());
     
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
@@ -419,12 +421,6 @@ public class MatriculationRESTService {
     BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.submitMatriculationExamEnrollment(studentIdentifier, examId, schoolDataEntity);
     
     if (response.ok()) {
-      try {
-        matriculationNotificationController.sendEnrollmentNotification(enrollment, studentIdentifier);
-      } catch (IOException e) {
-        logger.log(Level.SEVERE, "Failed to send matriculation enrollment notification email", e);
-      }
-      
       return Response.ok().build();
     }
     else {
@@ -493,7 +489,7 @@ public class MatriculationRESTService {
     msg.setGoalMatriculationExam(model.getGoalMatriculationExam());
     msg.setPlannedSubjects(model.getPlannedSubjects());
     msg.setStudentIdentifier(studentIdentifier.toId());
-    hopsWebSocketMessenger.sendMessage(studentIdentifier.toId(), "hops:matriculationplan-updated", msg);
+    hopsWebSocketMessenger.sendMessage(userSchoolDataIdentifier.getUserEntity().getId(), "hops:matriculationplan-updated", msg);
 
     return Response.ok().entity(model).build();
   }
@@ -597,6 +593,7 @@ public class MatriculationRESTService {
     restModel.setNumMandatoryCourses(enrollment.getNumMandatoryCourses());
     restModel.setRestartExam(enrollment.isRestartExam());
     restModel.setState(enrollment.getState());
+    restModel.setOpintopolkuUrl(enrollment.getOpintopolkuUrl());
 //    restModel.setStudentIdentifier(enrollment.getstudentAddress()); // TODO the id mess
     
     

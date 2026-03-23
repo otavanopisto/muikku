@@ -2,13 +2,13 @@ import * as React from "react";
 import { localize } from "~/locales/i18n";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import { WorkspaceAssessmentState } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 
 /**
  * AssessmentRequestIndicatorProps
  */
 interface AssessmentRequestIndicatorProps {
-  assessment: WorkspaceAssessmentState;
+  studyActivityItem: StudyActivityItem;
 }
 
 /**
@@ -19,15 +19,11 @@ interface AssessmentRequestIndicatorProps {
 export const AssessmentRequestIndicator: React.FC<
   AssessmentRequestIndicatorProps
 > = (props) => {
-  const { assessment } = props;
+  const { studyActivityItem } = props;
 
   const { t } = useTranslation(["studies", "common"]);
 
-  if (
-    assessment.state === "pending" ||
-    assessment.state === "pending_pass" ||
-    assessment.state === "pending_fail"
-  ) {
+  if (studyActivityItem.state === "PENDING") {
     return (
       <Dropdown
         openByHover
@@ -36,7 +32,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "evaluationRequest",
-              date: localize.date(assessment.date),
+              date: localize.date(studyActivityItem.date),
             })}
           </span>
         }
@@ -44,7 +40,7 @@ export const AssessmentRequestIndicator: React.FC<
         <span className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending" />
       </Dropdown>
     );
-  } else if (assessment.state === "interim_evaluation_request") {
+  } else if (studyActivityItem.state === "INTERIM_EVALUATION_REQUEST") {
     return (
       <Dropdown
         openByHover
@@ -53,7 +49,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "interimEvaluationRequest",
-              date: localize.date(assessment.date),
+              date: localize.date(studyActivityItem.date),
             })}
           </span>
         }

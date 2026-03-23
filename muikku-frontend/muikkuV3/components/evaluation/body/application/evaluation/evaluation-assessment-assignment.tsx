@@ -164,6 +164,19 @@ class EvaluationAssessmentAssignment extends React.Component<
   };
 
   /**
+   * Removes evaluation from material node in state, which is used when deleting evaluation from editor
+   */
+  removeEvaluationFromState = () => {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
+      ...this.state.materialNode,
+      evaluation: null,
+    };
+    this.setState({
+      materialNode: updatedMaterial,
+    });
+  };
+
+  /**
    * updateMaterialEvaluationData
    * @param  assessmentWithAudio assessmentWithAudio
    */
@@ -333,7 +346,20 @@ class EvaluationAssessmentAssignment extends React.Component<
           default:
             return "state-EVALUATED";
         }
+      } else {
+        switch (compositeReply.state) {
+          case "WITHDRAWN":
+            return "state-WITHDRAWN";
+          case "ANSWERED":
+            return "state-ANSWERED";
+          case "SUBMITTED":
+            return "state-SUBMITTED";
+          default:
+            return "state-UNANSWERED";
+        }
       }
+    } else {
+      return "state-UNANSWERED";
     }
   };
 
@@ -397,6 +423,8 @@ class EvaluationAssessmentAssignment extends React.Component<
       // Grade class mod
       const assignmentGradeClassMod = this.assigmentGradeClass(compositeReply);
 
+      const assignmentFunctionClassMod =
+        this.assignmentFunctionClass(compositeReply);
       // Points and max points object
       const pointsAndMaxPoints = {
         points: this.props.compositeReply.evaluationInfo?.points,
@@ -404,27 +432,45 @@ class EvaluationAssessmentAssignment extends React.Component<
         show: this.props.compositeReply.evaluationInfo?.points !== undefined,
       };
 
+      /**
+       * Gets assignment state label based on composite reply state
+       * @returns string
+       */
+      const getAssignmentStateLabel = (): string => {
+        switch (compositeReply.state) {
+          case "UNANSWERED":
+            return t("labels.notDone", { ns: "evaluation" });
+          case "WITHDRAWN":
+            return t("labels.withdrawnAssignment", { ns: "evaluation" });
+          case "SUBMITTED":
+            return t("labels.done", { ns: "evaluation" });
+          case "ANSWERED":
+            return t("labels.notSubmitted", { ns: "evaluation" });
+          case "PASSED":
+          case "FAILED":
+          case "INCOMPLETE":
+            return hasSubmitted
+              ? t("labels.done", { ns: "evaluation" })
+              : t("labels.notSubmitted", { ns: "evaluation" });
+          default:
+            return t("labels.notDone", { ns: "evaluation" });
+        }
+      };
+
       return (
         <div className="evaluation-modal__item-meta">
-          {hasSubmitted === null ||
-          (hasSubmitted !== null && compositeReply.state === "WITHDRAWN") ? (
-            <div className="evaluation-modal__item-meta-item">
+          <div
+            className={` evaluation-modal__item-meta-item ${assignmentFunctionClassMod}`}
+          >
+            <span className="evaluation-modal__item-meta-item-label">
+              {getAssignmentStateLabel()}
+            </span>
+            {hasSubmitted && compositeReply.state !== "WITHDRAWN" && (
               <span className="evaluation-modal__item-meta-item-data">
-                {t("labels.notDone", { ns: "evaluation" })}
+                {localize.date(hasSubmitted)}
               </span>
-            </div>
-          ) : (
-            hasSubmitted && (
-              <div className="evaluation-modal__item-meta-item">
-                <span className="evaluation-modal__item-meta-item-label">
-                  {t("labels.done", { ns: "evaluation" })}
-                </span>
-                <span className="evaluation-modal__item-meta-item-data">
-                  {localize.date(hasSubmitted)}
-                </span>
-              </div>
-            )
-          )}
+            )}
+          </div>
 
           {evaluationDate && (
             <div className="evaluation-modal__item-meta-item">
@@ -486,9 +532,18 @@ class EvaluationAssessmentAssignment extends React.Component<
           )}
         </div>
       );
+    } else {
+      return (
+        <div className="evaluation-modal__item-meta">
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-data">
+              {t("labels.notDone", { ns: "evaluation" })}
+            </span>
+          </div>
+        </div>
+      );
     }
   };
-
   /**
    * Handles is recoding on change
    * @param isRecording isRecording
@@ -613,24 +668,20 @@ class EvaluationAssessmentAssignment extends React.Component<
               />
             )}
 
-            {this.props.assigment.assignmentType === "EVALUATED" ||
-            this.props.assigment.assignmentType === "EXERCISE" ? (
-              compositeReply &&
-              compositeReply.state !== "UNANSWERED" &&
-              compositeReply.state !== "WITHDRAWN" ? (
-                <ButtonPill
-                  aria-label={t("actions.evaluateAssignment", {
-                    ns: "evaluation",
-                  })}
-                  onClick={this.handleOpenSlideDrawer(
-                    this.props.assigment.id,
-                    this.props.assigment.assignmentType
-                  )}
-                  buttonModifiers={["evaluate"]}
-                  icon="evaluate"
-                />
-              ) : null
-            ) : null}
+            {(this.props.assigment.assignmentType === "EXERCISE" ||
+              this.props.assigment.assignmentType === "EVALUATED") && (
+              <ButtonPill
+                aria-label={t("actions.evaluateAssignment", {
+                  ns: "evaluation",
+                })}
+                onClick={this.handleOpenSlideDrawer(
+                  this.props.assigment.id,
+                  this.props.assigment.assignmentType
+                )}
+                buttonModifiers={["evaluate"]}
+                icon="evaluate"
+              />
+            )}
           </div>
         </div>
         <SlideDrawer
@@ -663,6 +714,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 compositeReplies={compositeReply}
                 isRecording={this.state.isRecording}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 onIsRecordingChange={this.handleIsRecordingChange}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -678,6 +730,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 materialAssignment={this.state.materialNode.assignment}
                 isRecording={this.state.isRecording}
                 onIsRecordingChange={this.handleIsRecordingChange}
+                onDeleteEvaluation={this.removeEvaluationFromState}
                 compositeReplies={compositeReply}
                 updateMaterialEvaluationData={this.updateMaterialEvaluationData}
                 onClose={this.handleCloseSlideDrawer}
@@ -689,14 +742,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         <AnimateHeight duration={400} height={contentOpen}>
           {this.state.isLoading ? (
             <div className="loader-empty" />
-          ) : this.props.workspace && this.state.materialNode ? (
-            <EvaluationMaterial
-              material={this.state.materialNode}
-              workspace={this.props.workspace}
-              compositeReply={compositeReply}
-              userEntityId={this.props.selectedAssessment.userEntityId}
-            />
-          ) : null}
+          ) : (
+            this.props.workspace &&
+            this.state.materialNode && (
+              <EvaluationMaterial
+                material={this.state.materialNode}
+                workspace={this.props.workspace}
+                compositeReply={compositeReply}
+                userEntityId={this.props.selectedAssessment.userEntityId}
+              />
+            )
+          )}
         </AnimateHeight>
       </div>
     );

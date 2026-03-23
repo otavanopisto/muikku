@@ -1280,7 +1280,7 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
           maxResults: 512,
         });
 
-        const obj: EvaluationJournalCommentsByJournal = studyDiaryEvents.reduce(
+        const obj = studyDiaryEvents.reduce<EvaluationJournalCommentsByJournal>(
           (o, key) => ({ ...o, [key.id]: [] }),
           {}
         );
@@ -2067,10 +2067,14 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
             updatedCompositeReply.workspaceMaterialId
         );
 
-        updatedCompositeReplies[index] = {
-          ...updatedCompositeReply,
-        };
-
+        if (index === -1) {
+          // Well yeah, we do this now. We evaluate assignments that have no existing replies
+          updatedCompositeReplies.push(updatedCompositeReply);
+        } else {
+          updatedCompositeReplies[index] = {
+            ...updatedCompositeReply,
+          };
+        }
         dispatch({
           type: "EVALUATION_COMPOSITE_REPLIES_LOAD",
           payload: updatedCompositeReplies,

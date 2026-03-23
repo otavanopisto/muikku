@@ -590,5 +590,58 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       mockBuilder.wiremockReset();
     }
   }
+
+  @Test
+  public void courseMaterialAIUseTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addCourse(course1)
+      .mockLogin(admin)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
   
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          selectFinnishLocale();
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
+          waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+          waitAndClick(".tabs #tabControl-metadata");
+//        Tekoälyn käyttö dropdown. Valinta valuen perusteella.
+          waitForClickable("select:has(> option[value=\"ALLOWED\"])");
+          selectOption("select:has(> option[value=\"ALLOWED\"])", "ALLOWED");
+          waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
+          waitForPresent(".material-page__ai-warning-text");
+          assertText(".material-page__ai-warning-text", "Tekoälyn käyttö sallittu tehtävän ohjeiden mukaisesti");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        }
+        
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+
 }

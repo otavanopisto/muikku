@@ -63,7 +63,7 @@ export const useNextCourseSuggestions = (
          */
         const nextSuggestionsData = async () => {
           //Loaded student activity list
-          const studentActivityList = await hopsApi.getStudentStudyActivity({
+          const studentActivityList = await hopsApi.getStudyActivity({
             studentIdentifier: studentId,
           });
 
@@ -74,8 +74,8 @@ export const useNextCourseSuggestions = (
           const suggestedNextIdList: number[] = [];
 
           // Iterate studentActivity and pick only suggested next courses
-          for (const a of studentActivityList) {
-            if (a.status === "SUGGESTED_NEXT") {
+          for (const a of studentActivityList.items) {
+            if (a.state === "SUGGESTED_NEXT") {
               suggestedNextIdList.push(a.courseId);
 
               coursesAsNext.push({

@@ -379,12 +379,12 @@ public class WorkspaceMaterialController {
         : materialController.findMaterialById(workspaceMaterial.getMaterialId());
   }
 
-  public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials) {
-    return cloneWorkspaceNode(workspaceNode, parent, cloneMaterials, false);
+  public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials, WorkspaceNodeCopyMapper mapper) {
+    return cloneWorkspaceNode(workspaceNode, parent, cloneMaterials, false, mapper);
   }
 
   private WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials,
-      boolean overrideCloneMaterials) {
+      boolean overrideCloneMaterials, WorkspaceNodeCopyMapper mapper) {
     WorkspaceNode newNode;
     boolean isHtmlMaterial = false;
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
@@ -428,13 +428,22 @@ public class WorkspaceMaterialController {
       newNode = createWorkspaceFolder(parent, folder.getTitle(),
           generateUniqueUrlName(parent, workspaceNode.getUrlName()), index, workspaceNode.getHidden(),
           folder.getFolderType(), folder.getViewRestrict(), workspaceNode.getLanguage(), folder.getExam());
+      // Clone exam settings (page ids will be wrong for the copy and need to be adjusted by the caller)
+      if (folder.getExam()) {
+        mapper.getExamIds().add(folder.getId());
+        ExamSettings settings = examSettingsDAO.findByWorkspaceFolderId(folder.getId());
+        if (settings != null) {
+          examSettingsDAO.create(newNode.getId(), settings.getSettings());
+        }
+      }
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
     }
+    mapper.getIdMap().put(workspaceNode.getId(), newNode.getId());
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceNode);
     for (WorkspaceNode childNode : childNodes) {
-      cloneWorkspaceNode(childNode, newNode, cloneMaterials, isHtmlMaterial);
+      cloneWorkspaceNode(childNode, newNode, cloneMaterials, isHtmlMaterial, mapper);
     }
     return newNode;
   }
@@ -774,6 +783,10 @@ public class WorkspaceMaterialController {
   public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
     return listWorkspaceMaterialsByAssignmentType(workspaceEntity, assignmentType, BooleanPredicate.FALSE);
   }
+  
+  public List<Long> sortWorkspaceAssignmentIds(List<Long> ids) {
+    return workspaceMaterialDAO.sortIds(ids);
+  }
 
   public List<Long> listVisibleWorkspaceAssignmentIds(WorkspaceFolder workspaceFolder) {
     Set<WorkspaceMaterialAssignmentType> types = Set.of(WorkspaceMaterialAssignmentType.EVALUATED, WorkspaceMaterialAssignmentType.EXERCISE); 
@@ -967,8 +980,20 @@ public class WorkspaceMaterialController {
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
           workspaceFolder.getPath(), null, Collections.emptyList(), folderViewRestrict, 
           false, workspaceFolder.getLanguage(), null, null, workspaceFolder.getExam());
-      List<WorkspaceNode> children = level == 0 ? Collections.emptyList() : includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+      List<WorkspaceNode> children = null;
+      if (workspaceFolder.getViewRestrict() != MaterialViewRestrict.NONE && !sessionController.isLoggedIn()) {
+        children = Collections.emptyList();
+      }
+      else if (workspaceFolder.getViewRestrict() == MaterialViewRestrict.WORKSPACE_MEMBERS && userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+        WorkspaceEntity workspaceEntity = findWorkspaceEntityByNode(workspaceFolder);
+        if (!workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity)) {
+          children = Collections.emptyList();
+        }
+      }
+      else {
+        children = level == 0 ? Collections.emptyList() : includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
           : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
+      }
       List<FlattenedWorkspaceNode> flattenedChildren;
       if (level >= FLATTENING_LEVEL) {
         flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);

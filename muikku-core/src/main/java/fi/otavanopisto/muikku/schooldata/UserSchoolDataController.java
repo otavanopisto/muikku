@@ -39,13 +39,14 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.payload.CourseMatrixRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -69,9 +70,13 @@ public class UserSchoolDataController {
   }
 
   /* HOPS */
+  
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String dataSource, String identifier, String educationTypeCode) {
+    return getUserBridge(dataSource).getCourseMatrix(identifier, educationTypeCode);
+  }
 
-  public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String dataSource, String identifier) {
-    return getUserBridge(dataSource).getStudyActivity(identifier);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier, Long courseId, String educationTypeCode) {
+    return getUserBridge(dataSource).getStudyActivity(identifier, courseId, educationTypeCode);
   }
 
   /* Worklist */
@@ -374,6 +379,23 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
+  }
+  
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listStudentEducationTypes(studentIdentifier);
+  }
+
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,
+      boolean allowStudyDiscussions) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).updateContactInfoAllowStudyDiscussions(studentIdentifier, contactInfoId, allowStudyDiscussions);
   }
 
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {

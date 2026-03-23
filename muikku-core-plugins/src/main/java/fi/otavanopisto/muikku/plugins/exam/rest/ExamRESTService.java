@@ -315,7 +315,7 @@ public class ExamRESTService {
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
     if (attendance == null) {
-      attendance = examController.createAttendance(workspaceFolderId, userEntityId, true);
+      attendance = examController.createAttendance(workspaceFolderId, userEntityId);
     }
     else if (attendance.getArchived()) {
       attendance = examController.restoreAttendance(attendance);

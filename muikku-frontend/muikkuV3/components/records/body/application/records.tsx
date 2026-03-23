@@ -8,45 +8,44 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/file-uploader.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
-import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
-import ApplicationList, {
-  ApplicationListItem,
-} from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
-import RecordsGroup from "~/components/general/records-history/records-group";
-import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import RecordsListing from "~/components/general/records-history/records";
+import { StudyActivityState } from "~/reducers/study-activity";
+import ApplicationList, {
+  ApplicationListItem,
+} from "~/components/general/application-list";
+import Link from "~/components/general/link";
+import RecordsEducationTypeSelector from "~/components/general/records-history/records-education-type-selector";
+import {
+  updateSelectedEducationTypeCode,
+  UpdateSelectedEducationTypeCodeTriggerType,
+} from "~/actions/study-activity";
+import { getEducationTypeName } from "~/helper-functions/locale";
 
 /**
  * RecordsProps
  */
 interface RecordsProps extends WithTranslation {
   records: RecordsType;
+  studyActivity: StudyActivityState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
+  updateSelectedEducationTypeCode: UpdateSelectedEducationTypeCodeTriggerType;
 }
 
 /**
  * RecordsState
  */
 interface RecordsState {}
-
-/**
- * StoredCurriculum
- */
-export interface StoredCurriculum {
-  [identifier: string]: string;
-}
-
-const storedCurriculumIndex: StoredCurriculum = {};
 
 /**
  * Records
@@ -61,18 +60,39 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   /**
+   * handleSelectEducationType
+   * @param educationTypeCode educationTypeCode
+   */
+  handleSelectEducationType = (educationTypeCode: string) => {
+    this.props.updateSelectedEducationTypeCode({ educationTypeCode });
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const { t } = this.props;
 
+    const entry =
+      this.props.studyActivity.userStudyDataByEducationTypeCode[
+        this.props.studyActivity.selectedEducationTypeCode
+      ];
+
     if (
-      this.props.records.userDataStatus === "LOADING" ||
-      this.props.records.userDataStatus === "WAIT"
+      !entry ||
+      entry.studyActivityStatus === "LOADING" ||
+      entry.studyActivityStatus === "IDLE" ||
+      entry.courseMatrixStatus === "LOADING" ||
+      entry.courseMatrixStatus === "IDLE" ||
+      entry.curriculumConfigStatus === "LOADING" ||
+      entry.curriculumConfigStatus === "IDLE"
     ) {
       return null;
-    } else if (this.props.records.userDataStatus === "ERROR") {
+    } else if (
+      entry.studyActivityStatus === "ERROR" ||
+      entry.courseMatrixStatus === "ERROR"
+    ) {
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return (
@@ -82,52 +102,38 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       );
     }
 
-    if (
-      !Object.keys(storedCurriculumIndex).length &&
-      this.props.records.curriculums.length
-    ) {
-      this.props.records.curriculums.forEach((curriculum) => {
-        storedCurriculumIndex[curriculum.identifier] = curriculum.name;
-      });
-    }
-
     /**
      * studentRecords
      */
     const studentRecords = (
-      <RecordsInfoProvider
-        value={{
-          identifier: this.props.status.userSchoolDataIdentifier,
-          userEntityId: this.props.status.userId,
-          displayNotification: this.props.displayNotification,
-        }}
-      >
-        <ApplicationSubPanel>
-          {this.props.records.userData.map((lineCategoryData, i) => (
-            <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-              {lineCategoryData.credits.length +
-                lineCategoryData.transferCredits.length >
-              0 ? (
-                <RecordsGroup
-                  key={`credit-category-${i}`}
-                  recordGroup={lineCategoryData}
-                />
-              ) : (
-                <div className="application-sub-panel__item">
-                  <div className="empty">
-                    <span>
-                      {t("content.empty", {
-                        ns: "studies",
-                        context: "workspaces",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </ApplicationSubPanel.Body>
-          ))}
-        </ApplicationSubPanel>
-      </RecordsInfoProvider>
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Body>
+          <RecordsListing
+            recordsInfo={{
+              identifier: this.props.status.userSchoolDataIdentifier,
+              userEntityId: this.props.status.userId,
+              displayNotification: this.props.displayNotification,
+              curriculumConfig: entry.curriculumConfig,
+              studyActivity: entry.studyActivity,
+              courseMatrix: entry.courseMatrix,
+            }}
+            educationTypeSelector={
+              <RecordsEducationTypeSelector
+                options={this.props.studyActivity.userEducationTypes.map(
+                  (educationTypeCode) => ({
+                    educationTypeCode,
+                    label: getEducationTypeName(educationTypeCode, t),
+                  })
+                )}
+                selectedEducationTypeCode={
+                  this.props.studyActivity.selectedEducationTypeCode
+                }
+                onSelect={this.handleSelectEducationType}
+              />
+            }
+          />
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
     );
 
     return (
@@ -143,7 +149,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             {t("labels.files")}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
-            {this.props.records.files.length ? (
+            {this.props.records.files && this.props.records.files.length ? (
               <ApplicationList>
                 {this.props.records.files.map((file) => (
                   <ApplicationListItem
@@ -185,6 +191,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     status: state.status,
+    studyActivity: state.studyActivity,
   };
 }
 
@@ -193,7 +200,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ displayNotification }, dispatch);
+  return bindActionCreators(
+    { displayNotification, updateSelectedEducationTypeCode },
+    dispatch
+  );
 }
 
 export default withTranslation(["studies"])(

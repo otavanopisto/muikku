@@ -55,3 +55,8 @@
 .pagination__link--active {
   padding: 8px;
 }
+
+.announcement__icon--pinned-to-self {
+  color: $color-pinned-for-self-icon;
+  margin-left: 5px;
+}

@@ -1,0 +1,72 @@
+import * as React from "react";
+import {
+  StudyPlanChangeAction,
+  StudyPlannerNoteWithIdentifier,
+} from "~/reducers/hops";
+import PlannerPeriodNote from "./planner-period-note";
+import _ from "lodash";
+
+/**
+ * PlannerPlannedList props
+ */
+interface PlannerNotesListProps {
+  disabled: boolean;
+  notes: StudyPlannerNoteWithIdentifier[];
+  selectedPlanItemIds: string[];
+  originalNotes: StudyPlannerNoteWithIdentifier[];
+  onNoteChange: (
+    note: StudyPlannerNoteWithIdentifier,
+    action: StudyPlanChangeAction
+  ) => void;
+  onSelectNote: (note: StudyPlannerNoteWithIdentifier) => void;
+}
+
+/**
+ * PlannerPlannedList component to handle the rendering of course cards
+ * @param props props
+ */
+const PlannerNotesList = (props: PlannerNotesListProps) => {
+  const {
+    disabled,
+    notes,
+    originalNotes,
+    selectedPlanItemIds,
+    onNoteChange,
+    onSelectNote,
+  } = props;
+
+  return (
+    <ul className="study-planner__planned-list">
+      {notes.map((note) => {
+        const isSelected = selectedPlanItemIds.some(
+          (pItemIdentifier) => pItemIdentifier === note.identifier
+        );
+
+        const originalInfo = originalNotes.find(
+          (n) => n.identifier === note.identifier
+        );
+
+        const hasChanges = originalInfo ? !_.isEqual(originalInfo, note) : true;
+
+        return (
+          <li
+            key={note.identifier}
+            className="study-planner__planned-list-item"
+          >
+            <PlannerPeriodNote
+              key={note.identifier}
+              disabled={disabled}
+              note={note}
+              selected={isSelected}
+              hasChanges={hasChanges}
+              onNoteChange={onNoteChange}
+              onSelectNote={onSelectNote}
+            />
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
+
+export default PlannerNotesList;

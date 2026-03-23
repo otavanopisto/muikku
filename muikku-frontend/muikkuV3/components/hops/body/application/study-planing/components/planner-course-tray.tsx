@@ -4,10 +4,10 @@ import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useSelector } from "react-redux";
 import { useLocalStorage } from "usehooks-ts";
-import { Course, CourseFilter } from "~/@types/shared";
+import { CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import { StudentStudyActivity } from "~/generated/client";
+import { StudyActivityItem } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -20,14 +20,21 @@ import {
   PlannerCardLabel,
 } from "./planner-card";
 import { useTranslation } from "react-i18next";
+import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * PlannerSidebarProps
  */
 interface PlannerCourseTrayProps {
   plannedCourses: PlannedCourseWithIdentifier[];
-  onCourseClick: (course: Course & { subjectCode: string }) => void;
-  isCourseSelected: (course: Course & { subjectCode: string }) => boolean;
+  onCourseClick: (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => void;
+  isCourseSelected: (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => boolean;
 }
 
 /**
@@ -53,24 +60,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
     []
   );
 
-  const studyOptions = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyOptions
-  );
-
-  // Get curriculum config
-  const curriculumConfig = useSelector(
-    (state: StateType) => state.hopsNew.hopsCurriculumConfig
-  );
-
-  // Get available OPS courses
-  const availableOPSCourses = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.availableOPSCourses
-  );
-
-  // Get study activity
-  const studyActivity = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
-  );
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
   // Disable course tray if in read mode
   const disabled = useSelector(
@@ -78,20 +68,8 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   );
 
   const matrix = useMemo(
-    () =>
-      curriculumConfig.strategy.getCurriculumMatrix({
-        studyOptions,
-      }),
-    [curriculumConfig, studyOptions]
-  );
-
-  const availableOPSCoursesMap = useMemo(
-    () =>
-      availableOPSCourses.reduce((acc, course) => {
-        acc.set(course.subjectCode, course.courseNumbers);
-        return acc;
-      }, new Map<string, number[]>()),
-    [availableOPSCourses]
+    () => curriculumConfig.strategy.getCurriculumMatrix(),
+    [curriculumConfig]
   );
 
   /**
@@ -124,19 +102,17 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const filteredSubjects = useMemo(
     () =>
       filterSubjectsAndCourses(
-        matrix.subjectsTable,
+        matrix.subjects,
         searchTerm,
         selectedFilters,
-        availableOPSCoursesMap,
-        studyActivity,
+        userStudyActivity?.items ?? [],
         plannedCourses
       ),
     [
       matrix,
       searchTerm,
       selectedFilters,
-      availableOPSCoursesMap,
-      studyActivity,
+      userStudyActivity?.items,
       plannedCourses,
     ]
   );
@@ -250,46 +226,41 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
       </div>
       <div className="study-planner__course-tray-groups">
         {filteredSubjects.map((subject) => (
-          <div
-            key={subject.subjectCode}
-            className="study-planner__course-tray-group"
-          >
+          <div key={subject.code} className="study-planner__course-tray-group">
             <Button
               icon={
-                expandedGroups.includes(subject.subjectCode)
+                expandedGroups.includes(subject.code)
                   ? "arrow-down"
                   : "arrow-right"
               }
               buttonModifiers={["planner-course-group-toggle"]}
-              onClick={() => handleGroupToggle(subject.subjectCode)}
+              onClick={() => handleGroupToggle(subject.code)}
             >
               {subject.name}
             </Button>
-            <AnimatedDrawer
-              isOpen={expandedGroups.includes(subject.subjectCode)}
-            >
+            <AnimatedDrawer isOpen={expandedGroups.includes(subject.code)}>
               <ol className="study-planner__course-tray-list">
                 {subject.availableCourses.map((course) => {
                   // Check if course tray item is selected
                   const selected = props.isCourseSelected({
                     ...course,
-                    subjectCode: subject.subjectCode,
+                    subjectCode: subject.code,
                   });
 
                   const isAssessed =
                     course.studyActivity &&
-                    (course.studyActivity.status === "GRADED" ||
-                      course.studyActivity.status === "SUPPLEMENTATIONREQUEST");
+                    (course.studyActivity.state === "GRADED" ||
+                      course.studyActivity.state === "SUPPLEMENTATIONREQUEST");
 
                   return (
                     <PlannerCourseTrayItem
                       key={
                         course.identifier ||
-                        `${subject.subjectCode}${course.courseNumber}`
+                        `${subject.code}${course.courseNumber}`
                       }
                       disabled={disabled || course.planned || isAssessed}
                       course={course}
-                      subjectCode={subject.subjectCode}
+                      subjectCode={subject.code}
                       isPlannedCourse={course.planned}
                       selected={selected}
                       studyActivity={course.studyActivity}
@@ -312,13 +283,15 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
  */
 interface PlannerCourseTrayItemProps {
   disabled: boolean;
-  course: Course;
+  course: CourseMatrixModuleEnriched;
   subjectCode: string;
   isPlannedCourse: boolean;
   selected: boolean;
   curriculumConfig: CurriculumConfig;
-  studyActivity?: StudentStudyActivity;
-  onSelectCourse: (course: Course & { subjectCode: string }) => void;
+  studyActivity?: StudyActivityItem;
+  onSelectCourse: (
+    course: CourseMatrixModuleEnriched & { subjectCode: string }
+  ) => void;
 }
 
 /**
@@ -345,7 +318,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    */
   const getCourseState = () => {
     if (studyActivity) {
-      switch (studyActivity.status) {
+      switch (studyActivity.state) {
         case "GRADED":
           return studyActivity.passing
             ? {
@@ -401,16 +374,15 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
-      type: "new-course-card",
+      type: "planned-course-new",
       item: {
         info: { ...course, subjectCode },
-        type: "new-course-card",
+        type: "planned-course-new",
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
-      // eslint-disable-next-line jsdoc/require-jsdoc
       canDrag: !disabled,
     }),
     [disabled]
@@ -429,14 +401,16 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
-  const modifiers = ["course-tray-card"];
+  const modifiers = ["tray-card"];
 
   !disabled ? modifiers.push("draggable") : modifiers.push("not-draggable");
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
   courseState.state && modifiers.push(courseState.state);
 
-  const typeModifiers = course.mandatory ? ["mandatory"] : ["optional"];
+  const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(course.mandatority);
+
+  const typeModifiers = isMandatory ? ["mandatory"] : ["optional"];
 
   return (
     <li className="study-planner__course-tray-item">
@@ -446,17 +420,17 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         onClick={handleSelectCourse}
         ref={drag}
       >
-        <PlannerCardHeader modifiers={["course-tray-item"]}>
-          <span className="planner-course-tray-item__name">
+        <PlannerCardHeader>
+          <span className="study-planner__card-title">
             <b>{`${subjectCode}${course.courseNumber}`}</b>{" "}
-            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`}
           </span>
         </PlannerCardHeader>
 
-        <PlannerCardContent modifiers={["planned-course-card"]}>
-          <div className="study-planner__course-labels">
+        <PlannerCardContent>
+          <div className="study-planner__card-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
-              {course.mandatory
+              {isMandatory
                 ? t("labels.mandatory", {
                     ns: "common",
                   })
@@ -466,7 +440,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             </PlannerCardLabel>
 
             {isPlannedCourse && (
-              <PlannerCardLabel modifiers={["course-state", "planned"]}>
+              <PlannerCardLabel modifiers={["planned"]}>
                 {t("labels.planned", {
                   ns: "common",
                 })}
@@ -474,7 +448,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             )}
 
             {courseState.state && (
-              <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+              <PlannerCardLabel modifiers={[courseState.state]}>
                 {courseState.label}
               </PlannerCardLabel>
             )}
