@@ -85,7 +85,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
   const showAllMatrixCourses =
     showCoursesWithoutActivity || showMatrixStructure;
 
-  const { t } = useTranslation(["studies", "common"]);
+  const { t } = useTranslation(["studies", "common", "evaluation"]);
 
   // Calculate the statistics
   const statistics = React.useMemo(
@@ -433,6 +433,19 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       />
       <label htmlFor="filter-interim-evaluation">
         {t("labels.interimEvaluation")}
+      </label>
+    </div>,
+    <div key="evaluation-request" className="filter-item">
+      <input
+        onChange={handleFilterClick}
+        checked={activeStateFilters.includes("PENDING")}
+        type="checkbox"
+        value="PENDING"
+        id="filter-evaluation-request"
+        disabled={showMatrixStructure}
+      />
+      <label htmlFor="filter-evaluation-request">
+        {t("labels.evaluationRequest", { ns: "evaluation" })}
       </label>
     </div>,
     <div key="filterTitle" className="filter-category">
