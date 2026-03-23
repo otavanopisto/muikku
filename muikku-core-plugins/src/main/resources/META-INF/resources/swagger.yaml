@@ -17935,6 +17935,7 @@ components:
         - subjectName
         - subject
         - courseId
+        - url
         - courseNumber
         - courseName
         - courseNameExtension
@@ -17967,6 +17968,10 @@ components:
           type: integer
           description: Course id in Muikku, i.e. workspaceEntityId
           format: int64
+          nullable: true
+        url:
+          type: string
+          description: Course URL, e.g. /workspace/course-name
           nullable: true
         courseNumber:
           type: integer

@@ -222,6 +222,11 @@ public class WorkspaceEntityController {
     return result;
   }
   
+  public String getUrl(Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = findWorkspaceEntityById(workspaceEntityId);
+    return workspaceEntity == null ? null : String.format("/workspace/%s", workspaceEntity.getUrlName());
+  }
+  
   public WorkspaceEntityName getName(WorkspaceEntity workspaceEntity) {
     if (!searchProviders.isUnsatisfied()) {
       SearchProvider searchProvider = searchProviders.get();
