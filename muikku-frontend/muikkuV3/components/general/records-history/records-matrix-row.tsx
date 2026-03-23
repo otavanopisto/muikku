@@ -21,6 +21,7 @@ import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-
 import Dropdown from "../dropdown";
 import { AssessmentInformation } from "./assessment-information";
 import { MANDATORITY_OPTIONAL_VALUES } from "~/helper-functions/study-matrix";
+import Link from "~/components/general/link";
 
 /**
  * Props for the matrix-based records row.
@@ -124,6 +125,29 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     return (
       <div className="label">
         <div className="label__text">{localString}</div>
+      </div>
+    );
+  };
+
+  /**
+   * Render workspace link if workspace studyActivityItems exists
+   * @returns workspace link
+   */
+  const renderWorkspaceLink = () => {
+    if (!hasActivity || !subjectSpecificActivityItem?.url) return null;
+    return (
+      <div className="application-list__header-primary-meta">
+        <Link
+          href={subjectSpecificActivityItem.url}
+          openInNewTab="_blank"
+          className="link"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {t("labels.goto", { ns: "workspace" })}
+        </Link>
       </div>
     );
   };
@@ -233,6 +257,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
               </Dropdown>
             )}
           </div>
+          {renderWorkspaceLink()}
         </div>
         <div className="application-list__header-secondary">
           {config.showAssigmentsAndDiaries &&
