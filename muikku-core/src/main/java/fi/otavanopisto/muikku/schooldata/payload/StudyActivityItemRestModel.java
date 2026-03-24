@@ -192,9 +192,18 @@ public class StudyActivityItemRestModel {
     this.courseNameExtension = courseNameExtension;
   }
 
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
   private String subject;
   private String subjectName;
   private Long courseId;
+  private String url;
   private Integer courseNumber;
   private String courseName;
   private String courseNameExtension;

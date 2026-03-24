@@ -635,6 +635,12 @@ public class HopsRestService {
 
       for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
         
+        // Workspace url
+        
+        if (item.getCourseId() != null) {
+          item.setUrl(workspaceEntityController.getUrl(item.getCourseId()));
+        }
+        
         // Supplementation requests
         
         if (item.getCourseId() != null && studentEntity != null) {
@@ -777,11 +783,13 @@ public class HopsRestService {
             }
             else {
               StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
               item.setCourseNumber(suggestion.getCourseNumber());
               item.setDate(suggestion.getCreated());
               item.setSubject(suggestion.getSubject());
               item.setCourseId(suggestion.getWorkspaceEntityId());
+              if (item.getCourseId() != null) {
+                item.setUrl(workspaceEntityController.getUrl(item.getCourseId()));
+              }
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
               item.setState(StudyActivityItemState.SUGGESTED_NEXT);
               // Note: This item lacks some course metadata but for suggested courses, front-end can live with that 

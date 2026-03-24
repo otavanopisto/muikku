@@ -8,7 +8,7 @@ import {
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import {
   CourseMatrixModule,
   CourseMatrixSubject,
@@ -21,6 +21,7 @@ import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-
 import Dropdown from "../dropdown";
 import { AssessmentInformation } from "./assessment-information";
 import { MANDATORITY_OPTIONAL_VALUES } from "~/helper-functions/study-matrix";
+import Link from "~/components/general/link";
 
 /**
  * Props for the matrix-based records row.
@@ -59,7 +60,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
     displayNotification,
   } = useRecordsInfoContext();
 
-  const { t } = useTranslation([
+  const { t, i18n } = useTranslation([
     "studies",
     "evaluation",
     "materials",
@@ -110,22 +111,43 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    if (!hasActivity || !subjectSpecificActivityItem?.curriculums?.[0]) {
-      return null;
-    }
-    const OPS = subjectSpecificActivityItem.curriculums[0];
-    if (!OPS) return null;
-    const suitabilityMap = suitabilityMapHelper(t);
-    const education = `${educationType
-      .toLowerCase()
-      .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
-    if (!suitabilityMap[education]) return null;
-    let localString = suitabilityMap[education][course.mandatority];
+    if (!hasActivity || !subjectSpecificActivityItem.mandatority) return null;
+
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: course.mandatority,
+      educationType,
+      curriculums: subjectSpecificActivityItem.curriculums,
+    });
     const creditsString = getCreditsString();
     if (creditsString) localString = `${localString}, ${creditsString}`;
     return (
       <div className="label">
         <div className="label__text">{localString}</div>
+      </div>
+    );
+  };
+
+  /**
+   * Render workspace link if workspace studyActivityItems exists
+   * @returns workspace link
+   */
+  const renderWorkspaceLink = () => {
+    if (!hasActivity || !subjectSpecificActivityItem?.url) return null;
+    return (
+      <div className="application-list__header-primary-meta">
+        <Link
+          href={subjectSpecificActivityItem.url}
+          openInNewTab="_blank"
+          className="link"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {t("labels.goto", { ns: "workspace" })}
+        </Link>
       </div>
     );
   };
@@ -159,7 +181,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
 
   // Course name extension exist only in workspace embodiment (aka workspace).
   // So if it exists, add it to the title from activity item.
-  if (subjectSpecificActivityItem.courseNameExtension) {
+  if (subjectSpecificActivityItem?.courseNameExtension ?? false) {
     title += ` (${subjectSpecificActivityItem.courseNameExtension})`;
   }
 
@@ -235,6 +257,7 @@ export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
               </Dropdown>
             )}
           </div>
+          {renderWorkspaceLink()}
         </div>
         <div className="application-list__header-secondary">
           {config.showAssigmentsAndDiaries &&

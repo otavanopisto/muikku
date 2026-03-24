@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>delete from PermissionOverride where permission_id=(select id from Permission where name='ACCESS_WORKSPACE_MATERIALS');</sql>
+  <sql>delete from RolePermission where permission_id=(select id from Permission where name='ACCESS_WORKSPACE_MATERIALS');</sql>
+  <sql>delete from GroupPermission where permission_id=(select id from Permission where name='ACCESS_WORKSPACE_MATERIALS');</sql>
+  <sql>delete from Permission where name='ACCESS_WORKSPACE_MATERIALS';</sql>
+
+</update>

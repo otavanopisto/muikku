@@ -157,6 +157,8 @@
       "home": "Muikun etusivu",
       "idont": "En",
       "incomplete": "Täydennettävä",
+      "interimEvaluation": "Välipalaute annettu",
+      "interimEvaluationRequest": "Välipalautepyyntö",
       "instructions": "Muikun ohjeet",
       "language": "Kieli",
       "language_en": "Englanniksi (EN)",
@@ -2696,19 +2698,34 @@
       "PAID_student": "Olet maksanut tilauksen, mutta sitä ei ole käsitelty. Ota yhteyttä helpdeskiin."
     }
   },
-  "ops": {
-    "mandatory": "$t(common:labels.mandatory)",
-    "mandatory_lukioOPS2016": "$t(common:labels.mandatory)",
-    "mandatory_lukioOPS2021": "$t(common:labels.mandatory)",
-    "nationalLevelOptional": "$t(common:labels.optional)",
-    "nationalLevelOptional_lukioOPS2016": "Valtakunnallinen syventävä",
-    "nationalLevelOptional_lukioOPS2021": "Valtakunnallinen valinnainen",
-    "schoolLevelOptional": "Paikallinen valinnainen",
-    "schoolLevelOptional_lukioOPS2016": "Paikallinen syventävä",
-    "schoolLevelOptional_lukioOPS2021": "Paikallinen valinnainen",
-    "unspecifiedOptional": "$t(common:labels.optional)",
-    "unspecifiedOptional_lukioOPS2016": "Muu",
-    "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
+  "mandatority": {
+    "default": {
+      "MANDATORY": "$t(common:labels.mandatory)",
+      "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "SCHOOL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+    },
+    "perusopetus": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+        "SCHOOL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+        "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+      }
+    },
+    "lukio": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "Valtakunnallinen valinnainen",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen valinnainen",
+        "UNSPECIFIED_OPTIONAL": "Paikallinen valinnainen"
+      },
+      "OPS2016": {
+        "NATIONAL_LEVEL_OPTIONAL": "Valtakunnallinen syventävä",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen syventävä",
+        "UNSPECIFIED_OPTIONAL": "Muu"
+      }
+    }
   },
   "readSpeaker": {
     "messages": {

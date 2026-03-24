@@ -992,9 +992,6 @@ public class EvaluationRESTService extends PluginRESTService {
     if (workspaceMaterial == null) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("WorkspaceMaterial with id %d not found", payload.getWorkspaceMaterialId())).build();
     }
-    if (StringUtils.isBlank(payload.getRequestText())) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing requestText").build();
-    }
     WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).entity("Unknown workspace").build();

@@ -438,7 +438,9 @@ export const buildRecordsRowsFromMatrix = (
   transferedActivities: StudyActivityItem[];
   nonOPSActivities: StudyActivityItem[];
 } => {
-  const items = studyActivity?.items ?? [];
+  const items = (studyActivity?.items ?? []).filter(
+    (item) => item.state !== "SUGGESTED_NEXT"
+  );
   const transferedList = items.filter((item) => item.state === "TRANSFERRED");
   const transferedActivities = getNonOPSTransferedActivities(
     matrix,
