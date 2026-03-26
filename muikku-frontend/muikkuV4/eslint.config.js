@@ -64,6 +64,7 @@ export default defineConfig([
       "@typescript-eslint/no-unsafe-argument": "warn",
       "@typescript-eslint/consistent-type-definitions": "off",
       "@typescript-eslint/prefer-nullish-coalescing": "warn",
+      "@typescript-eslint/no-empty-object-type": "off",
 
       // JSDoc rules - only require for specific contexts
       "jsdoc/newline-after-description": "off",

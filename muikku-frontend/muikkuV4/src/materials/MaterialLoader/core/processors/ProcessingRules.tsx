@@ -13,7 +13,7 @@ import IFrame from "../../components/static/IFrame";
 import Image from "../../components/static/Image";
 import Link from "../../components/static/Link";
 import Table from "../../components/static/Table";
-import MathJAX from "../../components/static/MathJAX";
+import MathRenderer from "../../components/static/Math";
 
 const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
   {
@@ -191,8 +191,10 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
       tagname === "span" && element.classList.contains("math-tex"),
 
     processingFunction: (_tag, props, children, _element, context) => (
-      <MathJAX
+      <MathRenderer
         key={props.key}
+        engine="mathlive"
+        mode="inline"
         invisible={context?.invisible}
         children={children}
       />
@@ -294,7 +296,12 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
      * @returns any
      */
     processingFunction: (_tag, _props, children, _element) => (
-      <MathJAX invisible={false} children={children} />
+      <MathRenderer
+        engine="mathlive"
+        mode="inline"
+        invisible={false}
+        children={children}
+      />
     ),
   },
   {

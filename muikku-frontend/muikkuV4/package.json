@@ -40,6 +40,7 @@
     "jotai-tanstack-query": "0.11.0",
     "jquery": "3.7.1",
     "lodash": "4.17.21",
+    "mathlive": "^0.109.0",
     "motion": "^12.23.24",
     "postcss": "8.5.6",
     "postcss-preset-mantine": "1.18.0",
