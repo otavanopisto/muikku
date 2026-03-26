@@ -1,4 +1,4 @@
-import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
+import { Container, Title, Text, Paper, Button, Group, SimpleGrid } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
@@ -113,9 +113,24 @@ export function Dashboard() {
         </Group>
       </Paper>
 
-      <Paper p="xl" mt="md" withBorder>
+      <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
+        <Paper p="xl" withBorder>
+          <Title order={4}>MathLive</Title>
+          <SimpleMaterialLoader html={sampleHTML} mathEngine="mathlive" />
+        </Paper>
+        <Paper p="xl" withBorder>
+          <Title order={4}>KaTeX</Title>
+          <SimpleMaterialLoader html={sampleHTML} mathEngine="katex" />
+        </Paper>
+        <Paper p="xl" withBorder>
+          <Title order={4}>MathJax</Title>
+          <SimpleMaterialLoader html={sampleHTML} mathEngine="mathjax" />
+        </Paper>
+      </SimpleGrid>
+
+      {/* <Paper p="xl" mt="md" withBorder>
         <SimpleMaterialLoader html={sampleHTML} />
-      </Paper>
+      </Paper> */}
     </Container>
   );
 }

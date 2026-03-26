@@ -136,6 +136,10 @@ export interface AssignmentStateConfig {
   modifyState?: MaterialCompositeReplyStateType;
 }
 
+export type ProcessingRuleOptions = {
+  mathEngine?: "mathlive" | "katex" | "mathjax";
+};
+
 /**
  * Enhanced HTML to React Component Rule interface
  */
@@ -219,7 +223,6 @@ export interface MaterialLoaderReturn {
 /**
  * MaterialLoaderContextValue
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MaterialLoaderContextValue extends MaterialLoaderReturn {
   // Additional context-specific properties can be added here
 }

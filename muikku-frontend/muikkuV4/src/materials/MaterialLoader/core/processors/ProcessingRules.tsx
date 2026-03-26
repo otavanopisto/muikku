@@ -198,6 +198,7 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
         children={children}
       />
     ),
+    id: "math-rule",
   },
   {
     /**
@@ -302,6 +303,7 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
         children={children}
       />
     ),
+    id: "math-rule",
   },
   {
     /**
