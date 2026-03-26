@@ -1,11 +1,13 @@
+/* eslint-disable react-dom/no-dangerously-set-innerhtml */
 import { useMemo } from "react";
+import katex from "katex";
 import "mathlive";
+import "katex/dist/katex.min.css";
 
 /**
  * MathRendererBaseProps
  */
 interface MathRendererBaseProps {
-  mode: "inline" | "display";
   invisible?: boolean;
   children: React.ReactNode;
 }
@@ -61,8 +63,29 @@ interface KatexProps extends MathRendererBaseProps {}
  * @param props props
  * @returns Katex
  */
-function Katex(_props: KatexProps) {
-  return <div>Katex</div>;
+function Katex(props: KatexProps) {
+  const { invisible, children } = props;
+  const unwrapped = useMemo(
+    () => unwrapDelimiters(extractLatex(children).trim()),
+    [children]
+  );
+  if (!unwrapped.latex) return null;
+
+  if (invisible) {
+    return <span className="math-tex rs_skip_always">{unwrapped.latex}</span>;
+  }
+
+  const html = katex.renderToString(unwrapped.latex, {
+    displayMode: unwrapped.mode === "display",
+    throwOnError: false,
+    strict: "warn",
+  });
+  return (
+    <span
+      className="math-tex rs_skip_always"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
 }
 
 /**
@@ -76,24 +99,24 @@ interface MathLiveProps extends MathRendererBaseProps {}
  * @returns MathLive
  */
 function MathLive(props: MathLiveProps) {
-  const { mode, invisible, children } = props;
-  // Register MathLive custom elements on the client
-  /* useEffect(() => {
-    // This registers <math-span> and <math-div>
-    import("mathlive");
-  }, []); */
+  const { invisible, children } = props;
 
-  const latex = useMemo(() => extractLatex(children).trim(), [children]);
+  const unwrapped = useMemo(
+    () => unwrapDelimiters(extractLatex(children).trim()),
+    [children]
+  );
 
-  if (!latex) return null;
+  if (!unwrapped.latex) return null;
   const Tag =
-    mode === "display" ? ("math-div" as const) : ("math-span" as const);
+    unwrapped.mode === "display"
+      ? ("math-div" as const)
+      : ("math-span" as const);
   // If you want to preserve your old “invisible” behavior later,
   // you can branch here (e.g. show plain LaTeX when invisible).
   if (invisible) {
-    return <span className="math-tex rs_skip_always">{latex}</span>;
+    return <span className="math-tex rs_skip_always">{unwrapped.latex}</span>;
   }
-  return <Tag className="math-tex rs_skip_always">{latex}</Tag>;
+  return <Tag className="math-tex rs_skip_always">{unwrapped.latex}</Tag>;
 }
 
 /**
@@ -106,4 +129,26 @@ function extractLatex(children: React.ReactNode): string {
   if (Array.isArray(children)) return children.map(extractLatex).join("");
   // If it’s a React element etc, you can choose to ignore or stringify
   return "";
+}
+
+/**
+ * unwrapDelimiters
+ * @param s s
+ * @returns { latex: string; mode: "inline" | "display" }
+ */
+function unwrapDelimiters(s: string): {
+  latex: string;
+  mode: "inline" | "display";
+} {
+  const t = s.trim();
+  if (t.startsWith("\\(") && t.endsWith("\\)")) {
+    return { latex: t.slice(2, -2).trim(), mode: "inline" };
+  }
+  if (t.startsWith("\\[") && t.endsWith("\\]")) {
+    return { latex: t.slice(2, -2).trim(), mode: "display" };
+  }
+  if (t.startsWith("$$") && t.endsWith("$$")) {
+    return { latex: t.slice(2, -2).trim(), mode: "display" };
+  }
+  return { latex: t, mode: "inline" };
 }

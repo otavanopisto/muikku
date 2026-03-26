@@ -39,6 +39,7 @@
     "jotai-devtools": "0.13.0",
     "jotai-tanstack-query": "0.11.0",
     "jquery": "3.7.1",
+    "katex": "^0.16.43",
     "lodash": "4.17.21",
     "mathlive": "^0.109.0",
     "motion": "^12.23.24",

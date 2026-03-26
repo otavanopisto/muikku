@@ -193,8 +193,7 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
     processingFunction: (_tag, props, children, _element, context) => (
       <MathRenderer
         key={props.key}
-        engine="mathlive"
-        mode="inline"
+        engine="katex"
         invisible={context?.invisible}
         children={children}
       />
@@ -296,12 +295,7 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
      * @returns any
      */
     processingFunction: (_tag, _props, children, _element) => (
-      <MathRenderer
-        engine="mathlive"
-        mode="inline"
-        invisible={false}
-        children={children}
-      />
+      <MathRenderer engine="katex" invisible={false} children={children} />
     ),
   },
   {
