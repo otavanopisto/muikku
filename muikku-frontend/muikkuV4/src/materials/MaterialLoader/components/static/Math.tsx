@@ -3,11 +3,13 @@ import { useMemo } from "react";
 import katex from "katex";
 import "mathlive";
 import "katex/dist/katex.min.css";
+import { MathJax } from "better-react-mathjax";
 
 /**
  * MathRendererBaseProps
  */
 interface MathRendererBaseProps {
+  key?: number | string;
   invisible?: boolean;
   children: React.ReactNode;
 }
@@ -49,8 +51,30 @@ interface MathJAXProps extends MathRendererBaseProps {}
  * @param props props
  * @returns MathJAX
  */
-function MathJAX(_props: MathJAXProps) {
-  return <div>MathJAX</div>;
+function MathJAX(props: MathJAXProps) {
+  const { invisible, children } = props;
+
+  const unwrapped = useMemo(
+    () => unwrapDelimiters(extractLatex(children).trim()),
+    [children]
+  );
+
+  if (!unwrapped.latex) return null;
+
+  if (invisible) {
+    return <span className="math-tex rs_skip_always">{unwrapped.latex}</span>;
+  }
+
+  const wrapped =
+    unwrapped.mode === "display"
+      ? `\\[${unwrapped.latex}\\]`
+      : `\\(${unwrapped.latex}\\)`;
+
+  return (
+    <MathJax key={props.key} dynamic inline={unwrapped.mode === "inline"}>
+      <span className="math-tex rs_skip_always">{wrapped}</span>
+    </MathJax>
+  );
 }
 
 /**

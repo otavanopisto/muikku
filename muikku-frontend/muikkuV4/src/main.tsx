@@ -8,19 +8,37 @@ import { jotaiStore } from "./jotaiStore";
 import { DebugAtoms } from "src/utils/DebugAtoms";
 import App from "./App.tsx";
 import { theme } from "./theme";
+import { MathJaxContext } from "better-react-mathjax";
+
+const config = {
+  loader: { load: ["[tex]/html"] },
+  tex: {
+    packages: { "[+]": ["html"] },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+  },
+};
 
 createRoot(document.getElementById("app")!).render(
   <StrictMode>
-    <MantineProvider theme={theme}>
-      <Provider store={jotaiStore}>
-        {process.env.NODE_ENV === "development" && (
-          <>
-            <DebugAtoms />
-            <DevTools store={jotaiStore} />
-          </>
-        )}
-        <App />
-      </Provider>
-    </MantineProvider>
+    <MathJaxContext version={4} config={config}>
+      <MantineProvider theme={theme}>
+        <Provider store={jotaiStore}>
+          {process.env.NODE_ENV === "development" && (
+            <>
+              <DebugAtoms />
+              <DevTools store={jotaiStore} />
+            </>
+          )}
+          <App />
+        </Provider>
+      </MantineProvider>
+    </MathJaxContext>
   </StrictMode>
 );
