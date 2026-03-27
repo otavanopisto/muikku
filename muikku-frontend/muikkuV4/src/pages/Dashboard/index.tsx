@@ -1,10 +1,13 @@
-import { Container, Title, Text, Paper, Button, Group, SimpleGrid } from "@mantine/core";
+import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
 import { SimpleMaterialLoader } from "src/materials/MaterialLoader";
+import { materialContentNodesAtom } from "~/src/atoms/materials";
+import { useMemo } from "react";
+import type { MaterialContentNode } from "~/generated/client";
 
-const sampleHTML = String.raw`
+/* const sampleHTML = String.raw`
   <div>
     <h1>Test Material</h1>
     <p>This is a test paragraph with <strong>bold text</strong> and <em>italic text</em>.</p>
@@ -70,13 +73,30 @@ const sampleHTML = String.raw`
     <p dir="ltr"><span class="math-tex">\([Co(NH_3)_6]Cl_3\)</span></p>
 
   </div>
-`;
+`; */
+
+const htmlOnlyParser = (node: MaterialContentNode): MaterialContentNode[] => {
+  if (node.type === "html") return [node];
+  if (node.type === "folder") {
+    return node.children?.flatMap(htmlOnlyParser) ?? [];
+  }
+  return [];
+};
 
 /**
  * Dashboard - Dashboard page
  */
 export function Dashboard() {
   const user = useAtomValue(userAtom);
+  //const materialHtml = useAtomValue(materialHtmlAtom);
+  const materialContentNodes = useAtomValue(materialContentNodesAtom);
+
+  const htmlOnlyList = useMemo(
+    () => materialContentNodes?.flatMap(htmlOnlyParser) ?? [],
+    [materialContentNodes]
+  );
+
+  //console.log(materialHtml?.html ?? "No material HTML");
 
   return (
     <Container size="lg">
@@ -113,20 +133,34 @@ export function Dashboard() {
         </Group>
       </Paper>
 
-      <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
-        <Paper p="xl" withBorder>
-          <Title order={4}>MathLive</Title>
-          <SimpleMaterialLoader html={sampleHTML} mathEngine="mathlive" />
+      {/* {materialHtml && (
+        <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
+          <Paper p="xl" withBorder>
+            <Title order={4}>MathLive</Title>
+            <SimpleMaterialLoader
+              html={materialHtml.html}
+              mathEngine="mathlive"
+            />
+          </Paper>
+          <Paper p="xl" withBorder>
+            <Title order={4}>KaTeX</Title>
+            <SimpleMaterialLoader html={materialHtml.html} mathEngine="katex" />
+          </Paper>
+          <Paper p="xl" withBorder>
+            <Title order={4}>MathJax</Title>
+            <SimpleMaterialLoader
+              html={materialHtml.html}
+              mathEngine="mathjax"
+            />
+          </Paper>
+        </SimpleGrid>
+      )} */}
+
+      {htmlOnlyList.map((node) => (
+        <Paper key={node.materialId} p="xl" withBorder>
+          <SimpleMaterialLoader html={node.html} mathEngine="mathlive" />
         </Paper>
-        <Paper p="xl" withBorder>
-          <Title order={4}>KaTeX</Title>
-          <SimpleMaterialLoader html={sampleHTML} mathEngine="katex" />
-        </Paper>
-        <Paper p="xl" withBorder>
-          <Title order={4}>MathJax</Title>
-          <SimpleMaterialLoader html={sampleHTML} mathEngine="mathjax" />
-        </Paper>
-      </SimpleGrid>
+      ))}
 
       {/* <Paper p="xl" mt="md" withBorder>
         <SimpleMaterialLoader html={sampleHTML} />

@@ -159,7 +159,9 @@ export function HTMLtoReactComponent(
    * @returns The converted React component
    */
   const defaultProcessor = (tag: string, props: any, children: any[]) =>
-    React.createElement(tag, props, children);
+    children.length > 0
+      ? React.createElement(tag, props, children)
+      : React.createElement(tag, props);
 
   const actualProcessor = matchingRule
     ? matchingRule.processingFunction ?? defaultProcessor
