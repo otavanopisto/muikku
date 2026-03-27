@@ -1,8 +1,7 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { WorkspaceNote } from "~/generated/client";
-
-export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+import { ReducerStatusType } from "~/reducers/types";
 
 export type NoteDefaultLocation = "TOP" | "BOTTOM";
 
@@ -16,7 +15,7 @@ export interface NoteBookState {
   noteEditedPosition?: number;
   noteInTheEditor?: WorkspaceNote | null;
   noteDefaultLocation: NoteDefaultLocation;
-  state: ReducerStateType;
+  state: ReducerStatusType;
 }
 
 const initialJournalsState: NoteBookState = {

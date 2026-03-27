@@ -4,7 +4,7 @@ import {
   StudyActivityItem,
 } from "~/generated/client";
 import { AnyActionType, SpecificActionType } from "..";
-import { ReducerStateType } from "~/reducers/study-activity";
+import { ReducerStatusType } from "~/reducers/types";
 import { Action, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
@@ -21,7 +21,7 @@ const userApi = MApi.getUserApi();
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS =
   SpecificActionType<
     "STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_STATUS",
-    { key: string; status: ReducerStateType }
+    { key: string; status: ReducerStatusType }
   >;
 
 export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY = SpecificActionType<
@@ -37,7 +37,7 @@ export type STUDY_ACTIVITY_UPDATE_USER_STUDY_ACTIVITY_ITEMS =
 
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_COURSE_MATRIX_STATUS",
-  { key: string; status: ReducerStateType }
+  { key: string; status: ReducerStatusType }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX = SpecificActionType<
@@ -47,7 +47,7 @@ export type STUDY_ACTIVITY_UPDATE_COURSE_MATRIX = SpecificActionType<
 
 export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS = SpecificActionType<
   "STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG_STATUS",
-  { key: string; status: ReducerStateType }
+  { key: string; status: ReducerStatusType }
 >;
 
 export type STUDY_ACTIVITY_UPDATE_CURRICULUM_CONFIG = SpecificActionType<
@@ -63,7 +63,7 @@ export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPES = SpecificActionType<
 export type STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS =
   SpecificActionType<
     "STUDY_ACTIVITY_UPDATE_USER_EDUCATION_TYPE_STATUS",
-    ReducerStateType
+    ReducerStatusType
   >;
 
 export type STUDY_ACTIVITY_UPDATE_DEFAULT_EDUCATION_TYPE_CODE =

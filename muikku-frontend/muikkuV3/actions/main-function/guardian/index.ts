@@ -2,7 +2,6 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   ContactGroupNames,
   DependantActivityGraphData,
-  ReducerStateType,
 } from "~/reducers/main-function/guardian";
 import {
   ActivityLogEntry,
@@ -15,6 +14,7 @@ import {
   UserGuardiansDependant,
   UserGuardiansDependantWorkspace,
 } from "~/generated/client/models";
+import { ReducerStatusType } from "~/reducers/types";
 import notificationActions from "~/actions/base/notifications";
 import { Action, Dispatch } from "redux";
 import MApi, { isMApiError } from "~/api/api";
@@ -43,7 +43,7 @@ export type GUARDIAN_UPDATE_DEPENDANTS = SpecificActionType<
 
 export type GUARDIAN_UPDATE_DEPENDANTS_STATUS = SpecificActionType<
   "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 // GUARDIAN DEPENDANT WORKSPACES ACTIONS
@@ -52,7 +52,7 @@ export type GUARDIAN_UPDATE_WORKSPACES_BY_DEPENDANT_IDENTIFIER_STATUS =
     "GUARDIAN_UPDATE_WORKSPACES_BY_DEPENDANT_IDENTIFIER_STATUS",
     {
       identifier: string;
-      status: ReducerStateType;
+      status: ReducerStatusType;
     }
   >;
 
@@ -73,7 +73,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER = SpecificActionType<
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO_STATUS = SpecificActionType<
   "GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO = SpecificActionType<
@@ -84,7 +84,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO = SpecificActionType<
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS",
-    ReducerStateType
+    ReducerStatusType
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES =
@@ -108,7 +108,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_SELECTED_EDUCATION_TYPE_CODE =
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS",
-    { key: string; status: ReducerStateType }
+    { key: string; status: ReducerStatusType }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG =
@@ -120,7 +120,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG =
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS",
-    { key: string; status: ReducerStateType }
+    { key: string; status: ReducerStatusType }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY =
@@ -132,7 +132,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY =
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-    { key: string; status: ReducerStateType }
+    { key: string; status: ReducerStatusType }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX =
@@ -146,7 +146,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CONTACT_GROUPS_STATUS =
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CONTACT_GROUPS_STATUS",
     {
       groupName: ContactGroupNames;
-      status: ReducerStateType;
+      status: ReducerStatusType;
     }
   >;
 
@@ -162,7 +162,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CONTACT_GROUPS =
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_ACTIVITY_GRAPH_DATA_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_ACTIVITY_GRAPH_DATA_STATUS",
-    ReducerStateType
+    ReducerStatusType
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_ACTIVITY_GRAPH_DATA =
@@ -174,7 +174,7 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_ACTIVITY_GRAPH_DATA =
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_PEDAGOGY_FORM_ACCESS_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_PEDAGOGY_FORM_ACCESS_STATUS",
-    ReducerStateType
+    ReducerStatusType
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_PEDAGOGY_FORM_ACCESS =

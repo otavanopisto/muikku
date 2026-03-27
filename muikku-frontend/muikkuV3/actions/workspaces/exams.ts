@@ -9,10 +9,8 @@ import {
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import {
-  ReducerStateInfo,
-  ReducerStateType,
-} from "~/reducers/workspaces/exams";
+import { ReducerStateInfo } from "~/reducers/workspaces/exams";
+import { ReducerStatusType } from "~/reducers/types";
 import { displayNotification } from "../base/notifications";
 import _ from "lodash";
 import { ExamTimerRegistry } from "~/util/exam-timer";
@@ -23,7 +21,7 @@ const workspaceApi = MApi.getWorkspaceApi();
 // OVERALL EXAM STATUS
 export type EXAMS_INITIALIZE_STATUS = SpecificActionType<
   "EXAMS_INITIALIZE_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 // EXAMS
@@ -34,7 +32,7 @@ export type EXAMS_UPDATE_EXAMS = SpecificActionType<
 
 export type EXAMS_UPDATE_EXAMS_STATUS = SpecificActionType<
   "EXAMS_UPDATE_EXAMS_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 // EXAMS_COMPOSITE_REPLIES
