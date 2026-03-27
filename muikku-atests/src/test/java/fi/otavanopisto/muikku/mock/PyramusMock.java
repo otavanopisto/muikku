@@ -849,7 +849,7 @@ public class PyramusMock {
       }
       
       public Builder mockContactTypes() throws JsonProcessingException {      
-        ContactType contactType = new ContactType((long)1, "Koti", false, false);
+        ContactType contactType = new ContactType((long)1, "Koti", false);
         ContactType[] contactTypes = { contactType };
 
         stubFor(get(urlMatching("/1/common/contactTypes/.*"))
