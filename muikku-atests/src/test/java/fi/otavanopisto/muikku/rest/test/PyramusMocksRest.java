@@ -442,7 +442,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     mockPersonStudens(studentArray);
     mockPersonStaffMembers(staffArray);
 
-    ContactType contactType = new ContactType((long)1, "Koti", false, false);
+    ContactType contactType = new ContactType((long)1, "Koti", false);
     ContactType[] contactTypes = { contactType };
     stubFor(get(urlMatching("/1/common/contactTypes/.*"))
       .willReturn(aResponse()
