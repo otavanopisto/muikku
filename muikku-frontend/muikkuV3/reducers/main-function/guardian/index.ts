@@ -12,14 +12,13 @@ import {
 } from "~/generated/client/models";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
+import { ReducerStatusType } from "~/reducers/types";
 
 /**
  * Contact group interface
  */
 interface ContactGroup {
-  status: ReducerStateType;
+  status: ReducerStatusType;
   list: GuidanceCounselorContact[];
 }
 
@@ -28,11 +27,11 @@ interface ContactGroup {
  */
 export interface DependantStudyData {
   studyActivity: StudyActivity | null;
-  studyActivityStatus: ReducerStateType;
+  studyActivityStatus: ReducerStatusType;
   courseMatrix: CourseMatrix | null;
-  courseMatrixStatus: ReducerStateType;
+  courseMatrixStatus: ReducerStatusType;
   curriculumConfig: CurriculumConfig | null;
-  curriculumConfigStatus: ReducerStateType;
+  curriculumConfigStatus: ReducerStatusType;
 }
 
 /**
@@ -57,15 +56,14 @@ export interface DependantActivityGraphData {
  */
 export interface CurrentDependant {
   dependantInfo: Student | null;
-  dependantInfoStatus: ReducerStateType;
+  dependantInfoStatus: ReducerStatusType;
   dependantContactGroups: DependantContactGroups;
   dependantActivityGraphData: DependantActivityGraphData;
-  dependantActivityGraphDataStatus: ReducerStateType;
+  dependantActivityGraphDataStatus: ReducerStatusType;
   dependantPedagogyFormAccess: PedagogyFormAccess | null;
-  dependantPedagogyFormAccessStatus: ReducerStateType;
-
+  dependantPedagogyFormAccessStatus: ReducerStatusType;
   dependantEducationTypes: string[] | null;
-  dependantEducationTypesStatus: ReducerStateType;
+  dependantEducationTypesStatus: ReducerStatusType;
   dependantDefaultEducationTypeCode: string | null;
   dependantSelectedEducationTypeCode: string | null;
   dependantStudyDataByEducationTypeCode: Record<string, DependantStudyData>;
@@ -78,7 +76,7 @@ export type WorkspacesByDependantIdentifier = Record<
   string,
   {
     workspaces: UserGuardiansDependantWorkspace[];
-    status: ReducerStateType;
+    status: ReducerStatusType;
   }
 >;
 
@@ -87,7 +85,7 @@ export type WorkspacesByDependantIdentifier = Record<
  * Object that combines the results of the student and staff search
  */
 export interface GuardianState {
-  dependantsStatus: ReducerStateType;
+  dependantsStatus: ReducerStatusType;
   dependants: UserGuardiansDependant[];
   currentDependantIdentifier: string | null;
   currentDependant: CurrentDependant;

@@ -12,9 +12,11 @@ import {
 import {
   PedagogyEditingState,
   PedagogyMode,
-  ReducerInitializeStatusType,
-  ReducerStateType,
 } from "~/reducers/pedagogy-support";
+import {
+  ReducerStatusType,
+  ReducerInitializeStatusType,
+} from "~/reducers/types";
 import { Dispatch, Action } from "redux";
 import { StateType } from "~/reducers";
 import { isMApiError } from "~/api/api";
@@ -67,7 +69,7 @@ export type PEDAGOGY_SUPPORT_RESET_DATA = SpecificActionType<
 // PEDAGOGY SUPPORT LOCKED RELATED ACTIONS
 export type PEDAGOGY_SUPPORT_UPDATE_LOCKED_STATUS = SpecificActionType<
   "PEDAGOGY_SUPPORT_UPDATE_LOCKED_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 export type PEDAGOGY_SUPPORT_UPDATE_LOCKED = SpecificActionType<
@@ -85,7 +87,7 @@ export type PEDAGOGY_SUPPORT_UPDATE_CURRENTSTUDENTIDENTIFIER =
 // PEDAGOGY SUPPORT FORM RELATED ACTIONS
 export type PEDAGOGY_SUPPORT_FORM_UPDATE_STATUS = SpecificActionType<
   "PEDAGOGY_SUPPORT_FORM_UPDATE_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 export type PEDAGOGY_SUPPORT_FORM_UPDATE_DATA = SpecificActionType<
@@ -107,7 +109,7 @@ export type PEDAGOGY_SUPPORT_FORM_UPDATE_ACCESS = SpecificActionType<
 export type PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_STATUS =
   SpecificActionType<
     "PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_STATUS",
-    ReducerStateType
+    ReducerStatusType
   >;
 
 export type PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_DATA =
