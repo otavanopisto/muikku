@@ -1,4 +1,4 @@
-import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
+import { Container, Title, Text, Paper, Button, Group, SimpleGrid } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
@@ -7,7 +7,7 @@ import { materialContentNodesAtom } from "~/src/atoms/materials";
 import { useMemo } from "react";
 import type { MaterialContentNode } from "~/generated/client";
 
-/* const sampleHTML = String.raw`
+const sampleHTML = String.raw`
   <div>
     <h1>Test Material</h1>
     <p>This is a test paragraph with <strong>bold text</strong> and <em>italic text</em>.</p>
@@ -73,7 +73,7 @@ import type { MaterialContentNode } from "~/generated/client";
     <p dir="ltr"><span class="math-tex">\([Co(NH_3)_6]Cl_3\)</span></p>
 
   </div>
-`; */
+`;
 
 const htmlOnlyParser = (node: MaterialContentNode): MaterialContentNode[] => {
   if (node.type === "html") return [node];
@@ -133,23 +133,23 @@ export function Dashboard() {
         </Group>
       </Paper>
 
-      {/* {materialHtml && (
+      {/* {sampleHTML && (
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
           <Paper p="xl" withBorder>
             <Title order={4}>MathLive</Title>
             <SimpleMaterialLoader
-              html={materialHtml.html}
+              html={sampleHTML}
               mathEngine="mathlive"
             />
           </Paper>
           <Paper p="xl" withBorder>
             <Title order={4}>KaTeX</Title>
-            <SimpleMaterialLoader html={materialHtml.html} mathEngine="katex" />
+            <SimpleMaterialLoader html={sampleHTML} mathEngine="katex" />
           </Paper>
           <Paper p="xl" withBorder>
             <Title order={4}>MathJax</Title>
             <SimpleMaterialLoader
-              html={materialHtml.html}
+              html={sampleHTML}
               mathEngine="mathjax"
             />
           </Paper>
@@ -158,7 +158,7 @@ export function Dashboard() {
 
       {htmlOnlyList.map((node) => (
         <Paper key={node.materialId} p="xl" withBorder>
-          <SimpleMaterialLoader html={node.html} mathEngine="mathlive" />
+          <SimpleMaterialLoader html={node.html} mathEngine="mathjax" />
         </Paper>
       ))}
 
