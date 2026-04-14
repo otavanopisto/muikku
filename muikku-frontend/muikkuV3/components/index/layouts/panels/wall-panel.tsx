@@ -11,8 +11,10 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { NoteComponent } from "./wall/note";
+import WallNote from "./wall/wall-note";
+import WallEvent from "./wall/walll-event";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { UserEventService } from "~/mock/absence";
 
 /**
  * Wall properties
@@ -32,6 +34,9 @@ const WallPanel: React.FC<WallProps> = (props) => {
     status,
     displayNotification
   );
+  const service = new UserEventService(status.userId);
+
+  const absenceEvents = service.getAbsenceEvents();
 
   return (
     <Panel
@@ -43,7 +48,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
       <Panel.BodyContent>
         {notes.length > 0 ? (
           notes.map((note) => (
-            <NoteComponent
+            <WallNote
               isCreator={note.creator === status.userId}
               key={note.id}
               note={note}
@@ -54,6 +59,21 @@ const WallPanel: React.FC<WallProps> = (props) => {
         ) : (
           <div className="empty empty--front-page">
             {t("content.empty", { ns: "tasks", context: "student" })}
+          </div>
+        )}
+      </Panel.BodyContent>
+
+      <Panel.BodyTitle>
+        {t("labels.events", { ns: "frontPage" })}
+      </Panel.BodyTitle>
+      <Panel.BodyContent>
+        {absenceEvents.length > 0 ? (
+          absenceEvents.map((event) => (
+            <WallEvent key={event.id} event={event} />
+          ))
+        ) : (
+          <div className="empty empty--front-page">
+            {t("content.empty", { ns: "frontPage" })}
           </div>
         )}
       </Panel.BodyContent>

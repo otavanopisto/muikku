@@ -12,12 +12,73 @@ import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
 import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
+import {
+  UserEventService,
+  MuikkuEvent,
+  MuikkuEventProperty,
+} from "~/mock/absence";
+import WallEvent from "../wall/walll-event";
+import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+
+interface absenceEventsState {
+  absenceEvents: MuikkuEvent[];
+  state: "IDLE" | "LOADING" | "LOADED" | "ERROR";
+}
+
+type Action =
+  | { type: "SET_ABSENCE_EVENTS"; payload: MuikkuEvent[] }
+  | {
+      type: "UPDATE_EVENT_PROPERTY_VALUE";
+      payload: { eventId: number; value: string; userEntityId: number };
+    };
+
 /**
  * DependantProps
  */
 interface DependantComponentProps {
   dependant: UserGuardiansDependant;
 }
+
+const absenceEventsReducer = (
+  state: absenceEventsState,
+  action: Action
+): absenceEventsState => {
+  switch (action.type) {
+    case "SET_ABSENCE_EVENTS":
+      return { ...state, absenceEvents: action.payload };
+    case "UPDATE_EVENT_PROPERTY_VALUE": {
+      const { eventId, value, userEntityId } = action.payload;
+
+      return {
+        ...state,
+        absenceEvents: state.absenceEvents.map((event) => {
+          if (event.id === eventId) {
+            return {
+              ...event,
+              properties: [
+                {
+                  id: 1,
+                  eventId: eventId,
+                  name: "ABSENCE_REASON",
+                  value: value,
+                  date: new Date().toISOString(),
+                  userEntityId,
+                },
+              ],
+            };
+          }
+          return event;
+        }),
+      };
+    }
+    default:
+      return state;
+  }
+};
+const absenceEventsState: absenceEventsState = {
+  absenceEvents: [],
+  state: "IDLE",
+};
 
 /**
  * Dependant component
@@ -26,20 +87,49 @@ interface DependantComponentProps {
  */
 const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   const { dependant } = props;
+  const service = React.useMemo(
+    () => new UserEventService(dependant.userEntityId),
+    [dependant.userEntityId]
+  );
   const workspaces = useSelector(
     (state: StateType) =>
       state.guardian.workspacesByDependantIdentifier[dependant.identifier]
         ?.workspaces || []
   );
-  const dispatch = useDispatch();
+
+  const status = useSelector((state: StateType) => state.status);
+  const reduxDispatch = useDispatch();
+  const [state, dispatch] = React.useReducer(
+    absenceEventsReducer,
+    absenceEventsState
+  );
   const { t } = useTranslation(["frontPage", "workspace"]);
   const [showWorkspaces, setShowWorkspaces] = React.useState(false);
+
+  React.useEffect(() => {
+    dispatch({
+      type: "SET_ABSENCE_EVENTS",
+      payload: service.getAbsenceEvents(),
+    });
+  }, [service, dispatch]);
+
+  const handleConfirmFeedback = (explanation: string, eventId: number) => {
+    dispatch({
+      type: "UPDATE_EVENT_PROPERTY_VALUE",
+      payload: {
+        eventId: eventId,
+        value: explanation,
+        userEntityId: status.userId,
+      },
+    });
+  };
+
   /**
    * toggles description visibility
    */
   const toggleShowWorkspaces = () => {
     setShowWorkspaces(!showWorkspaces);
-    dispatch(loadDependantWorkspaces(dependant.identifier));
+    reduxDispatch(loadDependantWorkspaces(dependant.identifier));
   };
   return (
     <div className="dependant">
@@ -96,6 +186,41 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
             ns: "frontPage",
             date: localize.date(dependant.latestLogin),
           })}
+        </div>
+      )}
+      {state.absenceEvents.length > 0 ? (
+        state.absenceEvents.map((event) => {
+          const absenceHasReason = event.properties.some(
+            (p) => p.name === "ABSENCE_REASON" && p.value.trim() !== ""
+          );
+
+          return (
+            <div key={event.id}>
+              <h3 className="dependant__workspaces-title">
+                {t("labels.absences", { ns: "events" })}
+              </h3>
+              <WallEvent
+                actions={
+                  <AbsenceFeedbackDialog
+                    absenceEvent={event}
+                    onConfirm={handleConfirmFeedback}
+                  >
+                    <Button
+                      disabled={absenceHasReason}
+                      className="button button--primary-function-content"
+                    >
+                      {t("actions.giveFeedback", { ns: "events" })}
+                    </Button>
+                  </AbsenceFeedbackDialog>
+                }
+                event={event}
+              />
+            </div>
+          );
+        })
+      ) : (
+        <div className="empty empty--front-page">
+          {t("content.empty", { ns: "events" })}
         </div>
       )}
       <AnimateHeight

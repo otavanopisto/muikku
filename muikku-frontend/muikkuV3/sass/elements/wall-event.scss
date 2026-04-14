@@ -1,0 +1,66 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.wall-event {
+  cursor: pointer;
+  padding: 5px 0 5px 5px;
+}
+
+
+.wall-event__date {
+  font-weight: normal;
+  padding: 5px 10px;
+}
+
+.wall-event__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+.wall-event__body {
+  padding: 5px;
+}
+
+.wall-event__description {
+  padding: 5px;
+
+  // Override font-size inherited from global .rich-text rule
+  &.rich-text {
+    font-size: $text-mobile-font-size;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.wall-event__property {
+  background-color: #f5f5f5;
+  padding: 10px;
+}
+.wall-event__property-name {
+  font-weight: 600;
+}
+.wall-event__property-value {  font-weight: normal;
+  padding-left: 5px;  
+}
+
+.wall-event__footer {
+  padding: 5px;
+}
+
+@keyframes border {
+  from {
+    border-left: 3px solid $color-priority-high;
+  }
+  to {
+    border-left: 3px solid $color-default;
+  }
+}

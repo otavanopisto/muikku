@@ -1172,6 +1172,7 @@
       "contact": "Ota yhteyttä",
       "country": "Maa",
       "continue": "Jatka opintoja",
+      "events": "Tapahtumia",
       "followUs": "Seuraa Otaviaa",
       "instagram": "Seuraa meitä Instagramissa",
       "lastMessages": "Uusimmat viestit",
@@ -2610,9 +2611,26 @@
   "events": {
     "actions": {
       "createAbsence": "Luo poissaolo",
+      "giveFeedback": "Anna selvitys",
       "create": "Luo tapahtuma",
       "edit": "Muokkaa tapahtumaa",
       "remove": "Poista tapahtuma"
+    },
+    "labels": {
+      "absence": "Poissaolo",
+      "absences": "Poissaolot",
+      "event": "Tapahtuma",
+      "events": "Tapahtumat",
+      "reason": "Syy",
+      "start": "Alkaa",
+      "end": "Päättyy",
+      "property": "Tuntematon ominaisuus",
+      "property_ABSENCE_REASON": "Poissaolon syy"
+    },
+
+    "content": {
+      "empty": "Ei tapahtumia",
+      "removing": "Oletko varma, että haluat poistaa tapahtuman?"
     },
     "notifications": {
       "createError": "Tapahtuman luonti epäonnistui",

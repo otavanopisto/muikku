@@ -1,11 +1,9 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { ContactRecipientType } from "~/reducers/user-index";
-import { StateType } from "~/reducers";
 import DatePicker from "react-datepicker";
 import {
   WorkspaceStudent,
@@ -14,6 +12,9 @@ import {
 } from "~/generated/client";
 import MApi from "~/api/api";
 
+/**
+ * CreateAbsenceDialogProps
+ */
 interface CreateAbsenceDialogProps {
   children?: React.ReactElement;
   workspaceId: number;
@@ -52,6 +53,11 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = ({
     );
   };
 
+  /**
+   * Renders the content of the dialog
+   * @param onClose
+   * @returns JSX.Element
+   */
   const content = (onClose: () => void) => (
     <div>
       <div className="form__row">
@@ -95,6 +101,11 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = ({
     </div>
   );
 
+  /**
+   * Renders the footer of the dialog
+   * @param onClose
+   * @returns JSX.Element
+   */
   const footer = (onClose: () => void) => (
     <div className="dialog-footer">
       <Button onClick={onClose}>Cancel</Button>
@@ -104,21 +115,35 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = ({
     </div>
   );
 
-  const handleUserSelect = (user: ContactRecipientType) => {
-    if (!selectedUsers.find((u) => u.id === user.id)) {
-      setSelectedUsers([...selectedUsers, user]);
-    }
-  };
+  ///**
+  // * Handles the selection of a user
+  // * @param user The user to be selected
+  // */
+  //const handleUserSelect = (user: ContactRecipientType) => {
+  //  if (!selectedUsers.find((u) => u.id === user.id)) {
+  //    setSelectedUsers([...selectedUsers, user]);
+  //  }
+  //};
 
-  const handleRemoveUser = (userId: string) => {
-    setSelectedUsers(selectedUsers.filter((u) => u.id !== userId));
-  };
+  ///**
+  // * Handles the removal of a user
+  // * @param userId The ID of the user to be removed
+  // */
+  //const handleRemoveUser = (userId: string) => {
+  //  setSelectedUsers(selectedUsers.filter((u) => u.id !== userId));
+  //};
 
+  /**
+   * Handles the confirmation of the dialog
+   */
   const handleConfirm = () => {
     onConfirm(selectedUsers);
     setSelectedUsers([]);
   };
 
+  /**
+   * Handles the closing of the dialog
+   */
   const handleClose = () => {
     setSelectedUsers([]);
     onClose();
