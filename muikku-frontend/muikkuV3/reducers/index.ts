@@ -32,6 +32,7 @@ import { LanguageProfileState } from "./main-function/language-profile";
 import { PedagogySupportState } from "./pedagogy-support";
 import { StudyActivityState } from "./study-activity";
 import { GuardianState } from "./main-function/guardian";
+import { MuikkuEventsState } from "./base/muikku-events";
 
 /**
  * StateType
@@ -67,6 +68,7 @@ export interface StateType {
   notebook?: NoteBookState;
   hopsNew?: HopsState;
   exams?: ExamsState;
+  muikkuEvents?: MuikkuEventsState;
   languageProfile?: LanguageProfileState;
   pedagogySupport?: PedagogySupportState;
   studyActivity?: StudyActivityState;

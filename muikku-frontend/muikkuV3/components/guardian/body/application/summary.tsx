@@ -12,6 +12,8 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import StudyProgress from "./study-progress";
 import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
+import { UserEventService, MuikkuEvent } from "~/mock/absence";
+import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
 
 /**
  * SummaryProps
@@ -35,6 +37,9 @@ const Summary = (props: SummaryProps) => {
   const currentDependant = useSelector(
     (state: StateType) => state.guardian.currentDependant
   );
+  const service = new UserEventService(
+    currentDependant.dependantInfo?.userEntityId || 0
+  );
 
   if (
     currentDependant.dependantInfoStatus !== "READY" ||
@@ -44,6 +49,21 @@ const Summary = (props: SummaryProps) => {
   ) {
     return null;
   } else {
+    const absenceEvents = service.getAbsenceEvents();
+
+    const absences = (
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__header">
+          {t("labels.absences", { ns: "events" })}
+        </div>
+        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+          {absenceEvents.map((event) => (
+            <WallEvent key={event.id} event={event} />
+          ))}
+        </div>
+      </div>
+    );
+
     const studentBasicInfo = (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
@@ -275,9 +295,9 @@ const Summary = (props: SummaryProps) => {
 
     return (
       <section>
+        {absenceEvents && absenceEvents.length > 0 && absences}
         {studentCounselors}
         {studentBasicInfo}
-
         <div className="application-sub-panel">
           <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
             {t("labels.studyProgress", {

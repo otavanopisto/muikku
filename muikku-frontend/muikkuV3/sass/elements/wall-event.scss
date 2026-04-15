@@ -17,12 +17,11 @@
 .wall-event__header {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   padding: 5px;
 }
-.wall-event__body {
-  padding: 5px;
-}
+
 
 .wall-event__description {
   padding: 5px;
@@ -39,6 +38,10 @@
       margin-top: 0;
     }
   }
+}
+
+.wall-event__body {
+  padding: 5px;
 }
 
 .wall-event__property {
