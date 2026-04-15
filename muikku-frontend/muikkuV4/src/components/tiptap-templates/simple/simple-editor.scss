@@ -1,82 +1,70 @@
+/* NOTE:
+  The Google Fonts import is global by nature. Prefer moving it to a global place
+  (e.g. your app shell) if you actually want these fonts site-wide or want to
+  control loading. Leaving it here makes it easy to accidentally ship extra fonts.
+*/
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
-body {
-  --tt-toolbar-height: 44px;
-  --tt-theme-text: var(--tt-gray-light-900);
+/* Everything below is scoped to the editor wrapper */
+.muikkuTiptap {
+  background-color: var(--tt-bg-color);
+
+  --muikku-editor-text: var(--tt-gray-light-a-900);
 
   .dark & {
-    --tt-theme-text: var(--tt-gray-dark-900);
+    --muikku-editor-text: var(--tt-gray-dark-a-900);
   }
-}
 
-body {
-  font-family: "Inter", sans-serif;
-  color: var(--tt-theme-text);
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  padding: 0;
-  overscroll-behavior-y: none;
-}
+  /* Scrollbars (scoped; no longer global) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--tt-scrollbar-color) transparent;
+  }
 
-html,
-body {
-  overscroll-behavior-x: none;
-}
+  ::-webkit-scrollbar {
+    width: 0.25rem;
+  }
 
-html,
-body,
-#root,
-#app {
-  height: 100%;
-  background-color: var(--tt-bg-color);
-}
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 9999px;
+  }
 
-::-webkit-scrollbar {
-  width: 0.25rem;
-}
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--tt-scrollbar-color) transparent;
-}
+  /* Editor typography (scoped) */
+  .tiptap.ProseMirror {
+    color: var(--muikku-editor-text);
+    background: transparent;
+    font-family: "DM Sans", sans-serif;
+  }
 
-::-webkit-scrollbar-thumb {
-  background-color: var(--tt-scrollbar-color);
-  border-radius: 9999px;
-}
+  /* Template layout (scoped) */
+  .simple-editor-wrapper {
+    height: 100vh;
+    overflow: auto;
+  }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+  .simple-editor-content {
+    max-width: 648px;
+    width: 100%;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 
-.tiptap.ProseMirror {
-  font-family: "DM Sans", sans-serif;
-}
-
-.simple-editor-wrapper {
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-}
-
-.simple-editor-content {
-  max-width: 648px;
-  width: 100%;
-  margin: 0 auto;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.simple-editor-content .tiptap.ProseMirror.simple-editor {
-  flex: 1;
-  padding: 3rem 3rem 30vh;
-}
-
-@media screen and (max-width: 480px) {
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
-    padding: 1rem 1.5rem 30vh;
+    flex: 1;
+    padding: 3rem 3rem 30vh;
+  }
+
+  @media screen and (max-width: 480px) {
+    .simple-editor-content .tiptap.ProseMirror.simple-editor {
+      padding: 1rem 1.5rem 30vh;
+    }
   }
 }

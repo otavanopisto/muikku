@@ -1,13 +1,14 @@
-import { Container, Title, Text, Paper, Button, Group, SimpleGrid } from "@mantine/core";
+import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
 import { SimpleMaterialLoader } from "src/materials/MaterialLoader";
 import { materialContentNodesAtom } from "~/src/atoms/materials";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { MaterialContentNode } from "~/generated/client";
+import { SimpleEditor } from "~/src/components/tiptap-templates/simple/simple-editor";
 
-const sampleHTML = String.raw`
+/* const sampleHTML = String.raw`
   <div>
     <h1>Test Material</h1>
     <p>This is a test paragraph with <strong>bold text</strong> and <em>italic text</em>.</p>
@@ -73,7 +74,7 @@ const sampleHTML = String.raw`
     <p dir="ltr"><span class="math-tex">\([Co(NH_3)_6]Cl_3\)</span></p>
 
   </div>
-`;
+`; */
 
 const htmlOnlyParser = (node: MaterialContentNode): MaterialContentNode[] => {
   if (node.type === "html") return [node];
@@ -90,11 +91,30 @@ export function Dashboard() {
   const user = useAtomValue(userAtom);
   //const materialHtml = useAtomValue(materialHtmlAtom);
   const materialContentNodes = useAtomValue(materialContentNodesAtom);
+  const [materialHtml, setMaterialHtml] = useState<string>("");
+  const [temporaryMaterialHtml, setTemporaryMaterialHtml] =
+    useState<string>("");
 
   const htmlOnlyList = useMemo(
     () => materialContentNodes?.flatMap(htmlOnlyParser) ?? [],
     [materialContentNodes]
   );
+
+  /**
+   * Handles the change of the material HTML
+   * @param html - The new HTML content
+   */
+  const handleMaterialHtmlChange = (html: string) => {
+    console.log("html", html);
+    setTemporaryMaterialHtml(html);
+  };
+
+  /**
+   * Handles the saving of the material HTML
+   */
+  const handleSaveMaterialHtml = () => {
+    setMaterialHtml(temporaryMaterialHtml);
+  };
 
   //console.log(materialHtml?.html ?? "No material HTML");
 
@@ -156,15 +176,35 @@ export function Dashboard() {
         </SimpleGrid>
       )} */}
 
-      {htmlOnlyList.map((node) => (
+      <Paper p="xl" withBorder>
+        <Title order={1} mb="md">
+          Here is your workspace: bi1-elama-ja-evoluutio
+        </Title>
+
+        <Group mt="lg" justify="flex-start">
+          <Button onClick={handleSaveMaterialHtml} variant="default">
+            Save Material HTML
+          </Button>
+        </Group>
+
+        <SimpleEditor onChange={handleMaterialHtmlChange} />
+      </Paper>
+
+      {/* {htmlOnlyList.map((node) => (
         <Paper key={node.materialId} p="xl" withBorder>
           <SimpleMaterialLoader html={node.html} mathEngine="mathjax" />
         </Paper>
-      ))}
+      ))} */}
 
       {/* <Paper p="xl" mt="md" withBorder>
         <SimpleMaterialLoader html={sampleHTML} />
       </Paper> */}
+
+      {materialHtml && (
+        <Paper p="xl" mt="md" withBorder>
+          <SimpleMaterialLoader html={materialHtml} mathEngine="mathlive" />
+        </Paper>
+      )}
     </Container>
   );
 }

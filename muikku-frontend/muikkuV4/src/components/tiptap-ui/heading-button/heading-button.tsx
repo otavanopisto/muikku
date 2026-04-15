@@ -1,45 +1,53 @@
-import { forwardRef, useCallback } from "react"
+/* eslint-disable react-x/no-forward-ref */
+import { forwardRef, useCallback } from "react";
 
 // --- Lib ---
-import { parseShortcutKeys } from "@/lib/tiptap-utils"
+import { parseShortcutKeys } from "@/lib/tiptap-utils";
 
 // --- Tiptap UI ---
 import type {
   Level,
   UseHeadingConfig,
-} from "@/components/tiptap-ui/heading-button"
+} from "@/components/tiptap-ui/heading-button";
 import {
   HEADING_SHORTCUT_KEYS,
   useHeading,
-} from "@/components/tiptap-ui/heading-button"
+} from "@/components/tiptap-ui/heading-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge"
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
+import { Button } from "@/components/tiptap-ui-primitive/button";
+import { Badge } from "@/components/tiptap-ui-primitive/badge";
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
+/**
+ * Props for the HeadingButton component.
+ */
 export interface HeadingButtonProps
-  extends Omit<ButtonProps, "type">, UseHeadingConfig {
+  extends Omit<ButtonProps, "type">,
+    UseHeadingConfig {
   /**
    * Optional text to display alongside the icon.
    */
-  text?: string
+  text?: string;
   /**
    * Optional show shortcut keys in the button.
    * @default false
    */
-  showShortcut?: boolean
+  showShortcut?: boolean;
 }
 
+/**
+ * Badge component for displaying shortcut keys.
+ */
 export function HeadingShortcutBadge({
   level,
   shortcutKeys = HEADING_SHORTCUT_KEYS[level],
 }: {
-  level: Level
-  shortcutKeys?: string
+  level: Level;
+  shortcutKeys?: string;
 }) {
-  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
+  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 }
 
 /**
@@ -62,7 +70,7 @@ export const HeadingButton = forwardRef<HTMLButtonElement, HeadingButtonProps>(
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor)
+    const { editor } = useTiptapEditor(providedEditor);
     const {
       isVisible,
       canToggle,
@@ -76,19 +84,19 @@ export const HeadingButton = forwardRef<HTMLButtonElement, HeadingButtonProps>(
       level,
       hideWhenUnavailable,
       onToggled,
-    })
+    });
 
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
-        handleToggle()
+        onClick?.(event);
+        if (event.defaultPrevented) return;
+        handleToggle();
       },
       [handleToggle, onClick]
-    )
+    );
 
     if (!isVisible) {
-      return null
+      return null;
     }
 
     return (
@@ -117,8 +125,8 @@ export const HeadingButton = forwardRef<HTMLButtonElement, HeadingButtonProps>(
           </>
         )}
       </Button>
-    )
+    );
   }
-)
+);
 
-HeadingButton.displayName = "HeadingButton"
+HeadingButton.displayName = "HeadingButton";
