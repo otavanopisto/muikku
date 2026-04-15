@@ -87,6 +87,10 @@ import {
   MathEquation,
   MathEquationButton,
 } from "@/components/tiptap-extension-custom/math-equations";
+import {
+  StyleSetSelect,
+  StyleSetExtension,
+} from "@/components/tiptap-extension-custom/style-set";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -166,6 +170,12 @@ const MainToolbarContent = ({
 
     <ToolbarGroup>
       <MathEquationButton />
+    </ToolbarGroup>
+
+    <ToolbarSeparator />
+
+    <ToolbarGroup>
+      <StyleSetSelect />
     </ToolbarGroup>
 
     <Spacer />
@@ -264,6 +274,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
         onError: (error) => console.error("Upload failed:", error),
       }),
       MathEquation,
+      StyleSetExtension,
     ],
     textDirection: "auto",
     content,
