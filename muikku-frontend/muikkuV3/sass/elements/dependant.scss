@@ -104,7 +104,7 @@
   }
 }
 
-.dependant__workspaces-container h3 {
+.dependant__workspaces-container h3, .dependant__absences-container h3 {
   padding: 20px 0;
 }
 
@@ -125,10 +125,10 @@
   width: 100%;
 }
 
-.dependant__activity-container {
+.dependant__activity-container, .dependant__absences-container {
   margin: 20px 0;
 }
 
-.dependant__workspaces-title {
+.dependant__workspaces-title, .dependant__absences-title {
   font-weight: 400;
 }

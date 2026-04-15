@@ -12,25 +12,13 @@ import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
 import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
-import {
-  UserEventService,
-  MuikkuEvent,
-  MuikkuEventProperty,
-} from "~/mock/absence";
+import { MuikkuEventProperty } from "~/mock/absence";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
 import {
   updateAbsenceEventProperty,
   loadAbsenceEvents,
 } from "~/actions/base/muikku-events";
-
-/**
- * absenceEventsState
- */
-interface absenceEventsState {
-  absenceEvents: MuikkuEvent[];
-  state: "IDLE" | "LOADING" | "LOADED" | "ERROR";
-}
 
 /**
  * DependantProps
@@ -64,6 +52,11 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
     dispatch(loadAbsenceEvents(dependant.userEntityId));
   }, [dispatch, dependant.userEntityId]);
 
+  /**
+   * handles confirming feedback for an absence event
+   * @param explanation the feedback explanation provided by the user
+   * @param eventId the ID of the absence event for which feedback is being provided
+   */
   const handleConfirmFeedback = (explanation: string, eventId: number) => {
     const property: MuikkuEventProperty = {
       id: 0,
@@ -142,17 +135,18 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
         </div>
       )}
       {absenceEvents.events.length > 0 ? (
-        absenceEvents.events.map((event) => {
-          const absenceHasReason = event.properties.some(
-            (p) => p.name === "ABSENCE_REASON" && p.value.trim() !== ""
-          );
+        <div className="dependant__absences-container">
+          <h3 className="dependant__absences-title">
+            {t("labels.absences", { ns: "events" })}
+          </h3>
+          {absenceEvents.events.map((event) => {
+            const absenceHasReason = event.properties.some(
+              (p) => p.name === "ABSENCE_REASON" && p.value.trim() !== ""
+            );
 
-          return (
-            <div key={event.id}>
-              <h3 className="dependant__workspaces-title">
-                {t("labels.absences", { ns: "events" })}
-              </h3>
+            return (
               <WallEvent
+                key={event.id}
                 actions={
                   <AbsenceFeedbackDialog
                     absenceEvent={event}
@@ -168,9 +162,9 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
                 }
                 event={event}
               />
-            </div>
-          );
-        })
+            );
+          })}
+        </div>
       ) : (
         <div className="empty empty--front-page">
           {t("content.empty", { ns: "events" })}
