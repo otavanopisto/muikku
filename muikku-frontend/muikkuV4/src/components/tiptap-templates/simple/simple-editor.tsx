@@ -16,6 +16,7 @@ import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
 import { Selection } from "@tiptap/extensions";
+import { TextStyleKit } from "@tiptap/extension-text-style";
 
 // --- UI Primitives ---
 import { Button } from "@/components/tiptap-ui-primitive/button";
@@ -48,6 +49,7 @@ import {
   ColorHighlightPopoverContent,
   ColorHighlightPopoverButton,
 } from "@/components/tiptap-ui/color-highlight-popover";
+import { TextColorPopover } from "@/components/tiptap-ui/text-color-popover";
 import {
   LinkPopover,
   LinkContent,
@@ -134,6 +136,8 @@ const MainToolbarContent = ({
       ) : (
         <ColorHighlightPopoverButton onClick={onHighlighterClick} />
       )}
+
+      <TextColorPopover />
       {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
     </ToolbarGroup>
 
@@ -256,6 +260,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
           enableClickSelection: true,
         },
       }),
+      TextStyleKit,
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
