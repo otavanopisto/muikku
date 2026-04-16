@@ -32,6 +32,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
 import { StudyActivityState } from "~/reducers/study-activity";
+import { MuikkuEvents, MuikkuEventsState } from "~/reducers/base/muikku-events";
+import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
 
 /**
  * SummaryProps
@@ -42,6 +44,7 @@ interface SummaryProps extends WithTranslation {
   summary: SummaryType;
   status: StatusType;
   studyActivity: StudyActivityState;
+  absenceEvents: MuikkuEvents;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -67,13 +70,25 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
    */
   render() {
     const { t } = this.props;
-
+    const { absenceEvents } = this.props;
     if (
       this.props.records.location !== "summary" ||
       this.props.summary.status !== "READY"
     ) {
       return null;
     } else {
+      const absences = (
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__header">
+            {t("labels.absences", { ns: "events" })}
+          </div>
+          <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+            {absenceEvents.events.map((event) => (
+              <WallEvent key={event.id} event={event} />
+            ))}
+          </div>
+        </div>
+      );
       const studentBasicInfo = (
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
@@ -302,6 +317,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
+          {absences}
           {studentBasicInfo}
           {studentCounselors}
           {this.props.status.isActiveUser ? (
@@ -401,6 +417,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     contacts: state.contacts,
+    absenceEvents: state.muikkuEvents.absenceEvents,
     summary: state.summary,
     status: state.status,
     studyActivity: state.studyActivity,

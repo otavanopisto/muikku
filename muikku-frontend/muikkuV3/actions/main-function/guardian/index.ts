@@ -25,6 +25,12 @@ import {
   getCurriculumConfig,
 } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
+import { MuikkuEvents } from "~/reducers/base/muikku-events";
+import {
+  MuikkuEvent,
+  MuikkuEventProperty,
+  UserEventService,
+} from "~/mock/absence";
 
 const meApi = MApi.getMeApi();
 const hopsApi = MApi.getHopsApi();
@@ -64,6 +70,29 @@ export type GUARDIAN_UPDATE_WORKSPACES_BY_DEPENDANT_IDENTIFIER_WORKSPACES =
       workspaces: UserGuardiansDependantWorkspace[];
     }
   >;
+
+// GUARDIAN DEPENDANT EVENTS ACTIONS
+
+export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES = SpecificActionType<
+  "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
+  {
+    dependantId: number;
+    absences: MuikkuEvent[];
+  }
+>;
+
+export type GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY = SpecificActionType<
+  "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+  MuikkuEventProperty
+>;
+
+export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS = SpecificActionType<
+  "GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS",
+  {
+    dependantId: number;
+    status: ReducerStateType;
+  }
+>;
 
 // GUARDIAN CURRENT DEPENDANT ACTIONS
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER = SpecificActionType<
@@ -176,6 +205,20 @@ export interface LoadDependantsTriggerType {
  */
 export interface LoadDependantWorkspacesTriggerType {
   (dependantIdentifier: string): AnyActionType;
+}
+
+/**
+ * LoadDependantAbsenceEventsTriggerType
+ */
+export interface LoadDependantAbsenceEventsTriggerType {
+  (dependantId: number): AnyActionType;
+}
+
+/**
+ * UpdateDependantAbsenceEventPropertyTriggerType
+ */
+export interface UpdateDependantAbsenceEventPropertyTriggerType {
+  (property: MuikkuEventProperty): AnyActionType;
 }
 
 /**
@@ -357,6 +400,38 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
           },
         });
       }
+    };
+  };
+
+/**
+ * loadDependantAbsenceEvents
+ * @param dependantId dependantId
+ */
+const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
+  function loadDependantAbsenceEvents(dependantId: number) {
+    const EventService = new UserEventService(dependantId);
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      dispatch({
+        type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
+        payload: {
+          dependantId: dependantId,
+          absences: EventService.getAbsenceEvents(),
+        },
+      });
+    };
+  };
+
+/**
+ * updateAbsenceEventProperty
+ * @param property property
+ */
+const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
+  function updateAbsenceEventProperty(property: MuikkuEventProperty) {
+    return {
+      type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+      payload: property,
     };
   };
 
@@ -796,6 +871,8 @@ const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerT
 export {
   loadDependants,
   loadDependantWorkspaces,
+  loadDependantAbsenceEvents,
+  updateAbsenceEventProperty,
   loadCurrentDependantStudyActivity,
   loadCurrentDependantCourseMatrix,
   loadCurrentDependantStudentInfo,

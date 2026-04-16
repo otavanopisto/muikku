@@ -3,7 +3,10 @@ import "~/sass/elements/dependant.scss"; // Styles
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
 import { useDispatch, useSelector } from "react-redux";
-import { loadDependantWorkspaces } from "~/actions/main-function/guardian";
+import {
+  loadDependantWorkspaces,
+  loadDependantAbsenceEvents,
+} from "~/actions/main-function/guardian";
 import { getName } from "~/util/modifiers"; // getName function
 import { Link } from "react-router-dom"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
@@ -15,10 +18,7 @@ import { StateType } from "~/reducers";
 import { MuikkuEventProperty } from "~/mock/absence";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-import {
-  updateAbsenceEventProperty,
-  loadAbsenceEvents,
-} from "~/actions/base/muikku-events";
+import { updateAbsenceEventProperty } from "~/actions/main-function/guardian";
 
 /**
  * DependantProps
@@ -41,7 +41,8 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   );
 
   const absenceEvents = useSelector(
-    (state: StateType) => state.muikkuEvents.absenceEvents
+    (state: StateType) =>
+      state.guardian.absencesByDependantId[dependant.userEntityId]?.events || []
   );
 
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   const [showWorkspaces, setShowWorkspaces] = React.useState(false);
 
   React.useEffect(() => {
-    dispatch(loadAbsenceEvents(dependant.userEntityId));
+    dispatch(loadDependantAbsenceEvents(dependant.userEntityId));
   }, [dispatch, dependant.userEntityId]);
 
   /**
@@ -134,12 +135,12 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           })}
         </div>
       )}
-      {absenceEvents.events.length > 0 ? (
+      {absenceEvents.length > 0 ? (
         <div className="dependant__absences-container">
           <h3 className="dependant__absences-title">
             {t("labels.absences", { ns: "events" })}
           </h3>
-          {absenceEvents.events.map((event) => {
+          {absenceEvents.map((event) => {
             const absenceHasReason = event.properties.some(
               (p) => p.name === "ABSENCE_REASON" && p.value.trim() !== ""
             );

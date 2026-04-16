@@ -11,6 +11,7 @@ import { loadAnnouncementsAsAClient } from "~/actions/announcements";
 import { loadLastMessageThreadsFromServer } from "~/actions/main-function/messages";
 import CousePickerBody from "../components/coursepicker/body";
 import { loadLoggedUser } from "~/actions/user-index";
+import { loadAbsenceEvents } from "~/actions/base/muikku-events";
 import {
   loadWorkspacesFromServer,
   loadUserWorkspaceCurriculumFiltersFromServer,

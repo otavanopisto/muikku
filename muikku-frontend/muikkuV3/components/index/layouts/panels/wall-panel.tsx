@@ -15,12 +15,14 @@ import WallNote from "./wall/wall-note";
 import WallEvent from "./wall/walll-event";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { UserEventService } from "~/mock/absence";
+import { MuikkuEvents } from "~/reducers/base/muikku-events";
 
 /**
  * Wall properties
  */
 export interface WallProps extends WithTranslation {
   status: StatusType;
+  absenceEvents: MuikkuEvents;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -29,14 +31,11 @@ export interface WallProps extends WithTranslation {
  * @param props WallProps
  */
 const WallPanel: React.FC<WallProps> = (props) => {
-  const { status, displayNotification, t } = props;
+  const { status, displayNotification, t, absenceEvents } = props;
   const { notes, updateNoteStatus, updateNote } = useOnGoingNotes(
     status,
     displayNotification
   );
-  const service = new UserEventService(status.userId);
-
-  const absenceEvents = service.getAbsenceEvents();
 
   return (
     <Panel
@@ -67,8 +66,8 @@ const WallPanel: React.FC<WallProps> = (props) => {
         {t("labels.events", { ns: "frontPage" })}
       </Panel.BodyTitle>
       <Panel.BodyContent>
-        {absenceEvents.length > 0 ? (
-          absenceEvents.map((event) => (
+        {absenceEvents.events.length > 0 ? (
+          absenceEvents.events.map((event) => (
             <WallEvent key={event.id} event={event} />
           ))
         ) : (
@@ -88,6 +87,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
+    absenceEvents: state.muikkuEvents.absenceEvents,
   };
 }
 

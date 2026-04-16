@@ -3,7 +3,10 @@ import { Reducer } from "redux";
 import { MuikkuEvent } from "~/mock/absence";
 import { LoadingState } from "~/@types/shared";
 
-interface MuikkuEvents {
+/**
+ * MuikkuEvents
+ */
+export interface MuikkuEvents {
   events: MuikkuEvent[];
   state: LoadingState;
 }

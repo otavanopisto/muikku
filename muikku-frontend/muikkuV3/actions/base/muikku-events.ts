@@ -51,9 +51,7 @@ const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
 
 /**
  * updateAbsenceEventProperty
- * @param eventId eventId
  * @param property property
- * @param userEntityId userEntityId
  */
 const updateAbsenceEventProperty: UpdateAbsenceEventPropertyTriggerType =
   function updateAbsenceEventProperty(property) {

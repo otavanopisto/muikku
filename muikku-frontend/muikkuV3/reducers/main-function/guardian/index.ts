@@ -12,6 +12,7 @@ import {
 } from "~/generated/client/models";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
+import { MuikkuEvents } from "~/reducers/base/muikku-events";
 
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
@@ -80,6 +81,7 @@ export interface GuardianState {
   currentDependantIdentifier: string | null;
   currentDependant: CurrentDependant;
   workspacesByDependantIdentifier: WorkspacesByDependantIdentifier;
+  absencesByDependantId: Record<number, MuikkuEvents>;
 }
 
 /**
@@ -113,6 +115,7 @@ const initializeGuardianState: GuardianState = {
     dependantPedagogyFormAccessStatus: "IDLE",
   },
   workspacesByDependantIdentifier: {},
+  absencesByDependantId: {},
 };
 
 /**
@@ -132,10 +135,54 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         dependantsStatus: action.payload,
       };
+
     case "GUARDIAN_UPDATE_DEPENDANTS":
       return {
         ...state,
         dependants: action.payload,
+      };
+
+    case "GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS":
+      return {
+        ...state,
+        currentDependant: {
+          ...state.currentDependant,
+          dependantAbsencesStatus: action.payload,
+        },
+      };
+
+    case "GUARDIAN_UPDATE_DEPENDANT_ABSENCES":
+      return {
+        ...state,
+        absencesByDependantId: {
+          ...state.absencesByDependantId,
+          [action.payload.dependantId]: {
+            events: action.payload.absences,
+            state: "READY",
+          },
+        },
+      };
+
+    case "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY":
+      return {
+        ...state,
+        absencesByDependantId: {
+          ...state.absencesByDependantId,
+          [action.payload.userEntityId]: {
+            events: state.absencesByDependantId[
+              action.payload.userEntityId
+            ]?.events.map((event) => {
+              if (event.id === action.payload.eventId) {
+                return {
+                  ...event,
+                  properties: [action.payload],
+                };
+              }
+              return event;
+            }),
+            state: "READY",
+          },
+        },
       };
 
     case "GUARDIAN_UPDATE_WORKSPACES_BY_DEPENDANT_IDENTIFIER_STATUS":
@@ -151,6 +198,7 @@ export const guardian: Reducer<GuardianState> = (
           },
         },
       };
+
     case "GUARDIAN_UPDATE_WORKSPACES_BY_DEPENDANT_IDENTIFIER_WORKSPACES":
       return {
         ...state,
@@ -189,6 +237,7 @@ export const guardian: Reducer<GuardianState> = (
           dependantCurriculumConfigStatus: action.payload,
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG":
       return {
         ...state,
@@ -197,6 +246,7 @@ export const guardian: Reducer<GuardianState> = (
           dependantCurriculumConfig: action.payload,
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS":
       return {
         ...state,
@@ -205,6 +255,7 @@ export const guardian: Reducer<GuardianState> = (
           dependantStudyActivityStatus: action.payload,
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY":
       return {
         ...state,
@@ -213,6 +264,7 @@ export const guardian: Reducer<GuardianState> = (
           dependantStudyActivity: action.payload,
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS":
       return {
         ...state,
@@ -221,6 +273,7 @@ export const guardian: Reducer<GuardianState> = (
           dependantCourseMatrixStatus: action.payload,
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX":
       return {
         ...state,
@@ -246,6 +299,7 @@ export const guardian: Reducer<GuardianState> = (
           },
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CONTACT_GROUPS":
       return {
         ...state,
@@ -271,6 +325,7 @@ export const guardian: Reducer<GuardianState> = (
           dependantActivityGraphDataStatus: action.payload,
         },
       };
+
     case "GUARDIAN_UPDATE_CURRENT_DEPENDANT_ACTIVITY_GRAPH_DATA":
       return {
         ...state,
