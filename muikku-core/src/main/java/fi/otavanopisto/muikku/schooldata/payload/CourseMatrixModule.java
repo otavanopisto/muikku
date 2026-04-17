@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.schooldata.payload;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseMatrixModule {
 
@@ -29,14 +31,6 @@ public class CourseMatrixModule {
     this.length = length;
   }
 
-  public boolean isMandatory() {
-    return mandatory;
-  }
-
-  public void setMandatory(boolean mandatory) {
-    this.mandatory = mandatory;
-  }
-
   public boolean isAvailable() {
     return available;
   }
@@ -45,10 +39,18 @@ public class CourseMatrixModule {
     this.available = available;
   }
 
+  public Mandatority getMandatority() {
+    return mandatority;
+  }
+
+  public void setMandatority(Mandatority mandatority) {
+    this.mandatority = mandatority;
+  }
+
   private String name;
   private int courseNumber;
   private int length;
-  private boolean mandatory;
+  private Mandatority mandatority;
   private boolean available;
 
 }

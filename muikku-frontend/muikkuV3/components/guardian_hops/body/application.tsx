@@ -21,11 +21,7 @@ import { Action } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
-import {
-  loadCurrentDependantCourseMatrix,
-  loadCurrentDependantStudyActivity,
-  updateCurrentDependantIdentifier,
-} from "~/actions/main-function/guardian";
+import { initializeCurrentDependantEssentials } from "~/actions/main-function/guardian";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -70,7 +66,13 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
   const currentDependantIdentifier = useSelector(
     (state: StateType) => state.guardian.currentDependantIdentifier
   );
+
   const dispatch = useDispatch();
+
+  const currentDependantStudyData =
+    currentDependant.dependantStudyDataByEducationTypeCode[
+      currentDependant.dependantSelectedEducationTypeCode
+    ];
 
   // Get current dependant info
   const selectedDependant = dependants.find((d) => d.identifier === identifier);
@@ -89,16 +91,11 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
     if (!identifier) return;
     if (currentDependantIdentifier === identifier) return;
 
+    dispatch(initializeCurrentDependantEssentials(identifier));
+
     // Reset HOPS data if current dependant identifier has changed
     // based on guardian context
     dispatch(resetHopsData());
-
-    // Update current dependant identifier
-    dispatch(updateCurrentDependantIdentifier(identifier));
-
-    // Load essential data
-    dispatch(loadCurrentDependantCourseMatrix(identifier));
-    dispatch(loadCurrentDependantStudyActivity(identifier));
 
     // Initialize HOPS and load data based on student type
     dispatch(
@@ -168,12 +165,15 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
             selectUserStudyProgramme || ""
           );
         case "STUDYPLAN":
-          return true;
+          return (
+            currentDependantStudyData?.curriculumConfig?.isMatrixAvailable ??
+            false
+          );
         default:
           return false;
       }
     },
-    [selectedDependant]
+    [selectedDependant, currentDependantStudyData]
   );
 
   // Prepare dependants options
@@ -241,8 +241,8 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
           identifier: selectedDependant?.identifier || "",
           studyStartDate: selectedDependant?.studyStartDate || new Date(),
         }}
-        curriculumConfig={currentDependant.dependantCurriculumConfig}
-        userStudyActivity={currentDependant.dependantStudyActivity}
+        curriculumConfig={currentDependantStudyData?.curriculumConfig ?? null}
+        userStudyActivity={currentDependantStudyData?.studyActivity ?? null}
       >
         <ApplicationPanel
           title="HOPS"

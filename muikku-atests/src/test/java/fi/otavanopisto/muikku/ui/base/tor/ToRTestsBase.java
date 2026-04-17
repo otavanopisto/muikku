@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.hops.Mandatority;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivity;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityAssessment;
@@ -32,7 +33,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-import fi.otavanopisto.pyramus.rest.model.hops.Mandatority;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
 
@@ -398,7 +398,7 @@ public class ToRTestsBase extends AbstractUITest {
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
       waitForPresent(".application-sub-panel--counselors");        
-      findElementOrReloadAndFind(".item-list--student-counselors .item-list__user-name", 5, 5000);
+      waitForElementToAppear(".item-list--student-counselors .item-list__user-name", 5, 5000);
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
       assertPresent(".item-list--student-counselors .button-pill--new-message");

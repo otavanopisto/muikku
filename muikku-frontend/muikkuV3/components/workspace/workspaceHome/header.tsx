@@ -9,7 +9,7 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -87,37 +87,22 @@ class WorkspaceHomeHeader extends React.Component<
     /**
      * If OPS data and workspace mandatority property is present
      */
-    if (OPS && this.props.workspace.mandatority) {
-      /**
-       * Create map property from education type name and OPS name that was passed
-       * Strings are changes to lowercase form and any empty spaces are removed
-       */
-      const education = `${this.props.workspace.additionalInfo.educationType.name
-        .toLowerCase()
-        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
+    if (this.props.workspace.mandatority) {
+      const localString = getMandatorityLabel({
+        t: this.props.t,
+        exists: this.props.i18n.exists,
+        mandatority: this.props.workspace.mandatority,
+        educationType:
+          this.props.workspace?.additionalInfo?.educationType?.name ?? "",
+        curriculums: OPS ? [OPS.name] : undefined,
+      });
 
-      const suitabilityMap = suitabilityMapHelper(this.props.t);
-
-      /**
-       * Check if our map contains data with just created education string
-       * Otherwise just return null. There might not be all included values by every OPS created...
-       */
-      if (!suitabilityMap[education]) {
-        return null;
-      }
-
-      /**
-       * Then get correct local string from map by suitability enum value
-       */
-      const localString =
-        suitabilityMap[education][this.props.workspace.mandatority];
-
-      return localString ? (
+      return (
         <div className="meta__item">
           <span className="meta__item-label">Pakollisuus:</span>
           <span className="meta__item-description">{localString}</span>
         </div>
-      ) : null;
+      );
     }
 
     return null;

@@ -47,7 +47,6 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
@@ -563,7 +562,7 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/courseMatrix")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCourseMatrix(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+  public Response getCourseMatrix(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("educationTypeCode") String educationTypeCode) {
     
     // Payload validatiom
     
@@ -588,7 +587,7 @@ public class HopsRestService {
     // Service call
 
     BridgeResponse<CourseMatrixRestModel> response = userSchoolDataController.getCourseMatrix(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), educationTypeCode);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
@@ -600,7 +599,7 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studyActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("workspaceEntityId") Long workspaceEntityId) {
+  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("workspaceEntityId") Long workspaceEntityId, @QueryParam("educationTypeCode") String educationTypeCode) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -611,7 +610,7 @@ public class HopsRestService {
       return Response.status(Status.FORBIDDEN).build();
     }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_STUDY_ACTIVITY)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+      if (!userEntityController.isThisMe(studentIdentifier)) {
         if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
           return Response.status(Status.FORBIDDEN).build();
         }
@@ -630,10 +629,16 @@ public class HopsRestService {
     // Pyramus call for ongoing, transferred, and graded courses
 
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntityId);
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntityId, educationTypeCode);
     if (response.ok()) {
 
       for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
+        
+        // Workspace url
+        
+        if (item.getCourseId() != null) {
+          item.setUrl(workspaceEntityController.getUrl(item.getCourseId()));
+        }
         
         // Supplementation requests
         
@@ -777,11 +782,13 @@ public class HopsRestService {
             }
             else {
               StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
               item.setCourseNumber(suggestion.getCourseNumber());
               item.setDate(suggestion.getCreated());
               item.setSubject(suggestion.getSubject());
               item.setCourseId(suggestion.getWorkspaceEntityId());
+              if (item.getCourseId() != null) {
+                item.setUrl(workspaceEntityController.getUrl(item.getCourseId()));
+              }
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
               item.setState(StudyActivityItemState.SUGGESTED_NEXT);
               // Note: This item lacks some course metadata but for suggested courses, front-end can live with that 
@@ -1119,7 +1126,7 @@ public class HopsRestService {
       return Response.ok(suggestedWorkspaces).build();
     }
 
-    // Do the search
+    // Do the search (search method automatically strips unpublished and members only workspaces)
 
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
@@ -1134,13 +1141,6 @@ public class HopsRestService {
             String dataSource = id[1];
             String identifier = id[0];
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-
-            // Skip unpublished courses
-
-            Boolean published = (Boolean) result.get("published");
-            if (!published) {
-              continue;
-            }
 
             // OPS of the course and the student must match
 
@@ -1162,12 +1162,6 @@ public class HopsRestService {
 
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity == null) {
-              continue;
-            }
-
-            // Skip members only courses
-
-            if (workspaceEntity.getAccess() != null && workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
               continue;
             }
 
@@ -1698,7 +1692,7 @@ public class HopsRestService {
         studentEntity.getId(),
         student.getFirstName(),
         student.getLastName(),
-        student.getStudyProgrammeEducationType(),
+        student.getEducationTypeCode(),
         student.getStudyStartDate(),
         student.getStudyEndDate(),
         student.getStudyTimeEnd(),
@@ -1712,7 +1706,7 @@ public class HopsRestService {
       Long studentIdentifier,
       String firstName,
       String lastName,
-      String studyProgrammeEducationType,
+      String educationTypeCode,
       OffsetDateTime studyStartDate,
       OffsetDateTime studyEndDate,
       OffsetDateTime studyTimeEnd,
@@ -1722,7 +1716,7 @@ public class HopsRestService {
         studentIdentifier,
         firstName,
         lastName,
-        studyProgrammeEducationType,
+        educationTypeCode,
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
@@ -1886,7 +1880,7 @@ public class HopsRestService {
     if (userEntity == null || user == null) {
       return null;
     }
-    return new HopsStudent(userEntity.getId(), user.getStudyProgrammeEducationType());
+    return new HopsStudent(userEntity.getId(), user.getEducationTypeCode());
   }
   
   private HopsStudyPlannerNoteRestModel toRestModel(HopsStudyPlannerNote note) {

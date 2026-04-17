@@ -22,6 +22,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * PlannerSidebarProps
@@ -61,21 +62,14 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
 
   const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
-  const studyOptions = useSelector(
-    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyOptions
-  );
-
   // Disable course tray if in read mode
   const disabled = useSelector(
     (state: StateType) => state.hopsNew.hopsMode === "READ"
   );
 
   const matrix = useMemo(
-    () =>
-      curriculumConfig.strategy.getCurriculumMatrix({
-        studyOptions,
-      }),
-    [curriculumConfig, studyOptions]
+    () => curriculumConfig.strategy.getCurriculumMatrix(),
+    [curriculumConfig]
   );
 
   /**
@@ -414,7 +408,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
   selected && modifiers.push("selected");
   courseState.state && modifiers.push(courseState.state);
 
-  const typeModifiers = course.mandatory ? ["mandatory"] : ["optional"];
+  const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(course.mandatority);
+
+  const typeModifiers = isMandatory ? ["mandatory"] : ["optional"];
 
   return (
     <li className="study-planner__course-tray-item">
@@ -434,7 +430,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         <PlannerCardContent>
           <div className="study-planner__card-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
-              {course.mandatory
+              {isMandatory
                 ? t("labels.mandatory", {
                     ns: "common",
                   })

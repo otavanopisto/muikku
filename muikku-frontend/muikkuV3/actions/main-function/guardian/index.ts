@@ -10,10 +10,10 @@ import {
   CourseMatrix,
   GuidanceCounselorContact,
   PedagogyFormAccess,
+  Student,
   StudyActivity,
   UserGuardiansDependant,
   UserGuardiansDependantWorkspace,
-  UserWithSchoolData,
 } from "~/generated/client/models";
 import notificationActions from "~/actions/base/notifications";
 import { Action, Dispatch } from "redux";
@@ -107,43 +107,67 @@ export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO_STATUS = SpecificActionType<
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO = SpecificActionType<
   "GUARDIAN_UPDATE_CURRENT_DEPENDANT_INFO",
-  UserWithSchoolData
+  Student
 >;
+
+export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS =
+  SpecificActionType<
+    "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS",
+    ReducerStateType
+  >;
+
+export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES =
+  SpecificActionType<
+    "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES",
+    string[]
+  >;
+
+export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_DEFAULT_EDUCATION_TYPE_CODE =
+  SpecificActionType<
+    "GUARDIAN_UPDATE_CURRENT_DEPENDANT_DEFAULT_EDUCATION_TYPE_CODE",
+    string
+  >;
+
+export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_SELECTED_EDUCATION_TYPE_CODE =
+  SpecificActionType<
+    "GUARDIAN_UPDATE_CURRENT_DEPENDANT_SELECTED_EDUCATION_TYPE_CODE",
+    string
+  >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS",
-    ReducerStateType
+    { key: string; status: ReducerStateType }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG",
-    CurriculumConfig
+    { key: string; curriculumConfig: CurriculumConfig }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS",
-    ReducerStateType
+    { key: string; status: ReducerStateType }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY",
-    StudyActivity
+    { key: string; studyActivity: StudyActivity }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-    ReducerStateType
+    { key: string; status: ReducerStateType }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX =
   SpecificActionType<
     "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX",
-    CourseMatrix
+    { key: string; courseMatrix: CourseMatrix }
   >;
 
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_CONTACT_GROUPS_STATUS =
@@ -222,17 +246,30 @@ export interface UpdateDependantAbsenceEventPropertyTriggerType {
 }
 
 /**
+ * InitializeCurrentDependantEssentialsTriggerType
+ */
+export interface InitializeCurrentDependantEssentialsTriggerType {
+  (dependantIdentifier: string): AnyActionType;
+}
+
+/**
  * LoadCurrentDependantEssentialsTriggerType
  */
 export interface LoadCurrentDependantStudyActivityTriggerType {
-  (dependantIdentifier: string): AnyActionType;
+  (data: {
+    dependantIdentifier: string;
+    educationTypeCode?: string;
+  }): AnyActionType;
 }
 
 /**
  * LoadCurrentDependantCourseMatrixTriggerType
  */
 export interface LoadCurrentDependantCourseMatrixTriggerType {
-  (dependantIdentifier: string): AnyActionType;
+  (data: {
+    dependantIdentifier: string;
+    educationTypeCode?: string;
+  }): AnyActionType;
 }
 
 /**
@@ -264,6 +301,13 @@ export interface LoadCurrentDependantPedagogyFormAccessTriggerType {
 }
 
 /**
+ * LoadCurrentDependantEducationTypesTriggerType
+ */
+export interface LoadCurrentDependantEducationTypesTriggerType {
+  (dependantIdentifier: string): AnyActionType;
+}
+
+/**
  * UpdateCurrentDependantIdentifierTriggerType
  */
 export interface UpdateCurrentDependantIdentifierTriggerType {
@@ -271,14 +315,18 @@ export interface UpdateCurrentDependantIdentifierTriggerType {
 }
 
 /**
+ * UpdateCurrentDependantSelectedEducationTypeCodeTriggerType
+ */
+export interface UpdateCurrentDependantSelectedEducationTypeCodeTriggerType {
+  (educationTypeCode: string): AnyActionType;
+}
+
+/**
  * Thunk function to load dependants
  * @returns Thunk function to load dependants
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     try {
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
@@ -325,10 +373,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
  */
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   function loadDependantWorkspaces(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       let dependantWorkspaces =
@@ -437,41 +482,42 @@ const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType
 
 /**
  * Thunk function to load current dependant study activity
- * @param dependantIdentifier dependantIdentifier
+ * @param data data
  * @returns Thunk function to load current dependant study activity
  */
 const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTriggerType =
-  function loadCurrentDependantStudyActivity(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+  function loadCurrentDependantStudyActivity(data) {
+    const { dependantIdentifier, educationTypeCode } = data;
+    return async (dispatch, getState) => {
       const state = getState();
+      const entry =
+        state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
+          educationTypeCode
+        ];
 
-      if (
-        state.guardian.currentDependant.dependantStudyActivityStatus === "READY"
-      ) {
+      if (!entry || entry.studyActivityStatus !== "IDLE") {
         return;
       }
 
       try {
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS",
-          payload: "LOADING",
+          payload: { key: educationTypeCode, status: "LOADING" },
         });
 
         const studyActivity = await hopsApi.getStudyActivity({
           studentIdentifier: dependantIdentifier,
+          educationTypeCode: educationTypeCode,
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY",
-          payload: studyActivity,
+          payload: { key: educationTypeCode, studyActivity: studyActivity },
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS",
-          payload: "READY",
+          payload: { key: educationTypeCode, status: "READY" },
         });
       } catch (err) {
         if (!isMApiError(err)) {
@@ -480,7 +526,7 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_STUDY_ACTIVITY_STATUS",
-          payload: "ERROR",
+          payload: { key: educationTypeCode, status: "ERROR" },
         });
       }
     };
@@ -488,31 +534,32 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
 
 /**
  * Thunk function to load current dependant course matrix
- * @param dependantIdentifier dependantIdentifier
+ * @param data data
  * @returns Thunk function to load current dependant course matrix
  */
 const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerType =
-  function loadCurrentDependantCourseMatrix(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+  function loadCurrentDependantCourseMatrix(data) {
+    const { dependantIdentifier, educationTypeCode } = data;
+    return async (dispatch, getState) => {
       const state = getState();
+      const entry =
+        state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
+          educationTypeCode
+        ];
 
-      if (
-        state.guardian.currentDependant.dependantCourseMatrixStatus === "READY"
-      ) {
+      if (!entry || entry.courseMatrixStatus !== "IDLE") {
         return;
       }
 
       try {
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-          payload: "LOADING",
+          payload: { key: educationTypeCode, status: "LOADING" },
         });
 
         const courseMatrix = await hopsApi.getStudentCourseMatrix({
           studentIdentifier: dependantIdentifier,
+          educationTypeCode: educationTypeCode,
         });
 
         const curriculumConfig = getCurriculumConfig(
@@ -522,22 +569,25 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX",
-          payload: courseMatrix,
+          payload: { key: educationTypeCode, courseMatrix: courseMatrix },
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG",
-          payload: curriculumConfig,
+          payload: {
+            key: educationTypeCode,
+            curriculumConfig: curriculumConfig,
+          },
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-          payload: "READY",
+          payload: { key: educationTypeCode, status: "READY" },
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS",
-          payload: "READY",
+          payload: { key: educationTypeCode, status: "READY" },
         });
       } catch (err) {
         if (!isMApiError(err)) {
@@ -546,12 +596,12 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_COURSE_MATRIX_STATUS",
-          payload: "ERROR",
+          payload: { key: educationTypeCode, status: "ERROR" },
         });
 
         dispatch({
           type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_CURRICULUM_CONFIG_STATUS",
-          payload: "ERROR",
+          payload: { key: educationTypeCode, status: "ERROR" },
         });
       }
     };
@@ -563,11 +613,8 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
  * @returns Thunk function to load current dependant student details
  */
 const loadCurrentDependantStudentInfo: LoadCurrentDependantStudentInfoTriggerType =
-  function loadCurrentDependantStudentDetails(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+  function loadCurrentDependantStudentInfo(dependantIdentifier: string) {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (state.guardian.currentDependant.dependantInfoStatus === "READY") {
@@ -580,9 +627,38 @@ const loadCurrentDependantStudentInfo: LoadCurrentDependantStudentInfoTriggerTyp
           payload: "LOADING",
         });
 
+        dispatch({
+          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS",
+          payload: "LOADING",
+        });
+
         // Student's study time
         const dependantStudentInfo = await userApi.getStudent({
           studentId: dependantIdentifier,
+        });
+
+        const educationTypes = await userApi.getStudentEducationTypes({
+          studentIdentifier: dependantIdentifier,
+        });
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_DEFAULT_EDUCATION_TYPE_CODE",
+          payload: dependantStudentInfo.educationTypeCode,
+        });
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_SELECTED_EDUCATION_TYPE_CODE",
+          payload: dependantStudentInfo.educationTypeCode,
+        });
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES",
+          payload: educationTypes,
+        });
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES_STATUS",
+          payload: "READY",
         });
 
         dispatch({
@@ -618,10 +694,7 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
     groupName: ContactGroupNames,
     dependantIdentifier: string
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const isActiveUser = state.status.isActiveUser;
 
@@ -696,10 +769,7 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
  */
 const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDataTriggerType =
   function loadCurrentDependantActivityGraphData(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (
@@ -805,15 +875,12 @@ const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDa
  */
 const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAccessTriggerType =
   function loadCurrentDependantPedagogyFormAccess(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (
-        state.guardian.currentDependant.dependantPedagogyFormAccessStatus ===
-        "READY"
+        state.guardian.currentDependant.dependantPedagogyFormAccessStatus !==
+        "IDLE"
       ) {
         return;
       }
@@ -857,10 +924,7 @@ const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAc
  */
 const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerType =
   function updateCurrentDependantIdentifier(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
         payload: dependantIdentifier,
@@ -868,7 +932,99 @@ const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerT
     };
   };
 
+/**
+ * Update current dependant selected education type code thunk function
+ * @param educationTypeCode educationTypeCode
+ * @returns Thunk function to update current dependant selected education type code
+ */
+const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSelectedEducationTypeCodeTriggerType =
+  function updateCurrentDependantSelectedEducationTypeCode(
+    educationTypeCode: string
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      dispatch({
+        type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_SELECTED_EDUCATION_TYPE_CODE",
+        payload: educationTypeCode,
+      });
+
+      dispatch(
+        loadCurrentDependantStudyActivity({
+          dependantIdentifier: state.guardian.currentDependant.dependantInfo.id,
+          educationTypeCode: educationTypeCode,
+        })
+      );
+      dispatch(
+        loadCurrentDependantCourseMatrix({
+          dependantIdentifier: state.guardian.currentDependant.dependantInfo.id,
+          educationTypeCode: educationTypeCode,
+        })
+      );
+    };
+  };
+
+/**
+ * Load current dependant education types thunk function
+ * @param dependantIdentifier dependantIdentifier
+ * @returns Thunk function to load current dependant education types
+ */
+const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTriggerType =
+  function loadCurrentDependantEducationTypes(dependantIdentifier: string) {
+    return async (dispatch, getState) => {
+      const educationTypes = await userApi.getStudentEducationTypes({
+        studentIdentifier: dependantIdentifier,
+      });
+
+      dispatch({
+        type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_EDUCATION_TYPES",
+        payload: educationTypes,
+      });
+    };
+  };
+
+/**
+ * Initialize current dependant essentials thunk function
+ * @param dependantIdentifier dependantIdentifier
+ * @returns Thunk function to initialize current dependant essentials
+ */
+const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentialsTriggerType =
+  function initializeCurrentDependantEssentials(dependantIdentifier: string) {
+    return async (dispatch, getState) => {
+      // Update the current dependant identifier.
+      // This will reset the current dependant state so we will wait for it to complete.
+      await dispatch(updateCurrentDependantIdentifier(dependantIdentifier));
+
+      // Then load the current dependant student info.
+      await dispatch(loadCurrentDependantStudentInfo(dependantIdentifier));
+
+      // Get the default education type code.
+      const defaultEducationTypeCode =
+        getState().guardian.currentDependant.dependantInfo.educationTypeCode;
+
+      // Load the current dependant course matrix.
+      dispatch(
+        loadCurrentDependantCourseMatrix({
+          dependantIdentifier: dependantIdentifier,
+          educationTypeCode: defaultEducationTypeCode,
+        })
+      );
+
+      // Load the current dependant study activity.
+      dispatch(
+        loadCurrentDependantStudyActivity({
+          dependantIdentifier: dependantIdentifier,
+          educationTypeCode: defaultEducationTypeCode,
+        })
+      );
+    };
+  };
+
 export {
+  initializeCurrentDependantEssentials,
   loadDependants,
   loadDependantWorkspaces,
   loadDependantAbsenceEvents,
@@ -879,5 +1035,7 @@ export {
   loadCurrentDependantContactGroups,
   loadCurrentDependantActivityGraphData,
   loadCurrentDependantPedagogyFormAccess,
+  loadCurrentDependantEducationTypes,
   updateCurrentDependantIdentifier,
+  updateCurrentDependantSelectedEducationTypeCode,
 };

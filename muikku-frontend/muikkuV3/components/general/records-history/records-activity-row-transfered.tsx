@@ -5,7 +5,7 @@ import {
 } from "../application-list";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
 import { StudyActivityItem } from "~/generated/client";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -24,7 +24,7 @@ const RecordsActivityRowTransfered = (
   props: RecordsActivityRowTransferedProps
 ) => {
   const { studyActivityItem, educationType } = props;
-  const { t } = useTranslation([
+  const { t, i18n } = useTranslation([
     "studies",
     "evaluation",
     "materials",
@@ -49,19 +49,23 @@ const RecordsActivityRowTransfered = (
   const renderMandatorityDescription = () => {
     if (!studyActivityItem.mandatority) return null;
 
-    const OPS = studyActivityItem.curriculums[0];
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: studyActivityItem.mandatority,
+      educationType,
+      curriculums: studyActivityItem.curriculums,
+    });
 
-    const suitabilityMap = suitabilityMapHelper(t);
-    const education = `${educationType
-      .toLowerCase()
-      .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
-    if (!suitabilityMap[education]) return null;
-    let localString = suitabilityMap[education][studyActivityItem.mandatority];
-    const creditsString = getCreditsString();
-    if (creditsString) localString = `${localString}, ${creditsString}`;
+    const sumOfCredits = getCreditsString();
+
+    if (sumOfCredits) {
+      localString = `${localString}, ${sumOfCredits}`;
+    }
+
     return (
       <div className="label">
-        <div className="label__text">{localString} </div>
+        <div className="label__text">{localString}</div>
       </div>
     );
   };

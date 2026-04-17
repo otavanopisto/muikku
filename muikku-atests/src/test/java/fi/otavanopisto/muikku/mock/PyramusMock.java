@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -144,11 +145,11 @@ public class PyramusMock {
         pmock.gradingScales.put(gs, grades);
         
         pmock.educationalTimeUnits.add(new EducationalTimeUnit((long) 1, "test time unit", "h", (double) 1, false));
-        pmock.educationTypes.add(new EducationType((long) 1, "testEduType", "ET", false));
+        pmock.educationTypes.add(new EducationType((long) 1, "Lukio", "lukio", false));
         pmock.subjects.add(new Subject((long) 1, "tc_11", "Test course", (long) 1, false));
         
         pmock.studyProgrammeCategories.add(new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false));
-        pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false, null));
+        pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false, "lukio"));
         
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
@@ -591,6 +592,19 @@ public class PyramusMock {
             .withStatus(200)));
         return this;
       }
+
+      public Builder mockStudentEducationTypes() throws JsonProcessingException {
+        Set<String> educationTypes = new HashSet<>();
+        educationTypes.add("lukio");
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/students/students/.*/educationTypes"), true);
+        stubFor(get(urlPattern)
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(educationTypes))
+            .withStatus(200)));          
+        return this;
+      }
+      
       
       public Builder mockEducationalTimeUnits() throws JsonProcessingException {
         for (EducationalTimeUnit educationalTimeUnit : pmock.educationalTimeUnits) {
@@ -835,7 +849,7 @@ public class PyramusMock {
       }
       
       public Builder mockContactTypes() throws JsonProcessingException {      
-        ContactType contactType = new ContactType((long)1, "Koti", false, false);
+        ContactType contactType = new ContactType((long)1, "Koti", false);
         ContactType[] contactTypes = { contactType };
 
         stubFor(get(urlMatching("/1/common/contactTypes/.*"))
@@ -1533,7 +1547,11 @@ public class PyramusMock {
       public Builder mockEmptyStudyActivity() throws JsonProcessingException {
         UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/studyActivity"), true);
         pmock.studyActivity.setItems(new ArrayList<StudyActivityItemRestModel>());
-        pmock.studyActivity.setEducationType("Lukio");
+        pmock.studyActivity.setEducationTypeCode("lukio");
+        pmock.studyActivity.setCompletedCourseCredits(0);
+        pmock.studyActivity.setMandatoryCourseCredits(10);
+        pmock.studyActivity.setCompletedCourses(0);
+        pmock.studyActivity.setMandatoryCourses(5);
         stubFor(get(urlPattern)
             .withQueryParam("courseId", matching(".*"))
             .willReturn(aResponse()
@@ -1551,8 +1569,11 @@ public class PyramusMock {
       public Builder mockStudyActivity(List<StudyActivityItemRestModel> sairmList) throws JsonProcessingException {
         UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/muikku/students/.*/studyActivity"), true);      
         pmock.studyActivity.setItems(sairmList);
-        pmock.studyActivity.setEducationType("Lukio");
+        pmock.studyActivity.setEducationTypeCode("lukio");
         pmock.studyActivity.setCompletedCourseCredits(sairmList.iterator().next().getLength());
+        pmock.studyActivity.setMandatoryCourseCredits(10);
+        pmock.studyActivity.setCompletedCourses(1);
+        pmock.studyActivity.setMandatoryCourses(5);
         stubFor(get(urlPattern)
             .withQueryParam("courseId", matching(".*"))
             .willReturn(aResponse()
@@ -1613,6 +1634,7 @@ public class PyramusMock {
         mockPersons();
         mockStudents();
         mockStaffMembers();
+        mockStudentEducationTypes();
         
         mockCourseActivities();
         for (String payload : pmock.payloads) {

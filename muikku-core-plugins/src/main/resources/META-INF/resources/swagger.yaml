@@ -6459,6 +6459,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: educationTypeCode
+          in: query
+          description: Optional education type, e.g. lukio
+          schema:
+            type: string
       responses:
         "200":
           description: Student's HOPS course matrix
@@ -6487,6 +6492,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: educationTypeCode
+          in: query
+          description: Optional education type, e.g. lukio
+          schema:
+            type: string
       responses:
         "200":
           description: Student study activity
@@ -8432,40 +8442,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/students/{studentIdentifier}/students:
-    get:
-      operationId: getStudents
-      summary: Get students
-      description: Get students
-      tags:
-        - Records
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: includeInactiveStudents
-          in: query
-          description: Include inactive students
-          schema:
-            type: boolean
-            default: false
-      responses:
-        "200":
-          description: Students results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserWithSchoolData"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/records/users/{identifier}/workspaceActivity:
     get:
       operationId: getWorkspaceActivity
@@ -9031,7 +9007,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/StudentBasicInfo"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9057,7 +9033,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9083,7 +9059,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9173,7 +9149,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserWithSchoolData"
+                $ref: "#/components/schemas/StudentBasicInfo"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9443,6 +9419,30 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+
+  /rest/user/students/{studentIdentifier}/educationTypes:
+    get:
+      operationId: getStudentEducationTypes
+      summary: Returns student identifiers for each education type the student has studied under
+      description: Returns student identifiers for each education type the student has studied under
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Map where key is education type code and value is student identifier
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
 
   /rest/user/userInfo/{userEntityId}:
     get:
@@ -12209,7 +12209,6 @@ components:
             description: InterimEvaluationRequestCreateRequestBody object
             required:
               - workspaceMaterialId
-              - requestText
             properties:
               workspaceMaterialId:
                 type: integer
@@ -13257,17 +13256,19 @@ components:
                 type: string
               studyProgrammeIdentifier:
                 type: string
-              role:
+              gender:
                 type: string
+                nullable: true
               ssn:
                 type: string
+                nullable: true
 
     UserStudentUpdateRequestBody:
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/UserWithSchoolData"
+              - $ref: "#/components/schemas/Student"
 
     UserStudentBasicInfoUpdateRequestBody:
       content:
@@ -13280,6 +13281,7 @@ components:
               - firstName
               - lastName
               - email
+              - studyProgrammeIdentifier
             properties:
               identifier:
                 type: string
@@ -13289,12 +13291,14 @@ components:
                 type: string
               email:
                 type: string
-              ssn:
-                type: string
-              role:
-                type: string
               studyProgrammeIdentifier:
                 type: string
+              ssn:
+                type: string
+                nullable: true
+              gender:
+                type: string
+                nullable: true
 
     UserStudentAddressUpdateRequestBody:
       content:
@@ -17608,6 +17612,32 @@ components:
         code:
           type: string
 
+    StudentBasicInfo:
+      type: object
+      required:
+        - identifier
+        - firstName
+        - lastName
+        - email
+        - studyProgrammeIdentifier
+      properties:
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        studyProgrammeIdentifier:
+          type: string
+        gender:
+          type: string
+          nullable: true
+        ssn:
+          type: string
+          nullable: true
+
     Student:
       type: object
       required:
@@ -17622,6 +17652,7 @@ components:
         - curriculumIdentifier
         - studyProgrammeIdentifier
         - studyProgrammeName
+        - educationTypeCode
         - studyStartDate
         - studyEndDate
         - studyTimeEnd
@@ -17665,6 +17696,9 @@ components:
           type: string
         studyProgrammeName:
           type: string
+        educationTypeCode:
+          type: string
+          nullable: true
         studyStartDate:
           nullable: true
           type: string
@@ -17747,7 +17781,7 @@ components:
         - firstName
         - lastName
         - studyTimeEnd
-        - studyProgrammeEducationType
+        - educationTypeCode
         - curriculumName
       properties:
         id:
@@ -17766,8 +17800,9 @@ components:
         studyTimeEnd:
           nullable: true
           type: string
-        studyProgrammeEducationType:
+        educationTypeCode:
           type: string
+          description: Student's education type code, e.g. lukio or peruskoulu
         counselorList:
           nullable: true
           type: array
@@ -17782,11 +17817,16 @@ components:
       description: OPS specific course matrix for a given student
       required:
         - type
+        - curriculum
         - subjects
         - problems
       properties:
         type:
           $ref: "#/components/schemas/CourseMatrixType"
+          nullable: true
+        curriculum:
+          type: string
+          description: Student's curriculum, e.g. OPS 2021
           nullable: true
         subjects:
           type: array
@@ -17821,7 +17861,7 @@ components:
         - name
         - courseNumber
         - length
-        - mandatory
+        - mandatority
         - available
       properties:
         name:
@@ -17830,8 +17870,13 @@ components:
           type: integer
         length:
           type: integer
-        mandatory:
-          type: boolean
+        mandatority:
+          type: string
+          enum:
+            - MANDATORY
+            - SCHOOL_LEVEL_OPTIONAL
+            - NATIONAL_LEVEL_OPTIONAL
+            - UNSPECIFIED_OPTIONAL
         available:
           type: boolean
 
@@ -17855,14 +17900,16 @@ components:
       type: object
       description: Representation of all study activity of student
       required:
-        - educationType
+        - educationTypeCode
         - items
         - completedCourseCredits
         - mandatoryCourseCredits
+        - completedCourses
+        - mandatoryCourses
       properties:
-        educationType:
+        educationTypeCode:
           type: string
-          description: Student's education type, e.g. Lukio or Perusopetus
+          description: Student's education type code, e.g. lukio or peruskoulu
         items:
           type: array
           description: Study activity items
@@ -17874,6 +17921,12 @@ components:
         mandatoryCourseCredits:
           type: integer
           description: Student's number of mandatory course credits
+        completedCourses:
+          type: integer
+          description: Student's total number of completed courses
+        mandatoryCourses:
+          type: integer
+          description: Student's number of completed mandatory courses
 
     StudyActivityItem:
       type: object
@@ -17882,9 +17935,12 @@ components:
         - subjectName
         - subject
         - courseId
+        - url
         - courseNumber
         - courseName
+        - courseNameExtension
         - grade
+        - raisedGrade
         - passing
         - state
         - date
@@ -17913,6 +17969,10 @@ components:
           description: Course id in Muikku, i.e. workspaceEntityId
           format: int64
           nullable: true
+        url:
+          type: string
+          description: Course URL, e.g. /workspace/course-name
+          nullable: true
         courseNumber:
           type: integer
           description: Course number, e.g. 2
@@ -17920,10 +17980,17 @@ components:
         courseName:
           type: string
           description: Course name
+        courseNameExtension:
+          type: string
+          description: Course name extension
+          nullable: true
         grade:
           type: string
           description: Grade, e.g. 7
           nullable: true
+        raisedGrade:
+          type: boolean
+          description: If there is a grade, is it a raised grade
         passing:
           type: boolean
           description: If there is a grade, is it a passing grade
@@ -17956,7 +18023,6 @@ components:
           type: array
           items:
             type: string
-          nullable: true
         text:
           type: string
           description: Item text, e.g. supplementation request message or grade's verbal assesment
@@ -18535,64 +18601,6 @@ components:
           format: date-time
           nullable: true
 
-    UserWithSchoolData:
-      type: object
-      description: UserWithSchoolData object
-      required:
-        - id
-        - firstName
-        - email
-        - hasImage
-        - updatedByStudent
-        - userEntityId
-        - matriculationEligibility
-        - ceeposLine
-      properties:
-        id:
-          type: string
-        userEntityId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-        nickName:
-          type: string
-        email:
-          type: string
-        hasImage:
-          type: boolean
-        updatedByStudent:
-          type: boolean
-        matriculationEligibility:
-          type: string
-        ceeposLine:
-          type: string
-          nullable: true
-        curriculumName:
-          type: string
-        curriculumIdentifier:
-          type: string
-        language:
-          type: string
-        municipality:
-          type: string
-        nationality:
-          type: string
-        school:
-          type: string
-        studyEndDate:
-          type: string
-        studyStartDate:
-          type: string
-        studyTimeEnd:
-          type: string
-        lastLogin:
-          type: string
-        studyProgrammeName:
-          type: string
-
     UserWhoAmI:
       type: object
       description: This is whoAmI object returned by whoAmI endpoint. It contains basic information about the user.
@@ -18623,7 +18631,7 @@ components:
         - hasEvaluationFees
         - isDefaultOrganization
         - services
-        - studyLevel
+        - educationTypeCode
       properties:
         id:
           type: integer
@@ -18720,9 +18728,10 @@ components:
           nullable: true
         services:
           $ref: "#/components/schemas/UserWhoAmIServices"
-        studyLevel:
+        educationTypeCode:
           type: string
           nullable: true
+          description: Student's education type code, e.g. lukio or peruskoulu
 
     UserWhoAmIServices:
       type: object

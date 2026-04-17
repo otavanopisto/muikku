@@ -1,14 +1,28 @@
 import * as React from "react";
-import { CourseMatrix, StudyActivity } from "~/generated/client";
 import RecordsMatrixView from "./records-matrix-view";
 import RecordsActivityView from "./records-activity-view";
+import {
+  RecordsInfo,
+  RecordsInfoProvider,
+} from "./context/records-info-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * RecordsViewProps
  */
 interface RecordsListingProps {
-  courseMatrix: CourseMatrix;
-  studyActivity: StudyActivity;
+  /**
+   * Records data related to the records listing
+   */
+  recordsInfo: RecordsInfo;
+  /**
+   * Education type selector
+   */
+  educationTypeSelector?: React.ReactNode;
+  /**
+   * Empty message to override the default one
+   */
+  emptyMessage?: string;
 }
 
 /**
@@ -17,16 +31,37 @@ interface RecordsListingProps {
  * @returns JSX.Element
  */
 const RecordsListing = (props: RecordsListingProps) => {
-  const { courseMatrix, studyActivity } = props;
-  if (!courseMatrix.problems.includes("INCOMPATIBLE_STUDENT")) {
+  const { recordsInfo, educationTypeSelector, emptyMessage } = props;
+  const { courseMatrix, studyActivity } = recordsInfo;
+  const { t } = useTranslation(["studies"]);
+
+  if (!studyActivity) {
     return (
-      <RecordsMatrixView
-        courseMatrix={courseMatrix}
-        studyActivity={studyActivity}
-      />
+      <div className="application-sub-panel__item">
+        <div className="empty">
+          <span>
+            {emptyMessage ||
+              t("content.empty", {
+                ns: "studies",
+                context: "workspaces",
+              })}
+          </span>
+        </div>
+      </div>
     );
   }
-  return <RecordsActivityView studyActivity={studyActivity} />;
+
+  return (
+    <RecordsInfoProvider value={recordsInfo}>
+      {educationTypeSelector}
+      {courseMatrix &&
+      !courseMatrix.problems.includes("INCOMPATIBLE_STUDENT") ? (
+        <RecordsMatrixView />
+      ) : (
+        <RecordsActivityView />
+      )}
+    </RecordsInfoProvider>
+  );
 };
 
 export default RecordsListing;

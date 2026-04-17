@@ -16,13 +16,10 @@ import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 import {
+  initializeCurrentDependantEssentials,
   loadCurrentDependantActivityGraphData,
   loadCurrentDependantContactGroups,
-  loadCurrentDependantCourseMatrix,
   loadCurrentDependantPedagogyFormAccess,
-  loadCurrentDependantStudentInfo,
-  loadCurrentDependantStudyActivity,
-  updateCurrentDependantIdentifier,
 } from "~/actions/main-function/guardian";
 
 /**
@@ -72,11 +69,8 @@ const DependantApplication = (props: DependantApplicationProps) => {
   // Load data when identifier changes
   useEffect(() => {
     if (!identifier) return;
-    // Reset current dependant state
-    dispatch(updateCurrentDependantIdentifier(identifier));
-    // Load current dependant course matrix
-    dispatch(loadCurrentDependantCourseMatrix(identifier));
-    dispatch(loadCurrentDependantStudyActivity(identifier));
+
+    dispatch(initializeCurrentDependantEssentials(identifier));
     dispatch(loadCurrentDependantPedagogyFormAccess(identifier));
   }, [dispatch, identifier]);
 
@@ -104,7 +98,6 @@ const DependantApplication = (props: DependantApplicationProps) => {
       if (givenLocation === "summary" || !givenLocation) {
         // Summary needs counselors and student info
         dispatch(loadCurrentDependantContactGroups("counselors", identifier));
-        dispatch(loadCurrentDependantStudentInfo(identifier));
         dispatch(loadCurrentDependantActivityGraphData(identifier));
       }
     }

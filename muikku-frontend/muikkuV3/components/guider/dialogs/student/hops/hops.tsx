@@ -152,7 +152,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If study programme is not upper secondary, return false by default
-    if (hops.studentInfo.studyProgrammeEducationType !== "lukio") {
+    if (hops.studentInfo.educationTypeCode !== "lukio") {
       return false;
     }
 
@@ -168,7 +168,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   }, [
     hops.hopsEditing.matriculationPlan,
     hops.hopsMatriculation.plan,
-    hops.studentInfo.studyProgrammeEducationType,
+    hops.studentInfo.educationTypeCode,
   ]);
 
   // Check if any of the HOPS data has changes
@@ -321,8 +321,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "BACKGROUND":
       case "POSTGRADUATE":
       case "STUDYPLAN":
-        return studentInfo.permissions.canViewDetails;
-
+        return (
+          studentInfo.permissions.canViewDetails &&
+          (curriculumConfig?.isMatrixAvailable ?? false)
+        );
       case "MATRICULATION":
         return [
           "Nettilukio",
@@ -531,8 +533,14 @@ function mapStateToProps(state: StateType) {
     hops: state.hopsNew,
     status: state.status,
     studentInfo: state.guider.currentStudent.basic,
-    curriculumConfig: state.guider.currentStudent?.curriculumConfig ?? null,
-    studyActivity: state.guider.currentStudent?.studyActivity ?? null,
+    curriculumConfig:
+      state.guider.currentStudent.studyDataByEducationTypeCode[
+        state.guider.currentStudent.basic.educationTypeCode
+      ]?.curriculumConfig ?? null,
+    studyActivity:
+      state.guider.currentStudent.studyDataByEducationTypeCode[
+        state.guider.currentStudent.basic.educationTypeCode
+      ]?.studyActivity ?? null,
   };
 }
 

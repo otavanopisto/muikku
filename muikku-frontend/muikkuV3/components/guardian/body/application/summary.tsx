@@ -64,8 +64,6 @@ const Summary = (props: SummaryProps) => {
   React.useEffect(() => {
     if (
       currentDependant.dependantInfoStatus !== "READY" ||
-      currentDependant.dependantStudyActivityStatus !== "READY" ||
-      currentDependant.dependantCourseMatrixStatus !== "READY" ||
       currentDependant.dependantContactGroups.counselors.status !== "READY"
     ) {
       return;
@@ -75,15 +73,19 @@ const Summary = (props: SummaryProps) => {
     dispatch,
     currentDependant.dependantInfo?.userEntityId,
     currentDependant.dependantInfoStatus,
-    currentDependant.dependantStudyActivityStatus,
-    currentDependant.dependantCourseMatrixStatus,
     currentDependant.dependantContactGroups.counselors.status,
   ]);
 
+  const currentDependantStudyData =
+    currentDependant.dependantStudyDataByEducationTypeCode[
+      currentDependant.dependantSelectedEducationTypeCode
+    ] ?? null;
+
   if (
     currentDependant.dependantInfoStatus !== "READY" ||
-    currentDependant.dependantStudyActivityStatus !== "READY" ||
-    currentDependant.dependantCourseMatrixStatus !== "READY" ||
+    currentDependantStudyData === null ||
+    currentDependantStudyData.studyActivityStatus !== "READY" ||
+    currentDependantStudyData.courseMatrixStatus !== "READY" ||
     currentDependant.dependantContactGroups.counselors.status !== "READY"
   ) {
     return null;
@@ -364,7 +366,6 @@ const Summary = (props: SummaryProps) => {
           </div>
 
           <StudyProgress
-            curriculumName={currentDependant.dependantInfo.curriculumName}
             studyProgrammeName={
               currentDependant.dependantInfo.studyProgrammeName
             }

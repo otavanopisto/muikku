@@ -56,6 +56,12 @@ public class MockStudent extends MockLoggable{
   public void setEmail(String email) {
     this.email = email;
   }
+  public String getEducationTypeCode() {
+    return educationTypeCode;
+  }
+  public void setEducationTypeCode(String educationTypeCode) {
+    this.educationTypeCode = educationTypeCode;
+  }
   public Long getStudyProgrammeId() {
     return studyProgrammeId;
   }
@@ -124,6 +130,7 @@ public class MockStudent extends MockLoggable{
   private String firstName;
   private String lastName;
   private String email;
+  private String educationTypeCode;
   private Long studyProgrammeId;
   private OffsetDateTime birthday;
   private String socialSecurityNumber;
