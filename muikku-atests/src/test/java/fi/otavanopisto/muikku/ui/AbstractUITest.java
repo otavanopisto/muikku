@@ -1065,6 +1065,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
   }
+
+  protected void sendEnter(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).sendKeys(Keys.ENTER);
+  }
   
   protected void clearElement(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).clear();
@@ -2093,6 +2097,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
+    sleep(500);
     waitForPresent(".notification-queue__item--success");
     sleep(500);
   }
