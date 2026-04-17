@@ -8,6 +8,7 @@ import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
+import { TableKit } from "@tiptap/extension-table";
 import { Image } from "@tiptap/extension-image";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { TextAlign } from "@tiptap/extension-text-align";
@@ -62,6 +63,7 @@ import {
   TextDirectionLeftButton,
   TextDirectionRightButton,
 } from "@/components/tiptap-ui/text-direction-buttons";
+import { TableBubbleMenu } from "@/components/tiptap-ui/table-bubble-menu";
 
 // --- Icons ---
 import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon";
@@ -93,6 +95,7 @@ import {
   StyleSetSelect,
   StyleSetExtension,
 } from "@/components/tiptap-extension-custom/style-set";
+import TablePopover from "@/components/tiptap-ui/table-popover/table-popover";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -174,6 +177,7 @@ const MainToolbarContent = ({
 
     <ToolbarGroup>
       <MathEquationButton />
+      <TablePopover />
     </ToolbarGroup>
 
     <ToolbarSeparator />
@@ -225,7 +229,7 @@ const MobileToolbarContent = ({
  * Props for SimpleEditor
  */
 interface SimpleEditorProps {
-  onChange: (html: string) => void;
+  onChange?: (html: string) => void;
 }
 
 /**
@@ -260,6 +264,11 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
           enableClickSelection: true,
         },
       }),
+      TableKit.configure({
+        table: {
+          resizable: true,
+        },
+      }),
       TextStyleKit,
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -284,7 +293,8 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
     textDirection: "auto",
     content,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      //console.log("onUpdate", editor?.getHTML());
+      onChange?.(editor?.getHTML() ?? "");
     },
   });
 
@@ -325,6 +335,8 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
             />
           )}
         </Toolbar>
+
+        {editor && <TableBubbleMenu editor={editor} />}
 
         <EditorContent
           editor={editor}

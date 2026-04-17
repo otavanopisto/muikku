@@ -105,7 +105,6 @@ export function Dashboard() {
    * @param html - The new HTML content
    */
   const handleMaterialHtmlChange = (html: string) => {
-    console.log("html", html);
     setTemporaryMaterialHtml(html);
   };
 
