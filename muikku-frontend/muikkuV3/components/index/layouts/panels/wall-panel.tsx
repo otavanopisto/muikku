@@ -14,7 +14,6 @@ import {
 import WallNote from "./wall/wall-note";
 import WallEvent from "./wall/walll-event";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { UserEventService } from "~/mock/absence";
 import { MuikkuEvents } from "~/reducers/base/muikku-events";
 
 /**
@@ -61,21 +60,18 @@ const WallPanel: React.FC<WallProps> = (props) => {
           </div>
         )}
       </Panel.BodyContent>
-
-      <Panel.BodyTitle>
-        {t("labels.events", { ns: "frontPage" })}
-      </Panel.BodyTitle>
-      <Panel.BodyContent>
-        {absenceEvents.events.length > 0 ? (
-          absenceEvents.events.map((event) => (
-            <WallEvent key={event.id} event={event} />
-          ))
-        ) : (
-          <div className="empty empty--front-page">
-            {t("content.empty", { ns: "frontPage" })}
-          </div>
-        )}
-      </Panel.BodyContent>
+      {absenceEvents.events.length > 0 && (
+        <>
+          <Panel.BodyTitle>
+            {t("labels.absences", { ns: "events" })}
+          </Panel.BodyTitle>
+          <Panel.BodyContent>
+            {absenceEvents.events.map((event) => (
+              <WallEvent key={event.id} event={event} />
+            ))}
+          </Panel.BodyContent>
+        </>
+      )}
     </Panel>
   );
 };

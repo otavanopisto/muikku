@@ -15,10 +15,7 @@ interface PanelProps {
  * Panel
  * @param props PanelProps
  */
-export const Panel: React.FC<PanelProps> & {
-  BodyTitle?: React.FC<BodyTitleProps>;
-  BodyContent?: React.FC<BodyContentProps>;
-} = (props) => {
+export const Panel = (props: React.PropsWithChildren<PanelProps>) => {
   const { modifier, children, header, icon, indicator } = props;
 
   return (

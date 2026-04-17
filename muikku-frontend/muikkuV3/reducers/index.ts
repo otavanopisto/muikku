@@ -68,7 +68,7 @@ export interface StateType {
   notebook?: NoteBookState;
   hopsNew?: HopsState;
   exams?: ExamsState;
-  muikkuEvents?: MuikkuEventsState;
+  muikkuEvents: MuikkuEventsState;
   languageProfile?: LanguageProfileState;
   pedagogySupport?: PedagogySupportState;
   studyActivity?: StudyActivityState;
