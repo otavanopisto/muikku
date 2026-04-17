@@ -40,6 +40,8 @@ import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import moment from "moment";
+import { MuikkuEvents } from "~/reducers/base/muikku-events";
+import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
 
 /**
  * StateOfStudiesProps
@@ -108,6 +110,19 @@ class StateOfStudies extends React.Component<
       ></Avatar>
     );
 
+    const absences = this.props.guider.currentStudent.absenceEvents?.length >
+      0 && (
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__header">
+          {this.props.i18n.t("labels.absences", { ns: "events" })}
+        </div>
+        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+          {this.props.guider.currentStudent.absenceEvents.map((event) => (
+            <WallEvent key={event.id} event={event} />
+          ))}
+        </div>
+      </div>
+    );
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanelViewHeader
         decoration={avatar}
@@ -306,7 +321,7 @@ class StateOfStudies extends React.Component<
                 <ApplicationSubPanel.Body modifier="labels">
                   <div className="labels">
                     {studentLabels}
-
+                    {absences}
                     {this.props.guider.currentStudent.basic.hasPedagogyForm ? (
                       <Dropdown
                         alignSelfVertically="top"

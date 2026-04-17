@@ -25,7 +25,7 @@ import {
   getCurriculumConfig,
 } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { MuikkuEvents } from "~/reducers/base/muikku-events";
+
 import {
   MuikkuEvent,
   MuikkuEventProperty,

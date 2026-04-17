@@ -34,6 +34,11 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 import { getCurriculumConfig } from "~/util/curriculum-config";
+import {
+  MuikkuEvent,
+  MuikkuEventProperty,
+  UserEventService,
+} from "~/mock/absence";
 
 const hopsApi = MApi.getHopsApi();
 
@@ -1102,6 +1107,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             ) {
               dispatch(updateAvailablePurchaseProducts());
             }
+            // Load absence events for the student. This is needed
+            const eventService = new UserEventService(student.userEntityId);
+            const absences = eventService.getAbsenceEvents();
+
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "absenceEvents", value: absences },
+            });
 
             pedagogyApi
               .getPedagogyFormAccess({
