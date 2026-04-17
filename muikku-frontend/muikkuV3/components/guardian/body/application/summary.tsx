@@ -96,17 +96,17 @@ const Summary = (props: SummaryProps) => {
           {t("labels.absences", { ns: "events" })}
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-          {muikkuEvents.absenceEvents.events.map((event) => (
+          {muikkuEvents.absenceEvents.events.map((e) => (
             <WallEvent
-              key={event.id}
-              event={event}
+              key={e.id}
+              event={e}
               actions={
                 <AbsenceFeedbackDialog
-                  absenceEvent={event}
+                  absenceEvent={e}
                   onConfirm={handleConfirmFeedback}
                 >
                   <Button
-                    disabled={event.properties.some(
+                    disabled={e.properties.some(
                       (p) =>
                         p.name === "ABSENCE_REASON" && p.value.trim() !== ""
                     )}
@@ -366,6 +366,7 @@ const Summary = (props: SummaryProps) => {
           </div>
 
           <StudyProgress
+            curriculumName={currentDependantStudyData.courseMatrix.curriculum}
             studyProgrammeName={
               currentDependant.dependantInfo.studyProgrammeName
             }
