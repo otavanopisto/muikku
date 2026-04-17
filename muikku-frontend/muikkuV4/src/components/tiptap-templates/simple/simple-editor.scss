@@ -34,6 +34,72 @@
     background: transparent;
   }
 
+  .details {
+    border: 1px solid var(--tt-border-color, rgba(0, 0, 0, 0.15));
+    border-radius: 0.75rem;
+    background: var(--tt-bg-color, #fff);
+    overflow: hidden;
+    margin: 0.75rem 0;
+    // remove default marker spacing quirks
+    summary {
+      list-style: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    &[open] .details__summary {
+      border-bottom: 1px solid var(--tt-border-color, rgba(0, 0, 0, 0.12));
+    }
+  }
+  .details__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    cursor: text;
+    user-select: none;
+    // subtle header background like in the picture
+    background: color-mix(in srgb, var(--tt-bg-color, #fff) 92%, #000 8%);
+    // focus ring when navigating with keyboard
+    outline: none;
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--tt-brand-color-500, #3b82f6) inset;
+    }
+    // caret (CSS-only)
+    &::after {
+      content: "";
+      cursor: pointer;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      opacity: 0.7;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+  }
+
+  .details__summaryText {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .details[open] .details__summary::after {
+    transform: rotate(-135deg);
+  }
+  .details__content {
+    padding: 0.85rem 0.9rem;
+    // tighten first/last block spacing
+    > :first-child {
+      margin-top: 0;
+    }
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
   /* Table-specific styling */
   table {
     border-collapse: collapse;

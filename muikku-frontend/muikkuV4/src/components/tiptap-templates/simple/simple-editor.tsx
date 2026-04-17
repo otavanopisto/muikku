@@ -64,6 +64,7 @@ import {
   TextDirectionRightButton,
 } from "@/components/tiptap-ui/text-direction-buttons";
 import { TableBubbleMenu } from "@/components/tiptap-ui/table-bubble-menu";
+import TablePopover from "@/components/tiptap-ui/table-popover/table-popover";
 
 // --- Icons ---
 import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon";
@@ -95,7 +96,10 @@ import {
   StyleSetSelect,
   StyleSetExtension,
 } from "@/components/tiptap-extension-custom/style-set";
-import TablePopover from "@/components/tiptap-ui/table-popover/table-popover";
+import {
+  DetailsButton,
+  DetailsKit,
+} from "@/components/tiptap-extension-custom/details";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -178,6 +182,7 @@ const MainToolbarContent = ({
     <ToolbarGroup>
       <MathEquationButton />
       <TablePopover />
+      <DetailsButton />
     </ToolbarGroup>
 
     <ToolbarSeparator />
@@ -268,6 +273,14 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
         table: {
           resizable: true,
         },
+      }),
+      DetailsKit.configure({
+        classes: {
+          details: "details",
+          summary: "details__summary",
+          content: "details__content",
+        },
+        openByDefault: false,
       }),
       TextStyleKit,
       HorizontalRule,
