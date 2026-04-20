@@ -100,6 +100,10 @@ import {
   DetailsButton,
   DetailsKit,
 } from "@/components/tiptap-extension-custom/details";
+import {
+  IndentButton,
+  IndentExtension,
+} from "@/components/tiptap-extension-custom/indent";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -162,6 +166,14 @@ const MainToolbarContent = ({
       <TextAlignButton align="center" />
       <TextAlignButton align="right" />
       <TextAlignButton align="justify" />
+    </ToolbarGroup>
+
+    <ToolbarSeparator />
+
+    <ToolbarGroup>
+      <IndentButton action="increase" />
+      <IndentButton action="decrease" />
+      {/* <IndentButton action="reset" /> */}
     </ToolbarGroup>
 
     <ToolbarSeparator />
@@ -302,6 +314,9 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
       }),
       MathEquation,
       StyleSetExtension,
+      IndentExtension.configure({
+        stepPx: 40,
+      }),
     ],
     textDirection: "auto",
     content,
