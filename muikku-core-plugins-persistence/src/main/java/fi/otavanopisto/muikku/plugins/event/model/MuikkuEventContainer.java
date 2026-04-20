@@ -21,14 +21,6 @@ public class MuikkuEventContainer {
     this.userEntityId = userEntityId;
   }
 
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
   public String getName() {
     return name;
   }
@@ -48,9 +40,6 @@ public class MuikkuEventContainer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  
-  @Column
-  private String type;
   
   @Column
   private String name;

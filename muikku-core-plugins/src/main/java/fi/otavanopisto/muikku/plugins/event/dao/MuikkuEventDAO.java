@@ -7,24 +7,22 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
-import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant_;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent_;
 import fi.otavanopisto.muikku.plugins.event.model.EventType;
+import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent;
+import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventContainer;
+import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventContainer_;
+import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent_;
 
 public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
 
   private static final long serialVersionUID = 3875209908218154783L;
 
-  public MuikkuEvent create(Date start, Date end, boolean allDay, String title, String description, EventType type, Long userEntityId, Long creatorEntityId, boolean editableByUser, boolean isPrivate, boolean removableByUser, Long eventContainerId) {
+  public MuikkuEvent create(Date start, Date end, boolean allDay, String title, String description, EventType type, Long userEntityId, Long creatorEntityId, boolean editableByUser, boolean isPrivate, boolean removableByUser, MuikkuEventContainer eventContainer) {
     MuikkuEvent event = new MuikkuEvent();
     event.setStart(start);
     event.setEnd(end);
@@ -37,7 +35,7 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
     event.setEditableByUser(editableByUser);
     event.setPrivate(isPrivate);
     event.setRemovableByUser(removableByUser);
-    event.setEventContainerId(eventContainerId);
+    event.setEventContainer(eventContainer);
     return persist(event);
   }
 
@@ -59,19 +57,12 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
     super.delete(event);
   }
 
-  public List<MuikkuEvent> listByUserAndTimeframeAndType(Long userEntityId, Date start, Date end, String type) {
+  public List<MuikkuEvent> listByUserAndWorkspaceAndTimeframeAndType(Long userEntityId, Long workspaceEntityId, Date start, Date end, EventType type) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<MuikkuEvent> criteria = criteriaBuilder.createQuery(MuikkuEvent.class);
     Root<MuikkuEvent> root = criteria.from(MuikkuEvent.class);
-
-    Subquery<MuikkuEvent> subquery = criteria.subquery(MuikkuEvent.class);
-    Root<MuikkuEventParticipant> participantRoot = subquery.from(MuikkuEventParticipant.class);    
-    subquery.select(participantRoot.get(MuikkuEventParticipant_.muikkuEvent));
-    subquery.where(
-        criteriaBuilder.equal(participantRoot.get(MuikkuEventParticipant_.userEntityId), userEntityId)
-    );
     
     List<Predicate> predicates = new ArrayList<>();
     
@@ -85,23 +76,50 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
     
     // Type (optional)
     
-    if (!StringUtils.isEmpty(type)) {
+    if (type != null) {
       predicate = criteriaBuilder.equal(root.get(MuikkuEvent_.type), type);
       predicates.add(predicate);
     }
     
-    // Event participation
+    // Users
+    if (userEntityId != null) {
+      predicates.add(
+          criteriaBuilder.equal(root.get(MuikkuEvent_.userEntityId), userEntityId)
+      );
+    }
+
+    // Workspaces
     
-    predicate = criteriaBuilder.or(
-        // event belongs to user
-        criteriaBuilder.equal(root.get(MuikkuEvent_.userEntityId), userEntityId),
-        // user is event participant
-        root.in(subquery)
-    );
-    predicates.add(predicate);
+    if (workspaceEntityId != null) {
+
+      Join<MuikkuEvent, MuikkuEventContainer> containerJoin =
+          root.join(MuikkuEvent_.eventContainer);
+
+      predicates.add(
+          criteriaBuilder.equal(
+              containerJoin.get(MuikkuEventContainer_.workspaceEntityId),
+              workspaceEntityId
+          )
+      );
+    }
     
     criteria.select(root);
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<MuikkuEvent> listByReferenceEvent(MuikkuEvent event) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<MuikkuEvent> criteria = criteriaBuilder.createQuery(MuikkuEvent.class);
+    Root<MuikkuEvent> root = criteria.from(MuikkuEvent.class);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(MuikkuEvent_.eventId), event)
+    );
+
     return entityManager.createQuery(criteria).getResultList();
   }
 

@@ -21,7 +21,6 @@
     <sql>create table MuikkuEventContainer (
        id bigint not null auto_increment,
         name varchar(255),
-        type varchar(255),
         userEntityId bigint,
         workspaceEntityId bigint,
         primary key (id)

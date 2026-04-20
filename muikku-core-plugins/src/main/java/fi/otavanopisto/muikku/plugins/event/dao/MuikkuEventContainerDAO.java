@@ -16,19 +16,17 @@ public class MuikkuEventContainerDAO extends CorePluginsDAO<MuikkuEventContainer
   
   private static final long serialVersionUID = 4504898469280361641L;
 
-  public MuikkuEventContainer create(Long workspaceEntityId, Long userEntityId, String type, String name) {
+  public MuikkuEventContainer create(Long workspaceEntityId, Long userEntityId, String name) {
     MuikkuEventContainer eventContainer = new MuikkuEventContainer();
     eventContainer.setWorkspaceEntityId(workspaceEntityId);
     eventContainer.setUserEntityId(userEntityId);
-    eventContainer.setType(type);
     eventContainer.setName(name);
     return persist(eventContainer);
   }
 
-  public MuikkuEventContainer update(MuikkuEventContainer eventContainer, Long workspaceEntityId, Long userEntityId, String type, String name) {
+  public MuikkuEventContainer update(MuikkuEventContainer eventContainer, Long workspaceEntityId, Long userEntityId, String name) {
     eventContainer.setWorkspaceEntityId(workspaceEntityId);
     eventContainer.setUserEntityId(userEntityId);
-    eventContainer.setType(type);
     eventContainer.setName(name);
     return persist(eventContainer);
   }
@@ -43,6 +41,22 @@ public class MuikkuEventContainerDAO extends CorePluginsDAO<MuikkuEventContainer
     criteria.select(root);
     criteria.where(
             criteriaBuilder.equal(root.get(MuikkuEventContainer_.userEntityId), userEntityId)
+        
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public MuikkuEventContainer findByWorkspace(Long workspaceEntityId) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<MuikkuEventContainer> criteria = criteriaBuilder.createQuery(MuikkuEventContainer.class);
+    Root<MuikkuEventContainer> root = criteria.from(MuikkuEventContainer.class);
+    
+    criteria.select(root);
+    criteria.where(
+            criteriaBuilder.equal(root.get(MuikkuEventContainer_.workspaceEntityId), workspaceEntityId)
         
     );
 

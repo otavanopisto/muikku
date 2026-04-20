@@ -15,11 +15,11 @@ import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventProperty_;
 
 public class MuikkuEventPropertyDAO extends CorePluginsDAO<MuikkuEventProperty> {
   
-  private static final long serialVersionUID = 4485591072319343411L;
+  private static final long serialVersionUID = 8030047653752297087L;
 
-  public MuikkuEventProperty create(MuikkuEvent event, String name, String value, Long userEntityId) {
+  public MuikkuEventProperty create(MuikkuEvent event, String name, String value, Long userEntityId, Date date) {
     MuikkuEventProperty property = new MuikkuEventProperty();
-    property.setDate(new Date());
+    property.setDate(date);
     property.setEvent(event);
     property.setName(name);
     property.setValue(value);
@@ -27,10 +27,10 @@ public class MuikkuEventPropertyDAO extends CorePluginsDAO<MuikkuEventProperty> 
     return persist(property);
   }
 
-  public MuikkuEventProperty update(Date date, String name, String value) {
-    MuikkuEventProperty property = new MuikkuEventProperty();
+  public MuikkuEventProperty update(MuikkuEventProperty property, String name, String value, Date date) {
     property.setName(name);
     property.setValue(value);
+    property.setDate(date);
     return persist(property);
   }
   
