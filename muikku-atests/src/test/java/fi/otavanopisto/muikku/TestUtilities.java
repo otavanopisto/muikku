@@ -108,7 +108,7 @@ public class TestUtilities {
         mockStudent.getStudyProgrammeId(),
         null,
         null,
-        null,
+        "lukio",
         false,
         mockStudent.getStudyStartDate(),
         null,

@@ -52,8 +52,8 @@ public interface UserSchoolDataBridge {
   
   /* HOPS */
 
-  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier);
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId);
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String identifier, String educationTypeCode);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String identifier, Long courseId, String educationTypeCode);
   
   /* Worklist */
   
@@ -86,6 +86,8 @@ public interface UserSchoolDataBridge {
                     
   public BridgeResponse<StudentPayload> createStudent(StudentPayload student);
   public BridgeResponse<StudentPayload> updateStudent(StudentPayload student);
+  
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier);
     
   /**
    * Creates new user

@@ -16,6 +16,8 @@ import {
   getCourseDropdownName,
   getCourseInfo,
   getHighestCourseNumber,
+  MANDATORITY_MANDATORY_VALUES,
+  MANDATORITY_OPTIONAL_VALUES,
 } from "~/helper-functions/study-matrix";
 
 /**
@@ -113,7 +115,9 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     );
 
     // By default content is mandatory or option shorthand
-    let courseTdContent = course.mandatory
+    let courseTdContent = MANDATORITY_MANDATORY_VALUES.includes(
+      course.mandatority
+    )
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
       : t("labels.optionalShorthand", { ns: "studyMatrix" });
 
@@ -150,7 +154,9 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
             className="table__data-content-wrapper table__data-content-wrapper--course"
           >
             {courseTdContent}
-            {!course.mandatory ? <sup>*</sup> : null}
+            {MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority) ? (
+              <sup>*</sup>
+            ) : null}
           </span>
         </Dropdown>
       </Td>

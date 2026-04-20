@@ -35,6 +35,7 @@ import { AnimatedDrawer } from "../Animated-drawer";
 import PlannerActivityList from "../planner-activity-list";
 import PlannerNotesList from "../planner-notes-list";
 import { v4 as uuidv4 } from "uuid";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * PlannerPeriodMonthProps
@@ -72,14 +73,13 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
 ) => {
   const { monthIndex, title, year, courses, activities, isPast, notes } = props;
 
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
+
   // Selectors
-  const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
-    (state: StateType) => state.hopsNew
-  );
+  const { hopsMode } = useSelector((state: StateType) => state.hopsNew);
   const {
     plannedCourses: originalPlannedCourses,
     planNotes: originalPlanNotes,
-    studyActivity,
   } = useSelector((state: StateType) => state.hopsNew.hopsStudyPlanState);
   const {
     plannedCourses: editedPlannedCourses,
@@ -527,7 +527,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
               courses={courses}
               selectedPlanItemIds={selectedPlanItemIds}
               originalPlannedCourses={originalPlannedCourses}
-              studyActivity={studyActivity}
+              studyActivity={userStudyActivity.items}
               curriculumConfig={curriculumConfig}
               onCourseChange={handleCourseChange}
               onSelectCourse={handleSelectCourse}

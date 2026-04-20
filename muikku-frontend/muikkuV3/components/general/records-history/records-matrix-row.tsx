@@ -1,0 +1,316 @@
+import * as React from "react";
+import AnimateHeight from "react-animate-height";
+import { useTranslation } from "react-i18next";
+import {
+  ApplicationListItem,
+  ApplicationListItemHeader,
+} from "~/components/general/application-list";
+import Button from "~/components/general/button";
+import { useRecordsInfoContext } from "./context/records-info-context";
+import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
+import { getMandatorityLabel } from "~/@shared/suitability";
+import {
+  CourseMatrixModule,
+  CourseMatrixSubject,
+  StudyActivityItem,
+} from "~/generated/client";
+import AssessmentRequestIndicator from "./assessment-request-indicator";
+import AssessmentIndicator from "./assessment-indicator";
+import ActivityIndicator from "./activity-indicator";
+import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
+import Dropdown from "../dropdown";
+import { AssessmentInformation } from "./assessment-information";
+import { MANDATORITY_OPTIONAL_VALUES } from "~/helper-functions/study-matrix";
+import Link from "~/components/general/link";
+
+/**
+ * Props for the matrix-based records row.
+ * Structure comes from CourseMatrix (subject, course); StudyActivity is mapped onto it.
+ */
+export interface RecordsMatrixRowProps {
+  subject: CourseMatrixSubject;
+  course: CourseMatrixModule;
+  studyActivityItems: StudyActivityItem[];
+  educationType: string;
+  isCombinationWorkspace: boolean;
+  /** Show credits in the course title (e.g. "2 op"). Default true for upper secondary. */
+  showCredits?: boolean;
+}
+
+/**
+ * Single expandable row in the matrix-based records list.
+ * Displays one (subject, course) from CourseMatrix with optional StudyActivity data.
+ * @param props props
+ */
+export const RecordsMatrixRow: React.FC<RecordsMatrixRowProps> = (props) => {
+  const {
+    subject,
+    course,
+    studyActivityItems,
+    educationType,
+    isCombinationWorkspace,
+    showCredits = true,
+  } = props;
+
+  const {
+    identifier,
+    userEntityId,
+    curriculumConfig,
+    config,
+    displayNotification,
+  } = useRecordsInfoContext();
+
+  const { t, i18n } = useTranslation([
+    "studies",
+    "evaluation",
+    "materials",
+    "workspace",
+    "common",
+  ]);
+
+  const [showE, setShowE] = React.useState(false);
+
+  const subjectSpecificActivityItem = studyActivityItems.find(
+    (a) => a.subject === subject.code && a.courseNumber === course.courseNumber
+  );
+
+  const hasActivity = studyActivityItems.length > 0;
+
+  const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
+    workspaceId: subjectSpecificActivityItem?.courseId,
+    userEntityId,
+    enabled: showE && !!subjectSpecificActivityItem?.courseId,
+    displayNotification,
+  });
+
+  const rowId = `record-matrix-${subject.code}-${course.courseNumber}`;
+
+  const assessmentExist = React.useMemo(
+    () =>
+      subjectSpecificActivityItem?.state === "GRADED" ||
+      subjectSpecificActivityItem?.state === "SUPPLEMENTATIONREQUEST" ||
+      subjectSpecificActivityItem?.state === "INTERIM_EVALUATION" ||
+      subjectSpecificActivityItem?.state === "INTERIM_EVALUATION_REQUEST" ||
+      subjectSpecificActivityItem?.state === "PENDING",
+    [subjectSpecificActivityItem]
+  );
+
+  /**
+   * getSumOfCredits
+   * @returns sum of credits
+   */
+  const getCreditsString = (): string | null => {
+    if (!subjectSpecificActivityItem) return null;
+
+    if (subjectSpecificActivityItem.length === 0) return null;
+    return `${subjectSpecificActivityItem.length} ${subjectSpecificActivityItem.lengthSymbol}`;
+  };
+
+  /**
+   * renderMandatorityDescription
+   * @returns mandatority description
+   */
+  const renderMandatorityDescription = () => {
+    if (!hasActivity || !subjectSpecificActivityItem.mandatority) return null;
+
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: course.mandatority,
+      educationType,
+      curriculums: subjectSpecificActivityItem.curriculums,
+    });
+    const creditsString = getCreditsString();
+    if (creditsString) localString = `${localString}, ${creditsString}`;
+    return (
+      <div className="label">
+        <div className="label__text">{localString}</div>
+      </div>
+    );
+  };
+
+  /**
+   * Render workspace link if workspace studyActivityItems exists
+   * @returns workspace link
+   */
+  const renderWorkspaceLink = () => {
+    if (!hasActivity || !subjectSpecificActivityItem?.url) return null;
+    return (
+      <div className="application-list__header-primary-meta">
+        <Link
+          href={subjectSpecificActivityItem.url}
+          openInNewTab="_blank"
+          className="link"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {t("labels.goto", { ns: "workspace" })}
+        </Link>
+      </div>
+    );
+  };
+
+  /**
+   * handleShowEvaluationClick
+   */
+  const handleShowEvaluationClick = () => {
+    setShowE((prev) => !prev);
+  };
+
+  /**
+   * handleShowEvaluationKeyDown
+   * @param e e
+   */
+  const handleShowEvaluationKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setShowE((prev) => !prev);
+    }
+  };
+
+  let title = subject.code + course.courseNumber + " - " + course.name;
+
+  // Add asterisk to optional courses
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
+    title += "*";
+  }
+
+  // Course name extension exist only in workspace embodiment (aka workspace).
+  // So if it exists, add it to the title from activity item.
+  if (subjectSpecificActivityItem?.courseNameExtension ?? false) {
+    title += ` (${subjectSpecificActivityItem.courseNameExtension})`;
+  }
+
+  // Add credits to uppersecondary courses
+  if (showCredits) {
+    title += ` (${curriculumConfig.strategy.getCourseDisplayedLength(course.length)})`;
+  }
+
+  const animateOpen = showE ? "auto" : 0;
+
+  const headerModifiers = React.useMemo(
+    () => (assessmentExist ? ["course"] : ["course", "no-assessment"]),
+    [assessmentExist]
+  );
+
+  return (
+    <ApplicationListItem className="course course--studies" tabIndex={-1}>
+      <ApplicationListItemHeader
+        modifiers={headerModifiers}
+        onClick={assessmentExist ? handleShowEvaluationClick : undefined}
+        onKeyDown={assessmentExist ? handleShowEvaluationKeyDown : undefined}
+        role="button"
+        aria-label={
+          showE
+            ? t("wcag.collapseRecordInfo", { ns: "studies" })
+            : t("wcag.expandRecordInfo", { ns: "studies" })
+        }
+        aria-expanded={showE}
+        aria-controls={rowId}
+        tabIndex={0}
+      >
+        <span
+          className={`${hasActivity ? "application-list__header-icon" : "application-list__header-icon application-list__header-icon--inactive"}  icon-books`}
+        ></span>
+        <div className="application-list__header-primary">
+          <div className="application-list__header-primary-title">{title}</div>
+          <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
+            {hasActivity && (
+              <>
+                {subjectSpecificActivityItem.studyProgramme && (
+                  <div className="label">
+                    <div className="label__text">
+                      {subjectSpecificActivityItem.studyProgramme}
+                    </div>
+                  </div>
+                )}
+                {subjectSpecificActivityItem.curriculums?.map((curriculum) => (
+                  <div key={curriculum} className="label">
+                    <div className="label__text">{curriculum} </div>
+                  </div>
+                ))}
+              </>
+            )}
+            {hasActivity && renderMandatorityDescription()}
+            {!hasActivity && showCredits && course.length != null && (
+              <div className="label">
+                <div className="label__text">
+                  {curriculumConfig.strategy.getCourseDisplayedLength(
+                    course.length
+                  )}
+                </div>
+              </div>
+            )}
+
+            {isCombinationWorkspace && (
+              <Dropdown
+                openByHover
+                content={<span>{subjectSpecificActivityItem.courseName}</span>}
+              >
+                <div className="label">
+                  <div className="label__text">YHD</div>
+                </div>
+              </Dropdown>
+            )}
+          </div>
+          {renderWorkspaceLink()}
+        </div>
+        <div className="application-list__header-secondary">
+          {config.showAssigmentsAndDiaries &&
+            hasActivity &&
+            subjectSpecificActivityItem.courseId &&
+            !isCombinationWorkspace && (
+              <span>
+                <WorkspaceAssignmentsAndDiaryDialog
+                  credit={subjectSpecificActivityItem}
+                  userIdentifier={identifier}
+                  userEntityId={userEntityId}
+                >
+                  <Button
+                    buttonModifiers={["info", "assignments-and-exercises"]}
+                  >
+                    {t("actions.assignments", { ns: "studies" })}
+                  </Button>
+                </WorkspaceAssignmentsAndDiaryDialog>
+              </span>
+            )}
+          {hasActivity && (
+            <>
+              {!isCombinationWorkspace && (
+                <AssessmentRequestIndicator
+                  studyActivityItem={subjectSpecificActivityItem}
+                />
+              )}
+
+              <AssessmentIndicator
+                studyActivityItem={subjectSpecificActivityItem}
+                isCombinationWorkspace={false}
+              />
+
+              {!isCombinationWorkspace && (
+                <ActivityIndicator
+                  studyActivityItem={subjectSpecificActivityItem}
+                />
+              )}
+            </>
+          )}
+        </div>
+      </ApplicationListItemHeader>
+
+      <AnimateHeight height={animateOpen} id={rowId}>
+        <AssessmentInformation
+          assessment={subjectSpecificActivityItem}
+          assignmentInfo={assignmentInfo}
+          assignmentInfoLoading={assignmentInfoLoading}
+          showAssignmentInfo={true}
+        />
+      </AnimateHeight>
+    </ApplicationListItem>
+  );
+};
+
+export default RecordsMatrixRow;

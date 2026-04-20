@@ -118,6 +118,10 @@ public class UserController {
   public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserContacts(userIdentifier);
   }
+  
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.listStudentEducationTypes(studentIdentifier);
+  }
 
   /**
    * Sets allowStudyDiscussions on a given Contact Info

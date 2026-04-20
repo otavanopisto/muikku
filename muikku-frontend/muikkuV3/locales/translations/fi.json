@@ -105,12 +105,17 @@
       "comment": "Kommentoi",
       "comments": "Kommentit",
       "completed": "Suoritettu",
+      "completedStudies": "Suoritetut opinnot",
       "contactInfo": "Yhteystiedot",
       "content": "Sisältö",
       "content_vacationMessage": "Lomaviestin sisältö",
       "copy": "Kopioi",
       "course": "Kurssi",
-      "courses": "Kurssia",
+      "courseCredits": "Opintopisteet",
+      "courseCreditsMandatory": "Pakolliset:",
+      "courseCreditsOptional": "Valinnaiset:",
+      "courseCreditsTotal": "Yhteensä:",
+      "courses": "Kurssit",
       "coursepicker": "Kurssipoimuri",
       "create": "Luo uusi",
       "create_comment": "Uusi kommentti",
@@ -152,6 +157,8 @@
       "home": "Muikun etusivu",
       "idont": "En",
       "incomplete": "Täydennettävä",
+      "interimEvaluation": "Välipalaute annettu",
+      "interimEvaluationRequest": "Välipalautepyyntö",
       "instructions": "Muikun ohjeet",
       "language": "Kieli",
       "language_en": "Englanniksi (EN)",
@@ -382,6 +389,13 @@
       "Z": "Äidinkieli ja kirjallisuus, pohjoissaame",
       "I": "Äidinkieli ja kirjallisuus, inarinsaame",
       "W": "Äidinkieli ja kirjallisuus, koltansaame"
+    },
+    "educationType": {
+      "apa": "Aikuisten perusopetus, alkuvaihe",
+      "basicEducation": "Perusopetus",
+      "unknown": "Tuntematon koulutusaste",
+      "upperSecondaryEducation": "Lukio",
+      "vocational": "Ammatillinen"
     }
   },
   "profile": {
@@ -494,9 +508,6 @@
       "contactLog": "Yhteydenotot",
       "contactInfo_student": "Opiskelijan yhteystiedot",
       "contactInfo_guardian": "Huoltajan tai yhteyshenkilön yhteystiedot",
-      "courseCredits": "Opintopisteet",
-      "courseCreditsMandatory": "Pakolliset: {{mandatoryCredits}}",
-      "courseCreditsTotal": "Yhteensä: {{totalCredits}}",
       "created_interimEvaluation": "Välipalaute annettu",
       "discussionMessages": "Keskusteluviestit",
       "endDate": "Opintojen päättymispäivä",
@@ -564,9 +575,11 @@
       "empty_counselors": "Sinulla ei ole ohjaajia",
       "empty_counselorsGuardian": "Opiskelijalla ei ole ohjaajia",
       "empty_studyTime": "Ei asetettu",
-      "empty_records": "Ei suorituksia",
+      "empty_records": "Ei opintotietoja",
+      "empty_search": "Haulla ei löytynyt tuloksia. Kokeile toista hakusanaa tai muokkaa suodattimia.",
       "empty_workspaces": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla opiskelet, jotka olet suorittanut ja joista sinulle on tehty hyväksiluvut.",
       "empty_workspaces-guardian": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla huollettavasi opiskelee, jotka hän on suorittanut ja joista hänelle on tehty hyväksiluvut.",
+      "filtersDescription": "Voit hakea opintoja kurssin tai oppiaineen nimellä tai sen osalla sekä kurssitunnisteella (esim. RUB, RUB11). Suodattimet rajaavat näkymää: valitsemalla kurssin tilan tai tyypin, näet vain ne opinnot, jotka vastaavat valintaasi. ”Näytä koko oppimäärä” -valinta tuo näkyviin kaikki tutkintoon kuuluvat opinnot, myös ne, joita et ole vielä aloittanut.",
       "logins": "kertaa viimeisen kuukauden aikana.",
       "notEvaluated": "Ei arviointia",
       "sent": "Lähetetty",
@@ -575,7 +588,9 @@
       "transferCreditsDate": "Päiväys {{date}}"
     },
     "labels": {
-      "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
+      "combinationCourses": "Yhdistelmäopintojaksot",
+      "courseStatus": "Kurssin tila",
+      "courseType": "Kurssin tyyppi",
       "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "coursesForYou": "Kursseja sinulle",
@@ -584,12 +599,20 @@
       "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",
       "logins": "Olet kirjautunut yhteensä",
       "notifications": "Ilmoitukset",
+      "otherFilters": "Muut suodattimet",
+      "otherStudies": "Muut opinnot",
       "records": "Suoritukset",
+      "search": "$t(common:labels.search)",
+      "search_records": "Hae opintoja",
+      "showFullSyllabus": "Näytä koko oppimäärä",
       "summary": "Opintojen yhteenveto",
       "studyInfo": "Opintojen tiedot",
       "studyEvents": "Opintotapahtumat",
       "studyProgress": "Opintojen edistyminen",
       "transferCredits": "Hyväksiluvut"
+    },
+    "instructions": {
+      "recordsCombinationCourses": "Jos olet suorittanut opintoja yhdistelmäopintojaksolla, ne listataan tässä. Moduulit, joista yhdistelmäopintojakso koostuu (esim. RUB11 ja ENA1), on listattu myös oppiaineidensa alle. Näin näet aina sekä suorittamasi opintojakson tiedot että ajantasaisen tilanteen kunkin oppiaineen osalta."
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
@@ -2675,19 +2698,34 @@
       "PAID_student": "Olet maksanut tilauksen, mutta sitä ei ole käsitelty. Ota yhteyttä helpdeskiin."
     }
   },
-  "ops": {
-    "mandatory": "$t(common:labels.mandatory)",
-    "mandatory_lukioOPS2016": "$t(common:labels.mandatory)",
-    "mandatory_lukioOPS2021": "$t(common:labels.mandatory)",
-    "nationalLevelOptional": "$t(common:labels.optional)",
-    "nationalLevelOptional_lukioOPS2016": "Valtakunnallinen syventävä",
-    "nationalLevelOptional_lukioOPS2021": "Valtakunnallinen valinnainen",
-    "schoolLevelOptional": "Paikallinen valinnainen",
-    "schoolLevelOptional_lukioOPS2016": "Paikallinen syventävä",
-    "schoolLevelOptional_lukioOPS2021": "Paikallinen valinnainen",
-    "unspecifiedOptional": "$t(common:labels.optional)",
-    "unspecifiedOptional_lukioOPS2016": "Muu",
-    "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
+  "mandatority": {
+    "default": {
+      "MANDATORY": "$t(common:labels.mandatory)",
+      "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "SCHOOL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+      "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+    },
+    "perusopetus": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+        "SCHOOL_LEVEL_OPTIONAL": "$t(common:labels.optional)",
+        "UNSPECIFIED_OPTIONAL": "$t(common:labels.optional)"
+      }
+    },
+    "lukio": {
+      "default": {
+        "MANDATORY": "$t(common:labels.mandatory)",
+        "NATIONAL_LEVEL_OPTIONAL": "Valtakunnallinen valinnainen",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen valinnainen",
+        "UNSPECIFIED_OPTIONAL": "Paikallinen valinnainen"
+      },
+      "OPS2016": {
+        "NATIONAL_LEVEL_OPTIONAL": "Valtakunnallinen syventävä",
+        "SCHOOL_LEVEL_OPTIONAL": "Paikallinen syventävä",
+        "UNSPECIFIED_OPTIONAL": "Muu"
+      }
+    }
   },
   "readSpeaker": {
     "messages": {

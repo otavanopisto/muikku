@@ -34,7 +34,7 @@ import { StatusType } from "~/reducers/base/status";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 import _ from "lodash";
 import PendingChangesWarningDialog from "~/components/hops/dialogs/pending-changes-warning";
-import { GuiderStudent } from "~/generated/client";
+import { GuiderStudent, StudyActivity } from "~/generated/client";
 import Background from "~/components/hops/body/application/background/background";
 import Postgraduate from "~/components/hops/body/application/postgraduate/postgraduate";
 import {
@@ -49,6 +49,7 @@ import { Textarea } from "~/components/hops/body/application/wizard/components/t
 import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 import Dropdown from "~/components/general/dropdown";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -65,6 +66,10 @@ interface HopsApplicationProps {
   status: StatusType;
   /** Information about the current student */
   studentInfo: GuiderStudent;
+  /** The curriculum config for the current student */
+  curriculumConfig: CurriculumConfig | null;
+  /** The study activity for the current student */
+  studyActivity: StudyActivity | null;
   /** Unique identifier for the student */
   studentIdentifier: string;
   /** Function to load matriculation data */
@@ -97,6 +102,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
     hops,
     status,
     studentInfo,
+    curriculumConfig,
+    studyActivity,
   } = props;
 
   // Set the initial active tab based on the user's permissions
@@ -145,7 +152,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If study programme is not upper secondary, return false by default
-    if (hops.studentInfo.studyProgrammeEducationType !== "lukio") {
+    if (hops.studentInfo.educationTypeCode !== "lukio") {
       return false;
     }
 
@@ -161,7 +168,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   }, [
     hops.hopsEditing.matriculationPlan,
     hops.hopsMatriculation.plan,
-    hops.studentInfo.studyProgrammeEducationType,
+    hops.studentInfo.educationTypeCode,
   ]);
 
   // Check if any of the HOPS data has changes
@@ -314,8 +321,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "BACKGROUND":
       case "POSTGRADUATE":
       case "STUDYPLAN":
-        return studentInfo.permissions.canViewDetails;
-
+        return (
+          studentInfo.permissions.canViewDetails &&
+          (curriculumConfig?.isMatrixAvailable ?? false)
+        );
       case "MATRICULATION":
         return [
           "Nettilukio",
@@ -405,6 +414,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
           identifier: studentInfo.id,
           studyStartDate: studentInfo.studyStartDate,
         }}
+        curriculumConfig={curriculumConfig}
+        userStudyActivity={studyActivity}
       >
         {studentInfo.permissions.canEdit && (
           <div className="hops-edit__button-row">
@@ -522,6 +533,14 @@ function mapStateToProps(state: StateType) {
     hops: state.hopsNew,
     status: state.status,
     studentInfo: state.guider.currentStudent.basic,
+    curriculumConfig:
+      state.guider.currentStudent.studyDataByEducationTypeCode[
+        state.guider.currentStudent.basic.educationTypeCode
+      ]?.curriculumConfig ?? null,
+    studyActivity:
+      state.guider.currentStudent.studyDataByEducationTypeCode[
+        state.guider.currentStudent.basic.educationTypeCode
+      ]?.studyActivity ?? null,
   };
 }
 

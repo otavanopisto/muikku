@@ -7,7 +7,6 @@ import { ActionType } from "actions";
 import { Reducer } from "redux";
 import { MaterialCompositeReply, Curriculum } from "~/generated/client";
 import { WorkspaceJournalEntry } from "~/generated/client";
-import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
 
@@ -36,8 +35,6 @@ export type CurrentStudentUserAndWorkspaceStatusType =
  * RecordsType
  */
 export interface RecordsType {
-  userData: RecordWorkspaceActivitiesWithLineCategory[];
-  userDataStatus: AllStudentUsersDataStatusType;
   files: Array<UserFileType>;
   currentStatus: CurrentStudentUserAndWorkspaceStatusType;
   current?: CurrentRecordType;
@@ -58,8 +55,6 @@ export type TranscriptOfRecordLocationType =
  * initialState
  */
 const initialState: RecordsType = {
-  userData: [],
-  userDataStatus: "WAIT",
   location: null,
   files: null,
   current: null,
@@ -79,12 +74,6 @@ export const records: Reducer<RecordsType> = (
   action: ActionType
 ) => {
   switch (action.type) {
-    case "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA":
-      return { ...state, userData: action.payload };
-
-    case "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS":
-      return { ...state, userDataStatus: action.payload };
-
     case "UPDATE_RECORDS_LOCATION":
       return { ...state, location: action.payload };
 

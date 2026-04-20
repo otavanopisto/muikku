@@ -10,6 +10,7 @@ import {
 } from "./planner-card";
 import { useTranslation } from "react-i18next";
 import { CurriculumConfig } from "~/util/curriculum-config";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * Base planner period course props
@@ -132,9 +133,11 @@ const PlannerActivityCard = React.forwardRef<
   const cardModifiers = [];
   courseState.state && cardModifiers.push(courseState.state);
 
-  const innerContainerModifiers = item.course.mandatory
-    ? ["mandatory"]
-    : ["optional"];
+  const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
+    item.course.mandatority
+  );
+
+  const innerContainerModifiers = isMandatory ? ["mandatory"] : ["optional"];
 
   const activityDate = renderStudyActivityDate();
 
@@ -147,16 +150,16 @@ const PlannerActivityCard = React.forwardRef<
       <PlannerCardHeader>
         <span className="study-planner__card-title">
           <b>{`${item.course.subjectCode}${item.course.courseNumber}`}</b>{" "}
-          {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course)}`}
+          {`${item.course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(item.course.length)}`}
         </span>
       </PlannerCardHeader>
 
       <PlannerCardContent>
         <div className="study-planner__card-labels">
           <PlannerCardLabel
-            modifiers={[item.course.mandatory ? "mandatory" : "optional"]}
+            modifiers={[isMandatory ? "mandatory" : "optional"]}
           >
-            {item.course.mandatory
+            {isMandatory
               ? t("labels.mandatory", {
                   ns: "common",
                 })

@@ -17,7 +17,7 @@ import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import {
   Curriculum,
   StudyActivityItem,
@@ -26,7 +26,7 @@ import {
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
-import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
+import AssessmentIndicator from "~/components/general/records-history/assessment-indicator";
 import { Action, Dispatch } from "redux";
 
 /**
@@ -115,33 +115,16 @@ class Course extends React.Component<CourseProps, CourseState> {
      * If OPS data and workspace mandatority property is present
      */
     if (
-      OPS &&
       this.props.workspace.mandatority &&
       this.props.workspace.educationTypeName
     ) {
-      const suitabilityMap = suitabilityMapHelper(this.props.t);
-
-      /**
-       * Create map property from education type name and OPS name that was passed
-       * Strings are changes to lowercase form and any empty spaces are removed
-       */
-      const education = `${this.props.workspace.educationTypeName
-        .toLowerCase()
-        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
-
-      /**
-       * Check if our map contains data with just created education string
-       * Otherwise just return null. There might not be all included values by every OPS created...
-       */
-      if (!suitabilityMap[education]) {
-        return null;
-      }
-
-      /**
-       * Then get correct local string from map by suitability enum value
-       */
-      const localString =
-        suitabilityMap[education][this.props.workspace.mandatority];
+      const localString = getMandatorityLabel({
+        t: this.props.t,
+        exists: this.props.i18n.exists,
+        mandatority: this.props.workspace.mandatority,
+        educationType: this.props.workspace.educationTypeName,
+        curriculums: OPS ? [OPS.name] : undefined,
+      });
 
       const courseLength = this.props.workspace.courseLength;
       const courseLengthSymbol = this.props.workspace.courseLengthSymbol;
@@ -285,7 +268,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                 <AssessmentRequestIndicator
                   studyActivityItem={studyActivityItem}
                 />
-                <RecordsAssessmentIndicator
+                <AssessmentIndicator
                   studyActivityItem={studyActivityItem}
                   isCombinationWorkspace={true}
                 />
@@ -319,7 +302,7 @@ class Course extends React.Component<CourseProps, CourseState> {
             </span>
             <AssessmentRequestIndicator studyActivityItem={studyActivityItem} />
 
-            <RecordsAssessmentIndicator
+            <AssessmentIndicator
               studyActivityItem={studyActivityItem}
               isCombinationWorkspace={false}
             />
@@ -453,7 +436,6 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     availableCurriculums: state.workspaces.availableFilters.curriculums,
-    studyActivities: state.studyActivity.userStudyActivity,
   };
 }
 

@@ -37,11 +37,17 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
   } = props;
 
   const courseMatrix = useSelector(
-    (state: StateType) => state.studyActivity.courseMatrix
+    (state: StateType) =>
+      state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
+        state.guardian.currentDependant.dependantDefaultEducationTypeCode
+      ].courseMatrix
   );
 
   const studyActivityItems = useSelector(
-    (state: StateType) => state.studyActivity.userStudyActivity?.items
+    (state: StateType) =>
+      state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
+        state.guardian.currentDependant.dependantDefaultEducationTypeCode
+      ].studyActivity?.items
   );
 
   const skillAndArtCourses = React.useMemo(() => {
