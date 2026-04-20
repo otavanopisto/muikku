@@ -153,8 +153,7 @@ function collectIndentTargets(
 function updateSelectedIndent(props: {
   state: EditorState;
   tr: Transaction;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatch?: (tr: any) => void;
+  dispatch?: (tr: Transaction) => void;
   typeNames: Set<string>;
   nextIndent: (prev: number) => number;
 }) {

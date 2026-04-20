@@ -104,6 +104,10 @@ import {
   IndentButton,
   IndentExtension,
 } from "@/components/tiptap-extension-custom/indent";
+import {
+  LangDropdownMenu,
+  LangExtension,
+} from "@/components/tiptap-extension-custom/lang";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -115,7 +119,7 @@ const MainToolbarContent = ({
   isMobile: boolean;
 }) => (
   <>
-    <Spacer />
+    {/* <Spacer /> */}
 
     <ToolbarGroup>
       <UndoRedoButton action="undo" />
@@ -132,6 +136,12 @@ const MainToolbarContent = ({
       />
       <BlockquoteButton />
       <CodeBlockButton />
+    </ToolbarGroup>
+
+    <ToolbarSeparator />
+
+    <ToolbarGroup>
+      <LangDropdownMenu />
     </ToolbarGroup>
 
     <ToolbarSeparator />
@@ -274,6 +284,10 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
       },
     },
     extensions: [
+      // LangExtension is used first for priority reasons
+      LangExtension.configure({
+        blockTypes: ["paragraph", "heading", "blockquote", "listItem"],
+      }),
       StarterKit.configure({
         horizontalRule: false,
         link: {
