@@ -302,7 +302,7 @@ public class MuikkuEventRESTService {
     return Response.noContent().build();
   }
   
-  @Path("/event/{EVENTID}/properties/")
+  @Path("/event/{EVENTID}/properties")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createEventProperty(@PathParam("EVENTID") Long eventId, MuikkuEventPropertyRestModel payload) {
@@ -348,6 +348,27 @@ public class MuikkuEventRESTService {
     }
     
     return Response.ok(toRestModel(property)).build();
+  }
+  
+  @Path("/event/property/{EVENTPROPERTYID}")
+  @DELETE
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteEventProperty(@PathParam("EVENTPROPERTYID") Long eventPropertyId) {
+    
+    // Payload validation
+    MuikkuEventProperty property = eventController.findEventPropertyById(eventPropertyId);
+    
+    if (property == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Event property %d not found", eventPropertyId)).build();
+    }
+    
+    // If our own event property, delete it entirely
+    
+    if (property.getUserEntityId() == sessionController.getLoggedUserEntity().getId()) {
+      eventController.deleteEventProperty(property);
+    }
+    
+    return Response.noContent().build();
   }
   
   @Path("/event/{EVENTID}/attendance/{ATTENDANCE}")
@@ -589,21 +610,6 @@ public class MuikkuEventRESTService {
     }
     
     return restEvent;
-  }
-  
-  private MuikkuEventContainerRestModel toRestModel(MuikkuEventContainer container) {
-    if (container == null) {
-      return null;
-    }
-    
-    MuikkuEventContainerRestModel restContainer = new MuikkuEventContainerRestModel();
-    
-    restContainer.setId(container.getId());
-    restContainer.setName(container.getName());
-    restContainer.setUserEntityId(container.getUserEntityId());
-    restContainer.setWorkspaceEntityId(container.getWorkspaceEntityId());
-    
-    return restContainer;
   }
   
   private MuikkuEventPropertyRestModel toRestModel(MuikkuEventProperty property) {

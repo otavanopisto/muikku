@@ -3664,6 +3664,293 @@ paths:
         "500":
           description: Internal server error
 
+  #MUIKKUEVENTS
+  /rest/muikkuEvent/event:
+    post:
+      operationId: createEvent 
+      summary: Create event
+      description: Create event
+      tags:
+        - Events
+      parameters:
+        - name: users
+          in: query
+          description: List of event receivers
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      requestBody:
+        $ref: "#/components/requestBodies/MuikkuEventRequestBody"
+      responses:
+        "200":
+          description: Muikku event created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MuikkuEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/muikkuEvent/event/{eventId}:
+    put:
+      operationId: updateEvent 
+      description: Update event
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/MuikkuEventRequestBody"
+      responses:
+        "200":
+          description: Muikku event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MuikkuEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    delete:
+      operationId: deleteEvent
+      summary: Delete event
+      description: Delete event
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Event deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/muikkuEvent/events:
+    get:
+      operationId: listEvents
+      summary: List events
+      description: List events
+      tags:
+        - Events
+      parameters:
+        - name: user
+          in: query
+          description: User entity id
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: workspace
+          in: query
+          description: Workspace entity id
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: type
+          in: query
+          description: Event type
+          schema:
+            type: string
+            enum:
+              - DEFAULT
+              - ABSENCE
+        - name: adjustTimes
+          in: query
+          description: Time adjustments
+          schema:
+            type: boolean
+            default: true
+        - name: start
+          in: query
+          description: Start date
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          description: End date
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MuikkuEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+  
+  /rest/muikkuEvent/event/{eventId}/properties:
+    post:
+      operationId: createEventProperty 
+      summary: Create event property
+      description: Create event property
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/MuikkuEventPropertyRequestBody"
+      responses:
+        "200":
+          description: Muikku event property created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MuikkuEventProperty"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/muikkuEvent/event/{eventId}/properties/{propertyId}:
+    put:
+      operationId: updateEventProperty 
+      summary: Update event property
+      description: Update event property
+      tags:
+        - Events
+      parameters:
+        - name: eventId
+          in: path
+          description: Event id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: propertyId
+          in: path
+          description: Property id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/MuikkuEventPropertyRequestBody"
+      responses:
+        "200":
+          description: Muikku event property updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MuikkuEventProperty"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/muikkuEvent/event/property/{eventPropertyId}:
+    delete:
+      operationId: deleteEventProperty
+      summary: Delete event property
+      description: Delete event property
+      tags:
+        - Events
+      parameters:
+        - name: eventPropertyId
+          in: path
+          description: Event property id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Event property deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/muikkuEvent/user/{userEntityId}/container:
+    get:
+      operationId: getUserEventContainerId
+      description: Get user's event container id
+      tags:
+        - Events
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: get container
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/muikkuEvent/workspace/{workspaceEntityId}/container:
+    get:
+      operationId: getWorkspaceEventContainerId
+      description: Get workspace's event container id
+      tags:
+        - Events
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: get container
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   #FEED
   /rest/feed/feeds/{feedReadTarget}:
     get:
@@ -12891,6 +13178,20 @@ components:
             allOf:
               - $ref: "#/components/schemas/LocalizationLocale"
 
+    MuikkuEventRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MuikkuEvent"
+
+    MuikkuEventPropertyRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/MuikkuEventProperty"
+
     NoteCreateRequestBody:
       required: true
       description: NoteCreateRequestBody object
@@ -18466,6 +18767,132 @@ components:
           type: boolean
         studiesEnded:
           type: boolean
+
+    MuikkuEvent:
+      type: object
+      description: MuikkuEvent object
+      required:
+        - id
+        - eventContainerId
+        - start
+        - end
+        - allDay
+        - type
+        - isPrivate
+        - editable
+        - removable
+      properties:
+        id: 
+          description: Event id
+          type: integer
+          format: int64
+        eventContainerId:
+          description: Event container id
+          type: integer
+          format: int64
+        start:
+          description: Start date of the event
+          type: string
+          format: datetime
+          nullable: false
+        end:
+          description: End date of the event
+          type: string
+          format: datetime
+          nullable: false
+        allDay:
+          description: Is the event all day
+          type: boolean
+        title:
+          description: Title of the event
+          type: string
+        description:
+          description: Description of the event
+          type: string
+        type:
+          description: Type of the event
+          $ref: "#/components/schemas/MuikkuEventType"
+          nullable: true
+        isPrivate:
+          type: boolean
+        userEntityId:
+          description: The target user entity id of the event
+          type: integer
+          format: int64
+        creatorEntityId:
+          description: Creator entity id
+          type: integer
+          format: int64
+        editable:
+          description: Can the targeted user edit the event
+          type: boolean
+        removable:
+          description: Can the targeted user delete the event
+          type: boolean 
+    
+    MuikkuEventContainer:
+      type: object
+      description: MuikkuEventContainer object
+      required:
+        - id
+        - name
+      properties:
+        id: 
+          description: Event id
+          type: integer
+          format: int64
+        name:
+          description: Container name
+          type: string
+        userEntityId:
+          description: Who is the owner of the container if there even is one
+          type: integer
+          format: int64
+        workspaceEntityId:
+          description: If workspace is the owner of the container
+          type: integer
+          format: int64
+    
+    MuikkuEventProperty:
+      type: object
+      description: MuikkuEventProperty object
+      required:
+        - id
+        - eventId
+        - name
+        - value
+      properties:
+        id:
+          description: MuikkuEventProperty id
+          type: integer
+          format: int64
+        eventId:
+          description: Event id
+          type: integer
+          format: int64
+        name:
+          description: name of the property
+          type: string
+          nullable: false
+        value:
+          description: Value of the property
+          type: string
+          nullable: false
+        date:
+          description: Property creation day
+          type: string
+          format: datetime
+          nullable: false
+        userEntityId:
+          description: Property creator's user entity id
+          type: integer
+          format: int64
+
+    MuikkuEventType:
+      type: string
+      enum:
+        - DEFAULT
+        - ABSENCE
 
     StaffMember:
       type: object

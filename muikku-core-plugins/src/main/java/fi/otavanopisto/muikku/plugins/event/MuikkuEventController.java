@@ -206,7 +206,15 @@ public class MuikkuEventController {
     return muikkuEventPropertyDAO.update(property, name, value, date);
   }
   
+  public MuikkuEventProperty findEventPropertyById(Long eventPropertyId) {
+    return muikkuEventPropertyDAO.findById(eventPropertyId);
+  }
+  
   public MuikkuEventProperty findEventProperty(Long id) {
     return muikkuEventPropertyDAO.findById(id);
+  }
+  
+  public void deleteEventProperty(MuikkuEventProperty property) {
+    muikkuEventPropertyDAO.delete(property);
   }
 }
