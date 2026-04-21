@@ -111,6 +111,7 @@ public class MuikkuEventRESTService {
     
     MuikkuEvent event = null;
     List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<MuikkuEventPropertyRestModel>();
+    List<MuikkuEventRestModel> restEvents = new ArrayList<MuikkuEventRestModel>();
     
     // Students can't create events for other 
     // An event can only be created for a user group within the workspace’s event container
@@ -146,6 +147,8 @@ public class MuikkuEventRESTService {
               restProperties.add(toRestModel(property));
             }
           }
+          
+          restEvents.add(toRestModel(event, restProperties));
         }
       }
     } else {
@@ -207,9 +210,11 @@ public class MuikkuEventRESTService {
           restProperties.add(toRestModel(property));
         }
       }
+      
+      restEvents.add(toRestModel(event, restProperties));
     }
 
-    return Response.ok(toRestModel(event, restProperties)).build();
+    return Response.ok(restEvents).build();
 
   }
   
@@ -317,7 +322,7 @@ public class MuikkuEventRESTService {
     
     // TODO: Access checks here!!
     
-    MuikkuEventProperty property = eventController.createEventProperty(event, payload.getName(), payload.getValue(), sessionController.getLoggedUserEntity().getId(), payload.getDate());
+    MuikkuEventProperty property = eventController.createEventProperty(event, payload.getName(), payload.getValue(), sessionController.getLoggedUserEntity().getId(), new Date());
     
     return Response.ok(toRestModel(property)).build();
   }
@@ -624,7 +629,7 @@ public class MuikkuEventRESTService {
     restProperty.setValue(property.getValue());
     restProperty.setUserEntityId(property.getUserEntityId());
     restProperty.setDate(property.getDate());
-    restProperty.setEvent(toRestModel(property.getEvent(), null));
+    restProperty.setEventId(property.getEvent().getId());
     
     return restProperty;
   }

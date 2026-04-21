@@ -13183,6 +13183,13 @@ components:
       content:
         application/json:
           schema:
+            type: object
+            required:
+              - start 
+              - end 
+              - title
+              - type
+              - eventContainerId
             $ref: "#/components/schemas/MuikkuEvent"
 
     MuikkuEventPropertyRequestBody:
@@ -13190,6 +13197,11 @@ components:
       content:
         application/json:
           schema:
+            type: object
+            required:
+              - eventId
+              - name
+              - value
             $ref: "#/components/schemas/MuikkuEventProperty"
 
     NoteCreateRequestBody:

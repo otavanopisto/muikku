@@ -117,8 +117,7 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
     
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(MuikkuEvent_.eventId), event)
-    );
+        criteriaBuilder.equal(root.get(MuikkuEvent_.eventId), event.getId()));
 
     return entityManager.createQuery(criteria).getResultList();
   }

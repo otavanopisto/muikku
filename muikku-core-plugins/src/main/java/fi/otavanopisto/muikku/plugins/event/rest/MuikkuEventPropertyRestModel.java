@@ -12,14 +12,14 @@ public class MuikkuEventPropertyRestModel {
     this.id = id;
   }
 
-  public MuikkuEventRestModel getEvent() {
-    return muikkuEvent;
+  public Long getEventId() {
+    return eventId;
   }
 
-  public void setEvent(MuikkuEventRestModel muikkuEvent) {
-    this.muikkuEvent = muikkuEvent;
+  public void setEventId(Long eventId) {
+    this.eventId = eventId;
   }
-
+  
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -53,7 +53,7 @@ public class MuikkuEventPropertyRestModel {
   }
 
   private Long id;
-  private MuikkuEventRestModel muikkuEvent;
+  private Long eventId;
   private Long userEntityId;
   private Date date;
   private String name;
