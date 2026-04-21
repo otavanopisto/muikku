@@ -109,6 +109,10 @@ import {
   DivBoxExtension,
   DivBoxSelect,
 } from "@/components/tiptap-extension-custom/div-box";
+import {
+  IframeButton,
+  IframeExtension,
+} from "@/components/tiptap-extension-custom/iframe";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -198,6 +202,7 @@ const MainToolbarContent = ({
 
     <ToolbarGroup>
       <ImageUploadButton text="Add" />
+      <IframeButton />
     </ToolbarGroup>
 
     <ToolbarSeparator />
@@ -333,6 +338,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
       DivBoxExtension,
       //StyleSetExtension,
       //DivFrameExtension,
+      IframeExtension,
       IndentExtension.configure({
         stepPx: 40,
       }),

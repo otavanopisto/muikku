@@ -34,6 +34,17 @@
     background: transparent;
   }
 
+  .iframe-placeholder {
+    background-image: url("https://cdn.muikkuverkko.fi/libs/ckeditor/4.12.1/plugins/iframe/images/placeholder.png?t=JSS8");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1px solid #a9a9a9;
+    box-sizing: border-box;
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+
   .details {
     border: 1px solid var(--tt-border-color, rgba(0, 0, 0, 0.15));
     border-radius: 0.75rem;
