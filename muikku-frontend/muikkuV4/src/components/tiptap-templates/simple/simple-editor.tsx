@@ -93,10 +93,6 @@ import {
   MathEquationButton,
 } from "@/components/tiptap-extension-custom/math-equations";
 import {
-  StyleSetSelect,
-  StyleSetExtension,
-} from "@/components/tiptap-extension-custom/style-set";
-import {
   DetailsButton,
   DetailsKit,
 } from "@/components/tiptap-extension-custom/details";
@@ -108,6 +104,11 @@ import {
   LangDropdownMenu,
   LangExtension,
 } from "@/components/tiptap-extension-custom/lang";
+import {
+  DivBoxBubbleMenu,
+  DivBoxExtension,
+  DivBoxSelect,
+} from "@/components/tiptap-extension-custom/div-box";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -210,7 +211,9 @@ const MainToolbarContent = ({
     <ToolbarSeparator />
 
     <ToolbarGroup>
-      <StyleSetSelect />
+      {/* <StyleSetSelect /> */}
+      {/* <DivFrameToolbarButton /> */}
+      <DivBoxSelect />
     </ToolbarGroup>
 
     <Spacer />
@@ -327,7 +330,9 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
         onError: (error) => console.error("Upload failed:", error),
       }),
       MathEquation,
-      StyleSetExtension,
+      DivBoxExtension,
+      //StyleSetExtension,
+      //DivFrameExtension,
       IndentExtension.configure({
         stepPx: 40,
       }),
@@ -335,7 +340,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
     textDirection: "auto",
     content,
     onUpdate: ({ editor }) => {
-      //console.log("onUpdate", editor?.getHTML());
+      console.log("onUpdate", editor?.getHTML());
       onChange?.(editor?.getHTML() ?? "");
     },
   });
@@ -379,6 +384,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
         </Toolbar>
 
         {editor && <TableBubbleMenu editor={editor} />}
+        {editor && <DivBoxBubbleMenu editor={editor} />}
 
         <EditorContent
           editor={editor}
