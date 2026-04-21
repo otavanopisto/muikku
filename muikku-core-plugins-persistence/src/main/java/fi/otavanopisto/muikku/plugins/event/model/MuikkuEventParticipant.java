@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.calendar.model;
+package fi.otavanopisto.muikku.plugins.event.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,13 +14,13 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "event_id", "userEntityId" }) })
-public class CalendarEventParticipant {
+@Table
+public class MuikkuEventParticipant {
   
-  public CalendarEventParticipant() {
+  public MuikkuEventParticipant() {
   }
 
-  public CalendarEventParticipant(Long userEntityId) {
+  public MuikkuEventParticipant(Long userEntityId) {
     this.userEntityId = userEntityId;
   }
 
@@ -28,12 +28,12 @@ public class CalendarEventParticipant {
     return id;
   }
 
-  public CalendarEvent getEvent() {
-    return event;
+  public MuikkuEvent getEvent() {
+    return muikkuEvent;
   }
 
-  public void setEvent(CalendarEvent event) {
-    this.event = event;
+  public void setEvent(MuikkuEvent muikkuEvent) {
+    this.muikkuEvent = muikkuEvent;
   }
 
   public Long getUserEntityId() {
@@ -44,11 +44,11 @@ public class CalendarEventParticipant {
     this.userEntityId = userEntityId;
   }
 
-  public CalendarEventAttendance getAttendance() {
+  public EventAttendance getAttendance() {
     return attendance;
   }
 
-  public void setAttendance(CalendarEventAttendance attendance) {
+  public void setAttendance(EventAttendance attendance) {
     this.attendance = attendance;
   }
 
@@ -57,7 +57,8 @@ public class CalendarEventParticipant {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private CalendarEvent event;
+  @NotNull
+  private MuikkuEvent muikkuEvent;
 
   @NotNull
   @Column(nullable = false)
@@ -66,6 +67,6 @@ public class CalendarEventParticipant {
   @NotNull
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
-  private CalendarEventAttendance attendance;
+  private EventAttendance attendance;
 
 }
