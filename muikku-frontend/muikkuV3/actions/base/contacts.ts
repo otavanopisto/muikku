@@ -1,6 +1,6 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { ContactGroup, ContactGroupNames } from "~/reducers/base/contacts";
+import { ContactGroupNames, ContactsState } from "~/reducers/base/contacts";
 import { LoadingState } from "~/@types/shared";
 import notificationActions from "~/actions/base/notifications";
 import { Dispatch, Action } from "redux";
@@ -19,10 +19,12 @@ export type CONTACT_UPDATE_GROUP_STATE = SpecificActionType<
 /**
  * ContactGroupPayload
  */
-export interface ContactGroupPayload {
-  data: ContactGroup;
-  groupName: ContactGroupNames;
-}
+export type ContactGroupPayload = {
+  [GroupName in ContactGroupNames]: {
+    data: ContactsState[GroupName];
+    groupName: GroupName;
+  };
+}[ContactGroupNames];
 
 /**
  * LoadingStatePayload
@@ -69,22 +71,62 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         payload: { groupName: groupName, state: <LoadingState>"LOADING" },
       });
 
-      const data = await userApi.getGuidanceCounselors({
-        studentIdentifier,
-        properties:
-          "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-      });
+      let data;
 
-      const payload = {
-        data: {
-          list: data,
-          state: <LoadingState>"READY",
-        },
-        groupName: groupName,
-      };
+      switch (groupName) {
+        case "counselors": {
+          const data = await userApi.getGuidanceCounselors({
+            studentIdentifier,
+            properties:
+              "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+          });
+
+          dispatch({
+            type: "CONTACT_LOAD_GROUP",
+            payload: {
+              data: {
+                list: data,
+                state: <LoadingState>"READY",
+              },
+              groupName,
+            },
+          });
+
+          break;
+        }
+
+        case "guardians": {
+          const data = await userApi.getStudentsGuardians({
+            studentIdentifier,
+          });
+
+          dispatch({
+            type: "CONTACT_LOAD_GROUP",
+            payload: {
+              data: {
+                list: data,
+                state: <LoadingState>"READY",
+              },
+              groupName,
+            },
+          });
+
+          break;
+        }
+
+        default:
+          break;
+      }
+
       dispatch({
         type: "CONTACT_LOAD_GROUP",
-        payload: payload,
+        payload: {
+          data: {
+            list: data,
+            state: <LoadingState>"READY",
+          },
+          groupName,
+        },
       });
     } catch (err) {
       if (!isMApiError(err)) {

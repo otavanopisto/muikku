@@ -217,7 +217,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                             {t("labels.status", {
                               context: "xa",
                             })}
-                            &nbsp;
                             {localize.date(
                               counselor.properties["profile-vacation-start"]
                             )}
@@ -300,10 +299,45 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>
       );
 
+      const studentGuardians = (
+        <div className="application-sub-panel application-sub-panel--guardians">
+          <div className="application-sub-panel__header">
+            {t("labels.counselors", {
+              ns: "users",
+            })}
+          </div>
+          <div className="application-sub-panel__body">
+            <div className="item-list item-list--student-guardians">
+              <div className="item-list__item item-list__item--student-guardian">
+                {this.props.contacts.guardians.list.length > 0 &&
+                  this.props.contacts.guardians.list.map((guardian, index) => {
+                    const { userEntityId, firstName, hasImage } = guardian;
+
+                    return (
+                      <div
+                        className="item-list__profile-picture"
+                        key={guardian.identifier}
+                      >
+                        <Avatar
+                          id={index}
+                          userCategory={3}
+                          name={guardian.firstName + " " + guardian.lastName}
+                          hasImage={false}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
       return (
         <section>
           {studentBasicInfo}
           {studentCounselors}
+          {studentGuardians}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
               <div className="application-sub-panel">

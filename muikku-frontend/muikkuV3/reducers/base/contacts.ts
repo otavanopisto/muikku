@@ -1,23 +1,24 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState } from "~/@types/shared";
-import { GuidanceCounselorContact } from "~/generated/client";
+import { Guardian, GuidanceCounselorContact } from "~/generated/client";
 
 export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
 
 /**
  * ContactGroup
  */
-export interface ContactGroup {
+export interface ContactGroup<T> {
   state: LoadingState;
-  list: GuidanceCounselorContact[];
+  list: T[];
 }
 
 /**
  * CredentialsState
  */
 export interface ContactsState {
-  counselors: ContactGroup;
+  counselors: ContactGroup<GuidanceCounselorContact>;
+  guardians: ContactGroup<Guardian>;
 }
 
 export type ContactGroupNames = keyof ContactsState;
@@ -27,6 +28,10 @@ export type ContactGroupNames = keyof ContactsState;
  */
 const initialContactsState: ContactsState = {
   counselors: {
+    state: "WAITING",
+    list: [],
+  },
+  guardians: {
     state: "WAITING",
     list: [],
   },
