@@ -12,6 +12,14 @@ import {
   MonitoringAlarmsActivityResult,
 } from "~/api_smowl/";
 import { updateWorkspaceMaterialContentNode } from "~/actions/workspaces/material";
+import {
+  Table,
+  TableHead,
+  Tbody,
+  Td,
+  Th,
+  Tr,
+} from "~/components/general/table";
 
 /**
  * Get the label for a front camera alarm
@@ -353,40 +361,64 @@ const SmowlActivity = (props: SmowlActivityProps) => {
             >
               {smowlFrontCameraAlarmDraft?.alarms ? (
                 <div className="material-editor__smowl-alarms-section">
-                  <div className="material-editor__smowl-alarms-list">
-                    {(
-                      Object.keys(smowlFrontCameraAlarmDraft.alarms) as Array<
-                        keyof typeof smowlFrontCameraAlarmDraft.alarms
-                      >
-                    ).map((alarmKey) => (
-                      <div
-                        key={alarmKey}
-                        className="material-editor__smowl-alarm-item"
-                      >
-                        <label
-                          htmlFor={`alarm-${alarmKey}`}
-                          className="material-editor__smowl-alarm-label"
+                  <Table>
+                    <TableHead>
+                      <Tr>
+                        <Th modifiers={["left"]}>
+                          Front camera alarms enabled
+                        </Th>
+                        <Th modifiers={["centered"]}>Yes</Th>
+                        <Th modifiers={["centered"]}>No</Th>
+                      </Tr>
+                    </TableHead>
+                    <Tbody>
+                      {(
+                        Object.keys(smowlFrontCameraAlarmDraft.alarms) as Array<
+                          keyof typeof smowlFrontCameraAlarmDraft.alarms
                         >
-                          {getFrontCameraAlarmLabel(alarmKey)}
-                        </label>
-                        <button
-                          type="button"
-                          id={`alarm-${alarmKey}`}
-                          className={`button-pill button-pill--switch-horizontal ${
-                            isFrontCameraAlarmAllowed(alarmKey)
-                              ? "button-pill--switch-horizontal-active"
-                              : ""
-                          }`}
-                          onClick={() => toggleFrontCameraAlarm(alarmKey)}
-                          disabled={
-                            !smowlActivityDraft?.enabled ||
-                            !smowlActivityDraft?.FrontCamera
-                          }
-                          aria-label={`Toggle ${getFrontCameraAlarmLabel(alarmKey)}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                      ).map((alarmKey) => {
+                        const allowed = isFrontCameraAlarmAllowed(alarmKey);
+                        const disabled =
+                          !smowlActivityDraft?.enabled ||
+                          !smowlActivityDraft?.FrontCamera;
+
+                        return (
+                          <Tr key={alarmKey}>
+                            <Td modifiers={["left"]}>
+                              {getFrontCameraAlarmLabel(alarmKey)}
+                            </Td>
+
+                            <Td modifiers={["centered"]}>
+                              <input
+                                type="radio"
+                                name={`alarm-${alarmKey}`}
+                                checked={allowed}
+                                disabled={disabled}
+                                onChange={() => {
+                                  if (!allowed)
+                                    toggleFrontCameraAlarm(alarmKey);
+                                }}
+                                aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} on`}
+                              />
+                            </Td>
+
+                            <Td modifiers={["centered"]}>
+                              <input
+                                type="radio"
+                                name={`alarm-${alarmKey}`}
+                                checked={!allowed}
+                                disabled={disabled}
+                                onChange={() => {
+                                  if (allowed) toggleFrontCameraAlarm(alarmKey);
+                                }}
+                                aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} off`}
+                              />
+                            </Td>
+                          </Tr>
+                        );
+                      })}
+                    </Tbody>
+                  </Table>
                 </div>
               ) : (
                 <div className="material-editor__smowl-option-placeholder">
@@ -442,102 +474,146 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                 <>
                   {/* Allowed Actions Section */}
                   <div className="material-editor__smowl-alarms-section">
-                    <label className="material-editor__smowl-alarms-label">
-                      Allowed actions
-                    </label>
-                    <div className="material-editor__smowl-alarms-list">
-                      {(
-                        Object.keys(
-                          smowlComputerMonitoringAlarmDraft.alarms
-                            .allowed_actions
-                        ) as Array<ComputerMonitoringAllowedActions>
-                      ).map((alarmKey) => (
-                        <div
-                          key={alarmKey}
-                          className="material-editor__smowl-alarm-item"
-                        >
-                          <label
-                            htmlFor={`cm-action-${alarmKey}`}
-                            className="material-editor__smowl-alarm-label"
-                          >
-                            {getComputerMonitoringActionLabel(alarmKey)}
-                          </label>
-                          <button
-                            type="button"
-                            id={`cm-action-${alarmKey}`}
-                            className={`button-pill button-pill--switch-horizontal ${
-                              isComputerMonitoringAlarmAllowed(
-                                "allowed_actions",
-                                alarmKey
-                              )
-                                ? "button-pill--switch-horizontal-active"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              toggleComputerMonitoringAlarm(
-                                "allowed_actions",
-                                alarmKey
-                              )
-                            }
-                            disabled={
-                              !smowlActivityDraft?.enabled ||
-                              !smowlActivityDraft?.ComputerMonitoring
-                            }
-                            aria-label={`Toggle ${getComputerMonitoringActionLabel(alarmKey)}`}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                    <Table>
+                      <TableHead>
+                        <Tr>
+                          <Th modifiers={["left"]}>Allowed actions</Th>
+                          <Th modifiers={["centered"]}>Yes</Th>
+                          <Th modifiers={["centered"]}>No</Th>
+                        </Tr>
+                      </TableHead>
+
+                      <Tbody>
+                        {(
+                          Object.keys(
+                            smowlComputerMonitoringAlarmDraft.alarms
+                              .allowed_actions
+                          ) as Array<ComputerMonitoringAllowedActions>
+                        ).map((alarmKey) => {
+                          const allowed = isComputerMonitoringAlarmAllowed(
+                            "allowed_actions",
+                            alarmKey
+                          );
+                          const disabled =
+                            !smowlActivityDraft?.enabled ||
+                            !smowlActivityDraft?.ComputerMonitoring;
+
+                          return (
+                            <Tr key={alarmKey}>
+                              <Td modifiers={["left"]}>
+                                {getComputerMonitoringActionLabel(alarmKey)}
+                              </Td>
+
+                              <Td modifiers={["centered"]}>
+                                <input
+                                  type="radio"
+                                  name={`cm-action-${alarmKey}`}
+                                  checked={allowed}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    if (!allowed)
+                                      toggleComputerMonitoringAlarm(
+                                        "allowed_actions",
+                                        alarmKey
+                                      );
+                                  }}
+                                  aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} on`}
+                                />
+                              </Td>
+
+                              <Td modifiers={["centered"]}>
+                                <input
+                                  type="radio"
+                                  name={`cm-action-${alarmKey}`}
+                                  checked={!allowed}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    if (allowed)
+                                      toggleComputerMonitoringAlarm(
+                                        "allowed_actions",
+                                        alarmKey
+                                      );
+                                  }}
+                                  aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} off`}
+                                />
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                      </Tbody>
+                    </Table>
                   </div>
 
                   {/* Allowed Programs Section */}
                   <div className="material-editor__smowl-alarms-section">
-                    <label className="material-editor__smowl-alarms-label">
-                      Allowed programs
-                    </label>
-                    <div className="material-editor__smowl-alarms-list">
-                      {(
-                        Object.keys(
-                          smowlComputerMonitoringAlarmDraft.alarms
-                            .allowed_programs
-                        ) as Array<ComputerMonitoringAllowedPrograms>
-                      ).map((alarmKey) => (
-                        <div
-                          key={alarmKey}
-                          className="material-editor__smowl-alarm-item"
-                        >
-                          <label
-                            htmlFor={`cm-program-${alarmKey}`}
-                            className="material-editor__smowl-alarm-label"
-                          >
-                            {getComputerMonitoringProgramLabel(alarmKey)}
-                          </label>
-                          <button
-                            type="button"
-                            id={`cm-program-${alarmKey}`}
-                            className={`button-pill button-pill--switch-horizontal ${
-                              isComputerMonitoringAlarmAllowed(
-                                "allowed_programs",
-                                alarmKey
-                              )
-                                ? "button-pill--switch-horizontal-active"
-                                : ""
-                            }`}
-                            onClick={() =>
-                              toggleComputerMonitoringAlarm(
-                                "allowed_programs",
-                                alarmKey
-                              )
-                            }
-                            disabled={
-                              !smowlActivityDraft?.enabled ||
-                              !smowlActivityDraft?.ComputerMonitoring
-                            }
-                            aria-label={`Toggle ${getComputerMonitoringProgramLabel(alarmKey)}`}
-                          />
-                        </div>
-                      ))}
-                    </div>
+                    <Table>
+                      <TableHead>
+                        <Tr>
+                          <Th modifiers={["left"]}>Allowed programs</Th>
+                          <Th modifiers={["centered"]}>On</Th>
+                          <Th modifiers={["centered"]}>Off</Th>
+                        </Tr>
+                      </TableHead>
+
+                      <Tbody>
+                        {(
+                          Object.keys(
+                            smowlComputerMonitoringAlarmDraft.alarms
+                              .allowed_programs
+                          ) as Array<ComputerMonitoringAllowedPrograms>
+                        ).map((alarmKey) => {
+                          const allowed = isComputerMonitoringAlarmAllowed(
+                            "allowed_programs",
+                            alarmKey
+                          );
+                          const disabled =
+                            !smowlActivityDraft?.enabled ||
+                            !smowlActivityDraft?.ComputerMonitoring;
+
+                          return (
+                            <Tr key={alarmKey}>
+                              <Td modifiers={["left"]}>
+                                {getComputerMonitoringProgramLabel(alarmKey)}
+                              </Td>
+
+                              <Td modifiers={["centered"]}>
+                                <input
+                                  type="radio"
+                                  name={`cm-program-${alarmKey}`}
+                                  checked={allowed}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    if (!allowed)
+                                      toggleComputerMonitoringAlarm(
+                                        "allowed_programs",
+                                        alarmKey
+                                      );
+                                  }}
+                                  aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} on`}
+                                />
+                              </Td>
+
+                              <Td modifiers={["centered"]}>
+                                <input
+                                  type="radio"
+                                  name={`cm-program-${alarmKey}`}
+                                  checked={!allowed}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    if (allowed)
+                                      toggleComputerMonitoringAlarm(
+                                        "allowed_programs",
+                                        alarmKey
+                                      );
+                                  }}
+                                  aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} off`}
+                                />
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                      </Tbody>
+                    </Table>
                   </div>
                 </>
               ) : (
