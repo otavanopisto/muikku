@@ -18787,11 +18787,7 @@ components:
         - eventContainerId
         - start
         - end
-        - allDay
         - type
-        - isPrivate
-        - editable
-        - removable
       properties:
         id: 
           description: Event id
