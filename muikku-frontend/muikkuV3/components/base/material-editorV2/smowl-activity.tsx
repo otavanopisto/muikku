@@ -20,6 +20,7 @@ import {
   Th,
   Tr,
 } from "~/components/general/table";
+import { useSmowlExamResults } from "./hooks/useSmowlExamResults";
 
 /**
  * Get the label for a front camera alarm
@@ -219,6 +220,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
   const [expandedOptions, setExpandedOptions] = React.useState<{
     [key: string]: boolean;
   }>({});
+
+  const { hasProctoredData, loadingExamResults } = useSmowlExamResults({
+    examId: currentDraftNodeValue.workspaceMaterialId,
+  });
 
   const dispatch = useDispatch();
 
@@ -433,7 +438,11 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                   ? "button-pill--switch-horizontal-active"
                   : ""
               }`}
-              disabled={!smowlActivityDraft?.enabled}
+              disabled={
+                !smowlActivityDraft?.enabled ||
+                loadingExamResults ||
+                hasProctoredData
+              }
             />
             <button
               type="button"
@@ -476,7 +485,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                         const allowed = isFrontCameraAlarmAllowed(alarmKey);
                         const disabled =
                           !smowlActivityDraft?.enabled ||
-                          !smowlActivityDraft?.FrontCamera;
+                          !smowlActivityDraft?.FrontCamera ||
+                          loadingExamResults ||
+                          hasProctoredData;
 
                         return (
                           <Tr key={alarmKey}>
@@ -551,7 +562,11 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                   : ""
               }`}
               onClick={toggleComputerMonitoringEnabled}
-              disabled={!smowlActivityDraft?.enabled}
+              disabled={
+                !smowlActivityDraft?.enabled ||
+                loadingExamResults ||
+                hasProctoredData
+              }
             />
             <button
               type="button"
@@ -602,7 +617,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           );
                           const disabled =
                             !smowlActivityDraft?.enabled ||
-                            !smowlActivityDraft?.ComputerMonitoring;
+                            !smowlActivityDraft?.ComputerMonitoring ||
+                            loadingExamResults ||
+                            hasProctoredData;
 
                           return (
                             <Tr key={alarmKey}>
@@ -687,7 +704,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           );
                           const disabled =
                             !smowlActivityDraft?.enabled ||
-                            !smowlActivityDraft?.ComputerMonitoring;
+                            !smowlActivityDraft?.ComputerMonitoring ||
+                            loadingExamResults ||
+                            hasProctoredData;
 
                           return (
                             <Tr key={alarmKey}>
@@ -771,7 +790,11 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                   : ""
               }`}
               onClick={toggleTestExamModeEnabled}
-              disabled={!smowlActivityDraft?.enabled}
+              disabled={
+                !smowlActivityDraft?.enabled ||
+                loadingExamResults ||
+                hasProctoredData
+              }
             />
           </div>
         </div>

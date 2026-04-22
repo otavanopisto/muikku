@@ -20,6 +20,10 @@ import type {
   SetMonitoringDeviceAlarmsRequest,
   GetMonitoringDeviceAlarmsRequest,
   SmowlApiConfig,
+  IpResultsStatusRequest,
+  IpResultsStatusResponse,
+  ResultsStatusRequest,
+  ResultsStatusResponse,
 } from "./types";
 import { SmowlApiError } from "./types";
 
@@ -637,6 +641,92 @@ export class SmowlApi {
 
     return responseData as MonitoringAlarmsSetResponse;
   }
+
+  /**
+   * Gets the status of IP Analysis results for a user.
+   *
+   * @param params - Parameters for getting IP Analysis results status
+   * @returns Promise resolving to the IP Analysis results status response
+   * @throws SmowlApiError if the request fails with an API error
+   * @throws Error if the request fails for other reasons
+   */
+  async getIpResultsStatus(
+    params: IpResultsStatusRequest
+  ): Promise<IpResultsStatusResponse> {
+    const url = `${this.config.baseUrl}/results/status/ip`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        ...this.config.headers,
+      },
+      body: objectToFormUrlEncoded(params),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      if (
+        responseData &&
+        typeof responseData.status === "number" &&
+        typeof responseData.error === "number" &&
+        responseData.messages &&
+        typeof responseData.messages === "object"
+      ) {
+        throw new SmowlApiError(responseData as SmowlErrorResponse);
+      }
+
+      throw new Error(
+        `SMOWL API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return responseData as IpResultsStatusResponse;
+  }
+
+  /**
+   * Gets simple summary statuses for users across active services.
+   *
+   * @param params - Parameters for getting results status
+   * @returns Promise resolving to the results status response
+   */
+  async getResultsStatus(
+    params: ResultsStatusRequest
+  ): Promise<ResultsStatusResponse> {
+    const url = `${this.config.baseUrl}/results/status`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        ...this.config.headers,
+      },
+      body: objectToFormUrlEncoded(params),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      if (
+        responseData &&
+        typeof responseData.status === "number" &&
+        typeof responseData.error === "number" &&
+        responseData.messages &&
+        typeof responseData.messages === "object"
+      ) {
+        throw new SmowlApiError(responseData as SmowlErrorResponse);
+      }
+
+      throw new Error(
+        `SMOWL API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    return responseData as ResultsStatusResponse;
+  }
 }
 
 // Export types
@@ -660,4 +750,6 @@ export type {
   ExternalCameraResponse,
   SetMonitoringDeviceAlarmsRequest,
   GetMonitoringDeviceAlarmsRequest,
+  IpResultsStatusRequest,
+  IpResultsStatusResponse,
 };

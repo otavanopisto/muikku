@@ -468,3 +468,133 @@ export interface FrontCameraAlarmsConfig {
 }
 
 export type FrontCameraAlarms = keyof FrontCameraAlarmsConfig;
+
+/**
+ * Request parameters for getting IP Analysis results status
+ */
+export interface IpResultsStatusRequest {
+  /** Required. The type of activity e.g. "course", "quiz", "test", "forum" etc. */
+  activityType: string;
+  /** Required. The unique activity identifier. */
+  activityId: string | number;
+}
+
+export type IpAnalysisUserActivityStatus =
+  | "NOT_LAUNCHED"
+  | "PENDING"
+  | "UNSUCCESSFUL"
+  | "SUCCESSFUL";
+
+export type IpAnalysisGlobalStatus = "PENDING" | "UNSUCCESSFUL" | "SUCCESSFUL";
+
+/**
+ * Summary of IP Analysis results status
+ */
+export interface IpResultsStatusSummary {
+  total: number;
+  total_pending: number;
+  total_unsuccessful: number;
+  total_successful: number;
+  pCent_pending: number;
+  pCent_unsuccessful: number;
+  pCent_successful: number;
+}
+
+/**
+ * IP Analysis results status for a user
+ */
+export interface IpResultsStatusUser {
+  userId: string;
+  globalStatus: IpAnalysisGlobalStatus;
+  /**
+   * Keyed by activity name/id (e.g. "quiz1111"), each containing service status(es).
+   * From SMOWL docs example: { "quiz1111": { "IpAnalysis": "UNSUCCESSFUL" } }
+   */
+  activities: Record<string, { IpAnalysis: IpAnalysisUserActivityStatus }>;
+}
+
+/**
+ * Response from getting IP Analysis results status
+ */
+export interface IpResultsStatusResponse {
+  summary: IpResultsStatusSummary;
+  users: IpResultsStatusUser[];
+  request_info: RequestInfo;
+  globalStatus: IpAnalysisGlobalStatus;
+}
+
+/**
+ * Request parameters for getting overall results status (all services)
+ */
+export interface ResultsStatusRequest {
+  /** Required. The type of activity e.g. "course", "quiz", "test", "forum" etc. */
+  activityType: string;
+  /** Required. The unique activity identifier. */
+  activityId: string | number;
+}
+
+export type ResultsStatusServiceStatus =
+  | "NOT_LAUNCHED"
+  | "PENDING"
+  | "UNSUCCESSFUL"
+  | "SUCCESSFUL";
+
+export type ResultsStatusGlobalStatus =
+  | "PENDING"
+  | "UNSUCCESSFUL"
+  | "SUCCESSFUL";
+
+/**
+ * Summary of results status
+ */
+export interface ResultsStatusSummary {
+  total: number;
+  total_pending: number;
+  total_unsuccessful: number;
+  total_successful: number;
+  pCent_pending: number;
+  pCent_unsuccessful: number;
+  pCent_successful: number;
+}
+
+/**
+ * Services that can appear inside activities[activityKey]
+ * (based on SMOWL docs example for /results/status).
+ */
+export type ResultsStatusServiceKey =
+  | "FrontCamera"
+  | "ExternalCamera"
+  | "Audio"
+  | "ComputerMonitoring"
+  | "BrowserExtension"
+  | "IpAnalysis";
+
+/**
+ * Map of service -> status for a single activity item.
+ * Not all services are always present, so it's partial.
+ */
+export type ResultsStatusActivityServices = Partial<
+  Record<ResultsStatusServiceKey, ResultsStatusServiceStatus>
+>;
+
+/**
+ * User results status
+ */
+export interface ResultsStatusUser {
+  userId: string;
+  globalStatus: ResultsStatusGlobalStatus;
+  /**
+   * Keyed by activity name/id (e.g. "quiz2"), each containing multiple service statuses.
+   */
+  activities: Record<string, ResultsStatusActivityServices>;
+}
+
+/**
+ * Response from getting overall results status (all services)
+ */
+export interface ResultsStatusResponse {
+  summary: ResultsStatusSummary;
+  users: ResultsStatusUser[];
+  request_info: RequestInfo;
+  globalStatus: ResultsStatusGlobalStatus;
+}

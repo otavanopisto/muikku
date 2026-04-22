@@ -179,6 +179,20 @@ public class SmowlRESTService extends AbstractRESTService {
 
     return proxyPost("/configs/" + smowlPath, entityBody);
   }
+  
+  @POST
+  @Path("/results/{PATH: .*}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response resultsProxy(@PathParam("PATH") String smowlPath,
+      String entityBody) {
+
+    // Staff-only endpoints
+    if (!sessionController.hasAnyRole(EnvironmentRoleArchetype.STAFF_ROLES)) {
+      return Response.status(Status.FORBIDDEN).entity("Management only available to staff members").build();
+    }
+
+    return proxyPost("/results/" + smowlPath, entityBody);
+  }
 
   private Response proxyPost(String smowlPath, String entityBody) {
     String smowlUrl = SmowlController.SMOWL_BASE_URL + smowlPath;
