@@ -145,7 +145,7 @@ const getComputerMonitoringProgramLabel = (
     PENTESTING: "Tietoturvatestaus",
     CODE_EDITOR: "Koodieditorit",
     VIRTUAL_MACHINES: "Virtuaalikoneet",
-    DATABASE: "Tietokanta sovellukset",
+    DATABASE: "Tietokantasovellukset",
     OPEN_SOURCE_OFFICE_SUITE: "Vapaat toimisto-ohjelmat",
   };
   return labelMap[alarmKey] || alarmKey;
@@ -175,7 +175,8 @@ const getComputerMonitoringProgramDescription = (
       "Merkitään poikkeamaksi, jos käytetään laitteen tiedostonhallintatyökaluja kuten Resurssienhallinta.",
     MEDIA_PLAYER:
       "Merkitään poikkeamaksi, jos avoinna on musiikki- tai videopalveluita kuten Spotify tai iTunes.",
-    SLIDE_VIEWER: "Merkitään poikkeamaksi, jos avoinna on ...",
+    SLIDE_VIEWER:
+      "Merkitään poikkeamaksi, jos avoinna on esitysgrafiikkaohjelmia kuten PowerPoint.",
     SCREENSHOTER:
       "Merkitään poikkeamaksi, jos avoinna on näytön kaappaamiseen tai live-tallennukseen tarkoitettuja ohjelmia.",
     REMOTE_CONTROL:
@@ -410,6 +411,12 @@ const SmowlActivity = (props: SmowlActivityProps) => {
    */
   const renderContent = () => (
     <div className="material-editor__smowl-item">
+      {hasProctoredData && (
+        <div className="material-editor__smowl-warning">
+          Kokeen asetuksiin ei voi enää tehdä muutoksia koska kokeesta on jo
+          tallennettu valvottuja suorituksia.
+        </div>
+      )}
       <div className="material-editor__smowl-header">
         <div className="material-editor__smowl-header-title">
           Kokeen nimi: {smowlActivityDraft?.displayName}

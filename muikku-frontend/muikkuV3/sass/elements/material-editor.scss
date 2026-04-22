@@ -182,6 +182,14 @@
   padding: 0 0 5px;
 }
 
+.material-editor__smowl-warning {
+  background: lighten($color-warn, 20%);
+  border-radius: 5px;
+  color: $color-default-contrast;
+  font-size: 0.875rem;
+  padding: 10px;
+}
+
 .material-editor__selected-pages {
   display: flex;
   flex-flow: row wrap;
@@ -418,7 +426,6 @@
   th,
   td {
     min-width: 100px;
-    width: 20%;
 
     &:first-child {
       width: auto;
