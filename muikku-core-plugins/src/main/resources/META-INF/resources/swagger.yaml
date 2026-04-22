@@ -18784,7 +18784,6 @@ components:
       type: object
       description: MuikkuEvent object
       required:
-        - id
         - eventContainerId
         - start
         - end
@@ -18796,6 +18795,10 @@ components:
       properties:
         id: 
           description: Event id
+          type: integer
+          format: int64
+        eventId:
+          description: Id of the possible reference event
           type: integer
           format: int64
         eventContainerId:
