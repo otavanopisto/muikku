@@ -41,6 +41,10 @@ interface MonitoringGetParams {
    */
   lang: string;
   type: number;
+  /**
+   * The URL of the activity where to redirect the user after registration
+   */
+  activityUrl: string;
 }
 
 /**

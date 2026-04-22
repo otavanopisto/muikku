@@ -106,6 +106,7 @@ export const useSmowlMonitoringStatus = (
             userEmail: status.profile.emails[0],
             lang: localize.lang,
             type: 0,
+            activityUrl: window.location.href,
           }
         );
 
