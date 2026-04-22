@@ -114,6 +114,8 @@ export interface WorkspaceDataType {
   published: boolean;
   urlName: string;
   organizationEntityId: number;
+  // Workspace "calendar" event container id
+  workspaceEventContainerId: number;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccess; // This exists in settings
@@ -128,7 +130,6 @@ export interface WorkspaceDataType {
    * aka "modules", always contains at least one or more if it is combination workspace
    */
   subjects?: WorkspaceSubject[];
-
   //These are optional addons, and are usually not available
   settings?: WorkspaceSettings;
   activity?: WorkspaceActivity;

@@ -18,6 +18,7 @@ import MApi from "~/api/api";
 interface CreateAbsenceDialogProps {
   children?: React.ReactElement;
   workspaceId: number;
+  workspaceEventContainerId: number;
   onClose?: () => void;
   onConfirm?: (form: AbsenceEventFormState) => void;
 }
@@ -114,7 +115,13 @@ const absenceEventFormReducer = (
 export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   props
 ) => {
-  const { children, workspaceId, onClose, onConfirm } = props;
+  const {
+    children,
+    workspaceId,
+    workspaceEventContainerId,
+    onClose,
+    onConfirm,
+  } = props;
   const [formState, dispatchForm] = useReducer(
     absenceEventFormReducer,
     undefined,
@@ -154,10 +161,13 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         start: startDate?.toISOString(),
         end: endDate?.toISOString(),
         allDay: false,
+        editable: true,
+        removable: false,
         type: "ABSENCE",
         isPrivate: true,
+        eventContainerId: workspaceEventContainerId,
       },
-      userIds: formState.selectedUsers.map((u) => u.value.id),
+      users: formState.selectedUsers.map((u) => u.value.identifier),
     });
 
     onConfirm?.(formState);
