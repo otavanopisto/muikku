@@ -15,6 +15,7 @@ import {
   MaterialsApi,
   MatriculationApi,
   MeApi,
+  EventsApi,
   NotesApi,
   OrganizationApi,
   PedagogyApi,
@@ -204,6 +205,14 @@ export default class MApi {
    */
   public static getEvaluationApi() {
     return new EvaluationApi(configuration);
+  }
+
+  /**
+   * Get initialized EventsApi API
+   * @returns initialized EventsApi API
+   */
+  public static getEventsApi() {
+    return new EventsApi(configuration);
   }
 
   /**

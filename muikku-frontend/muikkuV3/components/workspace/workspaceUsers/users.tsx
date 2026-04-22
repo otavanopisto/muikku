@@ -35,7 +35,10 @@ import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Button from "~/components/general/button";
-import { CreateAbsenceDialog } from "./dialogs/create-absence";
+import {
+  AbsenceEventFormState,
+  CreateAbsenceDialog,
+} from "./dialogs/create-absence";
 
 /**
  * WorkspaceUsersProps
@@ -287,6 +290,17 @@ class WorkspaceUsers extends React.Component<
   handleInActiveStudentsPagerChange = (selectedItem: { selected: number }) =>
     this.loadInActiveStudents(selectedItem.selected + 1);
 
+  handleCreateAbsenceEvent = (absenceEvent: AbsenceEventFormState) => {
+    createMuikkuEvent({
+      workspaceId: this.props.workspace.id,
+      title: absenceEvent.title,
+      description: absenceEvent.description,
+      startDate: absenceEvent.startDate,
+      endDate: absenceEvent.endDate,
+      userIds: absenceEvent.selectedUsers.map((u) => u.userEntityId),
+    });
+  };
+
   /**
    * Component render method
    * @returns JSX.Element
@@ -304,7 +318,7 @@ class WorkspaceUsers extends React.Component<
     };
     const primaryOption = (
       <CreateAbsenceDialog
-        workspaceId={this.props.workspace.id}
+        workspaceId={this.props.workspace?.id}
         onClose={() => {}}
         onConfirm={() => {}}
       >

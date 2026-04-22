@@ -549,7 +549,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
       const evaluationApi = MApi.getEvaluationApi();
-
+      const muikkuEventsApi = MApi.getEventsApi();
       const current = state.workspaces.currentWorkspace;
       if (
         current &&
@@ -573,7 +573,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           //if I just make it be current it will be buggy
           workspace = { ...current };
         }
-
+        let workspaceEventContainerId: number;
         let assessmentRequests: AssessmentRequest[];
         let interimEvaluationRequests: InterimEvaluationRequest[];
         let activity: WorkspaceActivity;
@@ -586,6 +586,8 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
         [
           workspace,
+          // eslint-disable-next-line prefer-const
+          workspaceEventContainerId,
           // eslint-disable-next-line prefer-const
           assessmentRequests,
           // eslint-disable-next-line prefer-const
@@ -607,6 +609,14 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             workspaceApi.getWorkspace({
               workspaceId: data.workspaceId,
             })
+          ),
+          reuseExistantValue(
+            true,
+            workspace && workspace.workspaceEventContainerId,
+            () =>
+              muikkuEventsApi.getWorkspaceEventContainerId({
+                workspaceEntityId: data.workspaceId,
+              })
           ),
 
           reuseExistantValue(
@@ -698,6 +708,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.producers = producers;
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
+        workspace.workspaceEventContainerId = workspaceEventContainerId;
 
         const isMaterialsDisabled = shouldMaterialsBeDisabled(
           workspace.activity
