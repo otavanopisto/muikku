@@ -148,7 +148,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-counselors">
-              {this.props.contacts.counselors.list.length > 0 ? (
+              {this.props.contacts.counselors?.list.length > 0 ? (
                 this.props.contacts.counselors.list.map((counselor) => {
                   let displayVacationPeriod =
                     !!counselor.properties["profile-vacation-start"];
@@ -302,7 +302,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       const studentGuardians = (
         <div className="application-sub-panel application-sub-panel--guardians">
           <div className="application-sub-panel__header">
-            {t("labels.counselors", {
+            {t("labels.guardians", {
               ns: "users",
             })}
           </div>
@@ -311,20 +311,41 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="item-list__item item-list__item--student-guardian">
                 {this.props.contacts.guardians.list.length > 0 &&
                   this.props.contacts.guardians.list.map((guardian, index) => {
-                    const { userEntityId, firstName, hasImage } = guardian;
+                    const {
+                      firstName,
+                      lastName,
+                      identifier,
+                      continuedViewPermission,
+                    } = guardian;
 
                     return (
-                      <div
-                        className="item-list__profile-picture"
-                        key={guardian.identifier}
-                      >
-                        <Avatar
-                          id={index}
-                          userCategory={3}
-                          name={guardian.firstName + " " + guardian.lastName}
-                          hasImage={false}
-                        />
-                      </div>
+                      <>
+                        <div
+                          className="item-list__profile-picture"
+                          key={identifier}
+                        >
+                          <Avatar
+                            id={index}
+                            userCategory={3}
+                            name={firstName + " " + lastName}
+                            hasImage={false}
+                          />
+                        </div>
+                        <div className="item-list__text-body item-list__text-body--multiline">
+                          <div className="item-list__user-name">
+                            {firstName} {lastName}
+                          </div>
+                          <div className="item-list__guardian-permission">
+                            {continuedViewPermission
+                              ? t("labels.continuedViewPermission", {
+                                  ns: "users",
+                                })
+                              : t("labels.noContinuedViewPermission", {
+                                  ns: "users",
+                                })}
+                          </div>
+                        </div>
+                      </>
                     );
                   })}
               </div>

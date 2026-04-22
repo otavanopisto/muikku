@@ -71,8 +71,6 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         payload: { groupName: groupName, state: <LoadingState>"LOADING" },
       });
 
-      let data;
-
       switch (groupName) {
         case "counselors": {
           const data = await userApi.getGuidanceCounselors({
@@ -117,17 +115,6 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         default:
           break;
       }
-
-      dispatch({
-        type: "CONTACT_LOAD_GROUP",
-        payload: {
-          data: {
-            list: data,
-            state: <LoadingState>"READY",
-          },
-          groupName,
-        },
-      });
     } catch (err) {
       if (!isMApiError(err)) {
         return dispatch(

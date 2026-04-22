@@ -432,6 +432,16 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadProfileData(location: string) {
+    const status = this.props.store.getState().status;
+
+    if (status.isStudent) {
+      this.props.store.dispatch(
+        loadContactGroup(
+          "guardians",
+          status.userSchoolDataIdentifier
+        ) as Action as Action
+      );
+    }
     this.props.store.dispatch(setProfileLocation(location) as Action);
     this.props.store.dispatch(loadProfileAuthorizations() as Action);
 
