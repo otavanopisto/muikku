@@ -37,7 +37,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
   const dispatch = useDispatch();
 
-  const { plannedCourses, planNotes, studyOptions, goals } = useSelector(
+  const { plannedCourses, planNotes, goals } = useSelector(
     (state: StateType) => state.hopsNew.hopsStudyPlanState
   );
 
@@ -103,20 +103,15 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
   // Calculate the statistics
   const statistics = useMemo(
-    () =>
-      curriculumConfig.strategy.calculateStatistics(
-        userStudyActivity?.items ?? [],
-        studyOptions
-      ),
-    [curriculumConfig.strategy, userStudyActivity?.items, studyOptions]
+    () => curriculumConfig.strategy.calculateStatistics(userStudyActivity),
+    [curriculumConfig.strategy, userStudyActivity]
   );
 
   // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
       usedGoalInfo.studyHours,
-      userStudyActivity?.items ?? [],
-      studyOptions
+      userStudyActivity
     );
 
   /**

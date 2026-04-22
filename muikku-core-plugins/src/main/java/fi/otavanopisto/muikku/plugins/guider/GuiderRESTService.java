@@ -493,6 +493,7 @@ public class GuiderRESTService extends PluginRESTService {
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"),
             (String) o.get("studyProgrammeIdentifier"),
+            null, // educationTypeCode. Would need to be in Elastic as we don't want looped Pyramus calls :|
             hasImage,
             (String) o.get("nationality"),
             (String) o.get("language"),
@@ -583,6 +584,7 @@ public class GuiderRESTService extends PluginRESTService {
         user.getNickName(),
         user.getStudyProgrammeName(),
         user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
+        user.getEducationTypeCode(),
         hasImage,
         user.getNationality(),
         user.getLanguage(),
@@ -1351,7 +1353,7 @@ public class GuiderRESTService extends PluginRESTService {
     // Websocket message
 
     BridgeResponse<StudyActivityRestModel> response = userSchoolDataController.getStudyActivity(
-        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId());
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), workspaceEntity.getId(), null);
     if (response.ok()) {
       // Ensure caller and student are added to the listeners interested in the student's HOPS changes
       hopsWebSocketMessenger.registerUser(studentEntity.getId(), sessionController.getLoggedUserEntity().getId());

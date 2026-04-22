@@ -16,9 +16,9 @@ interface StudyPlanProps {}
 const StudyPlan = (props: StudyPlanProps) => {
   const { studentInfo } = useSelector((state: StateType) => state.hopsNew);
 
-  const { curriculumConfig } = useHopsBasicInfo();
+  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
 
-  if (!studentInfo || !curriculumConfig) {
+  if (!studentInfo || !curriculumConfig || !userStudyActivity) {
     return null;
   }
 

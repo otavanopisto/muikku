@@ -21,7 +21,7 @@ public interface User extends SchoolDataEntity {
   
   public String getStudyProgrammeName();
 
-  public String getStudyProgrammeEducationType();
+  public String getEducationTypeCode();
   
   public SchoolDataIdentifier getStudyProgrammeIdentifier();
   

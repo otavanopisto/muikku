@@ -789,6 +789,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
     	return Response.status(Status.NOT_FOUND).build();
     }
+    if (!workspaceEntityController.canAccessMaterials(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
     return Response.ok(helpPages).build();
   }
@@ -801,6 +804,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceNodeId);
     if (workspaceEntity == null || node == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!workspaceEntityController.canAccessMaterials(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(node);
     return Response.ok(workspaceMaterialController.createContentNode(node, nextSibling)).build();
@@ -2207,23 +2213,19 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GZIP
   @Path("/workspaces/{WORKSPACEENTITYID}/materialContentNodes/")
   @RESTPermitUnimplemented
-  public Response listWorkspaceMaterialsAsContentNodes(
-    @PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
-    @QueryParam("includeHidden") Boolean includeHidden
-  ) {
-    // TODO: SecuritY???
-
+  public Response listWorkspaceMaterialsAsContentNodes(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("includeHidden") Boolean includeHidden) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Could not find a workspace entity").build();
     }
-
+    if (!workspaceEntityController.canAccessMaterials(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     List<ContentNode> workspaceMaterials;
     workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
     if (workspaceMaterials.isEmpty()) {
     	return Response.ok(Collections.emptyList()).build();
     }
-
     return Response.ok(workspaceMaterials).build();
   }
 
@@ -2231,11 +2233,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
   @RESTPermitUnimplemented
   public Response getWorkspaceMaterial(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialId) {
-    // TODO: Security
-
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+    if (!workspaceEntityController.canAccessMaterials(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);

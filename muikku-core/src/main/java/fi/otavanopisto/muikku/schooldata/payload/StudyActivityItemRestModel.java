@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.payload;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -175,12 +176,39 @@ public class StudyActivityItemRestModel {
     this.exercisesDone = exercisesDone;
   }
 
+  public boolean isRaisedGrade() {
+    return raisedGrade;
+  }
+
+  public void setRaisedGrade(boolean raisedGrade) {
+    this.raisedGrade = raisedGrade;
+  }
+
+  public String getCourseNameExtension() {
+    return courseNameExtension;
+  }
+
+  public void setCourseNameExtension(String courseNameExtension) {
+    this.courseNameExtension = courseNameExtension;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
   private String subject;
   private String subjectName;
   private Long courseId;
+  private String url;
   private Integer courseNumber;
   private String courseName;
+  private String courseNameExtension;
   private String grade;
+  private boolean raisedGrade;
   private boolean passing;
   private Integer length;
   private String lengthSymbol;
@@ -188,7 +216,7 @@ public class StudyActivityItemRestModel {
   private StudyActivityItemState state;
   private Date date;
   private Date gradeDate;
-  private List<String> curriculums;
+  private List<String> curriculums = new ArrayList<>();
   private String text;
   private String evaluatorName;
   private String studyProgramme;

@@ -9,13 +9,14 @@ import {
 import Button from "~/components/general/button";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import { suitabilityMapHelper } from "~/@shared/suitability";
+import { getMandatorityLabel } from "~/@shared/suitability";
 import { StudyActivityItem } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import { AssessmentInformation } from "./assessment-information";
+import Link from "~/components/general/link";
 
 /**
  * RecordsActivityRowProps
@@ -42,7 +43,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
   const { identifier, userEntityId, config, displayNotification } =
     useRecordsInfoContext();
 
-  const { t } = useTranslation([
+  const { t, i18n } = useTranslation([
     "studies",
     "evaluation",
     "materials",
@@ -116,43 +117,50 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    // Get first OPS from curriculums there should be only one OPS per workspace
-    // Some old workspaces might have multiple OPS, but that is rare case
-    const OPS = studyActivityItems[0].curriculums?.[0];
+    if (!studyActivityItems[0].mandatority) return null;
 
-    // If OPS data and workspace mandatority property is present
-    if (OPS && studyActivityItems[0].mandatority) {
-      const suitabilityMap = suitabilityMapHelper(t);
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: studyActivityItems[0].mandatority,
+      educationType,
+      curriculums: studyActivityItems[0].curriculums,
+    });
 
-      // Create map property from education type name and OPS name that was passed
-      // Strings are changes to lowercase form and any empty spaces are removed
-      const education = `${educationType
-        .toLowerCase()
-        .replace(/ /g, "")}${OPS.replace(/ /g, "")}`;
+    const sumOfCredits = getSumOfCredits();
 
-      // Check if our map contains data with just created education string
-      // Otherwise just return null. There might not be all included values by every OPS created...
-      if (!suitabilityMap[education]) {
-        return null;
-      }
-
-      // Then get correct local string from map by suitability enum value
-      let localString =
-        suitabilityMap[education][studyActivityItems[0].mandatority];
-
-      const sumOfCredits = getSumOfCredits();
-
-      // If there is sum of credits, return it with local string
-      if (sumOfCredits) {
-        localString = `${localString}, ${sumOfCredits}`;
-      }
-
-      return (
-        <div className="label">
-          <div className="label__text">{localString} </div>
-        </div>
-      );
+    if (sumOfCredits) {
+      localString = `${localString}, ${sumOfCredits}`;
     }
+
+    return (
+      <div className="label">
+        <div className="label__text">{localString}</div>
+      </div>
+    );
+  };
+
+  /**
+   * Render workspace link if workspace studyActivityItems exists
+   * @returns workspace link
+   */
+  const renderWorkspaceLink = () => {
+    if (!studyActivityItems[0]?.url) return null;
+    return (
+      <div className="application-list__header-primary-meta">
+        <Link
+          href={studyActivityItems[0].url}
+          openInNewTab="_blank"
+          className="link"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {t("labels.goto", { ns: "workspace" })}
+        </Link>
+      </div>
+    );
   };
 
   const animateOpen = showEvaluation ? "auto" : 0;
@@ -195,11 +203,14 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
           </div>
 
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
-            <div className="label">
-              <div className="label__text">
-                {studyActivityItems[0].studyProgramme}
+            {studyActivityItems[0].studyProgramme && (
+              <div className="label">
+                <div className="label__text">
+                  {studyActivityItems[0].studyProgramme}
+                </div>
               </div>
-            </div>
+            )}
+
             {studyActivityItems[0].curriculums &&
               studyActivityItems[0].curriculums.map((curriculum) => (
                 <div key={curriculum} className="label">
@@ -209,6 +220,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
 
             {renderMandatorityDescription()}
           </div>
+          {renderWorkspaceLink()}
         </div>
         <div className="application-list__header-secondary">
           {config.showAssigmentsAndDiaries && (
@@ -259,12 +271,12 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
               codeSubjectString += `${courseNumber}`;
             }
 
-            if (courseLength && courseLengthSymbol) {
-              codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
-            }
-
             if (subjectName) {
               codeSubjectString += ` - ${subjectName}`;
+            }
+
+            if (courseLength && courseLengthSymbol) {
+              codeSubjectString += ` (${courseLength} ${courseLengthSymbol})`;
             }
 
             return (

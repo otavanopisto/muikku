@@ -70,6 +70,63 @@ class StateOfStudies extends React.Component<
     super(props);
   }
 
+  /**
+   * Render statistics
+   */
+  renderStatistics = () => {
+    const { studyDataByEducationTypeCode, selectedEducationTypeCode } =
+      this.props.guider.currentStudent;
+
+    if (!studyDataByEducationTypeCode || !selectedEducationTypeCode) {
+      return null;
+    }
+
+    const studyActivity =
+      studyDataByEducationTypeCode[selectedEducationTypeCode]?.studyActivity;
+    const curriculumConfig =
+      studyDataByEducationTypeCode[selectedEducationTypeCode]?.curriculumConfig;
+
+    if (!studyActivity || !curriculumConfig) {
+      return null;
+    }
+
+    const statistics =
+      curriculumConfig.strategy.calculateStatistics(studyActivity);
+
+    let title = this.props.i18n.t("labels.courseCredits");
+    let mandatoryLabel = this.props.t("labels.courseCreditsMandatory");
+    let optionalLabel = this.props.t("labels.courseCreditsOptional");
+    let totalLabel = this.props.t("labels.courseCreditsTotal");
+
+    if (
+      curriculumConfig.type === "compulsory" ||
+      curriculumConfig.type === "unknown"
+    ) {
+      title = this.props.i18n.t("labels.courses");
+      mandatoryLabel = this.props.t("labels.courseCreditsMandatory");
+      optionalLabel = this.props.t("labels.courseCreditsOptional");
+      totalLabel = this.props.t("labels.courseCreditsTotal");
+    }
+
+    return (
+      <ApplicationSubPanelItem title={title} modifier="guider-course-credits">
+        {curriculumConfig.type !== "unknown" && (
+          <ApplicationSubPanelItem.Content>
+            {`${mandatoryLabel} ${statistics.mandatoryStudies}`}
+          </ApplicationSubPanelItem.Content>
+        )}
+        {curriculumConfig.type !== "unknown" && (
+          <ApplicationSubPanelItem.Content>
+            {`${optionalLabel} ${statistics.optionalStudies}`}
+          </ApplicationSubPanelItem.Content>
+        )}
+        <ApplicationSubPanelItem.Content>
+          {`${totalLabel} ${statistics.totalStudies}`}
+        </ApplicationSubPanelItem.Content>
+      </ApplicationSubPanelItem>
+    );
+  };
+
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
    * render
@@ -255,32 +312,7 @@ class StateOfStudies extends React.Component<
             }
           )}
 
-        {this.props.guider.currentStudent.courseCredits &&
-          this.props.guider.currentStudent.courseCredits.showCredits && (
-            <ApplicationSubPanelItem
-              title={this.props.i18n.t("labels.courseCredits", {
-                ns: "guider",
-              })}
-              modifier="guider-course-credits"
-            >
-              <ApplicationSubPanelItem.Content>
-                {this.props.t("labels.courseCreditsMandatory", {
-                  ns: "guider",
-                  mandatoryCredits:
-                    this.props.guider.currentStudent.courseCredits
-                      .mandatoryCourseCredits,
-                })}
-              </ApplicationSubPanelItem.Content>
-              <ApplicationSubPanelItem.Content>
-                {this.props.t("labels.courseCreditsTotal", {
-                  ns: "guider",
-                  totalCredits:
-                    this.props.guider.currentStudent.courseCredits
-                      .completedCourseCredits,
-                })}
-              </ApplicationSubPanelItem.Content>
-            </ApplicationSubPanelItem>
-          )}
+        {this.renderStatistics()}
       </ApplicationSubPanel.Body>
     );
 

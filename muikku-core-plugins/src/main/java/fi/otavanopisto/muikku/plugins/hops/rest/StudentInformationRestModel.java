@@ -9,7 +9,7 @@ public class StudentInformationRestModel {
       Long id,
       String firstName,
       String lastName,
-      String studyProgrammeEducationType,
+      String educationTypeCode,
       OffsetDateTime studyStartDate,
       OffsetDateTime studyEndDate,
       OffsetDateTime studyTimeEnd,
@@ -19,7 +19,7 @@ public class StudentInformationRestModel {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.studyProgrammeEducationType = studyProgrammeEducationType;
+    this.educationTypeCode = educationTypeCode;
     this.studyStartDate = studyStartDate;
     this.studyEndDate = studyEndDate;
     this.studyTimeEnd = studyTimeEnd;
@@ -52,12 +52,12 @@ public class StudentInformationRestModel {
     this.lastName = lastName;
   }
 
-  public String getStudyProgrammeEducationType() {
-    return studyProgrammeEducationType;
+  public String getEducationTypeCode() {
+    return educationTypeCode;
   }
 
-  public void setStudyProgrammeEducationType(String studyProgrammeEducationType) {
-    this.studyProgrammeEducationType = studyProgrammeEducationType;
+  public void setEducationTypeCode(String educationTypeCode) {
+    this.educationTypeCode = educationTypeCode;
   }
 
   public OffsetDateTime getStudyTimeEnd() {
@@ -103,7 +103,7 @@ public class StudentInformationRestModel {
   private Long id;
   private String firstName;
   private String lastName;
-  private String studyProgrammeEducationType;
+  private String educationTypeCode;
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;

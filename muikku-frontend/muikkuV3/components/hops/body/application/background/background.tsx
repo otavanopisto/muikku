@@ -26,7 +26,7 @@ const Background = (props: BackgroundProps) => {
     return null;
   }
 
-  if (hops.studentInfo.studyProgrammeEducationType === "peruskoulu") {
+  if (hops.studentInfo.educationTypeCode === "peruskoulu") {
     return <CompulsoryStudiesHopsWizard formType="BACKGROUND" />;
   }
 

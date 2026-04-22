@@ -5,12 +5,15 @@ import {
 } from "../application-list";
 import TransferedCreditIndicator from "./transfered-credit-indicator";
 import { StudyActivityItem } from "~/generated/client";
+import { getMandatorityLabel } from "~/@shared/suitability";
+import { useTranslation } from "react-i18next";
 
 /**
  * RecordsActivityRowTransferedProps
  */
 interface RecordsActivityRowTransferedProps {
   studyActivityItem: StudyActivityItem;
+  educationType: string;
 }
 
 /**
@@ -20,7 +23,53 @@ interface RecordsActivityRowTransferedProps {
 const RecordsActivityRowTransfered = (
   props: RecordsActivityRowTransferedProps
 ) => {
-  const { studyActivityItem } = props;
+  const { studyActivityItem, educationType } = props;
+  const { t, i18n } = useTranslation([
+    "studies",
+    "evaluation",
+    "materials",
+    "workspace",
+    "common",
+  ]);
+
+  /**
+   * getSumOfCredits
+   * @returns sum of credits
+   */
+  const getCreditsString = (): string | null => {
+    if (!studyActivityItem) return null;
+
+    return `${studyActivityItem.length} ${studyActivityItem.lengthSymbol}`;
+  };
+
+  /**
+   * Renders mandatority description
+   * @returns mandatority description
+   */
+  const renderMandatorityDescription = () => {
+    if (!studyActivityItem.mandatority) return null;
+
+    let localString = getMandatorityLabel({
+      t,
+      exists: i18n.exists,
+      mandatority: studyActivityItem.mandatority,
+      educationType,
+      curriculums: studyActivityItem.curriculums,
+    });
+
+    const sumOfCredits = getCreditsString();
+
+    if (sumOfCredits) {
+      localString = `${localString}, ${sumOfCredits}`;
+    }
+
+    return (
+      <div className="label">
+        <div className="label__text">{localString}</div>
+      </div>
+    );
+  };
+
   return (
     <ApplicationListItem className="course course--credits">
       <ApplicationListItemHeader modifiers="course">
@@ -40,6 +89,8 @@ const RecordsActivityRowTransfered = (
                 <div className="label__text">{curriculum} </div>
               </div>
             ))}
+
+            {renderMandatorityDescription()}
           </div>
         </div>
         <div className="application-list__header-secondary">

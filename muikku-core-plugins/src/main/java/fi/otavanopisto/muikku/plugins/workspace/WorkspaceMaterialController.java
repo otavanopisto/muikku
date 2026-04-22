@@ -980,8 +980,20 @@ public class WorkspaceMaterialController {
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
           workspaceFolder.getPath(), null, Collections.emptyList(), folderViewRestrict, 
           false, workspaceFolder.getLanguage(), null, null, workspaceFolder.getExam());
-      List<WorkspaceNode> children = level == 0 ? Collections.emptyList() : includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
-          : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
+      List<WorkspaceNode> children = null;
+      if (workspaceFolder.getViewRestrict() != MaterialViewRestrict.NONE && !sessionController.isLoggedIn()) {
+        children = Collections.emptyList();
+      }
+      else if (workspaceFolder.getViewRestrict() == MaterialViewRestrict.WORKSPACE_MEMBERS && userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+        WorkspaceEntity workspaceEntity = findWorkspaceEntityByNode(workspaceFolder);
+        if (!workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity)) {
+          children = Collections.emptyList();
+        }
+      }
+      if (children == null) {
+        children = level == 0 ? Collections.emptyList() : includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+            : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
+      }
       List<FlattenedWorkspaceNode> flattenedChildren;
       if (level >= FLATTENING_LEVEL) {
         flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);

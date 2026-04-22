@@ -2,11 +2,16 @@ import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
   CourseMatrix,
   CourseMatrixModule,
+  CourseMatrixModuleMandatorityEnum,
   CourseMatrixSubject,
   StudyActivity,
   StudyActivityItem,
 } from "~/generated/client";
-import {} from "~/mock/mock-data";
+
+export const MANDATORITY_MANDATORY_VALUES: CourseMatrixModuleMandatorityEnum[] =
+  ["MANDATORY"];
+export const MANDATORITY_OPTIONAL_VALUES: CourseMatrixModuleMandatorityEnum[] =
+  ["SCHOOL_LEVEL_OPTIONAL", "NATIONAL_LEVEL_OPTIONAL", "UNSPECIFIED_OPTIONAL"];
 
 export const SKILL_AND_ART_SUBJECTS_CS: string[] = [
   "mu",
@@ -129,7 +134,7 @@ export const getCourseDropdownName = (
     subject.code + course.courseNumber + " - " + course.name;
 
   // Add asterisk to optional courses
-  if (!course.mandatory) {
+  if (MANDATORITY_OPTIONAL_VALUES.includes(course.mandatority)) {
     courseDropdownName += "*";
   }
 
@@ -413,6 +418,7 @@ export interface RecordsMatrixRow {
   subject: CourseMatrixSubject;
   course: CourseMatrixModule;
   studyActivityItems: StudyActivityItem[];
+  isCombinationWorkspace: boolean;
 }
 
 /**
@@ -432,7 +438,9 @@ export const buildRecordsRowsFromMatrix = (
   transferedActivities: StudyActivityItem[];
   nonOPSActivities: StudyActivityItem[];
 } => {
-  const items = studyActivity?.items ?? [];
+  const items = (studyActivity?.items ?? []).filter(
+    (item) => item.state !== "SUGGESTED_NEXT"
+  );
   const transferedList = items.filter((item) => item.state === "TRANSFERRED");
   const transferedActivities = getNonOPSTransferedActivities(
     matrix,
@@ -450,7 +458,12 @@ export const buildRecordsRowsFromMatrix = (
           item.subject === subject.code &&
           item.courseNumber === course.courseNumber
       );
-      rows.push({ subject, course, studyActivityItems });
+      rows.push({
+        subject,
+        course,
+        studyActivityItems,
+        isCombinationWorkspace: false,
+      });
     }
   }
 
@@ -458,19 +471,32 @@ export const buildRecordsRowsFromMatrix = (
 };
 
 /**
+ * StudyActivityItem with CourseMatrixModule
+ */
+export interface StudyActivityItemWithCourseModule extends StudyActivityItem {
+  courseModule?: CourseMatrixModule;
+}
+
+/**
  * Groups StudyActivityItems by courseId. Returns only groups that have 2+ items
  * (combination workspaces).
  * @param items items
+ * @param courseMatrixModulesBySubjectCode courseMatrixModulesBySubjectCode
  * @returns combination workspaces
  */
 export const getCombinationWorkspaces = (
-  items: StudyActivityItem[]
-): StudyActivityItem[][] => {
-  const byCourseId = new Map<number, StudyActivityItem[]>();
+  items: StudyActivityItem[],
+  courseMatrixModulesBySubjectCode?: Record<string, CourseMatrixModule>
+): StudyActivityItemWithCourseModule[][] => {
+  const byCourseId = new Map<number, StudyActivityItemWithCourseModule[]>();
   for (const item of items) {
     if (item.courseId == null) continue;
     const list = byCourseId.get(item.courseId) ?? [];
-    list.push(item);
+    list.push({
+      ...item,
+      courseModule:
+        courseMatrixModulesBySubjectCode?.[item.subject + item.courseNumber],
+    });
     byCourseId.set(item.courseId, list);
   }
   return Array.from(byCourseId.values()).filter((list) => list.length >= 2);
@@ -502,6 +528,10 @@ export const enrichMatrixRowsWithCombinationWorkspace = (
     if (courseId == null) return row;
     const fullList = byCourseId.get(courseId);
     if (!fullList || fullList.length < 2) return row;
-    return { ...row, studyActivityItems: fullList };
+    return {
+      ...row,
+      studyActivityItems: fullList,
+      isCombinationWorkspace: true,
+    };
   });
 };

@@ -204,6 +204,25 @@
   }
 }
 
+.link--select-education-type {
+  border: 1px solid lighten($color-info, 10%);
+  border-radius: 5px;
+  color: $color-default-contrast;
+  margin: 0 10px 0 0;
+  padding: 3px 12px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &.selected {
+    background-color: $color-info;
+    color: $color-text-link-selected;
+    cursor: not-allowed;
+    font-weight: 600;
+  }
+}
+
 .link--full {
   align-items: center;
   display: flex;
@@ -420,7 +439,6 @@
     color: $color-material-page-admin-panel-never-show-answers-color;
   }
 }
-
 
 // Links used in dropdowns of main functions
 .link--main-functions-settings-dropdown {

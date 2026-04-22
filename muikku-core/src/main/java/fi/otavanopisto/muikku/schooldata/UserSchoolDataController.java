@@ -71,12 +71,12 @@ public class UserSchoolDataController {
 
   /* HOPS */
   
-  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String dataSource, String identifier) {
-    return getUserBridge(dataSource).getCourseMatrix(identifier);
+  public BridgeResponse<CourseMatrixRestModel> getCourseMatrix(String dataSource, String identifier, String educationTypeCode) {
+    return getUserBridge(dataSource).getCourseMatrix(identifier, educationTypeCode);
   }
 
-  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier, Long courseId) {
-    return getUserBridge(dataSource).getStudyActivity(identifier, courseId);
+  public BridgeResponse<StudyActivityRestModel> getStudyActivity(String dataSource, String identifier, Long courseId, String educationTypeCode) {
+    return getUserBridge(dataSource).getStudyActivity(identifier, courseId, educationTypeCode);
   }
 
   /* Worklist */
@@ -379,6 +379,14 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
+  }
+  
+  public BridgeResponse<List<String>> listStudentEducationTypes(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listStudentEducationTypes(studentIdentifier);
   }
 
   public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,

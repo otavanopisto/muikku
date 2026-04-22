@@ -67,7 +67,7 @@ export interface ProfileStatusType {
   studyTimeEnd: Date;
   studyProgrammeName: string;
   studyProgrammeIdentifier: string;
-  studyLevel: string;
+  educationTypeCode: string;
   permissions: string[];
   curriculumName: string;
 }

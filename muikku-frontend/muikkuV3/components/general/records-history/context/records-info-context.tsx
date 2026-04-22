@@ -1,10 +1,12 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { CourseMatrix, StudyActivity } from "~/generated/client";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * RecordsInfo
  */
-interface RecordsInfo {
+export interface RecordsInfo {
   /**
    * Users data school identifier "PYRAMUS-STUDENT-XX" or "PYRAMUS-STAFF-XX"
    */
@@ -13,6 +15,18 @@ interface RecordsInfo {
    * Users entity id
    */
   userEntityId: number;
+  /**
+   * Study activity
+   */
+  studyActivity: StudyActivity;
+  /**
+   * Course matrix
+   */
+  courseMatrix: CourseMatrix;
+  /**
+   * Curriculum config
+   */
+  curriculumConfig: CurriculumConfig;
   /**
    * Display notification trigger
    */
