@@ -1579,6 +1579,60 @@ async function updateSmowlData(
     !_.isEqual(data.material.smowlActivity, data.update.smowlActivity)
   ) {
     promises.push(
+      updateSmowlComputerMonitoring({
+        material: data.material,
+        update: data.update,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: (computerMonitoring) => {
+          if (
+            !computerMonitoring.status &&
+            computerMonitoring.reason === "QUIZ_HAS_DATA"
+          ) {
+            dispatch(
+              displayNotification(
+                "Computer monitoring activation failed because the quiz has data.",
+                "info"
+              )
+            );
+
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                isDraft: false,
+                material: data.material,
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                update: {
+                  smowlActivity: {
+                    ...data.material.smowlActivity,
+                    ComputerMonitoring: computerMonitoring.status,
+                  },
+                },
+              },
+            });
+
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                isDraft: true,
+                material: data.material,
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                update: {
+                  smowlActivity: {
+                    ...data.material.smowlActivity,
+                    ComputerMonitoring: computerMonitoring.status,
+                  },
+                },
+              },
+            });
+          }
+        },
+      }),
       updateSmowlTestExamMode({
         material: data.material,
         update: data.update,
@@ -1724,6 +1778,61 @@ async function updateSmowlTestExamMode(data: {
   // If test exam mode is being disabled, we need to deactivate it
   else if (testModeHasChanged && !data.update.smowlActivity.TestExamMode) {
     await smowlApi.deactivateTestExamMode({
+      // eslint-disable-next-line camelcase
+      activityList_json: createActivityListJson(
+        [data.material.workspaceMaterialId.toString()],
+        "exam"
+      ),
+    });
+  }
+}
+
+/**
+ * Updates the computer monitoring for the material
+ * @param data data
+ * @param data.material material
+ * @param data.update update
+ * @param data.onSuccess onSuccess
+ */
+async function updateSmowlComputerMonitoring(data: {
+  material: MaterialContentNodeWithIdAndLogic;
+  update: Partial<MaterialContentNodeWithIdAndLogic>;
+  onSuccess?: (computerMonitoring: ActivityConfigResult) => void;
+}) {
+  // If there is not data for computer monitoring to update, we don't need to do anything
+  if (data.update.smowlActivity.ComputerMonitoring === undefined) {
+    return;
+  }
+
+  // If previous computer monitoring is different compared to the new one, we need to update the computer monitoring
+  const computerMonitoringHasChanged =
+    !data.material.smowlActivity.ComputerMonitoring ||
+    data.material.smowlActivity.ComputerMonitoring !==
+      data.update.smowlActivity.ComputerMonitoring;
+
+  // If computer monitoring is being enabled, we need to activate it
+  if (
+    computerMonitoringHasChanged &&
+    data.update.smowlActivity.ComputerMonitoring
+  ) {
+    const response = await smowlApi.activateComputerMonitoring({
+      // eslint-disable-next-line camelcase
+      activityList_json: createActivityListJson(
+        [data.material.workspaceMaterialId.toString()],
+        "exam"
+      ),
+    });
+
+    const computerMonitoring = response.ActivityConfigList_CM[0];
+    data.onSuccess?.(computerMonitoring);
+  }
+
+  // If computer monitoring is being disabled, we need to deactivate it
+  else if (
+    computerMonitoringHasChanged &&
+    !data.update.smowlActivity.ComputerMonitoring
+  ) {
+    await smowlApi.deactivateComputerMonitoring({
       // eslint-disable-next-line camelcase
       activityList_json: createActivityListJson(
         [data.material.workspaceMaterialId.toString()],
