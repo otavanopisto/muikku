@@ -28,20 +28,49 @@ import {
  */
 const getFrontCameraAlarmLabel = (alarmKey: FrontCameraAlarms): string => {
   const labelMap: Record<FrontCameraAlarms, string> = {
-    INCORRECT_USER: "Incorrect user",
-    MORE_THAN_ONE: "More than one person",
-    NOBODY: "Nobody in front of the camera",
-    WEBCAM_COVERED: "Webcam covered",
-    OTHER_TAB: "Other tab",
-    WRONG_LIGHT_POSING: "Wrong light/posing",
-    BANNED_ELEMENTS: "Banned elements",
-    SUSPICIOUS_BEHAVIOUR: "Suspicious behaviour",
-    MIN_IMAGES_REQUIRED: "Not even one correct image",
-    WEBCAM_REJECTED: "Webcam rejected",
-    CONFIGURATION_PROBLEM: "Configuration problem",
-    NO_WEBCAM: "No webcam",
-    WEBCAM_BLOCKED: "Webcam blocked",
-    UNSUPPORTED_BROWSER: "Unsupported browser",
+    INCORRECT_USER: "Väärä henkilö",
+    MORE_THAN_ONE: "Useita henkilöitä",
+    NOBODY: "Kuvassa ei näy ketään",
+    WEBCAM_COVERED: "Kamera peitetty",
+    OTHER_TAB: "Välilehden vaihto",
+    WRONG_LIGHT_POSING: "Huono valaistus tai asento",
+    BANNED_ELEMENTS: "Kielletyt esineet",
+    SUSPICIOUS_BEHAVIOUR: "Epäilyttävä toiminta",
+    MIN_IMAGES_REQUIRED: "Puuttuva kuvamateriaali",
+    WEBCAM_REJECTED: "Kameraoikeudet evätty",
+    CONFIGURATION_PROBLEM: "Virhe kameran asetuksissa",
+    NO_WEBCAM: "Kameraa ei löydy",
+    WEBCAM_BLOCKED: "Kamera varattu",
+    UNSUPPORTED_BROWSER: "Selain ei ole tuettu",
+  };
+  return labelMap[alarmKey] || alarmKey;
+};
+
+/**
+ * Get the description for a front camera alarm
+ * @param alarmKey - The key of the alarm
+ * @returns The description for the alarm
+ */
+const getFrontCameraAlarmDescription = (
+  alarmKey: FrontCameraAlarms
+): string => {
+  const labelMap: Record<FrontCameraAlarms, string> = {
+    INCORRECT_USER: "Kuvassa on joku muu kuin rekisteröitynyt käyttäjä.",
+    MORE_THAN_ONE: "Kuvassa näkyy useampi kuin yksi henkilö.",
+    NOBODY: "Kuvassa ei näy yhtään henkilöä.",
+    WEBCAM_COVERED: "Kamera on peitetty tai näkyvyys estetty.",
+    OTHER_TAB: "Käyttäjä poistuu koeikkunasta tai vaihtaa välilehteä.",
+    WRONG_LIGHT_POSING: "Valaistus tai asento estää luotettavan valvonnan.",
+    BANNED_ELEMENTS:
+      "Kuvassa näkyy kiellettyjä esineitä kuten kuulokkeet tai puhelin.",
+    SUSPICIOUS_BEHAVIOUR:
+      "Käyttäjä jatkaa aiemmin havaittua epäilyttävää toimintaa.",
+    MIN_IMAGES_REQUIRED: "Valvonnan vahvistamiseen tarvittavia kuvia puuttuu.",
+    WEBCAM_REJECTED: "Selain ei ole saanut lupaa käyttää kameraa.",
+    CONFIGURATION_PROBLEM: "Kameran asetuksissa havaitaan virhe.",
+    NO_WEBCAM: "Kokeen aikana ei ole kytkettyä kameraa.",
+    WEBCAM_BLOCKED: "Toinen sovellus käyttää kameraa ja estää valvonnan.",
+    UNSUPPORTED_BROWSER: "Selain ei tue SMOWL-valvontaa.",
   };
   return labelMap[alarmKey] || alarmKey;
 };
@@ -55,13 +84,39 @@ const getComputerMonitoringActionLabel = (
   alarmKey: ComputerMonitoringAllowedActions
 ): string => {
   const labelMap: Record<ComputerMonitoringAllowedActions, string> = {
-    WEB_NAVIGATION: "Web navigation",
-    VIRTUAL_MACHINE: "Virtual machine",
-    VIRTUAL_WEBCAM: "Virtual webcam",
-    MULTIPLE_SCREENS: "Multiple screens",
-    COMMANDS: "Commands",
-    BACKGROUND_PROGRAMS: "Background programs",
-    EARLY_CLOSE: "Early close",
+    WEB_NAVIGATION: "Nettisivujen selaus",
+    VIRTUAL_MACHINE: "Virtuaalikone",
+    VIRTUAL_WEBCAM: "Virtuaalikamera",
+    MULTIPLE_SCREENS: "Useat näytöt",
+    COMMANDS: "Komennot",
+    BACKGROUND_PROGRAMS: "Taustaohjelmat",
+    EARLY_CLOSE: "Ennenaikainen sulkeminen",
+  };
+  return labelMap[alarmKey] || alarmKey;
+};
+
+/**
+ * Get the description for a computer monitoring allowed action
+ * @param alarmKey - The key of the action
+ * @returns The description for the action
+ */
+const getComputerMonitoringActionDescription = (
+  alarmKey: ComputerMonitoringAllowedActions
+): string => {
+  const labelMap: Record<ComputerMonitoringAllowedActions, string> = {
+    WEB_NAVIGATION:
+      "Käyttäjä siirtyy kokeen aikana kokeen ulkopuolisille verkkosivuille. Käydyt sivustot tallennetaan raporttiin.",
+    VIRTUAL_MACHINE: "Kokeen suorittamiseen käytetään virtuaalikonetta.",
+    VIRTUAL_WEBCAM:
+      "Järjestelmä havaitsee virtuaalisen kameran käytön fyysisen webkameran sijasta.",
+    MULTIPLE_SCREENS:
+      "Järjestelmä havaitsee useamman kuin yhden näytön käytön.",
+    COMMANDS:
+      "Käyttäjä käyttää kiellettyjä komentoja, kuten kopiointia, liittämistä tai kuvakaappausta.",
+    BACKGROUND_PROGRAMS:
+      "Taustalla on käynnissä kiellettyjä ohjelmia kokeen aikana.",
+    EARLY_CLOSE:
+      "SMOWL-sovellus suljetaan ennen kokeen lopullista palauttamista.",
   };
   return labelMap[alarmKey] || alarmKey;
 };
@@ -75,22 +130,65 @@ const getComputerMonitoringProgramLabel = (
   alarmKey: ComputerMonitoringAllowedPrograms
 ): string => {
   const labelMap: Record<ComputerMonitoringAllowedPrograms, string> = {
-    TEXT_EDITOR: "Text editor",
-    PDF_READER: "PDF reader",
-    SPREADSHEET: "Spreadsheet",
-    MAIL: "Mail",
-    COMMUNICATION: "Communication",
-    VIRTUAL_WEBCAM: "Virtual webcam",
-    FILE_SYSTEM: "File system",
-    MEDIA_PLAYER: "Media player",
-    SLIDE_VIEWER: "Slide viewer",
-    SCREENSHOTER: "Screenshoter",
-    REMOTE_CONTROL: "Remote control",
-    PENTESTING: "Pentesting",
-    CODE_EDITOR: "Code editor",
-    VIRTUAL_MACHINES: "Virtual machines",
-    DATABASE: "Database",
-    OPEN_SOURCE_OFFICE_SUITE: "Open source office suite",
+    TEXT_EDITOR: "Tekstinkäsittely",
+    PDF_READER: "PDF-lukijat",
+    SPREADSHEET: "Taulukkolaskenta",
+    MAIL: "Sähköposti",
+    COMMUNICATION: "Viestintäohjelmat",
+    VIRTUAL_WEBCAM: "Virtuaalikamerat",
+    FILE_SYSTEM: "Tiedostonhallinta",
+    MEDIA_PLAYER: "Mediasoittimet",
+    SLIDE_VIEWER: "Esitysohjelmat",
+    SCREENSHOTER: "Näytöntallennus",
+    REMOTE_CONTROL: "Etähallinta",
+    PENTESTING: "Tietoturvatestaus",
+    CODE_EDITOR: "Koodieditorit",
+    VIRTUAL_MACHINES: "Virtuaalikoneet",
+    DATABASE: "Tietokanta sovellukset",
+    OPEN_SOURCE_OFFICE_SUITE: "Vapaat toimisto-ohjelmat",
+  };
+  return labelMap[alarmKey] || alarmKey;
+};
+
+/**
+ * Get the description for a computer monitoring allowed program
+ * @param alarmKey - The key of the program
+ * @returns The description for the program
+ */
+const getComputerMonitoringProgramDescription = (
+  alarmKey: ComputerMonitoringAllowedPrograms
+): string => {
+  const labelMap: Record<ComputerMonitoringAllowedPrograms, string> = {
+    TEXT_EDITOR:
+      "Merkitään poikkeamaksi, jos avoinna on tekstinkäsittelyohjelmia kuten Word.",
+    PDF_READER:
+      "Merkitään poikkeamaksi, jos avoinna on PDF-tiedostojen luku- tai muokkausohjelmia kuten Adobe Reader.",
+    SPREADSHEET:
+      "Merkitään poikkeamaksi, jos avoinna on taulukkolaskentaohjelmia kuten Excel.",
+    MAIL: "Merkitään poikkeamaksi, jos avoinna on sähköpostiohjelmia kuten Outlook.",
+    COMMUNICATION:
+      "Merkitään poikkeamaksi, jos avoinna on viestintä- tai kokoussovelluksia kuten Zoom tai Discord.",
+    VIRTUAL_WEBCAM:
+      "Merkitään poikkeamaksi, jos avoinna on virtuaalikameran käyttöön tarkoitettuja ohjelmia kuten OBS Studio.",
+    FILE_SYSTEM:
+      "Merkitään poikkeamaksi, jos käytetään laitteen tiedostonhallintatyökaluja kuten Resurssienhallinta.",
+    MEDIA_PLAYER:
+      "Merkitään poikkeamaksi, jos avoinna on musiikki- tai videopalveluita kuten Spotify tai iTunes.",
+    SLIDE_VIEWER: "Merkitään poikkeamaksi, jos avoinna on ...",
+    SCREENSHOTER:
+      "Merkitään poikkeamaksi, jos avoinna on näytön kaappaamiseen tai live-tallennukseen tarkoitettuja ohjelmia.",
+    REMOTE_CONTROL:
+      "Merkitään poikkeamaksi, jos avoinna on laitteen etähallintaan tarkoitettuja ohjelmia kuten Teamviewer tai Anydesk.",
+    PENTESTING:
+      "Merkitään poikkeamaksi, jos avoinna on tietoturva-analyysiin tarkoitettuja ohjelmia kuten Burp Suite.",
+    CODE_EDITOR:
+      "Merkitään poikkeamaksi, jos avoinna on ohjelmointiin tarkoitettuja koodieditoreita.",
+    VIRTUAL_MACHINES:
+      "Merkitään poikkeamaksi, jos avoinna on virtuaalikoneohjelmistoja kuten Virtualbox tai VMware.",
+    DATABASE:
+      "Merkitään poikkeamaksi, jos avoinna on tietokantojen hallintaan tai lukuun tarkoitettuja ohjelmia.",
+    OPEN_SOURCE_OFFICE_SUITE:
+      "Merkitään poikkeamaksi, jos avoinna on avoimen lähdekoodin toimisto-ohjelmistoja.",
   };
   return labelMap[alarmKey] || alarmKey;
 };
@@ -309,7 +407,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
     <div className="material-editor__smowl-item">
       <div className="material-editor__smowl-header">
         <div className="material-editor__smowl-header-title">
-          Activity: {smowlActivityDraft?.displayName}
+          Kokeen nimi: {smowlActivityDraft?.displayName}
         </div>
       </div>
       <div
@@ -325,7 +423,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
               htmlFor="computer-monitoring-enabled"
               className="material-editor__smowl-label"
             >
-              Webbi kamera vaadittuna
+              Kamera vaaditaan
             </label>
             <button
               type="button"
@@ -361,14 +459,12 @@ const SmowlActivity = (props: SmowlActivityProps) => {
             >
               {smowlFrontCameraAlarmDraft?.alarms ? (
                 <div className="material-editor__smowl-alarms-section">
-                  <Table>
+                  <Table className="material-editor__smowl-table">
                     <TableHead>
                       <Tr>
-                        <Th modifiers={["left"]}>
-                          Front camera alarms enabled
-                        </Th>
-                        <Th modifiers={["centered"]}>Yes</Th>
-                        <Th modifiers={["centered"]}>No</Th>
+                        <Th modifiers={["left"]}>Tarkkailtava toiminta</Th>
+                        <Th modifiers={["centered"]}>Tarkkaillaan</Th>
+                        <Th modifiers={["centered"]}>Ei tarkkailla</Th>
                       </Tr>
                     </TableHead>
                     <Tbody>
@@ -385,34 +481,44 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                         return (
                           <Tr key={alarmKey}>
                             <Td modifiers={["left"]}>
-                              {getFrontCameraAlarmLabel(alarmKey)}
+                              <div className="material-editor__smowl-option-title">
+                                {getFrontCameraAlarmLabel(alarmKey)}
+                              </div>
+                              <div className="material-editor__smowl-option-description">
+                                {getFrontCameraAlarmDescription(alarmKey)}
+                              </div>
                             </Td>
 
                             <Td modifiers={["centered"]}>
-                              <input
-                                type="radio"
-                                name={`alarm-${alarmKey}`}
-                                checked={allowed}
-                                disabled={disabled}
-                                onChange={() => {
-                                  if (!allowed)
-                                    toggleFrontCameraAlarm(alarmKey);
-                                }}
-                                aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} on`}
-                              />
+                              <span className="form-element form-element--smowl">
+                                <input
+                                  type="radio"
+                                  name={`alarm-${alarmKey}`}
+                                  checked={allowed}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    if (!allowed)
+                                      toggleFrontCameraAlarm(alarmKey);
+                                  }}
+                                  aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} on`}
+                                />
+                              </span>
                             </Td>
 
                             <Td modifiers={["centered"]}>
-                              <input
-                                type="radio"
-                                name={`alarm-${alarmKey}`}
-                                checked={!allowed}
-                                disabled={disabled}
-                                onChange={() => {
-                                  if (allowed) toggleFrontCameraAlarm(alarmKey);
-                                }}
-                                aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} off`}
-                              />
+                              <span className="form-element form-element--smowl">
+                                <input
+                                  type="radio"
+                                  name={`alarm-${alarmKey}`}
+                                  checked={!allowed}
+                                  disabled={disabled}
+                                  onChange={() => {
+                                    if (allowed)
+                                      toggleFrontCameraAlarm(alarmKey);
+                                  }}
+                                  aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} off`}
+                                />
+                              </span>
                             </Td>
                           </Tr>
                         );
@@ -434,7 +540,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
               htmlFor="computer-monitoring-enabled"
               className="material-editor__smowl-label"
             >
-              SMOWLCM sovellus vaadittuna
+              Valvontasovellus vaaditaan
             </label>
             <button
               type="button"
@@ -474,12 +580,12 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                 <>
                   {/* Allowed Actions Section */}
                   <div className="material-editor__smowl-alarms-section">
-                    <Table>
+                    <Table className="material-editor__smowl-table">
                       <TableHead>
                         <Tr>
-                          <Th modifiers={["left"]}>Allowed actions</Th>
-                          <Th modifiers={["centered"]}>Yes</Th>
-                          <Th modifiers={["centered"]}>No</Th>
+                          <Th modifiers={["left"]}>Tarkkailtava toiminta</Th>
+                          <Th modifiers={["centered"]}>Tarkkaillaan</Th>
+                          <Th modifiers={["centered"]}>Ei tarkkailla</Th>
                         </Tr>
                       </TableHead>
 
@@ -501,41 +607,52 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           return (
                             <Tr key={alarmKey}>
                               <Td modifiers={["left"]}>
-                                {getComputerMonitoringActionLabel(alarmKey)}
+                                <div className="material-editor__smowl-option-title">
+                                  {getComputerMonitoringActionLabel(alarmKey)}
+                                </div>
+                                <div className="material-editor__smowl-option-description">
+                                  {getComputerMonitoringActionDescription(
+                                    alarmKey
+                                  )}
+                                </div>
                               </Td>
 
                               <Td modifiers={["centered"]}>
-                                <input
-                                  type="radio"
-                                  name={`cm-action-${alarmKey}`}
-                                  checked={allowed}
-                                  disabled={disabled}
-                                  onChange={() => {
-                                    if (!allowed)
-                                      toggleComputerMonitoringAlarm(
-                                        "allowed_actions",
-                                        alarmKey
-                                      );
-                                  }}
-                                  aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} on`}
-                                />
+                                <span className="form-element form-element--smowl">
+                                  <input
+                                    type="radio"
+                                    name={`cm-action-${alarmKey}`}
+                                    checked={allowed}
+                                    disabled={disabled}
+                                    onChange={() => {
+                                      if (!allowed)
+                                        toggleComputerMonitoringAlarm(
+                                          "allowed_actions",
+                                          alarmKey
+                                        );
+                                    }}
+                                    aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} on`}
+                                  />
+                                </span>
                               </Td>
 
                               <Td modifiers={["centered"]}>
-                                <input
-                                  type="radio"
-                                  name={`cm-action-${alarmKey}`}
-                                  checked={!allowed}
-                                  disabled={disabled}
-                                  onChange={() => {
-                                    if (allowed)
-                                      toggleComputerMonitoringAlarm(
-                                        "allowed_actions",
-                                        alarmKey
-                                      );
-                                  }}
-                                  aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} off`}
-                                />
+                                <span className="form-element form-element--smowl">
+                                  <input
+                                    type="radio"
+                                    name={`cm-action-${alarmKey}`}
+                                    checked={!allowed}
+                                    disabled={disabled}
+                                    onChange={() => {
+                                      if (allowed)
+                                        toggleComputerMonitoringAlarm(
+                                          "allowed_actions",
+                                          alarmKey
+                                        );
+                                    }}
+                                    aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} off`}
+                                  />
+                                </span>
                               </Td>
                             </Tr>
                           );
@@ -546,12 +663,14 @@ const SmowlActivity = (props: SmowlActivityProps) => {
 
                   {/* Allowed Programs Section */}
                   <div className="material-editor__smowl-alarms-section">
-                    <Table>
+                    <Table className="material-editor__smowl-table">
                       <TableHead>
                         <Tr>
-                          <Th modifiers={["left"]}>Allowed programs</Th>
-                          <Th modifiers={["centered"]}>On</Th>
-                          <Th modifiers={["centered"]}>Off</Th>
+                          <Th modifiers={["left"]}>
+                            Tarkkailtavat sovellukset
+                          </Th>
+                          <Th modifiers={["centered"]}>Tarkkaillaan</Th>
+                          <Th modifiers={["centered"]}>Ei tarkkailla</Th>
                         </Tr>
                       </TableHead>
 
@@ -573,41 +692,52 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           return (
                             <Tr key={alarmKey}>
                               <Td modifiers={["left"]}>
-                                {getComputerMonitoringProgramLabel(alarmKey)}
+                                <div className="material-editor__smowl-option-title">
+                                  {getComputerMonitoringProgramLabel(alarmKey)}
+                                </div>
+                                <div className="material-editor__smowl-option-description">
+                                  {getComputerMonitoringProgramDescription(
+                                    alarmKey
+                                  )}
+                                </div>
                               </Td>
 
                               <Td modifiers={["centered"]}>
-                                <input
-                                  type="radio"
-                                  name={`cm-program-${alarmKey}`}
-                                  checked={allowed}
-                                  disabled={disabled}
-                                  onChange={() => {
-                                    if (!allowed)
-                                      toggleComputerMonitoringAlarm(
-                                        "allowed_programs",
-                                        alarmKey
-                                      );
-                                  }}
-                                  aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} on`}
-                                />
+                                <span className="form-element form-element--smowl">
+                                  <input
+                                    type="radio"
+                                    name={`cm-program-${alarmKey}`}
+                                    checked={allowed}
+                                    disabled={disabled}
+                                    onChange={() => {
+                                      if (!allowed)
+                                        toggleComputerMonitoringAlarm(
+                                          "allowed_programs",
+                                          alarmKey
+                                        );
+                                    }}
+                                    aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} on`}
+                                  />
+                                </span>
                               </Td>
 
                               <Td modifiers={["centered"]}>
-                                <input
-                                  type="radio"
-                                  name={`cm-program-${alarmKey}`}
-                                  checked={!allowed}
-                                  disabled={disabled}
-                                  onChange={() => {
-                                    if (allowed)
-                                      toggleComputerMonitoringAlarm(
-                                        "allowed_programs",
-                                        alarmKey
-                                      );
-                                  }}
-                                  aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} off`}
-                                />
+                                <span className="form-element form-element--smowl">
+                                  <input
+                                    type="radio"
+                                    name={`cm-program-${alarmKey}`}
+                                    checked={!allowed}
+                                    disabled={disabled}
+                                    onChange={() => {
+                                      if (allowed)
+                                        toggleComputerMonitoringAlarm(
+                                          "allowed_programs",
+                                          alarmKey
+                                        );
+                                    }}
+                                    aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} off`}
+                                  />
+                                </span>
                               </Td>
                             </Tr>
                           );

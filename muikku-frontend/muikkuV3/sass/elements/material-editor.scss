@@ -401,6 +401,40 @@
   padding: 10px 0;
 }
 
+.material-editor__smowl-option-title {
+  color: $color-default-contrast;
+  padding: 2px 0;
+}
+
+.material-editor__smowl-option-description {
+  color: darken($color-default-helper, 20%);
+  padding: 2px 0;
+}
+
+.material-editor__smowl-table {
+  border-collapse: collapse;
+  width: 100%;
+
+  th,
+  td {
+    min-width: 100px;
+    width: 20%;
+
+    &:first-child {
+      width: auto;
+    }
+  }
+
+  .table__head {
+    padding: 5px;
+  }
+
+  .table__row {
+    background: $color-default;
+    border-bottom: 1px solid $color-default-separator-border;
+  }
+}
+
 // Section label, used in the allowed actions and allowed programs sections.
 .material-editor__smowl-alarms-label {
   font-weight: 600;

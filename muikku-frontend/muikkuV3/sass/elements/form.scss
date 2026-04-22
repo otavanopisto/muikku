@@ -243,6 +243,16 @@ legend {
   }
 }
 
+.form-element--smowl {
+  display: flex;
+  justify-content: center;
+
+  input[type="radio"] {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+}
+
 .form-element--chat {
   input[type="checkbox"] {
     border: solid 2px $color-chat-primary;
