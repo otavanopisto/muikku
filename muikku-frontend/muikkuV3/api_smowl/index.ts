@@ -25,6 +25,10 @@ import {
   ComputerMonitoringAllowedActions,
   ComputerMonitoringAllowedPrograms,
   FrontCameraAlarms,
+  IpResultsStatusRequest,
+  IpResultsStatusResponse,
+  ResultsStatusResponse,
+  ResultsStatusRequest,
 } from "./types";
 import {
   isSmowlApiError,
@@ -71,6 +75,10 @@ export {
   type MonitoringAlarmsActivityResult,
   type SmowlErrorResponse,
   type SmowlApiError,
+  type IpResultsStatusRequest,
+  type IpResultsStatusResponse,
+  type ResultsStatusRequest,
+  type ResultsStatusResponse,
 
   // Helper functions
   isSmowlApiError,
