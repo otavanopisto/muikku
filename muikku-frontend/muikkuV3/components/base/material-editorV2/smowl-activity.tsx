@@ -585,7 +585,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           );
                           const disabled =
                             !smowlActivityDraft?.enabled ||
-                            !smowlActivityDraft?.ComputerMonitoring;
+                            !smowlActivityDraft?.ComputerMonitoring ||
+                            loadingExamResults ||
+                            hasProctoredData;
 
                           return (
                             <Tr key={alarmKey}>
