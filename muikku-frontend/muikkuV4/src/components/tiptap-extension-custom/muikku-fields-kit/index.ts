@@ -8,3 +8,4 @@ export * from "./muikku-sorterfield";
 export * from "./muikku-journalfield";
 export * from "./muikku-audiofield";
 export * from "./muikku-selectfield";
+export * from "./muikku-filefield";
