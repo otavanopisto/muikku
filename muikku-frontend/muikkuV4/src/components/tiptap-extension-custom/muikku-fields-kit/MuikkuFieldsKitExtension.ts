@@ -7,6 +7,7 @@ import { MuikkuOrganizerFieldExtension } from "./muikku-organizerfield/MuikkuOrg
 import { MuikkuSorterFieldExtension } from "./muikku-sorterfield";
 import { MuikkuJournalFieldExtension } from "./muikku-journalfield";
 import { MuikkuAudioFieldExtension } from "./muikku-audiofield";
+import { MuikkuSelectionFieldExtension } from "./muikku-selectfield";
 
 type MuikkuFieldsKitOptions = {
   fields?: {
@@ -17,6 +18,7 @@ type MuikkuFieldsKitOptions = {
     sorter?: boolean;
     journal?: boolean;
     audio?: boolean;
+    select?: boolean;
   };
 };
 
@@ -38,6 +40,7 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
         sorter: true,
         journal: true,
         audio: true,
+        select: true,
       },
     };
   },
@@ -53,6 +56,7 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
     if (f.sorter) extensions.push(MuikkuSorterFieldExtension);
     if (f.journal) extensions.push(MuikkuJournalFieldExtension);
     if (f.audio) extensions.push(MuikkuAudioFieldExtension);
+    if (f.select) extensions.push(MuikkuSelectionFieldExtension);
 
     return extensions;
   },
