@@ -121,6 +121,7 @@ import {
   MuikkuOrganizerFieldButton,
   MuikkuSorterFieldButton,
   MuikkuJournalFieldButton,
+  MuikkuAudioFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 
 const MainToolbarContent = ({
@@ -239,6 +240,7 @@ const MainToolbarContent = ({
       <MuikkuOrganizerFieldButton />
       <MuikkuSorterFieldButton />
       <MuikkuJournalFieldButton />
+      <MuikkuAudioFieldButton />
     </ToolbarGroup>
 
     <Spacer />
@@ -370,6 +372,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
           organizer: true,
           sorter: true,
           journal: true,
+          audio: true,
         },
       }),
     ],

@@ -6,3 +6,4 @@ export * from "./muikku-connectfield";
 export * from "./muikku-organizerfield";
 export * from "./muikku-sorterfield";
 export * from "./muikku-journalfield";
+export * from "./muikku-audiofield";

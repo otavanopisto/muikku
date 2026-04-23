@@ -6,6 +6,7 @@ import { MuikkuConnectFieldExtension } from "./muikku-connectfield";
 import { MuikkuOrganizerFieldExtension } from "./muikku-organizerfield/MuikkuOrganizerFieldExtension";
 import { MuikkuSorterFieldExtension } from "./muikku-sorterfield";
 import { MuikkuJournalFieldExtension } from "./muikku-journalfield";
+import { MuikkuAudioFieldExtension } from "./muikku-audiofield";
 
 type MuikkuFieldsKitOptions = {
   fields?: {
@@ -51,6 +52,7 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
     if (f.organizer) extensions.push(MuikkuOrganizerFieldExtension);
     if (f.sorter) extensions.push(MuikkuSorterFieldExtension);
     if (f.journal) extensions.push(MuikkuJournalFieldExtension);
+    if (f.audio) extensions.push(MuikkuAudioFieldExtension);
 
     return extensions;
   },
