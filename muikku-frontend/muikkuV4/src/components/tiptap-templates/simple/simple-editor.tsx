@@ -120,6 +120,7 @@ import {
   MuikkuConnectFieldButton,
   MuikkuOrganizerFieldButton,
   MuikkuSorterFieldButton,
+  MuikkuJournalFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 
 const MainToolbarContent = ({
@@ -237,6 +238,7 @@ const MainToolbarContent = ({
       <MuikkuConnectFieldButton />
       <MuikkuOrganizerFieldButton />
       <MuikkuSorterFieldButton />
+      <MuikkuJournalFieldButton />
     </ToolbarGroup>
 
     <Spacer />
@@ -367,6 +369,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
           connect: true,
           organizer: true,
           sorter: true,
+          journal: true,
         },
       }),
     ],
