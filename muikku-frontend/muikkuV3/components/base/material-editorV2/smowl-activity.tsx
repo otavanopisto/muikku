@@ -327,7 +327,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
 
     const currentValue = smowlFrontCameraAlarmDraft.alarms[alarmKey];
 
-    const isAllowed =
+    const isMonitored =
       currentValue !== 0 &&
       currentValue !== "0" &&
       currentValue !== null &&
@@ -337,7 +337,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
       ...smowlFrontCameraAlarmDraft,
       alarms: {
         ...smowlFrontCameraAlarmDraft.alarms,
-        [alarmKey]: isAllowed ? "0" : "1",
+        [alarmKey]: isMonitored ? "0" : "1",
       },
     });
   };
@@ -372,30 +372,44 @@ const SmowlActivity = (props: SmowlActivityProps) => {
   };
 
   /**
-   * Checks if a computer monitoring alarm is currently allowed
-   * @param subKey - The key of the sub-category ('allowed_actions' or 'allowed_programs')
-   * @param alarmKey - The key of the alarm to check within the sub-category
-   * @returns true if the alarm is allowed, false otherwise
+   * Checks if a computer monitoring action is currently monitored
+   * @param alarmKey - The key of the action to check
+   * @returns false if the action is monitored, true otherwise
    */
-  const isComputerMonitoringAlarmAllowed = (
-    subKey: keyof ComputerMonitoringAlarmsConfig,
-    alarmKey:
-      | ComputerMonitoringAllowedActions
-      | ComputerMonitoringAllowedPrograms
+  const isComputerMonitoringActionMonitored = (
+    alarmKey: ComputerMonitoringAllowedActions
   ): boolean => {
-    if (!smowlComputerMonitoringAlarmDraft.alarms) return false;
+    if (!smowlComputerMonitoringAlarmDraft.alarms) return true;
 
-    const subCategory = smowlComputerMonitoringAlarmDraft.alarms[subKey];
+    const subCategory =
+      smowlComputerMonitoringAlarmDraft.alarms.allowed_actions;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (subCategory as any)[alarmKey] === true;
+    return subCategory[alarmKey] === false;
   };
 
   /**
-   * Checks if a front camera alarm is currently allowed (checks pending state if available)
-   * @param alarmKey - The key of the alarm to check
-   * @returns true if the alarm is allowed, false otherwise
+   * Checks if a computer monitoring program is currently monitored
+   * @param alarmKey - The key of the alarm to check within the sub-category
+   * @returns false if the program is monitored, true otherwise
    */
-  const isFrontCameraAlarmAllowed = (alarmKey: FrontCameraAlarms): boolean => {
+  const isComputerMonitoringProgramMonitored = (
+    alarmKey: ComputerMonitoringAllowedPrograms
+  ): boolean => {
+    if (!smowlComputerMonitoringAlarmDraft.alarms) return true;
+
+    const subCategory =
+      smowlComputerMonitoringAlarmDraft.alarms.allowed_programs;
+    return subCategory[alarmKey] === false;
+  };
+
+  /**
+   * Checks if a front camera alarm is currently monitored (checks pending state if available)
+   * @param alarmKey - The key of the alarm to check
+   * @returns true if the alarm is monitored, false otherwise
+   */
+  const isFrontCameraAlarmMonitored = (
+    alarmKey: FrontCameraAlarms
+  ): boolean => {
     const alarmsToCheck = smowlFrontCameraAlarmDraft.alarms;
     if (!alarmsToCheck) return false;
 
@@ -489,7 +503,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           keyof typeof smowlFrontCameraAlarmDraft.alarms
                         >
                       ).map((alarmKey) => {
-                        const allowed = isFrontCameraAlarmAllowed(alarmKey);
+                        const monitored = isFrontCameraAlarmMonitored(alarmKey);
                         const disabled =
                           !smowlActivityDraft?.enabled ||
                           !smowlActivityDraft?.FrontCamera ||
@@ -512,10 +526,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                 <input
                                   type="radio"
                                   name={`alarm-${alarmKey}`}
-                                  checked={allowed}
+                                  checked={monitored}
                                   disabled={disabled}
                                   onChange={() => {
-                                    if (!allowed)
+                                    if (!monitored)
                                       toggleFrontCameraAlarm(alarmKey);
                                   }}
                                   aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} on`}
@@ -528,10 +542,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                 <input
                                   type="radio"
                                   name={`alarm-${alarmKey}`}
-                                  checked={!allowed}
+                                  checked={!monitored}
                                   disabled={disabled}
                                   onChange={() => {
-                                    if (allowed)
+                                    if (monitored)
                                       toggleFrontCameraAlarm(alarmKey);
                                   }}
                                   aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} off`}
@@ -618,10 +632,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                               .allowed_actions
                           ) as Array<ComputerMonitoringAllowedActions>
                         ).map((alarmKey) => {
-                          const allowed = isComputerMonitoringAlarmAllowed(
-                            "allowed_actions",
-                            alarmKey
-                          );
+                          const monitored =
+                            isComputerMonitoringActionMonitored(alarmKey);
+
                           const disabled =
                             !smowlActivityDraft?.enabled ||
                             !smowlActivityDraft?.ComputerMonitoring ||
@@ -646,10 +659,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                   <input
                                     type="radio"
                                     name={`cm-action-${alarmKey}`}
-                                    checked={allowed}
+                                    checked={monitored}
                                     disabled={disabled}
                                     onChange={() => {
-                                      if (!allowed)
+                                      if (!monitored)
                                         toggleComputerMonitoringAlarm(
                                           "allowed_actions",
                                           alarmKey
@@ -665,10 +678,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                   <input
                                     type="radio"
                                     name={`cm-action-${alarmKey}`}
-                                    checked={!allowed}
+                                    checked={!monitored}
                                     disabled={disabled}
                                     onChange={() => {
-                                      if (allowed)
+                                      if (monitored)
                                         toggleComputerMonitoringAlarm(
                                           "allowed_actions",
                                           alarmKey
@@ -705,10 +718,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                               .allowed_programs
                           ) as Array<ComputerMonitoringAllowedPrograms>
                         ).map((alarmKey) => {
-                          const allowed = isComputerMonitoringAlarmAllowed(
-                            "allowed_programs",
-                            alarmKey
-                          );
+                          const monitored =
+                            isComputerMonitoringProgramMonitored(alarmKey);
+
                           const disabled =
                             !smowlActivityDraft?.enabled ||
                             !smowlActivityDraft?.ComputerMonitoring ||
@@ -733,10 +745,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                   <input
                                     type="radio"
                                     name={`cm-program-${alarmKey}`}
-                                    checked={allowed}
+                                    checked={monitored}
                                     disabled={disabled}
                                     onChange={() => {
-                                      if (!allowed)
+                                      if (!monitored)
                                         toggleComputerMonitoringAlarm(
                                           "allowed_programs",
                                           alarmKey
@@ -752,10 +764,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                   <input
                                     type="radio"
                                     name={`cm-program-${alarmKey}`}
-                                    checked={!allowed}
+                                    checked={!monitored}
                                     disabled={disabled}
                                     onChange={() => {
-                                      if (allowed)
+                                      if (monitored)
                                         toggleComputerMonitoringAlarm(
                                           "allowed_programs",
                                           alarmKey
