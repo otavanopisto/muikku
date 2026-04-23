@@ -113,6 +113,10 @@ import {
   IframeButton,
   IframeExtension,
 } from "@/components/tiptap-extension-custom/iframe";
+import {
+  MuikkuFieldsKit,
+  MuikkuTextFieldButton,
+} from "@/components/tiptap-extension-custom/muikku-fields-kit";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -219,6 +223,12 @@ const MainToolbarContent = ({
       {/* <StyleSetSelect /> */}
       {/* <DivFrameToolbarButton /> */}
       <DivBoxSelect />
+    </ToolbarGroup>
+
+    <ToolbarSeparator />
+
+    <ToolbarGroup>
+      <MuikkuTextFieldButton />
     </ToolbarGroup>
 
     <Spacer />
@@ -341,6 +351,11 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
       IframeExtension,
       IndentExtension.configure({
         stepPx: 40,
+      }),
+      MuikkuFieldsKit.configure({
+        fields: {
+          text: true,
+        },
       }),
     ],
     textDirection: "auto",
