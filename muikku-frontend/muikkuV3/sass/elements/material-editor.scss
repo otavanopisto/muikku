@@ -177,9 +177,11 @@
   flex-flow: row nowrap;
   font-size: 1rem;
   font-weight: 600;
+  gap: 10px;
   justify-content: space-between;
   margin: 0 0 10px;
   padding: 0 0 5px;
+  width: 100%;
 }
 
 .material-editor__smowl-warning {
@@ -228,13 +230,6 @@
   flex-flow: row nowrap;
   font-size: 1rem;
   justify-content: space-between;
-}
-
-.material-editor__attendee-header,
-.material-editor__category-header,
-.material-editor__smowl-header {
-  gap: 10px;
-  width: 100%;
 }
 
 .material-editor__attendee-header-title,
