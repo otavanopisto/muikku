@@ -971,7 +971,7 @@ export const ExamSmowlIntegrationTab = (
         examEnabled={props.examEnabled}
       />
       <div className="material-editor__sub-section">
-        <h2 className="material-editor__sub-title">
+        <h3 className="material-editor__sub-title">
           Smowl asetukset
           <Instructions
             modifier="instructions"
@@ -982,7 +982,7 @@ export const ExamSmowlIntegrationTab = (
             persistent
             content="Jotain jotain"
           />
-        </h2>
+        </h3>
         <div className="material-editor__smowl">
           <SmowlActivity />
         </div>
