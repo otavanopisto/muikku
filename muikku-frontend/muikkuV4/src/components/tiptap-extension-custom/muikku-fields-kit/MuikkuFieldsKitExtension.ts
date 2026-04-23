@@ -2,6 +2,7 @@ import { Extension } from "@tiptap/core";
 import { createMuikkuPasteNameUniqPlugin } from "./helpers";
 import { MuikkuTextFieldExtension } from "./muikku-textfield";
 import { MuikkuMemoFieldExtension } from "./muikku-memofield";
+import { MuikkuConnectFieldExtension } from "./muikku-connectfield";
 
 type MuikkuFieldsKitOptions = {
   fields?: {
@@ -43,6 +44,7 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
     const extensions = [];
     if (f.text) extensions.push(MuikkuTextFieldExtension);
     if (f.memo) extensions.push(MuikkuMemoFieldExtension);
+    if (f.connect) extensions.push(MuikkuConnectFieldExtension);
 
     return extensions;
   },

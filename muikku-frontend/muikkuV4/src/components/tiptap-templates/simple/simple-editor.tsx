@@ -117,6 +117,7 @@ import {
   MuikkuFieldsKit,
   MuikkuTextFieldButton,
   MuikkuMemoFieldButton,
+  MuikkuConnectFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 
 const MainToolbarContent = ({
@@ -231,6 +232,7 @@ const MainToolbarContent = ({
     <ToolbarGroup>
       <MuikkuTextFieldButton />
       <MuikkuMemoFieldButton />
+      <MuikkuConnectFieldButton />
     </ToolbarGroup>
 
     <Spacer />
@@ -358,6 +360,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
         fields: {
           text: true,
           memo: true,
+          connect: true,
         },
       }),
     ],
