@@ -118,6 +118,7 @@ import {
   MuikkuTextFieldButton,
   MuikkuMemoFieldButton,
   MuikkuConnectFieldButton,
+  MuikkuOrganizerFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 
 const MainToolbarContent = ({
@@ -233,6 +234,7 @@ const MainToolbarContent = ({
       <MuikkuTextFieldButton />
       <MuikkuMemoFieldButton />
       <MuikkuConnectFieldButton />
+      <MuikkuOrganizerFieldButton />
     </ToolbarGroup>
 
     <Spacer />
