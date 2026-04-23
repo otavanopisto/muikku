@@ -9,6 +9,7 @@ import {
   WorkspaceStudent,
   User,
   GetWorkspaceStudentsRequest,
+  Student,
 } from "~/generated/client";
 import MApi from "~/api/api";
 
@@ -144,6 +145,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     return search.results.map(
       (student: WorkspaceStudent): User => ({
         id: student.userEntityId,
+        identifier: student.userIdentifier,
         firstName: student.firstName,
         lastName: student.lastName,
       })

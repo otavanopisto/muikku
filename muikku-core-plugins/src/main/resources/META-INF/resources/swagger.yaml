@@ -3667,7 +3667,7 @@ paths:
   #MUIKKUEVENTS
   /rest/muikkuEvent/event:
     post:
-      operationId: createEvent 
+      operationId: createEvent
       summary: Create event
       description: Create event
       tags:
@@ -3699,7 +3699,7 @@ paths:
 
   /rest/muikkuEvent/event/{eventId}:
     put:
-      operationId: updateEvent 
+      operationId: updateEvent
       description: Update event
       tags:
         - Events
@@ -3808,10 +3808,10 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/muikkuEvent/event/{eventId}/properties:
     post:
-      operationId: createEventProperty 
+      operationId: createEventProperty
       summary: Create event property
       description: Create event property
       tags:
@@ -3840,7 +3840,7 @@ paths:
 
   /rest/muikkuEvent/event/{eventId}/properties/{propertyId}:
     put:
-      operationId: updateEventProperty 
+      operationId: updateEventProperty
       summary: Update event property
       description: Update event property
       tags:
@@ -13185,8 +13185,8 @@ components:
           schema:
             type: object
             required:
-              - start 
-              - end 
+              - start
+              - end
               - title
               - type
               - eventContainerId
@@ -18742,6 +18742,8 @@ components:
         id:
           type: integer
           format: int64
+        identifier:
+          type: string
         firstName:
           type: string
         lastName:
@@ -18793,7 +18795,7 @@ components:
         - editable
         - removable
       properties:
-        id: 
+        id:
           description: Event id
           type: integer
           format: int64
@@ -18843,8 +18845,8 @@ components:
           type: boolean
         removable:
           description: Can the targeted user delete the event
-          type: boolean 
-    
+          type: boolean
+
     MuikkuEventContainer:
       type: object
       description: MuikkuEventContainer object
@@ -18852,7 +18854,7 @@ components:
         - id
         - name
       properties:
-        id: 
+        id:
           description: Event id
           type: integer
           format: int64
@@ -18867,7 +18869,7 @@ components:
           description: If workspace is the owner of the container
           type: integer
           format: int64
-    
+
     MuikkuEventProperty:
       type: object
       description: MuikkuEventProperty object
