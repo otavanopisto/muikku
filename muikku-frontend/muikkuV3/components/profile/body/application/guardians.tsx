@@ -58,7 +58,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
                     })}
               </div>
               <div>
-                <GuardianVisibilityDialog guardianId={guardian.identifier}>
+                <GuardianVisibilityDialog guardian={guardian}>
                   <Button buttonModifiers={["execute"]}>
                     Muokkaa näkyvyyksiä
                   </Button>

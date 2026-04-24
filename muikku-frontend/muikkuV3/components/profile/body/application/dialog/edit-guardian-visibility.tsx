@@ -2,11 +2,12 @@ import * as React from "react";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
+import { Guardian } from "~/generated/client/models/Guardian";
 /**
  * GuardianVisibilityDialog component props.
  */
 interface GuardianVisibilityDialogProps {
-  guardianId: string;
+  guardian: Guardian;
   children: React.ReactElement;
 }
 
@@ -21,8 +22,10 @@ const GuardianVisibilityDialog: React.FC<GuardianVisibilityDialogProps> = (
   props
 ) => {
   const { t } = useTranslation();
-  const { children, guardianId } = props;
-  const [canView, setCanView] = React.useState(false);
+  const { children, guardian } = props;
+  const [canView, setCanView] = React.useState(
+    guardian.continuedViewPermission
+  );
   const title = t("guardianVisibilityDialog.title", { ns: "users" });
 
   /**
@@ -44,13 +47,15 @@ const GuardianVisibilityDialog: React.FC<GuardianVisibilityDialogProps> = (
           Huoltajatunnusten jatkoaika
         </legend>
         <p className="form-element__description">
-          Saako huoltajasi/vanhempasi luvan nähdä tietojasi Muikussa myös
-          jatkossa?
+          Saako huoltajasi/vanhempasi{" "}
+          <b>
+            {guardian.firstName} {guardian.lastName}
+          </b>{" "}
+          luvan nähdä tietojasi Muikussa myös jatkossa?
         </p>
         <div className="form-element form-element--checkbox-radiobutton">
           <input
-            //  checked={this.state.vacationAutoReply === "ENABLED" ? true : false}
-            //  value={this.state.vacationAutoReply}
+            checked={canView}
             id="canSeeDependentInformation"
             type="radio"
             name="viewRights"
@@ -60,7 +65,7 @@ const GuardianVisibilityDialog: React.FC<GuardianVisibilityDialogProps> = (
         </div>
         <div className="form-element form-element--checkbox-radiobutton">
           <input
-            //  checked={this.state.vacationAutoReply === "ENABLED" ? true : false}
+            checked={!canView}
             //  value={this.state.vacationAutoReply}
             id="canSeeDependentInformation"
             type="radio"
