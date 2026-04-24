@@ -124,6 +124,7 @@ import {
   MuikkuAudioFieldButton,
   MuikkuSelectFieldButton,
   MuikkuFileFieldButton,
+  MuikkuMathFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 
 const MainToolbarContent = ({
@@ -245,6 +246,7 @@ const MainToolbarContent = ({
       <MuikkuAudioFieldButton />
       <MuikkuSelectFieldButton />
       <MuikkuFileFieldButton />
+      <MuikkuMathFieldButton />
     </ToolbarGroup>
 
     <Spacer />
@@ -379,6 +381,7 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
           audio: true,
           select: true,
           file: true,
+          mathexercise: true,
         },
       }),
     ],

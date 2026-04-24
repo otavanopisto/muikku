@@ -9,6 +9,7 @@ import { MuikkuJournalFieldExtension } from "./muikku-journalfield";
 import { MuikkuAudioFieldExtension } from "./muikku-audiofield";
 import { MuikkuSelectionFieldExtension } from "./muikku-selectfield";
 import { MuikkuFileFieldExtension } from "./muikku-filefield";
+import { MuikkuMathFieldExtension } from "./muikku-mathfield";
 
 type MuikkuFieldsKitOptions = {
   fields?: {
@@ -21,6 +22,7 @@ type MuikkuFieldsKitOptions = {
     audio?: boolean;
     select?: boolean;
     file?: boolean;
+    mathexercise?: boolean;
   };
 };
 
@@ -44,6 +46,7 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
         audio: true,
         select: true,
         file: true,
+        mathexercise: true,
       },
     };
   },
@@ -61,6 +64,7 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
     if (f.audio) extensions.push(MuikkuAudioFieldExtension);
     if (f.select) extensions.push(MuikkuSelectionFieldExtension);
     if (f.file) extensions.push(MuikkuFileFieldExtension);
+    if (f.mathexercise) extensions.push(MuikkuMathFieldExtension);
 
     return extensions;
   },
