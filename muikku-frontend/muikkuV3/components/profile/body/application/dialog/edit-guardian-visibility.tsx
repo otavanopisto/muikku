@@ -3,97 +3,118 @@ import EnvironmentDialog from "~/components/general/environment-dialog";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 import { Guardian } from "~/generated/client/models/Guardian";
+import { useDispatch } from "react-redux";
+import { updateContactGroupGuardian } from "~/actions/base/contacts";
 /**
- * GuardianVisibilityDialog component props.
+ * GuardianPermissionsDialog component props.
  */
-interface GuardianVisibilityDialogProps {
+interface GuardianPermissionsDialogProps {
   guardian: Guardian;
+  userIdentifier: string;
   children: React.ReactElement;
 }
 
 /**
- * GuardianVisibilityDialog component
- * This component renders a dialog for editing the visibility of a guardian's information.
+ * GuardianPermissionsDialog component
+ * This component renders a dialog for editing the view permissions of a guardian.
  *
  * @param props - The component props
  * @returns A React element representing the dialog
  */
-const GuardianVisibilityDialog: React.FC<GuardianVisibilityDialogProps> = (
+const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
   props
 ) => {
   const { t } = useTranslation();
-  const { children, guardian } = props;
+  const dispatch = useDispatch();
+  const { children, guardian, userIdentifier } = props;
   const [canView, setCanView] = React.useState(
     guardian.continuedViewPermission
   );
-  const title = t("guardianVisibilityDialog.title", { ns: "users" });
+  const title = (
+    <div>{t("labels.editGuardianPermissions", { ns: "users" })}</div>
+  );
+
+  /**
+   * saves the view permission changes for the guardian and closes the dialog
+   * @param closeDialog - A function to close the dialog after saving
+   */
+  const handleSave = (closeDialog: () => void) => {
+    // Dispatch an action to update the guardian's view permissions
+    dispatch(
+      updateContactGroupGuardian(userIdentifier, guardian.identifier, canView)
+    );
+    closeDialog();
+  };
 
   /**
    * Renders dialog body content.
-   * @param closeDialog closes the dialog
+   * @param closeDialog - A function to close the dialog
    * @returns Dialog body nodes
    */
   const content = (closeDialog: () => void) => (
     <form key="content">
       <p className="form-element__description ">
-        Kun olet täyttänyt 18 vuotta, opinnoistasi ei voi enää keskustella
-        esimerkiksi vanhempiesi kanssa ilman lupaasi. Jos huoltajasi/vanhempasi
-        pääsivät ennen kirjautumaan Muikkuun huoltajatunnuksilla, tunnukset
-        suljetaan. Voit itse määritellä, ketkä saavat jatkossa nähdä tietojasi
-        tai keskustella opintoihisi liittyvistä asioista.
+        {t("content.editGuardianPermissions", { ns: "users" })}
       </p>
       <fieldset className="form__fieldset">
         <legend className="form__legend form__legend--guardian-visibility">
-          Huoltajatunnusten jatkoaika
+          {t("labels.guardianContinuedViewPermission", { ns: "users" })}
         </legend>
         <p className="form-element__description">
-          Saako huoltajasi/vanhempasi{" "}
-          <b>
-            {guardian.firstName} {guardian.lastName}
-          </b>{" "}
-          luvan nähdä tietojasi Muikussa myös jatkossa?
+          {t("content.guardianPermissionPrompt", {
+            ns: "users",
+            guardian: guardian.firstName + " " + guardian.lastName,
+          })}
         </p>
         <div className="form-element form-element--checkbox-radiobutton">
           <input
             checked={canView}
             id="canSeeDependentInformation"
             type="radio"
-            name="viewRights"
+            name="viewPermissions"
             onChange={() => setCanView(true)}
           />
-          <label htmlFor="canSeeDependentInformation">Saa nähdä</label>
+          <label htmlFor="canSeeDependentInformation">
+            {t("labels.hasViewPermission", { ns: "users" })}
+          </label>
         </div>
         <div className="form-element form-element--checkbox-radiobutton">
           <input
             checked={!canView}
             //  value={this.state.vacationAutoReply}
-            id="canSeeDependentInformation"
+            id="cannotSeeDependentInformation"
             type="radio"
-            name="viewRights"
+            name="viewPermissions"
             onChange={() => setCanView(false)}
           />
-          <label htmlFor="canSeeDependentInformation">Ei saa nähdä</label>
+          <label htmlFor="cannotSeeDependentInformation">
+            {t("labels.noViewPermission", { ns: "users" })}
+          </label>
         </div>
       </fieldset>
     </form>
   );
+
+  /**
+   * Renders the dialog footer with action buttons.
+   * @param closeDialog - A function to close the dialog
+   * @returns Dialog footer nodes
+   */
   const footer = (closeDialog: () => void) => (
     <div className="env-dialog__actions">
       <Button
         className="button button--execute"
-        onClick={() => {
-          closeDialog();
-        }}
+        onClick={() => handleSave(closeDialog)}
       >
-        Tallenna
+        {t("actions.save", { ns: "common" })}
       </Button>
       <Button
-        className="button button--execute"
+        className="button button--cancel"
         onClick={() => {
           closeDialog();
         }}
       >
-        Peruuta
+        {t("actions.cancel", { ns: "common" })}
       </Button>
     </div>
   );
@@ -110,4 +131,4 @@ const GuardianVisibilityDialog: React.FC<GuardianVisibilityDialogProps> = (
   );
 };
 
-export default GuardianVisibilityDialog;
+export default GuardianPermissionsDialog;

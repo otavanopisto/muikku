@@ -32,6 +32,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
 import { UserStudyData } from "~/reducers/study-activity";
+import GuardianVisibilityDialog from "~/components/profile/body/application/dialog/edit-guardian-visibility";
+import Link from "~/components/general/link";
 
 /**
  * SummaryProps
@@ -343,6 +345,20 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                               : t("labels.noContinuedViewPermission", {
                                   ns: "users",
                                 })}
+                          </div>
+                          <div>
+                            <GuardianVisibilityDialog
+                              guardian={guardian}
+                              userIdentifier={
+                                this.props.status.userSchoolDataIdentifier
+                              }
+                            >
+                              <Link className="link">
+                                {t("actions.editPermissions", {
+                                  ns: "users",
+                                })}
+                              </Link>
+                            </GuardianVisibilityDialog>
                           </div>
                         </div>
                       </>

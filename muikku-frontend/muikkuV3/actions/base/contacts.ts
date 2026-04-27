@@ -169,9 +169,9 @@ const updateContactGroupGuardian: UpdateContactGroupTriggerType =
     ) => {
       try {
         const data = await userApi.updateGuardiansContinuedViewPermission({
-          studentIdentifier,
-          guardianIdentifier,
-          continuedViewPermission,
+          studentIdentifier: studentIdentifier,
+          guardianIdentifier: guardianIdentifier,
+          body: continuedViewPermission,
         });
 
         dispatch({

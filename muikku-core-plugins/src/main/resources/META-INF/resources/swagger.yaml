@@ -9348,12 +9348,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: continuedViewPermission
-          in: query
-          description: continuedViewPermission
-          required: true
-          schema:
-            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: boolean
       responses:
         "200":
           description: Student's Guardians

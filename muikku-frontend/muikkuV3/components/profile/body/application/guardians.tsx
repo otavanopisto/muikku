@@ -4,7 +4,7 @@ import { StateType } from "~/reducers";
 import Avatar from "~/components/general/avatar";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
-import Button from "~/components/general/button";
+import Link from "~/components/general/link";
 import GuardianVisibilityDialog from "~/components/profile/body/application/dialog/edit-guardian-visibility";
 
 /**
@@ -18,7 +18,7 @@ interface GuardiansProps {}
 const Guardians: React.FC<GuardiansProps> = () => {
   const { t } = useTranslation();
   const guardians = useSelector((state: StateType) => state.contacts.guardians);
-  const profile = useSelector((state: StateType) => state.profile);
+  const { profile, status } = useSelector((state: StateType) => state);
 
   if (profile.location !== "guardians" || !guardians.list) {
     return null;
@@ -58,10 +58,15 @@ const Guardians: React.FC<GuardiansProps> = () => {
                     })}
               </div>
               <div>
-                <GuardianVisibilityDialog guardian={guardian}>
-                  <Button buttonModifiers={["execute"]}>
-                    Muokkaa näkyvyyksiä
-                  </Button>
+                <GuardianVisibilityDialog
+                  guardian={guardian}
+                  userIdentifier={status.userSchoolDataIdentifier}
+                >
+                  <Link className="link">
+                    {t("actions.editPermissions", {
+                      ns: "users",
+                    })}
+                  </Link>
                 </GuardianVisibilityDialog>
               </div>
             </div>
