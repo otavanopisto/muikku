@@ -1,6 +1,6 @@
 import type { Editor } from "@tiptap/react";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Get the active page editor from the editor.storage.pages.activeEditor
