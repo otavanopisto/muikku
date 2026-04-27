@@ -1,37 +1,42 @@
-import { forwardRef, useCallback, useState } from "react"
+/* eslint-disable react-x/no-forward-ref */
+import { forwardRef, useCallback, useState } from "react";
 
 // --- Icons ---
-import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon"
+import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 
 // --- Tiptap UI ---
-import { HeadingButton } from "@/components/tiptap-ui/heading-button"
-import type { UseHeadingDropdownMenuConfig } from "@/components/tiptap-ui/heading-dropdown-menu"
-import { useHeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
+import { HeadingButton } from "@/components/tiptap-ui/heading-button";
+import type { UseHeadingDropdownMenuConfig } from "@/components/tiptap-ui/heading-dropdown-menu";
+import { useHeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
+import { Button } from "@/components/tiptap-ui-primitive/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuGroup,
-} from "@/components/tiptap-ui-primitive/dropdown-menu"
+} from "@/components/tiptap-ui-primitive/dropdown-menu";
 
+/**
+ * The HeadingDropdownMenu props interface.
+ */
 export interface HeadingDropdownMenuProps
-  extends Omit<ButtonProps, "type">, UseHeadingDropdownMenuConfig {
+  extends Omit<ButtonProps, "type">,
+    UseHeadingDropdownMenuConfig {
   /**
    * Callback for when the dropdown opens or closes
    */
-  onOpenChange?: (isOpen: boolean) => void
+  onOpenChange?: (isOpen: boolean) => void;
   /**
    * Whether the dropdown should use a modal
    */
-  modal?: boolean
+  modal?: boolean;
 }
 
 /**
@@ -46,6 +51,7 @@ export const HeadingDropdownMenu = forwardRef<
   (
     {
       editor: providedEditor,
+      // eslint-disable-next-line react-x/no-unstable-default-props
       levels = [1, 2, 3, 4, 5, 6],
       hideWhenUnavailable = false,
       onOpenChange,
@@ -55,25 +61,25 @@ export const HeadingDropdownMenu = forwardRef<
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor)
-    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const { editor } = useTiptapEditorV2({ editor: providedEditor });
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const { isVisible, isActive, canToggle, Icon } = useHeadingDropdownMenu({
       editor,
       levels,
       hideWhenUnavailable,
-    })
+    });
 
     const handleOpenChange = useCallback(
       (open: boolean) => {
-        if (!editor || !canToggle) return
-        setIsOpen(open)
-        onOpenChange?.(open)
+        if (!editor || !canToggle) return;
+        setIsOpen(open);
+        onOpenChange?.(open);
       },
       [canToggle, editor, onOpenChange]
-    )
+    );
 
     if (!isVisible) {
-      return null
+      return null;
     }
 
     return (
@@ -93,9 +99,7 @@ export const HeadingDropdownMenu = forwardRef<
             {...buttonProps}
             ref={ref}
           >
-            {children ? (
-              children
-            ) : (
+            {children ?? (
               <>
                 <Icon className="tiptap-button-icon" />
                 <ChevronDownIcon className="tiptap-button-dropdown-small" />
@@ -119,10 +123,10 @@ export const HeadingDropdownMenu = forwardRef<
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-    )
+    );
   }
-)
+);
 
-HeadingDropdownMenu.displayName = "HeadingDropdownMenu"
+HeadingDropdownMenu.displayName = "HeadingDropdownMenu";
 
-export default HeadingDropdownMenu
+export default HeadingDropdownMenu;

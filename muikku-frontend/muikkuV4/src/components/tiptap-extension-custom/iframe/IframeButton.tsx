@@ -9,7 +9,7 @@ import {
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
 import IframeModal from "./IframeModal";
-import { useTiptapEditor } from "~/src/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 const OPEN_EVENT = "muikku:open-iframe-modal";
 
@@ -27,7 +27,11 @@ export interface IframeButtonProps extends Omit<ButtonProps, "type"> {
  */
 export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
   ({ editor: providedEditor, ...buttonProps }, ref) => {
-    const { editor } = useTiptapEditor(providedEditor);
+    const { editor, selected } = useTiptapEditorV2({
+      editor: providedEditor,
+      selector: ({ editor }) => editor.isActive("iframe"),
+    });
+    const isActive = !!selected;
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
@@ -37,8 +41,6 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
     }, []);
 
     if (!editor?.isEditable) return null;
-
-    const isActive = editor.isActive("iframe");
 
     return (
       <>

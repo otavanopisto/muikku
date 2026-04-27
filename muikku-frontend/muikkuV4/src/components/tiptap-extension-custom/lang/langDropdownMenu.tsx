@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useEditorState, type Editor } from "@tiptap/react";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 
 // --- UI Primitives ---
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
@@ -73,10 +73,15 @@ export function LangDropdownMenu({
   children,
   ...props
 }: LangDropdownMenuProps) {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      canToggle: canUseLang(editor),
+    }),
+  });
   const [isOpen, setIsOpen] = useState(false);
 
-  const canToggle = canUseLang(editor);
+  //const canToggle = canUseLang(editor);
 
   const handleOnOpenChange = useCallback(
     (open: boolean) => {
@@ -209,8 +214,8 @@ export function LangDropdownMenu({
           variant="ghost"
           role="button"
           tabIndex={-1}
-          disabled={!canToggle}
-          data-disabled={!canToggle}
+          disabled={!(selected?.canToggle ?? true)}
+          data-disabled={!(selected?.canToggle ?? true)}
           data-active-state={selectedLangCode ? "on" : "off"}
           aria-label="Language"
           tooltip="Language"

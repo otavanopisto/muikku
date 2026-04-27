@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 import { isExtensionAvailable, isNodeTypeSelected } from "@/lib/tiptap-utils";
 
 import { IndentIncreaseIcon } from "@/components/tiptap-icons/indent-increase-icon";
 import { IndentDecreaseIcon } from "@/components/tiptap-icons/indent-decrease-icon";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 export type IndentAction = "increase" | "decrease";
 
@@ -84,10 +84,15 @@ export function useIndent(config: UseIndentConfig) {
     action,
     hideWhenUnavailable = false,
   } = config;
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      canIndent: canIndent(editor, action),
+    }),
+  });
 
   const [isVisible, setIsVisible] = useState(true);
-  const canRun = canIndent(editor, action);
+  const canRun = selected?.canIndent ?? false;
 
   useEffect(() => {
     if (!editor) return;

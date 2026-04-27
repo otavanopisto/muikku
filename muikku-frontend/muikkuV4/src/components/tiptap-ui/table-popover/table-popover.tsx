@@ -4,18 +4,14 @@
 import { forwardRef, useMemo, useState } from "react";
 import type { Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
-
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 import { Input } from "@/components/tiptap-ui-primitive/input";
-import { Label } from "@/components/tiptap-ui-primitive/label";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/tiptap-ui-primitive/popover";
-import { Separator } from "@/components/tiptap-ui-primitive/separator";
 import {
   Card,
   CardBody,
@@ -24,6 +20,7 @@ import {
 } from "@/components/tiptap-ui-primitive/card";
 
 import { TableIcon } from "@/components/tiptap-icons/table-icon";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * TablePopoverProps is the props for the TablePopover component
@@ -76,7 +73,9 @@ export function TablePopover({
   editor: providedEditor,
   ...props
 }: TablePopoverProps) {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor } = useTiptapEditorV2({
+    editor: providedEditor,
+  });
   const [open, setOpen] = useState(false);
 
   const [rowsInput, setRowsInput] = useState("3");

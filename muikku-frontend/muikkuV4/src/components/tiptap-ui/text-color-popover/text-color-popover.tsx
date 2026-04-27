@@ -4,7 +4,6 @@ import { type Editor } from "@tiptap/react";
 
 import { useMenuNavigation } from "@/hooks/use-menu-navigation";
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint";
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 import { BanIcon } from "@/components/tiptap-icons/ban-icon";
 import { TextColorIcon } from "@/components/tiptap-icons/text-color-icon";
@@ -30,6 +29,7 @@ import {
   type TextColor,
   useTextColor,
 } from "~/src/components/tiptap-ui/text-color-popover/use-text-color";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * TextColorPopoverContentProps is the props for the TextColorPopoverContent component
@@ -209,7 +209,12 @@ export function TextColorPopover({
   colors = TEXT_COLORS,
   ...props
 }: TextColorPopoverProps) {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      hasTextColor: hasTextColor(editor),
+    }),
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   // For the toolbar button itself, we just need visibility/can-show.
@@ -220,7 +225,7 @@ export function TextColorPopover({
 
   if (!isVisible) return null;
 
-  const isActive = hasTextColor(editor);
+  const isActive = selected?.hasTextColor ?? false;
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

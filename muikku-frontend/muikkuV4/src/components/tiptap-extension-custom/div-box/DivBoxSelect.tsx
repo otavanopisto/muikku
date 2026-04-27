@@ -2,8 +2,6 @@
 import * as React from "react";
 import type { Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +15,7 @@ import {
 import { blockStylesSet } from "./helper";
 import { canUseDivBox, getCurrentDivBoxPreset } from "./helper";
 import { DivBoxPresetButton } from "./DivBoxPresetButton";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * The DivBoxSelectProps interface.
@@ -32,13 +31,19 @@ export interface DivBoxSelectProps extends Omit<ButtonProps, "type"> {
  */
 export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
   ({ editor: providedEditor, ...buttonProps }, _ref) => {
-    const { editor } = useTiptapEditor(providedEditor);
+    const { editor, selected } = useTiptapEditorV2({
+      editor: providedEditor,
+      selector: ({ editor }) => ({
+        canUseDivBox: canUseDivBox(editor),
+        currentPreset: getCurrentDivBoxPreset(editor),
+      }),
+    });
     const [open, setOpen] = React.useState(false);
 
     if (!editor?.isEditable) return null;
 
-    const currentPreset = getCurrentDivBoxPreset(editor);
-    const isDisabled = !canUseDivBox(editor);
+    const currentPreset = selected?.currentPreset ?? undefined;
+    const isDisabled = !(selected?.canUseDivBox ?? false);
 
     return (
       <DropdownMenu open={open} onOpenChange={setOpen}>

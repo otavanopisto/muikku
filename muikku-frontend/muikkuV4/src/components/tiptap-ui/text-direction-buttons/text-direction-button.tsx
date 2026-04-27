@@ -3,7 +3,7 @@
 
 import { forwardRef, useCallback } from "react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
@@ -46,7 +46,9 @@ export const TextDirectionButton = forwardRef<
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor);
+    const { editor } = useTiptapEditorV2({
+      editor: providedEditor,
+    });
 
     const { isVisible, isActive, canChange, handleChange, label, Icon } =
       useTextDirection({

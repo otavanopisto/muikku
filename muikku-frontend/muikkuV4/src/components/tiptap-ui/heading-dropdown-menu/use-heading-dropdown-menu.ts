@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import type { Editor } from "@tiptap/react"
+import { useEffect, useState } from "react";
+import type { Editor } from "@tiptap/react";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 
 // --- Icons ---
-import { HeadingIcon } from "@/components/tiptap-icons/heading-icon"
+import { HeadingIcon } from "@/components/tiptap-icons/heading-icon";
 
 // --- Tiptap UI ---
 import {
@@ -16,7 +16,7 @@ import {
   isHeadingActive,
   canToggle,
   shouldShowButton,
-} from "@/components/tiptap-ui/heading-button"
+} from "@/components/tiptap-ui/heading-button";
 
 /**
  * Configuration for the heading dropdown menu functionality
@@ -25,17 +25,17 @@ export interface UseHeadingDropdownMenuConfig {
   /**
    * The Tiptap editor instance.
    */
-  editor?: Editor | null
+  editor?: Editor | null;
   /**
    * Available heading levels to show in the dropdown
    * @default [1, 2, 3, 4, 5, 6]
    */
-  levels?: Level[]
+  levels?: Level[];
   /**
    * Whether the dropdown should hide when headings are not available.
    * @default false
    */
-  hideWhenUnavailable?: boolean
+  hideWhenUnavailable?: boolean;
 }
 
 /**
@@ -45,8 +45,8 @@ export function getActiveHeadingLevel(
   editor: Editor | null,
   levels: Level[] = [1, 2, 3, 4, 5, 6]
 ): Level | undefined {
-  if (!editor || !editor.isEditable) return undefined
-  return levels.find((level) => isHeadingActive(editor, level))
+  if (!editor?.isEditable) return undefined;
+  return levels.find((level) => isHeadingActive(editor, level));
 }
 
 /**
@@ -93,40 +93,45 @@ export function useHeadingDropdownMenu(config?: UseHeadingDropdownMenuConfig) {
     editor: providedEditor,
     levels = [1, 2, 3, 4, 5, 6],
     hideWhenUnavailable = false,
-  } = config || {}
+  } = config ?? {};
 
-  const { editor } = useTiptapEditor(providedEditor)
-  const [isVisible, setIsVisible] = useState(true)
-
-  const activeLevel = getActiveHeadingLevel(editor, levels)
-  const isActive = isHeadingActive(editor)
-  const canToggleState = canToggle(editor)
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      activeLevel: getActiveHeadingLevel(editor, levels),
+      isActive: isHeadingActive(editor),
+      canToggle: canToggle(editor),
+    }),
+  });
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const handleSelectionUpdate = () => {
       setIsVisible(
         shouldShowButton({ editor, hideWhenUnavailable, level: levels })
-      )
-    }
+      );
+    };
 
-    handleSelectionUpdate()
+    handleSelectionUpdate();
 
-    editor.on("selectionUpdate", handleSelectionUpdate)
+    editor.on("selectionUpdate", handleSelectionUpdate);
 
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate)
-    }
-  }, [editor, hideWhenUnavailable, levels])
+      editor.off("selectionUpdate", handleSelectionUpdate);
+    };
+  }, [editor, hideWhenUnavailable, levels]);
 
   return {
     isVisible,
-    activeLevel,
-    isActive,
-    canToggle: canToggleState,
+    activeLevel: selected?.activeLevel,
+    isActive: selected?.isActive,
+    canToggle: selected?.canToggle,
     levels,
     label: "Heading",
-    Icon: activeLevel ? headingIcons[activeLevel] : HeadingIcon,
-  }
+    Icon: selected?.activeLevel
+      ? headingIcons[selected.activeLevel]
+      : HeadingIcon,
+  };
 }

@@ -8,8 +8,8 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import { useTiptapEditor } from "~/src/hooks/use-tiptap-editor";
 import MuikkuTextFieldModal from "./MuikkuTextFieldModal";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 const OPEN_EVENT = "muikku:open-muikku-textfield-modal";
 
@@ -29,7 +29,13 @@ export const MuikkuTextFieldButton = forwardRef<
   HTMLButtonElement,
   MuikkuTextFieldButtonProps
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      isActive: editor.isActive("muikkuTextField"),
+    }),
+  });
+  const isActive = selected?.isActive ?? false;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -39,8 +45,6 @@ export const MuikkuTextFieldButton = forwardRef<
   }, []);
 
   if (!editor?.isEditable) return null;
-
-  const isActive = editor.isActive("muikkuTextField");
 
   return (
     <>
@@ -58,11 +62,13 @@ export const MuikkuTextFieldButton = forwardRef<
         Tekstikenttä
       </Button>
 
-      <MuikkuTextFieldModal
-        editor={editor}
-        opened={open}
-        onClose={() => setOpen(false)}
-      />
+      {open && (
+        <MuikkuTextFieldModal
+          editor={editor}
+          opened={true}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 });

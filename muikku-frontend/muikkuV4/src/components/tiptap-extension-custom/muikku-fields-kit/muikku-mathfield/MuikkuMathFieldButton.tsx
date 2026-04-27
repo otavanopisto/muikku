@@ -7,7 +7,7 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import { useTiptapEditor } from "~/src/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * The Muikku math field button props interface.
@@ -20,11 +20,15 @@ export const MuikkuMathFieldButton = forwardRef<
   HTMLButtonElement,
   MuikkuMathFieldButtonProps
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      isActive: editor.isActive("muikkuMathField"),
+    }),
+  });
+  const isActive = selected?.isActive ?? false;
 
   if (!editor?.isEditable) return null;
-
-  const isActive = editor.isActive("muikkuMathField");
 
   return (
     <Button

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint";
 
 import { isExtensionAvailable, isNodeTypeSelected } from "@/lib/tiptap-utils";
@@ -129,12 +129,19 @@ export function useTextColor(config: UseTextColorConfig) {
     onApplied,
   } = config;
 
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      canTextColor: canSetTextColor(editor),
+      isActive: isTextColorActive(editor, color),
+    }),
+  });
+
   const isMobile = useIsBreakpoint();
   const [isVisible, setIsVisible] = useState(true);
 
-  const canTextColor = canSetTextColor(editor);
-  const isActive = isTextColorActive(editor, color);
+  const canTextColorState = selected?.canTextColor ?? false;
+  const isActiveState = selected?.isActive ?? false;
 
   useEffect(() => {
     if (!editor) return;
@@ -154,11 +161,11 @@ export function useTextColor(config: UseTextColorConfig) {
   }, [editor, hideWhenUnavailable]);
 
   const handleSetColor = useCallback(() => {
-    if (!editor || !canTextColor || !color || !label) return false;
+    if (!editor || !canTextColorState || !color || !label) return false;
     const ok = setTextColor(editor, color);
     if (ok) onApplied?.({ color, label });
     return ok;
-  }, [editor, canTextColor, color, label, onApplied]);
+  }, [editor, canTextColorState, color, label, onApplied]);
 
   const handleUnsetColor = useCallback(() => {
     const ok = unsetTextColor(editor);
@@ -168,8 +175,8 @@ export function useTextColor(config: UseTextColorConfig) {
 
   return {
     isVisible,
-    isActive,
-    canTextColor,
+    isActive: isActiveState,
+    canTextColor: canTextColorState,
     handleSetColor,
     handleUnsetColor,
     label: label ?? "Text color",

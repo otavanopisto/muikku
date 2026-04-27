@@ -7,8 +7,8 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import { useTiptapEditor } from "~/src/hooks/use-tiptap-editor";
 import MuikkuConnectFieldModal from "./MuikkuConnectFieldModal";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 const OPEN_EVENT = "muikku:open-muikku-connectfield-modal";
 
@@ -24,7 +24,13 @@ export const MuikkuConnectFieldButton = forwardRef<
   HTMLButtonElement,
   MuikkuConnectFieldButtonProps
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      isActive: editor.isActive("muikkuConnectField"),
+    }),
+  });
+  const isActive = selected?.isActive ?? false;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -34,8 +40,6 @@ export const MuikkuConnectFieldButton = forwardRef<
   }, []);
 
   if (!editor?.isEditable) return null;
-
-  const isActive = editor.isActive("muikkuConnectField");
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 import { isExtensionAvailable, isNodeTypeSelected } from "@/lib/tiptap-utils";
 
 import { TextDirectionLeftIcon } from "@/components/tiptap-icons/text-direction-left-icon";
@@ -117,11 +117,17 @@ export function useTextDirection(config: UseTextDirectionConfig) {
     onChanged,
   } = config;
 
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      canSetTextDirection: canSetTextDirection(editor, direction),
+      isTextDirectionActive: isTextDirectionActive(editor, direction),
+    }),
+  });
   const [isVisible, setIsVisible] = useState(true);
 
-  const canChange = canSetTextDirection(editor, direction);
-  const isActive = isTextDirectionActive(editor, direction);
+  const canChange = selected?.canSetTextDirection ?? false;
+  const isActive = selected?.isTextDirectionActive ?? false;
 
   useEffect(() => {
     if (!editor) return;

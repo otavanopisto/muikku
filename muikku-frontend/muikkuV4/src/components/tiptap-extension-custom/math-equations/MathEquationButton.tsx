@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/tiptap-ui-primitive/button";
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 import { Editor } from "@tiptap/core";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * MathEquationButtonProps is the props for the MathEquationButton component.
@@ -13,9 +13,11 @@ interface MathEquationButtonProps {
 
 export const MathEquationButton: React.FC<MathEquationButtonProps> = ({
   editor: providedEditor,
-  text,
+  text = "∑",
 }) => {
-  const editor = useTiptapEditor(providedEditor);
+  const editor = useTiptapEditorV2({
+    editor: providedEditor,
+  });
 
   const handleClick = React.useCallback(() => {
     if (!editor) return;
@@ -40,7 +42,7 @@ export const MathEquationButton: React.FC<MathEquationButtonProps> = ({
       tooltip="Insert math equation"
       onClick={handleClick}
     >
-      <span className="tiptap-button-icon">∑</span>
+      <span className="tiptap-button-icon">{text}</span>
     </Button>
   );
 };

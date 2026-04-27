@@ -8,7 +8,7 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import { useTiptapEditor } from "~/src/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * The DivFrameToolbarButtonProps interface.
@@ -27,7 +27,10 @@ export const DivFrameToolbarButton = forwardRef<
   DivFrameToolbarButtonProps
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const [open, setOpen] = useState(false);
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => editor.isActive("divFrame"),
+  });
 
   if (!editor?.isEditable) {
     return null;

@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-import { type Editor } from "@tiptap/react"
+import { useCallback, useEffect, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { type Editor } from "@tiptap/react";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
-import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
+import { useIsBreakpoint } from "@/hooks/use-is-breakpoint";
 
 // --- Lib ---
-import { isExtensionAvailable } from "@/lib/tiptap-utils"
+import { isExtensionAvailable } from "@/lib/tiptap-utils";
 
 // --- Icons ---
-import { ImagePlusIcon } from "@/components/tiptap-icons/image-plus-icon"
+import { ImagePlusIcon } from "@/components/tiptap-icons/image-plus-icon";
 
-export const IMAGE_UPLOAD_SHORTCUT_KEY = "mod+shift+i"
+export const IMAGE_UPLOAD_SHORTCUT_KEY = "mod+shift+i";
 
 /**
  * Configuration for the image upload functionality
@@ -23,42 +23,48 @@ export interface UseImageUploadConfig {
   /**
    * The Tiptap editor instance.
    */
-  editor?: Editor | null
+  editor?: Editor | null;
   /**
    * Whether the button should hide when insertion is not available.
    * @default false
    */
-  hideWhenUnavailable?: boolean
+  hideWhenUnavailable?: boolean;
   /**
    * Callback function called after a successful image insertion.
    */
-  onInserted?: () => void
+  onInserted?: () => void;
 }
 
 /**
  * Checks if image can be inserted in the current editor state
+ * @param editor - The editor to check.
+ * @returns True if the image can be inserted, false otherwise.
  */
 export function canInsertImage(editor: Editor | null): boolean {
-  if (!editor || !editor.isEditable) return false
-  if (!isExtensionAvailable(editor, "imageUpload")) return false
+  if (!editor?.isEditable) return false;
+  if (!isExtensionAvailable(editor, "imageUpload")) return false;
 
-  return editor.can().insertContent({ type: "imageUpload" })
+  return editor.can().insertContent({ type: "imageUpload" });
 }
 
 /**
  * Checks if image is currently active
+ * @param editor - The editor to check.
+ * @returns True if the image is active, false otherwise.
  */
 export function isImageActive(editor: Editor | null): boolean {
-  if (!editor || !editor.isEditable) return false
-  return editor.isActive("imageUpload")
+  if (!editor?.isEditable) return false;
+  return editor.isActive("imageUpload");
 }
 
 /**
  * Inserts an image in the editor
+ * @param editor - The editor to insert the image into.
+ * @returns True if the image is inserted, false otherwise.
  */
 export function insertImage(editor: Editor | null): boolean {
-  if (!editor || !editor.isEditable) return false
-  if (!canInsertImage(editor)) return false
+  if (!editor?.isEditable) return false;
+  if (!canInsertImage(editor)) return false;
 
   try {
     return editor
@@ -67,34 +73,36 @@ export function insertImage(editor: Editor | null): boolean {
       .insertContent({
         type: "imageUpload",
       })
-      .run()
+      .run();
   } catch {
-    return false
+    return false;
   }
 }
 
 /**
  * Determines if the image button should be shown
+ * @param props - The props for the should show button function.
+ * @returns True if the image button should be shown, false otherwise.
  */
 export function shouldShowButton(props: {
-  editor: Editor | null
-  hideWhenUnavailable: boolean
+  editor: Editor | null;
+  hideWhenUnavailable: boolean;
 }): boolean {
-  const { editor, hideWhenUnavailable } = props
+  const { editor, hideWhenUnavailable } = props;
 
-  if (!editor || !editor.isEditable) return false
+  if (!editor?.isEditable) return false;
 
   if (!hideWhenUnavailable) {
-    return true
+    return true;
   }
 
-  if (!isExtensionAvailable(editor, "imageUpload")) return false
+  if (!isExtensionAvailable(editor, "imageUpload")) return false;
 
   if (!editor.isActive("code")) {
-    return canInsertImage(editor)
+    return canInsertImage(editor);
   }
 
-  return true
+  return true;
 }
 
 /**
@@ -138,52 +146,58 @@ export function useImageUpload(config?: UseImageUploadConfig) {
     editor: providedEditor,
     hideWhenUnavailable = false,
     onInserted,
-  } = config || {}
+  } = config ?? {};
 
-  const { editor } = useTiptapEditor(providedEditor)
-  const isMobile = useIsBreakpoint()
-  const [isVisible, setIsVisible] = useState<boolean>(true)
-  const canInsert = canInsertImage(editor)
-  const isActive = isImageActive(editor)
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      canInsert: canInsertImage(editor),
+      isActive: isImageActive(editor),
+    }),
+  });
+  const isMobile = useIsBreakpoint();
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const canInsert = selected?.canInsert ?? false;
+  const isActive = selected?.isActive ?? false;
 
   useEffect(() => {
-    if (!editor) return
+    if (!editor) return;
 
     const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }))
-    }
+      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
+    };
 
-    handleSelectionUpdate()
+    handleSelectionUpdate();
 
-    editor.on("selectionUpdate", handleSelectionUpdate)
+    editor.on("selectionUpdate", handleSelectionUpdate);
 
     return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate)
-    }
-  }, [editor, hideWhenUnavailable])
+      editor.off("selectionUpdate", handleSelectionUpdate);
+    };
+  }, [editor, hideWhenUnavailable]);
 
   const handleImage = useCallback(() => {
-    if (!editor) return false
+    if (!editor) return false;
 
-    const success = insertImage(editor)
+    const success = insertImage(editor);
     if (success) {
-      onInserted?.()
+      onInserted?.();
     }
-    return success
-  }, [editor, onInserted])
+    return success;
+  }, [editor, onInserted]);
 
   useHotkeys(
     IMAGE_UPLOAD_SHORTCUT_KEY,
     (event) => {
-      event.preventDefault()
-      handleImage()
+      event.preventDefault();
+      handleImage();
     },
     {
       enabled: isVisible && canInsert,
       enableOnContentEditable: !isMobile,
       enableOnFormTags: true,
     }
-  )
+  );
 
   return {
     isVisible,
@@ -193,5 +207,5 @@ export function useImageUpload(config?: UseImageUploadConfig) {
     label: "Add image",
     shortcutKeys: IMAGE_UPLOAD_SHORTCUT_KEY,
     Icon: ImagePlusIcon,
-  }
+  };
 }

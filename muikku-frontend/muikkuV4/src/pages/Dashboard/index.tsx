@@ -6,7 +6,7 @@ import { SimpleMaterialLoader } from "src/materials/MaterialLoader";
 import { materialContentNodesAtom } from "~/src/atoms/materials";
 import { useMemo, useState } from "react";
 import type { MaterialContentNode } from "~/generated/client";
-import { SimpleEditor } from "~/src/components/tiptap-templates/simple/simple-editor";
+import MuikkuMaterialEditor from "~/src/components/tiptap-templates/muikku-material-editor/muikku-material-editor";
 
 /* const sampleHTML = String.raw`
   <div>
@@ -186,7 +186,7 @@ export function Dashboard() {
           </Button>
         </Group>
 
-        <SimpleEditor onChange={handleMaterialHtmlChange} />
+        <MuikkuMaterialEditor onChange={handleMaterialHtmlChange} />
       </Paper>
 
       {/* {htmlOnlyList.map((node) => (

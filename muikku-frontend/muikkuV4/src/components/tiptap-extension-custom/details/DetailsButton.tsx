@@ -4,12 +4,11 @@
 import { forwardRef, useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
-
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 
 import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * DetailsButtonProps is the props for the DetailsButton component.
@@ -36,7 +35,10 @@ export const DetailsButton = forwardRef<HTMLButtonElement, DetailsButtonProps>(
     { editor: providedEditor, summary, open, onClick, children, ...props },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor);
+    const { editor } = useTiptapEditorV2({
+      editor: providedEditor,
+      selector: ({ editor }) => editor.isActive("details"),
+    });
 
     const canInsert =
       !!editor?.isEditable &&

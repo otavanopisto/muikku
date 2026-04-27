@@ -9,7 +9,7 @@ import {
 } from "@/components/tiptap-ui/blockquote-button";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 
 // --- Lib ---
 import { parseShortcutKeys } from "@/lib/tiptap-utils";
@@ -69,7 +69,7 @@ export const BlockquoteButton = forwardRef<
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor);
+    const { editor } = useTiptapEditorV2({ editor: providedEditor });
     const {
       isVisible,
       canToggle,

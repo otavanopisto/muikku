@@ -18,7 +18,7 @@ import {
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 import { Badge } from "@/components/tiptap-ui-primitive/badge";
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 
 /**
  * Props for the HeadingButton component.
@@ -70,7 +70,7 @@ export const HeadingButton = forwardRef<HTMLButtonElement, HeadingButtonProps>(
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor);
+    const { editor } = useTiptapEditorV2({ editor: providedEditor });
     const {
       isVisible,
       canToggle,

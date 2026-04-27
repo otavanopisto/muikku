@@ -2,7 +2,6 @@
 
 import { useCallback, useState } from "react";
 import type { Editor } from "@tiptap/react";
-import { useEditorState } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 import {
@@ -16,6 +15,7 @@ import { DeleteColumnIcon } from "@/components/tiptap-icons/delete-column-icon";
 import { CogIcon } from "@/components/tiptap-icons/cog-icon";
 import type { EditorState } from "@tiptap/pm/state";
 import { Spacer } from "../../tiptap-ui-primitive/spacer";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * TableBubbleMenuProps is the props for the TableBubbleMenu component
@@ -29,17 +29,44 @@ export interface TableBubbleMenuProps {
  * @param props - The props for the TableBubbleMenu component
  * @returns The TableBubbleMenu component
  */
-export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
+export function TableBubbleMenu({
+  editor: providedEditor,
+}: TableBubbleMenuProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  useEditorState({
-    editor,
-    selector: ({ editor }) => {
-      if (!editor) return { isTable: false, selection: null };
-      return {
-        isTable: editor.isActive("table"),
-        selection: editor.state.selection,
-      };
-    },
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor }) => ({
+      isTable: editor.isActive("table"),
+      can: editor.isEditable
+        ? {
+            rowBefore: editor.can().addRowBefore(),
+            rowAfter: editor.can().addRowAfter(),
+            colBefore: editor.can().addColumnBefore(),
+            colAfter: editor.can().addColumnAfter(),
+            delRow: editor.can().deleteRow(),
+            delCol: editor.can().deleteColumn(),
+            delTable: editor.can().deleteTable(),
+            mergeCells: editor.can().mergeCells(),
+            splitCell: editor.can().splitCell(),
+            headerRow: editor.can().toggleHeaderRow(),
+            headerCol: editor.can().toggleHeaderColumn(),
+            headerCell: editor.can().toggleHeaderCell(),
+          }
+        : {
+            rowBefore: false,
+            rowAfter: false,
+            colBefore: false,
+            colAfter: false,
+            delRow: false,
+            delCol: false,
+            delTable: false,
+            mergeCells: false,
+            splitCell: false,
+            headerRow: false,
+            headerCol: false,
+            headerCell: false,
+          },
+    }),
   });
 
   const shouldShow = useCallback(
@@ -55,25 +82,20 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
     []
   );
 
-  const can = editor?.isEditable
-    ? {
-        rowBefore: editor.can().addRowBefore(),
-        rowAfter: editor.can().addRowAfter(),
-        colBefore: editor.can().addColumnBefore(),
-        colAfter: editor.can().addColumnAfter(),
-        delRow: editor.can().deleteRow(),
-        delCol: editor.can().deleteColumn(),
-        delTable: editor.can().deleteTable(),
-      }
-    : {
-        rowBefore: false,
-        rowAfter: false,
-        colBefore: false,
-        colAfter: false,
-        delRow: false,
-        delCol: false,
-        delTable: false,
-      };
+  const can = selected?.can ?? {
+    rowBefore: false,
+    rowAfter: false,
+    colBefore: false,
+    colAfter: false,
+    delRow: false,
+    delCol: false,
+    delTable: false,
+    mergeCells: false,
+    splitCell: false,
+    headerRow: false,
+    headerCol: false,
+    headerCell: false,
+  };
 
   const run =
     (fn: () => boolean) => (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -81,6 +103,8 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
       e.stopPropagation();
       fn();
     };
+
+  if (!editor) return null;
 
   const addRowBefore = () => editor.chain().focus().addRowBefore().run();
   const addRowAfter = () => editor.chain().focus().addRowAfter().run();
@@ -226,7 +250,7 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
                   type="button"
                   variant="ghost"
                   onClick={run(mergeCells)}
-                  disabled={!editor.can().mergeCells()}
+                  disabled={!can.mergeCells}
                 >
                   Merge
                 </Button>
@@ -234,7 +258,7 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
                   type="button"
                   variant="ghost"
                   onClick={run(splitCell)}
-                  disabled={!editor.can().splitCell()}
+                  disabled={!can.splitCell}
                 >
                   Split
                 </Button>
@@ -242,7 +266,7 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
                   type="button"
                   variant="ghost"
                   onClick={run(toggleHeaderRow)}
-                  disabled={!editor.can().toggleHeaderRow()}
+                  disabled={!can.headerRow}
                 >
                   Header row
                 </Button>
@@ -250,7 +274,7 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
                   type="button"
                   variant="ghost"
                   onClick={run(toggleHeaderColumn)}
-                  disabled={!editor.can().toggleHeaderColumn()}
+                  disabled={!can.headerCol}
                 >
                   Header column
                 </Button>
@@ -258,7 +282,7 @@ export function TableBubbleMenu({ editor }: TableBubbleMenuProps) {
                   type="button"
                   variant="ghost"
                   onClick={run(toggleHeaderCell)}
-                  disabled={!editor.can().toggleHeaderCell()}
+                  disabled={!can.headerCell}
                 >
                   Header cell
                 </Button>

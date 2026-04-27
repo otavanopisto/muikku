@@ -387,10 +387,10 @@ export function SimpleEditor({ onChange }: SimpleEditorProps) {
     ],
     textDirection: "auto",
     content,
-    onUpdate: ({ editor }) => {
-      console.log("onUpdate", editor?.getHTML());
+    /* onUpdate: ({ editor }) => {
+      //console.log("onUpdate", editor?.getHTML());
       onChange?.(editor?.getHTML() ?? "");
-    },
+    }, */
   });
 
   const rect = useCursorVisibility({
