@@ -5,7 +5,7 @@ import Avatar from "~/components/general/avatar";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
 import Link from "~/components/general/link";
-import GuardianVisibilityDialog from "~/components/profile/body/application/dialog/edit-guardian-visibility";
+import GuardianPermissionsDialog from "~/components/profile/body/application/dialog/guardian-permissions";
 
 /**
  * Guardians component props.
@@ -58,7 +58,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
                     })}
               </div>
               <div>
-                <GuardianVisibilityDialog
+                <GuardianPermissionsDialog
                   guardian={guardian}
                   userIdentifier={status.userSchoolDataIdentifier}
                 >
@@ -67,7 +67,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
                       ns: "users",
                     })}
                   </Link>
-                </GuardianVisibilityDialog>
+                </GuardianPermissionsDialog>
               </div>
             </div>
           </div>

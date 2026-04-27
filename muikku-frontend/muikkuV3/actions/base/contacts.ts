@@ -12,7 +12,6 @@ export type CONTACT_UPDATE_GUARDIAN = SpecificActionType<
   "CONTACT_UPDATE_GUARDIAN",
   Guardian
 >;
-
 export type CONTACT_LOAD_GROUP = SpecificActionType<
   "CONTACT_LOAD_GROUP",
   ContactGroupPayload
