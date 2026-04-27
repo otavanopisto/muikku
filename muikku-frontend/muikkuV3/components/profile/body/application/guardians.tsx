@@ -26,7 +26,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
 
   return (
     <div>
-      <h2>Guardians</h2>
+      <h2>{t("labels.guardians", { ns: "users" })}</h2>
       <div className="item-list item-list--student-guardians">
         {guardians.list.map((guardian, index) => (
           <div

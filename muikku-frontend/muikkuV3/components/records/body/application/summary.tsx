@@ -32,7 +32,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
 import { UserStudyData } from "~/reducers/study-activity";
-import GuardianVisibilityDialog from "~/components/profile/body/application/dialog/edit-guardian-visibility";
+import GuardianPermissionsDialog from "~/components/profile/body/application/dialog/guardian-permissions";
 import Link from "~/components/general/link";
 
 /**
@@ -347,7 +347,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                 })}
                           </div>
                           <div>
-                            <GuardianVisibilityDialog
+                            <GuardianPermissionsDialog
                               guardian={guardian}
                               userIdentifier={
                                 this.props.status.userSchoolDataIdentifier
@@ -358,7 +358,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   ns: "users",
                                 })}
                               </Link>
-                            </GuardianVisibilityDialog>
+                            </GuardianPermissionsDialog>
                           </div>
                         </div>
                       </>

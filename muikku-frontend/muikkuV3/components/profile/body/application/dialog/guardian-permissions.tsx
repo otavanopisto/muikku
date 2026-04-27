@@ -60,12 +60,15 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
         <legend className="form__legend form__legend--guardian-visibility">
           {t("labels.guardianContinuedViewPermission", { ns: "users" })}
         </legend>
-        <p className="form-element__description">
-          {t("content.guardianPermissionPrompt", {
-            ns: "users",
-            guardian: guardian.firstName + " " + guardian.lastName,
-          })}
-        </p>
+        <p
+          className="form-element__description"
+          dangerouslySetInnerHTML={{
+            __html: t("content.guardianPermissionPrompt", {
+              ns: "users",
+              guardian: guardian.firstName + " " + guardian.lastName,
+            }),
+          }}
+        ></p>
         <div className="form-element form-element--checkbox-radiobutton">
           <input
             checked={canView}
@@ -81,7 +84,6 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
         <div className="form-element form-element--checkbox-radiobutton">
           <input
             checked={!canView}
-            //  value={this.state.vacationAutoReply}
             id="cannotSeeDependentInformation"
             type="radio"
             name="viewPermissions"
