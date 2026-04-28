@@ -43,6 +43,10 @@ import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon";
 import { LinkIcon } from "@/components/tiptap-icons/link-icon";
 
 // --- Tiptap Extension Custom ---
+import {
+  SourceModeButton,
+  sourceModePluginKey,
+} from "@/components/tiptap-extension-custom/source-mode";
 import { MathEquationButton } from "@/components/tiptap-extension-custom/math-equations";
 import { DetailsButton } from "@/components/tiptap-extension-custom/details";
 import { IndentButton } from "@/components/tiptap-extension-custom/indent";
@@ -70,6 +74,7 @@ import { useCursorVisibility } from "~/src/hooks/use-cursor-visibility";
 import { Editor, useCurrentEditor } from "@tiptap/react";
 import { useWindowSize } from "~/src/hooks/use-window-size";
 import { useIsBreakpoint } from "~/src/hooks/use-is-breakpoint";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * MainToolbarContent is the main toolbar content for the Muikku Material Editor.
@@ -80,116 +85,133 @@ function MainToolbarContent(props: {
   onHighlighterClick: () => void;
   onLinkClick: () => void;
   isMobile: boolean;
+  isSourceMode: boolean;
   editor: Editor | null;
 }) {
-  const { onHighlighterClick, onLinkClick, isMobile } = props;
+  const { onHighlighterClick, onLinkClick, isMobile, isSourceMode } = props;
 
   return (
     <>
       <ToolbarGroup>
-        <UndoRedoButton action="undo" />
-        <UndoRedoButton action="redo" />
+        <SourceModeButton />
+      </ToolbarGroup>
+
+      <ToolbarGroup>
+        <UndoRedoButton action="undo" disabled={isSourceMode} />
+        <UndoRedoButton action="redo" disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <HeadingDropdownMenu modal={false} levels={[1, 2, 3, 4]} />
+        <HeadingDropdownMenu
+          modal={false}
+          levels={[1, 2, 3, 4]}
+          disabled={isSourceMode}
+        />
         <ListDropdownMenu
           modal={false}
           types={["bulletList", "orderedList", "taskList"]}
+          disabled={isSourceMode}
         />
-        <BlockquoteButton />
-        <CodeBlockButton />
+        <BlockquoteButton disabled={isSourceMode} />
+        <CodeBlockButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <LangDropdownMenu />
+        <LangDropdownMenu disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MarkButton type="bold" />
-        <MarkButton type="italic" />
-        <MarkButton type="strike" />
-        <MarkButton type="code" />
-        <MarkButton type="underline" />
+        <MarkButton type="bold" disabled={isSourceMode} />
+        <MarkButton type="italic" disabled={isSourceMode} />
+        <MarkButton type="strike" disabled={isSourceMode} />
+        <MarkButton type="code" disabled={isSourceMode} />
+        <MarkButton type="underline" disabled={isSourceMode} />
         {!isMobile ? (
-          <ColorHighlightPopover />
+          <ColorHighlightPopover disabled={isSourceMode} />
         ) : (
-          <ColorHighlightPopoverButton onClick={onHighlighterClick} />
+          <ColorHighlightPopoverButton
+            onClick={onHighlighterClick}
+            disabled={isSourceMode}
+          />
         )}
-        <TextColorPopover />
-        {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
+        <TextColorPopover disabled={isSourceMode} />
+        {!isMobile ? (
+          <LinkPopover disabled={isSourceMode} />
+        ) : (
+          <LinkButton onClick={onLinkClick} disabled={isSourceMode} />
+        )}
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MarkButton type="superscript" />
-        <MarkButton type="subscript" />
+        <MarkButton type="superscript" disabled={isSourceMode} />
+        <MarkButton type="subscript" disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <TextAlignButton align="left" />
-        <TextAlignButton align="center" />
-        <TextAlignButton align="right" />
-        <TextAlignButton align="justify" />
+        <TextAlignButton align="left" disabled={isSourceMode} />
+        <TextAlignButton align="center" disabled={isSourceMode} />
+        <TextAlignButton align="right" disabled={isSourceMode} />
+        <TextAlignButton align="justify" disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <IndentButton action="increase" />
-        <IndentButton action="decrease" />
+        <IndentButton action="increase" disabled={isSourceMode} />
+        <IndentButton action="decrease" disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <TextDirectionLeftButton />
-        <TextDirectionRightButton />
+        <TextDirectionLeftButton disabled={isSourceMode} />
+        <TextDirectionRightButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <ImageUploadButton text="Add" />
-        <IframeButton />
+        <ImageUploadButton text="Add" disabled={isSourceMode} />
+        <IframeButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MathEquationButton />
-        <TablePopover />
-        <DetailsButton />
+        <MathEquationButton disabled={isSourceMode} />
+        <TablePopover disabled={isSourceMode} />
+        <DetailsButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <DivBoxSelect />
+        <DivBoxSelect disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MuikkuTextFieldButton />
-        <MuikkuMemoFieldButton />
-        <MuikkuConnectFieldButton />
-        <MuikkuOrganizerFieldButton />
-        <MuikkuSorterFieldButton />
-        <MuikkuJournalFieldButton />
-        <MuikkuAudioFieldButton />
-        <MuikkuSelectFieldButton />
-        <MuikkuFileFieldButton />
-        <MuikkuMathFieldButton />
+        <MuikkuTextFieldButton disabled={isSourceMode} />
+        <MuikkuMemoFieldButton disabled={isSourceMode} />
+        <MuikkuConnectFieldButton disabled={isSourceMode} />
+        <MuikkuOrganizerFieldButton disabled={isSourceMode} />
+        <MuikkuSorterFieldButton disabled={isSourceMode} />
+        <MuikkuJournalFieldButton disabled={isSourceMode} />
+        <MuikkuAudioFieldButton disabled={isSourceMode} />
+        <MuikkuSelectFieldButton disabled={isSourceMode} />
+        <MuikkuFileFieldButton disabled={isSourceMode} />
+        <MuikkuMathFieldButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <Spacer />
@@ -210,6 +232,7 @@ function MainToolbarContent(props: {
  */
 function MobileToolbarContent(props: {
   type: "highlighter" | "link";
+  isSourceMode: boolean;
   onBack: () => void;
 }) {
   const { type, onBack } = props;
@@ -260,8 +283,16 @@ export function MuikkuMaterialEditorToolbar() {
     }
   }, [isMobile, mobileView]);
 
+  const { editor: effectiveEditor, selected: isSourceMode } = useTiptapEditorV2(
+    {
+      editor,
+      selector: ({ editor }) =>
+        !!sourceModePluginKey.getState(editor.state)?.enabled,
+    }
+  );
+
   const rect = useCursorVisibility({
-    editor,
+    editor: effectiveEditor,
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
@@ -278,12 +309,14 @@ export function MuikkuMaterialEditorToolbar() {
           onHighlighterClick={() => setMobileView("highlighter")}
           onLinkClick={() => setMobileView("link")}
           isMobile={isMobile}
+          isSourceMode={isSourceMode ?? false}
           editor={editor}
         />
       ) : (
         <MobileToolbarContent
           type={mobileView === "highlighter" ? "highlighter" : "link"}
           onBack={() => setMobileView("main")}
+          isSourceMode={isSourceMode ?? false}
         />
       )}
     </Toolbar>

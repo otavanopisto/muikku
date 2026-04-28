@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
@@ -29,6 +29,10 @@ import { TableBubbleMenu } from "@/components/tiptap-ui/table-bubble-menu";
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Tiptap Extension Custom ---
+import {
+  SourceModeExtension,
+  sourceModePluginKey,
+} from "@/components/tiptap-extension-custom/source-mode";
 import { MathEquation } from "@/components/tiptap-extension-custom/math-equations";
 import { DetailsKit } from "@/components/tiptap-extension-custom/details";
 import { IndentExtension } from "@/components/tiptap-extension-custom/indent";
@@ -39,6 +43,7 @@ import {
 } from "@/components/tiptap-extension-custom/div-box";
 import { IframeExtension } from "@/components/tiptap-extension-custom/iframe";
 import { MuikkuFieldsKit } from "@/components/tiptap-extension-custom/muikku-fields-kit";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * MuikkuMaterialEditorCore is the core component for the Muikku Material Editor.
@@ -120,11 +125,38 @@ export function MuikkuMaterialEditorCore(props: {
           mathexercise: true,
         },
       }),
+      SourceModeExtension,
     ],
     textDirection: "auto",
     shouldRerenderOnTransaction: false,
-    onUpdate: ({ editor }) => props.onChange?.(editor.getHTML()),
+    onUpdate: ({ editor }) => {
+      console.log("onUpdate", editor.getHTML(), editor.getJSON());
+      //props.onChange?.(editor.getHTML());
+    },
   });
+
+  const { selected: isSourceMode } = useTiptapEditorV2({
+    editor,
+    selector: ({ editor }) =>
+      !!sourceModePluginKey.getState(editor.state)?.enabled,
+  });
+
+  const [htmlDraft, setHtmlDraft] = useState("");
+
+  const prev = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (!editor || isSourceMode === undefined) return;
+    // entering source mode
+    if (!prev.current && isSourceMode) {
+      setHtmlDraft(editor.getHTML());
+    }
+    // leaving source mode => apply
+    if (prev.current && !isSourceMode) {
+      editor.commands.setContent(htmlDraft);
+    }
+    prev.current = isSourceMode;
+  }, [editor, isSourceMode, htmlDraft]);
 
   const ctxValue = useMemo(() => ({ editor }), [editor]);
 
@@ -135,11 +167,20 @@ export function MuikkuMaterialEditorCore(props: {
       {editor && <TableBubbleMenu editor={editor} />}
       {editor && <DivBoxBubbleMenu editor={editor} />}
 
-      <EditorContent
-        editor={editor}
-        role="presentation"
-        className="simple-editor-content"
-      />
+      {!isSourceMode ? (
+        <EditorContent
+          editor={editor}
+          role="presentation"
+          className="simple-editor-content"
+        />
+      ) : (
+        <textarea
+          value={htmlDraft}
+          onChange={(e) => setHtmlDraft(e.target.value)}
+          spellCheck={false}
+          className="source-mode-textarea"
+        />
+      )}
     </EditorContext.Provider>
   );
 }
