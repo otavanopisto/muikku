@@ -39,8 +39,7 @@ import StudyProgress from "./study-progress";
 import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
-import moment from "moment";
-
+import ContactCard from "~/components/general/contact-card";
 /**
  * StateOfStudiesProps
  */
@@ -164,6 +163,54 @@ class StateOfStudies extends React.Component<
         }
       ></Avatar>
     );
+
+    //const studentGuardians = (
+    //  <div className="application-sub-panel application-sub-panel--guardians">
+    //    <div className="application-sub-panel__header">
+    //      {t("labels.guardians", {
+    //        ns: "users",
+    //      })}
+    //    </div>
+    //    <div className="application-sub-panel__body">
+    //      <div className="item-list item-list--student-guardians">
+    //        {this.props.contacts.guardians.list.length > 0 &&
+    //          this.props.contacts.guardians.list.map((guardian, index) => {
+    //            const { firstName, lastName, continuedViewPermission } =
+    //              guardian;
+    //            const guardianState = continuedViewPermission
+    //              ? t("labels.continuedViewPermission", {
+    //                  ns: "users",
+    //                })
+    //              : t("labels.noContinuedViewPermission", {
+    //                  ns: "users",
+    //                });
+    //            const guardianActions = (
+    //              <GuardianPermissionsDialog
+    //                guardian={guardian}
+    //                userIdentifier={this.props.status.userSchoolDataIdentifier}
+    //              >
+    //                <Link className="link">
+    //                  {t("actions.editPermissions", {
+    //                    ns: "users",
+    //                  })}
+    //                </Link>
+    //              </GuardianPermissionsDialog>
+    //            );
+
+    //            return (
+    //              <ContactCard
+    //                key={index}
+    //                actions={guardianActions}
+    //                firstname={firstName}
+    //                lastname={lastName}
+    //                state={guardianState}
+    //              />
+    //            );
+    //          })}
+    //      </div>
+    //    </div>
+    //  </div>
+    //);
 
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanelViewHeader
@@ -549,156 +596,80 @@ class StateOfStudies extends React.Component<
                     .length > 0 ? (
                     this.props.guider.currentStudent.basic.guidanceCounselors.map(
                       (counselor) => {
-                        let displayVacationPeriod =
-                          !!counselor.properties["profile-vacation-start"];
-                        if (counselor.properties["profile-vacation-end"]) {
-                          // we must check for the ending
-                          const vacationEndsAt = moment(
-                            counselor.properties["profile-vacation-end"]
-                          );
-                          const today = moment();
-                          // if it's before or it's today then we display, otherwise nope
-                          displayVacationPeriod =
-                            vacationEndsAt.isAfter(today, "day") ||
-                            vacationEndsAt.isSame(today, "day");
-                        }
-                        return (
-                          <div
-                            className="item-list__item item-list__item--student-counselor"
-                            key={counselor.userEntityId}
-                          >
-                            <div className="item-list__profile-picture">
-                              <Avatar
-                                id={counselor.userEntityId}
-                                userCategory={3}
-                                name={counselor.firstName}
-                                hasImage={counselor.hasImage}
+                        const {
+                          userEntityId,
+                          firstName,
+                          lastName,
+                          email,
+                          hasImage,
+                          groupAdvisor,
+                          studyAdvisor,
+                          properties,
+                        } = counselor;
+                        const councelorActions = (
+                          <>
+                            <CommunicatorNewMessage
+                              extraNamespace="guidance-counselor"
+                              initialSelectedItems={[
+                                {
+                                  type: "staff",
+                                  value: {
+                                    id: userEntityId,
+                                    name: getName(counselor, true),
+                                  },
+                                },
+                              ]}
+                            >
+                              <ButtonPill
+                                icon="envelope"
+                                aria-label={this.props.i18n.t("labels.send", {
+                                  ns: "messaging",
+                                })}
+                                title={this.props.i18n.t("labels.send", {
+                                  ns: "messaging",
+                                })}
+                                buttonModifiers={[
+                                  "new-message",
+                                  "new-message-to-staff",
+                                ]}
+                              ></ButtonPill>
+                            </CommunicatorNewMessage>
+                            {properties["profile-phone"] &&
+                            properties["profile-whatsapp"] ? (
+                              <WhatsappButtonLink
+                                mobileNumber={properties["profile-phone"]}
                               />
-                            </div>
-                            <div className="item-list__text-body item-list__text-body--multiline">
-                              <div className="item-list__user-name">
-                                {counselor.firstName} {counselor.lastName}
-                              </div>
-                              <div className="item-list__counselors labels">
-                                {counselor.groupAdvisor && (
-                                  <span className="label">
-                                    <span className="label__text">
-                                      {this.props.i18n.t(
-                                        "labels.groupCounselor",
-                                        {
-                                          ns: "users",
-                                        }
-                                      )}
-                                    </span>
-                                  </span>
+                            ) : null}
+                            {properties["profile-appointmentCalendar"] ? (
+                              <ButtonPill
+                                aria-label={this.props.i18n.t(
+                                  "labels.appointment"
                                 )}
-                                {counselor.studyAdvisor && (
-                                  <span className="label">
-                                    <span className="label__text">
-                                      {this.props.i18n.t(
-                                        "labels.studyCounselor",
-                                        {
-                                          ns: "users",
-                                        }
-                                      )}
-                                    </span>
-                                  </span>
-                                )}
-                              </div>
-                              <div className="item-list__user-contact-info">
-                                <div className="item-list__user-email">
-                                  <div className="glyph icon-envelope"></div>
-                                  {counselor.email}
-                                </div>
-                                {counselor.properties["profile-phone"] ? (
-                                  <div className="item-list__user-phone">
-                                    <div className="glyph icon-phone"></div>
-                                    {counselor.properties["profile-phone"]}
-                                  </div>
-                                ) : null}
-                              </div>
-                              {displayVacationPeriod ? (
-                                <div className="item-list__user-vacation-period">
-                                  {this.props.i18n.t("labels.status", {
-                                    context: "xa",
-                                  })}
-                                  &nbsp;
-                                  {localize.date(
-                                    counselor.properties[
-                                      "profile-vacation-start"
-                                    ]
-                                  )}
-                                  {counselor.properties["profile-vacation-end"]
-                                    ? "–" +
-                                      localize.date(
-                                        counselor.properties[
-                                          "profile-vacation-end"
-                                        ]
-                                      )
-                                    : null}
-                                </div>
-                              ) : null}
-                              <div className="item-list__user-actions">
-                                <CommunicatorNewMessage
-                                  extraNamespace="guidance-counselor"
-                                  initialSelectedItems={[
-                                    {
-                                      type: "staff",
-                                      value: {
-                                        id: counselor.userEntityId,
-                                        name: getName(counselor, true),
-                                      },
-                                    },
-                                  ]}
-                                >
-                                  <ButtonPill
-                                    icon="envelope"
-                                    aria-label={this.props.i18n.t(
-                                      "labels.send",
-                                      {
-                                        ns: "messaging",
-                                      }
-                                    )}
-                                    title={this.props.i18n.t("labels.send", {
-                                      ns: "messaging",
-                                    })}
-                                    buttonModifiers={[
-                                      "new-message",
-                                      "new-message-to-staff",
-                                    ]}
-                                  ></ButtonPill>
-                                </CommunicatorNewMessage>
-                                {counselor.properties["profile-phone"] &&
-                                counselor.properties["profile-whatsapp"] ? (
-                                  <WhatsappButtonLink
-                                    mobileNumber={
-                                      counselor.properties["profile-phone"]
-                                    }
-                                  />
-                                ) : null}
-                                {counselor.properties[
-                                  "profile-appointmentCalendar"
-                                ] ? (
-                                  <ButtonPill
-                                    aria-label={this.props.i18n.t(
-                                      "labels.appointment"
-                                    )}
-                                    title={this.props.i18n.t(
-                                      "labels.appointment"
-                                    )}
-                                    icon="clock"
-                                    buttonModifiers="appointment-calendar"
-                                    openInNewTab="_blank"
-                                    href={
-                                      counselor.properties[
-                                        "profile-appointmentCalendar"
-                                      ]
-                                    }
-                                  />
-                                ) : null}
-                              </div>
-                            </div>
-                          </div>
+                                title={this.props.i18n.t("labels.appointment")}
+                                icon="clock"
+                                buttonModifiers="appointment-calendar"
+                                openInNewTab="_blank"
+                                href={properties["profile-appointmentCalendar"]}
+                              />
+                            ) : null}
+                          </>
+                        );
+
+                        return (
+                          <ContactCard
+                            key={userEntityId}
+                            actions={councelorActions}
+                            firstname={firstName}
+                            lastname={lastName}
+                            hasImage={hasImage}
+                            id={userEntityId}
+                            email={email}
+                            phone={properties["profile-phone"]}
+                            groupAdvisor={groupAdvisor}
+                            studyAdvisor={studyAdvisor}
+                            vacationStart={properties["profile-vacationStart"]}
+                            vacationEnd={properties["profile-vacationEnd"]}
+                          />
                         );
                       }
                     )

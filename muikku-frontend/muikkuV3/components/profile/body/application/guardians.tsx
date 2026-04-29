@@ -1,12 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import Avatar from "~/components/general/avatar";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
 import Link from "~/components/general/link";
 import GuardianPermissionsDialog from "~/components/profile/body/application/dialog/guardian-permissions";
-
+import ContactCard from "~/components/general/contact-card";
 /**
  * Guardians component props.
  */
@@ -20,58 +19,45 @@ const Guardians: React.FC<GuardiansProps> = () => {
   const guardians = useSelector((state: StateType) => state.contacts.guardians);
   const { profile, status } = useSelector((state: StateType) => state);
 
-  if (profile.location !== "guardians" || !guardians.list) {
-    return null;
-  }
-
   return (
     <div>
       <h2>{t("labels.guardians", { ns: "users" })}</h2>
       <div className="item-list item-list--student-guardians">
-        {guardians.list.map((guardian, index) => (
-          <div
-            className="item-list__item item-list__item--student-counselor"
-            key={guardian.identifier}
-          >
-            <div
-              className="item-list__profile-picture"
-              key={guardian.identifier}
+        {guardians.list.map((guardian, index) => {
+          const actions = (
+            <GuardianPermissionsDialog
+              guardian={guardian}
+              userIdentifier={status.userSchoolDataIdentifier}
             >
-              <Avatar
-                id={index}
-                userCategory={3}
-                name={guardian.firstName + " " + guardian.lastName}
-                hasImage={false}
-              />
-            </div>
-            <div className="item-list__text-body item-list__text-body--multiline">
-              <div className="item-list__user-name">
-                {guardian.firstName} {guardian.lastName}
-              </div>
-              <div className="item-list__guardian-permission">
-                {guardian.continuedViewPermission
-                  ? t("labels.continuedViewPermission", {
-                      ns: "users",
-                    })
-                  : t("labels.noContinuedViewPermission", {
-                      ns: "users",
-                    })}
-              </div>
-              <div>
-                <GuardianPermissionsDialog
-                  guardian={guardian}
-                  userIdentifier={status.userSchoolDataIdentifier}
-                >
-                  <Link className="link">
-                    {t("actions.editPermissions", {
-                      ns: "users",
-                    })}
-                  </Link>
-                </GuardianPermissionsDialog>
-              </div>
-            </div>
-          </div>
-        ))}
+              <Link className="link">
+                {t("actions.editPermissions", {
+                  ns: "users",
+                })}
+              </Link>
+            </GuardianPermissionsDialog>
+          );
+
+          const guardianState = guardian.continuedViewPermission
+            ? t("labels.continuedViewPermission", {
+                ns: "users",
+              })
+            : t("labels.noContinuedViewPermission", {
+                ns: "users",
+              });
+
+          if (profile.location !== "guardians" || !guardians.list) {
+            return null;
+          }
+          return (
+            <ContactCard
+              key={index}
+              actions={actions}
+              firstname={guardian.firstName}
+              lastname={guardian.lastName}
+              state={guardianState}
+            />
+          );
+        })}
       </div>
     </div>
   );

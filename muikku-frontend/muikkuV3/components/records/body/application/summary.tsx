@@ -14,9 +14,7 @@ import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
-import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import CourseCarousel from "~/components/general/carousel/course-carousel";
 import {
@@ -34,6 +32,7 @@ import StudyProgress from "../study-progress";
 import { UserStudyData } from "~/reducers/study-activity";
 import GuardianPermissionsDialog from "~/components/profile/body/application/dialog/guardian-permissions";
 import Link from "~/components/general/link";
+import ContactCard from "~/components/general/contact-card";
 
 /**
  * SummaryProps
@@ -152,138 +151,78 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="item-list item-list--student-counselors">
               {this.props.contacts.counselors?.list.length > 0 ? (
                 this.props.contacts.counselors.list.map((counselor) => {
-                  let displayVacationPeriod =
-                    !!counselor.properties["profile-vacation-start"];
-                  if (counselor.properties["profile-vacation-end"]) {
-                    // we must check for the ending
-                    const vacationEndsAt = moment(
-                      counselor.properties["profile-vacation-end"]
-                    );
-                    const today = moment();
-                    // if it's before or it's today then we display, otherwise nope
-                    displayVacationPeriod =
-                      vacationEndsAt.isAfter(today, "day") ||
-                      vacationEndsAt.isSame(today, "day");
-                  }
-                  return (
-                    <div
-                      className="item-list__item item-list__item--student-counselor"
-                      key={counselor.userEntityId}
-                    >
-                      <div className="item-list__profile-picture">
-                        <Avatar
-                          id={counselor.userEntityId}
-                          userCategory={3}
-                          name={counselor.firstName}
-                          hasImage={counselor.hasImage}
+                  const {
+                    userEntityId,
+                    firstName,
+                    lastName,
+                    email,
+                    hasImage,
+                    groupAdvisor,
+                    studyAdvisor,
+                    properties,
+                  } = counselor;
+                  const councelorActions = (
+                    <>
+                      <CommunicatorNewMessage
+                        extraNamespace="guidance-counselor"
+                        initialSelectedItems={[
+                          {
+                            type: "staff",
+                            value: {
+                              id: userEntityId,
+                              name: getName(counselor, true),
+                            },
+                          },
+                        ]}
+                      >
+                        <ButtonPill
+                          icon="envelope"
+                          aria-label={t("labels.send", {
+                            ns: "messaging",
+                          })}
+                          title={t("labels.send", {
+                            ns: "messaging",
+                          })}
+                          buttonModifiers={[
+                            "new-message",
+                            "new-message-to-staff",
+                          ]}
+                        ></ButtonPill>
+                      </CommunicatorNewMessage>
+                      {properties["profile-phone"] &&
+                      properties["profile-whatsapp"] ? (
+                        <WhatsappButtonLink
+                          mobileNumber={properties["profile-phone"]}
                         />
-                      </div>
-                      <div className="item-list__text-body item-list__text-body--multiline">
-                        <div className="item-list__user-name">
-                          {counselor.firstName} {counselor.lastName}
-                        </div>
-                        <div className="item-list__counselors labels">
-                          {counselor.groupAdvisor && (
-                            <span className="label">
-                              <span className="label__text">
-                                {t("labels.groupCounselor", {
-                                  ns: "users",
-                                })}
-                              </span>
-                            </span>
-                          )}
-                          {counselor.studyAdvisor && (
-                            <span className="label">
-                              <span className="label__text">
-                                {t("labels.studyCounselor", {
-                                  ns: "users",
-                                })}
-                              </span>
-                            </span>
-                          )}
-                        </div>
-                        <div className="item-list__user-contact-info">
-                          <div className="item-list__user-email">
-                            <div className="glyph icon-envelope"></div>
-                            {counselor.email}
-                          </div>
-                          {counselor.properties["profile-phone"] ? (
-                            <div className="item-list__user-phone">
-                              <div className="glyph icon-phone"></div>
-                              {counselor.properties["profile-phone"]}
-                            </div>
-                          ) : null}
-                        </div>
-                        {displayVacationPeriod ? (
-                          <div className="item-list__user-vacation-period">
-                            {t("labels.status", {
-                              context: "xa",
-                            })}
-                            {localize.date(
-                              counselor.properties["profile-vacation-start"]
-                            )}
-                            {counselor.properties["profile-vacation-end"]
-                              ? "–" +
-                                localize.date(
-                                  counselor.properties["profile-vacation-end"]
-                                )
-                              : null}
-                          </div>
-                        ) : null}
-                        <div className="item-list__user-actions">
-                          <CommunicatorNewMessage
-                            extraNamespace="guidance-counselor"
-                            initialSelectedItems={[
-                              {
-                                type: "staff",
-                                value: {
-                                  id: counselor.userEntityId,
-                                  name: getName(counselor, true),
-                                },
-                              },
-                            ]}
-                          >
-                            <ButtonPill
-                              icon="envelope"
-                              aria-label={t("labels.send", {
-                                ns: "messaging",
-                              })}
-                              title={t("labels.send", {
-                                ns: "messaging",
-                              })}
-                              buttonModifiers={[
-                                "new-message",
-                                "new-message-to-staff",
-                              ]}
-                            ></ButtonPill>
-                          </CommunicatorNewMessage>
-                          {counselor.properties["profile-phone"] &&
-                          counselor.properties["profile-whatsapp"] ? (
-                            <WhatsappButtonLink
-                              mobileNumber={
-                                counselor.properties["profile-phone"]
-                              }
-                            />
-                          ) : null}
-                          {counselor.properties[
-                            "profile-appointmentCalendar"
-                          ] ? (
-                            <ButtonPill
-                              aria-label={t("labels.appointment")}
-                              title={t("labels.appointment")}
-                              icon="clock"
-                              buttonModifiers="appointment-calendar"
-                              openInNewTab="_blank"
-                              href={
-                                counselor.properties[
-                                  "profile-appointmentCalendar"
-                                ]
-                              }
-                            />
-                          ) : null}
-                        </div>
-                      </div>
-                    </div>
+                      ) : null}
+                      {properties["profile-appointmentCalendar"] ? (
+                        <ButtonPill
+                          aria-label={t("labels.appointment")}
+                          title={t("labels.appointment")}
+                          icon="clock"
+                          buttonModifiers="appointment-calendar"
+                          openInNewTab="_blank"
+                          href={properties["profile-appointmentCalendar"]}
+                        />
+                      ) : null}
+                    </>
+                  );
+
+                  return (
+                    <ContactCard
+                      key={userEntityId}
+                      actions={councelorActions}
+                      firstname={firstName}
+                      lastname={lastName}
+                      hasImage={hasImage}
+                      id={userEntityId}
+                      email={email}
+                      phone={properties["profile-phone"]}
+                      groupAdvisor={groupAdvisor}
+                      studyAdvisor={studyAdvisor}
+                      vacationStart={properties["profile-vacationStart"]}
+                      vacationEnd={properties["profile-vacationEnd"]}
+                    />
                   );
                 })
               ) : (
@@ -310,61 +249,42 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-guardians">
-              <div className="item-list__item item-list__item--student-guardian">
-                {this.props.contacts.guardians.list.length > 0 &&
-                  this.props.contacts.guardians.list.map((guardian, index) => {
-                    const {
-                      firstName,
-                      lastName,
-                      identifier,
-                      continuedViewPermission,
-                    } = guardian;
+              {this.props.contacts.guardians.list.length > 0 &&
+                this.props.contacts.guardians.list.map((guardian, index) => {
+                  const { firstName, lastName, continuedViewPermission } =
+                    guardian;
+                  const guardianState = continuedViewPermission
+                    ? t("labels.continuedViewPermission", {
+                        ns: "users",
+                      })
+                    : t("labels.noContinuedViewPermission", {
+                        ns: "users",
+                      });
+                  const guardianActions = (
+                    <GuardianPermissionsDialog
+                      guardian={guardian}
+                      userIdentifier={
+                        this.props.status.userSchoolDataIdentifier
+                      }
+                    >
+                      <Link className="link">
+                        {t("actions.editPermissions", {
+                          ns: "users",
+                        })}
+                      </Link>
+                    </GuardianPermissionsDialog>
+                  );
 
-                    return (
-                      <>
-                        <div
-                          className="item-list__profile-picture"
-                          key={identifier}
-                        >
-                          <Avatar
-                            id={index}
-                            userCategory={3}
-                            name={firstName + " " + lastName}
-                            hasImage={false}
-                          />
-                        </div>
-                        <div className="item-list__text-body item-list__text-body--multiline">
-                          <div className="item-list__user-name">
-                            {firstName} {lastName}
-                          </div>
-                          <div className="item-list__guardian-permission">
-                            {continuedViewPermission
-                              ? t("labels.continuedViewPermission", {
-                                  ns: "users",
-                                })
-                              : t("labels.noContinuedViewPermission", {
-                                  ns: "users",
-                                })}
-                          </div>
-                          <div>
-                            <GuardianPermissionsDialog
-                              guardian={guardian}
-                              userIdentifier={
-                                this.props.status.userSchoolDataIdentifier
-                              }
-                            >
-                              <Link className="link">
-                                {t("actions.editPermissions", {
-                                  ns: "users",
-                                })}
-                              </Link>
-                            </GuardianPermissionsDialog>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })}
-              </div>
+                  return (
+                    <ContactCard
+                      key={index}
+                      actions={guardianActions}
+                      firstname={firstName}
+                      lastname={lastName}
+                      state={guardianState}
+                    />
+                  );
+                })}
             </div>
           </div>
         </div>
