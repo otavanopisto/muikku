@@ -1,5 +1,4 @@
 import { Node, mergeAttributes } from "@tiptap/core";
-//import type { Editor } from "@tiptap/react";
 import type { Node as PMNode, NodeRange } from "@tiptap/pm/model";
 import type { EditorState, Transaction } from "@tiptap/pm/state";
 import { findWrapping } from "@tiptap/pm/transform";
@@ -19,6 +18,32 @@ export type DivBoxAttrs = {
   "data-show": string | null;
   "data-name": string | null;
   "data-style": string | null; // preset name
+};
+
+export type DivBoxStylePolicy = "any" | "allowedStylesOnly" | "none";
+export type DivBoxDataStylePolicy = "any" | "knownPresetsOnly";
+
+export type DivBoxOptions = {
+  /**
+   * How to treat inline style on the div box.
+   * - "any": keep style as-is (current behavior)
+   * - "none": drop style completely
+   * - "allowedStylesOnly": keep only whitelisted CSS properties
+   * @default "any"
+   */
+  stylePolicy?: DivBoxStylePolicy;
+
+  /**
+   * CSS properties allowed when stylePolicy="allowedStylesOnly".
+   * Use lowercase names (e.g. "background-color").
+   */
+  allowedStyles?: string[];
+
+  /**
+   * Whether data-style must match known preset names (stylesSet).
+   * @default "knownPresetsOnly"
+   */
+  dataStylePolicy?: DivBoxDataStylePolicy;
 };
 
 declare module "@tiptap/core" {
@@ -63,8 +88,97 @@ function findStyle(styleName: string): StyleDefinition | null {
 }
 
 /**
+ * Check if the name is a known preset name.
+ * @param name - The name to check.
+ * @returns True if the name is a known preset name, false otherwise.
+ */
+function isKnownPresetName(name: string | null | undefined): boolean {
+  if (!name) return false;
+  return stylesSet.some((s) => s.name === name);
+}
+
+/**
+ * Keep only allowed CSS declarations (property allowlist).
+ * Very simple parser: splits by ";" and ":".
+ */
+function filterStyleByAllowlist(
+  style: string | null | undefined,
+  allowedProps: string[]
+): string | null {
+  const raw = emptyToNull(style);
+  if (!raw) return null;
+
+  const allowed = new Set(
+    allowedProps.map((p) => p.trim().toLowerCase()).filter(Boolean)
+  );
+  if (allowed.size === 0) return null;
+
+  const kept: string[] = [];
+
+  for (const decl of raw.split(";")) {
+    const d = decl.trim();
+    if (!d) continue;
+
+    const idx = d.indexOf(":");
+    if (idx < 0) continue;
+
+    const prop = d.slice(0, idx).trim().toLowerCase();
+    const val = d.slice(idx + 1).trim();
+
+    if (!prop || !val) continue;
+    if (!allowed.has(prop)) continue;
+
+    // Guard: disallow CSS custom props in allowlist mode unless explicitly included
+    // (If you want them, add "--foo" to allowedStyles)
+    if (prop.startsWith("--") && !allowed.has(prop)) continue;
+
+    kept.push(`${prop}: ${val}`);
+  }
+
+  return kept.length ? kept.join("; ") : null;
+}
+
+/**
+ * Sanitize the style by policy.
+ * @param style - The style to sanitize.
+ * @param options - The options for the sanitization.
+ * @returns The sanitized style or null.
+ */
+function sanitizeStyleByPolicy(
+  style: string | null | undefined,
+  options: DivBoxOptions
+): string | null {
+  const policy = options.stylePolicy ?? "any";
+  if (policy === "none") return null;
+  if (policy === "allowedStylesOnly") {
+    return filterStyleByAllowlist(style, options.allowedStyles ?? []);
+  }
+  // policy === "any"
+  return emptyToNull(style);
+}
+
+/**
+ * Sanitize the data style by policy.
+ * @param dataStyle - The data style to sanitize.
+ * @param options - The options for the sanitization.
+ * @returns The sanitized data style or null.
+ */
+function sanitizeDataStyleByPolicy(
+  dataStyle: string | null | undefined,
+  options: DivBoxOptions
+): string | null {
+  const policy = options.dataStylePolicy ?? "knownPresetsOnly";
+  const v = emptyToNull(dataStyle);
+  if (!v) return null;
+
+  if (policy === "any") return v;
+  // knownPresetsOnly
+  return isKnownPresetName(v) ? v : null;
+}
+
+/**
  * Find the active div box.
- * @param state - The editor state.
+ * @param state - The state to find the active div box in.
  * @returns The active div box or null.
  */
 function findActiveDivBox(state: EditorState) {
@@ -76,7 +190,7 @@ function findActiveDivBox(state: EditorState) {
 
 /**
  * Resolve the wrap target.
- * @param state - The editor state.
+ * @param state - The state to resolve the wrap target in.
  * @returns The wrap target or null.
  */
 function resolveWrapTarget(
@@ -87,7 +201,6 @@ function resolveWrapTarget(
   | null {
   const { $from, $to } = state.selection;
 
-  // Wrap whole table
   for (let d = $from.depth; d > 0; d--) {
     const n = $from.node(d);
     if (n.type.name === "table") {
@@ -95,7 +208,6 @@ function resolveWrapTarget(
     }
   }
 
-  // Wrap whole list
   for (let d = $from.depth; d > 0; d--) {
     const n = $from.node(d);
     if (
@@ -114,7 +226,7 @@ function resolveWrapTarget(
 
 /**
  * Apply the wrap.
- * @param props - The props for the applyWrap function.
+ * @param props - The props for the apply wrap.
  * @returns True if the wrap was applied, false otherwise.
  */
 function applyWrap(props: {
@@ -146,42 +258,51 @@ function applyWrap(props: {
   return true;
 }
 
-export const DivBoxExtension = Node.create({
+export const DivBoxExtension = Node.create<DivBoxOptions>({
   name: "divBox",
 
   group: "block",
   content: "block+",
   defining: true,
 
+  addOptions() {
+    return {
+      stylePolicy: "any",
+      allowedStyles: [],
+      dataStylePolicy: "knownPresetsOnly",
+    };
+  },
+
   addAttributes() {
     return {
       class: {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("class"),
+        parseHTML: (el: HTMLElement) => emptyToNull(el.getAttribute("class")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.class ? { class: attrs.class as string } : {},
       },
       id: {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("id"),
+        parseHTML: (el: HTMLElement) => emptyToNull(el.getAttribute("id")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.id ? { id: attrs.id as string } : {},
       },
       lang: {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("lang"),
+        parseHTML: (el: HTMLElement) => emptyToNull(el.getAttribute("lang")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.lang ? { lang: attrs.lang as string } : {},
       },
       style: {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("style"),
+        parseHTML: (el: HTMLElement) =>
+          sanitizeStyleByPolicy(el.getAttribute("style"), this.options),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.style ? { style: attrs.style as string } : {},
       },
       title: {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("title"),
+        parseHTML: (el: HTMLElement) => emptyToNull(el.getAttribute("title")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.title ? { title: attrs.title as string } : {},
       },
@@ -195,7 +316,8 @@ export const DivBoxExtension = Node.create({
       },
       "data-show": {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("data-show"),
+        parseHTML: (el: HTMLElement) =>
+          emptyToNull(el.getAttribute("data-show")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs["data-show"]
             ? { "data-show": attrs["data-show"] as string }
@@ -203,7 +325,8 @@ export const DivBoxExtension = Node.create({
       },
       "data-name": {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("data-name"),
+        parseHTML: (el: HTMLElement) =>
+          emptyToNull(el.getAttribute("data-name")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs["data-name"]
             ? { "data-name": attrs["data-name"] as string }
@@ -211,7 +334,11 @@ export const DivBoxExtension = Node.create({
       },
       "data-style": {
         default: null,
-        parseHTML: (el: HTMLElement) => el.getAttribute("data-style"),
+        parseHTML: (el: HTMLElement) =>
+          sanitizeDataStyleByPolicy(
+            el.getAttribute("data-style"),
+            this.options
+          ),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs["data-style"]
             ? { "data-style": attrs["data-style"] as string }
@@ -222,10 +349,8 @@ export const DivBoxExtension = Node.create({
 
   parseHTML() {
     return [
-      // New unified box
+      { tag: "div" },
       { tag: `div[${DIV_BOX_MARK}="true"]` },
-
-      // Legacy styleSet boxes
       { tag: "div.material-styles-block" },
     ];
   },
@@ -253,7 +378,6 @@ export const DivBoxExtension = Node.create({
 
           const active = findActiveDivBox(state);
 
-          // If already inside a box -> update attrs (toggle off if same preset)
           if (active) {
             const currentPreset = active.node.attrs["data-style"] as
               | string
@@ -261,7 +385,6 @@ export const DivBoxExtension = Node.create({
               | null;
 
             if (currentPreset && currentPreset === styleName) {
-              // same preset again = unwrap (toggle off)
               tr = tr.replaceWith(
                 active.pos,
                 active.pos + active.node.nodeSize,
@@ -281,7 +404,6 @@ export const DivBoxExtension = Node.create({
             return true;
           }
 
-          // Not inside a box -> wrap selection with one wrapper
           return applyWrap({
             state,
             tr,
@@ -304,11 +426,24 @@ export const DivBoxExtension = Node.create({
 
           const active = findActiveDivBox(state);
 
-          // If inside a box -> update it
+          const nextStyle =
+            attrs.style !== undefined
+              ? sanitizeStyleByPolicy(attrs.style, this.options)
+              : undefined;
+
+          const nextDataStyle =
+            attrs["data-style"] !== undefined
+              ? sanitizeDataStyleByPolicy(attrs["data-style"], this.options)
+              : undefined;
+
           if (active) {
             tr = tr.setNodeMarkup(active.pos, undefined, {
               ...active.node.attrs,
               ...attrs,
+              ...(nextStyle !== undefined ? { style: nextStyle } : {}),
+              ...(nextDataStyle !== undefined
+                ? { "data-style": nextDataStyle }
+                : {}),
               id: emptyToNull(attrs.id ?? (active.node.attrs.id as string)),
               lang: emptyToNull(
                 attrs.lang ?? (active.node.attrs.lang as string)
@@ -316,22 +451,23 @@ export const DivBoxExtension = Node.create({
               title: emptyToNull(
                 attrs.title ?? (active.node.attrs.title as string)
               ),
-              style: emptyToNull(
-                attrs.style ?? (active.node.attrs.style as string)
-              ),
               dir: normalizeDir(attrs.dir ?? active.node.attrs.dir),
             });
             if (dispatch) dispatch(tr.scrollIntoView());
             return true;
           }
 
-          // Not inside a box -> allow wrapping with attrs (optional; handy for modal-first use)
+          const wrapAttrs: Record<string, unknown> = { ...attrs };
+          if (nextStyle !== undefined) wrapAttrs.style = nextStyle;
+          if (nextDataStyle !== undefined)
+            wrapAttrs["data-style"] = nextDataStyle;
+
           return applyWrap({
             state,
             tr,
             dispatch,
             type,
-            attrs,
+            attrs: wrapAttrs,
           });
         },
 

@@ -44,35 +44,39 @@ function clamp(n: number, min: number, max: number) {
 }
 
 /**
- * Strips margin-left/right declarations from a style string.
- * @param style - The style string to strip.
- * @returns The stripped style string.
+ * Strip one specific margin side from style string.
+ * Keeps the opposite side untouched.
  */
-function stripMarginLeftRight(style: string): string {
-  // Remove any existing margin-left/right declarations to avoid duplicates.
+function stripMarginSide(
+  style: string,
+  propToStrip: "margin-left" | "margin-right"
+): string {
   return style
     .split(";")
     .map((s) => s.trim())
     .filter(Boolean)
     .filter((decl) => {
       const prop = decl.split(":")[0]?.trim()?.toLowerCase();
-      return prop !== "margin-left" && prop !== "margin-right";
+      return prop !== propToStrip;
     })
     .join("; ");
 }
 
+type ParsedMargin = {
+  raw: string;
+  px: number | null;
+};
+
 /**
  * Parses a margin-left/right declaration from a style string.
- * @param styleAttr - The style string to parse.
- * @param prop - The property to parse.
- * @returns The parsed margin in pixels.
+ * Picks the last declaration if repeated.
  */
-function parseMarginPx(
+function parseMargin(
   styleAttr: string | null,
   prop: "margin-left" | "margin-right"
-) {
+): ParsedMargin | null {
   if (!styleAttr) return null;
-  // pick the last declaration if repeated
+
   const decls = styleAttr
     .split(";")
     .map((s) => s.trim())
@@ -82,13 +86,15 @@ function parseMarginPx(
     const parts = decls[i].split(":");
     if (parts.length < 2) continue;
     const key = parts[0].trim().toLowerCase();
-    const val = parts.slice(1).join(":").trim().toLowerCase();
     if (key !== prop) continue;
 
-    // Only px for now
+    const valRaw = parts.slice(1).join(":").trim();
+    const val = valRaw.toLowerCase();
+
     const m = /^(-?\d+(?:\.\d+)?)px$/.exec(val);
-    if (!m) return null;
-    return Number(m[1]);
+    const px = m ? Number(m[1]) : null;
+
+    return { raw: val, px };
   }
 
   return null;
@@ -97,7 +103,7 @@ function parseMarginPx(
 /**
  * Checks if a node is indentable.
  * @param node - The node to check.
- * @param typeNames - The set of type names.
+ * @param typeNames - The set of type names to check.
  * @returns True if the node is indentable, false otherwise.
  */
 function isIndentableBlock(node: Node, typeNames: Set<string>) {
@@ -105,7 +111,9 @@ function isIndentableBlock(node: Node, typeNames: Set<string>) {
 }
 
 /**
- * Reads logical indent level from a node's attrs (0 if unset / invalid).
+ * Gets the indent level of a node.
+ * @param node - The node to get the indent level of.
+ * @returns The indent level of the node.
  */
 function getIndentLevel(node: Node): number {
   const raw = (node.attrs?.indent ?? 0) as unknown;
@@ -115,10 +123,10 @@ function getIndentLevel(node: Node): number {
 }
 
 /**
- * Collects the indent targets from the state.
- * @param state - The state to collect the indent targets from.
- * @param typeNames - The set of type names.
- * @returns The indent targets.
+ * Collects the indent targets of a selection.
+ * @param state - The editor state.
+ * @param typeNames - The set of type names to check.
+ * @returns The indent targets of the selection.
  */
 function collectIndentTargets(
   state: EditorState,
@@ -126,11 +134,13 @@ function collectIndentTargets(
 ): { pos: number; node: Node }[] {
   const { from, to } = state.selection;
   const targets: { pos: number; node: Node }[] = [];
+
   state.doc.nodesBetween(from, to, (node: Node, pos: number) => {
     if (!isIndentableBlock(node, typeNames)) return;
     targets.push({ pos, node });
     return false; // don't descend into this block
   });
+
   // Collapsed selection fallback: find closest indentable ancestor block.
   if (targets.length === 0) {
     const $from = state.selection.$from;
@@ -142,11 +152,12 @@ function collectIndentTargets(
       }
     }
   }
+
   return targets;
 }
 
 /**
- * Updates the selected indent.
+ * Updates the indent of a selected block.
  * @param props - The properties for the update.
  * @returns True if the indent was updated, false otherwise.
  */
@@ -160,13 +171,10 @@ function updateSelectedIndent(props: {
   const { state, dispatch, typeNames, nextIndent } = props;
   let { tr } = props;
 
-  // Collect the indent targets from the state.
   const targets = collectIndentTargets(state, typeNames);
 
   if (targets.length === 0) return false;
 
-  // If nothing would change (e.g. decrease at 0 everywhere, increase at max everywhere),
-  // return false so editor.can() matches real behavior.
   const wouldChange = targets.some(({ node }) => {
     const prev = getIndentLevel(node);
     const next = nextIndent(prev);
@@ -175,21 +183,25 @@ function updateSelectedIndent(props: {
 
   if (!wouldChange) return false;
 
-  // bottom-to-top (safe if structure changes)
   for (let i = targets.length - 1; i >= 0; i--) {
     const { pos } = targets[i];
     const current = tr.doc.nodeAt(pos);
     if (!current) continue;
+
     const prevIndent = getIndentLevel(current);
     const next = nextIndent(prevIndent);
     const nextAttrs = { ...current.attrs };
+
     if (next <= 0) {
       delete nextAttrs.indent;
+      // Keep opposite margin attr as-is; user may still want it preserved.
     } else {
       nextAttrs.indent = next;
     }
+
     tr = tr.setNodeMarkup(pos, undefined, nextAttrs);
   }
+
   if (dispatch) dispatch(tr);
   return true;
 }
@@ -213,26 +225,39 @@ export const IndentExtension = Extension.create<IndentOptions>({
   },
 
   addGlobalAttributes() {
-    //const typeNames = new Set(this.options.types);
     const stepPx = this.options.stepPx;
+    const maxLevel = this.options.maxLevel;
 
     return [
       {
         types: this.options.types,
         attributes: {
+          /**
+           * Logical indent level, rendered as margin-left or margin-right by dir.
+           */
           indent: {
             default: null,
 
             parseHTML: (element: HTMLElement) => {
               const styleAttr = element.getAttribute("style");
-              const ml = parseMarginPx(styleAttr, "margin-left");
-              const mr = parseMarginPx(styleAttr, "margin-right");
+              const dir = (element.getAttribute("dir") ?? "").toLowerCase();
+              const isRtl = dir === "rtl";
 
-              const px = mr ?? ml;
-              if (typeof px !== "number" || !Number.isFinite(px)) return null;
+              const logicalProp: "margin-left" | "margin-right" = isRtl
+                ? "margin-right"
+                : "margin-left";
+
+              const parsed = parseMargin(styleAttr, logicalProp);
+              if (!parsed) return null;
+              if (parsed.px === null || !Number.isFinite(parsed.px))
+                return null;
+
+              const px = parsed.px;
+              if (px <= 0) return null;
 
               const level = Math.round(px / stepPx);
-              return level > 0 ? level : null;
+              const clamped = clamp(level, 0, maxLevel);
+              return clamped > 0 ? clamped : null;
             },
 
             renderHTML: (attrs: Record<string, unknown>) => {
@@ -241,25 +266,103 @@ export const IndentExtension = Extension.create<IndentOptions>({
                 typeof indentRaw === "number"
                   ? indentRaw
                   : Number(indentRaw) || 0;
-              if (!indent) return {};
+
+              // If no indent, still let opposite margin render from the other attribute.
+              if (!indent) {
+                const oppositeRaw = attrs.indentOppositeMarginPx;
+                const opposite =
+                  typeof oppositeRaw === "number"
+                    ? oppositeRaw
+                    : Number(oppositeRaw);
+
+                if (!Number.isFinite(opposite) || opposite <= 0) return {};
+
+                const dir = attrs.dir as string | undefined;
+                const isRtl = dir === "rtl";
+                const oppositeProp = isRtl ? "margin-left" : "margin-right";
+
+                const prevStyle =
+                  typeof attrs.style === "string" ? attrs.style : "";
+
+                const base = stripMarginSide(prevStyle, oppositeProp);
+                const decl = `${oppositeProp}: ${Math.round(opposite)}px`;
+                const style = base ? `${base}; ${decl}` : decl;
+                return { style };
+              }
 
               const px = indent * stepPx;
 
               const dir = attrs.dir as string | undefined;
               const isRtl = dir === "rtl";
 
-              // Preserve other styles; normalize margin-left/right.
+              const logicalProp = isRtl ? "margin-right" : "margin-left";
+              const oppositeProp = isRtl ? "margin-left" : "margin-right";
+
               const prevStyle =
                 typeof attrs.style === "string" ? attrs.style : "";
-              const base = stripMarginLeftRight(prevStyle);
 
-              const marginDecl = isRtl
-                ? `margin-right: ${px}px`
-                : `margin-left: ${px}px`;
-              const style = base ? `${base}; ${marginDecl}` : marginDecl;
+              // Remove only the side we are about to set for indent.
+              // Opposite side is preserved and/or rewritten from indentOppositeMarginPx below.
+              let styleBase = stripMarginSide(prevStyle, logicalProp);
 
-              return { style };
+              const logicalDecl = `${logicalProp}: ${px}px`;
+              styleBase = styleBase
+                ? `${styleBase}; ${logicalDecl}`
+                : logicalDecl;
+
+              const oppositeRaw = attrs.indentOppositeMarginPx;
+              const opposite =
+                typeof oppositeRaw === "number"
+                  ? oppositeRaw
+                  : Number(oppositeRaw);
+
+              if (!Number.isFinite(opposite) || opposite <= 0) {
+                return { style: styleBase };
+              }
+
+              // Re-write opposite side from canonical attribute to keep it stable.
+              const baseWithoutOpposite = stripMarginSide(
+                styleBase,
+                oppositeProp
+              );
+              const oppositeDecl = `${oppositeProp}: ${Math.round(opposite)}px`;
+              const finalStyle = baseWithoutOpposite
+                ? `${baseWithoutOpposite}; ${oppositeDecl}`
+                : oppositeDecl;
+
+              return { style: finalStyle };
             },
+          },
+
+          /**
+           * Stores opposite-side margin in px (integer), so we can preserve it
+           * without enabling arbitrary style persistence.
+           *
+           * - LTR (default): stores margin-right px
+           * - RTL: stores margin-left px
+           */
+          indentOppositeMarginPx: {
+            default: null,
+            parseHTML: (element: HTMLElement) => {
+              const styleAttr = element.getAttribute("style");
+              const dir = (element.getAttribute("dir") ?? "").toLowerCase();
+              const isRtl = dir === "rtl";
+
+              const oppositeProp: "margin-left" | "margin-right" = isRtl
+                ? "margin-left"
+                : "margin-right";
+
+              const parsed = parseMargin(styleAttr, oppositeProp);
+              if (!parsed) return null;
+              if (parsed.px === null || !Number.isFinite(parsed.px))
+                return null;
+              if (parsed.px <= 0) return null;
+
+              // Keep as integer px for stable output
+              return Math.round(parsed.px);
+            },
+            // style rendering is handled in `indent.renderHTML`
+            renderHTML: () => ({}),
           },
         },
       },

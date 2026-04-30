@@ -107,9 +107,32 @@ export function MuikkuMaterialEditorCore(props: {
         upload: handleImageUpload,
         onError: (error) => console.error("Upload failed:", error),
       }),
-      MathEquation,
-      DivBoxExtension,
-      IframeExtension,
+      MathEquation.configure({
+        legacyMathRules: [
+          {
+            // Legacy CKEditor 4: math equation stored as literal text with delimiters.
+            // Example: <span class="math-tex">\(a + b = c\)</span>
+            tag: "span.math-tex",
+            getAttrsLegacy: (el) => {
+              const raw = (
+                (el.textContent ?? "") ||
+                (el.innerHTML ?? "")
+              ).trim();
+
+              return {
+                latex: raw,
+              };
+            },
+          },
+        ],
+      }),
+      DivBoxExtension.configure({
+        dataStylePolicy: "knownPresetsOnly",
+      }),
+      IframeExtension.configure({
+        allowedProtocols: ["https:"],
+        srcAllowlist: ["*.youtube.com"],
+      }),
       IndentExtension.configure({ stepPx: 40 }),
       MuikkuFieldsKit.configure({
         fields: {
@@ -127,10 +150,10 @@ export function MuikkuMaterialEditorCore(props: {
       }),
       SourceModeExtension,
     ],
-    textDirection: "auto",
+    textDirection: "ltr",
     shouldRerenderOnTransaction: false,
     onUpdate: ({ editor }) => {
-      console.log("onUpdate", editor.getHTML(), editor.getJSON());
+      console.log("onUpdate", editor.getHTML());
       //props.onChange?.(editor.getHTML());
     },
   });

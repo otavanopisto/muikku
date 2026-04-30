@@ -108,7 +108,20 @@ export const DetailsContent = Node.create<{
     return { HTMLAttributes: {} };
   },
   parseHTML() {
-    return [{ tag: "div" }];
+    return [
+      {
+        tag: "div",
+        getAttrs: (el: HTMLElement) => {
+          // Only accept the wrapper div that is the direct child of <details>
+          const parent = el.parentElement;
+          if (!parent || parent.tagName.toLowerCase() !== "details")
+            return false;
+          // Accept this div as detailsContent; class names are intentionally ignored
+          // because renderHTML will re-emit the configured Mantine/details classes.
+          return {};
+        },
+      },
+    ];
   },
   renderHTML({ HTMLAttributes }) {
     return [
@@ -151,7 +164,25 @@ export const Details = Node.create<DetailsOptions>({
   },
 
   parseHTML() {
-    return [{ tag: "details" }];
+    return [
+      {
+        tag: "details",
+        getAttrs: (el: HTMLElement) => {
+          // Require: <details> has a direct <summary> child
+          const children = Array.from(el.children);
+          const hasSummaryDirectChild = children.some(
+            (c) => c.tagName.toLowerCase() === "summary"
+          );
+          // Require: <details> has a direct <div> child (the wrapper for detailsContent)
+          const directDiv = children.find(
+            (c) => c.tagName.toLowerCase() === "div"
+          );
+          if (!hasSummaryDirectChild) return false;
+          if (!directDiv) return false;
+          return null;
+        },
+      },
+    ];
   },
 
   renderHTML({ HTMLAttributes }) {
