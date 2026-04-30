@@ -5,6 +5,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
+// --- Hooks ---
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
+
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
@@ -43,7 +46,7 @@ import {
 } from "@/components/tiptap-extension-custom/div-box";
 import { IframeExtension } from "@/components/tiptap-extension-custom/iframe";
 import { MuikkuFieldsKit } from "@/components/tiptap-extension-custom/muikku-fields-kit";
-import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
+import { PasteSanitizerExtension } from "@/components/tiptap-extension-custom/paste-sanitizer";
 
 /**
  * MuikkuMaterialEditorCore is the core component for the Muikku Material Editor.
@@ -149,6 +152,7 @@ export function MuikkuMaterialEditorCore(props: {
         },
       }),
       SourceModeExtension,
+      PasteSanitizerExtension,
     ],
     textDirection: "ltr",
     shouldRerenderOnTransaction: false,
