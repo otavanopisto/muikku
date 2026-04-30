@@ -13,6 +13,10 @@ export type CONTACT_UPDATE_GUARDIAN = SpecificActionType<
   "CONTACT_UPDATE_GUARDIAN",
   Guardian
 >;
+export type CONTACT_UPDATE_CONTACT = SpecificActionType<
+  "CONTACT_UPDATE_CONTACT",
+  UserContact
+>;
 export type CONTACT_LOAD_GROUP = SpecificActionType<
   "CONTACT_LOAD_GROUP",
   ContactGroupPayload
@@ -55,12 +59,23 @@ export interface LoadAllContactGroupsTriggerType {
 }
 
 /**
- * UpdateContactGroupGuardianTriggerType
+ * UpdateGuardianContactGroupTriggerType
  */
-export interface UpdateContactGroupTriggerType {
+export interface UpdateGuardianContactGroupTriggerType {
   (
     studentIdentifier: string,
     guardianIdentifier: string,
+    continuedViewPermission: boolean
+  ): AnyActionType;
+}
+
+/**
+ * UpdateGuardianContactGroupTriggerType
+ */
+export interface UpdateOtherContactGroupTriggerType {
+  (
+    studentIdentifier: string,
+    contactId: number,
     continuedViewPermission: boolean
   ): AnyActionType;
 }
@@ -290,7 +305,7 @@ const loadAllContactGroups: LoadAllContactGroupsTriggerType =
  * @param guardianIdentifier the muikku identifier of the guardian who is being updated
  * @param continuedViewPermission whether the guardian can see the student's information after the student turns 18
  */
-const updateContactGroupGuardian: UpdateContactGroupTriggerType =
+const updateContactGroupGuardian: UpdateGuardianContactGroupTriggerType =
   function updateContactGroupGuardian(
     studentIdentifier,
     guardianIdentifier,
@@ -330,5 +345,56 @@ const updateContactGroupGuardian: UpdateContactGroupTriggerType =
     };
   };
 
+/**
+ * updateContactGroupContact thunk function
+ * @param userIdentifier the muikku identifier of the student whose contact is being updated
+ * @param contactInfoId the muikku identifier of the contact info being updated
+ * @param allowStudyDiscussions whether the contact can discuss the student's studies
+ */
+const updateContactGroupContact: UpdateOtherContactGroupTriggerType =
+  function updateContactGroupContact(
+    userIdentifier,
+    contactInfoId,
+    allowStudyDiscussions
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        const data = await userApi.updateUserContactAllowStudyDiscussions({
+          userIdentifier,
+          contactInfoId,
+          body: allowStudyDiscussions,
+        });
+
+        dispatch({
+          type: "CONTACT_UPDATE_CONTACT",
+          payload: data,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          return dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "studies",
+              context: "contact",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export default { loadContactGroup };
-export { loadContactGroup, updateContactGroupGuardian, loadAllContactGroups };
+export {
+  loadContactGroup,
+  updateContactGroupGuardian,
+  updateContactGroupContact,
+  loadAllContactGroups,
+};

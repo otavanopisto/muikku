@@ -89,6 +89,22 @@ export const contacts: Reducer<ContactsState> = (
         guardians: { ...state.guardians, list: updatedGuardianList },
       };
     }
+    case "CONTACT_UPDATE_CONTACT": {
+      const updatedContact = action.payload;
+      const updatedContactList = [...state.others.list];
+      const updateContactIndex = updatedContactList.findIndex(
+        (contact) => contact.id === updatedContact.id
+      );
+      if (updateContactIndex === -1) {
+        return state;
+      }
+      updatedContactList[updateContactIndex] = updatedContact;
+
+      return {
+        ...state,
+        others: { ...state.others, list: updatedContactList },
+      };
+    }
     default:
       return state;
   }

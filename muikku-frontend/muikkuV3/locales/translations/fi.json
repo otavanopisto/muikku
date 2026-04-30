@@ -1599,7 +1599,7 @@
       "name": "$t(labels.name)",
       "name_userGroup": "Käyttäjäryhmän nimi",
       "noContinuedViewPermission": "Ei saa nähdä opintotietojasi täysi-ikäisyyden saavuttamisen jälkeen",
-      "noContinuedDiscussionPermission": "Ei saa keskustella opintojasi koskevista asioista täysi-ikäisyyden saavuttamisen jälkeen",
+      "noContinuedDiscussionPermission": "Ei saa keskustella opintojasi koskevista asioista",
       "pick": "Valitse kurssin käyttäjät, - {{stepInfo}}",
       "pick_workspaceStudents": "Valitse kurssin opiskelijat {{stepInfo}}",
       "pick_workspaceTeachers": "Valitse kurssin opettajat {{stepInfo}}",

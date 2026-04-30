@@ -106,7 +106,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             </span>
           )}
         </div>
-        <div className="item-list__user-state">{state}</div>
+
         <div className="item-list__user-contact-info">
           {email && (
             <div className="item-list__user-email">
@@ -142,7 +142,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             {vacationEnd ? "-" + localize.date(vacationEnd) : null}
           </div>
         )}
-
+        <div className="item-list__user-state">{state}</div>
         <div className="item-list__user-actions">{actions}</div>
       </div>
     </div>

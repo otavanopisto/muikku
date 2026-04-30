@@ -2,11 +2,9 @@ import * as React from "react";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
-import { Guardian } from "~/generated/client/models/Guardian";
 import { useDispatch } from "react-redux";
-import { updateContactGroupGuardian } from "~/actions/base/contacts";
-import { getName } from "~/util/modifiers";
-import { User, UserContact } from "~/generated/client";
+import { updateContactGroupContact } from "~/actions/base/contacts";
+import { UserContact } from "~/generated/client";
 /**
  * ContactPermissionsDialog component props.
  */
@@ -37,14 +35,11 @@ const ContactPermissionsDialog: React.FC<ContactPermissionsDialogProps> = (
   );
 
   /**
-   * saves the view permission changes for the guardian and closes the dialog
+   * Saves the view permission changes for the contact and closes the dialog
    * @param closeDialog - A function to close the dialog after saving
    */
   const handleSave = (closeDialog: () => void) => {
-    // Dispatch an action to update the guardian's view permissions
-    //dispatch(
-    //  updateContactGroupGuardian(userIdentifier, contact.identifier, canDiscuss)
-    //);
+    dispatch(updateContactGroupContact(userIdentifier, contact.id, canDiscuss));
     closeDialog();
   };
 

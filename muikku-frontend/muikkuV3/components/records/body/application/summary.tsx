@@ -135,7 +135,21 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="item-list item-list--student-counselors">
               {this.props.contacts.others?.list.length > 0 ? (
                 this.props.contacts.others.list.map((contact) => {
-                  const { name, id, phoneNumber, email, contactType } = contact;
+                  const {
+                    name,
+                    id,
+                    phoneNumber,
+                    email,
+                    contactType,
+                    allowStudyDiscussions,
+                  } = contact;
+                  const contactState = allowStudyDiscussions
+                    ? t("labels.hasContinuedDiscussionPermission", {
+                        ns: "users",
+                      })
+                    : t("labels.noContinuedDiscussionPermission", {
+                        ns: "users",
+                      });
                   const otherContactActions = (
                     <ContactPermissionsDialog
                       userIdentifier={
@@ -156,6 +170,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       key={id}
                       tag={contactType}
                       actions={otherContactActions}
+                      state={contactState}
                       fullName={name}
                       streetAddress={contact.streetAddress}
                       postalCode={contact.postalCode}
