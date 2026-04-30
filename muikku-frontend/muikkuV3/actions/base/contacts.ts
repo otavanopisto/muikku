@@ -7,6 +7,7 @@ import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 import { Guardian } from "~/generated/client/models/Guardian";
+import { UserContact } from "~/generated/client/models/UserContact";
 
 export type CONTACT_UPDATE_GUARDIAN = SpecificActionType<
   "CONTACT_UPDATE_GUARDIAN",
@@ -44,6 +45,13 @@ export interface LoadingStatePayload {
  */
 export interface LoadContactGroupTriggerType {
   (groupName: ContactGroupNames, userIdentifier?: string): AnyActionType;
+}
+
+/**
+ * LoadAllContactGroupsTriggerType
+ */
+export interface LoadAllContactGroupsTriggerType {
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -128,6 +136,31 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
           break;
         }
 
+        case "others": {
+          const data = await userApi.getUserContacts({
+            userIdentifier: studentIdentifier,
+          });
+
+          // remove current user from the payload list when the group is "others"
+          // student has no "contactType", so filter is used to remove the user from the list
+          const filteredData = data.filter(
+            (contact: UserContact) => contact.contactType !== null
+          );
+
+          dispatch({
+            type: "CONTACT_LOAD_GROUP",
+            payload: {
+              data: {
+                list: filteredData,
+                state: <LoadingState>"READY",
+              },
+              groupName,
+            },
+          });
+
+          break;
+        }
+
         default:
           break;
       }
@@ -150,6 +183,107 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
     }
   };
 };
+
+/**
+ * loadAllContactGroups thunk function
+ * @param userIdentifier The muikku identifier of the user to be loaded
+ */
+const loadAllContactGroups: LoadAllContactGroupsTriggerType =
+  function loadAllContactGroups(userIdentifier) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const isActiveUser = getState().status.isActiveUser;
+      const studentIdentifier = userIdentifier
+        ? userIdentifier
+        : getState().status.userSchoolDataIdentifier;
+      if (!isActiveUser) {
+        return;
+      }
+
+      try {
+        dispatch({
+          type: "CONTACT_UPDATE_GROUP_STATE",
+          payload: { groupName: "counselors", state: <LoadingState>"LOADING" },
+        });
+        dispatch({
+          type: "CONTACT_UPDATE_GROUP_STATE",
+          payload: { groupName: "guardians", state: <LoadingState>"LOADING" },
+        });
+        dispatch({
+          type: "CONTACT_UPDATE_GROUP_STATE",
+          payload: { groupName: "others", state: <LoadingState>"LOADING" },
+        });
+
+        Promise.all([
+          userApi.getGuidanceCounselors({
+            studentIdentifier,
+            properties:
+              "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+          }),
+          userApi.getStudentsGuardians({
+            studentIdentifier,
+          }),
+          userApi.getUserContacts({
+            userIdentifier: studentIdentifier,
+          }),
+        ]).then(([counselorsData, guardiansData, othersData]) => {
+          // remove current user from the payload list when the group is "others"
+          // student has no "contactType", so filter is used to remove the user from the list
+          const filteredData = othersData.filter(
+            (contact: UserContact) => contact.contactType !== null
+          );
+          dispatch({
+            type: "CONTACT_LOAD_GROUP",
+            payload: {
+              data: {
+                list: counselorsData,
+                state: <LoadingState>"READY",
+              },
+              groupName: "counselors",
+            },
+          });
+          dispatch({
+            type: "CONTACT_LOAD_GROUP",
+            payload: {
+              data: {
+                list: guardiansData,
+                state: <LoadingState>"READY",
+              },
+              groupName: "guardians",
+            },
+          });
+          dispatch({
+            type: "CONTACT_LOAD_GROUP",
+            payload: {
+              data: {
+                list: filteredData,
+                state: <LoadingState>"READY",
+              },
+              groupName: "others",
+            },
+          });
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          return dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 /**
  * updateContactGroupGuardian thunk function
  * @param studentIdentifier the muikku identifier of the student whose guardian is being updated
@@ -197,4 +331,4 @@ const updateContactGroupGuardian: UpdateContactGroupTriggerType =
   };
 
 export default { loadContactGroup };
-export { loadContactGroup, updateContactGroupGuardian };
+export { loadContactGroup, updateContactGroupGuardian, loadAllContactGroups };

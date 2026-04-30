@@ -4,8 +4,9 @@ import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
 import Link from "~/components/general/link";
-import GuardianPermissionsDialog from "~/components/profile/body/application/dialog/guardian-permissions";
+import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
 import ContactCard from "~/components/general/contact-card";
+import { getName } from "~/util/modifiers";
 /**
  * Guardians component props.
  */
@@ -38,7 +39,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
           );
 
           const guardianState = guardian.continuedViewPermission
-            ? t("labels.continuedViewPermission", {
+            ? t("labels.hasContinuedViewPermission", {
                 ns: "users",
               })
             : t("labels.noContinuedViewPermission", {
@@ -52,8 +53,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
             <ContactCard
               key={index}
               actions={actions}
-              firstname={guardian.firstName}
-              lastname={guardian.lastName}
+              fullName={getName(guardian, true)}
               state={guardianState}
             />
           );

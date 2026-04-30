@@ -110,7 +110,10 @@ import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
-import { loadContactGroup } from "~/actions/base/contacts";
+import {
+  loadAllContactGroups,
+  loadContactGroup,
+} from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
@@ -350,15 +353,9 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
-      // Summary needs counselors
-      this.props.store.dispatch(
-        loadContactGroup("counselors", userId) as Action
-      );
+      // Counselors, Guardians and other contact types are loaded in summary view
+      this.props.store.dispatch(loadAllContactGroups(userId) as Action);
 
-      // Summary needs guardians
-      this.props.store.dispatch(
-        loadContactGroup("guardians", userId) as Action
-      );
       this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(

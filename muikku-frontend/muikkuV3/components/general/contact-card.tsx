@@ -10,9 +10,13 @@ import { localize } from "~/locales/i18n";
  * It also handles displaying the vacation period if applicable.
  */
 interface ContactCardProps {
-  firstname: string;
-  lastname: string;
+  fullName: string;
   hasImage?: boolean;
+  streetAddress?: string;
+  postalCode?: string;
+  city?: string;
+  country?: string;
+  tag?: React.ReactNode;
   state?: string;
   actions?: React.ReactNode;
   email?: string;
@@ -32,10 +36,14 @@ interface ContactCardProps {
 const ContactCard: React.FC<ContactCardProps> = (props) => {
   const {
     actions,
-    firstname,
-    lastname,
+    fullName,
     id,
+    tag,
     hasImage,
+    streetAddress,
+    postalCode,
+    city,
+    country,
     state,
     email,
     phone,
@@ -61,20 +69,23 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
   return (
     <div
       className="item-list__item item-list__item--student-counselor"
-      key={firstname}
+      key={"card" + fullName}
     >
+      {tag && (
+        <div className="label label--contact-type">
+          <span className="label__text">{tag}</span>
+        </div>
+      )}
       <div className="item-list__profile-picture">
         <Avatar
           id={id ? id : Math.random() * 1000}
           userCategory={3}
-          name={firstname}
+          name={fullName}
           hasImage={hasImage}
         />
       </div>
       <div className="item-list__text-body item-list__text-body--multiline">
-        <div className="item-list__user-name">
-          {firstname} {lastname}
-        </div>
+        <div className="item-list__user-name">{fullName}</div>
         <div className="item-list__counselors labels">
           {groupAdvisor && (
             <span className="label">
@@ -109,6 +120,17 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
               {phone}
             </div>
           )}
+          {streetAddress && (
+            <div className="item-list__user-street-address">
+              {streetAddress}
+            </div>
+          )}
+          {(postalCode || city) && (
+            <div className="item-list__user-postal-address">
+              {postalCode && postalCode} {city && city}
+            </div>
+          )}
+          {country && <div className="item-list__user-country">{country}</div>}
         </div>
         {displayVacationPeriod && (
           <div className="item-list__user-vacation-period">
@@ -117,7 +139,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             })}
 
             {localize.date(vacationStart)}
-            {vacationEnd ? "–" + localize.date(vacationEnd) : null}
+            {vacationEnd ? "-" + localize.date(vacationEnd) : null}
           </div>
         )}
 

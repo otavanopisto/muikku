@@ -30,7 +30,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
 import { UserStudyData } from "~/reducers/study-activity";
-import GuardianPermissionsDialog from "~/components/profile/body/application/dialog/guardian-permissions";
+import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
+import ContactPermissionsDialog from "~/components/profile/dialogs/contact-permissions";
 import Link from "~/components/general/link";
 import ContactCard from "~/components/general/contact-card";
 
@@ -123,6 +124,64 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>
       );
 
+      const studentContacts = (
+        <div className="application-sub-panel application-sub-panel--counselors">
+          <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
+            {t("labels.contactInfo", {
+              ns: "users",
+            })}
+          </div>
+          <div className="application-sub-panel__body">
+            <div className="item-list item-list--student-counselors">
+              {this.props.contacts.others?.list.length > 0 ? (
+                this.props.contacts.others.list.map((contact) => {
+                  const { name, id, phoneNumber, email, contactType } = contact;
+                  const otherContactActions = (
+                    <ContactPermissionsDialog
+                      userIdentifier={
+                        this.props.status.userSchoolDataIdentifier
+                      }
+                      contact={contact}
+                    >
+                      <Link className="link">
+                        {t("actions.editPermissions", {
+                          ns: "users",
+                        })}
+                      </Link>
+                    </ContactPermissionsDialog>
+                  );
+
+                  return (
+                    <ContactCard
+                      key={id}
+                      tag={contactType}
+                      actions={otherContactActions}
+                      fullName={name}
+                      streetAddress={contact.streetAddress}
+                      postalCode={contact.postalCode}
+                      city={contact.city}
+                      country={contact.country}
+                      id={id}
+                      email={email}
+                      phone={phoneNumber}
+                    />
+                  );
+                })
+              ) : (
+                <div className="empty">
+                  <span>
+                    {t("content.empty", {
+                      ns: "studies",
+                      context: "counselors",
+                    })}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+
       const studentCounselors = (
         <div className="application-sub-panel application-sub-panel--counselors">
           <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
@@ -153,8 +212,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 this.props.contacts.counselors.list.map((counselor) => {
                   const {
                     userEntityId,
-                    firstName,
-                    lastName,
                     email,
                     hasImage,
                     groupAdvisor,
@@ -212,8 +269,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     <ContactCard
                       key={userEntityId}
                       actions={councelorActions}
-                      firstname={firstName}
-                      lastname={lastName}
+                      fullName={getName(counselor, true)}
                       hasImage={hasImage}
                       id={userEntityId}
                       email={email}
@@ -251,10 +307,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="item-list item-list--student-guardians">
               {this.props.contacts.guardians.list.length > 0 &&
                 this.props.contacts.guardians.list.map((guardian, index) => {
-                  const { firstName, lastName, continuedViewPermission } =
-                    guardian;
+                  const { continuedViewPermission } = guardian;
                   const guardianState = continuedViewPermission
-                    ? t("labels.continuedViewPermission", {
+                    ? t("labels.hasContinuedViewPermission", {
                         ns: "users",
                       })
                     : t("labels.noContinuedViewPermission", {
@@ -279,8 +334,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     <ContactCard
                       key={index}
                       actions={guardianActions}
-                      firstname={firstName}
-                      lastname={lastName}
+                      fullName={getName(guardian, true)}
                       state={guardianState}
                     />
                   );
@@ -293,8 +347,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       return (
         <section>
           {studentBasicInfo}
+          {this.props.contacts.others.list.length > 0 && studentContacts}
           {studentCounselors}
-          {studentGuardians}
+          {this.props.contacts.guardians.list.length > 0 && studentGuardians}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
               <div className="application-sub-panel">

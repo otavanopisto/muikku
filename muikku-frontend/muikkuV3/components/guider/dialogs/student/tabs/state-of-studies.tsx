@@ -500,7 +500,7 @@ class StateOfStudies extends React.Component<
                           key={contactInfo.id}
                         >
                           {contactInfo.contactType && (
-                            <div className="label label--guider-contact-type">
+                            <div className="label label--contact-type">
                               <span className="label__text">
                                 {contactInfo.contactType}
                               </span>
@@ -659,8 +659,7 @@ class StateOfStudies extends React.Component<
                           <ContactCard
                             key={userEntityId}
                             actions={councelorActions}
-                            firstname={firstName}
-                            lastname={lastName}
+                            fullName={getName(counselor, true)}
                             hasImage={hasImage}
                             id={userEntityId}
                             email={email}

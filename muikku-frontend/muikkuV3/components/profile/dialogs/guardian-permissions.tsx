@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Guardian } from "~/generated/client/models/Guardian";
 import { useDispatch } from "react-redux";
 import { updateContactGroupGuardian } from "~/actions/base/contacts";
+import { getName } from "~/util/modifiers";
 /**
  * GuardianPermissionsDialog component props.
  */
@@ -31,7 +32,7 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
     guardian.continuedViewPermission
   );
   const title = (
-    <div>{t("labels.editGuardianPermissions", { ns: "users" })}</div>
+    <div>{t("labels.editContactPermissions", { ns: "users" })}</div>
   );
 
   /**
@@ -54,18 +55,18 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
   const content = (closeDialog: () => void) => (
     <form key="content">
       <p className="form-element__description ">
-        {t("content.editGuardianPermissions", { ns: "users" })}
+        {t("content.studyContactPermissions", { ns: "users" })}
       </p>
       <fieldset className="form__fieldset">
         <legend className="form__legend form__legend--guardian-visibility">
-          {t("labels.guardianContinuedViewPermission", { ns: "users" })}
+          {t("labels.contactContinuedViewPermission", { ns: "users" })}
         </legend>
         <p
           className="form-element__description"
           dangerouslySetInnerHTML={{
-            __html: t("content.guardianPermissionPrompt", {
+            __html: t("content.studyViewPermissionPrompt", {
               ns: "users",
-              guardian: guardian.firstName + " " + guardian.lastName,
+              contact: getName(guardian, true),
             }),
           }}
         ></p>
@@ -78,7 +79,7 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
             onChange={() => setCanView(true)}
           />
           <label htmlFor="canSeeDependentInformation">
-            {t("labels.hasViewPermission", { ns: "users" })}
+            {t("labels.viewAccessAllow", { ns: "users" })}
           </label>
         </div>
         <div className="form-element form-element--checkbox-radiobutton">
@@ -90,7 +91,7 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
             onChange={() => setCanView(false)}
           />
           <label htmlFor="cannotSeeDependentInformation">
-            {t("labels.noViewPermission", { ns: "users" })}
+            {t("labels.viewAccessDeny", { ns: "users" })}
           </label>
         </div>
       </fieldset>
