@@ -16,6 +16,7 @@
   padding: 5px 0 10px 15px;
 }
 
+
 .item-list--student-counselors,
 .item-list--student-guardians,
 .item-list--student-contact-info {
@@ -52,6 +53,13 @@
 
 .item-list--matriculation-results {
   width: 100%;
+}
+
+.item-list__user-state {
+  background-color: $color-label-background;
+  border-radius: 3px;
+
+  padding: 10px;
 }
 
 // Item-list items BASE

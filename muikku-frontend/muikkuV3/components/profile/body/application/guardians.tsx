@@ -17,8 +17,17 @@ interface GuardiansProps {}
  */
 const Guardians: React.FC<GuardiansProps> = () => {
   const { t } = useTranslation();
-  const guardians = useSelector((state: StateType) => state.contacts.guardians);
+  const { guardians, others } = useSelector(
+    (state: StateType) => state.contacts
+  );
   const { profile, status } = useSelector((state: StateType) => state);
+
+  if (!profile || !status.profile) {
+    return null;
+  }
+  if (profile.location !== "guardians") {
+    return null;
+  }
 
   return (
     <div>
@@ -28,6 +37,43 @@ const Guardians: React.FC<GuardiansProps> = () => {
           const actions = (
             <GuardianPermissionsDialog
               guardian={guardian}
+              userIdentifier={status.userSchoolDataIdentifier}
+            >
+              <Link className="link">
+                {t("actions.editPermissions", {
+                  ns: "users",
+                })}
+              </Link>
+            </GuardianPermissionsDialog>
+          );
+
+          const guardianState = guardian.continuedViewPermission
+            ? t("labels.hasContinuedViewPermission", {
+                ns: "users",
+              })
+            : t("labels.noContinuedViewPermission", {
+                ns: "users",
+              });
+
+          if (profile.location !== "guardians" || !guardians.list) {
+            return null;
+          }
+          return (
+            <ContactCard
+              key={index}
+              actions={actions}
+              fullName={getName(guardian, true)}
+              state={guardianState}
+            />
+          );
+        })}
+      </div>
+      <h2>{t("labels.contacts", { ns: "users" })}</h2>
+      <div className="item-list item-list--student-guardians">
+        {guardians.list.map((contact, index) => {
+          const actions = (
+            <GuardianPermissionsDialog
+              guardian={contact}
               userIdentifier={status.userSchoolDataIdentifier}
             >
               <Link className="link">

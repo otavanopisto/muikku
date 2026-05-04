@@ -78,8 +78,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
       )}
       <div className="item-list__profile-picture">
         <Avatar
-          id={id ? id : Math.random() * 1000}
-          userCategory={3}
+          id={id ? id : Math.floor(Math.random() * 1000)}
           name={fullName}
           hasImage={hasImage}
         />
@@ -106,7 +105,6 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             </span>
           )}
         </div>
-
         <div className="item-list__user-contact-info">
           {email && (
             <div className="item-list__user-email">
