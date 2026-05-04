@@ -775,7 +775,7 @@ public class UserRESTService extends AbstractRESTService {
 
     BridgeResponse<UserContact> response = userController.updateContactInfoAllowStudyDiscussions(userIdentifier, contactInfoId, allowStudyDiscussions.booleanValue());
     if (response.ok()) {
-      return Response.noContent().build();
+      return Response.ok(createRestModel(response.getEntity())).build();
     }
     else {
       return Response.status(Status.fromStatusCode(response.getStatusCode())).build();
