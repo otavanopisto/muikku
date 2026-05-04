@@ -9,8 +9,7 @@ import NavigationMenu, {
 import { StatusType } from "~/reducers/base/status";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { ProfileState } from "../../../reducers/main-function/profile";
-import { ContactGroup } from "~/reducers/base/contacts";
-import { Guardian } from "~/generated/client";
+import { ContactsState } from "~/reducers/base/contacts";
 
 /**
  * NavigationProps
@@ -18,7 +17,7 @@ import { Guardian } from "~/generated/client";
 interface NavigationProps extends WithTranslation<["common"]> {
   location: string;
   status: StatusType;
-  guardians: ContactGroup<Guardian>;
+  contacts: ContactsState;
   profile: ProfileState;
 }
 
@@ -54,9 +53,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       case "vacation":
       case "chat":
         return !isOnlyStudentParent;
-      case "guardians":
+      case "contacts":
         return (
-          this.props.status.isStudent && this.props.guardians?.list.length > 0
+          this.props.status.isStudent &&
+          (this.props.contacts.guardians?.list.length > 0 ||
+            this.props.contacts.others?.list.length > 0)
         );
       case "work":
         return (
@@ -90,7 +91,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         hash: "contact",
       },
       {
-        name: this.props.t("labels.guardians", { ns: "users" }),
+        name: this.props.t("labels.contacts", { ns: "users" }),
         hash: "guardians",
       },
       {
@@ -146,7 +147,7 @@ function mapStateToProps(state: StateType) {
     location: state.profile.location,
     status: state.status,
     profile: state.profile,
-    guardians: state.contacts.guardians,
+    contacts: state.contacts,
   };
 }
 

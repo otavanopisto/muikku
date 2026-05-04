@@ -140,8 +140,8 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             {vacationEnd ? "-" + localize.date(vacationEnd) : null}
           </div>
         )}
-        <div className="item-list__user-state">{state}</div>
-        <div className="item-list__user-actions">{actions}</div>
+        {state && <div className="item-list__user-state">{state}</div>}
+        {actions && <div className="item-list__user-actions">{actions}</div>}
       </div>
     </div>
   );

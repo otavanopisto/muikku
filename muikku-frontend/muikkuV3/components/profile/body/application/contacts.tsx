@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
 import Link from "~/components/general/link";
 import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
+import ContactPermissionsDialog from "~/components/profile/dialogs/contact-permissions";
 import ContactCard from "~/components/general/contact-card";
 import { getName } from "~/util/modifiers";
 /**
@@ -68,12 +69,12 @@ const Guardians: React.FC<GuardiansProps> = () => {
           );
         })}
       </div>
-      <h2>{t("labels.contacts", { ns: "users" })}</h2>
+      <h2>{t("labels.contactInfo", { ns: "users" })}</h2>
       <div className="item-list item-list--student-guardians">
-        {guardians.list.map((contact, index) => {
+        {others.list.map((contact, index) => {
           const actions = (
-            <GuardianPermissionsDialog
-              guardian={contact}
+            <ContactPermissionsDialog
+              contact={contact}
               userIdentifier={status.userSchoolDataIdentifier}
             >
               <Link className="link">
@@ -81,26 +82,26 @@ const Guardians: React.FC<GuardiansProps> = () => {
                   ns: "users",
                 })}
               </Link>
-            </GuardianPermissionsDialog>
+            </ContactPermissionsDialog>
           );
 
-          const guardianState = guardian.continuedViewPermission
-            ? t("labels.hasContinuedViewPermission", {
+          const contactState = contact.allowStudyDiscussions
+            ? t("labels.hasContinuedDiscussionPermission", {
                 ns: "users",
               })
-            : t("labels.noContinuedViewPermission", {
+            : t("labels.noContinuedDiscussionPermission", {
                 ns: "users",
               });
 
-          if (profile.location !== "guardians" || !guardians.list) {
+          if (profile.location !== "guardians" || !others.list) {
             return null;
           }
           return (
             <ContactCard
               key={index}
               actions={actions}
-              fullName={getName(guardian, true)}
-              state={guardianState}
+              fullName={contact.name}
+              state={contactState}
             />
           );
         })}
