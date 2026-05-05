@@ -178,18 +178,12 @@ class StateOfStudies extends React.Component<
             {this.props.guider.currentStudent.contactInfos?.map(
               (contact, index) => {
                 const contactState = contact.allowStudyDiscussions
-                  ? this.props.i18n.t(
-                      "labels.hasContinuedDiscussionPermission",
-                      {
-                        ns: "users",
-                      }
-                    )
-                  : this.props.i18n.t(
-                      "labels.noContinuedDiscussionPermission",
-                      {
-                        ns: "users",
-                      }
-                    );
+                  ? this.props.i18n.t("labels.hasConsentToDiscussStudies", {
+                      ns: "users",
+                    })
+                  : this.props.i18n.t("labels.noConsentToDiscussStudies", {
+                      ns: "users",
+                    });
                 return (
                   <ContactCard
                     key={contact.id}
@@ -205,71 +199,7 @@ class StateOfStudies extends React.Component<
                   />
                 );
               }
-            )
-            //(contactInfo) => (
-            //  <div
-            //    className="item-list__item item-list__item--student-contact-info"
-            //    key={contactInfo.id}
-            //  >
-            //    {contactInfo.contactType && (
-            //      <div className="label label--contact-type">
-            //        <span className="label__text">
-            //          {contactInfo.contactType}
-            //        </span>
-            //      </div>
-            //    )}
-            //    <div className="item-list__text-body item-list__text-body--multiline">
-            //      {contactInfo.name && (
-            //        <div className="item-list__user-name">
-            //          {contactInfo.name}
-            //        </div>
-            //      )}
-            //      <div className="item-list__user-email">
-            //        <div className="glyph icon-envelope"></div>
-            //        {contactInfo.email}
-            //      </div>
-
-            //      {contactInfo.phoneNumber && (
-            //        <div className="item-list__user-phone">
-            //          <div className="glyph icon-phone"></div>
-            //          {contactInfo.phoneNumber}
-            //        </div>
-            //      )}
-            //      {contactInfo.streetAddress && (
-            //        <div className="item-list__user-street-address">
-            //          {contactInfo.streetAddress}
-            //        </div>
-            //      )}
-            //      {(contactInfo.postalCode || contactInfo.city) && (
-            //        <div className="item-list__user-postal-address">
-            //          {contactInfo.postalCode && contactInfo.postalCode}{" "}
-            //          {contactInfo.city && contactInfo.city}
-            //        </div>
-            //      )}
-            //      {contactInfo.country && (
-            //        <div className="item-list__user-country">
-            //          {contactInfo.country}
-            //        </div>
-            //      )}
-
-            //      {contactInfo.allowStudyDiscussions && (
-            //        <div className="item-list__user-consent-study-discussions">
-            //          <div className="label label--guider-consent">
-            //            <span className="label__text">
-            //              {this.props.i18n.t(
-            //                "labels.consentToDiscussStudies",
-            //                {
-            //                  ns: "users",
-            //                }
-            //              )}
-            //            </span>
-            //          </div>
-            //        </div>
-            //      )}
-            //    </div>
-            //  </div>
-            //)
-            }
+            )}
           </div>
         </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
@@ -581,8 +511,9 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
             </ApplicationSubPanel>
 
-            {this.props.guider.currentStudent.contactInfos && contacts}
-            {this.props.guider.currentStudent.guardians && studentGuardians}
+            {contacts}
+            {this.props.guider.currentStudent.guardians.length > 0 &&
+              studentGuardians}
             <ApplicationSubPanel modifier="counselors">
               <ApplicationSubPanel.Header modifier="with-instructions">
                 {this.props.i18n.t("labels.counselors", {

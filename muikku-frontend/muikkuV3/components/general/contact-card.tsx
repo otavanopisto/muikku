@@ -65,6 +65,11 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
       vacationEndsAt.isAfter(today, "day") ||
       vacationEndsAt.isSame(today, "day");
   }
+  // This prevents the avatar from changing color on every render when there's no id
+  const numericId = React.useMemo(
+    () => (id ? id : Math.floor(Math.random() * 1000)),
+    [id]
+  );
 
   return (
     <div
@@ -78,11 +83,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
       )}
       {fullName && (
         <div className="item-list__profile-picture">
-          <Avatar
-            id={id ? id : Math.floor(Math.random() * 1000)}
-            name={fullName}
-            hasImage={hasImage}
-          />
+          <Avatar id={numericId} name={fullName} hasImage={hasImage} />
         </div>
       )}
       <div className="item-list__text-body item-list__text-body--multiline">
