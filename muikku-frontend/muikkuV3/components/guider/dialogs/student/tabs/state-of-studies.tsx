@@ -546,7 +546,7 @@ class StateOfStudies extends React.Component<
                                 <div className="label label--guider-concent">
                                   <span className="label__text">
                                     {this.props.i18n.t(
-                                      "labels.concentToDiscussStudies",
+                                      "labels.consentToDiscussStudies",
                                       {
                                         ns: "users",
                                       }
