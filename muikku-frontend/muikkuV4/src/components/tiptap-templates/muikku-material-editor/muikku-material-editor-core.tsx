@@ -11,7 +11,7 @@ import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
 import { TableKit } from "@tiptap/extension-table";
-import { Image } from "@tiptap/extension-image";
+//import { Image } from "@tiptap/extension-image";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Typography } from "@tiptap/extension-typography";
@@ -47,6 +47,16 @@ import {
 import { IframeExtension } from "@/components/tiptap-extension-custom/iframe";
 import { MuikkuFieldsKit } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 import { PasteSanitizerExtension } from "@/components/tiptap-extension-custom/paste-sanitizer";
+import {
+  MuikkuImage,
+  MuikkuImageFigure,
+} from "@/components/tiptap-extension-custom/muikku-image";
+
+const testContent = String.raw`
+    <img src="https://www.kennelliitto.fi/sites/default/files/styles/mobile_large_header_640x430/public/images/7.pystispentu.JPG?itok=UR5FZrmQ" alt="Test image" />
+    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+    
+`;
 
 /**
  * MuikkuMaterialEditorCore is the core component for the Muikku Material Editor.
@@ -60,6 +70,7 @@ export function MuikkuMaterialEditorCore(props: {
   const { toolbar } = props;
 
   const editor = useEditor({
+    content: testContent,
     immediatelyRender: false,
     editorProps: {
       attributes: {
@@ -98,7 +109,8 @@ export function MuikkuMaterialEditorCore(props: {
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
-      Image,
+      MuikkuImage,
+      MuikkuImageFigure,
       Typography,
       Superscript,
       Subscript,

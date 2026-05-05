@@ -53,6 +53,10 @@ import { IndentButton } from "@/components/tiptap-extension-custom/indent";
 import { LangDropdownMenu } from "@/components/tiptap-extension-custom/lang";
 import { DivBoxSelect } from "@/components/tiptap-extension-custom/div-box";
 import { IframeButton } from "@/components/tiptap-extension-custom/iframe";
+import {
+  ImageAlignButton,
+  ImageCaptionButton,
+} from "@/components/tiptap-extension-custom/muikku-image";
 
 // --- Muikku fields ---
 import {
@@ -162,6 +166,16 @@ function MainToolbarContent(props: {
         <TextAlignButton align="center" disabled={isSourceMode} />
         <TextAlignButton align="right" disabled={isSourceMode} />
         <TextAlignButton align="justify" disabled={isSourceMode} />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup>
+        <ImageAlignButton align="left" disabled={isSourceMode} />
+        <ImageAlignButton align="center" disabled={isSourceMode} />
+        <ImageAlignButton align="right" disabled={isSourceMode} />
+        <ImageAlignButton align="none" disabled={isSourceMode} />
+        <ImageCaptionButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
