@@ -22,7 +22,8 @@ public class PyramusApi20 extends DefaultApi20 {
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(authorizationUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback()));
+    // Not the best approach as this assumes the authorizationUrl is in a very specific style - should probably be reworked
+    return String.format(authorizationUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback()), config.getScope());
   }
 
   @Override

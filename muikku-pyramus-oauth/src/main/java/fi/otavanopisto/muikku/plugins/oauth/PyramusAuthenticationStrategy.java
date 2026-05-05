@@ -45,6 +45,11 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   @Inject
   private SessionController sessionController;
 
+  public PyramusAuthenticationStrategy() {
+    // Initialize with a default scope
+    super("legacy");
+  }
+  
   private String getAuthUrl() {
     return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.authUrl");
   }
