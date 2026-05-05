@@ -40,8 +40,6 @@ import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import ContactCard from "~/components/general/contact-card";
-import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
-import Link from "~/components/general/link";
 
 /**
  * StateOfStudiesProps
@@ -175,31 +173,29 @@ class StateOfStudies extends React.Component<
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           <div className="item-list item-list--student-contact-info">
-            {this.props.guider.currentStudent.contactInfos?.map(
-              (contact, index) => {
-                const contactState = contact.allowStudyDiscussions
-                  ? this.props.i18n.t("labels.hasConsentToDiscussStudies", {
-                      ns: "users",
-                    })
-                  : this.props.i18n.t("labels.noConsentToDiscussStudies", {
-                      ns: "users",
-                    });
-                return (
-                  <ContactCard
-                    key={contact.id}
-                    tag={contact.contactType}
-                    email={contact.email}
-                    phone={contact.phoneNumber}
-                    streetAddress={contact.streetAddress}
-                    postalCode={contact.postalCode}
-                    city={contact.city}
-                    country={contact.country}
-                    fullName={contact.name}
-                    state={contact.contactType && contactState}
-                  />
-                );
-              }
-            )}
+            {this.props.guider.currentStudent.contactInfos?.map((contact) => {
+              const contactState = contact.allowStudyDiscussions
+                ? this.props.i18n.t("labels.hasConsentToDiscussStudies", {
+                    ns: "users",
+                  })
+                : this.props.i18n.t("labels.noConsentToDiscussStudies", {
+                    ns: "users",
+                  });
+              return (
+                <ContactCard
+                  key={contact.id}
+                  tag={contact.contactType}
+                  email={contact.email}
+                  phone={contact.phoneNumber}
+                  streetAddress={contact.streetAddress}
+                  postalCode={contact.postalCode}
+                  city={contact.city}
+                  country={contact.country}
+                  fullName={contact.name}
+                  state={contact.contactType && contactState}
+                />
+              );
+            })}
           </div>
         </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
