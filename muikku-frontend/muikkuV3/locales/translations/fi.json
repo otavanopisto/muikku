@@ -1527,7 +1527,6 @@
     },
     "content": {
       "editDetails": "Nimi on pakollinen tieto. Voit merkitä käyttäjäryhmän halutessasi ohjausryhmäksi.",
-      "studyContactPermissions": "Kun olet täyttänyt 18 vuotta, opinnoistasi ei voi enää keskustella esimerkiksi vanhempiesi kanssa ilman lupaasi. Jos huoltajasi/vanhempasi pääsivät ennen kirjautumaan Muikkuun huoltajatunnuksilla, tunnukset suljetaan. Voit itse määritellä, ketkä saavat jatkossa nähdä tietojasi tai keskustella opintoihisi liittyvistä asioista.",
       "empty": "Käyttäjiä ei löytynyt",
       "empty_studentGroups": "Opiskelijaryhmiä ei löytynyt",
       "empty_students": "Opiskelijoita ei löytynyt",
@@ -1549,7 +1548,8 @@
       "searchToRemove": "Hae poistettavia käyttäjiä",
       "searchToRemove_students": "Hae kurssilta poistettavia opiskelijoita. Poisto tehdään klikkaamalla opiskelijan nimeä. Voit selata poistettavia opiskelijoita toisella välilehdellä.",
       "searchToRemove_staff": "Hae käyttäjäryhmästä poistettavia henkilökunnan jäseniä. Poisto tehdään klikkaamalla jäsenen nimeä. Voit selata poistettavia jäseniä toisella välilehdellä.",
-      "searchToRemove_teachers": "Hae kurssilta poistettavia opettajia. Poisto tehdään klikkaamalla opettajan nimeä. Voit selata poistettavia opettajia toisella välilehdellä."
+      "searchToRemove_teachers": "Hae kurssilta poistettavia opettajia. Poisto tehdään klikkaamalla opettajan nimeä. Voit selata poistettavia opettajia toisella välilehdellä.",
+      "studyContactPermissions": "Kun olet täyttänyt 18 vuotta, opinnoistasi ei voi enää keskustella esimerkiksi vanhempiesi kanssa ilman lupaasi. Jos huoltajasi/vanhempasi pääsivät ennen kirjautumaan Muikkuun huoltajatunnuksilla, tunnukset suljetaan. Voit itse määritellä, ketkä saavat jatkossa nähdä tietojasi tai keskustella opintoihisi liittyvistä asioista."
     },
     "labels": {
       "activeStudents": "Aktiiviset",
