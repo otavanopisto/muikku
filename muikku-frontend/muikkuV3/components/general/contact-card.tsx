@@ -76,13 +76,15 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
           <span className="label__text">{tag}</span>
         </div>
       )}
-      <div className="item-list__profile-picture">
-        <Avatar
-          id={id ? id : Math.floor(Math.random() * 1000)}
-          name={fullName}
-          hasImage={hasImage}
-        />
-      </div>
+      {fullName && (
+        <div className="item-list__profile-picture">
+          <Avatar
+            id={id ? id : Math.floor(Math.random() * 1000)}
+            name={fullName}
+            hasImage={hasImage}
+          />
+        </div>
+      )}
       <div className="item-list__text-body item-list__text-body--multiline">
         <div className="item-list__user-name">{fullName}</div>
         <div className="item-list__counselors labels">

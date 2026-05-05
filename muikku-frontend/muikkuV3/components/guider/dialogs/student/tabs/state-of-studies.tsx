@@ -40,6 +40,9 @@ import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import ContactCard from "~/components/general/contact-card";
+import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
+import Link from "~/components/general/link";
+
 /**
  * StateOfStudiesProps
  */
@@ -163,54 +166,148 @@ class StateOfStudies extends React.Component<
         }
       ></Avatar>
     );
+    const contacts = (
+      <ApplicationSubPanel modifier="contact-infos">
+        <ApplicationSubPanel.Header>
+          {this.props.i18n.t("labels.contactInfo", {
+            ns: "users",
+          })}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          <div className="item-list item-list--student-contact-info">
+            {this.props.guider.currentStudent.contactInfos?.map(
+              (contact, index) => {
+                const contactState = contact.allowStudyDiscussions
+                  ? this.props.i18n.t(
+                      "labels.hasContinuedDiscussionPermission",
+                      {
+                        ns: "users",
+                      }
+                    )
+                  : this.props.i18n.t(
+                      "labels.noContinuedDiscussionPermission",
+                      {
+                        ns: "users",
+                      }
+                    );
+                return (
+                  <ContactCard
+                    key={contact.id}
+                    tag={contact.contactType}
+                    email={contact.email}
+                    phone={contact.phoneNumber}
+                    streetAddress={contact.streetAddress}
+                    postalCode={contact.postalCode}
+                    city={contact.city}
+                    country={contact.country}
+                    fullName={contact.name}
+                    state={contact.contactType && contactState}
+                  />
+                );
+              }
+            )
+            //(contactInfo) => (
+            //  <div
+            //    className="item-list__item item-list__item--student-contact-info"
+            //    key={contactInfo.id}
+            //  >
+            //    {contactInfo.contactType && (
+            //      <div className="label label--contact-type">
+            //        <span className="label__text">
+            //          {contactInfo.contactType}
+            //        </span>
+            //      </div>
+            //    )}
+            //    <div className="item-list__text-body item-list__text-body--multiline">
+            //      {contactInfo.name && (
+            //        <div className="item-list__user-name">
+            //          {contactInfo.name}
+            //        </div>
+            //      )}
+            //      <div className="item-list__user-email">
+            //        <div className="glyph icon-envelope"></div>
+            //        {contactInfo.email}
+            //      </div>
 
-    //const studentGuardians = (
-    //  <div className="application-sub-panel application-sub-panel--guardians">
-    //    <div className="application-sub-panel__header">
-    //      {t("labels.guardians", {
-    //        ns: "users",
-    //      })}
-    //    </div>
-    //    <div className="application-sub-panel__body">
-    //      <div className="item-list item-list--student-guardians">
-    //        {this.props.contacts.guardians.list.length > 0 &&
-    //          this.props.contacts.guardians.list.map((guardian, index) => {
-    //            const { firstName, lastName, continuedViewPermission } =
-    //              guardian;
-    //            const guardianState = continuedViewPermission
-    //              ? t("labels.continuedViewPermission", {
-    //                  ns: "users",
-    //                })
-    //              : t("labels.noContinuedViewPermission", {
-    //                  ns: "users",
-    //                });
-    //            const guardianActions = (
-    //              <GuardianPermissionsDialog
-    //                guardian={guardian}
-    //                userIdentifier={this.props.status.userSchoolDataIdentifier}
-    //              >
-    //                <Link className="link">
-    //                  {t("actions.editPermissions", {
-    //                    ns: "users",
-    //                  })}
-    //                </Link>
-    //              </GuardianPermissionsDialog>
-    //            );
+            //      {contactInfo.phoneNumber && (
+            //        <div className="item-list__user-phone">
+            //          <div className="glyph icon-phone"></div>
+            //          {contactInfo.phoneNumber}
+            //        </div>
+            //      )}
+            //      {contactInfo.streetAddress && (
+            //        <div className="item-list__user-street-address">
+            //          {contactInfo.streetAddress}
+            //        </div>
+            //      )}
+            //      {(contactInfo.postalCode || contactInfo.city) && (
+            //        <div className="item-list__user-postal-address">
+            //          {contactInfo.postalCode && contactInfo.postalCode}{" "}
+            //          {contactInfo.city && contactInfo.city}
+            //        </div>
+            //      )}
+            //      {contactInfo.country && (
+            //        <div className="item-list__user-country">
+            //          {contactInfo.country}
+            //        </div>
+            //      )}
 
-    //            return (
-    //              <ContactCard
-    //                key={index}
-    //                actions={guardianActions}
-    //                firstname={firstName}
-    //                lastname={lastName}
-    //                state={guardianState}
-    //              />
-    //            );
-    //          })}
-    //      </div>
-    //    </div>
-    //  </div>
-    //);
+            //      {contactInfo.allowStudyDiscussions && (
+            //        <div className="item-list__user-consent-study-discussions">
+            //          <div className="label label--guider-consent">
+            //            <span className="label__text">
+            //              {this.props.i18n.t(
+            //                "labels.consentToDiscussStudies",
+            //                {
+            //                  ns: "users",
+            //                }
+            //              )}
+            //            </span>
+            //          </div>
+            //        </div>
+            //      )}
+            //    </div>
+            //  </div>
+            //)
+            }
+          </div>
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+    );
+    const studentGuardians = (
+      <ApplicationSubPanel modifier="guardians">
+        <ApplicationSubPanel.Header>
+          {this.props.i18n.t("labels.guardians", {
+            ns: "users",
+          })}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          <div className="item-list item-list--student-guardians">
+            {this.props.guider.currentStudent.guardians?.length > 0 &&
+              this.props.guider.currentStudent.guardians?.map(
+                (guardian, index) => {
+                  const { continuedViewPermission } = guardian;
+                  const guardianState = continuedViewPermission
+                    ? this.props.i18n.t("labels.hasConsentToViewStudies", {
+                        ns: "users",
+                      })
+                    : this.props.i18n.t("labels.noConsentToViewStudies", {
+                        ns: "users",
+                      });
+
+                  return (
+                    <ContactCard
+                      key={"guardian" + index}
+                      fullName={getName(guardian, true)}
+                      state={guardianState}
+                    />
+                  );
+                }
+              )}
+          </div>
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+    );
 
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanelViewHeader
@@ -484,86 +581,8 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
             </ApplicationSubPanel>
 
-            {this.props.guider.currentStudent.contactInfos && (
-              <ApplicationSubPanel modifier="contact-infos">
-                <ApplicationSubPanel.Header>
-                  {this.props.i18n.t("labels.contactInfo", {
-                    ns: "users",
-                  })}
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  <div className="item-list item-list--student-contact-info">
-                    {this.props.guider.currentStudent.contactInfos.map(
-                      (contactInfo) => (
-                        <div
-                          className="item-list__item item-list__item--student-contact-info"
-                          key={contactInfo.id}
-                        >
-                          {contactInfo.contactType && (
-                            <div className="label label--contact-type">
-                              <span className="label__text">
-                                {contactInfo.contactType}
-                              </span>
-                            </div>
-                          )}
-                          <div className="item-list__text-body item-list__text-body--multiline">
-                            {contactInfo.name && (
-                              <div className="item-list__user-name">
-                                {contactInfo.name}
-                              </div>
-                            )}
-                            <div className="item-list__user-email">
-                              <div className="glyph icon-envelope"></div>
-                              {contactInfo.email}
-                            </div>
-
-                            {contactInfo.phoneNumber && (
-                              <div className="item-list__user-phone">
-                                <div className="glyph icon-phone"></div>
-                                {contactInfo.phoneNumber}
-                              </div>
-                            )}
-                            {contactInfo.streetAddress && (
-                              <div className="item-list__user-street-address">
-                                {contactInfo.streetAddress}
-                              </div>
-                            )}
-                            {(contactInfo.postalCode || contactInfo.city) && (
-                              <div className="item-list__user-postal-address">
-                                {contactInfo.postalCode &&
-                                  contactInfo.postalCode}{" "}
-                                {contactInfo.city && contactInfo.city}
-                              </div>
-                            )}
-                            {contactInfo.country && (
-                              <div className="item-list__user-country">
-                                {contactInfo.country}
-                              </div>
-                            )}
-
-                            {contactInfo.allowStudyDiscussions && (
-                              <div className="item-list__user-consent-study-discussions">
-                                <div className="label label--guider-concent">
-                                  <span className="label__text">
-                                    {this.props.i18n.t(
-                                      "labels.consentToDiscussStudies",
-                                      {
-                                        ns: "users",
-                                      }
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </ApplicationSubPanel.Body>
-              </ApplicationSubPanel>
-            )}
-
+            {this.props.guider.currentStudent.contactInfos && contacts}
+            {this.props.guider.currentStudent.guardians && studentGuardians}
             <ApplicationSubPanel modifier="counselors">
               <ApplicationSubPanel.Header modifier="with-instructions">
                 {this.props.i18n.t("labels.counselors", {
@@ -598,8 +617,6 @@ class StateOfStudies extends React.Component<
                       (counselor) => {
                         const {
                           userEntityId,
-                          firstName,
-                          lastName,
                           email,
                           hasImage,
                           groupAdvisor,
