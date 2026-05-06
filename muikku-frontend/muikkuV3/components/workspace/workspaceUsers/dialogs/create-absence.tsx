@@ -162,14 +162,12 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         description,
         start: startDate?.toISOString(),
         end: endDate?.toISOString(),
-        allDay: false,
         editable: true,
         removable: false,
         type: "ABSENCE",
-        isPrivate: true,
         eventContainerId: workspaceEventContainerId,
       },
-      users: formState.selectedUsers.map((u) => u.value.identifier),
+      users: formState.selectedUsers.map((u) => u.value.id),
     });
 
     onConfirm?.(formState);
@@ -263,7 +261,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     <div className="dialog-footer">
       <Button onClick={onClose}>Cancel</Button>
       <Button
-        onClick={handleConfirm}
+        onClick={() => handleConfirm(formState)}
         disabled={formState.selectedUsers.length === 0}
       >
         Confirm
