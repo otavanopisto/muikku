@@ -110,10 +110,7 @@ import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
-import {
-  loadAllContactGroups,
-  loadContactGroup,
-} from "~/actions/base/contacts";
+import { loadAllContactGroups } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
@@ -433,8 +430,7 @@ export default class MainFunction extends React.Component<
 
     if (status.isStudent) {
       this.props.store.dispatch(
-        loadContactGroup(
-          "guardians",
+        loadAllContactGroups(
           status.userSchoolDataIdentifier
         ) as Action as Action
       );
