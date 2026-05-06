@@ -6,6 +6,7 @@ import {
   type ReactNodeViewProps,
 } from "@tiptap/react";
 import { useImageResize } from "./UseImageResize";
+import { openImagePropertiesModal } from "./helpers";
 
 /**
  * The function to get the rendered image size.
@@ -69,6 +70,10 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
     maxWidth: 1200,
   });
 
+  /**
+   * Handles the mouse down event.
+   * @param e - The mouse down event.
+   */
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       if (e.button !== 0) return;
@@ -90,6 +95,26 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
         state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
       );
       view.focus();
+    },
+    [editor, getPos]
+  );
+
+  /**
+   * Handles the double click event.
+   * @param e - The double click event.
+   */
+  const handleDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // ensure the node is selected, so modal reads correct attrs
+      const pos = getPos();
+      const { state, view } = editor;
+      view.dispatch(
+        state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
+      );
+      view.focus();
+      openImagePropertiesModal({ mode: "edit" });
     },
     [editor, getPos]
   );
@@ -120,6 +145,7 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
       data-selected={selected ? "true" : "false"}
       onMouseDown={handleMouseDown}
       style={figureStyle}
+      onDoubleClick={handleDoubleClick}
     >
       <img
         src={typeof attrs.src === "string" ? attrs.src : ""}
@@ -165,8 +191,6 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
       <figcaption>
         <NodeViewContent />
       </figcaption>
-
-      {/* Later: resize handles overlay, contentEditable={false} */}
     </NodeViewWrapper>
   );
 }

@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { NodeSelection } from "@tiptap/pm/state";
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import { useImageResize } from "./UseImageResize";
+import { openImagePropertiesModal } from "./helpers";
 
 /**
  * The function to get the rendered image size.
@@ -39,6 +40,10 @@ export function MuikkuImageView(props: MuikkuImageViewProps) {
     maxWidth: 1200,
   });
 
+  /**
+   * Handles the mouse down event.
+   * @param e - The mouse down event.
+   */
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       // left-click only
@@ -58,6 +63,26 @@ export function MuikkuImageView(props: MuikkuImageViewProps) {
 
       // keep focus in the editor
       view.focus();
+    },
+    [editor, getPos]
+  );
+
+  /**
+   * Handles the double click event.
+   * @param e - The double click event.
+   */
+  const handleDoubleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // ensure the node is selected, so modal reads correct attrs
+      const pos = getPos();
+      const { state, view } = editor;
+      view.dispatch(
+        state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
+      );
+      view.focus();
+      openImagePropertiesModal({ mode: "edit" });
     },
     [editor, getPos]
   );
@@ -91,9 +116,9 @@ export function MuikkuImageView(props: MuikkuImageViewProps) {
       data-type="muikku-image"
       data-selected={selected ? "true" : "false"}
       onMouseDown={handleMouseDown}
-      // Optional: make wrapper match CKEditor widget behavior
       contentEditable={false}
       style={wrapperStyle}
+      onDoubleClick={handleDoubleClick}
     >
       <img
         src={typeof attrs.src === "string" ? attrs.src : ""}
