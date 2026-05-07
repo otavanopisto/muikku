@@ -74,154 +74,57 @@ public class MuikkuEventRESTService {
   @Inject
   private WorkspaceController workspaceController;
   
-  @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
-  
   @Path("/event")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createEvent(MuikkuEventRestModel restEvent, @QueryParam("users") List<Long> users) {
 
-    // Access checks
-    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
-
-    if (restEvent == null) {
+    if (restEvent == null || restEvent.getEventContainerId() == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    // Container check
-    if (restEvent.getEventContainerId() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing event container").build();
-    }
-    
-    MuikkuEventContainer payloadContainer = eventController.findEventContainerById(restEvent.getEventContainerId());
-    
+    MuikkuEventContainer payloadContainer =
+        eventController.findEventContainerById(restEvent.getEventContainerId());
+
     if (payloadContainer == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Event container %d not found", restEvent.getEventContainerId())).build();
+      return Response.status(Status.NOT_FOUND)
+        .entity("Event container not found")
+        .build();
     }
-    
-    boolean isWorkspaceContainer = payloadContainer.getWorkspaceEntityId() != null;
-    boolean isUserContainer = payloadContainer.getUserEntityId() != null;
-    
-    WorkspaceEntity workspaceEntity = null;
-    
-    if (isWorkspaceContainer) {
-      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payloadContainer.getWorkspaceEntityId());
+
+    // Cannot create events in a container that they cannot even see
+    if (!eventController.canViewEventContainer(payloadContainer)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
+
+    List<MuikkuEvent> events =
+        eventController.createEvents(restEvent, users, payloadContainer);
     
-    MuikkuEvent event = null;
-    List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<MuikkuEventPropertyRestModel>();
-    List<MuikkuEventRestModel> restEvents = new ArrayList<MuikkuEventRestModel>();
-    
-    // Students can't create events for other 
-    // An event can only be created for a user group within the workspace’s event container
-    if (!users.isEmpty() && !isStudent && isWorkspaceContainer) {
-      for (Long userId : users) {
-        UserEntity userEntity = userEntityController.findUserEntityById(userId);
-        if (userEntity == null) {
-          continue;
-        }
-        
-        // The target user must be a member of the workspace
-        boolean isWorkspaceMember = workspaceUserEntityController.isWorkspaceMember(userEntity.defaultSchoolDataIdentifier(), workspaceEntity);
-        
-        if (isWorkspaceMember) {
-          event = eventController.createEvent(
-              restEvent.getStart(), 
-              restEvent.getEnd(), 
-              restEvent.isAllDay(),
-              restEvent.getTitle(), 
-              restEvent.getDescription(), 
-              EventType.valueOf(restEvent.getType()), 
-              userId,
-              restEvent.isEditable(), 
-              restEvent.isPrivate(), 
-              restEvent.isRemovable(), 
-              payloadContainer);
-          
-          // EventProperties
-          if (restEvent.getProperties() != null) {
-            for (MuikkuEventPropertyRestModel restProperty : restEvent.getProperties()) {
-              MuikkuEventProperty property = eventController.createEventProperty(event, restProperty.getName(), restProperty.getValue(), sessionController.getLoggedUserEntity().getId(), restProperty.getDate());
-              
-              restProperties.add(toRestModel(property));
-            }
-          }
-          
-          restEvents.add(toRestModel(event, restProperties));
-        }
-      }
-    } else {
+    List<MuikkuEventRestModel> restEvents = new ArrayList<>();
+
+    for (MuikkuEvent event : events) {
+      // Properties
+      List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<>();
+      List<MuikkuEventProperty> properties = eventController.listPropertiesByEvent(event);
       
-      if (restEvent.getUserEntityId() == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Missing user entity").build();
-      }
-      
-      UserEntity userEntity = userEntityController.findUserEntityById(restEvent.getUserEntityId());
-      
-      if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Missing user entity").build();
-      }
-      
-      // Students can create events only for themselves
-      if (isStudent && sessionController.getLoggedUserEntity().getId() != restEvent.getUserEntityId() && userEntityController.isStudent(userEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-      
-      // If the event is user-specific, the container must be the target user’s container
-      
-      if (isUserContainer && !isWorkspaceContainer) {
-        MuikkuEventContainer targetUserContainer = eventController.findEventContainerByUserOrWorkspace(userEntity.getId(), null);
-        if (targetUserContainer != null) {
-          if (payloadContainer.getUserEntityId() != targetUserContainer.getUserEntityId()) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      }
-      
-      // Workspace specific event
-      
-      if (isWorkspaceContainer) {
-        boolean isWorkspaceMember = workspaceUserEntityController.isWorkspaceMember(userEntity.defaultSchoolDataIdentifier(), workspaceEntity);
-        
-        if (!isWorkspaceMember) {
-          return Response.status(Status.BAD_REQUEST).entity(String.format("User %d is not the member of workspace %d", userEntity.getId(), workspaceEntity.getId())).build();
-        }
-      }
-      
-      event = eventController.createEvent(
-          restEvent.getStart(), 
-          restEvent.getEnd(), 
-          restEvent.isAllDay(),
-          restEvent.getTitle(),
-          restEvent.getDescription(), 
-          EventType.valueOf(restEvent.getType()),
-          restEvent.getUserEntityId(), 
-          restEvent.isEditable(), 
-          restEvent.isPrivate(), 
-          restEvent.isRemovable(),
-          payloadContainer);
-      
-      // EventProperties
-      if (restEvent.getProperties() != null) {
-        for (MuikkuEventPropertyRestModel restProperty : restEvent.getProperties()) {
-          MuikkuEventProperty property = eventController.createEventProperty(event, restProperty.getName(), restProperty.getValue(), sessionController.getLoggedUserEntity().getId(), restProperty.getDate());
-          
+      if (!properties.isEmpty()) {
+        for (MuikkuEventProperty property : properties) {
           restProperties.add(toRestModel(property));
         }
       }
-      
       restEvents.add(toRestModel(event, restProperties));
     }
-
-    return Response.ok(restEvents).build();
-
+    
+    return Response.ok(restEvents)
+      .build();
   }
   
   @Path("/event/{EVENTID}")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateEvent(@PathParam("EVENTID") Long eventId, MuikkuEventRestModel restEvent) {
+
+    Long loggedUserEntityId = sessionController.getLoggedUserEntity().getId();
     
     // Payload validation
     
@@ -231,15 +134,24 @@ public class MuikkuEventRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("Event %d not found", restEvent.getId())).build();
     }
     
-    Long userEntityId = sessionController.getLoggedUserEntity().getId();
-    if (!event.getUserEntityId().equals(userEntityId) && !restEvent.isEditable() || sessionController.getLoggedUserEntity().getId() == event.getCreatorEntityId()) {
-      logger.warning(String.format("User %d attempt to edit calendar event %d revoked", userEntityId, event.getId()));
+    // Access checks
+    WorkspaceEntity workspaceEntity = null;
+    if (event.getEventContainer().getWorkspaceEntityId() != null) {
+      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(event.getEventContainer().getWorkspaceEntityId());
+    }
+    
+    boolean hasAccess = eventController.canEditEvent(workspaceEntity, event);
+    
+    if (!hasAccess) {
+      logger.warning(String.format("User %d attempt to edit calendar event %d revoked", loggedUserEntityId, event.getId()));
       return Response.status(Status.FORBIDDEN).build();
     }
-
-    // Access checks
     
-
+    if (!event.getUserEntityId().equals(loggedUserEntityId) && !restEvent.isEditable() || sessionController.getLoggedUserEntity().getId() == event.getCreatorEntityId()) {
+      logger.warning(String.format("User %d attempt to edit calendar event %d revoked", loggedUserEntityId, event.getId()));
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     // Event update
     
     if (event.isEditableByUser() && event.getUserEntityId() == sessionController.getLoggedUserEntity().getId() || sessionController.getLoggedUserEntity().getId() == event.getCreatorEntityId()) {
@@ -392,33 +304,6 @@ public class MuikkuEventRESTService {
     return Response.ok(toRestModel(event, null)).build();
   }
   
-  /**
-   * REQUEST:
-   * 
-   * mApi().calendar.events.read({
-   *   'user': 123,
-   *   'start': '2021-10-28T00:00:00+02:00',
-   *   'end': '2021-10-28T23:59:59+02:00',
-   *   'adjustTimes': true | false, // defaults to true
-   *   'type': 'optional event type'
-   * });
-   * 
-   * RESPONSE:
-   * 
-   * Array of calendar events
-   * 
-   * DESCRIPTION:
-   * 
-   * Returns events for the given user, timeframe, and (optional) event type
-   * 
-   * @param userEntityId User
-   * @param start Timeframe start
-   * @param end Timeframe end
-   * @param adjustTimes Should timeframe start and end times be start and end of day
-   * @param type Event type (optional)
-   * 
-   * @return Events of the given user
-   */
   @Path("/events")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -434,6 +319,7 @@ public class MuikkuEventRESTService {
     
     OffsetDateTime startDate = null;
     OffsetDateTime endDate = null;
+    // Start and end dates cannot be empty
     if (StringUtils.isEmpty(start) || StringUtils.isEmpty(end)) {
       return Response.status(Status.BAD_REQUEST).entity("Missing start/end parameters").build();
     }
@@ -451,8 +337,8 @@ public class MuikkuEventRESTService {
       userEntityId = sessionController.getLoggedUserEntity().getId();
     }
     if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
-      UserEntity caller = sessionController.getLoggedUserEntity();
-      if (userEntityController.isStudent(caller)) {
+      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+      if (userEntityController.isStudent(loggedUserEntity)) {
         UserEntity target = userEntityController.findUserEntityById(userEntityId);
         if (userEntityController.isStudent(target)) {
           logger.warning(String.format("User %d attempt to list calendar of user %d revoked", sessionController.getLoggedUserEntity().getId(), userEntityId));
@@ -482,7 +368,7 @@ public class MuikkuEventRESTService {
     List<MuikkuEvent> events = eventController.listByUserAndWorkspaceAndTimeframeAndType(userEntityId, workspaceEntityId, startDate, endDate, type != null ? EventType.valueOf(type) : null);
     List<MuikkuEventRestModel> restEvents = new ArrayList<>();
     for (MuikkuEvent event : events) {
-      
+      // Access to specific event
       // Event properties
       List<MuikkuEventProperty> properties = eventController.listPropertiesByEvent(event);
       List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<MuikkuEventPropertyRestModel>();
