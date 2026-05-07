@@ -129,7 +129,6 @@ export function TableBubbleMenu({
       shouldShow={shouldShow}
       // Offset so it sits above caret/cell and doesn’t cover typing
       options={{
-        strategy: "fixed",
         placement: "top",
         offset: {
           mainAxis: 8,
@@ -138,7 +137,6 @@ export function TableBubbleMenu({
           padding: 8,
         },
       }}
-      updateDelay={0}
     >
       <Card
         style={{ boxShadow: "var(--tt-shadow, 0 10px 30px rgba(0,0,0,.12))" }}

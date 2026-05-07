@@ -16,6 +16,7 @@ import { ImageAlignButton } from "@/components/tiptap-extension-custom/muikku-im
 import { ImageCaptionButton } from "@/components/tiptap-extension-custom/muikku-image/MuikkuImageCaptionButton";
 import { CogIcon } from "@/components/tiptap-icons/cog-icon";
 import { OPEN_IMAGE_PROPERTIES_MODAL_EVENT } from "./helpers";
+import type { BubbleMenuPluginProps } from "@tiptap/extension-bubble-menu";
 
 /**
  * The ImageBubbleMenu component.
@@ -26,9 +27,8 @@ import { OPEN_IMAGE_PROPERTIES_MODAL_EVENT } from "./helpers";
 export function ImageBubbleMenu(props: { editor: Editor }) {
   const { editor } = props;
 
-  const options = useMemo(
+  const options: BubbleMenuPluginProps["options"] = useMemo(
     () => ({
-      strategy: "fixed" as const,
       placement: "top" as const,
       offset: { mainAxis: 8 },
       shift: { padding: 8 },
