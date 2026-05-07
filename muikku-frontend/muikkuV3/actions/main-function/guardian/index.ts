@@ -25,16 +25,12 @@ import {
   getCurriculumConfig,
 } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-
-import {
-  MuikkuEvent,
-  MuikkuEventProperty,
-  UserEventService,
-} from "~/mock/absence";
+import { MuikkuEvent, MuikkuEventProperty } from "~/generated/client";
 
 const meApi = MApi.getMeApi();
 const hopsApi = MApi.getHopsApi();
 const userApi = MApi.getUserApi();
+const eventsApi = MApi.getEventsApi();
 const activitylogsApi = MApi.getActivitylogsApi();
 const workspaceApi = MApi.getWorkspaceApi();
 const evaluationApi = MApi.getEvaluationApi();
@@ -454,15 +450,26 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
  */
 const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
   function loadDependantAbsenceEvents(dependantId: number) {
-    const EventService = new UserEventService(dependantId);
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
+      const end = new Date();
+      const start = new Date(end);
+      start.setMonth(start.getMonth() - 6);
+
+      const events = await eventsApi.listEvents({
+        user: dependantId,
+        type: "ABSENCE",
+        start,
+        end,
+        adjustTimes: true,
+      });
+
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
         payload: {
           dependantId: dependantId,
-          absences: EventService.getAbsenceEvents(),
+          absences: events,
         },
       });
     };

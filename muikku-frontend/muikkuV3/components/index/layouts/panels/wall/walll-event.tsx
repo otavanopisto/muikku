@@ -2,7 +2,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/note.scss";
 import WallItem from "./components/wall-item";
-import { MuikkuEvent } from "~/mock/absence";
+import { MuikkuEvent } from "~/generated/client";
 import moment from "moment";
 import "~/sass/elements/wall-event.scss";
 

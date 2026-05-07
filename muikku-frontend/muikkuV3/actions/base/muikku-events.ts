@@ -1,10 +1,9 @@
 import { SpecificActionType, AnyActionType } from "~/actions";
-import {
-  MuikkuEvent,
-  MuikkuEventProperty,
-  UserEventService,
-} from "~/mock/absence";
+import { MuikkuEventProperty } from "~/mock/absence";
+
+import { MuikkuEvent } from "~/generated/client";
 import { LoadingState } from "~/@types/shared";
+import MApi from "~/api/api";
 
 export type EVENTS_SET_ABSENCE_EVENTS = SpecificActionType<
   "EVENTS_SET_ABSENCE_EVENTS",
@@ -34,17 +33,28 @@ export interface UpdateAbsenceEventPropertyTriggerType {
   (property: MuikkuEventProperty): AnyActionType;
 }
 
+const eventsApi = MApi.getEventsApi();
 /**
  * loadAbsenceEvents
  * @param userId userId
  */
 const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
   function loadAbsenceEvents(userId: number) {
-    const EventService = new UserEventService(userId);
     return async (dispatch: (arg: AnyActionType) => any) => {
+      const end = new Date();
+      const start = new Date(end);
+      start.setMonth(start.getMonth() - 6);
+
+      const events = await eventsApi.listEvents({
+        user: userId,
+        start,
+        end,
+        adjustTimes: true,
+        type: "ABSENCE",
+      });
       dispatch({
         type: "EVENTS_SET_ABSENCE_EVENTS",
-        payload: await EventService.getAbsenceEvents(),
+        payload: events,
       });
     };
   };

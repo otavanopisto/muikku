@@ -3680,7 +3680,7 @@ paths:
           schema:
             type: array
             items:
-              type: string
+              type: number
       requestBody:
         $ref: "#/components/requestBodies/MuikkuEventRequestBody"
       responses:
@@ -18842,6 +18842,11 @@ components:
         removable:
           description: Can the targeted user delete the event
           type: boolean
+        properties:
+          description: Additional properties of the event
+          type: array
+          items:
+            $ref: "#/components/schemas/MuikkuEventProperty"
 
     MuikkuEventContainer:
       type: object
