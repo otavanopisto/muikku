@@ -221,6 +221,25 @@ function isHostnameAllowed(hostname: string, allowlist: string[]): boolean {
 }
 
 /**
+ * Normalize protocol relative URL to absolute URL.
+ * @param raw - The raw URL.
+ * @param allowedProtocols - The allowed protocols.
+ * @returns The normalized URL, or null if the URL is not valid.
+ */
+function normalizeProtocolRelativeUrl(
+  raw: string,
+  allowedProtocols: string[]
+): string | null {
+  if (!raw.startsWith("//")) return raw;
+  // Prefer https for security, fall back to first allowed protocol if needed.
+  const preferred = allowedProtocols.includes("https:")
+    ? "https:"
+    : allowedProtocols[0];
+  if (!preferred) return null;
+  return `${preferred}${raw}`;
+}
+
+/**
  * Sanitizes iframe src:
  * - must be absolute URL
  * - protocol must be allowed
@@ -230,10 +249,15 @@ function sanitizeSrc(
   raw: string | null | undefined,
   opts: { allowedProtocols: string[]; srcAllowlist?: string[] }
 ): string | null {
-  const t = emptyToNull(raw);
+  const t0 = emptyToNull(raw);
+  if (!t0) return null;
+
+  const t = normalizeProtocolRelativeUrl(t0, opts.allowedProtocols);
+
   if (!t) return null;
 
   let url: URL;
+
   try {
     url = new URL(t);
   } catch {
@@ -241,12 +265,11 @@ function sanitizeSrc(
   }
 
   const proto = url.protocol;
-  if (!opts.allowedProtocols.includes(proto)) return null;
 
+  if (!opts.allowedProtocols.includes(proto)) return null;
   if (opts.srcAllowlist && opts.srcAllowlist.length > 0) {
     if (!isHostnameAllowed(url.hostname, opts.srcAllowlist)) return null;
   }
-
   return url.toString();
 }
 
@@ -272,116 +295,55 @@ export const IframeExtension = Node.create<IframeOptions>({
   },
 
   addAttributes() {
-    const allowedProtocols = this.options.allowedProtocols ?? ["https:"];
-    const srcAllowlist = this.options.srcAllowlist;
-
-    const allowClass = !!this.options.allowClass;
-    const allowStyle = !!this.options.allowStyle;
-    const allowId = !!this.options.allowId;
-    const allowTitle = this.options.allowTitle !== false;
-
     return {
       src: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          sanitizeSrc(el.getAttribute("src"), {
-            allowedProtocols,
-            srcAllowlist,
-          }),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.src ? { src: attrs.src as string } : {},
       },
       width: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          sanitizeDimension(el.getAttribute("width")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.width ? { width: attrs.width as string } : {},
       },
       height: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          sanitizeDimension(el.getAttribute("height")),
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.height ? { height: attrs.height as string } : {},
       },
       scrolling: {
         default: null,
-        parseHTML: (el: HTMLElement) => {
-          const v = emptyToNull(el.getAttribute("scrolling"));
-          return v === "yes" || v === "no" ? v : null;
-        },
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.scrolling ? { scrolling: attrs.scrolling as string } : {},
       },
       frameborder: {
         default: null,
-        parseHTML: (el: HTMLElement) => {
-          const v =
-            el.getAttribute("frameborder") ?? el.getAttribute("frameBorder");
-          return v === "0" || v === "1" ? v : null;
-        },
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.frameborder ? { frameborder: attrs.frameborder as string } : {},
       },
       id: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          allowId ? emptyToNull(el.getAttribute("id")) : null,
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.id ? { id: attrs.id as string } : {},
       },
       class: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          allowClass ? sanitizeClass(el.getAttribute("class")) : null,
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.class ? { class: attrs.class as string } : {},
       },
       title: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          allowTitle ? emptyToNull(el.getAttribute("title")) : null,
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.title ? { title: attrs.title as string } : {},
       },
       style: {
         default: null,
-        parseHTML: (el: HTMLElement) =>
-          allowStyle ? sanitizeStyle(el.getAttribute("style")) : null,
         renderHTML: (attrs: Record<string, unknown>) =>
           attrs.style ? { style: attrs.style as string } : {},
       },
       alignment: {
         default: "unset",
-        parseHTML: (el: HTMLElement) => {
-          const dataAlignment = el.getAttribute(
-            "data-alignment"
-          ) as IframeAlignment | null;
 
-          if (
-            dataAlignment === "left" ||
-            dataAlignment === "center" ||
-            dataAlignment === "right"
-          ) {
-            return dataAlignment;
-          }
-
-          // Legacy align attribute is deprecated. Ckeditor 4 uses it.
-          if (this.options.allowLegacyAlign !== false) {
-            const legacyAlign = el.getAttribute("align");
-            if (
-              legacyAlign === "left" ||
-              legacyAlign === "center" ||
-              legacyAlign === "right"
-            ) {
-              return legacyAlign;
-            }
-          }
-
-          // fall back to infer from style
-          return parseAlignmentFromStyle(el.getAttribute("style"));
-        },
         renderHTML: () => ({}), // handled in renderHTML() below
       },
     };
@@ -391,17 +353,139 @@ export const IframeExtension = Node.create<IframeOptions>({
     const allowedProtocols = this.options.allowedProtocols ?? ["https:"];
     const srcAllowlist = this.options.srcAllowlist;
 
+    const allowClass = !!this.options.allowClass;
+    const allowStyle = !!this.options.allowStyle;
+    const allowId = !!this.options.allowId;
+    const allowTitle = this.options.allowTitle !== false;
+
     return [
       {
         tag: "iframe",
         getAttrs: (node) => {
-          if (this.options.dropInvalidIframesOnParse === false) return null;
           const el = node;
           const src = sanitizeSrc(el.getAttribute("src"), {
             allowedProtocols,
             srcAllowlist,
           });
-          return src ? null : false; // false => do not parse into this node
+          // If src is invalid, either drop the node (false) or keep it unparsed (null),
+          // depending on your existing option.
+          if (!src) {
+            return this.options.dropInvalidIframesOnParse === false
+              ? null
+              : false;
+          }
+          const alignment = (() => {
+            const dataAlignment = el.getAttribute(
+              "data-alignment"
+            ) as IframeAlignment | null;
+            if (
+              dataAlignment === "left" ||
+              dataAlignment === "center" ||
+              dataAlignment === "right"
+            ) {
+              return dataAlignment;
+            }
+            if (this.options.allowLegacyAlign !== false) {
+              const legacyAlign = el.getAttribute("align");
+              if (
+                legacyAlign === "left" ||
+                legacyAlign === "center" ||
+                legacyAlign === "right"
+              ) {
+                return legacyAlign;
+              }
+            }
+            return parseAlignmentFromStyle(el.getAttribute("style"));
+          })();
+          return {
+            src,
+            width: sanitizeDimension(el.getAttribute("width")),
+            height: sanitizeDimension(el.getAttribute("height")),
+            scrolling: (() => {
+              const v = emptyToNull(el.getAttribute("scrolling"));
+              return v === "yes" || v === "no" ? v : null;
+            })(),
+            frameborder: (() => {
+              const v =
+                el.getAttribute("frameborder") ??
+                el.getAttribute("frameBorder");
+              return v === "0" || v === "1" ? v : null;
+            })(),
+            id: allowId ? emptyToNull(el.getAttribute("id")) : null,
+            class: allowClass ? sanitizeClass(el.getAttribute("class")) : null,
+            style: allowStyle ? sanitizeStyle(el.getAttribute("style")) : null,
+            title: allowTitle ? emptyToNull(el.getAttribute("title")) : null,
+            alignment,
+          } satisfies Partial<IframeAttrs>;
+        },
+      },
+
+      // Legacy CKEditor 4 iframe wrapper / oEmbed migration.
+      // CKEditor stores embeds as:
+      //   <div class="embeddedContent ..." data-oembed="..." ...>
+      //     <iframe src="//www.youtube.com/embed/..." ...></iframe>
+      //   </div>
+      // We need to parse the iframe from the div.embeddedContent.
+      {
+        tag: "div.embeddedContent",
+        priority: 1000,
+        getAttrs: (node) => {
+          const wrapper = node;
+
+          // ProseMirror can still apply attributes defined in the schema (addAttributes())
+          // based on the element which tag name matches.
+          // So we need to remove the attributes from the div.embeddedContent.
+          wrapper.removeAttribute("class");
+          wrapper.removeAttribute("id");
+          wrapper.removeAttribute("style");
+          wrapper.removeAttribute("title");
+
+          const iframe = wrapper.querySelector("iframe");
+          if (!iframe) return false;
+
+          // In legacy case, the alignment is stored in the data-align attribute of the div.embeddedContent.
+          const dataAlign = wrapper.getAttribute("data-align");
+          const alignment: IframeAlignment =
+            dataAlign === "left" ||
+            dataAlign === "center" ||
+            dataAlign === "right"
+              ? dataAlign
+              : "unset";
+          const src = sanitizeSrc(iframe.getAttribute("src"), {
+            allowedProtocols,
+            srcAllowlist,
+          });
+          if (!src) {
+            return this.options.dropInvalidIframesOnParse === false
+              ? null
+              : false;
+          }
+          return {
+            src,
+            width: sanitizeDimension(iframe.getAttribute("width")),
+            height: sanitizeDimension(iframe.getAttribute("height")),
+            scrolling: (() => {
+              const v = emptyToNull(iframe.getAttribute("scrolling"));
+              return v === "yes" || v === "no" ? v : null;
+            })(),
+            frameborder: (() => {
+              const v =
+                iframe.getAttribute("frameborder") ??
+                iframe.getAttribute("frameBorder");
+              return v === "0" || v === "1" ? v : null;
+            })(),
+            id: allowId ? emptyToNull(iframe.getAttribute("id")) : null,
+            class: allowClass
+              ? sanitizeClass(iframe.getAttribute("class"))
+              : null,
+            style: allowStyle
+              ? sanitizeStyle(iframe.getAttribute("style"))
+              : null,
+            title: allowTitle
+              ? emptyToNull(iframe.getAttribute("title"))
+              : null,
+            alignment,
+          } satisfies Partial<IframeAttrs>;
         },
       },
     ];
