@@ -1,9 +1,7 @@
 .tiptap-button {
   font-size: 0.875rem;
   font-weight: 500;
-  font-feature-settings:
-    "salt" on,
-    "cv01" on;
+  font-feature-settings: "salt" on, "cv01" on;
   line-height: 1.15;
   height: 2rem;
   min-width: 2rem;
@@ -173,6 +171,10 @@
     width: 1rem;
     display: flex;
     justify-content: center;
+  }
+
+  .tiptap-button-emoji img {
+    width: inherit;
   }
 
   &[data-size="large"] .tiptap-button-emoji {

@@ -27,11 +27,13 @@ import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/ho
 
 // --- Tiptap UI ---
 import { TableBubbleMenu } from "@/components/tiptap-ui/table-bubble-menu";
+import { createEmojiSuggestion } from "@/components/tiptap-ui/muikku-emoji-dropdown-menu";
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Tiptap Extension Custom ---
+import { Emoji, gitHubEmojis } from "@tiptap/extension-emoji";
 import {
   SourceModeExtension,
   sourceModePluginKey,
@@ -113,6 +115,11 @@ export function MuikkuMaterialEditorCore(props: {
       Superscript,
       Subscript,
       Selection,
+      Emoji.configure({
+        enableEmoticons: true,
+        emojis: gitHubEmojis,
+        suggestion: createEmojiSuggestion(gitHubEmojis),
+      }),
       ImageUploadNode.configure({
         accept: "image/*",
         maxSize: MAX_FILE_SIZE,
