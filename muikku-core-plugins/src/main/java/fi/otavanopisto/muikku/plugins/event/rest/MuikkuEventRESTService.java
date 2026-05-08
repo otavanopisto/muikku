@@ -222,19 +222,19 @@ public class MuikkuEventRESTService {
   @Path("/event/{EVENTID}/properties")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createEventProperty(@PathParam("EVENTID") Long eventId, MuikkuEventPropertyRestModel payload) {
+  public Response createEventProperty(@PathParam("EVENTID") Long eventId, @QueryParam("name") String name, @QueryParam("value") String value) {
     MuikkuEvent event = eventController.findEventById(eventId);
     if (event == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Event %d not found", eventId)).build();
     }
     
-    if (payload == null) {
+    if (name == null || value == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
     // TODO: Access checks here!!
     
-    MuikkuEventProperty property = eventController.createEventProperty(event, payload.getName(), payload.getValue(), sessionController.getLoggedUserEntity().getId(), new Date());
+    MuikkuEventProperty property = eventController.createEventProperty(event, name, value, sessionController.getLoggedUserEntity().getId(), new Date());
     
     return Response.ok(toRestModel(property)).build();
   }
