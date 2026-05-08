@@ -35,11 +35,6 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 import { getCurriculumConfig } from "~/util/curriculum-config";
-import {
-  MuikkuEvent,
-  MuikkuEventProperty,
-  UserEventService,
-} from "~/generated/client";
 
 const hopsApi = MApi.getHopsApi();
 

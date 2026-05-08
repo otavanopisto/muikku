@@ -9,7 +9,7 @@ import { MuikkuEvent } from "~/generated/client";
  */
 interface AbsenceFeedbackDialogProps {
   children?: React.ReactElement;
-  absenceEvent: MuikkuEvent;
+  absenceEvent?: MuikkuEvent;
   onClose?: () => void;
   onConfirm?: (explanation: string, eventId: number) => void;
 }

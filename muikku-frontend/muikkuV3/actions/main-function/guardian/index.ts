@@ -235,13 +235,6 @@ export interface LoadDependantAbsenceEventsTriggerType {
 }
 
 /**
- * UpdateDependantAbsenceEventPropertyTriggerType
- */
-export interface CreateDependantAbsenceEventPropertyTriggerType {
-  (property: MuikkuEventProperty): AnyActionType;
-}
-
-/**
  * InitializeCurrentDependantEssentialsTriggerType
  */
 export interface InitializeCurrentDependantEssentialsTriggerType {

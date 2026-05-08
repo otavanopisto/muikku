@@ -15,10 +15,10 @@ import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
 import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { MuikkuEventProperty } from "~/generated/client";
+import { CreateEventPropertyRequest } from "~/generated/client";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-import { updateAbsenceEventProperty } from "~/actions/main-function/guardian";
+import { createAbsenceEventProperty } from "~/actions/base/muikku-events";
 
 /**
  * DependantProps
@@ -44,7 +44,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
     (state: StateType) =>
       state.guardian.absencesByDependantId[dependant.userEntityId]?.events || []
   );
-<
+
   const dispatch = useDispatch();
   const { t } = useTranslation(["frontPage", "workspace"]);
   const [showWorkspaces, setShowWorkspaces] = React.useState(false);
@@ -59,15 +59,13 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
    * @param eventId the ID of the absence event for which feedback is being provided
    */
   const handleConfirmFeedback = (explanation: string, eventId: number) => {
-    const property: MuikkuEventProperty = {
+    const data: CreateEventPropertyRequest = {
       eventId,
-      userEntityId: dependant.userEntityId,
-      date: new Date().toISOString(),
       name: "ABSENCE_REASON",
       value: explanation,
     };
 
-    dispatch(updateAbsenceEventProperty(property));
+    dispatch(createAbsenceEventProperty(data));
   };
 
   /**

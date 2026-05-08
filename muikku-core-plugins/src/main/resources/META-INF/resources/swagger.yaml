@@ -3824,8 +3824,18 @@ paths:
           schema:
             type: integer
             format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/MuikkuEventPropertyRequestBody"
+        - name: name
+          in: query
+          description: Property name
+          required: true
+          schema:
+            type: string
+        - name: value
+          in: query
+          description: Property value
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Muikku event property created successfully
@@ -3860,8 +3870,12 @@ paths:
           schema:
             type: integer
             format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/MuikkuEventPropertyRequestBody"
+        - name: value
+          in: query
+          description: Property value
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Muikku event property updated successfully

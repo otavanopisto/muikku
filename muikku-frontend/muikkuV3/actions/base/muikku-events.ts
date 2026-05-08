@@ -4,7 +4,7 @@ import { MuikkuEvent } from "~/generated/client";
 import { LoadingState } from "~/@types/shared";
 import { Dispatch, Action } from "redux";
 import MApi from "~/api/api";
-
+import { CreateEventPropertyRequest } from "~/generated/client";
 export type EVENTS_SET_ABSENCE_EVENTS = SpecificActionType<
   "EVENTS_SET_ABSENCE_EVENTS",
   MuikkuEvent[]
@@ -31,6 +31,13 @@ export interface LoadAbsenceEventsTriggerType {
  */
 export interface UpdateAbsenceEventPropertyTriggerType {
   (property: MuikkuEventProperty): AnyActionType;
+}
+
+/**
+ * UpdateDependantAbsenceEventPropertyTriggerType
+ */
+export interface CreateDependantAbsenceEventPropertyTriggerType {
+  (data: CreateEventPropertyRequest): AnyActionType;
 }
 
 const eventsApi = MApi.getEventsApi();
@@ -62,15 +69,15 @@ const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
   };
 
 /**
- * updateAbsenceEventProperty
- * @param property property
+ * createAbsenceEventProperty
+ * @param data property
  */
 const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
-  function createAbsenceEventProperty(property: MuikkuEventProperty) {
+  function createAbsenceEventProperty(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
-      const prop = await eventsApi.createEventProperty({ property });
+      const property = await eventsApi.createEventProperty(data);
 
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
@@ -91,4 +98,8 @@ const updateAbsenceEventProperty: UpdateAbsenceEventPropertyTriggerType =
     };
   };
 
-export { loadAbsenceEvents, updateAbsenceEventProperty };
+export {
+  loadAbsenceEvents,
+  updateAbsenceEventProperty,
+  createAbsenceEventProperty,
+};
