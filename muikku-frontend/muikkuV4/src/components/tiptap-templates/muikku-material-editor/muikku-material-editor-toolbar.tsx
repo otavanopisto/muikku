@@ -54,6 +54,7 @@ import { LangDropdownMenu } from "@/components/tiptap-extension-custom/lang";
 import { DivBoxSelect } from "@/components/tiptap-extension-custom/div-box";
 import { IframeButton } from "@/components/tiptap-extension-custom/iframe";
 import { ImageAddButton } from "@/components/tiptap-extension-custom/muikku-image/ImageAddButton";
+import { SpecialCharButton } from "@/components/tiptap-extension-custom/special-char";
 
 // --- Muikku fields ---
 import {
@@ -198,6 +199,7 @@ function MainToolbarContent(props: {
         <MathEquationButton disabled={isSourceMode} />
         <TablePopover disabled={isSourceMode} />
         <DetailsButton disabled={isSourceMode} />
+        <SpecialCharButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
