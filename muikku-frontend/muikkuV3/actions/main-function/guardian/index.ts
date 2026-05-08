@@ -237,7 +237,7 @@ export interface LoadDependantAbsenceEventsTriggerType {
 /**
  * UpdateDependantAbsenceEventPropertyTriggerType
  */
-export interface UpdateDependantAbsenceEventPropertyTriggerType {
+export interface CreateDependantAbsenceEventPropertyTriggerType {
   (property: MuikkuEventProperty): AnyActionType;
 }
 
@@ -472,18 +472,6 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
           absences: events,
         },
       });
-    };
-  };
-
-/**
- * updateAbsenceEventProperty
- * @param property property
- */
-const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
-  function updateAbsenceEventProperty(property: MuikkuEventProperty) {
-    return {
-      type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-      payload: property,
     };
   };
 

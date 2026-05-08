@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
-import { MuikkuEvent } from "~/mock/absence";
+import { MuikkuEvent } from "~/generated/client";
 
 /**
  * AbsenceFeedbackDialogProps

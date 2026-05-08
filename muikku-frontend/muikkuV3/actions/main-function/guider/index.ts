@@ -39,7 +39,7 @@ import {
   MuikkuEvent,
   MuikkuEventProperty,
   UserEventService,
-} from "~/mock/absence";
+} from "~/generated/client";
 
 const hopsApi = MApi.getHopsApi();
 

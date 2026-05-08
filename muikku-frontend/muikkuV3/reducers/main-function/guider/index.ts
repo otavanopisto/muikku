@@ -23,7 +23,7 @@ import {
   StudyActivity,
 } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
-import { MuikkuEvent } from "~/mock/absence";
+import { MuikkuEvent } from "~/generated/client";
 
 /**
  * GuiderFiltersType

@@ -12,7 +12,7 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import StudyProgress from "./study-progress";
 import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
-import { MuikkuEventProperty } from "~/mock/absence";
+import { MuikkuEventProperty } from "~/generated/client";
 import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
 import {
   updateAbsenceEventProperty,
@@ -51,7 +51,6 @@ const Summary = (props: SummaryProps) => {
    */
   const handleConfirmFeedback = (explanation: string, eventId: number) => {
     const property: MuikkuEventProperty = {
-      id: 0,
       eventId,
       userEntityId: currentDependant.dependantInfo.userEntityId,
       date: new Date().toISOString(),
