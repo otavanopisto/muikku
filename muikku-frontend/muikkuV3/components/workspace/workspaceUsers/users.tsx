@@ -290,17 +290,6 @@ class WorkspaceUsers extends React.Component<
   handleInActiveStudentsPagerChange = (selectedItem: { selected: number }) =>
     this.loadInActiveStudents(selectedItem.selected + 1);
 
-  handleCreateAbsenceEvent = (absenceEvent: AbsenceEventFormState) => {
-    createMuikkuEvent({
-      workspaceId: this.props.workspace.id,
-      title: absenceEvent.title,
-      description: absenceEvent.description,
-      startDate: absenceEvent.startDate,
-      endDate: absenceEvent.endDate,
-      userIds: absenceEvent.selectedUsers.map((u) => u.userEntityId),
-    });
-  };
-
   /**
    * Component render method
    * @returns JSX.Element
@@ -319,6 +308,9 @@ class WorkspaceUsers extends React.Component<
     const primaryOption = (
       <CreateAbsenceDialog
         workspaceId={this.props.workspace?.id}
+        workspaceEventContainerId={
+          this.props.workspace?.workspaceEventContainerId
+        }
         onClose={() => {}}
         onConfirm={() => {}}
       >

@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { MuikkuEvent } from "~/mock/absence";
+import { MuikkuEvent } from "~/generated/client";
 import { LoadingState } from "~/@types/shared";
 
 /**
