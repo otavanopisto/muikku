@@ -28,12 +28,20 @@ public class MuikkuEventPropertyRestModel {
     this.userEntityId = userEntityId;
   }
 
-  public Date getDate() {
-    return date;
+  public Date getCreated() {
+    return created;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  public Date getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(Date updated) {
+    this.updated = updated;
   }
 
   public String getName() {
@@ -55,7 +63,8 @@ public class MuikkuEventPropertyRestModel {
   private Long id;
   private Long eventId;
   private Long userEntityId;
-  private Date date;
+  private Date created;
+  private Date updated;
   private String name;
   private String value;
 

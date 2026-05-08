@@ -45,12 +45,20 @@ public class MuikkuEventProperty {
     this.userEntityId = userEntityId;
   }
 
-  public Date getDate() {
-    return date;
+  public Date getCreated() {
+    return created;
   }
 
-  public void setDate(Date date) {
-    this.date = date;
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  public Date getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(Date updated) {
+    this.updated = updated;
   }
 
   public String getName() {
@@ -84,7 +92,11 @@ public class MuikkuEventProperty {
   @NotNull
   @Column(nullable = false)
   @Temporal(value=TemporalType.TIMESTAMP)
-  private Date date;
+  private Date created;
+  
+  @Column
+  @Temporal(value=TemporalType.TIMESTAMP)
+  private Date updated;
   
   @NotNull
   @Column

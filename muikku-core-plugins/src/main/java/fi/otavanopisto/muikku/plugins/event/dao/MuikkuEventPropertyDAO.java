@@ -19,7 +19,7 @@ public class MuikkuEventPropertyDAO extends CorePluginsDAO<MuikkuEventProperty> 
 
   public MuikkuEventProperty create(MuikkuEvent event, String name, String value, Long userEntityId, Date date) {
     MuikkuEventProperty property = new MuikkuEventProperty();
-    property.setDate(date);
+    property.setCreated(date);
     property.setEvent(event);
     property.setName(name);
     property.setValue(value);
@@ -27,10 +27,9 @@ public class MuikkuEventPropertyDAO extends CorePluginsDAO<MuikkuEventProperty> 
     return persist(property);
   }
 
-  public MuikkuEventProperty update(MuikkuEventProperty property, String name, String value, Date date) {
-    property.setName(name);
+  public MuikkuEventProperty update(MuikkuEventProperty property, String value, Date updated) {
     property.setValue(value);
-    property.setDate(date);
+    property.setUpdated(updated);
     return persist(property);
   }
   
