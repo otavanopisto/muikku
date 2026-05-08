@@ -34,8 +34,9 @@
     );</sql>
     <sql>create table MuikkuEventProperty (
        id bigint not null auto_increment,
-        date datetime not null,
+        created datetime not null,
         name varchar(255),
+        updated datetime,
         userEntityId bigint not null,
         value varchar(255),
         muikkuEvent_id bigint,

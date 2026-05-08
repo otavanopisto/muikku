@@ -242,7 +242,7 @@ public class MuikkuEventRESTService {
   @Path("/event/{EVENTID}/properties/{PROPERTYID}")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateEventProperty(@PathParam("EVENTID") Long eventId, @PathParam("PROPERTYID") Long propertyId, MuikkuEventPropertyRestModel payload) {
+  public Response updateEventProperty(@PathParam("EVENTID") Long eventId, @PathParam("PROPERTYID") Long propertyId, @QueryParam("value") String value) {
     MuikkuEvent event = eventController.findEventById(eventId);
     if (event == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Event %d not found", eventId)).build();
@@ -254,14 +254,14 @@ public class MuikkuEventRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("Event property %d not found", propertyId)).build();
     }
     
-    if (payload == null) {
+    if (value == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
     // TODO: Access checks here!!
     
     if (sessionController.getLoggedUserEntity().getId() == property.getUserEntityId()) { // User can update properties only if created by themselves
-      property = eventController.updateEventProperty(property, payload.getName(), payload.getValue(), sessionController.getLoggedUserEntity().getId(), payload.getDate());
+      property = eventController.updateEventProperty(property, value, new Date());
     }
     
     return Response.ok(toRestModel(property)).build();
@@ -514,7 +514,8 @@ public class MuikkuEventRESTService {
     restProperty.setName(property.getName());
     restProperty.setValue(property.getValue());
     restProperty.setUserEntityId(property.getUserEntityId());
-    restProperty.setDate(property.getDate());
+    restProperty.setCreated(property.getCreated());
+    restProperty.setUpdated(property.getUpdated());
     restProperty.setEventId(property.getEvent().getId());
     
     return restProperty;

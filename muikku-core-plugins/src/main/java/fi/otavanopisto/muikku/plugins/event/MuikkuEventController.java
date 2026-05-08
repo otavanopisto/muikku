@@ -115,7 +115,7 @@ public class MuikkuEventController {
                 restProperty.getName(), 
                 restProperty.getValue(), 
                 loggedUserEntity.getId(),
-                restProperty.getDate());
+                new Date());
           }
         }
         createdEvents.add(event);
@@ -527,9 +527,8 @@ public class MuikkuEventController {
     return muikkuEventPropertyDAO.create(event, name, value, userEntityId, date);
   }
 
-  public MuikkuEventProperty updateEventProperty(MuikkuEventProperty property, String name, String value,
-      Long userEntityId, Date date) {
-    return muikkuEventPropertyDAO.update(property, name, value, date);
+  public MuikkuEventProperty updateEventProperty(MuikkuEventProperty property, String value, Date date) {
+    return muikkuEventPropertyDAO.update(property, value, date);
   }
 
   public MuikkuEventProperty findEventPropertyById(Long eventPropertyId) {
