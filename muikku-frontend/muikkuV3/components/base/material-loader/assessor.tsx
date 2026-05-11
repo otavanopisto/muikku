@@ -22,11 +22,11 @@ export function MaterialLoaderAssessor(props: MaterialLoaderAssessorProps) {
   }
 
   return (
-    <div className="material-page__assignment-assessment-date">
-      <span className="material-page__assignment-assessment-date-label">
+    <div className="material-page__assignment-assessment-assessor">
+      <span className="material-page__assignment-assessment-assessor-label">
         {t("labels.assessor")}:
       </span>
-      <span className="material-page__assignment-assessment-date-data">
+      <span className="material-page__assignment-assessment-assessor-data">
         {assessor}
       </span>
     </div>
