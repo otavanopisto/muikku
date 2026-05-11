@@ -117,25 +117,35 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const values = useWizardContext();
 
   /**
-   * Gets list of finished attendances excluding attendances that are marked as "OUTDATED" in the term field
+   * Gets list of finished attendances.
    *
+   * If includeOutdated is true, all finished attendances are returned.
+   * If includeOutdated is false, only finished attendances that are not marked as "OUTDATED" in the term field are returned.
+   *
+   * @param includeOutdated - whether to include outdated attendances
    * @returns list of finished attendances
    */
   const getFinishedAttendances = React.useCallback(
-    () =>
-      examinationInformation.finishedAttendances.filter(
-        (attendance) => attendance.term !== "OUTDATED"
-      ),
+    (includeOutdated = false) =>
+      includeOutdated
+        ? examinationInformation.finishedAttendances
+        : examinationInformation.finishedAttendances.filter(
+            (attendance) => attendance.term !== "OUTDATED"
+          ),
     [examinationInformation.finishedAttendances]
   );
 
   /**
    * Gets list of finished subjects from finished attendances lists
    *
+   * @param includeOutdated - whether to include outdated attendances
    * @returns list of finished subjects
    */
   const getFinishedSubjects = React.useCallback(
-    () => getFinishedAttendances().map((attendance) => attendance.subject),
+    (includeOutdated = false) =>
+      getFinishedAttendances(includeOutdated).map(
+        (attendance) => attendance.subject
+      ),
     [getFinishedAttendances]
   );
 
@@ -551,23 +561,35 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * previous exam with the same subject.
    * @param attendance attendance
    */
-  const isConflictingRepeat = (
-    attendance: MatriculationExamEnrolledSubject
-  ) => {
-    if (attendance.subject && attendance.repeat === false) {
-      return getFinishedSubjects().indexOf(attendance.subject) != -1;
-    } else if (attendance.subject && attendance.repeat === true) {
-      return getFinishedSubjects().indexOf(attendance.subject) == -1;
-    } else {
-      return false;
-    }
-  };
+  const isConflictingRepeat = React.useCallback(
+    (attendance: MatriculationExamEnrolledSubject) => {
+      const includeOutdated =
+        examinationInformation.degreeType ===
+        MatriculationExamDegreeType.Matriculationexaminationsupplement;
+
+      if (attendance.subject && attendance.repeat === false) {
+        return (
+          getFinishedSubjects(includeOutdated).indexOf(attendance.subject) != -1
+        );
+      } else if (attendance.subject && attendance.repeat === true) {
+        return (
+          getFinishedSubjects(includeOutdated).indexOf(attendance.subject) == -1
+        );
+      } else {
+        return false;
+      }
+    },
+    [examinationInformation.degreeType, getFinishedSubjects]
+  );
 
   /**
    * Returns true if there are any conflicting repeats; see isConflictingRepeat.
    */
   const hasConflictingRepeats = React.useCallback(() => {
-    const finishedSubjects = getFinishedSubjects();
+    const includeOutdated =
+      examinationInformation.degreeType ===
+      MatriculationExamDegreeType.Matriculationexaminationsupplement;
+    const finishedSubjects = getFinishedSubjects(includeOutdated);
 
     return (
       examinationInformation.enrolledAttendances.filter(
@@ -578,7 +600,11 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             finishedSubjects.indexOf(attendance.subject) == -1)
       ).length > 0
     );
-  }, [examinationInformation.enrolledAttendances, getFinishedSubjects]);
+  }, [
+    examinationInformation.degreeType,
+    examinationInformation.enrolledAttendances,
+    getFinishedSubjects,
+  ]);
 
   /**
    * Checks if any of choosed enrolled exams are renewable for free
