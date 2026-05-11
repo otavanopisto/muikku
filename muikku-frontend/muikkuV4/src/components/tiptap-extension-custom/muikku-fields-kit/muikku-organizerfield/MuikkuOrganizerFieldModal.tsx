@@ -396,5 +396,3 @@ export function MuikkuOrganizerFieldModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuOrganizerFieldModal;

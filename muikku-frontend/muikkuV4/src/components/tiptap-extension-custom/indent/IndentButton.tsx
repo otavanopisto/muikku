@@ -6,8 +6,7 @@ import type { Editor } from "@tiptap/react";
 
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
-
-import { useIndent, type IndentAction } from "./UseIndent";
+import { useIndent, type IndentAction } from "./useIndent";
 
 /**
  * IndentButtonProps is the props for the IndentButton component.
@@ -69,5 +68,3 @@ export const IndentButton = forwardRef<HTMLButtonElement, IndentButtonProps>(
     );
   }
 );
-
-IndentButton.displayName = "IndentButton";

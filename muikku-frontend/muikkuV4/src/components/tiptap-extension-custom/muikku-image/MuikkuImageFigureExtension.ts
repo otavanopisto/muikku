@@ -358,5 +358,3 @@ export const MuikkuImageFigure = Node.create<MuikkuImageFigureOptions>({
     };
   },
 });
-
-export default MuikkuImageFigure;

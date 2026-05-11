@@ -8,7 +8,7 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuImagePropertiesModal from "@/components/tiptap-extension-custom/muikku-image/MuikkuImagePropertiesModal";
+import { MuikkuImagePropertiesModal } from "./MuikkuImagePropertiesModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 import { OPEN_IMAGE_PROPERTIES_MODAL_EVENT } from "./helpers";
 
@@ -77,5 +77,3 @@ export const ImageAddButton = forwardRef<
     </>
   );
 });
-
-export default ImageAddButton;

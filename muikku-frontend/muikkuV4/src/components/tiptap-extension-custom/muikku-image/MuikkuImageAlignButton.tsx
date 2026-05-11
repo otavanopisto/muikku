@@ -7,8 +7,7 @@ import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 
-import type { UseImageAlignConfig } from "./UseImageAlign";
-import { useImageAlign } from "./UseImageAlign";
+import { useImageAlign, type UseImageAlignConfig } from "./useImageAlign";
 
 export type ImageAlignButtonProps = Omit<ButtonProps, "type"> &
   UseImageAlignConfig;
@@ -77,5 +76,3 @@ export const ImageAlignButton = forwardRef<
     );
   }
 );
-
-ImageAlignButton.displayName = "ImageAlignButton";

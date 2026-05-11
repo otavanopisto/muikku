@@ -68,7 +68,3 @@ export const SpecialCharButton = forwardRef<
     </>
   );
 });
-
-SpecialCharButton.displayName = "SpecialCharButton";
-
-export default SpecialCharButton;

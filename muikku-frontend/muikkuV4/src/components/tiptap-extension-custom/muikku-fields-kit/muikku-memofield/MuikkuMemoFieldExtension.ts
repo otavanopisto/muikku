@@ -21,7 +21,7 @@ export type MuikkuMemoFieldAttrs = {
 };
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.memo";
-const OPEN_EVENT = "muikku:open-muikku-memofield-modal";
+export const OPEN_EVENT = "muikku:open-muikku-memofield-modal";
 
 /**
  * Normalizes the content of a Muikku memo field.
@@ -187,5 +187,3 @@ export const MuikkuMemoFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuMemoFieldExtension;

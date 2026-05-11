@@ -3,7 +3,7 @@ import { createMuikkuPasteNameUniqPlugin } from "./helpers";
 import { MuikkuTextFieldExtension } from "./muikku-textfield";
 import { MuikkuMemoFieldExtension } from "./muikku-memofield";
 import { MuikkuConnectFieldExtension } from "./muikku-connectfield";
-import { MuikkuOrganizerFieldExtension } from "./muikku-organizerfield/MuikkuOrganizerFieldExtension";
+import { MuikkuOrganizerFieldExtension } from "./muikku-organizerfield";
 import { MuikkuSorterFieldExtension } from "./muikku-sorterfield";
 import { MuikkuJournalFieldExtension } from "./muikku-journalfield";
 import { MuikkuAudioFieldExtension } from "./muikku-audiofield";
@@ -73,5 +73,3 @@ export const MuikkuFieldsKit = Extension.create<MuikkuFieldsKitOptions>({
     return [createMuikkuPasteNameUniqPlugin()];
   },
 });
-
-export default MuikkuFieldsKit;

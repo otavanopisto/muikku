@@ -203,5 +203,3 @@ export const StyleSetExtension = Node.create<StyleSetOptions>({
     };
   },
 });
-
-export default StyleSetExtension;

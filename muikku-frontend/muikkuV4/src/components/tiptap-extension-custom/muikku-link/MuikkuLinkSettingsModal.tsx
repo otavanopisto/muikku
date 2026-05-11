@@ -649,5 +649,3 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
     </Modal>
   );
 }
-
-export default MuikkuLinkSettingsModal;

@@ -5,7 +5,7 @@ import { BubbleMenu } from "@tiptap/react/menus";
 import type { Editor } from "@tiptap/react";
 
 import { Button } from "@/components/tiptap-ui-primitive/button";
-import DivBoxModal from "./DivBoxModal";
+import { DivBoxModal } from "./DivBoxModal";
 import type { EditorState } from "@tiptap/pm/state";
 import { Card, CardBody } from "@/components/tiptap-ui-primitive/card";
 import { ButtonGroup } from "../../tiptap-ui-primitive/button-group";
@@ -83,5 +83,3 @@ export function DivBoxBubbleMenu({ editor }: { editor: Editor }) {
     </>
   );
 }
-
-export default DivBoxBubbleMenu;

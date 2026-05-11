@@ -99,8 +99,12 @@ export function MuikkuConnectFieldModal(props: {
           <div style={{ opacity: 0.7 }}>Ei vastinpareja.</div>
         ) : (
           pairs.map((pair, idx) => (
-            // eslint-disable-next-line react-x/no-array-index-key
-            <Group key={idx} align="flex-end" grow wrap="nowrap">
+            <Group
+              key={`${pair.left}-${pair.right}`}
+              align="flex-end"
+              grow
+              wrap="nowrap"
+            >
               <TextInput
                 value={pair.left}
                 onChange={(e) =>
@@ -155,5 +159,3 @@ export function MuikkuConnectFieldModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuConnectFieldModal;

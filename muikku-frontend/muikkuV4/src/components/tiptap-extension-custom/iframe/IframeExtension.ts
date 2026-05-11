@@ -1,6 +1,8 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
-import IframePlaceholder from "./IframePlaceholder";
+import { IframePlaceholder } from "./IframePlaceholder";
+
+export const OPEN_EVENT = "muikku:open-iframe-modal";
 
 export type IframeAlignment = "unset" | "left" | "center" | "right";
 
@@ -597,5 +599,3 @@ export const IframeExtension = Node.create<IframeOptions>({
     };
   },
 });
-
-export default IframeExtension;

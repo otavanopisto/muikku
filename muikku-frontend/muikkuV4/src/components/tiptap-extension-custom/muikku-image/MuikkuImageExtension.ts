@@ -214,33 +214,4 @@ export const MuikkuImage = Image.extend({
   addNodeView() {
     return ReactNodeViewRenderer(MuikkuImageView);
   },
-
-  // addProseMirrorPlugins() {
-  //   const plugins = this.parent?.() ?? [];
-  //   return [
-  //     ...plugins,
-  //     new Plugin({
-  //       props: {
-  //         handleClickOn: (view, _pos, node, nodePos, event, direct) => {
-  //           // Only react to direct clicks on our image node
-  //           if (!direct) return false;
-  //           if (node.type.name !== this.name) return false;
-  //           const target = event.target;
-  //           if (!(target instanceof HTMLImageElement)) return false;
-  //           // Only needed when alignment is set (float/center style output)
-  //           const align = (node.attrs as { align?: unknown }).align;
-  //           if (align == null) return false;
-  //           // Force NodeSelection so `.ProseMirror-selectednode` styling applies
-  //           const tr = view.state.tr.setSelection(
-  //             NodeSelection.create(view.state.doc, nodePos)
-  //           );
-  //           view.dispatch(tr);
-  //           return true;
-  //         },
-  //       },
-  //     }),
-  //   ];
-  // },
 });
-
-export default MuikkuImage;

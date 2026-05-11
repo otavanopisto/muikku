@@ -126,5 +126,3 @@ export const MuikkuFileFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuFileFieldExtension;

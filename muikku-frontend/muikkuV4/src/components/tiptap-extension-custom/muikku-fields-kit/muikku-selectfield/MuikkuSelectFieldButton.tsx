@@ -7,10 +7,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuSelectFieldModal from "./MuikkuSelectFieldModal";
+import { MuikkuSelectFieldModal } from "./MuikkuSelectFieldModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-muikku-selectionfield-modal";
+import { OPEN_EVENT } from "./MuikkuSelectFieldExtension";
 
 /**
  * The Muikku select field button props interface.
@@ -71,5 +70,3 @@ export const MuikkuSelectFieldButton = forwardRef<
     </>
   );
 });
-
-export default MuikkuSelectFieldButton;

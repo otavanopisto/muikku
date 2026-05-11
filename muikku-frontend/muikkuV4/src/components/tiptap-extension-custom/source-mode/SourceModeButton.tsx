@@ -67,7 +67,3 @@ export const SourceModeButton = forwardRef<
     </Button>
   );
 });
-
-SourceModeButton.displayName = "SourceModeButton";
-
-export default SourceModeButton;

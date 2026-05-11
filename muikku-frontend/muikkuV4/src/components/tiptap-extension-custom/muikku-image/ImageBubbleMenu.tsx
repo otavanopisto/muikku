@@ -120,5 +120,3 @@ export function ImageBubbleMenu(props: { editor: Editor }) {
     </BubbleMenu>
   );
 }
-
-export default ImageBubbleMenu;

@@ -215,5 +215,3 @@ export const LangExtension = Extension.create<LangOptions>({
     };
   },
 });
-
-export default LangExtension;

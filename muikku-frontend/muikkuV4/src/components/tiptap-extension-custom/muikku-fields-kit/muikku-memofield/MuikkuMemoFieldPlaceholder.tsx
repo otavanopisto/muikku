@@ -2,8 +2,7 @@
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import type { MuikkuMemoFieldContent } from "./MuikkuMemoFieldExtension";
-
-const OPEN_EVENT = "muikku:open-muikku-memofield-modal";
+import { OPEN_EVENT } from "./MuikkuMemoFieldExtension";
 
 /**
  * Summary of the Muikku memo field content.
@@ -71,5 +70,3 @@ export function MuikkuMemoFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuMemoFieldPlaceholder;

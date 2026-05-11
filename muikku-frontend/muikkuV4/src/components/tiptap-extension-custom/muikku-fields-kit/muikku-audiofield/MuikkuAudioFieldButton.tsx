@@ -51,5 +51,3 @@ export const MuikkuAudioFieldButton = forwardRef<
     </Button>
   );
 });
-
-export default MuikkuAudioFieldButton;

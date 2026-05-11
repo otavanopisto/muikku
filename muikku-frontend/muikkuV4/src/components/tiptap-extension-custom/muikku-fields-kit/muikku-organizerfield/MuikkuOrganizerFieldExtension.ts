@@ -35,7 +35,7 @@ export type MuikkuOrganizerFieldAttrs = {
 };
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.organizer";
-const OPEN_EVENT = "muikku:open-muikku-organizerfield-modal";
+export const OPEN_EVENT = "muikku:open-muikku-organizerfield-modal";
 
 /**
  * Checks if a value is a record.
@@ -261,5 +261,3 @@ export const MuikkuOrganizerFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuOrganizerFieldExtension;

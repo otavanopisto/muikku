@@ -2,8 +2,7 @@
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import type { MuikkuSelectionFieldContent } from "./MuikkuSelectFieldExtension";
-
-const OPEN_EVENT = "muikku:open-muikku-selectionfield-modal";
+import { OPEN_EVENT } from "./MuikkuSelectFieldExtension";
 
 /**
  * Gets the label from the list type.
@@ -85,5 +84,3 @@ export function MuikkuSelectFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuSelectFieldPlaceholder;

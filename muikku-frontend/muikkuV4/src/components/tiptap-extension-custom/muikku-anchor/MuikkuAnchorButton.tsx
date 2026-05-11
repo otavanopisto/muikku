@@ -68,7 +68,3 @@ export const MuikkuAnchorButton = forwardRef<
     </>
   );
 });
-
-MuikkuAnchorButton.displayName = "MuikkuAnchorButton";
-
-export default MuikkuAnchorButton;

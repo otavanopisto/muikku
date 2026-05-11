@@ -1,8 +1,7 @@
 "use client";
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
-
-const OPEN_EVENT = "muikku:open-iframe-modal";
+import { OPEN_EVENT } from "./IframeExtension";
 
 /**
  * Convert a value to pixels.
@@ -60,5 +59,3 @@ export function IframePlaceholder(props: ReactNodeViewProps) {
     />
   );
 }
-
-export default IframePlaceholder;

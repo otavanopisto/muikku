@@ -126,5 +126,3 @@ export const MuikkuJournalFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuJournalFieldExtension;

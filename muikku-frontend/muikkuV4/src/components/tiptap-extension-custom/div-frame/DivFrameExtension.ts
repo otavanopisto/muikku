@@ -256,5 +256,3 @@ export const DivFrameExtension = Node.create({
     };
   },
 });
-
-export default DivFrameExtension;

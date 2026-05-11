@@ -45,5 +45,3 @@ export function MuikkuAudioFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuAudioFieldPlaceholder;

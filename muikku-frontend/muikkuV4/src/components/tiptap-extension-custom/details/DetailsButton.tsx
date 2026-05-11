@@ -92,7 +92,3 @@ export const DetailsButton = forwardRef<HTMLButtonElement, DetailsButtonProps>(
     );
   }
 );
-
-DetailsButton.displayName = "DetailsButton";
-
-export default DetailsButton;

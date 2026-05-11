@@ -5,7 +5,7 @@ import {
   NodeViewWrapper,
   type ReactNodeViewProps,
 } from "@tiptap/react";
-import { useImageResize } from "./UseImageResize";
+import { useImageResize } from "./useImageResize";
 import { openImagePropertiesModal } from "./helpers";
 
 /**

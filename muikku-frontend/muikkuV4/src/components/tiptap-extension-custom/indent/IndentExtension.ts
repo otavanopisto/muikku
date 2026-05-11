@@ -409,5 +409,3 @@ export const IndentExtension = Extension.create<IndentOptions>({
     };
   },
 });
-
-export default IndentExtension;

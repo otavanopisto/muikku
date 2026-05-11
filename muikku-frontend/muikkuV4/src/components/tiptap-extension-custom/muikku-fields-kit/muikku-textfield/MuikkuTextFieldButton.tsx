@@ -8,10 +8,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuTextFieldModal from "./MuikkuTextFieldModal";
+import { MuikkuTextFieldModal } from "./MuikkuTextFieldModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-muikku-textfield-modal";
+import { OPEN_EVENT } from "./MuikkuTextFieldExtension";
 
 /**
  * The Muikku text field button props interface.
@@ -62,15 +61,11 @@ export const MuikkuTextFieldButton = forwardRef<
         Tekstikenttä
       </Button>
 
-      {open && (
-        <MuikkuTextFieldModal
-          editor={editor}
-          opened={true}
-          onClose={() => setOpen(false)}
-        />
-      )}
+      <MuikkuTextFieldModal
+        editor={editor}
+        opened={open}
+        onClose={() => setOpen(false)}
+      />
     </>
   );
 });
-
-export default MuikkuTextFieldButton;

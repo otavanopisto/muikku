@@ -225,5 +225,3 @@ export function IframeModal(props: {
     </Modal>
   );
 }
-
-export default IframeModal;

@@ -212,5 +212,3 @@ export function MuikkuSorterFieldModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuSorterFieldModal;

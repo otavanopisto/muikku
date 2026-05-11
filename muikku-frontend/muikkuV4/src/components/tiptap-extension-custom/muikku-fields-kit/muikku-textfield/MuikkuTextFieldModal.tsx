@@ -202,8 +202,12 @@ export function MuikkuTextFieldModal(props: {
               <div style={{ opacity: 0.7 }}>Ei vastausvaihtoehtoja.</div>
             ) : (
               rightAnswers.map((a, idx) => (
-                // eslint-disable-next-line react-x/no-array-index-key
-                <Group key={idx} align="flex-end" grow wrap="nowrap">
+                <Group
+                  key={`right-answer-${a.text}`}
+                  align="flex-end"
+                  grow
+                  wrap="nowrap"
+                >
                   <TextInput
                     label={idx === 0 ? "Teksti" : undefined}
                     value={a.text}
@@ -258,5 +262,3 @@ export function MuikkuTextFieldModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuTextFieldModal;

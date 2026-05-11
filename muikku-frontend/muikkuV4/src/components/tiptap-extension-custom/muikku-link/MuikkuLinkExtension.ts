@@ -210,5 +210,3 @@ export const MuikkuLinkExtension = Link.extend({
     ];
   },
 });
-
-export default MuikkuLinkExtension;

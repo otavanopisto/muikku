@@ -34,7 +34,7 @@ export type MuikkuConnectFieldAttrs = {
 };
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.connect";
-const OPEN_EVENT = "muikku:open-muikku-connectfield-modal";
+export const OPEN_EVENT = "muikku:open-muikku-connectfield-modal";
 
 /**
  * Converts a numeric index to an Excel-style letter index.
@@ -286,5 +286,3 @@ export const MuikkuConnectFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuConnectFieldExtension;

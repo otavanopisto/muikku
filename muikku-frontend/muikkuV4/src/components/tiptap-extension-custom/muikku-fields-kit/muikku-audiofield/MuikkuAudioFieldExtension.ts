@@ -139,5 +139,3 @@ export const MuikkuAudioFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuAudioFieldExtension;

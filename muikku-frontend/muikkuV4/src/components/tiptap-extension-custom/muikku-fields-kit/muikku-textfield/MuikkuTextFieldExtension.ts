@@ -28,7 +28,7 @@ export type MuikkuTextFieldAttrs = {
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.text";
 
-const OPEN_EVENT = "muikku:open-muikku-textfield-modal";
+export const OPEN_EVENT = "muikku:open-muikku-textfield-modal";
 
 /**
  * Normalizes the content of a Muikku text field.
@@ -64,7 +64,7 @@ function normalizeContent(input: unknown): MuikkuTextFieldContent | null {
     columns:
       typeof obj.columns === "string"
         ? obj.columns
-        : (obj.columns as unknown as string),
+        : (obj.columns as unknown as string)?.toString?.() ?? "",
     autogrow: typeof obj.autogrow === "boolean" ? obj.autogrow : true,
     hint: typeof obj.hint === "string" ? obj.hint : "",
     rightAnswers,
@@ -199,5 +199,3 @@ export const MuikkuTextFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuTextFieldExtension;

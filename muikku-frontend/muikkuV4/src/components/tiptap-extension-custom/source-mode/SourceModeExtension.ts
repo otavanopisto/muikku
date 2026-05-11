@@ -1,8 +1,8 @@
-// Sketch (new code; adapt to your project style)
 import { Extension, type Dispatch } from "@tiptap/core";
 import { Plugin, PluginKey, Transaction } from "@tiptap/pm/state";
 
 type SourceModeState = { enabled: boolean };
+
 export const sourceModePluginKey = new PluginKey<SourceModeState>("sourceMode");
 
 declare module "@tiptap/core" {

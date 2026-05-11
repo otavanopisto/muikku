@@ -222,5 +222,3 @@ export const PasteSanitizerExtension = Extension.create<PasteSanitizerOptions>({
     ];
   },
 });
-
-export default PasteSanitizerExtension;

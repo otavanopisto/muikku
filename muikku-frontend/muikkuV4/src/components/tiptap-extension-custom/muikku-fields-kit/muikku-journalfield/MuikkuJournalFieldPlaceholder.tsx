@@ -45,5 +45,3 @@ export function MuikkuJournalFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuJournalFieldPlaceholder;

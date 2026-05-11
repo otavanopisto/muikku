@@ -7,8 +7,7 @@ import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 
-import type { UseImageCaptionConfig } from "./UseImageCaption";
-import { useImageCaption } from "./UseImageCaption";
+import { useImageCaption, type UseImageCaptionConfig } from "./useImageCaption";
 
 export type ImageCaptionButtonProps = Omit<ButtonProps, "type"> &
   UseImageCaptionConfig;
@@ -71,5 +70,3 @@ export const ImageCaptionButton = forwardRef<
     );
   }
 );
-
-ImageCaptionButton.displayName = "ImageCaptionButton";

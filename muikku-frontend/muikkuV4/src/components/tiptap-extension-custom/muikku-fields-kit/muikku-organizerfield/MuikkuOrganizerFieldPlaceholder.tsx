@@ -2,8 +2,7 @@
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import type { MuikkuOrganizerFieldContent } from "./MuikkuOrganizerFieldExtension";
-
-const OPEN_EVENT = "muikku:open-muikku-organizerfield-modal";
+import { OPEN_EVENT } from "./MuikkuOrganizerFieldExtension";
 
 /**
  * Summary of the Muikku organizer field content.
@@ -75,5 +74,3 @@ export function MuikkuOrganizerFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuOrganizerFieldPlaceholder;

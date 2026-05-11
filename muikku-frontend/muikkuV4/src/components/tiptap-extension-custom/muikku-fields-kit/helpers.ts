@@ -1,8 +1,8 @@
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { mergeAttributes } from "@tiptap/core";
 
-export const MUUKKU_FIELD_NAME_RE = /muikku-field-[a-zA-Z0-9]{24}/g;
-export const MUUKKU_PARAM_MIME_JSON = "application/json";
+export const MUIKKU_FIELD_NAME_RE = /muikku-field-[a-zA-Z0-9]{24}/g;
+export const MUIKKU_PARAM_MIME_JSON = "application/json";
 
 /**
  * Generates a random string from the given alphabet.
@@ -80,7 +80,7 @@ export function renderMuikkuObjectTag(props: {
   return [
     "object",
     mergeAttributes(htmlAttributes ?? {}, { type: objectType }),
-    ["param", { name: "type", value: MUUKKU_PARAM_MIME_JSON }],
+    ["param", { name: "type", value: MUIKKU_PARAM_MIME_JSON }],
     ["param", { name: "content", value: JSON.stringify(content ?? {}) }],
   ] as const;
 }
@@ -95,7 +95,7 @@ export function createMuikkuPasteNameUniqPlugin() {
     props: {
       transformPastedHTML: (html) => {
         const names: Record<string, string> = {};
-        return html.replace(MUUKKU_FIELD_NAME_RE, (matched) => {
+        return html.replace(MUIKKU_FIELD_NAME_RE, (matched) => {
           if (!names[matched]) names[matched] = createRandomMuikkuFieldName();
           return names[matched];
         });

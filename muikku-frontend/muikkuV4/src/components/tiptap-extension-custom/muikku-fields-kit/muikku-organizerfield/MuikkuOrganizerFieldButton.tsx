@@ -7,11 +7,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuOrganizerFieldModal from "./MuikkuOrganizerFieldModal";
+import { MuikkuOrganizerFieldModal } from "./MuikkuOrganizerFieldModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-muikku-organizerfield-modal";
-
+import { OPEN_EVENT } from "./MuikkuOrganizerFieldExtension";
 /**
  * The Muikku organizer field button props interface.
  */
@@ -70,5 +68,3 @@ export const MuikkuOrganizerFieldButton = forwardRef<
     </>
   );
 });
-
-export default MuikkuOrganizerFieldButton;

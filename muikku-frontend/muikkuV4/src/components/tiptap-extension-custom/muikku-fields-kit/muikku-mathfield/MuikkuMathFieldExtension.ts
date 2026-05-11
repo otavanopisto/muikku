@@ -124,5 +124,3 @@ export const MuikkuMathFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuMathFieldExtension;

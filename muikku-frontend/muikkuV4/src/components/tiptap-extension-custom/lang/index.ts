@@ -1,2 +1,2 @@
 export * from "./langExtension";
-export * from "./langDropdownMenu";
+export * from "./LangDropdownMenu";

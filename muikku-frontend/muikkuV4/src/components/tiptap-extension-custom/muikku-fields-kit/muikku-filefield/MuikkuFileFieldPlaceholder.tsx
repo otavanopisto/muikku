@@ -45,5 +45,3 @@ export function MuikkuFileFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuFileFieldPlaceholder;

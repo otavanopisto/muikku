@@ -1,8 +1,6 @@
 import * as React from "react";
 import { type Editor } from "@tiptap/react";
 
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
-
 import { StyleButton } from "./StyleButton";
 import { blockStylesSet, canApplyStyle, getCurrentStyle } from "./helper";
 
@@ -15,6 +13,7 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
+import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
  * The StyleSetSelectProps interface
@@ -34,7 +33,7 @@ export const StyleSetSelect = React.forwardRef<
   HTMLDivElement,
   StyleSetSelectProps
 >(({ editor: providedEditor, ...buttonProps }, _ref) => {
-  const { editor } = useTiptapEditor(providedEditor);
+  const { editor } = useTiptapEditorV2({ editor: providedEditor });
   const [open, setOpen] = React.useState(false);
 
   if (!editor?.isEditable) {
@@ -77,6 +76,3 @@ export const StyleSetSelect = React.forwardRef<
     </DropdownMenu>
   );
 });
-
-StyleSetSelect.displayName = "StyleSetSelect";
-export default StyleSetSelect;

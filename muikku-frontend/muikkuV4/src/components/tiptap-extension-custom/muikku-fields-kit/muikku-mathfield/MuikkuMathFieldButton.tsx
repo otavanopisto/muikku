@@ -46,5 +46,3 @@ export const MuikkuMathFieldButton = forwardRef<
     </Button>
   );
 });
-
-export default MuikkuMathFieldButton;

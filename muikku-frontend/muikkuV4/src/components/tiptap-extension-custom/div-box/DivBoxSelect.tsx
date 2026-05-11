@@ -79,6 +79,3 @@ export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
     );
   }
 );
-
-DivBoxSelect.displayName = "DivBoxSelect";
-export default DivBoxSelect;

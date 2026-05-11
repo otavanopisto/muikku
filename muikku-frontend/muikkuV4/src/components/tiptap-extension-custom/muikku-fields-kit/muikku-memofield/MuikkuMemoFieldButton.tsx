@@ -7,10 +7,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuMemoFieldModal from "./MuikkuMemoFieldModal";
+import { MuikkuMemoFieldModal } from "./MuikkuMemoFieldModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-muikku-memofield-modal";
+import { OPEN_EVENT } from "./MuikkuMemoFieldExtension";
 
 /**
  * The Muikku memo field button props interface.
@@ -69,5 +68,3 @@ export const MuikkuMemoFieldButton = forwardRef<
     </>
   );
 });
-
-export default MuikkuMemoFieldButton;

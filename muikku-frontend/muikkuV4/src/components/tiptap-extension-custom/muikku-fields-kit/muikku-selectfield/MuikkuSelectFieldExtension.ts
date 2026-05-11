@@ -33,7 +33,7 @@ export type MuikkuSelectionFieldAttrs = {
 
 const SELECT_OBJECT_TYPE = "application/vnd.muikku.field.select";
 const MULTISELECT_OBJECT_TYPE = "application/vnd.muikku.field.multiselect";
-const OPEN_EVENT = "muikku:open-muikku-selectionfield-modal";
+export const OPEN_EVENT = "muikku:open-muikku-selectionfield-modal";
 
 /**
  * Checks if a value is a record.
@@ -266,5 +266,3 @@ export const MuikkuSelectionFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuSelectionFieldExtension;

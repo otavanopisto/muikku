@@ -132,5 +132,3 @@ export function MuikkuMemoFieldModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuMemoFieldModal;

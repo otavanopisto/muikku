@@ -1,3 +1,3 @@
 export * from "./IndentExtension";
 export * from "./IndentButton";
-export * from "./UseIndent";
+export * from "./useIndent";

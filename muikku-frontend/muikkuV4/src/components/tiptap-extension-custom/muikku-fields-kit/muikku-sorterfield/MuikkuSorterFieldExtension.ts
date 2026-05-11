@@ -26,7 +26,7 @@ export type MuikkuSorterFieldAttrs = {
 };
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.sorter";
-const OPEN_EVENT = "muikku:open-muikku-sorterfield-modal";
+export const OPEN_EVENT = "muikku:open-muikku-sorterfield-modal";
 
 /**
  * Checks if a value is a record.
@@ -209,5 +209,3 @@ export const MuikkuSorterFieldExtension = Node.create({
     };
   },
 });
-
-export default MuikkuSorterFieldExtension;

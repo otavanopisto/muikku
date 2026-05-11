@@ -192,5 +192,3 @@ export function DivBoxModal(props: {
     </Modal>
   );
 }
-
-export default DivBoxModal;

@@ -180,5 +180,3 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
     </Modal>
   );
 }
-
-export default MuikkuAnchorModal;

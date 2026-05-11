@@ -18,8 +18,7 @@ import type {
   MuikkuSelectionOption,
 } from "./MuikkuSelectFieldExtension";
 import { createRandomMuikkuFieldName } from "../helpers";
-
-const OPEN_EVENT = "muikku:open-muikku-selectionfield-modal";
+import { OPEN_EVENT } from "./MuikkuSelectFieldExtension";
 
 const TYPE_OPTIONS = [
   { value: "dropdown", label: "Alaspudotusvalikko" },
@@ -260,5 +259,3 @@ export function MuikkuSelectFieldModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuSelectFieldModal;

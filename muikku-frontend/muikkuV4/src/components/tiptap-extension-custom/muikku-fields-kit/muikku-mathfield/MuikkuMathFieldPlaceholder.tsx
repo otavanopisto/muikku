@@ -45,5 +45,3 @@ export function MuikkuMathFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuMathFieldPlaceholder;

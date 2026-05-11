@@ -2,8 +2,7 @@
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import type { MuikkuSorterFieldContent } from "./MuikkuSorterFieldExtension";
-
-const OPEN_EVENT = "muikku:open-muikku-sorterfield-modal";
+import { OPEN_EVENT } from "./MuikkuSorterFieldExtension";
 
 /**
  * Summary of the Muikku sorter field content.
@@ -74,5 +73,3 @@ export function MuikkuSorterFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuSorterFieldPlaceholder;

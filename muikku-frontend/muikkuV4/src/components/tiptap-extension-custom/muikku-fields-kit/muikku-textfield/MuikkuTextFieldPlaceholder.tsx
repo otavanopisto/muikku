@@ -2,8 +2,7 @@
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import type { MuikkuTextFieldContent } from "./MuikkuTextFieldExtension";
-
-const OPEN_EVENT = "muikku:open-muikku-textfield-modal";
+import { OPEN_EVENT } from "./MuikkuTextFieldExtension";
 
 /**
  * Gets the summary of a Muikku text field.
@@ -81,5 +80,3 @@ export function MuikkuTextFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuTextFieldPlaceholder;

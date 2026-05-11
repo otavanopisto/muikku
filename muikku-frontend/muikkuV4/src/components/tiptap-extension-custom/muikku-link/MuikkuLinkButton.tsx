@@ -72,7 +72,3 @@ export const MuikkuLinkButton = forwardRef<
     </>
   );
 });
-
-MuikkuLinkButton.displayName = "MuikkuLinkButton";
-
-export default MuikkuLinkButton;

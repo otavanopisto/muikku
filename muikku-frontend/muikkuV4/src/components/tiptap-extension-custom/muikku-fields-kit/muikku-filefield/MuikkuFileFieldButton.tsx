@@ -47,5 +47,3 @@ export const MuikkuFileFieldButton = forwardRef<
     </Button>
   );
 });
-
-export default MuikkuFileFieldButton;

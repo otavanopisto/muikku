@@ -7,10 +7,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuSorterFieldModal from "./MuikkuSorterFieldModal";
+import { MuikkuSorterFieldModal } from "./MuikkuSorterFieldModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-muikku-sorterfield-modal";
+import { OPEN_EVENT } from "./MuikkuSorterFieldExtension";
 
 /**
  * The Muikku sorter field button props interface.
@@ -70,5 +69,3 @@ export const MuikkuSorterFieldButton = forwardRef<
     </>
   );
 });
-
-export default MuikkuSorterFieldButton;

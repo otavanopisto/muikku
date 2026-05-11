@@ -7,10 +7,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import MuikkuConnectFieldModal from "./MuikkuConnectFieldModal";
+import { MuikkuConnectFieldModal } from "./MuikkuConnectFieldModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-muikku-connectfield-modal";
+import { OPEN_EVENT } from "./MuikkuConnectFieldExtension";
 
 /**
  * The Muikku connect field button props interface.
@@ -65,5 +64,3 @@ export const MuikkuConnectFieldButton = forwardRef<
     </>
   );
 });
-
-export default MuikkuConnectFieldButton;

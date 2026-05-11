@@ -489,5 +489,3 @@ export const DivBoxExtension = Node.create<DivBoxOptions>({
     };
   },
 });
-
-export default DivBoxExtension;

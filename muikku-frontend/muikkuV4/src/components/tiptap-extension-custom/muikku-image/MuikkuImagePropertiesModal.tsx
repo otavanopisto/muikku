@@ -526,5 +526,3 @@ export function MuikkuImagePropertiesModal(props: {
     </Modal>
   );
 }
-
-export default MuikkuImagePropertiesModal;

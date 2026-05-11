@@ -81,6 +81,3 @@ export const StyleButton = React.forwardRef<
     );
   }
 );
-
-StyleButton.displayName = "StyleButton";
-export default StyleButton;

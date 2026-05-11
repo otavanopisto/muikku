@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { NodeSelection } from "@tiptap/pm/state";
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
-import { useImageResize } from "./UseImageResize";
+import { useImageResize } from "./useImageResize";
 import { openImagePropertiesModal } from "./helpers";
 
 /**

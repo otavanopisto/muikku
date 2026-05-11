@@ -2,8 +2,7 @@
 
 import { NodeViewWrapper, type ReactNodeViewProps } from "@tiptap/react";
 import type { MuikkuConnectFieldContent } from "./MuikkuConnectFieldExtension";
-
-const OPEN_EVENT = "muikku:open-muikku-connectfield-modal";
+import { OPEN_EVENT } from "./MuikkuConnectFieldExtension";
 
 /**
  * Summary of the Muikku connect field content.
@@ -70,5 +69,3 @@ export function MuikkuConnectFieldPlaceholder(props: ReactNodeViewProps) {
     </NodeViewWrapper>
   );
 }
-
-export default MuikkuConnectFieldPlaceholder;

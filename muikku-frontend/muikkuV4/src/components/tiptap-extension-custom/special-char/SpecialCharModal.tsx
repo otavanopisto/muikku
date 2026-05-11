@@ -273,5 +273,3 @@ export function SpecialCharModal(props: SpecialCharModalProps) {
     </Modal>
   );
 }
-
-export default SpecialCharModal;

@@ -47,5 +47,3 @@ export const MuikkuJournalFieldButton = forwardRef<
     </Button>
   );
 });
-
-export default MuikkuJournalFieldButton;

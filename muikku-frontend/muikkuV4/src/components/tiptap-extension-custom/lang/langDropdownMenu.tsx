@@ -266,5 +266,3 @@ export function LangDropdownMenu({
     </DropdownMenu>
   );
 }
-
-export default LangDropdownMenu;

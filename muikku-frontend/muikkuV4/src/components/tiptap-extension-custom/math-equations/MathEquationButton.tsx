@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react-x/no-forward-ref */
+import React, { forwardRef } from "react";
 import {
   Button,
   type ButtonProps,
@@ -14,25 +15,32 @@ interface MathEquationButtonProps extends Omit<ButtonProps, "type"> {
   text?: string;
 }
 
-export const MathEquationButton: React.FC<MathEquationButtonProps> = ({
-  editor: providedEditor,
-  text = "∑",
-  ...props
-}) => {
-  const editor = useTiptapEditorV2({
+/**
+ * The MathEquationButton component.
+ * @param props - The props for the MathEquationButton component.
+ * @returns The MathEquationButton component.
+ */
+export const MathEquationButton = forwardRef<
+  HTMLButtonElement,
+  MathEquationButtonProps
+>(({ editor: providedEditor, text = "∑", ...props }, ref) => {
+  const { editor } = useTiptapEditorV2({
     editor: providedEditor,
   });
 
+  /**
+   * Handles the click event of the MathEquationButton component.
+   */
   const handleClick = React.useCallback(() => {
     if (!editor) return;
 
-    editor.editor?.commands.setMathEquation({
+    editor?.commands.setMathEquation({
       latex: "x^2 + y^2 = z^2", // Default equation
       displayMode: true,
     });
   }, [editor]);
 
-  if (!editor?.editor?.isEditable) {
+  if (!editor?.isEditable) {
     return null;
   }
 
@@ -45,9 +53,10 @@ export const MathEquationButton: React.FC<MathEquationButtonProps> = ({
       aria-label="Insert math equation"
       tooltip="Insert math equation"
       onClick={handleClick}
+      ref={ref}
       {...props}
     >
       <span className="tiptap-button-icon">{text}</span>
     </Button>
   );
-};
+});

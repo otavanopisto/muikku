@@ -8,10 +8,9 @@ import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import IframeModal from "./IframeModal";
+import { IframeModal } from "./IframeModal";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
-const OPEN_EVENT = "muikku:open-iframe-modal";
+import { OPEN_EVENT } from "./IframeExtension";
 
 /**
  * The IframeButtonProps interface.
@@ -67,5 +66,3 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
     );
   }
 );
-
-export default IframeButton;
