@@ -12,10 +12,9 @@ export function MaterialLoaderAssessor(props: MaterialLoaderAssessorProps) {
   const { t } = useTranslation(["materials", "common"]);
 
   const assessor =
-    (props.material.evaluation && props.material.evaluation.evaluated) ||
-    (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.assessorName);
+    props.compositeReplies &&
+    props.compositeReplies.evaluationInfo &&
+    props.compositeReplies.evaluationInfo.assessorName;
 
   if (!assessor) {
     return null;
