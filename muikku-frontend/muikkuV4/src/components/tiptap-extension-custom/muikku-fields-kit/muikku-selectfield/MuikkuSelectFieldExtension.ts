@@ -3,6 +3,7 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 import {
   createRandomMuikkuFieldName,
   readMuikkuObjectContentParam,
+  isRecord,
 } from "../helpers";
 import { MuikkuSelectFieldPlaceholder } from "./MuikkuSelectFieldPlaceholder";
 
@@ -34,15 +35,6 @@ export type MuikkuSelectionFieldAttrs = {
 const SELECT_OBJECT_TYPE = "application/vnd.muikku.field.select";
 const MULTISELECT_OBJECT_TYPE = "application/vnd.muikku.field.multiselect";
 export const OPEN_EVENT = "muikku:open-muikku-selectionfield-modal";
-
-/**
- * Checks if a value is a record.
- * @param value - The value to check.
- * @returns True if the value is a record, false otherwise.
- */
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
 
 /**
  * Normalizes the list type.

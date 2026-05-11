@@ -4,6 +4,7 @@ import {
   createRandomMuikkuFieldName,
   readMuikkuObjectContentParam,
   renderMuikkuObjectTag,
+  isRecord,
 } from "../helpers";
 import { MuikkuSorterFieldPlaceholder } from "./MuikkuSorterFieldPlaceholder";
 
@@ -27,15 +28,6 @@ export type MuikkuSorterFieldAttrs = {
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.sorter";
 export const OPEN_EVENT = "muikku:open-muikku-sorterfield-modal";
-
-/**
- * Checks if a value is a record.
- * @param value - The value to check.
- * @returns True if the value is a record, false otherwise.
- */
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
 
 /**
  * Normalizes the orientation.

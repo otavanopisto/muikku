@@ -4,6 +4,7 @@ import {
   createRandomMuikkuFieldName,
   readMuikkuObjectContentParam,
   renderMuikkuObjectTag,
+  isRecord,
 } from "../helpers";
 import { MuikkuMathFieldPlaceholder } from "./MuikkuMathFieldPlaceholder";
 
@@ -16,15 +17,6 @@ export type MuikkuMathFieldAttrs = {
 };
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.mathexercise";
-
-/**
- * Checks if the value is a record.
- * @param value - The value to check.
- * @returns True if the value is a record, false otherwise.
- */
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
 
 /**
  * Normalizes the content of the math exercise field.

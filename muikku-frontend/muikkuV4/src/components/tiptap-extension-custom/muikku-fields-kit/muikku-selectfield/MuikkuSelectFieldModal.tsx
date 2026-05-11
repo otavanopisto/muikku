@@ -17,7 +17,7 @@ import type {
   MuikkuSelectionListType,
   MuikkuSelectionOption,
 } from "./MuikkuSelectFieldExtension";
-import { createRandomMuikkuFieldName } from "../helpers";
+import { createRandomMuikkuFieldName, isRecord } from "../helpers";
 import { OPEN_EVENT } from "./MuikkuSelectFieldExtension";
 
 const TYPE_OPTIONS = [
@@ -28,9 +28,6 @@ const TYPE_OPTIONS = [
   { value: "checkbox-horizontal", label: "Valintaruudut (vaakasuora)" },
   { value: "checkbox-vertical", label: "Valintaruudut (pystysuora)" },
 ] satisfies { value: MuikkuSelectionListType; label: string }[];
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null;
 
 /**
  * Gets the next free numeric name.

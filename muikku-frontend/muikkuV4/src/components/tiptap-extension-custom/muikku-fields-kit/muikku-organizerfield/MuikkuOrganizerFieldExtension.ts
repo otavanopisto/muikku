@@ -4,6 +4,7 @@ import {
   createRandomMuikkuFieldName,
   readMuikkuObjectContentParam,
   renderMuikkuObjectTag,
+  isRecord,
 } from "../helpers";
 import { MuikkuOrganizerFieldPlaceholder } from "./MuikkuOrganizerFieldPlaceholder";
 
@@ -36,15 +37,6 @@ export type MuikkuOrganizerFieldAttrs = {
 
 const FIELD_OBJECT_TYPE = "application/vnd.muikku.field.organizer";
 export const OPEN_EVENT = "muikku:open-muikku-organizerfield-modal";
-
-/**
- * Checks if a value is a record.
- * @param value - The value to check.
- * @returns True if the value is a record, false otherwise.
- */
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
 
 /**
  * Normalizes a string.
