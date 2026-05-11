@@ -39,6 +39,7 @@
     "@tiptap/extension-highlight": "^3.22.3",
     "@tiptap/extension-horizontal-rule": "^3.22.3",
     "@tiptap/extension-image": "^3.22.3",
+    "@tiptap/extension-link": "^3.22.5",
     "@tiptap/extension-list": "^3.22.3",
     "@tiptap/extension-subscript": "^3.22.3",
     "@tiptap/extension-superscript": "^3.22.3",

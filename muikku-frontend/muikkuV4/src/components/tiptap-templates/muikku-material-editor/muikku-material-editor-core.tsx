@@ -33,6 +33,8 @@ import { createEmojiSuggestion } from "@/components/tiptap-ui/muikku-emoji-dropd
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Tiptap Extension Custom ---
+import { MuikkuLinkExtension } from "@/components/tiptap-extension-custom/muikku-link";
+import { MuikkuAnchorExtension } from "@/components/tiptap-extension-custom/muikku-anchor";
 import { Emoji, gitHubEmojis } from "@tiptap/extension-emoji";
 import {
   SourceModeExtension,
@@ -87,11 +89,13 @@ export function MuikkuMaterialEditorCore(props: {
       }),
       StarterKit.configure({
         horizontalRule: false,
-        link: {
-          openOnClick: false,
-          enableClickSelection: true,
-        },
+        link: false,
       }),
+      MuikkuLinkExtension.configure({
+        openOnClick: false,
+        enableClickSelection: true,
+      }),
+      MuikkuAnchorExtension,
       TableKit.configure({
         table: { resizable: true },
       }),

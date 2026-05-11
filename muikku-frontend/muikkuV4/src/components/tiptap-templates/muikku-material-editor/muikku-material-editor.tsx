@@ -7,8 +7,8 @@ import "@/components/tiptap-node/list-node/list-node.scss";
 import "@/components/tiptap-node/image-node/image-node.scss";
 import "@/components/tiptap-node/heading-node/heading-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
+import "@/components/tiptap-node/muikku-anchor/anchor-node.scss";
 import "@/components/tiptap-templates/muikku-material-editor/muikku-material-editor.scss";
-
 import MuikkuMaterialEditorCore from "./muikku-material-editor-core";
 import MuikkuMaterialEditorToolbar from "./muikku-material-editor-toolbar";
 

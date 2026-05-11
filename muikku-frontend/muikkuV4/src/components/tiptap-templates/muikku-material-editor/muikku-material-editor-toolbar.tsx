@@ -19,15 +19,9 @@ import { BlockquoteButton } from "@/components/tiptap-ui/blockquote-button";
 import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button";
 import {
   ColorHighlightPopover,
-  ColorHighlightPopoverContent,
   ColorHighlightPopoverButton,
 } from "@/components/tiptap-ui/color-highlight-popover";
 import { TextColorPopover } from "@/components/tiptap-ui/text-color-popover";
-import {
-  LinkPopover,
-  LinkContent,
-  LinkButton,
-} from "@/components/tiptap-ui/link-popover";
 import { MarkButton } from "@/components/tiptap-ui/mark-button";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
@@ -55,6 +49,8 @@ import { DivBoxSelect } from "@/components/tiptap-extension-custom/div-box";
 import { IframeButton } from "@/components/tiptap-extension-custom/iframe";
 import { ImageAddButton } from "@/components/tiptap-extension-custom/muikku-image/ImageAddButton";
 import { SpecialCharButton } from "@/components/tiptap-extension-custom/special-char";
+import { MuikkuLinkButton } from "@/components/tiptap-extension-custom/muikku-link";
+import { MuikkuAnchorButton } from "@/components/tiptap-extension-custom/muikku-anchor";
 
 // --- Muikku fields ---
 import {
@@ -90,7 +86,7 @@ function MainToolbarContent(props: {
   isSourceMode: boolean;
   editor: Editor | null;
 }) {
-  const { onHighlighterClick, onLinkClick, isMobile, isSourceMode } = props;
+  const { onHighlighterClick, isMobile, isSourceMode } = props;
 
   return (
     <>
@@ -143,11 +139,9 @@ function MainToolbarContent(props: {
           />
         )}
         <TextColorPopover disabled={isSourceMode} />
-        {!isMobile ? (
-          <LinkPopover disabled={isSourceMode} />
-        ) : (
-          <LinkButton onClick={onLinkClick} disabled={isSourceMode} />
-        )}
+
+        <MuikkuLinkButton disabled={isSourceMode} />
+        <MuikkuAnchorButton disabled={isSourceMode} />
       </ToolbarGroup>
 
       <ToolbarSeparator />
@@ -260,12 +254,6 @@ function MobileToolbarContent(props: {
       </ToolbarGroup>
 
       <ToolbarSeparator />
-
-      {type === "highlighter" ? (
-        <ColorHighlightPopoverContent />
-      ) : (
-        <LinkContent />
-      )}
     </>
   );
 }
