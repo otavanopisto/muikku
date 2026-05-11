@@ -36,6 +36,10 @@ const workspaceApi = MApi.getWorkspaceApi();
 const evaluationApi = MApi.getEvaluationApi();
 const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 const pedagogyApi = MApi.getPedagogyApi();
+import {
+  CreateEventPropertyRequest,
+  UpdateEventPropertyRequest,
+} from "~/generated/client";
 
 // GUARDIAN DEPENDANTS ACTIONS
 export type GUARDIAN_UPDATE_DEPENDANTS = SpecificActionType<
@@ -310,6 +314,19 @@ export interface UpdateCurrentDependantSelectedEducationTypeCodeTriggerType {
   (educationTypeCode: string): AnyActionType;
 }
 
+/**
+ * UpdateDependantAbsenceEventPropertyTriggerType
+ */
+export interface UpdateDependantAbsenceEventPropertyTriggerType {
+  (data: UpdateEventPropertyRequest): AnyActionType;
+}
+
+/**
+ * UpdateDependantAbsenceEventPropertyTriggerType
+ */
+export interface CreateDependantAbsenceEventPropertyTriggerType {
+  (data: CreateEventPropertyRequest): AnyActionType;
+}
 /**
  * Thunk function to load dependants
  * @returns Thunk function to load dependants
@@ -1011,12 +1028,49 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
     };
   };
 
+/**
+ * createAbsenceEventProperty
+ * @param data data for creation
+ */
+const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
+  function createAbsenceEventProperty(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      const property = await eventsApi.createEventProperty(data);
+
+      dispatch({
+        type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+        payload: property,
+      });
+    };
+  };
+
+/**
+ * updateAbsenceEventProperty
+ * @param data data for creatio0n
+ */
+const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
+  function updateAbsenceEventProperty(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      const property = await eventsApi.updateEventProperty(data);
+
+      dispatch({
+        type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+        payload: property,
+      });
+    };
+  };
+
 export {
   initializeCurrentDependantEssentials,
   loadDependants,
   loadDependantWorkspaces,
   loadDependantAbsenceEvents,
   updateAbsenceEventProperty,
+  createAbsenceEventProperty,
   loadCurrentDependantStudyActivity,
   loadCurrentDependantCourseMatrix,
   loadCurrentDependantStudentInfo,

@@ -3,7 +3,11 @@ import { useState } from "react";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { MuikkuEvent } from "~/generated/client";
-
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/main-function/guardian";
+import { useDispatch } from "react-redux";
 /**
  * AbsenceFeedbackDialogProps
  */
@@ -11,7 +15,11 @@ interface AbsenceFeedbackDialogProps {
   children?: React.ReactElement;
   absenceEvent?: MuikkuEvent;
   onClose?: () => void;
-  onConfirm?: (explanation: string, eventId: number) => void;
+  onConfirm?: (
+    explanation: string,
+    eventId: number,
+    propertyId?: number
+  ) => void;
 }
 
 export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
@@ -20,7 +28,17 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
   children,
   absenceEvent,
 }) => {
-  const [absenceReason, setAbsenceReason] = useState<string>("");
+  const dispatch = useDispatch();
+  const currentAbsenceProperty = absenceEvent.properties.find(
+    (property) => property.name === "ABSENCE_REASON"
+  );
+
+  const [absenceReason, setAbsenceReason] = useState<string>(
+    currentAbsenceProperty?.value
+  );
+
+  const hasCurrentAbsenceReason =
+    currentAbsenceProperty && currentAbsenceProperty.value !== "";
 
   /**
    * Renders the content of the dialog
@@ -49,9 +67,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
   const footer = (onClose: () => void) => (
     <div className="dialog-footer">
       <Button onClick={onClose}>Cancel</Button>
-      <Button onClick={handleConfirm} disabled={absenceReason.trim() === ""}>
-        Confirm
-      </Button>
+      <Button onClick={handleConfirm}>Confirm</Button>
     </div>
   );
 
@@ -60,21 +76,28 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
    */
   const handleConfirm = () => {
     if (absenceReason.trim() !== "") {
-      onConfirm(absenceReason, absenceEvent.id);
+      if (hasCurrentAbsenceReason) {
+        dispatch(
+          updateAbsenceEventProperty({
+            eventId: absenceEvent.id,
+            propertyId: currentAbsenceProperty.id,
+            value: absenceReason,
+          })
+        );
+      } else {
+        dispatch(
+          createAbsenceEventProperty({
+            eventId: absenceEvent.id,
+            name: "ABSENCE_EVENT",
+            value: absenceReason,
+          })
+        );
+      }
     }
-  };
-
-  /**
-   * Handles the closing of the dialog
-   */
-  const handleClose = () => {
-    setAbsenceReason("");
-    onClose();
   };
 
   return (
     <Dialog
-      onClose={handleClose}
       modifier="absence-feedback"
       title="Absence Feedback"
       content={content}

@@ -137,31 +137,25 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           <h3 className="dependant__absences-title">
             {t("labels.absences", { ns: "events" })}
           </h3>
-          {absenceEvents.map((event) => {
-            const absenceHasReason = event.properties.some(
-              (p) => p.name === "ABSENCE_REASON" && p.value.trim() !== ""
-            );
-
-            return (
-              <WallEvent
-                key={event.id}
-                actions={
-                  <AbsenceFeedbackDialog
-                    absenceEvent={event}
-                    onConfirm={handleConfirmFeedback}
+          {absenceEvents.map((event) => (
+            <WallEvent
+              key={event.id}
+              actions={
+                <AbsenceFeedbackDialog
+                  absenceEvent={event}
+                  onConfirm={handleConfirmFeedback}
+                >
+                  <Button
+                    /* disabled={absenceHasReason} */
+                    className="button button--primary-function-content"
                   >
-                    <Button
-                      disabled={absenceHasReason}
-                      className="button button--primary-function-content"
-                    >
-                      {t("actions.giveFeedback", { ns: "events" })}
-                    </Button>
-                  </AbsenceFeedbackDialog>
-                }
-                event={event}
-              />
-            );
-          })}
+                    {t("actions.giveFeedback", { ns: "events" })}
+                  </Button>
+                </AbsenceFeedbackDialog>
+              }
+              event={event}
+            />
+          ))}
         </div>
       ) : (
         <div className="empty empty--front-page">

@@ -18915,6 +18915,11 @@ components:
           type: string
           format: datetime
           nullable: false
+        updated:
+          description: Property last update day
+          type: string
+          format: datetime
+          nullable: false
         userEntityId:
           description: Property creator's user entity id
           type: integer
