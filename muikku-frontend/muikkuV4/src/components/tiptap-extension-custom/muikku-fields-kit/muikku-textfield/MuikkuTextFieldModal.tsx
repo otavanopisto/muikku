@@ -16,6 +16,7 @@ import type {
   MuikkuTextFieldRightAnswer,
 } from "./MuikkuTextFieldExtension";
 import { createRandomMuikkuFieldName } from "../helpers";
+import { uniqueId } from "lodash";
 
 /**
  * Normalizes the right answers of a Muikku text field.
@@ -27,6 +28,7 @@ function normalizeRightAnswers(
 ): MuikkuTextFieldRightAnswer[] {
   if (!Array.isArray(answers)) return [];
   return answers.map((a) => ({
+    id: uniqueId("right-answer-"),
     text: typeof a.text === "string" ? a.text : "",
     correct: !!a.correct,
     caseSensitive:
@@ -155,6 +157,7 @@ export function MuikkuTextFieldModal(props: {
     setRightAnswers((prev) => [
       ...prev,
       {
+        id: uniqueId("right-answer-"),
         text: "",
         correct: false,
         caseSensitive: false,
@@ -291,12 +294,7 @@ export function MuikkuTextFieldModal(props: {
               <div style={{ opacity: 0.7 }}>Ei vastausvaihtoehtoja.</div>
             ) : (
               rightAnswers.map((a, idx) => (
-                <Group
-                  key={`right-answer-${a.text}`}
-                  align="flex-end"
-                  grow
-                  wrap="nowrap"
-                >
+                <Group key={a.id} align="flex-end" grow wrap="nowrap">
                   <TextInput
                     label={idx === 0 ? "Teksti" : undefined}
                     value={a.text}

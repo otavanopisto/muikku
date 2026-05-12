@@ -8,16 +8,19 @@ import {
 } from "../helpers";
 
 export type MuikkuConnectFieldPair = {
+  id?: string;
   left: string;
   right: string;
 };
 
 export type MuikkuConnectFieldItem = {
+  id?: string;
   name: string; // "1", "2", ... OR "A", "B", ...
   text: string;
 };
 
 export type MuikkuConnectFieldConnection = {
+  id?: string;
   field: string; // "1", "2", ...
   counterpart: string; // "A", "B", ...
 };

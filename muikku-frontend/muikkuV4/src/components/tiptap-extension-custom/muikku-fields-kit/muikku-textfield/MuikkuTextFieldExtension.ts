@@ -8,6 +8,7 @@ import {
 } from "../helpers";
 
 export type MuikkuTextFieldRightAnswer = {
+  id?: string;
   text: string;
   correct: boolean;
   caseSensitive?: boolean;

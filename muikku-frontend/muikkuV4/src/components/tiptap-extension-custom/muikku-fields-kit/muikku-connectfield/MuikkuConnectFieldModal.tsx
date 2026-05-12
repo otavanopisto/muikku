@@ -7,6 +7,7 @@ import type {
   MuikkuConnectFieldContent,
   MuikkuConnectFieldPair,
 } from "./MuikkuConnectFieldExtension";
+import { uniqueId } from "lodash";
 
 /**
  * The Muikku connect field modal component.
@@ -23,6 +24,7 @@ export function MuikkuConnectFieldModal(props: {
   const isEditing = !!editor?.isActive("muikkuConnectField");
   const [pairs, setPairs] = useState<MuikkuConnectFieldPair[]>([]);
 
+  // Hydrate the state from the editor.
   useEffect(() => {
     if (!opened || !editor) return;
 
@@ -38,6 +40,7 @@ export function MuikkuConnectFieldModal(props: {
       // Because the extension always normalizes content to sequential connections,
       // we can reconstruct pairs by index safely.
       const nextPairs = lefts.map((l, i) => ({
+        id: uniqueId("pair-"),
         left: l?.text ?? "",
         right: rights[i]?.text ?? "",
       }));
@@ -51,7 +54,8 @@ export function MuikkuConnectFieldModal(props: {
   /**
    * The addPair function.
    */
-  const addPair = () => setPairs((p) => [...p, { left: "", right: "" }]);
+  const addPair = () =>
+    setPairs((p) => [...p, { id: uniqueId("pair-"), left: "", right: "" }]);
 
   /**
    * The updatePair function.
@@ -119,12 +123,7 @@ export function MuikkuConnectFieldModal(props: {
           <div style={{ opacity: 0.7 }}>Ei vastinpareja.</div>
         ) : (
           pairs.map((pair, idx) => (
-            <Group
-              key={`${pair.left}-${pair.right}`}
-              align="flex-end"
-              grow
-              wrap="nowrap"
-            >
+            <Group key={pair.id} align="flex-end" grow wrap="nowrap">
               <TextInput
                 value={pair.left}
                 onChange={(e) =>
