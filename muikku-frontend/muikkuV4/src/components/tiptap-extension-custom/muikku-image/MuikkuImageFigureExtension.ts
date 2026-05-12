@@ -41,9 +41,7 @@ export interface MuikkuImageFigureAttributes {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuImageFigure: {
       /** Insert a new captioned image. */

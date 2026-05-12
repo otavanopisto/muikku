@@ -32,9 +32,7 @@ export interface MathEquationOptions {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     mathEquation: {
       setMathEquation: (options: MathEquationAttributes) => ReturnType;

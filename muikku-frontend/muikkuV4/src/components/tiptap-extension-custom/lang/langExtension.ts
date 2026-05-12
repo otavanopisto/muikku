@@ -11,10 +11,7 @@ export type LangOptions = {
 };
 
 declare module "@tiptap/core" {
-  /**
-   * Commands for the lang extension.
-   * @returns The return type.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     lang: {
       setTextLang: (lang: string) => ReturnType;

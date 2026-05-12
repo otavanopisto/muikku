@@ -18,9 +18,7 @@ export type DivFrameAttrs = {
 };
 
 declare module "@tiptap/core" {
-  /**
-   * Commands for the divFrame extension.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     divFrame: {
       setDivFrame: (attrs: DivFrameAttrs) => ReturnType;

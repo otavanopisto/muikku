@@ -27,9 +27,7 @@ export type MuikkuLinkAttrs = {
 export type InsertMuikkuLinkPayload = { text: string } & MuikkuLinkAttrs;
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku link extension.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuLink: {
       /**

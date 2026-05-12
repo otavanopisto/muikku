@@ -72,10 +72,7 @@ function normalizeContent(input: unknown): MuikkuTextFieldContent | null {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku text field extension.
-   * @param ReturnType - The return type of the commands.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuTextField: {
       setMuikkuTextField: (

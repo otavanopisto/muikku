@@ -107,10 +107,7 @@ function normalizeContent(input: unknown): MuikkuSelectionFieldContent | null {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku selection field extension.
-   * @param ReturnType - The return type of the commands.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuSelectionField: {
       setMuikkuSelectionField: (

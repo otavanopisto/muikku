@@ -6,9 +6,7 @@ type SourceModeState = { enabled: boolean };
 export const sourceModePluginKey = new PluginKey<SourceModeState>("sourceMode");
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the source mode extension.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     sourceMode: {
       enableSourceMode: () => ReturnType;

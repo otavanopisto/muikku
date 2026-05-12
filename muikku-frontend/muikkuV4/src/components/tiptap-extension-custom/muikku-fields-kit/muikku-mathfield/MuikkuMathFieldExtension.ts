@@ -35,10 +35,7 @@ function normalizeContent(input: unknown): MuikkuMathFieldContent | null {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku math field extension.
-   * @param ReturnType - The return type of the commands.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuMathField: {
       setMuikkuMathField: () => ReturnType;

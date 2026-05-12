@@ -72,9 +72,7 @@ export type IframeOptions = {
 };
 
 declare module "@tiptap/core" {
-  /**
-   * Commands for the iframe extension.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     iframe: {
       setIframe: (attrs: Partial<IframeAttrs>) => ReturnType;

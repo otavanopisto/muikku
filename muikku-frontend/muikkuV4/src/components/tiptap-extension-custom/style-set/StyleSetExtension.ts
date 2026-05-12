@@ -12,9 +12,7 @@ export interface StyleSetOptions {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands is the commands for the StyleSetExtension
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     styleSet: {
       setStyle: (styleName: string) => ReturnType;

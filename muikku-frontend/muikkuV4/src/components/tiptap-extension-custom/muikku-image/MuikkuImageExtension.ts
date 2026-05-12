@@ -103,9 +103,7 @@ export function mergeImageStyles(
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuImage: {
       setImageAlign: (align: MuikkuImageAlign | null) => ReturnType;

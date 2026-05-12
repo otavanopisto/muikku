@@ -125,10 +125,7 @@ function normalizeContent(input: unknown): MuikkuOrganizerFieldContent | null {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku organizer field extension.
-   * @param ReturnType - The return type of the commands.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuOrganizerField: {
       setMuikkuOrganizerField: (

@@ -78,10 +78,7 @@ function normalizeContent(input: unknown): MuikkuSorterFieldContent | null {
 }
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku sorter field extension.
-   * @param ReturnType - The return type of the commands.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuSorterField: {
       setMuikkuSorterField: (

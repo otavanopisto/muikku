@@ -11,10 +11,7 @@ const anchorFlagPluginKey = new PluginKey("muikkuAnchorFlagDecorations");
 export type MuikkuAnchorAttrs = { id: string; name: string };
 
 declare module "@tiptap/core" {
-  /**
-   * Commands interface for the Muikku anchor extension.
-   * @param ReturnType - The return type of the commands.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     muikkuAnchor: {
       setMuikkuAnchor: (attrs: MuikkuAnchorAttrs) => ReturnType;

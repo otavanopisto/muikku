@@ -20,9 +20,7 @@ export type IndentOptions = {
 };
 
 declare module "@tiptap/core" {
-  /**
-   * Commands is the commands for the IndentExtension
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     indent: {
       indentIncrease: () => ReturnType;

@@ -22,9 +22,7 @@ export type DetailsOptions = {
 export interface DetailsKitOptions extends DetailsOptions {}
 
 declare module "@tiptap/core" {
-  /**
-   * Commands is the commands for the DetailsExtension
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     details: {
       /**

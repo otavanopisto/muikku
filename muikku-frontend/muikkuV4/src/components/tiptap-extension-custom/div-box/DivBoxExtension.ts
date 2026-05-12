@@ -47,9 +47,7 @@ export type DivBoxOptions = {
 };
 
 declare module "@tiptap/core" {
-  /**
-   * Commands for the divBox extension.
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   interface Commands<ReturnType> {
     divBox: {
       setDivBoxPreset: (styleName: string) => ReturnType;
