@@ -1,16 +1,15 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
-
 import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
 import { LinkIcon } from "@/components/tiptap-icons/link-icon";
-import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
-
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
+import { useCallbackOnEvent } from "@/hooks/use-callback-on-event";
 import { MuikkuLinkSettingsModal } from "./MuikkuLinkSettingsModal";
 import { OPEN_MUIKKU_LINK_SETTINGS_MODAL_EVENT } from "./MuikkuLinkExtension";
 
@@ -33,18 +32,9 @@ export const MuikkuLinkButton = forwardRef<
   const { editor } = useTiptapEditorV2({ editor: providedEditor });
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const openFromDblClick = () => setOpen(true);
-    window.addEventListener(
-      OPEN_MUIKKU_LINK_SETTINGS_MODAL_EVENT,
-      openFromDblClick
-    );
-    return () =>
-      window.removeEventListener(
-        OPEN_MUIKKU_LINK_SETTINGS_MODAL_EVENT,
-        openFromDblClick
-      );
-  }, []);
+  useCallbackOnEvent(OPEN_MUIKKU_LINK_SETTINGS_MODAL_EVENT, () =>
+    setOpen(true)
+  );
 
   if (!editor?.isEditable) return null;
 

@@ -18,7 +18,6 @@ import type {
   MuikkuSelectionOption,
 } from "./MuikkuSelectFieldExtension";
 import { createRandomMuikkuFieldName, isRecord } from "../helpers";
-import { OPEN_EVENT } from "./MuikkuSelectFieldExtension";
 
 const TYPE_OPTIONS = [
   { value: "dropdown", label: "Alaspudotusvalikko" },
@@ -96,15 +95,6 @@ export function MuikkuSelectFieldModal(props: {
       setExplanation("");
     }
   }, [opened, editor]);
-
-  // Allow placeholder to open the modal via event
-  useEffect(() => {
-    const handler = () => {
-      // noop here; button owns listener typically, but keeping consistent is fine
-    };
-    window.addEventListener(OPEN_EVENT, handler);
-    return () => window.removeEventListener(OPEN_EVENT, handler);
-  }, []);
 
   const addOption = () => {
     const used = new Set(options.map((o) => o.name));

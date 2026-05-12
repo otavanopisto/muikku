@@ -1,13 +1,14 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
-import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
+import { useCallbackOnEvent } from "@/hooks/use-callback-on-event";
 import { MuikkuAnchorModal } from "./MuikkuAnchorModal";
 import { OPEN_MUIKKU_ANCHOR_SETTINGS_MODAL_EVENT } from "./MuikkuAnchorExtension";
 
@@ -31,15 +32,9 @@ export const MuikkuAnchorButton = forwardRef<
   const [open, setOpen] = useState(false);
 
   // Sets up a listener to open the anchor modal when the anchor settings modal is opened
-  useEffect(() => {
-    const openModal = () => setOpen(true);
-    window.addEventListener(OPEN_MUIKKU_ANCHOR_SETTINGS_MODAL_EVENT, openModal);
-    return () =>
-      window.removeEventListener(
-        OPEN_MUIKKU_ANCHOR_SETTINGS_MODAL_EVENT,
-        openModal
-      );
-  }, []);
+  useCallbackOnEvent(OPEN_MUIKKU_ANCHOR_SETTINGS_MODAL_EVENT, () =>
+    setOpen(true)
+  );
 
   if (!editor?.isEditable) return null;
 

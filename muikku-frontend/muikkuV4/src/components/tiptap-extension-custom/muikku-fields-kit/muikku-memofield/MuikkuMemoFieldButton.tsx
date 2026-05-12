@@ -1,14 +1,15 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
 import { MuikkuMemoFieldModal } from "./MuikkuMemoFieldModal";
-import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
+import { useCallbackOnEvent } from "@/hooks/use-callback-on-event";
 import { OPEN_EVENT } from "./MuikkuMemoFieldExtension";
 
 /**
@@ -36,11 +37,7 @@ export const MuikkuMemoFieldButton = forwardRef<
   const isActive = selected?.isActive ?? false;
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const handler = () => setOpen(true);
-    window.addEventListener(OPEN_EVENT, handler);
-    return () => window.removeEventListener(OPEN_EVENT, handler);
-  }, []);
+  useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
 
   if (!editor?.isEditable) return null;
 

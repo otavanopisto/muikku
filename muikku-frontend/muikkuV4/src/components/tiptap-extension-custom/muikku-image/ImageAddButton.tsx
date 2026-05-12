@@ -1,15 +1,15 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useState } from "react";
 import { Editor } from "@tiptap/react";
-
 import {
   Button,
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
 import { MuikkuImagePropertiesModal } from "./MuikkuImagePropertiesModal";
-import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
+import { useCallbackOnEvent } from "@/hooks/use-callback-on-event";
 import { OPEN_IMAGE_PROPERTIES_MODAL_EVENT } from "./helpers";
 
 /**
@@ -35,12 +35,7 @@ export const ImageAddButton = forwardRef<
 
   const [opened, setOpened] = useState(false);
 
-  useEffect(() => {
-    const handler = () => setOpened(true);
-    window.addEventListener(OPEN_IMAGE_PROPERTIES_MODAL_EVENT, handler);
-    return () =>
-      window.removeEventListener(OPEN_IMAGE_PROPERTIES_MODAL_EVENT, handler);
-  }, []);
+  useCallbackOnEvent(OPEN_IMAGE_PROPERTIES_MODAL_EVENT, () => setOpened(true));
 
   /**
    * The handleOpen function.
