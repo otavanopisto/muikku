@@ -32,49 +32,6 @@ const Guardians: React.FC<GuardiansProps> = () => {
 
   return (
     <div>
-      {guardians.list.length > 0 && (
-        <>
-          <h2 className="application-panel__content-header">
-            {t("labels.guardians", { ns: "users" })}
-          </h2>
-          <div className="item-list item-list--student-guardians">
-            {guardians.list.map((guardian, index) => {
-              const actions = (
-                <GuardianPermissionsDialog
-                  guardian={guardian}
-                  userIdentifier={status.userSchoolDataIdentifier}
-                >
-                  <Link className="link">
-                    {t("actions.editPermissions", {
-                      ns: "users",
-                    })}
-                  </Link>
-                </GuardianPermissionsDialog>
-              );
-
-              const guardianState = guardian.continuedViewPermission
-                ? t("labels.hasContinuedViewPermission", {
-                    ns: "users",
-                  })
-                : t("labels.noContinuedViewPermission", {
-                    ns: "users",
-                  });
-
-              if (profile.location !== "guardians" || !guardians.list) {
-                return null;
-              }
-              return (
-                <ContactCard
-                  key={index}
-                  actions={actions}
-                  fullName={getName(guardian, true)}
-                  state={guardianState}
-                />
-              );
-            })}
-          </div>
-        </>
-      )}
       {others.list.length > 0 && (
         <>
           <h2 className="application-panel__content-header">
@@ -112,6 +69,49 @@ const Guardians: React.FC<GuardiansProps> = () => {
                   actions={actions}
                   fullName={contact.name}
                   state={contactState}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
+      {guardians.list.length > 0 && (
+        <>
+          <h2 className="application-panel__content-header">
+            {t("labels.guardians", { ns: "users" })}
+          </h2>
+          <div className="item-list item-list--student-guardians">
+            {guardians.list.map((guardian, index) => {
+              const actions = (
+                <GuardianPermissionsDialog
+                  guardian={guardian}
+                  userIdentifier={status.userSchoolDataIdentifier}
+                >
+                  <Link className="link">
+                    {t("actions.editPermissions", {
+                      ns: "users",
+                    })}
+                  </Link>
+                </GuardianPermissionsDialog>
+              );
+
+              const guardianState = guardian.continuedViewPermission
+                ? t("labels.hasContinuedViewPermission", {
+                    ns: "users",
+                  })
+                : t("labels.noContinuedViewPermission", {
+                    ns: "users",
+                  });
+
+              if (profile.location !== "guardians" || !guardians.list) {
+                return null;
+              }
+              return (
+                <ContactCard
+                  key={index}
+                  actions={actions}
+                  fullName={getName(guardian, true)}
+                  state={guardianState}
                 />
               );
             })}
