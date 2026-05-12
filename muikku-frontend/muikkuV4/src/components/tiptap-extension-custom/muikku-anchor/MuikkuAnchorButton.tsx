@@ -36,6 +36,20 @@ export const MuikkuAnchorButton = forwardRef<
     setOpen(true)
   );
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    setOpen(true);
+  };
+
+  /**
+   * The handleCloseClick function.
+   */
+  const handleCloseClick = () => {
+    setOpen(false);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -45,7 +59,7 @@ export const MuikkuAnchorButton = forwardRef<
         variant="ghost"
         aria-label="Anchor"
         tooltip="Anchor"
-        onClick={() => setOpen(true)}
+        onClick={handleOpenClick}
         tabIndex={-1}
         role="button"
         ref={ref}
@@ -58,7 +72,7 @@ export const MuikkuAnchorButton = forwardRef<
       <MuikkuAnchorModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseClick}
       />
     </>
   );

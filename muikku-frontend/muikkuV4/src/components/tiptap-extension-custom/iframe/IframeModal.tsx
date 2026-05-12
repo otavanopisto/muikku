@@ -21,6 +21,62 @@ const ALIGN_OPTIONS = [
   { value: "right", label: "Tasaa oikeat reunat" },
 ] satisfies { value: IframeAlignment; label: string }[];
 
+type IframeFormState = {
+  // General
+  src: string;
+  width: string;
+  height: string;
+  alignment: IframeAlignment;
+  showScrollbars: boolean;
+  showBorder: boolean;
+  name: string;
+  assistTitle: string;
+  longDescUrl: string;
+  // Advanced
+  id: string;
+  styleAttr: string;
+  className: string;
+};
+
+// Default form state for the iframe.
+const DEFAULT_FORM: IframeFormState = {
+  src: "",
+  width: "500",
+  height: "200",
+  alignment: "unset",
+  showScrollbars: true,
+  showBorder: false,
+  name: "",
+  assistTitle: "",
+  longDescUrl: "",
+  id: "",
+  styleAttr: "",
+  className: "",
+};
+
+/**
+ * The formFromAttrs function.
+ * @param a - The attributes of the iframe.
+ * @returns The form state for the iframe.
+ */
+function formFromAttrs(a: IframeAttrs): IframeFormState {
+  return {
+    ...DEFAULT_FORM,
+    src: a.src ?? "",
+    width: a.width ?? "",
+    height: a.height ?? "",
+    alignment: a.alignment ?? "unset",
+    showScrollbars: (a.scrolling ?? "yes") !== "no",
+    showBorder: (a.frameborder ?? "0") !== "0",
+    id: a.id ?? "",
+    styleAttr: a.style ?? "",
+    className: a.class ?? "",
+    name: a.title ?? "",
+    assistTitle: a.title ?? "",
+    // longDescUrl: a.longdesc ?? "", // if you decide to support it
+  };
+}
+
 /**
  * The IframeModal component.
  * @param props - The props for the IframeModal component.
@@ -37,81 +93,79 @@ export function IframeModal(props: {
   const [tab, setTab] = useState<string | null>("general");
 
   // General
-  const [src, setSrc] = useState("");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [alignment, setAlignment] = useState<IframeAlignment>("unset");
-  const [showScrollbars, setShowScrollbars] = useState(true);
-  const [showBorder, setShowBorder] = useState(false);
-  const [name, setName] = useState(""); // maps to title for now
-  const [assistTitle, setAssistTitle] = useState(""); // also title; keep separate if you later add aria-label
-  const [longDescUrl, setLongDescUrl] = useState("");
+  const [form, setForm] = useState<IframeFormState>(DEFAULT_FORM);
 
-  // Advanced
-  const [id, setId] = useState("");
-  const [styleAttr, setStyleAttr] = useState("");
-  const [className, setClassName] = useState("");
+  /**
+   * The setField function.
+   * @param key - The key of the field to set.
+   * @param value - The value of the field to set.
+   */
+  const setField = <K extends keyof IframeFormState>(
+    key: K,
+    value: IframeFormState[K]
+  ) => setForm((prev) => ({ ...prev, [key]: value }));
+
+  /**
+   * The handleText function.
+   * @param key - The key of the field to set.
+   * @param e - The change event.
+   */
+  const handleText =
+    (key: Extract<keyof IframeFormState, string>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.value);
+    };
+
+  /**
+   * The handleCheck function.
+   * @param key - The key of the field to set.
+   * @param e - The change event.
+   */
+  const handleCheck =
+    (key: Extract<keyof IframeFormState, string>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.checked);
+    };
+
+  /**
+   * The handleAlignmentChange function.
+   * @param v - The value of the alignment.
+   */
+  const handleAlignmentChange = (v: string | null) => {
+    setField("alignment", (v as IframeAlignment) ?? "unset");
+  };
 
   useEffect(() => {
     if (!opened || !editor) return;
-
     if (editor.isActive("iframe")) {
       const a = editor.getAttributes("iframe") as IframeAttrs;
-
-      setSrc(a.src ?? "");
-      setWidth(a.width ?? "");
-      setHeight(a.height ?? "");
-      setAlignment(a.alignment ?? "unset");
-
-      setShowScrollbars((a.scrolling ?? "yes") !== "no");
-      setShowBorder((a.frameborder ?? "0") !== "0");
-
-      setId(a.id ?? "");
-      setStyleAttr(a.style ?? "");
-      setClassName(a.class ?? "");
-
-      setName(a.title ?? "");
-      setAssistTitle(a.title ?? "");
-      //setLongDescUrl(a.longdesc ?? "");
+      setForm(formFromAttrs(a));
     } else {
-      setSrc("");
-      setWidth("500");
-      setHeight("200");
-      setAlignment("unset");
-      setShowScrollbars(true);
-      setShowBorder(false);
-      setId("");
-      setStyleAttr("");
-      setClassName("");
-      setName("");
-      setAssistTitle("");
-      setLongDescUrl("");
+      setForm(DEFAULT_FORM);
     }
   }, [opened, editor]);
 
+  /**
+   * The handleOk function.
+   */
   const handleOk = () => {
     if (!editor) return;
-
     const attrs: IframeAttrs = {
-      src: src.trim(),
-      width: width.trim() || null,
-      height: height.trim() || null,
-      alignment: alignment,
-      scrolling: showScrollbars ? "yes" : "no",
-      frameborder: showBorder ? "1" : "0",
-      id: id.trim() || null,
-      class: className.trim() || null,
-      style: styleAttr.trim() || null,
-      // Keep “Name / Assist title / longdesc” minimal for v1:
-      title: (assistTitle || name).trim() || null,
-      // longdesc is legacy HTML; optional
-      //longdesc: longDescUrl.trim() || null,
+      src: form.src.trim(),
+      width: form.width.trim() || null,
+      height: form.height.trim() || null,
+      alignment: form.alignment,
+      scrolling: form.showScrollbars ? "yes" : "no",
+      frameborder: form.showBorder ? "1" : "0",
+      id: form.id.trim() || null,
+      class: form.className.trim() || null,
+      style: form.styleAttr.trim() || null,
+      title: (form.assistTitle || form.name).trim() || null,
+      // longdesc: form.longDescUrl.trim() || null,
     };
-
     const ok = isEditing
       ? editor.commands.updateIframe(attrs)
       : editor.commands.setIframe(attrs);
-
     if (ok) onClose();
   };
 
@@ -133,40 +187,38 @@ export function IframeModal(props: {
           <Stack gap="sm">
             <TextInput
               label="Osoite"
-              value={src}
-              onChange={(e) => setSrc(e.currentTarget.value)}
+              value={form.src}
+              onChange={handleText("src")}
             />
 
             <Group grow>
               <TextInput
                 label="Leveys"
-                value={width}
-                onChange={(e) => setWidth(e.currentTarget.value)}
+                value={form.width}
+                onChange={handleText("width")}
               />
               <TextInput
                 label="Korkeus"
-                value={height}
-                onChange={(e) => setHeight(e.currentTarget.value)}
+                value={form.height}
+                onChange={handleText("height")}
               />
               <Select
                 label="Kohdistus"
                 data={ALIGN_OPTIONS}
-                value={alignment}
-                onChange={(v) =>
-                  setAlignment((v as IframeAlignment) ?? "unset")
-                }
+                value={form.alignment}
+                onChange={handleAlignmentChange}
               />
             </Group>
 
             <Group>
               <Checkbox
-                checked={showScrollbars}
-                onChange={(e) => setShowScrollbars(e.currentTarget.checked)}
+                checked={form.showScrollbars}
+                onChange={handleCheck("showScrollbars")}
                 label="Näytä vierityspalkit"
               />
               <Checkbox
-                checked={showBorder}
-                onChange={(e) => setShowBorder(e.currentTarget.checked)}
+                checked={form.showBorder}
+                onChange={handleCheck("showBorder")}
                 label="Näytä kehyksen reunat"
               />
             </Group>
@@ -174,20 +226,20 @@ export function IframeModal(props: {
             <Group grow>
               <TextInput
                 label="Nimi"
-                value={name}
-                onChange={(e) => setName(e.currentTarget.value)}
+                value={form.name}
+                onChange={handleText("name")}
               />
               <TextInput
                 label="Avustava otsikko"
-                value={assistTitle}
-                onChange={(e) => setAssistTitle(e.currentTarget.value)}
+                value={form.assistTitle}
+                onChange={handleText("assistTitle")}
               />
             </Group>
 
             <TextInput
               label="Pitkän kuvauksen URL"
-              value={longDescUrl}
-              onChange={(e) => setLongDescUrl(e.currentTarget.value)}
+              value={form.longDescUrl}
+              onChange={handleText("longDescUrl")}
             />
           </Stack>
         </Tabs.Panel>
@@ -196,20 +248,20 @@ export function IframeModal(props: {
           <Stack gap="sm">
             <TextInput
               label="Tunniste"
-              value={id}
-              onChange={(e) => setId(e.currentTarget.value)}
+              value={form.id}
+              onChange={handleText("id")}
             />
 
             <Group grow>
               <TextInput
                 label="Tyyli"
-                value={styleAttr}
-                onChange={(e) => setStyleAttr(e.currentTarget.value)}
+                value={form.styleAttr}
+                onChange={handleText("styleAttr")}
               />
               <TextInput
                 label="Tyylitiedoston luokat"
-                value={className}
-                onChange={(e) => setClassName(e.currentTarget.value)}
+                value={form.className}
+                onChange={handleText("className")}
               />
             </Group>
           </Stack>

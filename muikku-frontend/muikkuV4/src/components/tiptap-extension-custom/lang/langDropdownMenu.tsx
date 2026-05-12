@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { useEditorState, type Editor } from "@tiptap/react";
 
 // --- Hooks ---
@@ -81,99 +81,93 @@ export function LangDropdownMenu({
   });
   const [isOpen, setIsOpen] = useState(false);
 
-  //const canToggle = canUseLang(editor);
+  /**
+   * The handleOnOpenChange function.
+   * @param open - The open state.
+   */
+  const handleOnOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    onOpenChange?.(open);
+  };
 
-  const handleOnOpenChange = useCallback(
-    (open: boolean) => {
-      setIsOpen(open);
-      onOpenChange?.(open);
-    },
-    [onOpenChange]
-  );
-
-  const items = useMemo(() => LANGUAGE_LIST, []);
+  const items = LANGUAGE_LIST;
 
   /**
    * Applies the lang to the selection.
    * @param lang - The lang to apply.
    * @returns True if the lang was applied, false otherwise.
    */
-  const applyLang = useCallback(
-    (lang: string | null) => {
-      if (!editor?.isEditable) return false;
+  const applyLang = (lang: string | null) => {
+    if (!editor?.isEditable) return false;
 
-      const { state } = editor;
-      const { from, empty } = state.selection;
+    const { state } = editor;
+    const { from, empty } = state.selection;
 
-      setIsOpen(false);
+    setIsOpen(false);
 
-      // Helper: apply/remove the textLang mark for the "current intent"
-      const applyToSelection = () =>
-        lang
-          ? editor.chain().focus().setTextLang(lang).run()
-          : editor.chain().focus().unsetTextLang().run();
+    // Helper: apply/remove the textLang mark for the "current intent"
+    const applyToSelection = () =>
+      lang
+        ? editor.chain().focus().setTextLang(lang).run()
+        : editor.chain().focus().unsetTextLang().run();
 
-      if (!empty) {
-        // Non-empty selection: apply directly
-        return applyToSelection();
-      }
+    if (!empty) {
+      // Non-empty selection: apply directly
+      return applyToSelection();
+    }
 
-      // Caret only: apply to whole nearest block's inline content
-      const $from = state.selection.$from;
+    // Caret only: apply to whole nearest block's inline content
+    const $from = state.selection.$from;
 
-      // Find nearest block ancestor
-      let depth = $from.depth;
-      while (depth > 0 && !$from.node(depth).isBlock) depth--;
+    // Find nearest block ancestor
+    let depth = $from.depth;
+    while (depth > 0 && !$from.node(depth).isBlock) depth--;
 
-      const blockStart = $from.start(depth);
-      const blockEnd = $from.end(depth);
+    const blockStart = $from.start(depth);
+    const blockEnd = $from.end(depth);
 
-      // Inline content range inside the block
-      const rangeFrom = blockStart + 1;
-      const rangeTo = blockEnd - 1;
+    // Inline content range inside the block
+    const rangeFrom = blockStart + 1;
+    const rangeTo = blockEnd - 1;
 
-      // Empty block: no valid text range → set stored mark (so new typing gets the lang)
-      if (rangeFrom > rangeTo) {
-        return lang
-          ? editor.chain().focus().setMark("textLang", { lang }).run()
-          : editor.chain().focus().unsetMark("textLang").run();
-      }
+    // Empty block: no valid text range → set stored mark (so new typing gets the lang)
+    if (rangeFrom > rangeTo) {
+      return lang
+        ? editor.chain().focus().setMark("textLang", { lang }).run()
+        : editor.chain().focus().unsetMark("textLang").run();
+    }
 
-      // Select the block's content, apply mark, then restore the caret.
-      // (Restoring is optional, but feels nicer.)
-      const caretPos = from;
+    // Select the block's content, apply mark, then restore the caret.
+    // (Restoring is optional, but feels nicer.)
+    const caretPos = from;
 
-      const chain = editor
-        .chain()
-        .focus()
-        .setTextSelection({ from: rangeFrom, to: rangeTo });
+    const chain = editor
+      .chain()
+      .focus()
+      .setTextSelection({ from: rangeFrom, to: rangeTo });
 
-      const ok = lang
-        ? chain.setTextLang(lang).run()
-        : chain.unsetTextLang().run();
+    const ok = lang
+      ? chain.setTextLang(lang).run()
+      : chain.unsetTextLang().run();
 
-      if (ok) {
-        editor.chain().focus().setTextSelection(caretPos).run();
-      }
+    if (ok) {
+      editor.chain().focus().setTextSelection(caretPos).run();
+    }
 
-      return ok;
-    },
-    [editor, setIsOpen]
-  );
+    return ok;
+  };
 
   /**
    * Handles the set language click.
    * @param lang - The lang to apply.
    * @returns True if the lang was applied, false otherwise.
    */
-  const handleSetLanguageClick = useCallback(
+  const handleSetLanguageClick =
     (lang: string | null) => (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       setIsOpen(false);
       applyLang(lang);
-    },
-    [applyLang]
-  );
+    };
 
   const selectedLangCode =
     useEditorState({

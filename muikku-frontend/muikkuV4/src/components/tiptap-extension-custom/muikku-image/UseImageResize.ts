@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 type ResizeSide = "left" | "right";
 
@@ -13,6 +13,11 @@ export function useImageResize(props: {
   maxWidth?: number;
 }) {
   const { onSizeChange, minWidth = 80, maxWidth = 1200 } = props;
+
+  const onSizeChangeRef = useRef(onSizeChange);
+  useEffect(() => {
+    onSizeChangeRef.current = onSizeChange;
+  }, [onSizeChange]);
 
   const dragRef = useRef<{
     startX: number;
@@ -74,9 +79,9 @@ export function useImageResize(props: {
       const nextWidth = Math.max(minWidth, Math.min(maxWidth, nextWidthRaw));
       const nextHeight = Math.round(nextWidth * drag.ratio);
 
-      onSizeChange({ width: nextWidth, height: nextHeight });
+      onSizeChangeRef.current({ width: nextWidth, height: nextHeight });
     },
-    [maxWidth, minWidth, onSizeChange]
+    [maxWidth, minWidth]
   );
 
   /**

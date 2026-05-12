@@ -1,7 +1,7 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useCallback } from "react";
+import { forwardRef } from "react";
 import type { Editor } from "@tiptap/react";
 
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
@@ -45,31 +45,31 @@ export const DetailsButton = forwardRef<HTMLButtonElement, DetailsButtonProps>(
       // guard: only enable if command exists (extension loaded)
       typeof editor?.commands?.insertDetails === "function";
 
-    const handleClick = useCallback(
-      (e: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(e);
-        if (e.defaultPrevented) return;
-        if (!editor?.isEditable) return;
+    /**
+     * The handleClick function.
+     * @param e - The event.
+     */
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e);
+      if (e.defaultPrevented) return;
+      if (!editor?.isEditable) return;
 
-        editor
-          .chain()
-          .focus()
-          .insertContent({
-            type: "details",
-            attrs:
-              typeof open === "boolean" ? { open: open ? true : null } : {},
-            content: [
-              {
-                type: "detailsSummary",
-                content: [{ type: "text", text: summary ?? "Yhteenveto" }],
-              },
-              { type: "detailsContent", content: [{ type: "paragraph" }] },
-            ],
-          })
-          .run();
-      },
-      [editor, onClick, summary, open]
-    );
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "details",
+          attrs: typeof open === "boolean" ? { open: open ? true : null } : {},
+          content: [
+            {
+              type: "detailsSummary",
+              content: [{ type: "text", text: summary ?? "Yhteenveto" }],
+            },
+            { type: "detailsContent", content: [{ type: "paragraph" }] },
+          ],
+        })
+        .run();
+    };
 
     if (!editor?.isEditable) return null;
 

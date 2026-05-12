@@ -1,7 +1,7 @@
 "use client";
 
 /* eslint-disable react-x/no-forward-ref */
-import { forwardRef, useCallback } from "react";
+import { forwardRef } from "react";
 import type { Editor } from "@tiptap/react";
 
 import {
@@ -40,15 +40,12 @@ export const SourceModeButton = forwardRef<
    * The handleClick function.
    * @param e - The event.
    */
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      onClick?.(e);
-      if (e.defaultPrevented) return;
-      if (!canToggle) return;
-      editor.commands.toggleSourceMode();
-    },
-    [onClick, canToggle, editor]
-  );
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onClick?.(e);
+    if (e.defaultPrevented) return;
+    if (!canToggle) return;
+    editor.commands.toggleSourceMode();
+  };
 
   if (!editor?.isEditable) return null;
 

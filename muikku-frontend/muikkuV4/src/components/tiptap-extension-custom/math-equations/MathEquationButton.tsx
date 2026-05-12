@@ -1,5 +1,5 @@
 /* eslint-disable react-x/no-forward-ref */
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import {
   Button,
   type ButtonProps,
@@ -31,14 +31,14 @@ export const MathEquationButton = forwardRef<
   /**
    * Handles the click event of the MathEquationButton component.
    */
-  const handleClick = React.useCallback(() => {
+  const handleClick = () => {
     if (!editor) return;
 
     editor?.commands.setMathEquation({
       latex: "x^2 + y^2 = z^2", // Default equation
       displayMode: true,
     });
-  }, [editor]);
+  };
 
   if (!editor?.isEditable) {
     return null;

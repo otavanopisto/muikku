@@ -8,7 +8,7 @@ import {
   type ButtonProps,
 } from "@/components/tiptap-ui-primitive/button";
 import { canUseDivBox, getCurrentDivBoxPreset } from "./helper";
-import { forwardRef, useCallback } from "react";
+import { forwardRef } from "react";
 import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 
 /**
@@ -47,14 +47,14 @@ export const DivBoxPresetButton = forwardRef<
       editor: providedEditor,
     });
 
-    const handleClick = useCallback(
-      (e: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(e);
-        if (!editor) return;
-        editor.commands.setDivBoxPreset(styleName);
-      },
-      [editor, styleName, onClick]
-    );
+    /**
+     * The handleClick function.
+     */
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e);
+      if (!editor) return;
+      editor.commands.setDivBoxPreset(styleName);
+    };
 
     if (!editor?.isEditable) {
       return null;

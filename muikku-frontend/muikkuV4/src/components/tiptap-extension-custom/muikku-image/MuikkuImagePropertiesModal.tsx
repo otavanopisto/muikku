@@ -34,6 +34,84 @@ type ImageAttrs = {
   class?: string | null;
 };
 
+type ImageFormState = {
+  // Main
+  src: string;
+  alt: string;
+  width: string;
+  height: string;
+  lockRatio: boolean;
+  ratio: number | null;
+  align: Align;
+  captionEnabled: boolean;
+  captionText: string;
+  // Meta
+  dataSource: string;
+  dataSourceUrl: string;
+  dataAuthor: string;
+  dataAuthorUrl: string;
+  dataLicense: string;
+  dataLicenseUrl: string;
+};
+
+// The default form state.
+const DEFAULT_FORM: ImageFormState = {
+  src: "",
+  alt: "",
+  width: "",
+  height: "",
+  lockRatio: true,
+  ratio: null,
+  align: null,
+  captionEnabled: false,
+  captionText: "",
+  dataSource: "",
+  dataSourceUrl: "",
+  dataAuthor: "",
+  dataAuthorUrl: "",
+  dataLicense: "",
+  dataLicenseUrl: "",
+};
+
+/**
+ * The formFromEditor function.
+ * @param editor - The editor to get the form state from.
+ * @returns The form state for the editor.
+ */
+function formFromEditor(editor: Editor): ImageFormState {
+  const kind = getActiveKind(editor);
+  if (!kind) {
+    return { ...DEFAULT_FORM };
+  }
+  const info =
+    kind === "imageFigure"
+      ? findActiveImageNode(editor, "imageFigure")
+      : findActiveImageNode(editor, "image");
+  const a = info?.attrs ?? (editor.getAttributes(kind) as ImageAttrs);
+  const width = toNumOrEmpty(a.width);
+  const height = toNumOrEmpty(a.height);
+  const w = parsePositiveInt(width);
+  const h = parsePositiveInt(height);
+  const isFig = kind === "imageFigure";
+  return {
+    ...DEFAULT_FORM,
+    src: toText(a.src),
+    alt: toText(a.alt),
+    width,
+    height,
+    align: (a.align ?? null) as Align,
+    captionEnabled: isFig,
+    captionText: isFig ? info?.captionText ?? "" : "",
+    dataSource: toText(a.dataSource),
+    dataSourceUrl: toText(a.dataSourceUrl),
+    dataAuthor: toText(a.dataAuthor),
+    dataAuthorUrl: toText(a.dataAuthorUrl),
+    dataLicense: toText(a.dataLicense),
+    dataLicenseUrl: toText(a.dataLicenseUrl),
+    ratio: w && h ? h / w : null,
+  };
+}
+
 /**
  * Converts a value to text.
  * @param v - The value to convert to text.
@@ -131,122 +209,105 @@ export function MuikkuImagePropertiesModal(props: {
   const canSave = useMemo(() => !!editor?.isEditable, [editor]);
   const [tab, setTab] = useState<string | null>("main");
 
-  // Main fields
-  const [src, setSrc] = useState("");
-  const [alt, setAlt] = useState("");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [lockRatio, setLockRatio] = useState(true);
-  const [ratio, setRatio] = useState<number | null>(null);
+  const [form, setForm] = useState<ImageFormState>(DEFAULT_FORM);
 
-  const [align, setAlign] = useState<Align>(null);
-  const [captionEnabled, setCaptionEnabled] = useState(false);
-  const [captionText, setCaptionText] = useState("");
-
-  // Metadata fields
-  const [dataSource, setDataSource] = useState("");
-  const [dataSourceUrl, setDataSourceUrl] = useState("");
-  const [dataAuthor, setDataAuthor] = useState("");
-  const [dataAuthorUrl, setDataAuthorUrl] = useState("");
-  const [dataLicense, setDataLicense] = useState("");
-  const [dataLicenseUrl, setDataLicenseUrl] = useState("");
-
-  // Load current node attrs when opening
+  // Hydrates the form from the editor.
   useEffect(() => {
     if (!opened || !editor) return;
-
-    const kind = getActiveKind(editor);
-    // If no image node is selected, reset the fields to defaults.
-    if (!kind) {
-      // If nothing selected, reset to defaults
-      setSrc("");
-      setAlt("");
-      setWidth("");
-      setHeight("");
-      setAlign(null);
-      setCaptionEnabled(false);
-      setCaptionText("");
-      setDataSource("");
-      setDataSourceUrl("");
-      setDataAuthor("");
-      setDataAuthorUrl("");
-      setDataLicense("");
-      setDataLicenseUrl("");
-      setRatio(null);
-      return;
-    }
-
-    // Get the active image node by kind (image or imageFigure).
-    const info =
-      kind === "imageFigure"
-        ? findActiveImageNode(editor, "imageFigure")
-        : findActiveImageNode(editor, "image");
-
-    // Get the attributes of the active image node.
-    const a = info?.attrs ?? (editor.getAttributes(kind) as ImageAttrs);
-
-    // Set the source, alt, width, height, align, caption enabled, caption text, data source, data source url, data author, data author url, data license, and data license url.
-    setSrc(toText(a.src));
-    setAlt(toText(a.alt));
-    setWidth(toNumOrEmpty(a.width));
-    setHeight(toNumOrEmpty(a.height));
-    setAlign((a.align ?? null) as Align);
-
-    const isFig = kind === "imageFigure";
-    setCaptionEnabled(isFig);
-    setCaptionText(isFig ? info?.captionText ?? "" : "");
-
-    setDataSource(toText(a.dataSource));
-    setDataSourceUrl(toText(a.dataSourceUrl));
-    setDataAuthor(toText(a.dataAuthor));
-    setDataAuthorUrl(toText(a.dataAuthorUrl));
-    setDataLicense(toText(a.dataLicense));
-    setDataLicenseUrl(toText(a.dataLicenseUrl));
-
-    // Compute ratio if width/height exist
-    const w = parsePositiveInt(toNumOrEmpty(a.width));
-    const h = parsePositiveInt(toNumOrEmpty(a.height));
-    setRatio(w && h ? h / w : null);
+    setForm(formFromEditor(editor));
   }, [opened, editor]);
 
   /**
-   * Handles the width change event.
-   * @param next - The next width.
+   * The setField function.
+   * @param key - The key of the field to set.
+   * @param value - The value of the field to set.
    */
-  const handleWidthChange = (next: string) => {
-    setWidth(next);
-    if (!lockRatio) return;
+  const setField = <K extends keyof ImageFormState>(
+    key: K,
+    value: ImageFormState[K]
+  ) => setForm((prev) => ({ ...prev, [key]: value }));
 
-    const w = parsePositiveInt(next);
-    if (!w) return;
+  /**
+   * The handleText function.
+   * @param key - The key of the field to set.
+   * @param e - The change event.
+   */
+  const handleText =
+    (
+      key: keyof Pick<
+        ImageFormState,
+        | "src"
+        | "alt"
+        | "captionText"
+        | "dataSource"
+        | "dataSourceUrl"
+        | "dataAuthor"
+        | "dataAuthorUrl"
+        | "dataLicense"
+        | "dataLicenseUrl"
+      >
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.value);
+    };
 
-    // Prefer stored ratio; if missing but height is filled, compute it
-    const hNow = parsePositiveInt(height);
-    const r = ratio ?? (w && hNow ? hNow / w : null);
-    if (!r) return;
+  /**
+   * The handleCheck function.
+   * @param key - The key of the field to set.
+   * @param e - The change event.
+   */
+  const handleCheck =
+    (key: keyof Pick<ImageFormState, "lockRatio" | "captionEnabled">) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.checked);
+    };
 
-    setRatio(r);
-    setHeight(String(Math.round(w * r)));
+  /**
+   * The handleAlignChange function.
+   * @param v - The value of the alignment.
+   */
+  const handleAlignChange = (v: string) => {
+    setField("align", v === "none" ? null : (v as Align));
+  };
+
+  /**
+   * Handles the width change event.
+   * @param e - The change event.
+   */
+  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.currentTarget.value;
+    setForm((prev) => {
+      const updated: ImageFormState = { ...prev, width: next };
+      if (!prev.lockRatio) return updated;
+      const w = parsePositiveInt(next);
+      if (!w) return updated;
+      const hNow = parsePositiveInt(prev.height);
+      const r = prev.ratio ?? (w && hNow ? hNow / w : null);
+      if (!r) return updated;
+      updated.ratio = r;
+      updated.height = String(Math.round(w * r));
+      return updated;
+    });
   };
 
   /**
    * Handles the height change event.
    * @param next - The next height.
    */
-  const handleHeightChange = (next: string) => {
-    setHeight(next);
-    if (!lockRatio) return;
-
-    const h = parsePositiveInt(next);
-    if (!h) return;
-
-    // Prefer stored ratio; if missing but width is filled, compute it
-    const wNow = parsePositiveInt(width);
-    const r = ratio ?? (wNow && h ? h / wNow : null);
-    if (!r) return;
-
-    setRatio(r);
-    setWidth(String(Math.round(h / r)));
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const next = e.currentTarget.value;
+    setForm((prev) => {
+      const updated: ImageFormState = { ...prev, height: next };
+      if (!prev.lockRatio) return updated;
+      const h = parsePositiveInt(next);
+      if (!h) return updated;
+      const wNow = parsePositiveInt(prev.width);
+      const r = prev.ratio ?? (wNow && h ? h / wNow : null);
+      if (!r) return updated;
+      updated.ratio = r;
+      updated.width = String(Math.round(h / r));
+      return updated;
+    });
   };
 
   /**
@@ -257,21 +318,21 @@ export function MuikkuImagePropertiesModal(props: {
 
     const kind = getActiveKind(editor);
 
-    const w = parsePositiveInt(width);
-    const h = parsePositiveInt(height);
+    const w = parsePositiveInt(form.width);
+    const h = parsePositiveInt(form.height);
 
     const nextAttrs: ImageAttrs = {
-      src: src.trim() || null,
-      alt: alt.trim() || null,
+      src: form.src.trim() || null,
+      alt: form.alt.trim() || null,
       width: w ?? null,
       height: h ?? null,
-      align,
-      dataSource: dataSource.trim() || null,
-      dataSourceUrl: dataSourceUrl.trim() || null,
-      dataAuthor: dataAuthor.trim() || null,
-      dataAuthorUrl: dataAuthorUrl.trim() || null,
-      dataLicense: dataLicense.trim() || null,
-      dataLicenseUrl: dataLicenseUrl.trim() || null,
+      align: form.align,
+      dataSource: form.dataSource.trim() || null,
+      dataSourceUrl: form.dataSourceUrl.trim() || null,
+      dataAuthor: form.dataAuthor.trim() || null,
+      dataAuthorUrl: form.dataAuthorUrl.trim() || null,
+      dataLicense: form.dataLicense.trim() || null,
+      dataLicenseUrl: form.dataLicenseUrl.trim() || null,
     };
 
     // CREATE mode: no active image node selected
@@ -279,13 +340,13 @@ export function MuikkuImagePropertiesModal(props: {
       // Optional: require URL
       if (!nextAttrs.src) return;
 
-      if (captionEnabled) {
+      if (form.captionEnabled) {
         // Prefer your command if available
         const chain = editor.chain().focus();
 
         if (typeof chain.setImageFigure === "function") {
           const ok = chain
-            .setImageFigure(nextAttrs, captionText.trim() || undefined)
+            .setImageFigure(nextAttrs, form.captionText.trim() || undefined)
             .run();
           if (ok) onClose();
           return;
@@ -298,8 +359,8 @@ export function MuikkuImagePropertiesModal(props: {
           .insertContent({
             type: "imageFigure",
             attrs: { class: "image", ...nextAttrs },
-            content: captionText.trim()
-              ? [{ type: "text", text: captionText.trim() }]
+            content: form.captionText.trim()
+              ? [{ type: "text", text: form.captionText.trim() }]
               : [],
           })
           .run();
@@ -325,13 +386,13 @@ export function MuikkuImagePropertiesModal(props: {
     // EDIT mode: existing image/imageFigure is active
 
     // Caption toggling / caption text requires replacing the node for imageFigure content
-    if (captionEnabled) {
+    if (form.captionEnabled) {
       if (kind === "image") {
         // Convert selected image -> imageFigure with captionText
         const ok = editor
           .chain()
           .focus()
-          .addImageCaption(captionText.trim() || undefined)
+          .addImageCaption(form.captionText.trim() || undefined)
           .run();
 
         if (!ok) return;
@@ -350,7 +411,7 @@ export function MuikkuImagePropertiesModal(props: {
       const nodeType = state.schema.nodes.imageFigure;
       if (!nodeType) return;
 
-      const text = captionText.trim();
+      const text = form.captionText.trim();
       const content = text ? state.schema.text(text) : null;
 
       const newNode = nodeType.create(
@@ -409,41 +470,41 @@ export function MuikkuImagePropertiesModal(props: {
             <Stack gap="sm">
               <TextInput
                 label="Osoite"
-                value={src}
-                onChange={(e) => setSrc(e.currentTarget.value)}
+                value={form.src}
+                onChange={handleText("src")}
               />
 
               <TextInput
                 label="Vaihtoehtoinen teksti"
-                value={alt}
-                onChange={(e) => setAlt(e.currentTarget.value)}
+                value={form.alt}
+                onChange={handleText("alt")}
               />
 
               <Group grow align="flex-end">
                 <TextInput
                   label="Leveys"
-                  value={width}
-                  onChange={(e) => handleWidthChange(e.currentTarget.value)}
+                  value={form.width}
+                  onChange={handleWidthChange}
                   placeholder="px"
                 />
                 <TextInput
                   label="Korkeus"
-                  value={height}
-                  onChange={(e) => handleHeightChange(e.currentTarget.value)}
+                  value={form.height}
+                  onChange={handleHeightChange}
                   placeholder="px"
                 />
               </Group>
 
               <Checkbox
-                checked={lockRatio}
-                onChange={(e) => setLockRatio(e.currentTarget.checked)}
+                checked={form.lockRatio}
+                onChange={handleCheck("lockRatio")}
                 label="Säilytä kuvasuhde"
               />
 
               <div style={{ fontWeight: 600, marginTop: 6 }}>Kohdistus</div>
               <Radio.Group
-                value={align ?? "none"}
-                onChange={(v) => setAlign(v === "none" ? null : (v as Align))}
+                value={form.align ?? "none"}
+                onChange={handleAlignChange}
               >
                 <Group>
                   <Radio value="none" label="Ei asetettu" />
@@ -454,16 +515,16 @@ export function MuikkuImagePropertiesModal(props: {
               </Radio.Group>
 
               <Checkbox
-                checked={captionEnabled}
-                onChange={(e) => setCaptionEnabled(e.currentTarget.checked)}
+                checked={form.captionEnabled}
+                onChange={handleCheck("captionEnabled")}
                 label="Kuva kuvatekstillä"
               />
 
-              {captionEnabled ? (
+              {form.captionEnabled ? (
                 <TextInput
                   label="Kuvateksti"
-                  value={captionText}
-                  onChange={(e) => setCaptionText(e.currentTarget.value)}
+                  value={form.captionText}
+                  onChange={handleText("captionText")}
                   placeholder="Kirjoita kuvateksti…"
                 />
               ) : null}
@@ -475,39 +536,39 @@ export function MuikkuImagePropertiesModal(props: {
               <Group grow>
                 <TextInput
                   label="Lähde"
-                  value={dataSource}
-                  onChange={(e) => setDataSource(e.currentTarget.value)}
+                  value={form.dataSource}
+                  onChange={handleText("dataSource")}
                 />
                 <TextInput
                   label="Lähteen URL-osoite"
-                  value={dataSourceUrl}
-                  onChange={(e) => setDataSourceUrl(e.currentTarget.value)}
+                  value={form.dataSourceUrl}
+                  onChange={handleText("dataSourceUrl")}
                 />
               </Group>
 
               <Group grow>
                 <TextInput
                   label="Tekijä"
-                  value={dataAuthor}
-                  onChange={(e) => setDataAuthor(e.currentTarget.value)}
+                  value={form.dataAuthor}
+                  onChange={handleText("dataAuthor")}
                 />
                 <TextInput
                   label="Tekijän URL-osoite"
-                  value={dataAuthorUrl}
-                  onChange={(e) => setDataAuthorUrl(e.currentTarget.value)}
+                  value={form.dataAuthorUrl}
+                  onChange={handleText("dataAuthorUrl")}
                 />
               </Group>
 
               <Group grow>
                 <TextInput
                   label="Lisenssi"
-                  value={dataLicense}
-                  onChange={(e) => setDataLicense(e.currentTarget.value)}
+                  value={form.dataLicense}
+                  onChange={handleText("dataLicense")}
                 />
                 <TextInput
                   label="Lisenssin URL-osoite"
-                  value={dataLicenseUrl}
-                  onChange={(e) => setDataLicenseUrl(e.currentTarget.value)}
+                  value={form.dataLicenseUrl}
+                  onChange={handleText("dataLicenseUrl")}
                 />
               </Group>
             </Stack>

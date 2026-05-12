@@ -40,6 +40,13 @@ export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
     });
     const [open, setOpen] = React.useState(false);
 
+    /**
+     * The handleCloseClick function.
+     */
+    const handleCloseClick = () => {
+      setOpen(false);
+    };
+
     if (!editor?.isEditable) return null;
 
     const currentPreset = selected?.currentPreset ?? undefined;
@@ -71,7 +78,7 @@ export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
               key={style.name}
               editor={editor}
               styleName={style.name}
-              onClick={() => setOpen(false)}
+              onClick={handleCloseClick}
             />
           ))}
         </DropdownMenuContent>

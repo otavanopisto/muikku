@@ -1,7 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Modal, Tabs, Group, Stack, Text, Checkbox } from "@mantine/core";
+import { useEffect, useState } from "react";
+import {
+  Modal,
+  Tabs,
+  Group,
+  Stack,
+  Text,
+  Checkbox,
+  Select,
+  type ComboboxItem,
+} from "@mantine/core";
 import type { Editor } from "@tiptap/react";
 
 import { Input } from "@/components/tiptap-ui-primitive/input";
@@ -11,6 +20,104 @@ import type { MuikkuLinkAttrs } from "./MuikkuLinkExtension";
 import { collectAnchorOptions, type AnchorOption } from "./helper";
 
 type LinkType = "url" | "anchor" | "email" | "phone";
+
+type LinkFormState = {
+  // Basic
+  type: LinkType;
+  displayText: string;
+  url: string;
+  anchor: string;
+  email: string;
+  emailSubject: string;
+  emailBody: string;
+  phone: string;
+  // Advanced attrs
+  id: string;
+  dir: string;
+  accesskey: string;
+  tabindex: string;
+  title: string;
+  className: string;
+  style: string;
+  rel: string;
+  target: string;
+  forceDownload: boolean;
+};
+
+// The default form state.
+const DEFAULT_FORM: LinkFormState = {
+  type: "url",
+  displayText: "",
+  url: "",
+  anchor: "",
+  email: "",
+  emailSubject: "",
+  emailBody: "",
+  phone: "",
+  id: "",
+  dir: "",
+  accesskey: "",
+  tabindex: "",
+  title: "",
+  className: "",
+  style: "",
+  rel: "",
+  target: "",
+  forceDownload: false,
+};
+
+/**
+ * The formFromSelection function.
+ * @param editor - The editor to get the form state from.
+ * @returns The form state for the selection.
+ */
+function formFromSelection(editor: Editor): LinkFormState {
+  const attrs = editor.getAttributes("link") as MuikkuLinkAttrs;
+  const href = String(attrs.href ?? "");
+
+  const { from, to, empty } = editor.state.selection;
+  const selectedText = empty ? "" : editor.state.doc.textBetween(from, to, " ");
+
+  const base: LinkFormState = {
+    ...DEFAULT_FORM,
+    displayText: selectedText,
+
+    id: attrs.id ?? "",
+    dir: attrs.dir ?? "",
+    accesskey: attrs.accesskey ?? "",
+    tabindex: attrs.tabindex ?? "",
+    title: attrs.title ?? "",
+    className: attrs.class ?? "",
+    style: attrs.style ?? "",
+    rel: attrs.rel ?? "",
+    target: attrs.target ?? "",
+    forceDownload: attrs.download !== null && attrs.download !== undefined,
+  };
+
+  const nextType: LinkType = href ? detectType(href) : "url";
+  base.type = nextType;
+
+  if (nextType === "email") {
+    const p = parseMailto(href);
+    return {
+      ...base,
+      email: p.email,
+      emailSubject: p.subject,
+      emailBody: p.body,
+    };
+  }
+
+  if (nextType === "phone") {
+    return { ...base, phone: parseTel(href) };
+  }
+
+  if (nextType === "anchor") {
+    return { ...base, anchor: parseAnchor(href) };
+  }
+
+  // url
+  return { ...base, url: href };
+}
 
 /**
  * Detect the type of the link.
@@ -129,109 +236,15 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
 
   // Anchor options collected from the editor
   const [anchorOptions, setAnchorOptions] = useState<AnchorOption[]>([]);
-
-  const [type, setType] = useState<LinkType>("url");
-
-  // Type-specific fields
-  const [displayText, setDisplayText] = useState("");
-  const [url, setUrl] = useState("");
-  const [anchor, setAnchor] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailSubject, setEmailSubject] = useState("");
-  const [emailBody, setEmailBody] = useState("");
-  const [phone, setPhone] = useState("");
-
-  // Shared attrs (“Lisäominaisuudet”)
-  const [id, setId] = useState("");
-  const [dir, setDir] = useState("");
-  const [accesskey, setAccesskey] = useState("");
-  const [tabindex, setTabindex] = useState("");
-  const [title, setTitle] = useState("");
-  const [className, setClassName] = useState("");
-  const [style, setStyle] = useState("");
-  const [rel, setRel] = useState("");
-  const [target, setTarget] = useState("");
-  const [forceDownload, setForceDownload] = useState(false);
+  const [form, setForm] = useState<LinkFormState>(DEFAULT_FORM);
 
   const isLinkActive = !!editor?.isActive("link");
 
-  /**
-   * Reset the link settings from the selection.
-   */
-  const resetFromSelection = useCallback(() => {
-    if (!editor) return;
-
-    const attrs = editor.getAttributes("link") as MuikkuLinkAttrs;
-    const href = String(attrs.href ?? "");
-
-    // DisplayText: if selection is not empty, we can show selected text.
-    const { from, to, empty } = editor.state.selection;
-    const selectedText = empty
-      ? ""
-      : editor.state.doc.textBetween(from, to, " ");
-    setDisplayText(selectedText);
-
-    // Shared attrs
-    setId(attrs.id ?? "");
-    setDir(attrs.dir ?? "");
-    setAccesskey(attrs.accesskey ?? "");
-    setTabindex(attrs.tabindex ?? "");
-    setTitle(attrs.title ?? "");
-    setClassName(attrs.class ?? "");
-    setStyle(attrs.style ?? "");
-    setRel(attrs.rel ?? "");
-    setTarget(attrs.target ?? "");
-    setForceDownload(attrs.download !== null && attrs.download !== undefined);
-
-    // Type + type fields
-    const nextType = href ? detectType(href) : "url";
-    setType(nextType);
-
-    if (nextType === "email") {
-      const p = parseMailto(href);
-      setEmail(p.email);
-      setEmailSubject(p.subject);
-      setEmailBody(p.body);
-      setUrl("");
-      setPhone("");
-      setAnchor("");
-      return;
-    }
-
-    if (nextType === "phone") {
-      setPhone(parseTel(href));
-      setUrl("");
-      setEmail("");
-      setEmailSubject("");
-      setEmailBody("");
-      setAnchor("");
-      return;
-    }
-
-    if (nextType === "anchor") {
-      setAnchor(parseAnchor(href));
-      setUrl("");
-      setEmail("");
-      setEmailSubject("");
-      setEmailBody("");
-      setPhone("");
-      return;
-    }
-
-    // url
-    setUrl(href);
-    setEmail("");
-    setEmailSubject("");
-    setEmailBody("");
-    setPhone("");
-    setAnchor("");
-  }, [editor]);
-
-  // Resets the link settings from the selection when the modal is opened
+  // Hydrates the form from the selection when the modal is opened
   useEffect(() => {
-    if (!opened) return;
-    resetFromSelection();
-  }, [opened, resetFromSelection]);
+    if (!opened || !editor) return;
+    setForm(formFromSelection(editor));
+  }, [opened, editor]);
 
   // Collects the anchor options when the modal is opened
   useEffect(() => {
@@ -249,104 +262,129 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
     };
   }, [opened, editor]);
 
-  const computedHref = useMemo(() => {
-    if (type === "email") return buildMailto(email, emailSubject, emailBody);
-    if (type === "phone") return buildTel(phone);
-    if (type === "anchor") return buildAnchor(anchor);
+  /**
+   * The setField function.
+   * @param key - The key of the field to set.
+   * @param value - The value of the field to set.
+   */
+  const setField = <K extends keyof LinkFormState>(
+    key: K,
+    value: LinkFormState[K]
+  ) => setForm((prev) => ({ ...prev, [key]: value }));
 
-    // URL: sanitize (but keep it as-is if empty)
-    const raw = url.trim();
-    if (!raw) return "";
-    return sanitizeUrl(raw, window.location.href);
-  }, [type, url, anchor, email, emailSubject, emailBody, phone]);
-
-  const computedAttrs = useMemo<MuikkuLinkAttrs>(() => {
-    const attrs: MuikkuLinkAttrs = {
-      href: computedHref || null,
-      id: emptyToNull(id),
-      dir: emptyToNull(dir),
-      accesskey: emptyToNull(accesskey),
-      tabindex: emptyToNull(tabindex),
-      title: emptyToNull(title),
-      class: emptyToNull(className),
-      style: emptyToNull(style),
-      rel: emptyToNull(rel),
-      target: emptyToNull(target),
-      download: forceDownload ? "" : null,
+  /**
+   * The handleText function.
+   * @param key - The key of the field to set.
+   * @returns The handleText function.
+   */
+  const handleText =
+    (key: keyof Omit<LinkFormState, "forceDownload" | "type">) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.value);
     };
 
-    return attrs;
-  }, [
-    computedHref,
-    id,
-    dir,
-    accesskey,
-    tabindex,
-    title,
-    className,
-    style,
-    rel,
-    target,
-    forceDownload,
-  ]);
+  /**
+   * The handleForceDownloadChange function.
+   * @param e - The change event.
+   */
+  const handleCheck =
+    (key: keyof Pick<LinkFormState, "forceDownload">) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.checked);
+    };
 
-  const canApply = !!editor?.isEditable && !!computedHref.trim();
+  /**
+   * The handleAnchorChange function.
+   * @param e - The change event.
+   */
+  const handleAnchorChange = (value: string | null, _option: ComboboxItem) => {
+    setField("anchor", value ?? "");
+  };
+
+  /**
+   * The handleTypeChange function.
+   * @param e - The change event.
+   */
+  const handleTypeChange = (value: string | null, _option: ComboboxItem) => {
+    setField("type", value as LinkType);
+  };
+
+  /**
+   * The handleDirChange function.
+   * @param e - The change event.
+   */
+  const handleDirChange = (value: string | null, _option: ComboboxItem) => {
+    setField("dir", value ?? "");
+  };
+
+  /**
+   * The handleTargetChange function.
+   * @param e - The change event.
+   */
+  const handleTargetChange = (value: string | null, _option: ComboboxItem) => {
+    setField("target", value ?? "");
+  };
 
   /**
    * Apply the link settings.
    */
-  const handleApplyClick = useCallback(() => {
+  const handleApplyClick = () => {
     if (!editor) return;
     if (!computedHref.trim()) return;
-
     const { empty } = editor.state.selection;
-
-    // If empty selection, insert display text (or fallback) and mark it.
     if (empty) {
       const text =
-        displayText.trim() ||
-        (type === "url"
+        form.displayText.trim() ||
+        (form.type === "url"
           ? computedHref
-          : type === "anchor"
-          ? `#${anchor.trim()}`
-          : type === "email"
-          ? email.trim()
-          : phone.trim());
-
+          : form.type === "anchor"
+          ? `#${form.anchor.trim()}`
+          : form.type === "email"
+          ? form.email.trim()
+          : form.phone.trim());
       if (!text.trim()) return;
-
-      editor.commands.insertMuikkuLink({
-        text,
-        ...computedAttrs,
-      });
-
+      editor.commands.insertMuikkuLink({ text, ...computedAttrs });
       onClose();
       return;
     }
-
     editor.commands.setMuikkuLink(computedAttrs);
-
     onClose();
-  }, [
-    editor,
-    computedHref,
-    computedAttrs,
-    onClose,
-    displayText,
-    type,
-    anchor,
-    email,
-    phone,
-  ]);
+  };
 
   /**
    * Remove the link.
    */
-  const handleRemoveClick = useCallback(() => {
+  const handleRemoveClick = () => {
     if (!editor) return;
     editor.commands.unsetMuikkuLink();
     onClose();
-  }, [editor, onClose]);
+  };
+
+  const computedHref = (() => {
+    if (form.type === "email")
+      return buildMailto(form.email, form.emailSubject, form.emailBody);
+    if (form.type === "phone") return buildTel(form.phone);
+    if (form.type === "anchor") return buildAnchor(form.anchor);
+    const raw = form.url.trim();
+    if (!raw) return "";
+    return sanitizeUrl(raw, window.location.href);
+  })();
+
+  const computedAttrs: MuikkuLinkAttrs = {
+    href: computedHref || null,
+    id: emptyToNull(form.id),
+    dir: emptyToNull(form.dir),
+    accesskey: emptyToNull(form.accesskey),
+    tabindex: emptyToNull(form.tabindex),
+    title: emptyToNull(form.title),
+    class: emptyToNull(form.className),
+    style: emptyToNull(form.style),
+    rel: emptyToNull(form.rel),
+    target: emptyToNull(form.target),
+    download: form.forceDownload ? "" : null,
+  };
+
+  const canApply = !!editor?.isEditable && !!computedHref.trim();
 
   return (
     <Modal
@@ -372,37 +410,35 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                   Display Text
                 </Text>
                 <Input
-                  value={displayText}
-                  onChange={(e) => setDisplayText(e.target.value)}
+                  value={form.displayText}
+                  onChange={handleText("displayText")}
                   placeholder="Text shown for the link"
                 />
               </div>
 
               <div>
-                <Text size="sm" fw={600}>
-                  Linkkityyppi
-                </Text>
-                <select
-                  className="tiptap-input"
-                  value={type}
-                  onChange={(e) => setType(e.target.value as LinkType)}
-                >
-                  <option value="url">Osoite</option>
-                  <option value="anchor">Ankkuri tässä sivussa</option>
-                  <option value="email">Sähköposti</option>
-                  <option value="phone">Phone</option>
-                </select>
+                <Select
+                  label="Linkkityyppi"
+                  data={[
+                    { value: "url", label: "Osoite" },
+                    { value: "anchor", label: "Ankkuri tässä sivussa" },
+                    { value: "email", label: "Sähköposti" },
+                    { value: "phone", label: "Phone" },
+                  ]}
+                  value={form.type}
+                  onChange={handleTypeChange}
+                />
               </div>
 
-              {type === "url" && (
+              {form.type === "url" && (
                 <div>
                   <Text size="sm" fw={600}>
                     Osoite
                   </Text>
                   <Input
                     type="url"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
+                    value={form.url}
+                    onChange={handleText("url")}
                     placeholder="https://example.com"
                     autoComplete="off"
                     autoCorrect="off"
@@ -411,32 +447,28 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                 </div>
               )}
 
-              {type === "anchor" && (
+              {form.type === "anchor" && (
                 <div>
-                  <Text size="sm" fw={600}>
-                    Ankkuri tässä sivussa
-                  </Text>
-                  <select
-                    className="tiptap-input"
-                    value={anchor}
-                    onChange={(e) => setAnchor(e.target.value)}
-                  >
-                    <option value="">{"<ei asetettu>"}</option>
-                    {anchorOptions.map((opt) => (
-                      <option
-                        key={`${opt.source}:${opt.value}`}
-                        value={opt.value}
-                      >
-                        {opt.value}
-                      </option>
-                    ))}
-                  </select>
+                  <Select
+                    label="Ankkuri tässä sivussa"
+                    placeholder="<ei asetettu>"
+                    data={[
+                      { value: "", label: "<ei asetettu>" },
+                      ...anchorOptions.map((opt) => ({
+                        value: opt.value,
+                        label: opt.value,
+                      })),
+                    ]}
+                    value={form.anchor}
+                    onChange={handleAnchorChange}
+                    searchable
+                  />
                   <Text size="xs" c="dimmed" mt={6}>
                     Voit myös kirjoittaa ankkurin nimen käsin.
                   </Text>
                   <Input
-                    value={anchor}
-                    onChange={(e) => setAnchor(e.target.value)}
+                    value={form.anchor}
+                    onChange={handleText("anchor")}
                     placeholder="Anchor in the page"
                     autoComplete="off"
                     autoCorrect="off"
@@ -445,15 +477,15 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                 </div>
               )}
 
-              {type === "email" && (
+              {form.type === "email" && (
                 <>
                   <div>
                     <Text size="sm" fw={600}>
                       Sähköpostiosoite
                     </Text>
                     <Input
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={form.email}
+                      onChange={handleText("email")}
                       placeholder="user@example.com"
                       autoComplete="off"
                     />
@@ -463,8 +495,8 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                       Aihe
                     </Text>
                     <Input
-                      value={emailSubject}
-                      onChange={(e) => setEmailSubject(e.target.value)}
+                      value={form.emailSubject}
+                      onChange={handleText("emailSubject")}
                       placeholder="Subject"
                     />
                   </div>
@@ -473,22 +505,22 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                       Viesti
                     </Text>
                     <Input
-                      value={emailBody}
-                      onChange={(e) => setEmailBody(e.target.value)}
+                      value={form.emailBody}
+                      onChange={handleText("emailBody")}
                       placeholder="Body"
                     />
                   </div>
                 </>
               )}
 
-              {type === "phone" && (
+              {form.type === "phone" && (
                 <div>
                   <Text size="sm" fw={600}>
                     Phone number
                   </Text>
                   <Input
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={form.phone}
+                    onChange={handleText("phone")}
                     placeholder="+358401234567"
                     autoComplete="off"
                   />
@@ -508,30 +540,29 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                   <Text size="sm" fw={600}>
                     Tunniste
                   </Text>
-                  <Input value={id} onChange={(e) => setId(e.target.value)} />
+                  <Input value={form.id} onChange={handleText("id")} />
                 </div>
                 <div>
-                  <Text size="sm" fw={600}>
-                    Kielen suunta
-                  </Text>
-                  <select
-                    className="tiptap-input"
-                    value={dir}
-                    onChange={(e) => setDir(e.target.value)}
-                  >
-                    <option value="">{"<ei asetettu>"}</option>
-                    <option value="ltr">ltr</option>
-                    <option value="rtl">rtl</option>
-                    <option value="auto">auto</option>
-                  </select>
+                  <Select
+                    label="Kielen suunta"
+                    placeholder="<ei asetettu>"
+                    data={[
+                      { value: "", label: "<ei asetettu>" },
+                      { value: "ltr", label: "ltr" },
+                      { value: "rtl", label: "rtl" },
+                      { value: "auto", label: "auto" },
+                    ]}
+                    value={form.dir}
+                    onChange={handleDirChange}
+                  />
                 </div>
                 <div>
                   <Text size="sm" fw={600}>
                     Pikanäppäin
                   </Text>
                   <Input
-                    value={accesskey}
-                    onChange={(e) => setAccesskey(e.target.value)}
+                    value={form.accesskey}
+                    onChange={handleText("accesskey")}
                   />
                 </div>
               </Group>
@@ -542,43 +573,39 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                     Tabulaattori indeksi
                   </Text>
                   <Input
-                    value={tabindex}
-                    onChange={(e) => setTabindex(e.target.value)}
+                    value={form.tabindex}
+                    onChange={handleText("tabindex")}
                   />
                 </div>
                 <div>
                   <Text size="sm" fw={600}>
                     Avustava otsikko
                   </Text>
-                  <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
+                  <Input value={form.title} onChange={handleText("title")} />
                 </div>
                 <div>
                   <Text size="sm" fw={600}>
                     Suhde (rel)
                   </Text>
-                  <Input value={rel} onChange={(e) => setRel(e.target.value)} />
+                  <Input value={form.rel} onChange={handleText("rel")} />
                 </div>
               </Group>
 
               <Group grow align="flex-start">
                 <div>
-                  <Text size="sm" fw={600}>
-                    Kohde (target)
-                  </Text>
-                  <select
-                    className="tiptap-input"
-                    value={target}
-                    onChange={(e) => setTarget(e.target.value)}
-                  >
-                    <option value="">{"<ei asetettu>"}</option>
-                    <option value="_self">_self</option>
-                    <option value="_blank">_blank</option>
-                    <option value="_parent">_parent</option>
-                    <option value="_top">_top</option>
-                  </select>
+                  <Select
+                    label="Kohde (target)"
+                    placeholder="<ei asetettu>"
+                    data={[
+                      { value: "", label: "<ei asetettu>" },
+                      { value: "_self", label: "_self" },
+                      { value: "_blank", label: "_blank" },
+                      { value: "_parent", label: "_parent" },
+                      { value: "_top", label: "_top" },
+                    ]}
+                    value={form.target}
+                    onChange={handleTargetChange}
+                  />
                 </div>
 
                 <div>
@@ -586,8 +613,8 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                     Tyyliluokat (class)
                   </Text>
                   <Input
-                    value={className}
-                    onChange={(e) => setClassName(e.target.value)}
+                    value={form.className}
+                    onChange={handleText("className")}
                   />
                 </div>
               </Group>
@@ -596,15 +623,12 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
                 <Text size="sm" fw={600}>
                   Tyyli (style)
                 </Text>
-                <Input
-                  value={style}
-                  onChange={(e) => setStyle(e.target.value)}
-                />
+                <Input value={form.style} onChange={handleText("style")} />
               </div>
 
               <Checkbox
-                checked={forceDownload}
-                onChange={(e) => setForceDownload(e.currentTarget.checked)}
+                checked={form.forceDownload}
+                onChange={handleCheck("forceDownload")}
                 label="Force Download"
               />
             </Stack>

@@ -33,9 +33,16 @@ export const SpecialCharButton = forwardRef<
    * The handleClick function.
    * @param e - The event.
    */
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpen(true);
+  };
+
+  /**
+   * The handleClose function.
+   */
+  const handleCloseClick = () => {
+    setOpen(false);
   };
 
   if (!editor?.isEditable) return null;
@@ -47,7 +54,7 @@ export const SpecialCharButton = forwardRef<
         variant="ghost"
         aria-label="Insert special character"
         tooltip="Special character"
-        onClick={handleClick}
+        onClick={handleOpenClick}
         tabIndex={-1}
         role="button"
         ref={ref}
@@ -72,7 +79,7 @@ export const SpecialCharButton = forwardRef<
       <SpecialCharModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseClick}
       />
     </>
   );

@@ -1,7 +1,7 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useCallback } from "react";
+import { forwardRef } from "react";
 
 import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
@@ -40,14 +40,11 @@ export const ImageCaptionButton = forwardRef<
      * The handleClick function.
      * @param event - The event.
      */
-    const handleClick = useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(event);
-        if (event.defaultPrevented) return;
-        handleToggle();
-      },
-      [handleToggle, onClick]
-    );
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(event);
+      if (event.defaultPrevented) return;
+      handleToggle();
+    };
 
     if (!isVisible) {
       return null;

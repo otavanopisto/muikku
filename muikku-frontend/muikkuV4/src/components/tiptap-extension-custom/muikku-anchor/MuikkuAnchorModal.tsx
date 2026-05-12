@@ -37,49 +37,57 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
   const isAnchorActive =
     !!editor?.isActive("anchor") || !!editor?.isActive("anchorPlaceholder");
 
-  /**
-   * Hydrates the anchor modal from the selection.
-   */
-  const hydrateFromSelection = useCallback(() => {
-    if (!editor) return;
-
-    // Mark case
-    if (editor.isActive("anchor")) {
-      const attrs = editor.getAttributes("anchor") as {
-        id?: string;
-        name?: string;
-      };
-      setName(String(attrs.name ?? attrs.id ?? ""));
-      return;
-    }
-
-    // Placeholder node case
-    if (editor.isActive("anchorPlaceholder")) {
-      const attrs = editor.getAttributes("anchorPlaceholder") as {
-        id?: string;
-        name?: string;
-      };
-      setName(String(attrs.name ?? attrs.id ?? ""));
-      return;
-    }
-
-    // New anchor
-    setName("");
-  }, [editor]);
-
   // Hydrates the anchor modal from the selection when the modal is opened
   useEffect(() => {
     if (!opened) return;
+    /**
+     * Hydrates the anchor modal from the selection.
+     */
+    const hydrateFromSelection = () => {
+      if (!editor) return;
+
+      // Mark case
+      if (editor.isActive("anchor")) {
+        const attrs = editor.getAttributes("anchor") as {
+          id?: string;
+          name?: string;
+        };
+        setName(String(attrs.name ?? attrs.id ?? ""));
+        return;
+      }
+
+      // Placeholder node case
+      if (editor.isActive("anchorPlaceholder")) {
+        const attrs = editor.getAttributes("anchorPlaceholder") as {
+          id?: string;
+          name?: string;
+        };
+        setName(String(attrs.name ?? attrs.id ?? ""));
+        return;
+      }
+
+      // New anchor
+      setName("");
+    };
+
     hydrateFromSelection();
-  }, [opened, hydrateFromSelection]);
+  }, [opened, editor]);
 
   // Checks if the anchor modal can be applied
   const canApply = !!editor?.isEditable && !!normalize(name);
 
   /**
+   * The handleInputChange function.
+   * @param e - The change event.
+   */
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.currentTarget.value);
+  };
+
+  /**
    * Applies the anchor modal.
    */
-  const apply = useCallback(() => {
+  const apply = () => {
     if (!editor) return;
 
     const v = normalize(name);
@@ -105,7 +113,25 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
     // Otherwise wrap selection with anchor mark
     editor.commands.setMuikkuAnchor(attrs);
     onClose();
-  }, [editor, name, onClose]);
+  };
+
+  /**
+   * The handleInputApplyKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleInputApplyKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      apply();
+    }
+  };
+
+  /**
+   * The handleApplyClick function.
+   */
+  const handleApplyClick = () => {
+    apply();
+  };
 
   /**
    * Removes the anchor.
@@ -115,6 +141,13 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
     editor.commands.unsetMuikkuAnchor();
     onClose();
   }, [editor, onClose]);
+
+  /**
+   * The handleRemoveClick function.
+   */
+  const handleRemoveClick = () => {
+    remove();
+  };
 
   return (
     <Modal
@@ -132,16 +165,11 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
           </Text>
           <Input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleInputChange}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                apply();
-              }
-            }}
+            onKeyDown={handleInputApplyKeyDown}
           />
         </div>
 
@@ -150,7 +178,7 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
             <Button
               type="button"
               variant="primary"
-              onClick={apply}
+              onClick={handleApplyClick}
               disabled={!canApply}
               showTooltip={false}
             >
@@ -169,7 +197,7 @@ export function MuikkuAnchorModal(props: MuikkuAnchorModalProps) {
           <Button
             type="button"
             variant="ghost"
-            onClick={remove}
+            onClick={handleRemoveClick}
             disabled={!isAnchorActive}
             tooltip="Remove anchor"
           >

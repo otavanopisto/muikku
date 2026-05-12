@@ -42,17 +42,30 @@ export function IframePlaceholder(props: ReactNodeViewProps) {
     window.dispatchEvent(new CustomEvent(OPEN_EVENT));
   };
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    open();
+  };
+
+  /**
+   * The handleOpenKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleOpenKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
+  };
+
   return (
     <NodeViewWrapper
       as="img"
       data-iframe-placeholder="true"
-      onClick={open}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open();
-        }
-      }}
+      onClick={handleOpenClick}
+      onKeyDown={handleOpenKeyDown}
       tabIndex={0}
       className="iframe-placeholder"
       style={{ width, height, display: "inline-block" }}

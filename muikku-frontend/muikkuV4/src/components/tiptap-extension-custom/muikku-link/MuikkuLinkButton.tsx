@@ -45,6 +45,13 @@ export const MuikkuLinkButton = forwardRef<
     setOpen(true);
   };
 
+  /**
+   * The handleClose function.
+   */
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -66,7 +73,7 @@ export const MuikkuLinkButton = forwardRef<
       <MuikkuLinkSettingsModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
       />
     </>
   );

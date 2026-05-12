@@ -1,7 +1,7 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useCallback, useState } from "react";
+import { forwardRef, useState } from "react";
 import { Editor } from "@tiptap/react";
 import {
   Button,
@@ -40,11 +40,18 @@ export const ImageAddButton = forwardRef<
   /**
    * The handleOpen function.
    */
-  const handleOpen = useCallback(() => {
+  const handleOpen = () => {
     if (!editor?.isEditable) return;
     editor.chain().focus().run();
     setOpened(true);
-  }, [editor]);
+  };
+
+  /**
+   * The handleClose function.
+   */
+  const handleClose = () => {
+    setOpened(false);
+  };
 
   if (!editor?.isEditable) return null;
 
@@ -67,7 +74,7 @@ export const ImageAddButton = forwardRef<
       <MuikkuImagePropertiesModal
         editor={editor}
         opened={opened}
-        onClose={() => setOpened(false)}
+        onClose={handleClose}
       />
     </>
   );

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 import { NodeSelection } from "@tiptap/pm/state";
 import {
   NodeViewContent,
@@ -74,60 +74,73 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
    * Handles the mouse down event.
    * @param e - The mouse down event.
    */
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.button !== 0) return;
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return;
 
-      const target = e.target as HTMLElement | null;
+    const target = e.target as HTMLElement | null;
 
-      // Don't hijack caption editing
-      if (target?.closest?.("figcaption")) return;
+    // Don't hijack caption editing
+    if (target?.closest?.("figcaption")) return;
 
-      // Don't hijack resize handles (add this attribute to handles later)
-      if (target?.closest?.("[data-image-resize-handle]")) return;
+    // Don't hijack resize handles (add this attribute to handles later)
+    if (target?.closest?.("[data-image-resize-handle]")) return;
 
-      e.preventDefault();
-      e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
-      const pos = getPos();
-      const { state, view } = editor;
-      view.dispatch(
-        state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
-      );
-      view.focus();
-    },
-    [editor, getPos]
-  );
+    const pos = getPos();
+    const { state, view } = editor;
+    view.dispatch(
+      state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
+    );
+    view.focus();
+  };
 
   /**
    * Handles the double click event.
    * @param e - The double click event.
    */
-  const handleDoubleClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      // ensure the node is selected, so modal reads correct attrs
-      const pos = getPos();
-      const { state, view } = editor;
-      view.dispatch(
-        state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
-      );
-      view.focus();
-      openImagePropertiesModal({ mode: "edit" });
-    },
-    [editor, getPos]
-  );
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // ensure the node is selected, so modal reads correct attrs
+    const pos = getPos();
+    const { state, view } = editor;
+    view.dispatch(
+      state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
+    );
+    view.focus();
+    openImagePropertiesModal({ mode: "edit" });
+  };
 
-  const figureStyle = useMemo<React.CSSProperties>(
-    () => ({
-      position: "relative",
-      cursor: "pointer",
-      zIndex: align ? 2 : 0, // keeps it clickable over wrapping text when floated
-      ...wrapperStyleForAlign(align),
-    }),
-    [align]
-  );
+  const figureStyle: React.CSSProperties = {
+    position: "relative",
+    cursor: "pointer",
+    zIndex: align ? 2 : 0, // keeps it clickable over wrapping text when floated
+    ...wrapperStyleForAlign(align),
+  };
+
+  /**
+   * The handleLeftResizePointerDown function.
+   * @param e - The pointer event.
+   */
+  const handleLeftResizePointerDown = (e: React.PointerEvent) => {
+    const root = e.currentTarget.closest<HTMLElement>(
+      'figure[data-type="muikku-image-figure"]'
+    );
+    onPointerDown(e, "left", getRenderedImgSize(root));
+  };
+
+  /**
+   * The handleRightResizePointerDown function.
+   * @param e - The pointer event.
+   */
+  const handleRightResizePointerDown = (e: React.PointerEvent) => {
+    const root = e.currentTarget.closest<HTMLElement>(
+      'figure[data-type="muikku-image-figure"]'
+    );
+    onPointerDown(e, "right", getRenderedImgSize(root));
+  };
 
   const widthAttr = Number.isFinite(Number(attrs.width))
     ? Number(attrs.width)
@@ -136,6 +149,10 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
     ? Number(attrs.height)
     : undefined;
   const hasExplicitSize = typeof widthAttr === "number" && widthAttr > 0;
+
+  const imgStyle: React.CSSProperties = hasExplicitSize
+    ? { display: "block", height: "auto" }
+    : { display: "block", width: "100%", height: "auto" };
 
   return (
     <NodeViewWrapper
@@ -154,35 +171,19 @@ export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
         width={hasExplicitSize ? widthAttr : undefined}
         height={hasExplicitSize ? heightAttr : undefined}
         draggable={false}
-        style={
-          hasExplicitSize
-            ? { display: "block", height: "auto" }
-            : { display: "block", width: "100%", height: "auto" }
-        }
-        // If you want data-* visible in DOM for debugging, you can spread them here,
-        // but it's not required for ProseMirror state.
+        style={imgStyle}
       />
 
       <span data-image-resize-overlay contentEditable={false}>
         <span
           data-image-resize-handle="left"
-          onPointerDown={(e) => {
-            const root = e.currentTarget.closest<HTMLElement>(
-              'figure[data-type="muikku-image-figure"]'
-            );
-            onPointerDown(e, "left", getRenderedImgSize(root));
-          }}
+          onPointerDown={handleLeftResizePointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
         />
         <span
           data-image-resize-handle="right"
-          onPointerDown={(e) => {
-            const root = e.currentTarget.closest<HTMLElement>(
-              'figure[data-type="muikku-image-figure"]'
-            );
-            onPointerDown(e, "right", getRenderedImgSize(root));
-          }}
+          onPointerDown={handleRightResizePointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
         />

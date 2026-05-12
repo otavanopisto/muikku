@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
 import type { Editor } from "@tiptap/react";
 import type { EditorState } from "@tiptap/pm/state";
 import { BubbleMenu } from "@tiptap/react/menus";
@@ -18,6 +17,40 @@ import { CogIcon } from "@/components/tiptap-icons/cog-icon";
 import { OPEN_IMAGE_PROPERTIES_MODAL_EVENT } from "./helpers";
 import type { BubbleMenuPluginProps } from "@tiptap/extension-bubble-menu";
 
+const BUBBLE_OPTIONS: BubbleMenuPluginProps["options"] = {
+  placement: "top" as const,
+  offset: { mainAxis: 8 },
+  shift: { padding: 8 },
+};
+
+/**
+ * Should show the image bubble menu.
+ * @param editor - The editor.
+ * @param state - The state.
+ * @returns True if the image bubble menu should be shown, false otherwise.
+ */
+const shouldShow = ({
+  editor,
+  state,
+}: {
+  editor: Editor;
+  state: EditorState;
+}) => {
+  if (!editor.isEditable) return false;
+
+  // show only when an image-like node is active/selected
+  if (editor.isActive("image") || editor.isActive("imageFigure")) return true;
+
+  // also handle selection inside caption text (walk ancestors)
+  const $from = state.selection.$from;
+  for (let d = $from.depth; d > 0; d--) {
+    const name = $from.node(d).type.name;
+    if (name === "imageFigure") return true;
+  }
+
+  return false;
+};
+
 /**
  * The ImageBubbleMenu component.
  * @param props - The props for the ImageBubbleMenu component.
@@ -26,41 +59,6 @@ import type { BubbleMenuPluginProps } from "@tiptap/extension-bubble-menu";
  */
 export function ImageBubbleMenu(props: { editor: Editor }) {
   const { editor } = props;
-
-  const options: BubbleMenuPluginProps["options"] = useMemo(
-    () => ({
-      placement: "top" as const,
-      offset: { mainAxis: 8 },
-      shift: { padding: 8 },
-    }),
-    []
-  );
-
-  /**
-   * Should show the image bubble menu.
-   * @param editor - The editor.
-   * @param state - The state.
-   * @returns True if the image bubble menu should be shown, false otherwise.
-   */
-  const shouldShow = useCallback(
-    ({ editor, state }: { editor: Editor; state: EditorState }) => {
-      if (!editor.isEditable) return false;
-
-      // show only when an image-like node is active/selected
-      if (editor.isActive("image") || editor.isActive("imageFigure"))
-        return true;
-
-      // also handle selection inside caption text (walk ancestors)
-      const $from = state.selection.$from;
-      for (let d = $from.depth; d > 0; d--) {
-        const name = $from.node(d).type.name;
-        if (name === "imageFigure") return true;
-      }
-
-      return false;
-    },
-    []
-  );
 
   /**
    * Runs the function.
@@ -84,7 +82,7 @@ export function ImageBubbleMenu(props: { editor: Editor }) {
     <BubbleMenu
       editor={editor}
       shouldShow={shouldShow}
-      options={options}
+      options={BUBBLE_OPTIONS}
       updateDelay={0}
     >
       <Card

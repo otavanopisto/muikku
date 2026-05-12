@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import {
   Modal,
   Tabs,
@@ -21,6 +21,11 @@ const DIR_OPTIONS = [
   { value: "rtl", label: "rtl" },
 ];
 
+const STYLE_SELECT_DATA = [
+  { value: "", label: "Ei asetettu" },
+  ...stylesSet.map((s) => ({ value: s.name, label: s.name })),
+];
+
 /**
  * Find the style definition by name.
  * @param name - The name to find.
@@ -28,6 +33,46 @@ const DIR_OPTIONS = [
  */
 function findStyleDefinitionByName(name: string): StyleDefinition | null {
   return stylesSet.find((s) => s.name === name) ?? null;
+}
+
+type DivBoxFormState = {
+  styleName: string | null;
+  extraClass: string;
+  id: string;
+  lang: string;
+  styleAttr: string;
+  title: string;
+  dir: string;
+};
+
+// Default form state for the div box.
+const DEFAULT_FORM: DivBoxFormState = {
+  styleName: null,
+  extraClass: "",
+  id: "",
+  lang: "",
+  styleAttr: "",
+  title: "",
+  dir: "",
+};
+
+/**
+ * The formFromAttrs function.
+ * @param a - The attributes of the div box.
+ * @returns The form state for the div box.
+ */
+function formFromAttrs(a: Partial<DivBoxAttrs>): DivBoxFormState {
+  const preset = findStyleDefinitionByName(a["data-style"] ?? "");
+  return {
+    ...DEFAULT_FORM,
+    styleName: preset?.name ?? null,
+    extraClass: a.class ?? "",
+    id: a.id ?? "",
+    lang: a.lang ?? "",
+    styleAttr: a.style ?? "",
+    title: a.title ?? "",
+    dir: a.dir ?? "",
+  };
 }
 
 /**
@@ -44,75 +89,82 @@ export function DivBoxModal(props: {
 
   const [tab, setTab] = useState<string | null>("general");
 
-  const [styleName, setStyleName] = useState<string | null>(null);
-  const [extraClass, setExtraClass] = useState("");
+  const [form, setForm] = useState<DivBoxFormState>(DEFAULT_FORM);
 
-  const [id, setId] = useState("");
-  const [lang, setLang] = useState("");
-  const [styleAttr, setStyleAttr] = useState("");
-  const [title, setTitle] = useState("");
-  const [dir, setDir] = useState("");
-
-  const styleSelectData = useMemo(
-    () => [
-      { value: "", label: "Ei asetettu" },
-      ...stylesSet.map((s) => ({ value: s.name, label: s.name })),
-    ],
-    []
-  );
-
+  // Hydrates the form from the attributes of the div box.
   useEffect(() => {
     if (!opened || !editor) return;
     const a = editor.getAttributes("divBox") as Partial<DivBoxAttrs>;
-
-    const preset = findStyleDefinitionByName(a["data-style"] ?? "");
-    setStyleName(preset?.name ?? null);
-    setExtraClass(a.class ?? "");
-
-    setId(a.id ?? "");
-    setLang(a.lang ?? "");
-    setStyleAttr(a.style ?? "");
-    setTitle(a.title ?? "");
-    setDir(a.dir ?? "");
+    setForm(formFromAttrs(a));
   }, [opened, editor]);
 
-  const handleOk = () => {
-    if (!editor) return;
+  /**
+   * The setField function.
+   * @param key - The key of the field to set.
+   * @param value - The value of the field to set.
+   */
+  const setField = <K extends keyof DivBoxFormState>(
+    key: K,
+    value: DivBoxFormState[K]
+  ) => setForm((prev) => ({ ...prev, [key]: value }));
 
-    editor.commands.updateDivBox({
-      id: id.trim() ? id.trim() : null,
-      lang: lang.trim() ? lang.trim() : null,
-      style: styleAttr.trim() ? styleAttr.trim() : null,
-      title: title.trim() ? title.trim() : null,
-      dir: dir === "ltr" || dir === "rtl" ? dir : null,
-      "data-style": styleName ?? null,
-      class: extraClass.trim() ? extraClass.trim() : null,
-    });
+  /**
+   * The handleText function.
+   * @param key - The key of the field to set.
+   * @param e - The change event.
+   */
+  const handleText =
+    (
+      key: keyof Pick<
+        DivBoxFormState,
+        "extraClass" | "id" | "lang" | "styleAttr" | "title"
+      >
+    ) =>
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setField(key, e.currentTarget.value);
+    };
 
-    onClose();
+  /**
+   * The handleDirChange function.
+   * @param v - The value of the direction.
+   */
+  const handleDirChange = (v: string | null) => {
+    setField("dir", v ?? "");
   };
 
   /**
-   * Handle the selection of a style set.
+   * The handleSelectStyleSet function.
    * @param v - The value of the selected style set.
    */
   const handleSelectStyleSet = (v: string | null) => {
-    setStyleName(v?.length ? v : null);
-    // Find selected style definition and overwrite extra class with the class of the selected style definition
+    const nextStyleName = v?.length ? v : null;
+    setField("styleName", nextStyleName);
+    // Overwrite extra class from preset (same behavior as current code)
     const style = findStyleDefinitionByName(v ?? "");
     const updatedExtraClass =
       typeof style?.attributes?.class === "string"
         ? style.attributes.class
         : "";
-    setExtraClass(updatedExtraClass);
+    setField("extraClass", updatedExtraClass);
   };
 
   /**
-   * Handle the selection of extra classes.
-   * @param v - The value of the selected extra classes.
+   * The handleOk function.
    */
-  const handleSelectExtraClass = (e: ChangeEvent<HTMLInputElement>) => {
-    setExtraClass(e.currentTarget.value);
+  const handleOk = () => {
+    if (!editor) return;
+
+    editor.commands.updateDivBox({
+      id: form.id.trim() ? form.id.trim() : null,
+      lang: form.lang.trim() ? form.lang.trim() : null,
+      style: form.styleAttr.trim() ? form.styleAttr.trim() : null,
+      title: form.title.trim() ? form.title.trim() : null,
+      dir: form.dir === "ltr" || form.dir === "rtl" ? form.dir : null,
+      "data-style": form.styleName ?? null,
+      class: form.extraClass.trim() ? form.extraClass.trim() : null,
+    });
+
+    onClose();
   };
 
   return (
@@ -133,16 +185,16 @@ export function DivBoxModal(props: {
           <Stack gap="sm">
             <Select
               label="Tyyli"
-              data={styleSelectData}
-              value={styleName ?? ""}
+              data={STYLE_SELECT_DATA}
+              value={form.styleName ?? ""}
               onChange={handleSelectStyleSet}
               clearable
             />
             <TextInput
               label="Tyyliluokat"
               description="Lisäluokat (välilyönnillä erotettu)"
-              value={extraClass}
-              onChange={handleSelectExtraClass}
+              value={form.extraClass}
+              onChange={handleText("extraClass")}
             />
           </Stack>
         </Tabs.Panel>
@@ -152,32 +204,32 @@ export function DivBoxModal(props: {
             <Group grow>
               <TextInput
                 label="Tunniste"
-                value={id}
-                onChange={(e) => setId(e.currentTarget.value)}
+                value={form.id}
+                onChange={handleText("id")}
               />
               <TextInput
                 label="Kielikoodi"
-                value={lang}
-                onChange={(e) => setLang(e.currentTarget.value)}
+                value={form.lang}
+                onChange={handleText("lang")}
               />
             </Group>
 
             <TextInput
               label="Tyyli (inline)"
-              value={styleAttr}
-              onChange={(e) => setStyleAttr(e.currentTarget.value)}
+              value={form.styleAttr}
+              onChange={handleText("styleAttr")}
             />
             <TextInput
               label="Avustava otsikko"
-              value={title}
-              onChange={(e) => setTitle(e.currentTarget.value)}
+              value={form.title}
+              onChange={handleText("title")}
             />
 
             <Select
               label="Kielen suunta"
               data={DIR_OPTIONS}
-              value={dir}
-              onChange={(v) => setDir(v ?? "")}
+              value={form.dir}
+              onChange={handleDirChange}
             />
           </Stack>
         </Tabs.Panel>

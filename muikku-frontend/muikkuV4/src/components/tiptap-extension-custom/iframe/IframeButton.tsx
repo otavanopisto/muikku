@@ -36,6 +36,20 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
 
     useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
 
+    /**
+     * The handleOpenClick function.
+     */
+    const handleOpenClick = () => {
+      setOpen(true);
+    };
+
+    /**
+     * The handleCloseClick function.
+     */
+    const handleCloseClick = () => {
+      setOpen(false);
+    };
+
     if (!editor?.isEditable) return null;
 
     return (
@@ -45,7 +59,7 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
           variant="ghost"
           data-active-state={isActive ? "on" : "off"}
           tooltip="Iframe"
-          onClick={() => setOpen(true)}
+          onClick={handleOpenClick}
           tabIndex={-1}
           role="button"
           ref={ref}
@@ -54,11 +68,7 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
           Iframe
         </Button>
 
-        <IframeModal
-          editor={editor}
-          opened={open}
-          onClose={() => setOpen(false)}
-        />
+        <IframeModal editor={editor} opened={open} onClose={handleCloseClick} />
       </>
     );
   }

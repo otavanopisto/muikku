@@ -1,7 +1,7 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useCallback } from "react";
+import { forwardRef } from "react";
 import type { Editor } from "@tiptap/react";
 
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
@@ -38,14 +38,15 @@ export const IndentButton = forwardRef<HTMLButtonElement, IndentButtonProps>(
       hideWhenUnavailable,
     });
 
-    const handleClick = useCallback(
-      (e: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(e);
-        if (e.defaultPrevented) return;
-        handleIndent();
-      },
-      [onClick, handleIndent]
-    );
+    /**
+     * The handleClick function.
+     * @param e - The event.
+     */
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e);
+      if (e.defaultPrevented) return;
+      handleIndent();
+    };
 
     if (!isVisible) return null;
 
