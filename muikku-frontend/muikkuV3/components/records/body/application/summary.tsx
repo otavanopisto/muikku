@@ -362,8 +362,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       return (
         <section>
           {studentBasicInfo}
-          {this.props.contacts.others.list.length > 0 && studentContacts}
           {studentCounselors}
+          {this.props.contacts.others.list.length > 0 && studentContacts}
           {this.props.contacts.guardians.list.length > 0 && studentGuardians}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
