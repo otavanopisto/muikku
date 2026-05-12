@@ -97,15 +97,6 @@ export function MuikkuSelectFieldModal(props: {
   }, [opened, editor]);
 
   /**
-   * The addOption function.
-   */
-  const addOption = () => {
-    const used = new Set(options.map((o) => o.name));
-    const name = nextFreeNumericName(used);
-    setOptions((prev) => [...prev, { name, text: "", correct: false }]);
-  };
-
-  /**
    * The updateOption function.
    * @param name - The name of the option to update.
    * @param patch - The patch to apply to the option.
@@ -117,14 +108,6 @@ export function MuikkuSelectFieldModal(props: {
     setOptions((prev) =>
       prev.map((o) => (o.name === name ? { ...o, ...patch } : o))
     );
-  };
-
-  /**
-   * The removeOption function.
-   * @param name - The name of the option to remove.
-   */
-  const removeOption = (name: string) => {
-    setOptions((prev) => prev.filter((o) => o.name !== name));
   };
 
   /**
@@ -142,6 +125,69 @@ export function MuikkuSelectFieldModal(props: {
       next[j] = tmp;
       return next;
     });
+  };
+
+  /**
+   * The handleAddOption function.
+   */
+  const handleAddOption = () => {
+    const used = new Set(options.map((o) => o.name));
+    const name = nextFreeNumericName(used);
+    setOptions((prev) => [...prev, { name, text: "", correct: false }]);
+  };
+
+  /**
+   * The handleOptionTextChange function.
+   * @param name - The name of the option to update.
+   * @param e - The change event.
+   */
+  const handleOptionTextChange =
+    (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateOption(name, { text: e.currentTarget.value });
+    };
+
+  /**
+   * The handleOptionCorrectChange function.
+   * @param name - The name of the option to update.
+   * @param e - The change event.
+   */
+  const handleOptionCorrectChange =
+    (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateOption(name, { correct: e.currentTarget.checked });
+    };
+
+  /**
+   * The handleMoveOptionUp function.
+   * @param idx - The index of the option to move.
+   */
+  const handleMoveOptionUp = (idx: number) => () => {
+    moveOption(idx, -1);
+  };
+
+  /**
+   * The handleMoveOptionDown function.
+   * @param idx - The index of the option to move.
+   */
+  const handleMoveOptionDown = (idx: number) => () => {
+    moveOption(idx, 1);
+  };
+
+  /**
+   * The handleRemoveOptionClick function.
+   * @param name - The name of the option to remove.
+   */
+  const handleRemoveOptionClick = (name: string) => () => {
+    setOptions((prev) => prev.filter((o) => o.name !== name));
+  };
+
+  /**
+   * The handleExplanationChange function.
+   * @param e - The change event.
+   */
+  const handleExplanationChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setExplanation(e.currentTarget.value);
   };
 
   /**
@@ -194,7 +240,7 @@ export function MuikkuSelectFieldModal(props: {
 
         <Group justify="space-between" align="center">
           <div style={{ fontWeight: 600 }}>Valinnat</div>
-          <Button variant="light" onClick={addOption}>
+          <Button variant="light" onClick={handleAddOption}>
             +
           </Button>
         </Group>
@@ -206,38 +252,34 @@ export function MuikkuSelectFieldModal(props: {
             <Group key={o.name} align="flex-end" grow wrap="nowrap">
               <TextInput
                 value={o.text}
-                onChange={(e) =>
-                  updateOption(o.name, { text: e.currentTarget.value })
-                }
+                onChange={handleOptionTextChange(o.name)}
                 placeholder={`Vaihtoehto ${o.name}`}
               />
 
               <Checkbox
                 checked={!!o.correct}
-                onChange={(e) =>
-                  updateOption(o.name, { correct: e.currentTarget.checked })
-                }
+                onChange={handleOptionCorrectChange(o.name)}
                 aria-label="Oikea vastaus"
               />
 
               <Group gap="xs" wrap="nowrap">
                 <Button
                   variant="default"
-                  onClick={() => moveOption(idx, -1)}
+                  onClick={handleMoveOptionUp(idx)}
                   disabled={idx === 0}
                 >
                   ↑
                 </Button>
                 <Button
                   variant="default"
-                  onClick={() => moveOption(idx, 1)}
+                  onClick={handleMoveOptionDown(idx)}
                   disabled={idx === options.length - 1}
                 >
                   ↓
                 </Button>
                 <Button
                   variant="default"
-                  onClick={() => removeOption(o.name)}
+                  onClick={handleRemoveOptionClick(o.name)}
                   title="Poista valinta"
                 >
                   🗑
@@ -251,7 +293,7 @@ export function MuikkuSelectFieldModal(props: {
           label="Selitys"
           minRows={6}
           value={explanation}
-          onChange={(e) => setExplanation(e.currentTarget.value)}
+          onChange={handleExplanationChange}
         />
       </Stack>
 

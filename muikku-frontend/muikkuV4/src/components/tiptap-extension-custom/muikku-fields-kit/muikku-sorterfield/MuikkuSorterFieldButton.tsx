@@ -47,6 +47,13 @@ export const MuikkuSorterFieldButton = forwardRef<
     setOpen(true);
   };
 
+  /**
+   * The handleCloseClick function.
+   */
+  const handleCloseClick = () => {
+    setOpen(false);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -68,7 +75,7 @@ export const MuikkuSorterFieldButton = forwardRef<
       <MuikkuSorterFieldModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseClick}
       />
     </>
   );

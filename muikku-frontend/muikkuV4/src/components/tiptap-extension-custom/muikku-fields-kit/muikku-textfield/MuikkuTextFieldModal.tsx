@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Modal,
   Tabs,
@@ -59,8 +59,9 @@ export function MuikkuTextFieldModal(props: {
     MuikkuTextFieldRightAnswer[]
   >([]);
 
-  const canSave = useMemo(() => !!editor?.isEditable, [editor]);
+  const canSave = !!editor?.isEditable;
 
+  // Hydrate the state from the editor.
   useEffect(() => {
     if (!opened || !editor) return;
 
@@ -83,21 +84,6 @@ export function MuikkuTextFieldModal(props: {
       setRightAnswers([]);
     }
   }, [opened, editor]);
-
-  /**
-   * The addAnswer function.
-   */
-  const addAnswer = () => {
-    setRightAnswers((prev) => [
-      ...prev,
-      {
-        text: "",
-        correct: false,
-        caseSensitive: false,
-        normalizeWhitespace: true,
-      },
-    ]);
-  };
 
   /**
    * The updateAnswer function.
@@ -136,6 +122,89 @@ export function MuikkuTextFieldModal(props: {
       next[j] = tmp;
       return next;
     });
+  };
+
+  /**
+   * The handleColumnsChange function.
+   * @param e - The change event.
+   */
+  const handleColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setColumns(e.currentTarget.value);
+  };
+
+  /**
+   * The handleAutogrowChange function.
+   * @param e - The change event.
+   */
+  const handleAutogrowChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAutogrow(e.currentTarget.checked);
+  };
+
+  /**
+   * The handleHintChange function.
+   * @param e - The change event.
+   */
+  const handleHintChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHint(e.currentTarget.value);
+  };
+
+  /**
+   * The handleAddAnswer function.
+   */
+  const handleAddAnswer = () => {
+    setRightAnswers((prev) => [
+      ...prev,
+      {
+        text: "",
+        correct: false,
+        caseSensitive: false,
+        normalizeWhitespace: true,
+      },
+    ]);
+  };
+
+  /**
+   * The handleAnswerTextChange function.
+   * @param idx - The index of the answer to update.
+   * @param e - The change event.
+   */
+  const handleAnswerTextChange =
+    (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateAnswer(idx, { text: e.currentTarget.value });
+    };
+
+  /**
+   * The handleAnswerCorrectChange function.
+   * @param idx - The index of the answer to update.
+   * @param e - The change event.
+   */
+  const handleAnswerCorrectChange =
+    (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateAnswer(idx, { correct: e.currentTarget.checked });
+    };
+
+  /**
+   * The handleMoveAnswerUp function.
+   * @param idx - The index of the answer to move.
+   */
+  const handleMoveAnswerUp = (idx: number) => () => {
+    moveAnswer(idx, -1);
+  };
+
+  /**
+   * The handleMoveAnswerDown function.
+   * @param idx - The index of the answer to move.
+   */
+  const handleMoveAnswerDown = (idx: number) => () => {
+    moveAnswer(idx, 1);
+  };
+
+  /**
+   * The handleRemoveAnswerClick function.
+   * @param idx - The index of the answer to remove.
+   */
+  const handleRemoveAnswerClick = (idx: number) => () => {
+    removeAnswer(idx);
   };
 
   /**
@@ -193,18 +262,18 @@ export function MuikkuTextFieldModal(props: {
             <TextInput
               label="Leveys"
               value={columns}
-              onChange={(e) => setColumns(e.currentTarget.value)}
+              onChange={handleColumnsChange}
               placeholder="Esim. 40"
             />
             <Checkbox
               checked={autogrow}
-              onChange={(e) => setAutogrow(e.currentTarget.checked)}
+              onChange={handleAutogrowChange}
               label="Levene automaattisesti kirjoittaessa"
             />
             <TextInput
               label="Vihjeteksti"
               value={hint}
-              onChange={(e) => setHint(e.currentTarget.value)}
+              onChange={handleHintChange}
             />
           </Stack>
         </Tabs.Panel>
@@ -213,7 +282,7 @@ export function MuikkuTextFieldModal(props: {
           <Stack gap="sm">
             <Group justify="space-between">
               <div style={{ fontWeight: 600 }}>Vastausvaihtoehdot</div>
-              <Button variant="light" onClick={addAnswer}>
+              <Button variant="light" onClick={handleAddAnswer}>
                 +
               </Button>
             </Group>
@@ -231,16 +300,12 @@ export function MuikkuTextFieldModal(props: {
                   <TextInput
                     label={idx === 0 ? "Teksti" : undefined}
                     value={a.text}
-                    onChange={(e) =>
-                      updateAnswer(idx, { text: e.currentTarget.value })
-                    }
+                    onChange={handleAnswerTextChange(idx)}
                   />
 
                   <Checkbox
                     checked={!!a.correct}
-                    onChange={(e) =>
-                      updateAnswer(idx, { correct: e.currentTarget.checked })
-                    }
+                    onChange={handleAnswerCorrectChange(idx)}
                     label={idx === 0 ? "Oikea" : ""}
                     styles={{ label: { whiteSpace: "nowrap" } }}
                   />
@@ -248,19 +313,22 @@ export function MuikkuTextFieldModal(props: {
                   <Group gap="xs" wrap="nowrap">
                     <Button
                       variant="default"
-                      onClick={() => moveAnswer(idx, -1)}
+                      onClick={handleMoveAnswerUp(idx)}
                       disabled={idx === 0}
                     >
                       ↑
                     </Button>
                     <Button
                       variant="default"
-                      onClick={() => moveAnswer(idx, 1)}
+                      onClick={handleMoveAnswerDown(idx)}
                       disabled={idx === rightAnswers.length - 1}
                     >
                       ↓
                     </Button>
-                    <Button variant="default" onClick={() => removeAnswer(idx)}>
+                    <Button
+                      variant="default"
+                      onClick={handleRemoveAnswerClick(idx)}
+                    >
                       🗑
                     </Button>
                   </Group>

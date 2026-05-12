@@ -46,6 +46,13 @@ export const MuikkuMemoFieldButton = forwardRef<
     setOpen(true);
   };
 
+  /**
+   * The handleCloseClick function.
+   */
+  const handleCloseClick = () => {
+    setOpen(false);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -67,7 +74,7 @@ export const MuikkuMemoFieldButton = forwardRef<
       <MuikkuMemoFieldModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseClick}
       />
     </>
   );

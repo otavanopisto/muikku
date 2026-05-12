@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Modal,
   Button,
@@ -50,8 +50,9 @@ export function MuikkuSorterFieldModal(props: {
   const [capitalize, setCapitalize] = useState(false);
   const [items, setItems] = useState<MuikkuSorterFieldItem[]>([]);
 
-  const canSave = useMemo(() => !!editor?.isEditable, [editor]);
+  const canSave = !!editor?.isEditable;
 
+  // Hydrate the state from the editor.
   useEffect(() => {
     if (!opened || !editor) return;
 
@@ -82,33 +83,6 @@ export function MuikkuSorterFieldModal(props: {
   }, [opened, editor]);
 
   /**
-   * The addItem function.
-   */
-  const addItem = () => {
-    let id = randomItemId();
-    const used = new Set(items.map((i) => i.id));
-    while (!id || used.has(id)) id = randomItemId();
-
-    setItems((prev) => [...prev, { id, name: "" }]);
-  };
-
-  /**
-   * The updateItem function.
-   * @param id - The id of the item to update.
-   * @param name - The name of the item to update.
-   */
-  const updateItem = (id: string, name: string) => {
-    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, name } : it)));
-  };
-
-  /**
-   * The removeItem function.
-   * @param id - The id of the item to remove.
-   */
-  const removeItem = (id: string) =>
-    setItems((prev) => prev.filter((it) => it.id !== id));
-
-  /**
    * The moveItem function.
    * @param idx - The index of the item to move.
    * @param dir - The direction to move the item.
@@ -123,6 +97,71 @@ export function MuikkuSorterFieldModal(props: {
       next[j] = tmp;
       return next;
     });
+  };
+
+  /**
+   * The handleAddItem function.
+   */
+  const handleAddItem = () => {
+    let id = randomItemId();
+    const used = new Set(items.map((i) => i.id));
+    while (!id || used.has(id)) id = randomItemId();
+
+    setItems((prev) => [...prev, { id, name: "" }]);
+  };
+
+  /**
+   * The handleOrientationChange function.
+   * @param v - The value to set the orientation to.
+   */
+  const handleOrientationChange = (v: string | null) => {
+    setOrientation((v as MuikkuSorterFieldOrientation) ?? "vertical");
+  };
+
+  /**
+   * The handleCapitalizeChange function.
+   * @param e - The change event.
+   */
+  const handleCapitalizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCapitalize(e.currentTarget.checked);
+  };
+
+  /**
+   * The handleItemNameChange function.
+   * @param id - The id of the item to update.
+   * @param e - The change event.
+   */
+  const handleItemNameChange =
+    (id: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setItems((prev) =>
+        prev.map((it) =>
+          it.id === id ? { ...it, name: e.currentTarget.value } : it
+        )
+      );
+    };
+
+  /**
+   * The handleMoveItemUp function.
+   * @param idx - The index of the item to move.
+   */
+  const handleMoveItemUp = (idx: number) => () => {
+    moveItem(idx, -1);
+  };
+
+  /**
+   * The handleMoveItemDown function.
+   * @param idx - The index of the item to move.
+   */
+  const handleMoveItemDown = (idx: number) => () => {
+    moveItem(idx, 1);
+  };
+
+  /**
+   * The handleRemoveItemClick function.
+   * @param id - The id of the item to remove.
+   */
+  const handleRemoveItemClick = (id: string) => () => {
+    setItems((prev) => prev.filter((it) => it.id !== id));
   };
 
   /**
@@ -164,20 +203,18 @@ export function MuikkuSorterFieldModal(props: {
           label="Suunta"
           data={ORIENTATION_OPTIONS}
           value={orientation}
-          onChange={(v) =>
-            setOrientation((v as MuikkuSorterFieldOrientation) ?? "vertical")
-          }
+          onChange={handleOrientationChange}
         />
 
         <Checkbox
           checked={capitalize}
-          onChange={(e) => setCapitalize(e.currentTarget.checked)}
+          onChange={handleCapitalizeChange}
           label="Ensimmäinen termi isolla alkukirjaimella"
         />
 
         <Group justify="space-between">
           <div style={{ fontWeight: 600 }}>Termit</div>
-          <Button variant="light" onClick={addItem}>
+          <Button variant="light" onClick={handleAddItem}>
             +
           </Button>
         </Group>
@@ -189,28 +226,28 @@ export function MuikkuSorterFieldModal(props: {
             <Group key={it.id} align="flex-end" grow wrap="nowrap">
               <TextInput
                 value={it.name}
-                onChange={(e) => updateItem(it.id, e.currentTarget.value)}
+                onChange={handleItemNameChange(it.id)}
                 placeholder={`JÄ${idx + 1}`}
               />
 
               <Group gap="xs" wrap="nowrap">
                 <Button
                   variant="default"
-                  onClick={() => moveItem(idx, -1)}
+                  onClick={handleMoveItemUp(idx)}
                   disabled={idx === 0}
                 >
                   ↑
                 </Button>
                 <Button
                   variant="default"
-                  onClick={() => moveItem(idx, 1)}
+                  onClick={handleMoveItemDown(idx)}
                   disabled={idx === items.length - 1}
                 >
                   ↓
                 </Button>
                 <Button
                   variant="default"
-                  onClick={() => removeItem(it.id)}
+                  onClick={handleRemoveItemClick(it.id)}
                   title="Poista termi"
                 >
                   🗑

@@ -48,15 +48,32 @@ export function MuikkuConnectFieldModal(props: {
     }
   }, [opened, editor]);
 
+  /**
+   * The addPair function.
+   */
   const addPair = () => setPairs((p) => [...p, { left: "", right: "" }]);
 
+  /**
+   * The updatePair function.
+   * @param idx - The index of the pair to update.
+   * @param next - The next pair.
+   */
   const updatePair = (idx: number, next: Partial<MuikkuConnectFieldPair>) => {
     setPairs((prev) => prev.map((p, i) => (i === idx ? { ...p, ...next } : p)));
   };
 
+  /**
+   * The removePair function.
+   * @param idx - The index of the pair to remove.
+   */
   const removePair = (idx: number) =>
     setPairs((prev) => prev.filter((_, i) => i !== idx));
 
+  /**
+   * The movePair function.
+   * @param idx - The index of the pair to move.
+   * @param dir - The direction to move the pair.
+   */
   const movePair = (idx: number, dir: -1 | 1) => {
     setPairs((prev) => {
       const next = [...prev];
@@ -69,6 +86,9 @@ export function MuikkuConnectFieldModal(props: {
     });
   };
 
+  /**
+   * The handleOk function.
+   */
   const handleOk = () => {
     if (!editor?.isEditable) return;
 

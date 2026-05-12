@@ -244,6 +244,54 @@ export function MuikkuOrganizerFieldModal(props: {
   };
 
   /**
+   * The handleCategoryNameChange function.
+   * @param categoryId - The ID of the category.
+   * @param e - The change event.
+   */
+  const handleCategoryNameChange =
+    (categoryId: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateCategoryName(categoryId, e.currentTarget.value);
+    };
+
+  /**
+   * The handleDeleteCategoryClick function.
+   * @param categoryId - The ID of the category.
+   * @param e - The mouse event.
+   */
+  const handleDeleteCategoryClick =
+    (categoryId: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      deleteCategory(categoryId);
+    };
+
+  /**
+   * The handleNewTermKeyDown function.
+   * @param categoryId - The ID of the category.
+   * @param e - The keyboard event.
+   */
+  const handleNewTermKeyDown =
+    (categoryId: string) => (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const target = e.currentTarget;
+      addTermToCategory(categoryId, target.value);
+      target.value = "";
+    };
+
+  /**
+   * The handleRemoveTermClick function.
+   * @param categoryId - The ID of the category.
+   * @param termId - The ID of the term.
+   * @param e - The mouse event.
+   */
+  const handleRemoveTermClick =
+    (categoryId: string, termId: string) =>
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      removeTermFromCategory(categoryId, termId);
+    };
+
+  /**
    * Handles the OK button click.
    * @returns The updated categories and terms index.
    */
@@ -334,13 +382,11 @@ export function MuikkuOrganizerFieldModal(props: {
                     label="Ryhmän nimi"
                     placeholder="Ryhmän nimi"
                     value={cat.name}
-                    onChange={(e) =>
-                      updateCategoryName(cat.id, e.currentTarget.value)
-                    }
+                    onChange={handleCategoryNameChange(cat.id)}
                   />
                   <Button
                     variant="default"
-                    onClick={() => deleteCategory(cat.id)}
+                    onClick={handleDeleteCategoryClick(cat.id)}
                     title="Poista"
                   >
                     🗑
@@ -350,14 +396,7 @@ export function MuikkuOrganizerFieldModal(props: {
                 <TextInput
                   label="Uusi termi"
                   placeholder="Uusi termi"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      const target = e.currentTarget as HTMLInputElement;
-                      addTermToCategory(cat.id, target.value);
-                      target.value = "";
-                    }
-                  }}
+                  onKeyDown={handleNewTermKeyDown(cat.id)}
                 />
 
                 <Group mt="sm" gap="xs">
@@ -371,7 +410,7 @@ export function MuikkuOrganizerFieldModal(props: {
                         rightSection={
                           <button
                             type="button"
-                            onClick={() => removeTermFromCategory(cat.id, tid)}
+                            onClick={handleRemoveTermClick(cat.id, tid)}
                             style={{
                               border: "none",
                               background: "transparent",

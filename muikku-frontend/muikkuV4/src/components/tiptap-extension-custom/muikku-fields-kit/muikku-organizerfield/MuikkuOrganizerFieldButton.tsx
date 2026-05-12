@@ -46,6 +46,13 @@ export const MuikkuOrganizerFieldButton = forwardRef<
     setOpen(true);
   };
 
+  /**
+   * The handleCloseClick function.
+   */
+  const handleCloseClick = () => {
+    setOpen(false);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -67,7 +74,7 @@ export const MuikkuOrganizerFieldButton = forwardRef<
       <MuikkuOrganizerFieldModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseClick}
       />
     </>
   );
