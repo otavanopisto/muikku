@@ -26,9 +26,30 @@ export function MuikkuConnectFieldPlaceholder(props: ReactNodeViewProps) {
   const content = (node.attrs?.content ??
     null) as MuikkuConnectFieldContent | null;
 
+  /**
+   * The select function.
+   */
   const open = () => {
     if (typeof pos === "number") editor.commands.setNodeSelection(pos);
     window.dispatchEvent(new CustomEvent(OPEN_EVENT));
+  };
+
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    open();
+  };
+
+  /**
+   * The handleKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleOpenKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
   };
 
   return (
@@ -36,13 +57,8 @@ export function MuikkuConnectFieldPlaceholder(props: ReactNodeViewProps) {
       as="span"
       data-muikku-connectfield-placeholder="true"
       tabIndex={0}
-      onClick={open}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open();
-        }
-      }}
+      onClick={handleOpenClick}
+      onKeyDown={handleOpenKeyDown}
       style={{
         display: "inline-flex",
         verticalAlign: "middle",

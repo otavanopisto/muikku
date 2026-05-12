@@ -81,6 +81,9 @@ export function MuikkuSorterFieldModal(props: {
     }
   }, [opened, editor]);
 
+  /**
+   * The addItem function.
+   */
   const addItem = () => {
     let id = randomItemId();
     const used = new Set(items.map((i) => i.id));
@@ -89,13 +92,27 @@ export function MuikkuSorterFieldModal(props: {
     setItems((prev) => [...prev, { id, name: "" }]);
   };
 
+  /**
+   * The updateItem function.
+   * @param id - The id of the item to update.
+   * @param name - The name of the item to update.
+   */
   const updateItem = (id: string, name: string) => {
     setItems((prev) => prev.map((it) => (it.id === id ? { ...it, name } : it)));
   };
 
+  /**
+   * The removeItem function.
+   * @param id - The id of the item to remove.
+   */
   const removeItem = (id: string) =>
     setItems((prev) => prev.filter((it) => it.id !== id));
 
+  /**
+   * The moveItem function.
+   * @param idx - The index of the item to move.
+   * @param dir - The direction to move the item.
+   */
   const moveItem = (idx: number, dir: -1 | 1) => {
     setItems((prev) => {
       const next = [...prev];
@@ -108,6 +125,9 @@ export function MuikkuSorterFieldModal(props: {
     });
   };
 
+  /**
+   * The handleOk function.
+   */
   const handleOk = () => {
     if (!editor || !canSave) return;
 

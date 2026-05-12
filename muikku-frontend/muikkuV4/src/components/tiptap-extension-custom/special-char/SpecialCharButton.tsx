@@ -29,6 +29,15 @@ export const SpecialCharButton = forwardRef<
   const { editor } = useTiptapEditorV2({ editor: providedEditor });
   const [open, setOpen] = useState(false);
 
+  /**
+   * The handleClick function.
+   * @param e - The event.
+   */
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setOpen(true);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -38,7 +47,7 @@ export const SpecialCharButton = forwardRef<
         variant="ghost"
         aria-label="Insert special character"
         tooltip="Special character"
-        onClick={() => setOpen(true)}
+        onClick={handleClick}
         tabIndex={-1}
         role="button"
         ref={ref}

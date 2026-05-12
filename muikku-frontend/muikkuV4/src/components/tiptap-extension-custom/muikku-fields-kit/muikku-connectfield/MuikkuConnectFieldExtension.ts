@@ -39,7 +39,7 @@ export const OPEN_EVENT = "muikku:open-muikku-connectfield-modal";
 /**
  * Converts a numeric index to an Excel-style letter index.
  * @param numericIndex - The numeric index to convert.
- * @returns The Excel-style letter index.
+ * @returns The Excel-style letter index. Example: 1 -> A, 2 -> B, 26 -> Z, 27 -> AA, 28 -> AB, etc.
  */
 function excelStyleLetterIndex(numericIndex: number): string {
   // Ported from CKEditor plugin.js

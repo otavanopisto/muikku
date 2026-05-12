@@ -42,6 +42,10 @@ export const ImageAlignButton = forwardRef<
         onAligned,
       });
 
+    /**
+     * The handleClick function.
+     * @param event - The event.
+     */
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);

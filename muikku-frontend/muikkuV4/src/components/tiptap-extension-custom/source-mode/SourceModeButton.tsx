@@ -36,6 +36,10 @@ export const SourceModeButton = forwardRef<
     !!editor?.isEditable &&
     typeof editor?.commands?.toggleSourceMode === "function";
 
+  /**
+   * The handleClick function.
+   * @param e - The event.
+   */
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       onClick?.(e);

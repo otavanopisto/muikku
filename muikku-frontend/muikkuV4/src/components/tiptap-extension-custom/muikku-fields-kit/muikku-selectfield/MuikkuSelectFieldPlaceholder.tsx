@@ -41,9 +41,30 @@ export function MuikkuSelectFieldPlaceholder(props: ReactNodeViewProps) {
     null) as MuikkuSelectionFieldContent | null;
   const text = labelFromListType(content?.listType);
 
+  /**
+   * The open function.
+   */
   const open = () => {
     if (typeof pos === "number") editor.commands.setNodeSelection(pos);
     window.dispatchEvent(new CustomEvent(OPEN_EVENT));
+  };
+
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    open();
+  };
+
+  /**
+   * The handleKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
   };
 
   return (
@@ -51,13 +72,8 @@ export function MuikkuSelectFieldPlaceholder(props: ReactNodeViewProps) {
       as="span"
       tabIndex={0}
       data-muikku-selectionfield-placeholder="true"
-      onClick={open}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open();
-        }
-      }}
+      onClick={handleOpenClick}
+      onKeyDown={handleKeyDown}
       style={{
         display: "inline-flex",
         verticalAlign: "middle",

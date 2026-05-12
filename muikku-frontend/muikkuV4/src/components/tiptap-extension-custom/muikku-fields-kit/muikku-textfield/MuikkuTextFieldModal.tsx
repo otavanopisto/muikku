@@ -84,6 +84,9 @@ export function MuikkuTextFieldModal(props: {
     }
   }, [opened, editor]);
 
+  /**
+   * The addAnswer function.
+   */
   const addAnswer = () => {
     setRightAnswers((prev) => [
       ...prev,
@@ -96,6 +99,11 @@ export function MuikkuTextFieldModal(props: {
     ]);
   };
 
+  /**
+   * The updateAnswer function.
+   * @param idx - The index of the answer to update.
+   * @param next - The next answer.
+   */
   const updateAnswer = (
     idx: number,
     next: Partial<MuikkuTextFieldRightAnswer>
@@ -105,10 +113,19 @@ export function MuikkuTextFieldModal(props: {
     );
   };
 
+  /**
+   * The removeAnswer function.
+   * @param idx - The index of the answer to remove.
+   */
   const removeAnswer = (idx: number) => {
     setRightAnswers((prev) => prev.filter((_, i) => i !== idx));
   };
 
+  /**
+   * The moveAnswer function.
+   * @param idx - The index of the answer to move.
+   * @param dir - The direction to move the answer.
+   */
   const moveAnswer = (idx: number, dir: -1 | 1) => {
     setRightAnswers((prev) => {
       const next = [...prev];
@@ -121,6 +138,9 @@ export function MuikkuTextFieldModal(props: {
     });
   };
 
+  /**
+   * The handleOk function.
+   */
   const handleOk = () => {
     if (!editor || !canSave) return;
 

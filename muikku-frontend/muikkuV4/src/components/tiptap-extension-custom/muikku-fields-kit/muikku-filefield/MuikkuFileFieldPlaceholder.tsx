@@ -11,8 +11,29 @@ export function MuikkuFileFieldPlaceholder(props: ReactNodeViewProps) {
   const { editor, getPos } = props;
   const pos = getPos?.();
 
+  /**
+   * The select function.
+   */
   const select = () => {
     if (typeof pos === "number") editor.commands.setNodeSelection(pos);
+  };
+
+  /**
+   * The handleSelectClick function.
+   */
+  const handleSelectClick = () => {
+    select();
+  };
+
+  /**
+   * The handleSelectKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleSelectKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      select();
+    }
   };
 
   return (
@@ -20,13 +41,8 @@ export function MuikkuFileFieldPlaceholder(props: ReactNodeViewProps) {
       as="span"
       tabIndex={0}
       data-muikku-filefield-placeholder="true"
-      onClick={select}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          select();
-        }
-      }}
+      onClick={handleSelectClick}
+      onKeyDown={handleSelectKeyDown}
       style={{
         display: "inline-flex",
         verticalAlign: "middle",

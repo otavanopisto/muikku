@@ -122,11 +122,18 @@ export function MuikkuOrganizerFieldModal(props: {
     }
   }, [opened, editor]);
 
+  /**
+   * The addCategory function.
+   */
   const addCategory = () => {
     const id = nextId("c", usedCategoryIds);
     setCategories((prev) => [...prev, { id, name: "", termIds: [] }]);
   };
 
+  /**
+   * The deleteCategory function.
+   * @param categoryId - The ID of the category to delete.
+   */
   const deleteCategory = (categoryId: string) => {
     setCategories((prev) => prev.filter((c) => c.id !== categoryId));
 

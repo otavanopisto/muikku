@@ -22,6 +22,12 @@ export function useImageResize(props: {
     active: boolean;
   } | null>(null);
 
+  /**
+   * The onPointerDown function.
+   * @param e - The event.
+   * @param side - The side of the resize.
+   * @param currentSize - The current size of the image.
+   */
   const onPointerDown = useCallback(
     (
       e: React.PointerEvent,
@@ -49,6 +55,10 @@ export function useImageResize(props: {
     []
   );
 
+  /**
+   * The onPointerMove function.
+   * @param e - The event.
+   */
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
       const drag = dragRef.current;
@@ -69,6 +79,10 @@ export function useImageResize(props: {
     [maxWidth, minWidth, onSizeChange]
   );
 
+  /**
+   * The onPointerUp function.
+   * @param e - The event.
+   */
   const onPointerUp = useCallback((e: React.PointerEvent) => {
     const drag = dragRef.current;
     if (!drag?.active) return;

@@ -129,6 +129,10 @@ export function useImageCaption(config: UseImageCaptionConfig) {
     };
   }, [editor, hideWhenUnavailable]);
 
+  /**
+   * The handleToggle function.
+   * @returns True if the toggle ran.
+   */
   const handleToggle = useCallback(() => {
     if (!editor) return false;
     const ok = toggleImageCaption(editor);

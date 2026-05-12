@@ -41,6 +41,13 @@ export const MuikkuSelectFieldButton = forwardRef<
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    setOpen(true);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -50,7 +57,7 @@ export const MuikkuSelectFieldButton = forwardRef<
         variant="ghost"
         data-active-state={isActive ? "on" : "off"}
         tooltip="Valintakenttä"
-        onClick={() => setOpen(true)}
+        onClick={handleOpenClick}
         tabIndex={-1}
         role="button"
         ref={ref}

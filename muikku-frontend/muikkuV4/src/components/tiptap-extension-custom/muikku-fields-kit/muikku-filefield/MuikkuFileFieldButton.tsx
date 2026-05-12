@@ -29,6 +29,14 @@ export const MuikkuFileFieldButton = forwardRef<
   });
   const isActive = selected?.isActive ?? false;
 
+  /**
+   * The handleSetFileFieldClick function.
+   */
+  const handleSetFileFieldClick = () => {
+    if (!editor) return;
+    editor.commands.setMuikkuFileField();
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -37,7 +45,7 @@ export const MuikkuFileFieldButton = forwardRef<
       variant="ghost"
       data-active-state={isActive ? "on" : "off"}
       tooltip="Tiedostokenttä"
-      onClick={() => editor.commands.setMuikkuFileField()}
+      onClick={handleSetFileFieldClick}
       tabIndex={-1}
       role="button"
       ref={ref}

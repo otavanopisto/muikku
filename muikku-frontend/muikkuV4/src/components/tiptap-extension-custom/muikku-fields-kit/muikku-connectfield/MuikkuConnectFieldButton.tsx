@@ -35,6 +35,20 @@ export const MuikkuConnectFieldButton = forwardRef<
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    setOpen(true);
+  };
+
+  /**
+   * The handleSetConnectFieldClick function.
+   */
+  const handleCloseClick = () => {
+    setOpen(false);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -44,7 +58,7 @@ export const MuikkuConnectFieldButton = forwardRef<
         variant="ghost"
         data-active-state={isActive ? "on" : "off"}
         tooltip="Yhdistelykenttä"
-        onClick={() => setOpen(true)}
+        onClick={handleOpenClick}
         tabIndex={-1}
         role="button"
         ref={ref}
@@ -56,7 +70,7 @@ export const MuikkuConnectFieldButton = forwardRef<
       <MuikkuConnectFieldModal
         editor={editor}
         opened={open}
-        onClose={() => setOpen(false)}
+        onClose={handleCloseClick}
       />
     </>
   );

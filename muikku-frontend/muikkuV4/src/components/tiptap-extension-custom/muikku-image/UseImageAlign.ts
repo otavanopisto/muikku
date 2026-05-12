@@ -151,6 +151,10 @@ export function useImageAlign(config: UseImageAlignConfig) {
     };
   }, [editor, hideWhenUnavailable]);
 
+  /**
+   * The handleAlign function.
+   * @returns True if the align ran.
+   */
   const handleAlign = useCallback(() => {
     if (!editor) return false;
     const ok = setImageAlign(editor, align);

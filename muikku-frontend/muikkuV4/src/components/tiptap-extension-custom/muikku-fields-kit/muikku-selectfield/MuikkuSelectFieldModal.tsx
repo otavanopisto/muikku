@@ -96,12 +96,20 @@ export function MuikkuSelectFieldModal(props: {
     }
   }, [opened, editor]);
 
+  /**
+   * The addOption function.
+   */
   const addOption = () => {
     const used = new Set(options.map((o) => o.name));
     const name = nextFreeNumericName(used);
     setOptions((prev) => [...prev, { name, text: "", correct: false }]);
   };
 
+  /**
+   * The updateOption function.
+   * @param name - The name of the option to update.
+   * @param patch - The patch to apply to the option.
+   */
   const updateOption = (
     name: string,
     patch: Partial<MuikkuSelectionOption>
@@ -111,10 +119,19 @@ export function MuikkuSelectFieldModal(props: {
     );
   };
 
+  /**
+   * The removeOption function.
+   * @param name - The name of the option to remove.
+   */
   const removeOption = (name: string) => {
     setOptions((prev) => prev.filter((o) => o.name !== name));
   };
 
+  /**
+   * The moveOption function.
+   * @param idx - The index of the option to move.
+   * @param dir - The direction to move the option.
+   */
   const moveOption = (idx: number, dir: -1 | 1) => {
     setOptions((prev) => {
       const next = [...prev];
@@ -127,6 +144,9 @@ export function MuikkuSelectFieldModal(props: {
     });
   };
 
+  /**
+   * The handleOk function.
+   */
   const handleOk = () => {
     if (!editor || !canSave) return;
 

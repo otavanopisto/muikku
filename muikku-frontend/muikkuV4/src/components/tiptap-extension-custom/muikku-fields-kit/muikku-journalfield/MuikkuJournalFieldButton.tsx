@@ -29,6 +29,14 @@ export const MuikkuJournalFieldButton = forwardRef<
   });
   const isActive = selected?.isActive ?? false;
 
+  /**
+   * The handleSetJournalFieldClick function.
+   */
+  const handleSetJournalFieldClick = () => {
+    if (!editor) return;
+    editor.commands.setMuikkuJournalField();
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -37,7 +45,7 @@ export const MuikkuJournalFieldButton = forwardRef<
       variant="ghost"
       data-active-state={isActive ? "on" : "off"}
       tooltip="Oppimispäiväkirjakenttä"
-      onClick={() => editor.commands.setMuikkuJournalField()}
+      onClick={handleSetJournalFieldClick}
       tabIndex={-1}
       role="button"
       ref={ref}

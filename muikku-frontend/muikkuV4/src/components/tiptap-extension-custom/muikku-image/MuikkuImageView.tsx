@@ -137,10 +137,15 @@ export function MuikkuImageView(props: MuikkuImageViewProps) {
         <span
           data-image-resize-handle="left"
           onPointerDown={(e) => {
-            const root = e.currentTarget.closest<HTMLElement>(
-              'span[data-type="muikku-image"]'
+            onPointerDown(
+              e,
+              "left",
+              getRenderedImgSize(
+                e.currentTarget.closest<HTMLElement>(
+                  'span[data-type="muikku-image"]'
+                )
+              )
             );
-            onPointerDown(e, "left", getRenderedImgSize(root));
           }}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -148,10 +153,15 @@ export function MuikkuImageView(props: MuikkuImageViewProps) {
         <span
           data-image-resize-handle="right"
           onPointerDown={(e) => {
-            const root = e.currentTarget.closest<HTMLElement>(
-              'span[data-type="muikku-image"]'
+            onPointerDown(
+              e,
+              "right",
+              getRenderedImgSize(
+                e.currentTarget.closest<HTMLElement>(
+                  'span[data-type="muikku-image"]'
+                )
+              )
             );
-            onPointerDown(e, "right", getRenderedImgSize(root));
           }}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}

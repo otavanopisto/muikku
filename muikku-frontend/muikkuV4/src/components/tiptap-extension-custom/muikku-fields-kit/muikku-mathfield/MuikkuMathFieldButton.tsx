@@ -28,6 +28,14 @@ export const MuikkuMathFieldButton = forwardRef<
   });
   const isActive = selected?.isActive ?? false;
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    if (!editor) return;
+    editor.commands.setMuikkuMathField();
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -36,7 +44,7 @@ export const MuikkuMathFieldButton = forwardRef<
       variant="ghost"
       data-active-state={isActive ? "on" : "off"}
       tooltip="Matematiikkatehtäväkenttä"
-      onClick={() => editor.commands.setMuikkuMathField()}
+      onClick={handleOpenClick}
       tabIndex={-1}
       role="button"
       ref={ref}

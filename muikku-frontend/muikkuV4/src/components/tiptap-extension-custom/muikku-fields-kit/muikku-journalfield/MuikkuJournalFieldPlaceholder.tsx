@@ -11,8 +11,29 @@ export function MuikkuJournalFieldPlaceholder(props: ReactNodeViewProps) {
   const { editor, getPos } = props;
   const pos = getPos?.();
 
+  /**
+   * The select function.
+   */
   const select = () => {
     if (typeof pos === "number") editor.commands.setNodeSelection(pos);
+  };
+
+  /**
+   * The handleOpenClick function.
+   */
+  const handleSelectClick = () => {
+    select();
+  };
+
+  /**
+   * The handleKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      select();
+    }
   };
 
   return (
@@ -20,13 +41,8 @@ export function MuikkuJournalFieldPlaceholder(props: ReactNodeViewProps) {
       as="span"
       data-muikku-journalfield-placeholder="true"
       tabIndex={0}
-      onClick={select}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          select();
-        }
-      }}
+      onClick={handleSelectClick}
+      onKeyDown={handleKeyDown}
       style={{
         display: "inline-flex",
         verticalAlign: "middle",

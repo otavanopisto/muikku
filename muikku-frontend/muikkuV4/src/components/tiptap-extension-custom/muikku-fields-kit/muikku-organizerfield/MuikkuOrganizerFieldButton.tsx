@@ -39,6 +39,13 @@ export const MuikkuOrganizerFieldButton = forwardRef<
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    setOpen(true);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -48,7 +55,7 @@ export const MuikkuOrganizerFieldButton = forwardRef<
         variant="ghost"
         data-active-state={isActive ? "on" : "off"}
         tooltip="Ryhmittelykenttä"
-        onClick={() => setOpen(true)}
+        onClick={handleOpenClick}
         tabIndex={-1}
         role="button"
         ref={ref}

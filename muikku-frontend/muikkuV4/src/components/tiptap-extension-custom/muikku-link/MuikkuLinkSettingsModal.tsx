@@ -295,7 +295,7 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
   /**
    * Apply the link settings.
    */
-  const apply = useCallback(() => {
+  const handleApplyClick = useCallback(() => {
     if (!editor) return;
     if (!computedHref.trim()) return;
 
@@ -342,7 +342,7 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
   /**
    * Remove the link.
    */
-  const remove = useCallback(() => {
+  const handleRemoveClick = useCallback(() => {
     if (!editor) return;
     editor.commands.unsetMuikkuLink();
     onClose();
@@ -616,7 +616,7 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
             <Button
               type="button"
               variant="primary"
-              onClick={apply}
+              onClick={handleApplyClick}
               disabled={!canApply}
               tooltip="OK"
               showTooltip={false}
@@ -638,7 +638,7 @@ export function MuikkuLinkSettingsModal(props: MuikkuLinkSettingsModalProps) {
           <Button
             type="button"
             variant="ghost"
-            onClick={remove}
+            onClick={handleRemoveClick}
             disabled={!isLinkActive}
             tooltip="Remove link"
           >

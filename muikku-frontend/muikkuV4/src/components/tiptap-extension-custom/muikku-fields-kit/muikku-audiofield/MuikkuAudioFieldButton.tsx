@@ -33,6 +33,14 @@ export const MuikkuAudioFieldButton = forwardRef<
   });
   const isActive = selected?.isActive ?? false;
 
+  /**
+   * The handleSetAudioFieldClick function.
+   */
+  const handleSetAudioFieldClick = () => {
+    if (!editor) return;
+    editor.commands.setMuikkuAudioField();
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -41,7 +49,7 @@ export const MuikkuAudioFieldButton = forwardRef<
       variant="ghost"
       data-active-state={isActive ? "on" : "off"}
       tooltip="Äänikenttä"
-      onClick={() => editor.commands.setMuikkuAudioField()}
+      onClick={handleSetAudioFieldClick}
       tabIndex={-1}
       role="button"
       ref={ref}

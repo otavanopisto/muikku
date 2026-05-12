@@ -36,6 +36,15 @@ export const MuikkuLinkButton = forwardRef<
     setOpen(true)
   );
 
+  /**
+   * The handleClick function.
+   * @param e - The event.
+   */
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setOpen(true);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -45,7 +54,7 @@ export const MuikkuLinkButton = forwardRef<
         variant="ghost"
         aria-label="Link"
         tooltip="Link"
-        onClick={() => setOpen(true)}
+        onClick={handleClick}
         tabIndex={-1}
         role="button"
         ref={ref}

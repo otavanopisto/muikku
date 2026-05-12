@@ -40,6 +40,13 @@ export const MuikkuSorterFieldButton = forwardRef<
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
 
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    setOpen(true);
+  };
+
   if (!editor?.isEditable) return null;
 
   return (
@@ -49,7 +56,7 @@ export const MuikkuSorterFieldButton = forwardRef<
         variant="ghost"
         data-active-state={isActive ? "on" : "off"}
         tooltip="Järjestelykenttä"
-        onClick={() => setOpen(true)}
+        onClick={handleOpenClick}
         tabIndex={-1}
         role="button"
         ref={ref}

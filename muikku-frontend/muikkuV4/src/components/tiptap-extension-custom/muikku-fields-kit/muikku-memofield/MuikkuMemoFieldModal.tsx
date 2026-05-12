@@ -56,6 +56,9 @@ export function MuikkuMemoFieldModal(props: {
     }
   }, [opened, editor]);
 
+  /**
+   * The handleOk function.
+   */
   const handleOk = () => {
     if (!editor?.isEditable) return;
 

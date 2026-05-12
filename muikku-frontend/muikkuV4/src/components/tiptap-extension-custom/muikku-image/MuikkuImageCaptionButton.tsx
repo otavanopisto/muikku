@@ -36,6 +36,10 @@ export const ImageCaptionButton = forwardRef<
     const { isVisible, handleToggle, label, canToggle, isActive, Icon } =
       useImageCaption({ editor, hideWhenUnavailable, onToggled });
 
+    /**
+     * The handleClick function.
+     * @param event - The event.
+     */
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);

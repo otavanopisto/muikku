@@ -41,6 +41,10 @@ export const StyleButton = React.forwardRef<
   ) => {
     const { editor } = useTiptapEditor(providedEditor);
 
+    /**
+     * The handleClick function.
+     * @param e - The event.
+     */
     const handleClick = React.useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(e);

@@ -31,9 +31,30 @@ export function MuikkuOrganizerFieldPlaceholder(props: ReactNodeViewProps) {
   const content = (node.attrs?.content ??
     null) as MuikkuOrganizerFieldContent | null;
 
+  /**
+   * The open function.
+   */
   const open = () => {
     if (typeof pos === "number") editor.commands.setNodeSelection(pos);
     window.dispatchEvent(new CustomEvent(OPEN_EVENT));
+  };
+
+  /**
+   * The handleOpenClick function.
+   */
+  const handleOpenClick = () => {
+    open();
+  };
+
+  /**
+   * The handleKeyDown function.
+   * @param e - The keyboard event.
+   */
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
   };
 
   return (
@@ -41,13 +62,8 @@ export function MuikkuOrganizerFieldPlaceholder(props: ReactNodeViewProps) {
       as="span"
       data-muikku-organizerfield-placeholder="true"
       tabIndex={0}
-      onClick={open}
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open();
-        }
-      }}
+      onClick={handleOpenClick}
+      onKeyDown={handleKeyDown}
       style={{
         display: "inline-flex",
         verticalAlign: "middle",
