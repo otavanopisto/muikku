@@ -175,10 +175,10 @@ class StateOfStudies extends React.Component<
           <div className="item-list item-list--student-contact-info">
             {this.props.guider.currentStudent.contactInfos?.map((contact) => {
               const contactState = contact.allowStudyDiscussions
-                ? this.props.i18n.t("labels.hasConsentToDiscussStudies", {
+                ? this.props.i18n.t("labels.hasContinuedDiscussionPermission", {
                     ns: "users",
                   })
-                : this.props.i18n.t("labels.noConsentToDiscussStudies", {
+                : this.props.i18n.t("labels.noContinuedDiscussionPermission", {
                     ns: "users",
                   });
               return (
@@ -214,10 +214,10 @@ class StateOfStudies extends React.Component<
                 (guardian, index) => {
                   const { continuedViewPermission } = guardian;
                   const guardianState = continuedViewPermission
-                    ? this.props.i18n.t("labels.hasConsentToViewStudies", {
+                    ? this.props.i18n.t("labels.hasContinuedViewPermission", {
                         ns: "users",
                       })
-                    : this.props.i18n.t("labels.noConsentToViewStudies", {
+                    : this.props.i18n.t("labels.noContinuedViewPermission", {
                         ns: "users",
                       });
 

@@ -55,7 +55,7 @@ const GuardianPermissionsDialog: React.FC<GuardianPermissionsDialogProps> = (
   const content = (closeDialog: () => void) => (
     <form key="content">
       <p className="form-element__description ">
-        {t("content.studyContactPermissions", { ns: "users" })}
+        {t("content.studyGuardianPermissions", { ns: "users" })}
       </p>
       <fieldset className="form__fieldset">
         <legend className="form__legend form__legend--guardian-visibility">

@@ -54,6 +54,9 @@ const ContactPermissionsDialog: React.FC<ContactPermissionsDialogProps> = (
         <legend className="form__legend form__legend--guardian-visibility">
           {t("labels.contactContinuedDiscussionPermission", { ns: "users" })}
         </legend>
+        <p className="form-element__description ">
+          {t("content.studyContactPermissions", { ns: "users" })}
+        </p>
         <p
           className="form-element__description"
           dangerouslySetInnerHTML={{
