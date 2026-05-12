@@ -109,6 +109,9 @@ export function useIndent(config: UseIndentConfig) {
     };
   }, [editor, hideWhenUnavailable]);
 
+  /**
+   * The handleIndent function.
+   */
   const handleIndent = useCallback(() => {
     if (!editor?.isEditable) return false;
     if (!canRun) return false;
