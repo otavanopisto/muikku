@@ -34,7 +34,9 @@ const Guardians: React.FC<GuardiansProps> = () => {
     <div>
       {guardians.list.length > 0 && (
         <>
-          <h2>{t("labels.guardians", { ns: "users" })}</h2>
+          <h2 className="application-panel__content-header">
+            {t("labels.guardians", { ns: "users" })}
+          </h2>
           <div className="item-list item-list--student-guardians">
             {guardians.list.map((guardian, index) => {
               const actions = (
@@ -75,7 +77,9 @@ const Guardians: React.FC<GuardiansProps> = () => {
       )}
       {others.list.length > 0 && (
         <>
-          <h2>{t("labels.contactInfo", { ns: "users" })}</h2>
+          <h2 className="application-panel__content-header">
+            {t("labels.contactInfo", { ns: "users" })}
+          </h2>
           <div className="item-list item-list--student-guardians">
             {others.list.map((contact, index) => {
               const actions = (
