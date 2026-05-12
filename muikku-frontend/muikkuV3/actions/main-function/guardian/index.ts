@@ -83,7 +83,7 @@ export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES = SpecificActionType<
 
 export type GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY = SpecificActionType<
   "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-  MuikkuEventProperty
+  { userId: number; property: MuikkuEventProperty }
 >;
 
 export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS = SpecificActionType<
@@ -318,14 +318,14 @@ export interface UpdateCurrentDependantSelectedEducationTypeCodeTriggerType {
  * UpdateDependantAbsenceEventPropertyTriggerType
  */
 export interface UpdateDependantAbsenceEventPropertyTriggerType {
-  (data: UpdateEventPropertyRequest): AnyActionType;
+  (userId: number, data: UpdateEventPropertyRequest): AnyActionType;
 }
 
 /**
  * UpdateDependantAbsenceEventPropertyTriggerType
  */
 export interface CreateDependantAbsenceEventPropertyTriggerType {
-  (data: CreateEventPropertyRequest): AnyActionType;
+  (userId: number, data: CreateEventPropertyRequest): AnyActionType;
 }
 /**
  * Thunk function to load dependants
@@ -1030,10 +1030,11 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
 
 /**
  * createAbsenceEventProperty
+ * @param userId user id
  * @param data data for creation
  */
 const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
-  function createAbsenceEventProperty(data) {
+  function createAbsenceEventProperty(userId, data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
@@ -1041,17 +1042,18 @@ const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType
 
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-        payload: property,
+        payload: { userId, property },
       });
     };
   };
 
 /**
  * updateAbsenceEventProperty
+ * @param userId user id
  * @param data data for creatio0n
  */
 const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
-  function updateAbsenceEventProperty(data) {
+  function updateAbsenceEventProperty(userId, data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
@@ -1059,7 +1061,7 @@ const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType
 
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-        payload: property,
+        payload: { userId, property },
       });
     };
   };

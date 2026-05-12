@@ -142,6 +142,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
               key={event.id}
               actions={
                 <AbsenceFeedbackDialog
+                  studentId={dependant.userEntityId}
                   absenceEvent={event}
                   onConfirm={handleConfirmFeedback}
                 >

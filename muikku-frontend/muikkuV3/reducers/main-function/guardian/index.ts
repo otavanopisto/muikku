@@ -180,14 +180,26 @@ export const guardian: Reducer<GuardianState> = (
         ...state,
         absencesByDependantId: {
           ...state.absencesByDependantId,
-          [action.payload.userEntityId]: {
+          [action.payload.userId]: {
             events: state.absencesByDependantId[
-              action.payload.userEntityId
+              action.payload.userId
             ]?.events.map((event) => {
-              if (event.id === action.payload.eventId) {
+              if (event.id === action.payload.property.eventId) {
+                const newEventProperties = [...event.properties];
+                const payloadPropertyIndex = newEventProperties.findIndex(
+                  (property) => property.id === action.payload.property.id
+                );
+
+                if (payloadPropertyIndex !== -1) {
+                  newEventProperties[payloadPropertyIndex] =
+                    action.payload.property;
+                } else {
+                  newEventProperties.push(action.payload.property);
+                }
+
                 return {
                   ...event,
-                  properties: [action.payload],
+                  properties: newEventProperties,
                 };
               }
               return event;

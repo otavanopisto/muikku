@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 interface AbsenceFeedbackDialogProps {
   children?: React.ReactElement;
   absenceEvent?: MuikkuEvent;
+  studentId: number;
   onClose?: () => void;
   onConfirm?: (
     explanation: string,
@@ -23,9 +24,8 @@ interface AbsenceFeedbackDialogProps {
 }
 
 export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
-  onClose,
-  onConfirm,
   children,
+  studentId,
   absenceEvent,
 }) => {
   const dispatch = useDispatch();
@@ -78,7 +78,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
     if (absenceReason.trim() !== "") {
       if (hasCurrentAbsenceReason) {
         dispatch(
-          updateAbsenceEventProperty({
+          updateAbsenceEventProperty(studentId, {
             eventId: absenceEvent.id,
             propertyId: currentAbsenceProperty.id,
             value: absenceReason,
@@ -86,9 +86,9 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
         );
       } else {
         dispatch(
-          createAbsenceEventProperty({
+          createAbsenceEventProperty(studentId, {
             eventId: absenceEvent.id,
-            name: "ABSENCE_EVENT",
+            name: "ABSENCE_REASON",
             value: absenceReason,
           })
         );
