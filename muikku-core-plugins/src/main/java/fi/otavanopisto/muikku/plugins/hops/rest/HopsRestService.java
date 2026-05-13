@@ -660,7 +660,6 @@ public class HopsRestService {
                 item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
                 item.setText(request.getRequestText());
               }
-              break;
             }
           }
 
