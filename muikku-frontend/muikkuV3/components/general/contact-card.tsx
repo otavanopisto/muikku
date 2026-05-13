@@ -18,6 +18,7 @@ interface ContactCardProps {
   country?: string;
   tag?: React.ReactNode;
   state?: string;
+  stateModifier?: string;
   actions?: React.ReactNode;
   email?: string;
   groupAdvisor?: boolean;
@@ -45,6 +46,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
     city,
     country,
     state,
+    stateModifier,
     email,
     phone,
     groupAdvisor,
@@ -143,7 +145,13 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             {vacationEnd ? "-" + localize.date(vacationEnd) : null}
           </div>
         )}
-        {state && <div className="item-list__user-state">{state}</div>}
+        {state && (
+          <div
+            className={`item-list__user-state ${stateModifier ? "item-list__user-state--" + stateModifier : ""}`}
+          >
+            {state}
+          </div>
+        )}
         {actions && <div className="item-list__user-actions">{actions}</div>}
       </div>
     </div>

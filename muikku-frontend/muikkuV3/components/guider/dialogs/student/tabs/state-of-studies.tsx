@@ -214,18 +214,31 @@ class StateOfStudies extends React.Component<
                 (guardian, index) => {
                   const { continuedViewPermission } = guardian;
                   const guardianState = continuedViewPermission
-                    ? this.props.i18n.t("labels.hasContinuedViewPermission", {
-                        ns: "users",
-                      })
-                    : this.props.i18n.t("labels.noContinuedViewPermission", {
-                        ns: "users",
-                      });
+                    ? {
+                        modifier: "APPROVED",
+                        text: this.props.i18n.t(
+                          "labels.hasContinuedViewPermission",
+                          {
+                            ns: "users",
+                          }
+                        ),
+                      }
+                    : {
+                        modifier: "DENIED",
+                        text: this.props.i18n.t(
+                          "labels.noContinuedViewPermission",
+                          {
+                            ns: "users",
+                          }
+                        ),
+                      };
 
                   return (
                     <ContactCard
                       key={"guardian" + index}
                       fullName={getName(guardian, true)}
-                      state={guardianState}
+                      state={guardianState.text}
+                      stateModifier={guardianState.modifier}
                     />
                   );
                 }
