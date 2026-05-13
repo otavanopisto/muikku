@@ -16,6 +16,7 @@ import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import { AssessmentInformation } from "./assessment-information";
 import { StudyActivityItemWithCourseModule } from "~/helper-functions/study-matrix";
+import Link from "~/components/general/link";
 
 /**
  * Props for the combination-workspace (Yhdistelmäopintojaksot) row.
@@ -110,6 +111,29 @@ const RecordsMatrixRowCombination: React.FC<
   };
 
   /**
+   * Render workspace link if workspace studyActivityItems exists
+   * @returns workspace link
+   */
+  const renderWorkspaceLink = () => {
+    if (!studyActivityItems[0]?.url) return null;
+    return (
+      <div className="application-list__header-primary-meta">
+        <Link
+          href={studyActivityItems[0].url}
+          openInNewTab="_blank"
+          className="link"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {t("labels.goto", { ns: "workspace" })}
+        </Link>
+      </div>
+    );
+  };
+
+  /**
    * handleShowEvaluationClick
    */
   const handleShowEvaluationClick = () => {
@@ -171,6 +195,7 @@ const RecordsMatrixRowCombination: React.FC<
             ))}
             {renderMandatorityDescription()}
           </div>
+          {renderWorkspaceLink()}
         </div>
         <div className="application-list__header-secondary">
           {config.showAssigmentsAndDiaries && firstItem.courseId && (

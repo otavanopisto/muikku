@@ -848,7 +848,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
   public static void mockContactTypes() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    ContactType contactType = new ContactType((long)1, "Koti", false, false);
+    ContactType contactType = new ContactType((long)1, "Koti", false);
     ContactType[] contactTypes = { contactType };
     String contactTypeJson = objectMapper.writeValueAsString(contactType);
     stubFor(get(urlMatching("/1/common/contactTypes/.*"))
