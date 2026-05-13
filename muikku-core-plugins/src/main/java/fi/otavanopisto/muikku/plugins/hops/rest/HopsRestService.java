@@ -654,12 +654,10 @@ public class HopsRestService {
               Boolean.FALSE,
               Boolean.FALSE);
           for (SupplementationRequest request : requests) {
-            if (isApplicable(request, item)) {
-              if (item.getDate().before(request.getRequestDate())) {
-                item.setDate(request.getRequestDate());
-                item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
-                item.setText(request.getRequestText());
-              }
+            if (isApplicable(request, item) && item.getDate().before(request.getRequestDate())) {
+              item.setDate(request.getRequestDate());
+              item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
+              item.setText(request.getRequestText());
             }
           }
 
