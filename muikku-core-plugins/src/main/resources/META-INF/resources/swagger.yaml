@@ -17747,11 +17747,14 @@ components:
           required:
             - curriculumName
             - matriculationEligibility
+            - under18
           properties:
             curriculumName:
               type: string
               nullable: true
             matriculationEligibility:
+              type: boolean
+            under18:
               type: boolean
             permissions:
               type: object
@@ -18719,6 +18722,9 @@ components:
           allOf:
             - $ref: "#/components/schemas/LocaleType"
         hasEvaluationFees:
+          type: boolean
+          nullable: true
+        under18:
           type: boolean
           nullable: true
         isDefaultOrganization:
