@@ -475,6 +475,48 @@ public class UserEntityController implements Serializable {
   public UserEntity markAsUpdatedByStudent(UserEntity userEntity) {
     return userEntityDAO.updateUpdatedByStudent(userEntity, Boolean.TRUE);
   }
+
+  /**
+   * Returns true, if the student is under 18 years old.
+   * 
+   * @param studentIdentifier Student's identifier
+   * @return true if yes
+   */
+  public boolean isUnder18Student(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier == null) {
+      logger.log(Level.WARNING, "Called with null studentIdentifier.");
+      return false;
+    }
+    
+    for (SearchProvider searchProvider : searchProviders) {
+      if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+        SearchResult searchResult = searchProvider.findUser(studentIdentifier, true);
+        
+        if (searchResult.getTotalHitCount() != 1) {
+          logger.log(Level.WARNING, String.format("Couldn't find unique result for identifier %s, %d results.", studentIdentifier.toId(), searchResult.getTotalHitCount()));
+          return false;
+        }
+        
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
+
+        try {
+          String birthdayStr = (String) match.get("birthday");
+
+          if (StringUtils.isNotBlank(birthdayStr)) {
+            LocalDate birthday = LocalDate.parse(birthdayStr);
+
+            return birthday != null && birthday.plusYears(18).isAfter(LocalDate.now());
+          }
+        }
+        catch (DateTimeParseException ex) {
+          return false;
+        }
+      }
+    }
+
+    return false;
+  }
   
   /**
    * Returns true, if the student is under 18 years old and

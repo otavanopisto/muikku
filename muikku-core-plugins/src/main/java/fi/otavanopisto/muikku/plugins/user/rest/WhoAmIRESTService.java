@@ -223,6 +223,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         user == null ? null : user.getEducationTypeCode(),
         hasImage,
         user == null ? false : user.getHasEvaluationFees(),
+        userIdentifier != null ? userEntityController.isUnder18Student(userIdentifier) : null,
         user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
         curriculumName,
         organizationIdentifier != null ? organizationIdentifier.toId() : null,
