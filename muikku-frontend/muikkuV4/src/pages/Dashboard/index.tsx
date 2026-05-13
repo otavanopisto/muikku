@@ -7,6 +7,7 @@ import { materialContentNodesAtom } from "~/src/atoms/materials";
 import { useMemo } from "react";
 import type { MaterialContentNode } from "~/generated/client";
 
+// For testing purposes. Please don't remove this yet
 /* const sampleHTML = String.raw`
   <div>
     <h1>Test Material</h1>
@@ -88,15 +89,12 @@ const htmlOnlyParser = (node: MaterialContentNode): MaterialContentNode[] => {
  */
 export function Dashboard() {
   const user = useAtomValue(userAtom);
-  //const materialHtml = useAtomValue(materialHtmlAtom);
   const materialContentNodes = useAtomValue(materialContentNodesAtom);
 
   const htmlOnlyList = useMemo(
     () => materialContentNodes?.flatMap(htmlOnlyParser) ?? [],
     [materialContentNodes]
   );
-
-  //console.log(materialHtml?.html ?? "No material HTML");
 
   return (
     <Container size="lg">
@@ -133,6 +131,7 @@ export function Dashboard() {
         </Group>
       </Paper>
 
+      {/* For testing purposes. Please don't remove this yet */}
       {/* {materialHtml && (
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
           <Paper p="xl" withBorder>
@@ -162,6 +161,7 @@ export function Dashboard() {
         </Paper>
       ))}
 
+      {/* For testing purposes. Please don't remove this yet */}
       {/* <Paper p="xl" mt="md" withBorder>
         <SimpleMaterialLoader html={sampleHTML} />
       </Paper> */}
