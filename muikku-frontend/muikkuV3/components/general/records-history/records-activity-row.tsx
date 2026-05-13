@@ -16,6 +16,7 @@ import AssessmentIndicator from "./assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import WorkspaceAssignmentsAndDiaryDialog from "./dialogs/workspace-assignments-and-diaries";
 import { AssessmentInformation } from "./assessment-information";
+import Link from "~/components/general/link";
 
 /**
  * RecordsActivityRowProps
@@ -139,6 +140,29 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
     );
   };
 
+  /**
+   * Render workspace link if workspace studyActivityItems exists
+   * @returns workspace link
+   */
+  const renderWorkspaceLink = () => {
+    if (!studyActivityItems[0]?.url) return null;
+    return (
+      <div className="application-list__header-primary-meta">
+        <Link
+          href={studyActivityItems[0].url}
+          openInNewTab="_blank"
+          className="link"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {t("labels.goto", { ns: "workspace" })}
+        </Link>
+      </div>
+    );
+  };
+
   const animateOpen = showEvaluation ? "auto" : 0;
 
   const headerModifiers = React.useMemo(() => {
@@ -196,6 +220,7 @@ export const RecordsActivityRow: React.FC<RecordsActivityRowProps> = (
 
             {renderMandatorityDescription()}
           </div>
+          {renderWorkspaceLink()}
         </div>
         <div className="application-list__header-secondary">
           {config.showAssigmentsAndDiaries && (

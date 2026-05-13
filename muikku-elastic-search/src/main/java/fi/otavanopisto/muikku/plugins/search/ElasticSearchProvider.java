@@ -526,6 +526,7 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjects.subjectIdentifier", subjectIdentifier.toId()));
     query.must(termQuery("subjects.courseNumber", courseNumber));
+    query.mustNot(termQuery("access", "MEMBERS_ONLY"));
     
     try {
       SearchResponse response = searchRequest(MUIKKU_WORKSPACE_INDEX, query, 0, 50);

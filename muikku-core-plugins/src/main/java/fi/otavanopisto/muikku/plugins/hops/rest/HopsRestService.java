@@ -47,7 +47,6 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
@@ -635,6 +634,12 @@ public class HopsRestService {
 
       for (StudyActivityItemRestModel item : response.getEntity().getItems()) {
         
+        // Workspace url
+        
+        if (item.getCourseId() != null) {
+          item.setUrl(workspaceEntityController.getUrl(item.getCourseId()));
+        }
+        
         // Supplementation requests
         
         if (item.getCourseId() != null && studentEntity != null) {
@@ -777,11 +782,13 @@ public class HopsRestService {
             }
             else {
               StudyActivityItemRestModel item = new StudyActivityItemRestModel();
-
               item.setCourseNumber(suggestion.getCourseNumber());
               item.setDate(suggestion.getCreated());
               item.setSubject(suggestion.getSubject());
               item.setCourseId(suggestion.getWorkspaceEntityId());
+              if (item.getCourseId() != null) {
+                item.setUrl(workspaceEntityController.getUrl(item.getCourseId()));
+              }
               item.setCourseName(workspaceEntityController.getName(workspaceEntity).getDisplayName());
               item.setState(StudyActivityItemState.SUGGESTED_NEXT);
               // Note: This item lacks some course metadata but for suggested courses, front-end can live with that 
@@ -1119,7 +1126,7 @@ public class HopsRestService {
       return Response.ok(suggestedWorkspaces).build();
     }
 
-    // Do the search
+    // Do the search (search method automatically strips unpublished and members only workspaces)
 
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
@@ -1134,13 +1141,6 @@ public class HopsRestService {
             String dataSource = id[1];
             String identifier = id[0];
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-
-            // Skip unpublished courses
-
-            Boolean published = (Boolean) result.get("published");
-            if (!published) {
-              continue;
-            }
 
             // OPS of the course and the student must match
 
@@ -1162,12 +1162,6 @@ public class HopsRestService {
 
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
             if (workspaceEntity == null) {
-              continue;
-            }
-
-            // Skip members only courses
-
-            if (workspaceEntity.getAccess() != null && workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
               continue;
             }
 

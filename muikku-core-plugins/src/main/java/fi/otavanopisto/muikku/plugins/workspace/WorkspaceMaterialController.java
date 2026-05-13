@@ -990,9 +990,9 @@ public class WorkspaceMaterialController {
           children = Collections.emptyList();
         }
       }
-      else {
+      if (children == null) {
         children = level == 0 ? Collections.emptyList() : includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
-          : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
+            : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
       }
       List<FlattenedWorkspaceNode> flattenedChildren;
       if (level >= FLATTENING_LEVEL) {
