@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
+  <sql>alter table WorkspaceMaterialField drop index UK_j6ptlndkbga3580nde57gug4p;</sql>
   <sql>alter table WorkspaceMaterialField drop column embedId;</sql>
-  <sql>alter table WorkspaceMaterial drop index UK_j6ptlndkbga3580nde57gug4p;</sql>
-  <!-- TODO New unique index -->
+  <sql>alter table WorkspaceMaterialField add constraint UK4hfrygqw2skxmd09379rj1sam unique (queryField_id, workspaceMaterial_id);</sql>
 
 </update>
