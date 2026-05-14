@@ -13,7 +13,7 @@ import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 @Entity
 @Table (
   uniqueConstraints = {
-    @UniqueConstraint (columnNames = { "embedId", "queryField_id", "workspaceMaterial_id" })
+    @UniqueConstraint (columnNames = { "queryField_id", "workspaceMaterial_id" })
   }    
 )
 public class WorkspaceMaterialField {
@@ -24,14 +24,6 @@ public class WorkspaceMaterialField {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getEmbedId() {
-    return embedId;
-  }
-  
-  public void setEmbedId(String embedId) {
-    this.embedId = embedId;
   }
 
   public QueryField getQueryField() {
@@ -53,8 +45,6 @@ public class WorkspaceMaterialField {
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
-  
-  private String embedId;
   
   @ManyToOne
   private QueryField queryField;

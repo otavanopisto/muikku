@@ -52,9 +52,9 @@ public class SaveFieldAnswerWebSocketMessageHandler {
   @Inject
   private QueryFieldController queryFieldController;
   
-  public void handleError(String error, String embedId, Long materialId, String fieldName, Long workspaceMaterialId, Long workspaceEntityId, String ticket){
+  public void handleError(String error, Long materialId, String fieldName, Long workspaceMaterialId, Long workspaceEntityId, String ticket){
     ObjectMapper mapper = new ObjectMapper();
-    SaveFieldErrorWebSocketMessage message = new SaveFieldErrorWebSocketMessage(error, embedId, materialId, fieldName, workspaceMaterialId, workspaceEntityId);
+    SaveFieldErrorWebSocketMessage message = new SaveFieldErrorWebSocketMessage(error, materialId, fieldName, workspaceMaterialId, workspaceEntityId);
     try {
       String data = mapper.writeValueAsString(message);
       webSocketMessenger.sendMessage("workspace:field-answer-error", data, ticket);
@@ -81,59 +81,59 @@ public class SaveFieldAnswerWebSocketMessageHandler {
     
     if (message.getMaterialId() == null) {
       logger.log(Level.SEVERE, "Missing material id");
-      handleError("Missing material id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Missing material id", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     if (message.getWorkspaceMaterialId() == null) {
       logger.log(Level.SEVERE, "Missing workspace material id");
-      handleError("Missing workspace material id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Missing workspace material id", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     if (message.getUserEntityId() == null) {
       logger.log(Level.SEVERE, String.format("Missing user entity id for ticket %s (field %s in workspace material %d)", event.getTicket(), message.getFieldName(), message.getWorkspaceMaterialId()));
-      handleError("Missing user entity id", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Missing user entity id", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     Material material = materialController.findMaterialById(message.getMaterialId());
     if (material == null) {
       logger.log(Level.SEVERE, "Could not find material");
-      handleError("Could not find material", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Could not find material", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     UserEntity userEntity = userEntityController.findUserEntityById(message.getUserEntityId());
     if (userEntity == null) {
       logger.log(Level.SEVERE, "Could not find user");
-      handleError("Could not find user", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Could not find user", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(message.getWorkspaceMaterialId());
     if (workspaceMaterial == null) {
       logger.log(Level.SEVERE, "Could not find workspace material");
-      handleError("Could not find workspace material", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Could not find workspace material", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     if (!workspaceMaterial.getMaterialId().equals(material.getId())) {
       logger.log(Level.SEVERE, "Invalid materialId or workspaceMaterialId");
-      handleError("Invalid materialId or workspaceMaterialId", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Invalid materialId or workspaceMaterialId", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
     QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, message.getFieldName());
     if (queryField == null) {
       logger.log(Level.SEVERE, "Could not find query field");
-      handleError("Could not find query field", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Could not find query field", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 
-    WorkspaceMaterialField materialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, message.getEmbedId());
+    WorkspaceMaterialField materialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryField(workspaceMaterial, queryField);
     if (materialField == null) {
-      materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField, message.getEmbedId());
+      materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField);
     }
 
     fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
@@ -152,7 +152,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       case PASSED:
       case FAILED:
       case SUBMITTED:
-        handleError("Assignment is already submitted thus can not be modified", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+        handleError("Assignment is already submitted thus can not be modified", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
         return;
       default:
         break;
@@ -164,7 +164,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
     }
     catch (WorkspaceFieldIOException e) {
       logger.log(Level.SEVERE, "Could not store field value", e);
-      handleError("Could not store field value", message.getEmbedId(), message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
+      handleError("Could not store field value", message.getMaterialId(), message.getFieldName(), message.getWorkspaceMaterialId(), message.getWorkspaceEntityId(), event.getTicket());
       return;
     }
 

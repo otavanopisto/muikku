@@ -5,10 +5,9 @@ public class SaveFieldErrorWebSocketMessage {
   public SaveFieldErrorWebSocketMessage() {
   }
   
-  public SaveFieldErrorWebSocketMessage(String error, String embedId, Long materialId, String fieldName, Long workspaceMaterialId, Long workspaceEntityId) {
+  public SaveFieldErrorWebSocketMessage(String error, Long materialId, String fieldName, Long workspaceMaterialId, Long workspaceEntityId) {
     super();
     this.error = error;
-    this.embedId = embedId;
     this.materialId = materialId;
     this.fieldName = fieldName;
     this.workspaceMaterialId = workspaceMaterialId;
@@ -21,14 +20,6 @@ public class SaveFieldErrorWebSocketMessage {
 
   public void setError(String error) {
     this.error = error;
-  }
-
-  public String getEmbedId() {
-    return embedId;
-  }
-
-  public void setEmbedId(String embedId) {
-    this.embedId = embedId;
   }
 
   public Long getMaterialId() {
@@ -64,7 +55,6 @@ public class SaveFieldErrorWebSocketMessage {
   }
 
   private String error;
-  private String embedId;
   private Long materialId;
   private String fieldName;
   private Long workspaceMaterialId;
