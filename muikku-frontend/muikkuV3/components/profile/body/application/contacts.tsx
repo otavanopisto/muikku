@@ -6,7 +6,7 @@ import "~/sass/elements/item-list.scss";
 import Link from "~/components/general/link";
 import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
 import ContactPermissionsDialog from "~/components/profile/dialogs/contact-permissions";
-import ContactCard from "~/components/general/contact-card";
+import ContactCard, { ContactState } from "~/components/general/contact-card";
 import { getName } from "~/util/modifiers";
 /**
  * Guardians component props.
@@ -52,13 +52,21 @@ const Guardians: React.FC<GuardiansProps> = () => {
                 </ContactPermissionsDialog>
               );
 
-              const contactState = contact.allowStudyDiscussions
-                ? t("labels.hasContinuedDiscussionPermission", {
-                    ns: "users",
-                  })
-                : t("labels.noContinuedDiscussionPermission", {
-                    ns: "users",
-                  });
+              const contactState: ContactState = contact.allowStudyDiscussions
+                ? {
+                    modifier: "APPROVED",
+                    icon: "icon-thumb-up",
+                    text: t("labels.hasContinuedDiscussionPermission", {
+                      ns: "users",
+                    }),
+                  }
+                : {
+                    modifier: "DENIED",
+                    icon: "icon-cross",
+                    text: t("labels.noContinuedDiscussionPermission", {
+                      ns: "users",
+                    }),
+                  };
 
               if (profile.location !== "guardians" || !others.list) {
                 return null;
@@ -94,14 +102,21 @@ const Guardians: React.FC<GuardiansProps> = () => {
                   </Link>
                 </GuardianPermissionsDialog>
               );
-
               const guardianState = guardian.continuedViewPermission
-                ? t("labels.hasContinuedViewPermission", {
-                    ns: "users",
-                  })
-                : t("labels.noContinuedViewPermission", {
-                    ns: "users",
-                  });
+                ? {
+                    modifier: "APPROVED",
+                    icon: "icon-thumb-up",
+                    text: t("labels.hasContinuedViewPermission", {
+                      ns: "users",
+                    }),
+                  }
+                : {
+                    modifier: "DENIED",
+                    icon: "icon-cross",
+                    text: t("labels.noContinuedViewPermission", {
+                      ns: "users",
+                    }),
+                  };
 
               if (profile.location !== "guardians" || !guardians.list) {
                 return null;

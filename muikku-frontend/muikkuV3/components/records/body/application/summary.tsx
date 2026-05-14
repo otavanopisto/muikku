@@ -33,7 +33,7 @@ import { UserStudyData } from "~/reducers/study-activity";
 import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
 import ContactPermissionsDialog from "~/components/profile/dialogs/contact-permissions";
 import Link from "~/components/general/link";
-import ContactCard from "~/components/general/contact-card";
+import ContactCard, { ContactState } from "~/components/general/contact-card";
 
 /**
  * SummaryProps
@@ -143,13 +143,22 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     contactType,
                     allowStudyDiscussions,
                   } = contact;
-                  const contactState = allowStudyDiscussions
-                    ? t("labels.hasContinuedDiscussionPermission", {
-                        ns: "users",
-                      })
-                    : t("labels.noContinuedDiscussionPermission", {
-                        ns: "users",
-                      });
+                  const contactState: ContactState = allowStudyDiscussions
+                    ? {
+                        modifier: "APPROVED",
+                        icon: "icon-thumb-up",
+                        text: t("labels.hasContinuedDiscussionPermission", {
+                          ns: "users",
+                        }),
+                      }
+                    : {
+                        modifier: "DENIED",
+                        icon: "icon-cross",
+                        text: t("labels.noContinuedDiscussionPermission", {
+                          ns: "users",
+                        }),
+                      };
+
                   const otherContactActions = (
                     <ContactPermissionsDialog
                       userIdentifier={
@@ -169,8 +178,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     <ContactCard
                       key={id}
                       tag={contactType}
-                      actions={otherContactActions}
-                      state={contactState}
+                      actions={
+                        !this.props.status.isUnder18 && otherContactActions
+                      }
+                      state={!this.props.status.isUnder18 && contactState}
                       fullName={name}
                       streetAddress={contact.streetAddress}
                       postalCode={contact.postalCode}
@@ -322,14 +333,21 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="item-list item-list--student-guardians">
               {this.props.contacts.guardians.list.length > 0 &&
                 this.props.contacts.guardians.list.map((guardian, index) => {
-                  const { continuedViewPermission } = guardian;
-                  const guardianState = continuedViewPermission
-                    ? t("labels.hasContinuedViewPermission", {
-                        ns: "users",
-                      })
-                    : t("labels.noContinuedViewPermission", {
-                        ns: "users",
-                      });
+                  const guardianState = guardian.continuedViewPermission
+                    ? {
+                        modifier: "APPROVED",
+                        icon: "icon-thumb-up",
+                        text: t("labels.hasContinuedViewPermission", {
+                          ns: "users",
+                        }),
+                      }
+                    : {
+                        modifier: "DENIED",
+                        icon: "icon-cross",
+                        text: t("labels.noContinuedViewPermission", {
+                          ns: "users",
+                        }),
+                      };
                   const guardianActions = (
                     <GuardianPermissionsDialog
                       guardian={guardian}
@@ -348,9 +366,9 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   return (
                     <ContactCard
                       key={index}
-                      actions={guardianActions}
+                      actions={!this.props.status.isUnder18 && guardianActions}
                       fullName={getName(guardian, true)}
-                      state={guardianState}
+                      state={!this.props.status.isUnder18 && guardianState}
                     />
                   );
                 })}

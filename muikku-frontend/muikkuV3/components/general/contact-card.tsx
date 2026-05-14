@@ -4,6 +4,12 @@ import Avatar from "~/components/general/avatar";
 import moment from "moment";
 import { localize } from "~/locales/i18n";
 
+export type ContactState = {
+  text: string;
+  modifier?: string;
+  icon?: string;
+};
+
 /**
  * Component for displaying contact information for a student such as a counselor or a guardian.
  * It shows the person's name, profile picture, contact information, and any relevant labels (e.g., group counselor, study counselor).
@@ -17,8 +23,7 @@ interface ContactCardProps {
   city?: string;
   country?: string;
   tag?: React.ReactNode;
-  state?: string;
-  stateModifier?: string;
+  state?: ContactState;
   actions?: React.ReactNode;
   email?: string;
   groupAdvisor?: boolean;
@@ -46,7 +51,6 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
     city,
     country,
     state,
-    stateModifier,
     email,
     phone,
     groupAdvisor,
@@ -147,9 +151,14 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
         )}
         {state && (
           <div
-            className={`item-list__user-state ${stateModifier ? "item-list__user-state--" + stateModifier : ""}`}
+            className={`item-list__user-state ${state.modifier ? "item-list__user-state--" + state.modifier : ""}`}
           >
-            {state}
+            {state.icon && (
+              <span
+                className={"item-list__user-state-icon " + state.icon}
+              ></span>
+            )}
+            {state.text}
           </div>
         )}
         {actions && <div className="item-list__user-actions">{actions}</div>}

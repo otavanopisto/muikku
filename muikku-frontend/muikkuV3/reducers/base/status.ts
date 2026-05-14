@@ -20,6 +20,7 @@ export interface StatusType {
   permissions: any;
   contextPath: string;
   isActiveUser: boolean;
+  isUnder18: boolean;
   roles: Role[];
   isStudent: boolean;
   hasFees: boolean;

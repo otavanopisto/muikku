@@ -39,7 +39,7 @@ import StudyProgress from "./study-progress";
 import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
-import ContactCard from "~/components/general/contact-card";
+import ContactCard, { ContactState } from "~/components/general/contact-card";
 
 /**
  * StateOfStudiesProps
@@ -174,13 +174,27 @@ class StateOfStudies extends React.Component<
         <ApplicationSubPanel.Body>
           <div className="item-list item-list--student-contact-info">
             {this.props.guider.currentStudent.contactInfos?.map((contact) => {
-              const contactState = contact.allowStudyDiscussions
-                ? this.props.i18n.t("labels.hasContinuedDiscussionPermission", {
-                    ns: "users",
-                  })
-                : this.props.i18n.t("labels.noContinuedDiscussionPermission", {
-                    ns: "users",
-                  });
+              const contactState: ContactState = contact.allowStudyDiscussions
+                ? {
+                    modifier: "APPROVED",
+                    icon: "icon-thumb-up",
+                    text: this.props.i18n.t(
+                      "labels.hasContinuedDiscussionPermission",
+                      {
+                        ns: "users",
+                      }
+                    ),
+                  }
+                : {
+                    modifier: "DENIED",
+                    icon: "icon-thumb-down",
+                    text: this.props.i18n.t(
+                      "labels.noContinuedDiscussionPermission",
+                      {
+                        ns: "users",
+                      }
+                    ),
+                  };
               return (
                 <ContactCard
                   key={contact.id}
@@ -192,7 +206,11 @@ class StateOfStudies extends React.Component<
                   city={contact.city}
                   country={contact.country}
                   fullName={contact.name}
-                  state={contact.contactType && contactState}
+                  state={
+                    contact.contactType && // if there's a contact type for the user we show the state
+                    !this.props.guider.currentStudent.basic.under18 && // if the student is underaged, we do not show the state
+                    contactState
+                  }
                 />
               );
             })}
@@ -212,33 +230,37 @@ class StateOfStudies extends React.Component<
             {this.props.guider.currentStudent.guardians?.length > 0 &&
               this.props.guider.currentStudent.guardians?.map(
                 (guardian, index) => {
-                  const { continuedViewPermission } = guardian;
-                  const guardianState = continuedViewPermission
-                    ? {
-                        modifier: "APPROVED",
-                        text: this.props.i18n.t(
-                          "labels.hasContinuedViewPermission",
-                          {
-                            ns: "users",
-                          }
-                        ),
-                      }
-                    : {
-                        modifier: "DENIED",
-                        text: this.props.i18n.t(
-                          "labels.noContinuedViewPermission",
-                          {
-                            ns: "users",
-                          }
-                        ),
-                      };
+                  const guardianState: ContactState =
+                    guardian.continuedViewPermission
+                      ? {
+                          modifier: "APPROVED",
+                          icon: "icon-thumb-up",
+                          text: this.props.i18n.t(
+                            "labels.hasContinuedViewPermission",
+                            {
+                              ns: "users",
+                            }
+                          ),
+                        }
+                      : {
+                          modifier: "DENIED",
+                          icon: "icon-thumb-down",
+                          text: this.props.i18n.t(
+                            "labels.noContinuedViewPermission",
+                            {
+                              ns: "users",
+                            }
+                          ),
+                        };
 
                   return (
                     <ContactCard
                       key={"guardian" + index}
                       fullName={getName(guardian, true)}
-                      state={guardianState.text}
-                      stateModifier={guardianState.modifier}
+                      state={
+                        !this.props.guider.currentStudent.basic.under18 &&
+                        guardianState
+                      }
                     />
                   );
                 }
