@@ -2,7 +2,6 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
-  getCourseDropdownName,
   getCourseInfo,
   MANDATORITY_MANDATORY_VALUES,
   MANDATORITY_OPTIONAL_VALUES,
@@ -15,6 +14,13 @@ import Button from "~/components/general/button";
 import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
 import { useTranslation } from "react-i18next";
 import { WorkspaceSuggestion } from "~/generated/client";
+import { CurriculumConfig } from "~/util/curriculum-config";
+import {
+  OPSCourseCard,
+  OPSCourseCardContent,
+  OPSCourseCardHeader,
+  OPSCourseCardLabel,
+} from "~/components/general/OPS-matrix/OPS-course-card";
 
 /**
  * Component that displays a summary of a student's study progress in a list format.
@@ -26,6 +32,7 @@ interface ProgressListProps
     OPSCourseListProps,
     "renderMandatoryCourseItemContent" | "renderOptionalCourseItemContent"
   > {
+  curriculumConfig: CurriculumConfig;
   /** Callback function triggered when a student signs up for a course workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
@@ -47,6 +54,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     needSupplementationList,
     studentIdentifier,
     studentUserEntityId,
+    curriculumConfig,
     onSignUp,
   } = props;
   const { t } = useTranslation(["studyMatrix", "workspace"]);
@@ -103,10 +111,12 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
       </SuggestionList>
     );
 
-    // By default content is mandatory or option shorthand
-    let courseTdContent = MANDATORITY_MANDATORY_VALUES.includes(
+    const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
       course.mandatority
-    )
+    );
+
+    // By default content is mandatory or option shorthand
+    let courseTdContent = isMandatory
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
       : t("labels.optionalShorthand", { ns: "studyMatrix" });
 
@@ -131,14 +141,32 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
           <Dropdown
             content={
               <div className="hops-container__study-tool-dropdown-container">
-                <div className="hops-container__study-tool-dropdow-title">
-                  {getCourseDropdownName(
-                    subject,
-                    course,
-                    matrix.type === "UPPER_SECONDARY"
-                  )}
-                </div>
-                {canBeSelected && suggestionList}
+                <OPSCourseCard
+                  innerContainerModifiers={
+                    isMandatory ? ["mandatory"] : ["optional"]
+                  }
+                >
+                  <OPSCourseCardHeader>
+                    <span className="ops-course__card-title">
+                      <b>{`${subject.code}${course.courseNumber}`}</b>{" "}
+                      {curriculumConfig
+                        ? `${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`
+                        : `${course.name}`}
+                    </span>
+                  </OPSCourseCardHeader>
+                  <OPSCourseCardContent>
+                    <div className="ops-course__card-labels">
+                      <OPSCourseCardLabel
+                        modifiers={[isMandatory ? "mandatory" : "optional"]}
+                      >
+                        {isMandatory
+                          ? t("labels.mandatory", { ns: "common" })
+                          : t("labels.optional", { ns: "common" })}
+                      </OPSCourseCardLabel>
+                    </div>
+                    {canBeSelected && suggestionList}
+                  </OPSCourseCardContent>
+                </OPSCourseCard>
               </div>
             }
           >
