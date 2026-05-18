@@ -1,0 +1,152 @@
+@import "../base/colors";
+@import "../base/vars";
+
+// OPS course card (study progress / OPS matrix dropdowns)
+.ops-course__card {
+  background: $color-default;
+  border-radius: 5px;
+  opacity: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.ops-course__card--disabled {
+  cursor: not-allowed;
+  opacity: 50%;
+}
+
+.ops-course__card--selected {
+  outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
+  outline-offset: -2px;
+  overflow: hidden;
+  position: relative;
+
+  .ops-course__card-inner-container {
+    border-color: $color-study-plan-tool-accent;
+  }
+}
+
+.ops-course__card-inner-container {
+  border-left: 3px solid transparent;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  padding: 10px;
+  position: relative;
+  width: 100%;
+}
+
+.ops-course__card-inner-container--mandatory {
+  border-left-color: $color-mandatory;
+}
+
+.ops-course__card-inner-container--optional {
+  border-left-color: $color-optional;
+}
+
+.ops-course__card-header {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.ops-course__card-header .ops-course__card-title {
+  text-align: initial;
+}
+
+.ops-course__card-content {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
+
+.ops-course__card-actions {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+// Plain classNames used inside Header / Content (no TS wrapper)
+.ops-course__card-title {
+  text-align: initial;
+}
+
+.ops-course__card-labels {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.ops-course__card-label {
+  align-items: center;
+  border-radius: 4px;
+  display: flex;
+  font-size: $text-mobile-font-size;
+  max-width: fit-content;
+  padding: 3px 6px;
+  text-transform: uppercase;
+}
+
+.ops-course__card-label--mandatory {
+  background: $color-mandatory;
+  color: darken($color-mandatory, 45%);
+}
+
+.ops-course__card-label--optional {
+  background: $color-optional;
+  color: darken($color-optional, 55%);
+}
+
+.ops-course__card-label--course-length {
+  background: $color-info;
+  color: $color-default;
+}
+
+.ops-course__card-label--planned {
+  background: lighten($color-passed, 50%);
+  color: $color-default-contrast;
+}
+
+.ops-course__card-label--transferred {
+  background: $color-passed;
+  color: $color-default;
+}
+
+.ops-course__card-label--inprogress {
+  background: $color-info;
+  color: $color-default;
+}
+
+.ops-course__card-label--completed {
+  background: $color-passed;
+  color: $color-default;
+}
+
+.ops-course__card-label--failed {
+  background: $color-failed;
+  color: $color-default;
+}
+
+.ops-course__card-label--supplementation-request {
+  background: $color-incomplete;
+  color: $color-default;
+}
+
+.ops-course__card-label--suggested-next {
+  background: $color-next;
+  color: $color-default;
+}
+
+.ops-course__card-dates {
+  color: $color-default-contrast;
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: column;
+  font-size: 0.75rem;
+}
+
+.ops-course__card-dates-item {
+  display: flex;
+}

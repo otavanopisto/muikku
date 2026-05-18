@@ -12,6 +12,7 @@ import {
   getNonOPSTransferedActivities,
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
+import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
@@ -122,9 +123,13 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
               <Dropdown
                 content={
                   <div className="hops-container__study-tool-dropdown-container">
-                    <div className="hops-container__study-tool-dropdow-title">
-                      {courseDropdownName}
-                    </div>
+                    <OPSCourseCard innerContainerModifiers={["mandatory"]}>
+                      <OPSCourseCardHeader>
+                        <span className="ops-course__card-title">
+                          {courseDropdownName}
+                        </span>
+                      </OPSCourseCardHeader>
+                    </OPSCourseCard>
                   </div>
                 }
               >
@@ -156,9 +161,13 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
             <Dropdown
               content={
                 <div className="hops-container__study-tool-dropdown-container">
-                  <div className="hops-container__study-tool-dropdow-title">
-                    {`${courseDropdownName}*`}
-                  </div>
+                  <OPSCourseCard innerContainerModifiers={["optional"]}>
+                    <OPSCourseCardHeader>
+                      <span className="ops-course__card-title">
+                        {`${courseDropdownName}*`}
+                      </span>
+                    </OPSCourseCardHeader>
+                  </OPSCourseCard>
                 </div>
               }
             >
