@@ -858,6 +858,11 @@ public class EvaluationController {
           }
         }
       }
+
+      UserEntity assessor = userEntityController.findUserEntityById(workspaceNodeEvaluation.getAssessorEntityId());
+      if (assessor != null) {
+        evaluation.setAssessorName(userEntityController.getName(assessor, true).getDisplayName());
+      }
       
       evaluationAudioClips.forEach(audioClip -> {
         evaluation.addAudioAssessmentAudioClip(new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()));
