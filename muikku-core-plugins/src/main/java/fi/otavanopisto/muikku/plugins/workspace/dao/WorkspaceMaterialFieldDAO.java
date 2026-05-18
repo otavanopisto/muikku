@@ -18,18 +18,17 @@ public class WorkspaceMaterialFieldDAO extends CorePluginsDAO<WorkspaceMaterialF
 
   private static final long serialVersionUID = 6804548350145556078L;
 
-  public WorkspaceMaterialField create(QueryField field, WorkspaceMaterial workspaceMaterial, String embedId) {
+  public WorkspaceMaterialField create(QueryField field, WorkspaceMaterial workspaceMaterial) {
 
     WorkspaceMaterialField workspaceMaterialField = new WorkspaceMaterialField();
 
-    workspaceMaterialField.setEmbedId(embedId);
     workspaceMaterialField.setWorkspaceMaterial(workspaceMaterial);
     workspaceMaterialField.setQueryField(field);
 
     return persist(workspaceMaterialField);
   }
 
-  public WorkspaceMaterialField findByWorkspaceMaterialAndQueryFieldAndEmbedId(WorkspaceMaterial workspaceMaterial, QueryField queryField, String embedId) {
+  public WorkspaceMaterialField findByWorkspaceMaterialAndQueryField(WorkspaceMaterial workspaceMaterial, QueryField queryField) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -39,8 +38,7 @@ public class WorkspaceMaterialFieldDAO extends CorePluginsDAO<WorkspaceMaterialF
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(WorkspaceMaterialField_.workspaceMaterial), workspaceMaterial),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialField_.queryField), queryField),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialField_.embedId), embedId)
+        criteriaBuilder.equal(root.get(WorkspaceMaterialField_.queryField), queryField)
       )
     );
 
