@@ -30,10 +30,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
 import { UserStudyData } from "~/reducers/study-activity";
-import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
-import ContactPermissionsDialog from "~/components/profile/dialogs/contact-permissions";
-import Link from "~/components/general/link";
-import ContactCard, { ContactState } from "~/components/general/contact-card";
+import ContactCard from "~/components/general/contact-card";
+import OtherContact from "./summary/other-contact";
+import GuardianContact from "./summary/guardian-contact";
 
 /**
  * SummaryProps
@@ -134,65 +133,16 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-counselors">
               {this.props.contacts.others?.list.length > 0 ? (
-                this.props.contacts.others.list.map((contact) => {
-                  const {
-                    name,
-                    id,
-                    phoneNumber,
-                    email,
-                    contactType,
-                    allowStudyDiscussions,
-                  } = contact;
-                  const contactState: ContactState = allowStudyDiscussions
-                    ? {
-                        modifier: "APPROVED",
-                        icon: "icon-thumb-up",
-                        text: t("labels.hasContinuedDiscussionPermission", {
-                          ns: "users",
-                        }),
-                      }
-                    : {
-                        modifier: "DENIED",
-                        icon: "icon-cross",
-                        text: t("labels.noContinuedDiscussionPermission", {
-                          ns: "users",
-                        }),
-                      };
-
-                  const otherContactActions = (
-                    <ContactPermissionsDialog
-                      userIdentifier={
-                        this.props.status.userSchoolDataIdentifier
-                      }
-                      contact={contact}
-                    >
-                      <Link className="link">
-                        {t("actions.editPermissions", {
-                          ns: "users",
-                        })}
-                      </Link>
-                    </ContactPermissionsDialog>
-                  );
-
-                  return (
-                    <ContactCard
-                      key={id}
-                      tag={contactType}
-                      actions={
-                        !this.props.status.isUnder18 && otherContactActions
-                      }
-                      state={!this.props.status.isUnder18 && contactState}
-                      fullName={name}
-                      streetAddress={contact.streetAddress}
-                      postalCode={contact.postalCode}
-                      city={contact.city}
-                      country={contact.country}
-                      id={id}
-                      email={email}
-                      phone={phoneNumber}
-                    />
-                  );
-                })
+                this.props.contacts.others.list.map((contact) => (
+                  <OtherContact
+                    key={contact.id}
+                    contact={contact}
+                    studentIdentifier={
+                      this.props.status.userSchoolDataIdentifier
+                    }
+                    isUnder18={this.props.status.isUnder18}
+                  />
+                ))
               ) : (
                 <div className="empty">
                   <span>
@@ -332,46 +282,16 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-guardians">
               {this.props.contacts.guardians.list.length > 0 &&
-                this.props.contacts.guardians.list.map((guardian, index) => {
-                  const guardianState = guardian.continuedViewPermission
-                    ? {
-                        modifier: "APPROVED",
-                        icon: "icon-thumb-up",
-                        text: t("labels.hasContinuedViewPermission", {
-                          ns: "users",
-                        }),
-                      }
-                    : {
-                        modifier: "DENIED",
-                        icon: "icon-cross",
-                        text: t("labels.noContinuedViewPermission", {
-                          ns: "users",
-                        }),
-                      };
-                  const guardianActions = (
-                    <GuardianPermissionsDialog
-                      guardian={guardian}
-                      userIdentifier={
-                        this.props.status.userSchoolDataIdentifier
-                      }
-                    >
-                      <Link className="link">
-                        {t("actions.editPermissions", {
-                          ns: "users",
-                        })}
-                      </Link>
-                    </GuardianPermissionsDialog>
-                  );
-
-                  return (
-                    <ContactCard
-                      key={index}
-                      actions={!this.props.status.isUnder18 && guardianActions}
-                      fullName={getName(guardian, true)}
-                      state={!this.props.status.isUnder18 && guardianState}
-                    />
-                  );
-                })}
+                this.props.contacts.guardians.list.map((guardian, index) => (
+                  <GuardianContact
+                    key={guardian.identifier}
+                    guardian={guardian}
+                    studentIdentifier={
+                      this.props.status.userSchoolDataIdentifier
+                    }
+                    isUnder18={this.props.status.isUnder18}
+                  />
+                ))}
             </div>
           </div>
         </div>
