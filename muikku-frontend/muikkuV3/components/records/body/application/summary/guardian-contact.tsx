@@ -54,9 +54,9 @@ const GuardianContact: React.FC<GuardianContactProps> = (props) => {
   return (
     <ContactCard
       key={studentIdentifier}
-      actions={isUnder18 && guardianActions}
+      actions={!isUnder18 && guardianActions}
       fullName={getName(guardian, true)}
-      state={isUnder18 && guardianState}
+      state={!isUnder18 && guardianState}
     />
   );
 };

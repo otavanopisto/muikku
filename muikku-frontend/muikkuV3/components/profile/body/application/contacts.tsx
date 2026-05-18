@@ -4,9 +4,10 @@ import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
 import Link from "~/components/general/link";
-import GuardianPermissionsDialog from "~/components/profile/dialogs/guardian-permissions";
-import ContactPermissionsDialog from "~/components/profile/dialogs/contact-permissions";
-import ContactCard, { ContactState } from "~/components/general/contact-card";
+
+/* import ContactCard, { ContactState } from "~/components/general/contact-card"; */
+import GuardianContact from "~/components/records/body/application/summary/guardian-contact";
+import OtherContact from "~/components/records/body/application/summary/other-contact";
 import { getName } from "~/util/modifiers";
 /**
  * Guardians component props.
@@ -18,6 +19,7 @@ interface GuardiansProps {}
  */
 const Guardians: React.FC<GuardiansProps> = () => {
   const { t } = useTranslation();
+
   const { guardians, others } = useSelector(
     (state: StateType) => state.contacts
   );
@@ -38,48 +40,14 @@ const Guardians: React.FC<GuardiansProps> = () => {
             {t("labels.contactInfo", { ns: "users" })}
           </h2>
           <div className="item-list item-list--student-guardians">
-            {others.list.map((contact, index) => {
-              const actions = (
-                <ContactPermissionsDialog
-                  contact={contact}
-                  userIdentifier={status.userSchoolDataIdentifier}
-                >
-                  <Link className="link">
-                    {t("actions.editPermissions", {
-                      ns: "users",
-                    })}
-                  </Link>
-                </ContactPermissionsDialog>
-              );
-
-              const contactState: ContactState = contact.allowStudyDiscussions
-                ? {
-                    modifier: "APPROVED",
-                    icon: "icon-thumb-up",
-                    text: t("labels.hasContinuedDiscussionPermission", {
-                      ns: "users",
-                    }),
-                  }
-                : {
-                    modifier: "DENIED",
-                    icon: "icon-cross",
-                    text: t("labels.noContinuedDiscussionPermission", {
-                      ns: "users",
-                    }),
-                  };
-
-              if (profile.location !== "guardians" || !others.list) {
-                return null;
-              }
-              return (
-                <ContactCard
-                  key={index}
-                  actions={actions}
-                  fullName={contact.name}
-                  state={contactState}
-                />
-              );
-            })}
+            {others.list.map((contact, index) => (
+              <OtherContact
+                key={contact.id}
+                contact={contact}
+                studentIdentifier={status.userSchoolDataIdentifier}
+                isUnder18={status.isUnder18}
+              />
+            ))}
           </div>
         </>
       )}
@@ -89,47 +57,14 @@ const Guardians: React.FC<GuardiansProps> = () => {
             {t("labels.guardians", { ns: "users" })}
           </h2>
           <div className="item-list item-list--student-guardians">
-            {guardians.list.map((guardian, index) => {
-              const actions = (
-                <GuardianPermissionsDialog
-                  guardian={guardian}
-                  userIdentifier={status.userSchoolDataIdentifier}
-                >
-                  <Link className="link">
-                    {t("actions.editPermissions", {
-                      ns: "users",
-                    })}
-                  </Link>
-                </GuardianPermissionsDialog>
-              );
-              const guardianState = guardian.continuedViewPermission
-                ? {
-                    modifier: "APPROVED",
-                    icon: "icon-thumb-up",
-                    text: t("labels.hasContinuedViewPermission", {
-                      ns: "users",
-                    }),
-                  }
-                : {
-                    modifier: "DENIED",
-                    icon: "icon-cross",
-                    text: t("labels.noContinuedViewPermission", {
-                      ns: "users",
-                    }),
-                  };
-
-              if (profile.location !== "guardians" || !guardians.list) {
-                return null;
-              }
-              return (
-                <ContactCard
-                  key={index}
-                  actions={actions}
-                  fullName={getName(guardian, true)}
-                  state={guardianState}
-                />
-              );
-            })}
+            {guardians.list.map((guardian, index) => (
+              <GuardianContact
+                key={guardian.identifier}
+                guardian={guardian}
+                studentIdentifier={status.userSchoolDataIdentifier}
+                isUnder18={status.isUnder18}
+              />
+            ))}
           </div>
         </>
       )}

@@ -57,8 +57,8 @@ const OtherContact: React.FC<OtherContactProps> = (props) => {
     <ContactCard
       key={id}
       tag={contactType}
-      actions={isUnder18 && otherContactActions}
-      state={isUnder18 && contactState}
+      actions={!isUnder18 && otherContactActions}
+      state={!isUnder18 && contactState}
       fullName={name}
       streetAddress={contact.streetAddress}
       postalCode={contact.postalCode}
