@@ -24,6 +24,7 @@ import {
   MANDATORITY_MANDATORY_VALUES,
   MANDATORITY_OPTIONAL_VALUES,
 } from "~/helper-functions/study-matrix";
+import { localize } from "~/locales/i18n";
 import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
@@ -55,6 +56,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     gradedList,
     onGoingList,
     needSupplementationList,
+    plannedCourses,
     curriculumConfig,
     onSignUpBehalf,
   } = props;
@@ -143,6 +145,19 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       courseTdContent = grade;
     }
 
+    const plannedCourseInfo = plannedCourses?.find(
+      (plannedCourse) =>
+        plannedCourse.subjectCode === subject.code &&
+        plannedCourse.courseNumber === course.courseNumber
+    );
+
+    // Calculates the end date of the planned course
+    const calculatedEndDate = plannedCourseInfo?.duration
+      ? new Date(
+          plannedCourseInfo.startDate.getTime() + plannedCourseInfo.duration
+        )
+      : null;
+
     return (
       <Td key={`${subject.code}-${course.courseNumber}`} modifiers={modifiers}>
         <Dropdown
@@ -171,6 +186,22 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                         : t("labels.optional", { ns: "common" })}
                     </OPSCourseCardLabel>
                   </div>
+
+                  {plannedCourseInfo && (
+                    <div className="ops-course__card-dates">
+                      <div className="ops-course__card-dates-item">
+                        {calculatedEndDate ? (
+                          <>
+                            {`${localize.date(new Date(plannedCourseInfo.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}
+                          </>
+                        ) : (
+                          <>
+                            {`${localize.date(new Date(plannedCourseInfo.startDate))} (suunniteltu)`}
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   {canBeSelected && suggestionList}
                 </OPSCourseCardContent>
               </OPSCourseCard>

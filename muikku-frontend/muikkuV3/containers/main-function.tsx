@@ -335,6 +335,9 @@ export default class MainFunction extends React.Component<
           userIdentifier: originalData.c,
         }) as Action
       );
+      this.props.store.dispatch(
+        loadStudyPlanData({ userIdentifier: originalData.c }) as Action
+      );
     }
   }
 
