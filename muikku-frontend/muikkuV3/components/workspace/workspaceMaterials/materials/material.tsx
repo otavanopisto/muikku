@@ -22,6 +22,7 @@ import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-l
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import { MaterialLoaderAssessor } from "~/components/base/material-loader/assessor";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -240,6 +241,7 @@ class WorkspaceMaterial extends React.Component<
                       className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
                     ></div>
                     <MaterialLoaderDate {...props} {...state} />
+                    <MaterialLoaderAssessor {...props} {...state} />
                     <MaterialLoaderGrade {...props} {...state} />
                     <MaterialLoaderPoints {...props} {...state} />
                     <MaterialLoaderAssesment {...props} {...state} />

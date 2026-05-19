@@ -10,6 +10,7 @@ import { MaterialLoaderContent } from "~/components/base/material-loader/content
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import { MaterialLoaderAssessor } from "~/components/base/material-loader/assessor";
 import {
   ApplicationListItem,
   ApplicationListItemHeader,
@@ -274,6 +275,7 @@ const Material = (props: MaterialProps) => {
                         className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
                       ></div>
                       <MaterialLoaderDate {...props} {...state} />
+                      <MaterialLoaderAssessor {...props} {...state} />
                       <MaterialLoaderGrade {...props} {...state} />
                       <MaterialLoaderPoints {...props} {...state} />
                       <MaterialLoaderAssesment {...props} {...state} />
