@@ -3,6 +3,7 @@ import Dropdown from "~/components/general/dropdown";
 import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
   getCourseInfo,
+  getCourseStateLabel,
   MANDATORITY_MANDATORY_VALUES,
   MANDATORITY_OPTIONAL_VALUES,
 } from "~/helper-functions/study-matrix";
@@ -59,15 +60,21 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   const renderCourseItem = (params: RenderItemParams) => {
     const { subject, course, listItemModifiers } = params;
 
-    const { modifiers, grade, needsSupplementation } = getCourseInfo(
-      listItemModifiers,
-      subject,
-      course,
-      suggestedNextList,
-      transferedList,
-      gradedList,
-      onGoingList,
-      needSupplementationList
+    const { modifiers, grade, needsSupplementation, currentActivityItem } =
+      getCourseInfo(
+        listItemModifiers,
+        subject,
+        course,
+        suggestedNextList,
+        transferedList,
+        gradedList,
+        onGoingList,
+        needSupplementationList
+      );
+
+    const currentActivityItemLabel = getCourseStateLabel(
+      currentActivityItem,
+      t
     );
 
     const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
@@ -122,6 +129,14 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
                           ? t("labels.mandatory", { ns: "common" })
                           : t("labels.optional", { ns: "common" })}
                       </OPSCourseCardLabel>
+
+                      {currentActivityItemLabel && (
+                        <OPSCourseCardLabel
+                          modifiers={[currentActivityItemLabel.state]}
+                        >
+                          {currentActivityItemLabel.label}
+                        </OPSCourseCardLabel>
+                      )}
                     </div>
                   </OPSCourseCardContent>
                 </OPSCourseCard>

@@ -9,6 +9,7 @@ import {
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import {
   getCourseInfo,
+  getCourseStateLabel,
   getHighestCourseNumber,
   MANDATORITY_MANDATORY_VALUES,
   MANDATORITY_OPTIONAL_VALUES,
@@ -63,15 +64,21 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;
 
-    const { modifiers, grade, needsSupplementation } = getCourseInfo(
-      tdModifiers,
-      subject,
-      course,
-      suggestedNextList,
-      transferedList,
-      gradedList,
-      onGoingList,
-      needSupplementationList
+    const { modifiers, grade, needsSupplementation, currentActivityItem } =
+      getCourseInfo(
+        tdModifiers,
+        subject,
+        course,
+        suggestedNextList,
+        transferedList,
+        gradedList,
+        onGoingList,
+        needSupplementationList
+      );
+
+    const currentActivityItemLabel = getCourseStateLabel(
+      currentActivityItem,
+      t
     );
 
     const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
@@ -122,6 +129,14 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                         ? t("labels.mandatory", { ns: "common" })
                         : t("labels.optional", { ns: "common" })}
                     </OPSCourseCardLabel>
+
+                    {currentActivityItemLabel && (
+                      <OPSCourseCardLabel
+                        modifiers={[currentActivityItemLabel.state]}
+                      >
+                        {currentActivityItemLabel.label}
+                      </OPSCourseCardLabel>
+                    )}
                   </div>
                 </OPSCourseCardContent>
               </OPSCourseCard>
