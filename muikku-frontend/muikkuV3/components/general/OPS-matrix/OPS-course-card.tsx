@@ -1,3 +1,7 @@
+// PLEASE NOTE:
+// This component is almost identical to PlannerCard component, with the only difference being the class names
+// and without any additional functionality that PlannerCard may have related to planner tool. It is done this way even if it is code duplication, because
+// there is not component to suit for both use cases without major refactoring. And as we are moving towards Muikku V4, this will do for now.
 import * as React from "react";
 import "~/sass/elements/ops-course-card.scss";
 
@@ -11,7 +15,6 @@ interface OPSCourseCardProps {
 }
 
 /**
- * OPSCourseCard component.
  * Composable card for OPS matrix dropdowns and related views.
  * @param props - The props for the OPSCourseCard component.
  * @returns The OPSCourseCard component.
