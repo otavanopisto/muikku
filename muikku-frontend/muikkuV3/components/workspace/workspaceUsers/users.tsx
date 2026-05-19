@@ -314,7 +314,7 @@ class WorkspaceUsers extends React.Component<
         onClose={() => {}}
         onConfirm={() => {}}
       >
-        <Button buttonModifiers="primary-function">
+        <Button buttonModifiers={["primary-function", "no-toolbar"]}>
           {this.props.t("actions.createAbsence", {
             ns: "events",
           })}

@@ -9,9 +9,11 @@ import {
   WorkspaceStudent,
   User,
   GetWorkspaceStudentsRequest,
-  Student,
 } from "~/generated/client";
 import MApi from "~/api/api";
+import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * CreateAbsenceDialogProps
@@ -62,6 +64,7 @@ type AbsenceEventFormAction =
 
 const workspaceApi = MApi.getWorkspaceApi();
 const muikkuEventApi = MApi.getEventsApi();
+
 /**
  * createInitialAbsenceEventFormState
  * @returns Initial absence event form state
@@ -129,6 +132,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     createInitialAbsenceEventFormState
   );
 
+  const { t } = useTranslation();
   /**
    * studentsLoader
    * @param searchTerm Search term for student lookup
@@ -151,10 +155,16 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       })
     );
   };
+
   /**
    * Handles the confirmation of the dialog
+   * @param absenceEvent event from form
+   * @param onClose closes the dialog
    */
-  const handleConfirm = async (absenceEvent: AbsenceEventFormState) => {
+  const handleConfirm = async (
+    absenceEvent: AbsenceEventFormState,
+    onClose: () => void
+  ) => {
     const { title, description, startDate, endDate } = absenceEvent;
     await muikkuEventApi.createEvent({
       muikkuEvent: {
@@ -162,8 +172,6 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         description,
         start: startDate?.toISOString(),
         end: endDate?.toISOString(),
-        editable: true,
-        removable: false,
         type: "ABSENCE",
         eventContainerId: workspaceEventContainerId,
       },
@@ -171,6 +179,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     });
 
     onConfirm?.(formState);
+    onClose();
     dispatchForm({ type: "RESET" });
   };
 
@@ -219,6 +228,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-description">Poissaolotapahtuma kuvaus</label>
         <textarea
+          className="form-element__textarea"
           id="absence-description"
           value={formState.description}
           onChange={(event) =>
@@ -237,6 +247,10 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           onChange={(date: Date | null) =>
             dispatchForm({ type: "SET_START_DATE", payload: date })
           }
+          showTimeSelect
+          timeFormat="HH:mm"
+          dateFormat="Pp"
+          locale={outputCorrectDatePickerLocale(localize.language)}
         />
       </div>
       <div className="form__row form__row--absence-event">
@@ -247,6 +261,11 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           onChange={(date: Date | null) =>
             dispatchForm({ type: "SET_END_DATE", payload: date })
           }
+          showTimeSelect
+          timeFormat="HH:mm"
+          dateFormat="Pp"
+          minDate={formState.startDate ?? undefined}
+          locale={outputCorrectDatePickerLocale(localize.language)}
         />
       </div>
     </div>
@@ -258,14 +277,22 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    * @returns JSX.Element
    */
   const footer = (onClose: () => void) => (
-    <div className="dialog-footer">
-      <Button onClick={onClose}>Cancel</Button>
-      <Button
-        onClick={() => handleConfirm(formState)}
-        disabled={formState.selectedUsers.length === 0}
-      >
-        Confirm
-      </Button>
+    <div className="dialog__footer">
+      <div className="dialog__button-set">
+        <Button
+          className="button button--execute button--standard-ok"
+          onClick={() => handleConfirm(formState, onClose)}
+          disabled={formState.selectedUsers.length === 0}
+        >
+          {t("actions.create")}
+        </Button>
+        <Button
+          className="button button--cancel button--standard-cancel"
+          onClick={onClose}
+        >
+          {t("actions.cancel")}
+        </Button>
+      </div>
     </div>
   );
 
