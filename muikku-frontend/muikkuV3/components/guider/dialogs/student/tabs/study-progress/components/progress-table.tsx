@@ -20,6 +20,7 @@ import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import { StudyActivityItem, WorkspaceSuggestion } from "~/generated/client";
 import {
   getCourseInfo,
+  getCourseStateLabel,
   getHighestCourseNumber,
   MANDATORITY_MANDATORY_VALUES,
   MANDATORITY_OPTIONAL_VALUES,
@@ -79,6 +80,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       canBeSelected,
       grade,
       needsSupplementation,
+      currentActivityItem,
     } = getCourseInfo(
       tdModifiers,
       subject,
@@ -88,6 +90,11 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       gradedList,
       onGoingList,
       needSupplementationList
+    );
+
+    const currentActivityItemLabel = getCourseStateLabel(
+      currentActivityItem,
+      t
     );
 
     const suggestionList = (
@@ -185,6 +192,14 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                         ? t("labels.mandatory", { ns: "common" })
                         : t("labels.optional", { ns: "common" })}
                     </OPSCourseCardLabel>
+
+                    {currentActivityItemLabel && (
+                      <OPSCourseCardLabel
+                        modifiers={[currentActivityItemLabel.state]}
+                      >
+                        {currentActivityItemLabel.label}
+                      </OPSCourseCardLabel>
+                    )}
                   </div>
 
                   {plannedCourseInfo && (
