@@ -18,6 +18,7 @@ import {
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
 import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * Interface for parameters passed to the course item renderer
@@ -37,6 +38,7 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
   studentUserEntityId: number;
   curriculumName: string;
   studyProgrammeName: string;
+  plannedCourses?: PlannedCourseWithIdentifier[];
   renderCourseItem?: (params: RenderItemParams) => JSX.Element;
 }
 

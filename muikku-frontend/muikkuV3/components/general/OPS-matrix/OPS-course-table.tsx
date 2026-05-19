@@ -13,6 +13,7 @@ import {
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
 import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
@@ -33,6 +34,7 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
   currentMaxCourses: number | null;
   curriculumName: string;
   studyProgrammeName: string;
+  plannedCourses?: PlannedCourseWithIdentifier[];
   renderCourseCell?: (params: RenderItemParams) => JSX.Element;
   renderEmptyCell?: (params: {
     index: number;

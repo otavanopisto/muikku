@@ -355,6 +355,8 @@ export default class MainFunction extends React.Component<
         loadContactGroup("counselors", userId) as Action
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
+
+      this.props.store.dispatch(loadStudyPlanData({}) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords(userId) as Action

@@ -62,6 +62,10 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
       ]?.curriculumConfig ?? null
   );
 
+  const plannedCourses = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState.plannedCourses ?? []
+  );
+
   const skillAndArtCourses = useMemo(() => {
     if (!studyActivityItems) return {};
     return filterActivityBySubjects(
@@ -129,6 +133,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             skillsAndArt={skillAndArtCourses}
             otherLanguageSubjects={otherLanguageSubjects}
             otherSubjects={otherSubjects}
+            plannedCourses={plannedCourses}
             matrix={courseMatrix}
             onSignUp={handleOpenSignUpDialog}
             curriculumConfig={curriculumConfig}
@@ -153,6 +158,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             skillsAndArt={skillAndArtCourses}
             otherLanguageSubjects={otherLanguageSubjects}
             otherSubjects={otherSubjects}
+            plannedCourses={plannedCourses}
             matrix={courseMatrix}
             curriculumConfig={curriculumConfig}
             onSignUp={handleOpenSignUpDialog}

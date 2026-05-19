@@ -21,6 +21,7 @@ import {
   OPSCourseCardHeader,
   OPSCourseCardLabel,
 } from "~/components/general/OPS-matrix/OPS-course-card";
+import { localize } from "~/locales/i18n";
 
 /**
  * Component that displays a summary of a student's study progress in a list format.
@@ -54,6 +55,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     needSupplementationList,
     studentIdentifier,
     studentUserEntityId,
+    plannedCourses,
     curriculumConfig,
     onSignUp,
   } = props;
@@ -132,6 +134,19 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
       courseTdContent = grade;
     }
 
+    const plannedCourseInfo = plannedCourses?.find(
+      (plannedCourse) =>
+        plannedCourse.subjectCode === subject.code &&
+        plannedCourse.courseNumber === course.courseNumber
+    );
+
+    // Calculates the end date of the planned course
+    const calculatedEndDate = plannedCourseInfo?.duration
+      ? new Date(
+          plannedCourseInfo.startDate.getTime() + plannedCourseInfo.duration
+        )
+      : null;
+
     return (
       <ListItem
         key={`${subject.code}-${course.courseNumber}`}
@@ -163,7 +178,31 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
                           ? t("labels.mandatory", { ns: "common" })
                           : t("labels.optional", { ns: "common" })}
                       </OPSCourseCardLabel>
+
+                      {plannedCourseInfo && (
+                        <OPSCourseCardLabel modifiers={["planned"]}>
+                          {t("labels.planned", {
+                            ns: "common",
+                          })}
+                        </OPSCourseCardLabel>
+                      )}
                     </div>
+
+                    {plannedCourseInfo && (
+                      <div className="ops-course__card-dates">
+                        <div className="ops-course__card-dates-item">
+                          {calculatedEndDate ? (
+                            <>
+                              {`${localize.date(new Date(plannedCourseInfo.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}
+                            </>
+                          ) : (
+                            <>
+                              {`${localize.date(new Date(plannedCourseInfo.startDate))} (suunniteltu)`}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     {canBeSelected && suggestionList}
                   </OPSCourseCardContent>
                 </OPSCourseCard>
