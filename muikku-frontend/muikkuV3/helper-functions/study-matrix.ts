@@ -597,6 +597,9 @@ export const getCourseStateLabel = (
           }),
         };
       case "ONGOING":
+      case "PENDING":
+      case "INTERIM_EVALUATION_REQUEST":
+      case "INTERIM_EVALUATION":
         return {
           state: "inprogress",
           label: t("labels.inProgress", {
