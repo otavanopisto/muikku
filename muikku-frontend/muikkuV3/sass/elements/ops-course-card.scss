@@ -129,6 +129,12 @@
   color: $color-default;
 }
 
+.ops-course__card-label--aborted {
+  background: $color-passed-aborted;
+  border: solid;
+  border-color: $color-passed-aborted-border;
+}
+
 .ops-course__card-label--supplementation-request {
   background: $color-incomplete;
   color: $color-default;

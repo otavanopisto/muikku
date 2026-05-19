@@ -21,6 +21,7 @@ import {
   getHighestCourseNumber,
   MANDATORITY_OPTIONAL_VALUES,
   MANDATORITY_MANDATORY_VALUES,
+  getCourseStateLabel,
 } from "~/helper-functions/study-matrix";
 import { localize } from "~/locales/i18n";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -74,17 +75,27 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;
 
-    const { modifiers, canBeSelected, grade, needsSupplementation } =
-      getCourseInfo(
-        tdModifiers,
-        subject,
-        course,
-        suggestedNextList,
-        transferedList,
-        gradedList,
-        onGoingList,
-        needSupplementationList
-      );
+    const {
+      modifiers,
+      canBeSelected,
+      grade,
+      needsSupplementation,
+      currentActivityItem,
+    } = getCourseInfo(
+      tdModifiers,
+      subject,
+      course,
+      suggestedNextList,
+      transferedList,
+      gradedList,
+      onGoingList,
+      needSupplementationList
+    );
+
+    const currentActivityItemLabel = getCourseStateLabel(
+      currentActivityItem,
+      t
+    );
 
     const suggestionList = (
       <SuggestionList
@@ -183,6 +194,14 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                             ns: "common",
                           })}
                     </OPSCourseCardLabel>
+
+                    {currentActivityItemLabel && (
+                      <OPSCourseCardLabel
+                        modifiers={[currentActivityItemLabel.state]}
+                      >
+                        {currentActivityItemLabel.label}
+                      </OPSCourseCardLabel>
+                    )}
 
                     {plannedCourseInfo && (
                       <OPSCourseCardLabel modifiers={["planned"]}>
