@@ -478,8 +478,6 @@ class Base extends React.Component<BaseProps, BaseState> {
       // Tell the server thru the websocket to save
       const messageData = JSON.stringify({
         answer: newValue,
-        // I have no idea what this is for
-        embedId: "",
         materialId: this.props.material.materialId,
         fieldName: name,
         workspaceEntityId: this.props.workspace.id,
