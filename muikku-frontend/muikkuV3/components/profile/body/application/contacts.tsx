@@ -3,12 +3,9 @@ import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/item-list.scss";
-import Link from "~/components/general/link";
-
-/* import ContactCard, { ContactState } from "~/components/general/contact-card"; */
 import GuardianContact from "~/components/records/body/application/summary/guardian-contact";
 import OtherContact from "~/components/records/body/application/summary/other-contact";
-import { getName } from "~/util/modifiers";
+
 /**
  * Guardians component props.
  */

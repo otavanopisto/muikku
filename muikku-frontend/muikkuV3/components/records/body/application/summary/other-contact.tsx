@@ -15,10 +15,9 @@ interface OtherContactProps {
 
 /**
  * Contact
- * @param props
+ * @param props OtherContactProps
  * @returns JSX.Element
  */
-
 const OtherContact: React.FC<OtherContactProps> = (props) => {
   const { contact, studentIdentifier, isUnder18 } = props;
   const { name, id, phoneNumber, email, contactType, allowStudyDiscussions } =

@@ -17,7 +17,7 @@ interface GuardianContactProps {
 
 /**
  * Guardian
- * @param props
+ * @param props GuardianContactProps
  * @returns JSX.Element
  */
 const GuardianContact: React.FC<GuardianContactProps> = (props) => {
