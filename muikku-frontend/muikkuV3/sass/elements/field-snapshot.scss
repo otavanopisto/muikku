@@ -1,0 +1,29 @@
+.field-snapshot {
+    border: 2px solid black;
+    margin-top: 0.5rem;
+  }
+  
+  .field-snapshot__row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .field-snapshot__toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .field-snapshot__toggle-icon.is-open {
+    transform: rotate(90deg);
+  }
+  
+  .field-snapshot__accordion-content {
+    font-weight: 300;
+    padding: 5px 10px;
+  }

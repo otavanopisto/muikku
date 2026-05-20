@@ -131,6 +131,8 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             checkAnswers={props.answersChecked}
             onAnswerChange={props.onAnswerChange}
             onAnswerCheckableChange={props.onAnswerCheckableChange}
+            onTakeFieldSnapshot={props.onTakeFieldSnapshot}
+            onDeleteFieldSnapshot={props.onDeleteFieldSnapshot}
             invisible={props.invisible}
             readOnly={props.readOnly}
             answerable={props.answerable}

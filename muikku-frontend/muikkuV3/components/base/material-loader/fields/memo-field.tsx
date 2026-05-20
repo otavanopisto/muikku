@@ -20,6 +20,9 @@ import {
 import "~/sass/elements/memofield.scss";
 import { isValidHTML } from "~/util/html";
 import { CommonFieldProps } from "../types";
+import { IconButton } from "~/components/general/button";
+import Dropdown from "~/components/general/dropdown";
+import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 
 /**
  * MemoFieldProps
@@ -179,7 +182,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * replaceNewlinesWithBreaks
-   * @param str
+   * @param str str
    * @returns string with \ replaced with <br />
    */
   replaceNewlinesWithBreaks = (str: string): string =>
@@ -210,13 +213,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       this.state.modified !== nextState.modified ||
       this.state.synced !== nextState.synced ||
       this.state.syncError !== nextState.syncError ||
-      nextProps.invisible !== this.props.invisible
+      nextProps.invisible !== this.props.invisible ||
+      !equals(nextProps.snapshots, this.props.snapshots)
     );
   }
 
   /**
    * trimPastedContent - Trims the pasted content if it exceeds the character or word limit
-   * @param content
+   * @param content content
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
@@ -268,7 +272,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * A function tha checks if it is the last word we are writing
-   * @param value
+   * @param value value
    * @returns boolean
    */
   isInsideLastWord = (value: string) => {
@@ -288,9 +292,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   };
 
   /**
-   * onInputPaste - paste handling for memofield
-   *
-   * @param e e
+   * onInputPaste - paste handling for memofield   *
    */
   onInputPaste() {
     this.setState({ isPasting: true });
@@ -348,8 +350,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * onCkeditorPaste
-   * @param event ckeditor event
-   * @param isPasting isPasting state
    */
   onCkeditorPaste() {
     this.setState({
@@ -665,6 +665,92 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
+          {this.props.usedAs === "evaluationTool" &&
+            this.props.onTakeFieldSnapshot && (
+              <Dropdown content="Snapshot" openByHover>
+                <IconButton
+                  buttonModifiers="snapshot"
+                  icon="plus"
+                  disabled={!this.state.value}
+                  onClick={() =>
+                    this.props.onTakeFieldSnapshot(this.props.content.name)
+                  }
+                />
+              </Dropdown>
+            )}
+
+          {this.props.usedAs === "evaluationTool" && (
+            <FieldSnapshotList
+              snapshots={this.props.snapshots}
+              fieldName={this.props.content.name}
+              onDeleteFieldSnapshot={this.props.onDeleteFieldSnapshot}
+              renderSnapshot={(snapshot) => {
+                const isHTML = isValidHTML(snapshot.value || "");
+                const rawText = isHTML
+                  ? $(snapshot.value).text()
+                  : snapshot.value;
+                const words = getWords(rawText).length;
+                const characters = getCharacters(rawText).length;
+                const snapshotValue = isHTML
+                  ? snapshot.value || ""
+                  : "<p>" +
+                    this.replaceNewlinesWithBreaks(snapshot.value || "") +
+                    "</p>";
+                const snapshotField = isHTML ? (
+                  <div
+                    className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
+                    dangerouslySetInnerHTML={{ __html: snapshotValue }}
+                  />
+                ) : (
+                  <TextareaAutosize
+                    readOnly
+                    className="memofield memofield--evaluation"
+                    value={snapshot.value}
+                  />
+                );
+                return (
+                  <span className="memofield-wrapper rs_skip_always">
+                    {snapshotField}
+                    <span className="memofield__counter-wrapper">
+                      <span
+                        className={`memofield__word-count-container ${
+                          words >= parseInt(this.props.content.maxWords)
+                            ? "LIMIT-REACHED"
+                            : ""
+                        }`}
+                      >
+                        <span className="memofield__word-count-title">
+                          {t("labels.wordCount", { ns: "materials" })}
+                        </span>
+                        <span className="memofield__word-count">
+                          {" "}
+                          {words}{" "}
+                          {this.props.content.maxWords &&
+                            ` / ${this.props.content.maxWords}`}
+                        </span>
+                      </span>
+                      <span
+                        className={`memofield__character-count-container ${
+                          characters >= parseInt(this.props.content.maxChars)
+                            ? "LIMIT-REACHED"
+                            : ""
+                        }`}
+                      >
+                        <span className="memofield__character-count-title">
+                          {t("labels.characterCount", { ns: "materials" })}
+                        </span>
+                        <span className="memofield__character-count">
+                          {characters}{" "}
+                          {this.props.content.maxChars &&
+                            ` / ${this.props.content.maxChars}`}
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                );
+              }}
+            />
+          )}
         </span>
       </>
     );

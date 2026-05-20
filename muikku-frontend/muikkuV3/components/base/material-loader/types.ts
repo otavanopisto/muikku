@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UsedAs } from "~/@types/shared";
 import {
+  MaterialAnswerSnapshot,
   MaterialAssigmentType,
   MaterialCompositeReplyStateType,
 } from "~/generated/client";
@@ -35,6 +36,7 @@ export interface CommonFieldProps {
   status: StatusType;
   usedAs: UsedAs;
   content: any;
+  snapshots?: MaterialAnswerSnapshot[];
   onChange?: (
     context: React.Component<any, any>,
     name: string,
@@ -44,6 +46,8 @@ export interface CommonFieldProps {
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
+  onTakeFieldSnapshot?: (fieldName: string) => any;
+  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
 }
 
 // DATASETS

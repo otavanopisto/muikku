@@ -329,6 +329,9 @@ export interface MaterialLoaderProps {
   readspeakerComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
+  onTakeFieldSnapshot?: (fieldName: string) => any;
+  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
+
   children?: (
     props: MaterialLoaderProps,
     state: MaterialLoaderState,
@@ -422,6 +425,8 @@ class MaterialLoader extends React.Component<
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
+    this.onTakeFieldSnapshot = this.onTakeFieldSnapshot.bind(this);
+    this.onDeleteFieldSnapshot = this.onDeleteFieldSnapshot.bind(this);
 
     let stateConfiguration: StateConfig | null = null;
 
@@ -725,6 +730,24 @@ class MaterialLoader extends React.Component<
   }
 
   /**
+   * Takes a field specific snapshot from answers
+   * @param fieldName fieldName
+   */
+  onTakeFieldSnapshot(fieldName: string) {
+    this.props.onTakeFieldSnapshot && this.props.onTakeFieldSnapshot(fieldName);
+  }
+
+  /**
+   * Deletes a field specific snapshot from answers
+   * @param fieldName fieldName
+   * @param snapshotId snapshotId
+   */
+  onDeleteFieldSnapshot(fieldName: string, snapshotId: number) {
+    this.props.onDeleteFieldSnapshot &&
+      this.props.onDeleteFieldSnapshot(fieldName, snapshotId);
+  }
+
+  /**
    * returnMaterialPageType
    * @returns material page type
    */
@@ -842,6 +865,8 @@ class MaterialLoader extends React.Component<
           onAnswerCheckableChange: this.onAnswerCheckableChange,
           onPushAnswer: this.onPushAnswer,
           onToggleAnswersVisible: this.toggleAnswersVisible,
+          onTakeFieldSnapshot: this.onTakeFieldSnapshot,
+          onDeleteFieldSnapshot: this.onDeleteFieldSnapshot,
         },
         this.state,
         this.state.stateConfiguration

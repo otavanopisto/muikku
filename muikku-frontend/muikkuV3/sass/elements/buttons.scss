@@ -2788,3 +2788,18 @@
   color: $color-study-plan-tool-accent;
   font-size: 1rem;
 }
+
+.button-icon--snapshot {
+  color: $color-info;
+  font-size: 1.25rem;
+  position: absolute;
+  right: 5px;
+  text-decoration: none;
+  top: 5px;
+}
+
+.button-icon--snapshot-delete {
+  color: $color-fatal;
+  font-size: 1.25rem;
+  text-decoration: none;
+}

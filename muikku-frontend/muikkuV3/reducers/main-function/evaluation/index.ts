@@ -497,6 +497,65 @@ export const evaluations: Reducer<EvaluationState> = (
       };
     }
 
+    case "EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_CREATE": {
+      const { snapshot, fieldName, workspaceMaterialId } = action.payload;
+      return {
+        ...state,
+        evaluationCompositeReplies: {
+          ...state.evaluationCompositeReplies,
+          data: state.evaluationCompositeReplies.data?.map((compositeReply) => {
+            if (compositeReply.workspaceMaterialId !== workspaceMaterialId) {
+              return compositeReply;
+            }
+            const nextAnswers = compositeReply.answers.map((answer) => {
+              if (answer.fieldName !== fieldName) {
+                return answer;
+              }
+              const nextSnapshots = [...(answer.snapshots ?? []), snapshot];
+              return {
+                ...answer,
+                snapshots: nextSnapshots,
+              };
+            });
+            return {
+              ...compositeReply,
+              answers: nextAnswers,
+            };
+          }),
+        },
+      };
+    }
+    case "EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_DELETE": {
+      const { snapshotId, workspaceMaterialId, fieldName } = action.payload;
+      return {
+        ...state,
+        evaluationCompositeReplies: {
+          ...state.evaluationCompositeReplies,
+          data: state.evaluationCompositeReplies.data?.map((compositeReply) => {
+            if (compositeReply.workspaceMaterialId !== workspaceMaterialId) {
+              return compositeReply;
+            }
+            const nextAnswers = compositeReply.answers.map((answer) => {
+              if (answer.fieldName !== fieldName) {
+                return answer;
+              }
+              const nextSnapshots = (answer.snapshots ?? []).filter(
+                (s) => s.id !== snapshotId
+              );
+              return {
+                ...answer,
+                snapshots: nextSnapshots,
+              };
+            });
+            return {
+              ...compositeReply,
+              answers: nextAnswers,
+            };
+          }),
+        },
+      };
+    }
+
     default:
       return state;
   }
