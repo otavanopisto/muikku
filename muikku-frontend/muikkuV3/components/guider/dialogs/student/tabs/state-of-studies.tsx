@@ -187,7 +187,7 @@ class StateOfStudies extends React.Component<
                   }
                 : {
                     modifier: "DENIED",
-                    icon: "icon-thumb-down",
+                    icon: "icon-cross",
                     text: this.props.i18n.t(
                       "labels.noContinuedDiscussionPermission",
                       {
@@ -244,7 +244,7 @@ class StateOfStudies extends React.Component<
                         }
                       : {
                           modifier: "DENIED",
-                          icon: "icon-thumb-down",
+                          icon: "icon-cross",
                           text: this.props.i18n.t(
                             "labels.noContinuedViewPermission",
                             {
@@ -542,7 +542,8 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
             </ApplicationSubPanel>
 
-            {contacts}
+            {this.props.guider.currentStudent.contactInfos.length > 0 &&
+              contacts}
             {this.props.guider.currentStudent.guardians.length > 0 &&
               studentGuardians}
             <ApplicationSubPanel modifier="counselors">

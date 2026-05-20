@@ -45,7 +45,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
     fullName,
     id,
     tag,
-    hasImage,
+    hasImage = false,
     streetAddress,
     postalCode,
     city,
@@ -78,10 +78,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
   );
 
   return (
-    <div
-      className="item-list__item item-list__item--student-counselor"
-      key={"card" + fullName}
-    >
+    <div className="item-list__item item-list__item--student-counselor">
       {tag && (
         <div className="label label--contact-type">
           <span className="label__text">{tag}</span>
