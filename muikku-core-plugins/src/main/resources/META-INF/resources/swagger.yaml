@@ -16172,6 +16172,7 @@ components:
         - grade
         - date
         - audioAssessments
+        - assessorName
       properties:
         id:
           description: The id of the evaluation
@@ -16205,20 +16206,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AudioAssessment"
+        assessorName:
+          description: Name of the assessing user
+          type: string
+          nullable: true
 
     MaterialAnswer:
       type: object
       description: MaterialAnswer object
       required:
-        - embedId
         - fieldName
         - materialId
         - value
         - workspaceMaterialId
       properties:
-        embedId:
-          description: Id of the answer field
-          type: string
         fieldName:
           description: Name of the answer field
           type: string

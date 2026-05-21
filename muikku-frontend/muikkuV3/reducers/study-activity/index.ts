@@ -2,19 +2,18 @@ import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { CourseMatrix, StudyActivity } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
-
-export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
+import { ReducerStatusType } from "~/reducers/types";
 
 /**
  * EducationTypeStudyData
  */
 export interface UserStudyData {
   studyActivity: StudyActivity | null;
-  studyActivityStatus: ReducerStateType;
+  studyActivityStatus: ReducerStatusType;
   courseMatrix: CourseMatrix | null;
-  courseMatrixStatus: ReducerStateType;
+  courseMatrixStatus: ReducerStatusType;
   curriculumConfig: CurriculumConfig | null;
-  curriculumConfigStatus: ReducerStateType;
+  curriculumConfigStatus: ReducerStatusType;
 }
 
 /**
@@ -23,7 +22,7 @@ export interface UserStudyData {
 export interface StudyActivityState {
   // Current logged in user's education types
   userEducationTypes: string[];
-  userEducationTypesStatus: ReducerStateType;
+  userEducationTypesStatus: ReducerStatusType;
   // Default education type code
   defaultEducationTypeCode: string | null;
   // Selected education type code, which data is currently being displayed in the records UI

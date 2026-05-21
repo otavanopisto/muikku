@@ -76,6 +76,14 @@ public class RestAssignmentEvaluation {
     this.points = points;
   }
 
+  public String getAssessorName() {
+    return assessorName;
+  }
+
+  public void setAssessorName(String assessorName) {
+    this.assessorName = assessorName;
+  }
+
   private Long id;
   private RestAssignmentEvaluationType type;
   private WorkspaceNodeEvaluationType evaluationType;
@@ -83,5 +91,6 @@ public class RestAssignmentEvaluation {
   private Date date;
   private String grade;
   private Double points;
+  private String assessorName;
   private List<RestAssignmentEvaluationAudioClip> audioAssessments = new ArrayList<>();
 }
