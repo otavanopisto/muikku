@@ -2652,11 +2652,11 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/workspaceMaterials/{WORKSPACEMATERIALID}/state")
+  @Path ("/workspaceMaterials/{WORKSPACEMATERIALID}/state/{STATE}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceMaterialState(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReplyState payload) {
-    if (payload == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
+  public Response updateWorkspaceMaterialState(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("STATE") WorkspaceMaterialReplyState state) {
+    if (state == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing state").build();
     }
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
@@ -2668,14 +2668,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceMaterialReply == null) {
       workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(
           workspaceMaterial,
-          payload,
+          state,
           sessionController.getLoggedUserEntity(),
           false);
     }
     else {
-      workspaceMaterialReply = workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, payload);
+      workspaceMaterialReply = workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, state);
     }
-    return Response.ok(payload).build();
+    return Response.noContent().build();
   }
 
   @Deprecated
