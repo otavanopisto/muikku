@@ -298,6 +298,8 @@ class MaterialLoader extends React.Component<
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
     this.onTakeFieldSnapshot = this.onTakeFieldSnapshot.bind(this);
     this.onDeleteFieldSnapshot = this.onDeleteFieldSnapshot.bind(this);
+    this.resolveFieldSnapshotCapabilities =
+      this.resolveFieldSnapshotCapabilities.bind(this);
 
     let stateConfiguration: StateConfig | null = null;
 
