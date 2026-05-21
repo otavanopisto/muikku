@@ -2610,9 +2610,28 @@
   "events": {
     "actions": {
       "createAbsence": "Create absence",
+      "giveFeedback": "Give feedback",
+      "editFeedback": "Edit feedback",
       "create": "Create event",
       "edit": "Edit event",
       "remove": "Remove event"
+    },
+    "labels": {
+      "absence": "Poissaolo",
+      "absences": "Poissaolot",
+      "absence_explanation": "Selitys poissaololle",
+      "event": "Tapahtuma",
+      "events": "Tapahtumat",
+      "reason": "Syy",
+      "start": "Alkaa",
+      "end": "Päättyy",
+      "property": "Tuntematon ominaisuus",
+      "property_ABSENCE_REASON": "Poissaolon syy"
+    },
+
+    "content": {
+      "empty": "Ei tapahtumia",
+      "removing": "Oletko varma, että haluat poistaa tapahtuman?"
     },
     "notifications": {
       "createError": "Creating the event failed",

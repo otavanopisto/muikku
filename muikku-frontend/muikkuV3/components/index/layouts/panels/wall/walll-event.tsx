@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/note.scss";
 import WallItem from "./components/wall-item";
 import { MuikkuEvent } from "~/generated/client";
-import moment from "moment";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/wall-event.scss";
 
 /**
@@ -39,8 +39,9 @@ const WallEvent: React.FC<WallEventsProps> = (props) => {
         <div className="wall-event__header">
           <div className="wall-event__description">{event.description}</div>
           <div className="wall-event__date">
-            {moment(event.start).format("D.M.YYYY")} -
-            {moment(event.end).format("D.M.YYYY")}
+            {localize.date(event.start, "l - LT")}
+            <span className="icon icon-long-arrow-right wall-event__date-decoration" />
+            {localize.date(event.end, "l - LT")}
           </div>
         </div>
         <div className="wall-event__body">

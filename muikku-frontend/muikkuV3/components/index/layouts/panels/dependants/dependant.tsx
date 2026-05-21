@@ -15,10 +15,8 @@ import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
 import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { CreateEventPropertyRequest } from "~/generated/client";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-import { createAbsenceEventProperty } from "~/actions/base/muikku-events";
 
 /**
  * DependantProps
@@ -52,21 +50,6 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   React.useEffect(() => {
     dispatch(loadDependantAbsenceEvents(dependant.userEntityId));
   }, [dispatch, dependant.userEntityId]);
-
-  /**
-   * handles confirming feedback for an absence event
-   * @param explanation the feedback explanation provided by the user
-   * @param eventId the ID of the absence event for which feedback is being provided
-   */
-  const handleConfirmFeedback = (explanation: string, eventId: number) => {
-    const data: CreateEventPropertyRequest = {
-      eventId,
-      name: "ABSENCE_REASON",
-      value: explanation,
-    };
-
-    dispatch(createAbsenceEventProperty(data));
-  };
 
   /**
    * toggles description visibility
@@ -137,26 +120,30 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           <h3 className="dependant__absences-title">
             {t("labels.absences", { ns: "events" })}
           </h3>
-          {absenceEvents.map((event) => (
-            <WallEvent
-              key={event.id}
-              actions={
-                <AbsenceFeedbackDialog
-                  studentId={dependant.userEntityId}
-                  absenceEvent={event}
-                  onConfirm={handleConfirmFeedback}
-                >
-                  <Button
-                    /* disabled={absenceHasReason} */
-                    className="button button--primary-function-content"
+          {absenceEvents.map((event) => {
+            const hasFeedback = event.properties.find(
+              (property) =>
+                property.name == "ABSENCE_REASON" && property.value !== ""
+            );
+            return (
+              <WallEvent
+                key={event.id}
+                actions={
+                  <AbsenceFeedbackDialog
+                    studentId={dependant.userEntityId}
+                    absenceEvent={event}
                   >
-                    {t("actions.giveFeedback", { ns: "events" })}
-                  </Button>
-                </AbsenceFeedbackDialog>
-              }
-              event={event}
-            />
-          ))}
+                    <Button className="button button--primary-function-content">
+                      {hasFeedback
+                        ? t("actions.editFeedback", { ns: "events" })
+                        : t("actions.giveFeedback", { ns: "events" })}
+                    </Button>
+                  </AbsenceFeedbackDialog>
+                }
+                event={event}
+              />
+            );
+          })}
         </div>
       ) : (
         <div className="empty empty--front-page">

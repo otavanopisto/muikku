@@ -8,19 +8,16 @@ import {
   updateAbsenceEventProperty,
 } from "~/actions/main-function/guardian";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { on } from "events";
 /**
  * AbsenceFeedbackDialogProps
  */
 interface AbsenceFeedbackDialogProps {
   children?: React.ReactElement;
-  absenceEvent?: MuikkuEvent;
+  absenceEvent: MuikkuEvent;
   studentId: number;
   onClose?: () => void;
-  onConfirm?: (
-    explanation: string,
-    eventId: number,
-    propertyId?: number
-  ) => void;
 }
 
 export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
@@ -32,7 +29,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
   const currentAbsenceProperty = absenceEvent.properties.find(
     (property) => property.name === "ABSENCE_REASON"
   );
-
+  const { t } = useTranslation();
   const [absenceReason, setAbsenceReason] = useState<string>(
     currentAbsenceProperty?.value
   );
@@ -50,7 +47,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-reason">Poissaolotapahtuman selitys</label>
         <textarea
-          className="form__textarea"
+          className="form-element__textarea"
           id="absence-reason"
           value={absenceReason}
           onChange={(e) => setAbsenceReason(e.target.value)}
@@ -65,16 +62,29 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
    * @returns JSX.Element
    */
   const footer = (onClose: () => void) => (
-    <div className="dialog-footer">
-      <Button onClick={onClose}>Cancel</Button>
-      <Button onClick={handleConfirm}>Confirm</Button>
+    <div className="dialog__footer">
+      <div className="dialog__button-set">
+        <Button
+          className="button button--execute button--standard-ok"
+          onClick={() => handleConfirm(onClose)}
+        >
+          {t("actions.save")}
+        </Button>
+        <Button
+          className="button button--cancel button--standard-cancel"
+          onClick={onClose}
+        >
+          {t("actions.cancel")}
+        </Button>
+      </div>
     </div>
   );
 
   /**
    * Handles the confirmation of the dialog
+   * @param onClose dialog closing function
    */
-  const handleConfirm = () => {
+  const handleConfirm = (onClose: () => void) => {
     if (absenceReason.trim() !== "") {
       if (hasCurrentAbsenceReason) {
         dispatch(
@@ -93,6 +103,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
           })
         );
       }
+      onClose();
     }
   };
 

@@ -2614,6 +2614,7 @@
     "actions": {
       "createAbsence": "Luo poissaolo",
       "giveFeedback": "Anna selvitys",
+      "editFeedback": "Muokkaa selvitystä",
       "create": "Luo tapahtuma",
       "edit": "Muokkaa tapahtumaa",
       "remove": "Poista tapahtuma"
@@ -2621,6 +2622,7 @@
     "labels": {
       "absence": "Poissaolo",
       "absences": "Poissaolot",
+      "absence_explanation": "Selitys poissaololle",
       "event": "Tapahtuma",
       "events": "Tapahtumat",
       "reason": "Syy",
