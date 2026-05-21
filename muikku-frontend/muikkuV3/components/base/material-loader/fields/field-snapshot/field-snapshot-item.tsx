@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { IconButton } from "~/components/general/button";
 import { FieldSnapshotAccordion } from "./field-snapshot-accordion";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * Field snapshot item props
@@ -58,12 +59,14 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
         </button>
 
         {onDelete && (
-          <IconButton
-            buttonModifiers="snapshot-delete"
-            icon="trash"
-            disabled={deleteDisabled}
-            onClick={onDelete}
-          />
+          <Dropdown content="Delete snapshot" openByHover>
+            <IconButton
+              buttonModifiers="snapshot-delete"
+              icon="trash"
+              disabled={deleteDisabled}
+              onClick={onDelete}
+            />
+          </Dropdown>
         )}
       </div>
 

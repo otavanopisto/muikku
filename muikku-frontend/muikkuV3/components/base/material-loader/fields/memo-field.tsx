@@ -214,7 +214,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       this.state.synced !== nextState.synced ||
       this.state.syncError !== nextState.syncError ||
       nextProps.invisible !== this.props.invisible ||
-      !equals(nextProps.snapshots, this.props.snapshots)
+      !equals(nextProps.snapshots, this.props.snapshots) ||
+      !equals(
+        nextProps.fieldSnapshotCapabilities,
+        this.props.fieldSnapshotCapabilities
+      )
     );
   }
 
@@ -488,6 +492,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     ) {
       let unloadedField;
       if (this.props.readOnly) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const value = (unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
@@ -665,7 +670,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
-          {this.props.usedAs === "evaluationTool" &&
+          {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
             this.props.onTakeFieldSnapshot && (
               <Dropdown content="Snapshot" openByHover>
                 <IconButton
@@ -679,11 +684,15 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
               </Dropdown>
             )}
 
-          {this.props.usedAs === "evaluationTool" && (
+          {this.props.fieldSnapshotCapabilities?.snapshotCanView && (
             <FieldSnapshotList
               snapshots={this.props.snapshots}
               fieldName={this.props.content.name}
-              onDeleteFieldSnapshot={this.props.onDeleteFieldSnapshot}
+              onDeleteFieldSnapshot={
+                this.props.fieldSnapshotCapabilities?.snapshotCanDelete
+                  ? this.props.onDeleteFieldSnapshot
+                  : undefined
+              }
               renderSnapshot={(snapshot) => {
                 const isHTML = isValidHTML(snapshot.value || "");
                 const rawText = isHTML

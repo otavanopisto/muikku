@@ -20,6 +20,8 @@ import {
   createFieldSnapshot,
   deleteFieldSnapshot,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { resolveEvaluationFieldSnapshotCapabilities } from "~/components/base/material-loader/helpers";
+import { FieldSnapshotCapabilities } from "~/components/base/material-loader/types";
 
 /**
  * EvaluationMaterialProps
@@ -84,9 +86,13 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
   /**
    * Handles taking a field snapshot
    * @param fieldName fieldName
+   * @param cap cap
    */
-  const handleTakeFieldSnapshot = (fieldName: string) => {
-    if (!compositeReply) {
+  const handleTakeFieldSnapshot = (
+    fieldName: string,
+    cap: FieldSnapshotCapabilities
+  ) => {
+    if (!cap.snapshotCanTake) {
       return;
     }
 
@@ -103,9 +109,14 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
    * Handles deleting a field snapshot
    * @param fieldName fieldName
    * @param snapshotId snapshotId
+   * @param cap cap
    */
-  const handleDeleteFieldSnapshot = (fieldName: string, snapshotId: number) => {
-    if (!compositeReply) {
+  const handleDeleteFieldSnapshot = (
+    fieldName: string,
+    snapshotId: number,
+    cap: FieldSnapshotCapabilities
+  ) => {
+    if (!cap.snapshotCanDelete) {
       return;
     }
 
@@ -130,6 +141,7 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
       userEntityId={userEntityId}
       answerable={true}
       status={status}
+      fieldSnapshotPolicy={resolveEvaluationFieldSnapshotCapabilities}
       onTakeFieldSnapshot={handleTakeFieldSnapshot}
       onDeleteFieldSnapshot={handleDeleteFieldSnapshot}
       websocket={websocket}

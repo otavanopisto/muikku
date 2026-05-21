@@ -1,13 +1,13 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
 import { StateConfig } from "./types";
 
 /**
  * MaterialLoaderButtonsProps
  */
-interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
+interface MaterialLoaderButtonsProps extends MaterialLoaderRenderProps {
   stateConfiguration: StateConfig;
   answerCheckable: boolean;
   answersVisible: boolean;

@@ -1,12 +1,12 @@
 import * as React from "react";
 import InterimEvaluationEditor from "./external-content/interim-evaluation-editor";
-import { MaterialLoaderProps } from "./index";
+import { MaterialLoaderRenderProps } from "./index";
 import { StateConfig } from "./types";
 
 /**
  * MaterialLoaderExternalContentProps
  */
-interface MaterialLoaderExternalContentProps extends MaterialLoaderProps {
+interface MaterialLoaderExternalContentProps extends MaterialLoaderRenderProps {
   answersChecked: boolean;
   answersVisible: boolean;
   stateConfiguration: StateConfig;

@@ -22,167 +22,12 @@ import {
 import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
-import { STATES } from "./helpers";
-import { StateConfig } from "./types";
-
-/* i18n.t("", { ns: "materials" }); */
-
-//These represent the states assignments and exercises can be in
-/* const STATES = [
-  {
-    "assignment-type": "EXERCISE",
-    //usually exercises cannot be withdrawn but they might be in extreme cases when a evaluated has
-    //been modified
-    state: ["UNANSWERED", "ANSWERED", "WITHDRAWN"],
-
-    //when an exercise is in the state unanswered answered or withdrawn then it doesn't
-    //display this button
-    "displays-hide-show-answers-on-request-button-if-allowed": false,
-    "button-class": "muikku-submit-exercise",
-
-    //This is what by default appears on the button
-    "button-text": "actions.send_exercise",
-
-    //Buttons are not disabled
-    "button-disabled": false,
-
-    //When the button is pressed, the composite reply will change state to this one
-    "success-state": "SUBMITTED",
-
-    //Whether or not the fields are read only
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "EXERCISE",
-    state: ["SUBMITTED"],
-
-    //With this property active whenever in this state the answers will be checked
-    "checks-answers": true,
-    "displays-hide-show-answers-on-request-button-if-allowed": true,
-    "button-class": "muikku-submit-exercise",
-    "button-text": "actions.cancel_exercise",
-    "button-disabled": false,
-    "success-state": "ANSWERED",
-    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
-    "modify-state": "ANSWERED",
-  },
-  {
-    "assignment-type": "EXERCISE",
-    state: ["PASSED", "FAILED", "INCOMPLETE"],
-
-    //With this property active whenever in this state the answers will be checked
-    "checks-answers": true,
-    "displays-hide-show-answers-on-request-button-if-allowed": true,
-    "button-class": "muikku-submit-exercise",
-    "button-text": "actions.sent",
-    "button-disabled": false,
-
-    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
-    "modify-state": "ANSWERED",
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: ["UNANSWERED", "ANSWERED"],
-    "button-class": "muikku-submit-assignment",
-    "button-text": "actions.send_assignment",
-    //Represents a message that will be shown once the state changes to the success state
-    "success-text": "notifications.assignmentSubmitted",
-    "button-disabled": false,
-    "success-state": "SUBMITTED",
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: "SUBMITTED",
-    "button-class": "muikku-withdraw-assignment",
-    "button-text": "actions.cancel_assignment",
-    "success-text": "notifications.assignmentWithdrawn",
-    "button-disabled": false,
-    "success-state": "WITHDRAWN",
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: ["FAILED"],
-    "button-class": "muikku-withdraw-assignment",
-    "button-text": "actions.cancel_assignment",
-    "success-text": "notifications.assignmentWithdrawn",
-    "button-disabled": true,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: ["INCOMPLETE"],
-    "button-class": "muikku-withdraw-assignment",
-    "button-text": "actions.cancel_assignment",
-    "success-text": "notifications.assignmentWithdrawn",
-    "button-disabled": false,
-    "success-state": "WITHDRAWN",
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: "WITHDRAWN",
-    "button-class": "muikku-update-assignment",
-    "button-text": "actions.update",
-    "success-text": "notifications.assignmentUpdated",
-    "button-disabled": false,
-    "success-state": "SUBMITTED",
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: "PASSED",
-    "button-class": "muikku-evaluated-assignment",
-    "button-text": "actions.evaluated",
-    "button-disabled": true,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "JOURNAL",
-    state: ["UNANSWERED", "ANSWERED"],
-    "button-class": "muikku-submit-journal",
-    "button-text": "actions.save",
-    "success-state": "SUBMITTED",
-    "button-disabled": false,
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "JOURNAL",
-    state: "SUBMITTED",
-    "button-class": "muikku-submit-journal",
-    "button-text": "actions.edit",
-    "success-state": "ANSWERED",
-    "button-disabled": false,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "INTERIM_EVALUATION",
-    state: ["UNANSWERED", "ANSWERED"],
-    "button-class": "muikku-submit-interim-evaluation",
-    "button-text": "actions.send_interimEvaluationRequest",
-    "success-state": "SUBMITTED",
-    "button-disabled": false,
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "INTERIM_EVALUATION",
-    state: "SUBMITTED",
-    "button-class": "muikku-submit-interim-evaluation",
-    "button-text": "actions.cancel_interimEvaluationRequest",
-    "success-state": "ANSWERED",
-    "button-disabled": false,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "INTERIM_EVALUATION",
-    state: "PASSED",
-    "button-class": "muikku-evaluated-assignment",
-    "button-text": "actions.evaluated",
-    "button-disabled": true,
-    "fields-read-only": true,
-  },
-]; */
+import { DEFAULT_FIELD_SNAPSHOT_CAPABILITIES, STATES } from "./helpers";
+import {
+  FieldSnapshotCapabilities,
+  FieldSnapshotPolicy,
+  StateConfig,
+} from "./types";
 
 /**
  * Callback parameter types for MaterialLoader
@@ -246,6 +91,23 @@ export interface AttachmentsRequestCallback {
     workspace: WorkspaceDataType,
     material: MaterialContentNodeWithIdAndLogic
   ): void;
+}
+
+/**
+ * MaterialLoaderRenderProps. Injected by the MaterialLoader renderer to the children components.
+ * Do not pass parent handlers to Base
+ */
+export interface MaterialLoaderRenderProps
+  extends Omit<
+    MaterialLoaderProps,
+    | "onTakeFieldSnapshot"
+    | "onDeleteFieldSnapshot"
+    | "fieldSnapshotPolicy"
+    | "children"
+  > {
+  onTakeFieldSnapshot?: (fieldName: string) => any;
+  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
+  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
 }
 
 /**
@@ -329,11 +191,20 @@ export interface MaterialLoaderProps {
   readspeakerComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
-  onTakeFieldSnapshot?: (fieldName: string) => any;
-  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
+  fieldSnapshotPolicy?: FieldSnapshotPolicy;
+  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  onTakeFieldSnapshot?: (
+    fieldName: string,
+    cap: FieldSnapshotCapabilities
+  ) => any;
+  onDeleteFieldSnapshot?: (
+    fieldName: string,
+    snapshotId: number,
+    cap: FieldSnapshotCapabilities
+  ) => any;
 
   children?: (
-    props: MaterialLoaderProps,
+    props: MaterialLoaderRenderProps,
     state: MaterialLoaderState,
     stateConfiguration: any
   ) => any;
@@ -628,6 +499,26 @@ class MaterialLoader extends React.Component<
   }
 
   /**
+   * Resolves field snapshot capabilities from props, policy prop or default if not provided
+   * @returns FieldSnapshotCapabilities
+   */
+  resolveFieldSnapshotCapabilities(): FieldSnapshotCapabilities {
+    const compositeReplies =
+      this.props.compositeReplies || this.state.compositeRepliesInState;
+    return (
+      this.props.fieldSnapshotCapabilities ??
+      (typeof this.props.fieldSnapshotPolicy === "function"
+        ? this.props.fieldSnapshotPolicy({
+            compositeReply: compositeReplies,
+            usedAs: this.props.usedAs ?? "default",
+            lock: compositeReplies?.lock,
+          })
+        : this.props.fieldSnapshotPolicy) ??
+      DEFAULT_FIELD_SNAPSHOT_CAPABILITIES
+    );
+  }
+
+  /**
    * onPushAnswer
    * This gets called once an answer is pushed with the button to push the answer
    * To change its state
@@ -734,7 +625,13 @@ class MaterialLoader extends React.Component<
    * @param fieldName fieldName
    */
   onTakeFieldSnapshot(fieldName: string) {
-    this.props.onTakeFieldSnapshot && this.props.onTakeFieldSnapshot(fieldName);
+    const cap = this.resolveFieldSnapshotCapabilities();
+    if (!cap.snapshotCanTake) {
+      return;
+    }
+
+    this.props.onTakeFieldSnapshot &&
+      this.props.onTakeFieldSnapshot(fieldName, cap);
   }
 
   /**
@@ -743,8 +640,13 @@ class MaterialLoader extends React.Component<
    * @param snapshotId snapshotId
    */
   onDeleteFieldSnapshot(fieldName: string, snapshotId: number) {
+    const cap = this.resolveFieldSnapshotCapabilities();
+    if (!cap.snapshotCanDelete) {
+      return;
+    }
+
     this.props.onDeleteFieldSnapshot &&
-      this.props.onDeleteFieldSnapshot(fieldName, snapshotId);
+      this.props.onDeleteFieldSnapshot(fieldName, snapshotId, cap);
   }
 
   /**
@@ -849,6 +751,8 @@ class MaterialLoader extends React.Component<
       className += " state-" + compositeReplies.state;
     }
 
+    const fieldSnapshotCapabilities = this.resolveFieldSnapshotCapabilities();
+
     let content = null;
     if (
       (this.props.loadCompositeReplies &&
@@ -867,6 +771,7 @@ class MaterialLoader extends React.Component<
           onToggleAnswersVisible: this.toggleAnswersVisible,
           onTakeFieldSnapshot: this.onTakeFieldSnapshot,
           onDeleteFieldSnapshot: this.onDeleteFieldSnapshot,
+          fieldSnapshotCapabilities,
         },
         this.state,
         this.state.stateConfiguration

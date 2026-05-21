@@ -31,6 +31,7 @@ import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialCompositeReply } from "~/generated/client";
 import {
   CommonFieldProps,
+  FieldSnapshotCapabilities,
   IframeDataset,
   ImageDataset,
   LinkDataset,
@@ -113,11 +114,14 @@ interface BaseProps extends WithTranslation {
   checkAnswers: boolean;
   onAnswerChange: (name: string, status: boolean) => any;
   onAnswerCheckableChange: (status: boolean) => any;
-  onTakeFieldSnapshot: (fieldName: string) => any;
-  onDeleteFieldSnapshot: (fieldName: string, snapshotId: number) => any;
   usedAs: UsedAs;
   invisible: boolean;
   answerRegistry?: { [name: string]: any };
+
+  // Field snapshot capabilities
+  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  onTakeFieldSnapshot?: (fieldName: string) => any;
+  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
 }
 
 /**
@@ -977,10 +981,13 @@ export function extractCommonFieldProps(
     displayCorrectAnswers: props.displayCorrectAnswers,
     checkAnswers: props.checkAnswers,
     onAnswerChange: props.onAnswerChange,
-    onTakeFieldSnapshot: props.onTakeFieldSnapshot,
-    onDeleteFieldSnapshot: props.onDeleteFieldSnapshot,
     invisible: props.invisible,
     userId: props.status.userId,
+
+    // Field snapshot capabilities
+    fieldSnapshotCapabilities: props.fieldSnapshotCapabilities,
+    onTakeFieldSnapshot: props.onTakeFieldSnapshot,
+    onDeleteFieldSnapshot: props.onDeleteFieldSnapshot,
 
     // React key
     key: key,
