@@ -31,6 +31,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -108,8 +109,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected static final String aXeScript = AbstractWCAGTest.class.getResource("/axe.min.js").getFile();
   
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
+  @ClassRule
+  public static WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
     
   @Rule
   public TestWatcher testWatcher = new TestWatcher() {
@@ -2066,20 +2067,23 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
-    navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
     waitForVisible("#wokspaceName");
     String title = getAttributeValue("#wokspaceName", "value");
     int i = 0;
     while (title.isEmpty()) {
       i++;
-      refresh();
-      sleep(1500);
+      navigate("", false);
+      waitForVisible(".navbar .button-pill--profile");
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
+      waitForVisible("#wokspaceName");
       title = getAttributeValue("#wokspaceName", "value");
       if(i > 20)
         break;
     }
     scrollTo("input#" + workspaceAccess, 300);
-    sleep(500);    
+    sleep(500);
     WebElement element = getWebDriver().findElement(By.cssSelector("input#" + workspaceAccess));
     i = 0;
     while (!element.isSelected()) {
@@ -2093,6 +2097,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     scrollIntoView(".button--primary-function-save");
     sleep(500);
     waitAndClick(".button--primary-function-save");
+    sleep(1500);
     waitForPresent(".notification-queue__item--success");
     sleep(500);
   }
