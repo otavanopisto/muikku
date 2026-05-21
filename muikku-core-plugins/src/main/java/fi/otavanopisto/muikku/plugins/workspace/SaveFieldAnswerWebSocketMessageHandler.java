@@ -170,6 +170,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
 
     try {
       message.setOriginTicket(event.getTicket());
+      message.setState(reply.getState());
       String data = mapper.writeValueAsString(message);
       webSocketMessenger.sendMessage("workspace:field-answer-saved", data, Arrays.asList(userEntity));
     }

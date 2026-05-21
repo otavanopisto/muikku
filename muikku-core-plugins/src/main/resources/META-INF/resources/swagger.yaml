@@ -10901,6 +10901,34 @@ paths:
                     description: Reason what caused conflict
         "500":
           description: Internal server error
+          
+  /rest/workspace/workspaceMaterials/{workspaceMaterialId}/state:
+    post:
+      operationId: updateWorkspaceMaterialState
+      summary: Updates the reply state of the given workspace material for the curren tuser
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceMaterialId
+          in: path
+          description: Workspace material id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+      responses:
+        "200":
+          description: Updated reply state of the given workspace material 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+        "400":
+          description: Missing payload state
+        "403":
+          description: Workspace material not found
 
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies:
     get:

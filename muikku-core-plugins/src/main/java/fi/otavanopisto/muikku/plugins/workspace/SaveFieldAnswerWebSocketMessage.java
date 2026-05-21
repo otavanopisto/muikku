@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+
 public class SaveFieldAnswerWebSocketMessage {
 
   public String getAnswer() {
@@ -58,11 +60,20 @@ public class SaveFieldAnswerWebSocketMessage {
     this.userEntityId = userEntityId;
   }
 
+  public WorkspaceMaterialReplyState getState() {
+    return state;
+  }
+
+  public void setState(WorkspaceMaterialReplyState state) {
+    this.state = state;
+  }
+
   private String answer;
   private Long materialId;
   private String fieldName;
   private String originTicket;
   private Long workspaceMaterialId;
   private Long workspaceEntityId;
+  private WorkspaceMaterialReplyState state;
   private Long userEntityId;
 }

@@ -2651,6 +2651,34 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
 
+  @POST
+  @Path ("/workspaceMaterials/{WORKSPACEMATERIALID}/state")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceMaterialState(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReplyState payload) {
+    if (payload == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
+    }
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
+    }
+    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(
+        workspaceMaterial,
+        sessionController.getLoggedUserEntity());
+    if (workspaceMaterialReply == null) {
+      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(
+          workspaceMaterial,
+          payload,
+          sessionController.getLoggedUserEntity(),
+          false);
+    }
+    else {
+      workspaceMaterialReply = workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, payload);
+    }
+    return Response.ok(payload).build();
+  }
+
+  @Deprecated
   @GET
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermitUnimplemented
@@ -2686,7 +2714,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.ok(createRestModel(new WorkspaceMaterialReply[] { })).build();
     }
   }
-
+  
+  @Deprecated
   @POST
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -2728,6 +2757,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceMaterialReply)).build();
   }
 
+  @Deprecated
   @PUT
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
