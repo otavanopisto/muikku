@@ -93,6 +93,7 @@
       "appointment": "Varaa aika",
       "approved": "Hyväksytty",
       "archived": "Arkistoitu",
+      "assessor": "Arvioija",
       "autumn": "Syksy {{year}}",
       "available": "Saatavilla",
       "beginDate": "Alkupäivämäärä",
@@ -1523,7 +1524,8 @@
   "users": {
     "actions": {
       "create": "Luo käyttäjäryhmä",
-      "edit": "Muokkaa käyttäjäryhmää"
+      "edit": "Muokkaa käyttäjäryhmää",
+      "editPermissions": "Muokkaa lupia"
     },
     "content": {
       "editDetails": "Nimi on pakollinen tieto. Voit merkitä käyttäjäryhmän halutessasi ohjausryhmäksi.",
@@ -1532,6 +1534,8 @@
       "empty_students": "Opiskelijoita ei löytynyt",
       "empty_teachers": "Opettajia ei löytynyt",
       "noneSelected": "Ei valittuja käyttäjiä",
+      "studyViewPermissionPrompt": "Saako henkilö <b>{{contact}}</b> käyttää huoltajatunnusta opintojesi seuraamiseen? <br/>Huomioi, että voit muuttaa tätä asetusta milloin tahansa.",
+      "studyDiscussPermissionPrompt": "Saako oppilaitos keskustella opintoihisi liittyvistä asioista henkilön <b>{{contact}}</b> kanssa? <br/> Huomioi, että voit muuttaa tätä asetusta milloin tahansa. ",
       "noneSelected_counselors": "Ei valittuja ohjaajia",
       "noneSelected_students": "Ei valittuja opiskelijoita",
       "noneSelected_teachers": "Ei valittuja opettajia",
@@ -1546,7 +1550,9 @@
       "searchToRemove": "Hae poistettavia käyttäjiä",
       "searchToRemove_students": "Hae kurssilta poistettavia opiskelijoita. Poisto tehdään klikkaamalla opiskelijan nimeä. Voit selata poistettavia opiskelijoita toisella välilehdellä.",
       "searchToRemove_staff": "Hae käyttäjäryhmästä poistettavia henkilökunnan jäseniä. Poisto tehdään klikkaamalla jäsenen nimeä. Voit selata poistettavia jäseniä toisella välilehdellä.",
-      "searchToRemove_teachers": "Hae kurssilta poistettavia opettajia. Poisto tehdään klikkaamalla opettajan nimeä. Voit selata poistettavia opettajia toisella välilehdellä."
+      "searchToRemove_teachers": "Hae kurssilta poistettavia opettajia. Poisto tehdään klikkaamalla opettajan nimeä. Voit selata poistettavia opettajia toisella välilehdellä.",
+      "studyGuardianPermissions": "Olet täyttänyt 18 vuotta, ja huoltajiesi oikeus nähdä tietojasi päättyy automaattisesti. Voit kuitenkin päättää, saavatko huoltajasi jatkossakin seurata opintojasi Muikussa omilla tunnuksillaan.",
+      "studyContactPermissions": "Olet täyttänyt 18 vuotta, joten jatkossa päätät itse tietojesi luovuttamisesta. Voit antaa opettajille ja ohjaajille luvan keskustella opintoihisi liittyvistä asioista huoltajasi tai muun yhteyshenkilön kanssa (esim. puhelimitse tai sähköpostitse)."
     },
     "labels": {
       "activeStudents": "Aktiiviset",
@@ -1566,8 +1572,12 @@
       "archivedStudents": "Arkistoidut",
       "chosenStudents": "Valitut opiskelijat",
       "chosenTeachers": "Valitut opettajat",
-      "concentToDiscussStudies": "Lupa keskustella opinnoista",
+      "contactContinuedViewPermission": "Huoltajan tunnukset",
+      "contactContinuedDiscussionPermission": "Opintojasi koskeva tiedonvaihto",
       "contactInfo": "Yhteystiedot",
+      "contacts": "Yhteyshenkilöt",
+      "hasContinuedViewPermission": "Saa seurata opintoja huoltajatunnuksella",
+      "hasContinuedDiscussionPermission": "Saa keskustella opintoihin liittyvistä asioista",
       "counselor": "Ohjaaja",
       "counselors": "Ohjaajat",
       "counselorsToAdd": "Lisättävät ohjaajat",
@@ -1575,18 +1585,24 @@
       "create": "Luo käyttäjä",
       "create_userGroup": "Luo käyttäjäryhmä",
       "creating": "Luodaan käyttäjäryhmää",
+      "discussionAccessAllow": "Saa keskustella",
+      "discussionAccessDeny": "Ei saa keskustella",
       "edit": "Muokkaa käyttäjää",
+      "editContactPermissions": "Muokkaa lupia",
       "edit_userGroup": "Muokkaa käyttäjäryhmää {{userGroup}}",
       "edituserGroupInfo": "Muokkaa käyttäjäryhmän tietoja {{stepInfo}}",
       "email": "Sähköposti",
       "firstName": "Etunimi",
       "groupCounselor": "Ryhmänohjaaja",
       "groupCounselors": "Ryhmänohjaajat",
+      "guardians": "Huoltajat",
       "guidanceGroup": "Ohjausryhmä",
       "lastName": "Sukunimi",
       "manager": "Manageri",
       "name": "$t(labels.name)",
       "name_userGroup": "Käyttäjäryhmän nimi",
+      "noContinuedViewPermission": "Ei saa seurata opintoja huoltajatunnuksella",
+      "noContinuedDiscussionPermission": "Ei saa keskustella opintoihin liittyvistä asioista",
       "pick": "Valitse kurssin käyttäjät, - {{stepInfo}}",
       "pick_workspaceStudents": "Valitse kurssin opiskelijat {{stepInfo}}",
       "pick_workspaceTeachers": "Valitse kurssin opettajat {{stepInfo}}",
@@ -1641,6 +1657,8 @@
       "users": "Käyttäjät",
       "userGroups": "Käyttäjäryhmät",
       "userGroupStudents": "Käyttäjäryhmän opiskelijat",
+      "viewAccessAllow": "Saa käyttää tunnusta",
+      "viewAccessDeny": "Ei saa käyttää tunnusta",
       "workspaceStudents": "Kurssin opiskelijat"
     },
     "notifications": {

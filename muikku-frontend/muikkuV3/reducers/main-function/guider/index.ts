@@ -21,6 +21,7 @@ import {
   UserContact,
   CourseMatrix,
   StudyActivity,
+  Guardian,
 } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { MuikkuEvent } from "~/generated/client";
@@ -109,6 +110,7 @@ export interface GuiderStudentUserProfileType {
   activityLogState: LoadingState;
   pedagogyFormState: LoadingState;
   contactInfos: UserContact[];
+  guardians: Guardian[];
   basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
@@ -242,6 +244,7 @@ const initialGuiderState: GuiderState = {
     activityLogState: "LOADING",
     pedagogyFormState: "WAITING",
     basic: null,
+    guardians: [],
     contactInfos: [],
     labels: [],
     files: [],

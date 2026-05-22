@@ -10,14 +10,6 @@ public class SaveFieldAnswerWebSocketMessage {
     this.answer = answer;
   }
 
-  public String getEmbedId() {
-    return embedId;
-  }
-
-  public void setEmbedId(String embedId) {
-    this.embedId = embedId;
-  }
-
   public Long getMaterialId() {
     return materialId;
   }
@@ -67,7 +59,6 @@ public class SaveFieldAnswerWebSocketMessage {
   }
 
   private String answer;
-  private String embedId;
   private Long materialId;
   private String fieldName;
   private String originTicket;

@@ -570,6 +570,7 @@ public class GuiderRESTService extends PluginRESTService {
       organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
     }
 
+    boolean under18 = userEntityController.isUnder18Student(studentIdentifier);
     boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
     
@@ -602,6 +603,7 @@ public class GuiderRESTService extends PluginRESTService {
         organizationRESTModel,
         user.getMatriculationEligibility(),
         userEntity == null ? false : pedagogyController.isPublished(userEntity.getId()),
+        under18,
         u18Compulsory,
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
         hopsController.getHOPSStudentPermissions(studentIdentifier),
