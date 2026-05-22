@@ -115,7 +115,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           })}
         </div>
       )}
-      {absenceEvents.length > 0 ? (
+      {absenceEvents.length > 0 && (
         <div className="dependant__absences-container">
           <h3 className="dependant__absences-title">
             {t("labels.absences", { ns: "events" })}
@@ -144,10 +144,6 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
               />
             );
           })}
-        </div>
-      ) : (
-        <div className="empty empty--front-page">
-          {t("content.empty", { ns: "events" })}
         </div>
       )}
       <AnimateHeight

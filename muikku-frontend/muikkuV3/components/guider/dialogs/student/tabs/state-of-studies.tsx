@@ -39,7 +39,7 @@ import StudyProgress from "./study-progress";
 import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
-import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
+import WallAbsenceEvent from "~/components/index/layouts/panels/wall/walll-event";
 import ContactCard, { ContactState } from "~/components/general/contact-card";
 
 /**
@@ -279,7 +279,11 @@ class StateOfStudies extends React.Component<
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           {this.props.guider.currentStudent.absenceEvents.map((event) => (
-            <WallEvent key={event.id} event={event} />
+            <WallAbsenceEvent
+              isUnder18={this.props.guider.currentStudent.basic.under18}
+              key={event.id}
+              event={event}
+            />
           ))}
         </div>
       </div>

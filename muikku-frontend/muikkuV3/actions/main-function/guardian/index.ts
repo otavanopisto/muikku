@@ -90,7 +90,7 @@ export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS = SpecificActionType<
   "GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS",
   {
     dependantId: number;
-    status: ReducerStateType;
+    status: ReducerStatusType;
   }
 >;
 
