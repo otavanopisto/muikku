@@ -135,6 +135,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             readOnly={props.readOnly}
             answerable={props.answerable}
             answerRegistry={props.answerRegistry}
+            onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
           />
         )}
       </div>

@@ -31,6 +31,8 @@ import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialCompositeReply } from "~/generated/client";
 import {
   CommonFieldProps,
+  FieldsSyncStatus,
+  FieldSyncStatePatch,
   IframeDataset,
   ImageDataset,
   LinkDataset,
@@ -116,6 +118,8 @@ interface BaseProps extends WithTranslation {
   usedAs: UsedAs;
   invisible: boolean;
   answerRegistry?: { [name: string]: any };
+
+  onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
 }
 
 /**
@@ -310,6 +314,45 @@ class Base extends React.Component<BaseProps, BaseState> {
   }
 
   /**
+   * computeFieldsSyncStatus - Computes the fields sync status
+   * @returns FieldsSyncStatus
+   */
+  private computeFieldsSyncStatus(): FieldsSyncStatus {
+    const contexts = Object.values(this.nameContextRegistry);
+    const pending = contexts.filter(
+      (ctx) => !ctx.state.synced || ctx.state.syncError
+    );
+    return {
+      allSynced: pending.length === 0,
+      hasSyncErrors: contexts.some((ctx) => !!ctx.state.syncError),
+      pendingCount: pending.length,
+    };
+  }
+
+  /**
+   * notifyFieldsSyncStatus - Notifies the fields sync status change
+   */
+  private notifyFieldsSyncStatus() {
+    if (!this.props.onFieldsSyncStatusChange) return;
+    this.props.onFieldsSyncStatusChange(this.computeFieldsSyncStatus());
+  }
+
+  /**
+   * Register a field sync state and notify the status change
+   * @param name name
+   * @param context context
+   * @param patch patch
+   */
+  private setFieldSyncState(
+    name: string,
+    context: React.Component<any, any>,
+    patch: FieldSyncStatePatch
+  ) {
+    this.nameContextRegistry[name] = context;
+    context.setState(patch, () => this.notifyFieldsSyncStatus());
+  }
+
+  /**
    * setupEverything
    * @param props props
    * @param elements elements
@@ -368,10 +411,14 @@ class Base extends React.Component<BaseProps, BaseState> {
         console.error && console.error(actualData.error);
 
         // we get the context and check whether it's synced
-        this.nameContextRegistry[actualData.fieldName].setState({
-          synced: false,
-          syncError: actualData.error,
-        });
+        this.setFieldSyncState(
+          actualData.fieldName,
+          this.nameContextRegistry[actualData.fieldName],
+          {
+            synced: false,
+            syncError: actualData.error,
+          }
+        );
         return;
       }
 
@@ -387,10 +434,14 @@ class Base extends React.Component<BaseProps, BaseState> {
           this.nameContextRegistry[actualData.fieldName].state.syncError
         ) {
           // we make it synced then and the user is happy can keep typing
-          this.nameContextRegistry[actualData.fieldName].setState({
-            synced: true,
-            syncError: null,
-          });
+          this.setFieldSyncState(
+            actualData.fieldName,
+            this.nameContextRegistry[actualData.fieldName],
+            {
+              synced: true,
+              syncError: null,
+            }
+          );
         }
       }
     }
@@ -460,14 +511,12 @@ class Base extends React.Component<BaseProps, BaseState> {
       context.setState({ modified: true });
     }
     if (!this.props.answerable) {
-      context.setState({ synced: true });
+      this.setFieldSyncState(name, context, { synced: true });
       return;
     }
-    context.setState({ synced: false });
+    this.setFieldSyncState(name, context, { synced: false });
 
     this.props.onModification && this.props.onModification();
-
-    // we get the name context registry and register that context for future use
     this.nameContextRegistry[name] = context;
 
     // we clear the timeout of possible previous changes
@@ -517,7 +566,7 @@ class Base extends React.Component<BaseProps, BaseState> {
           null,
           stackId
         );
-        context.setState({
+        this.setFieldSyncState(name, context, {
           syncError: this.props.t("notifications.serverDoesNotReply", {
             ns: "common",
           }),

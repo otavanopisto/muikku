@@ -23,7 +23,7 @@ import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
 import { STATES } from "./helpers";
-import { StateConfig } from "./types";
+import { FieldsSyncStatus, StateConfig } from "./types";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -329,6 +329,8 @@ export interface MaterialLoaderProps {
   readspeakerComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
+  onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
+
   children?: (
     props: MaterialLoaderProps,
     state: MaterialLoaderState,
@@ -361,6 +363,9 @@ interface MaterialLoaderState {
   //A registry for the right and wrong answers as told by the material
   answerRegistry: { [name: string]: any };
   stateConfiguration: StateConfig | null;
+
+  fieldsAllSynced: boolean;
+  fieldsHasSyncErrors: boolean;
 }
 
 //A cheap cache for material replies and composite replies used by the hack
@@ -411,6 +416,10 @@ class MaterialLoader extends React.Component<
       //The rightness registry start empty
       answerRegistry: {},
       stateConfiguration: null,
+
+      // initially all fields are synced and have no sync errors
+      fieldsAllSynced: true,
+      fieldsHasSyncErrors: false,
     };
 
     //A sync version of the answer registry, it can change so fast
@@ -422,6 +431,7 @@ class MaterialLoader extends React.Component<
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
+    this.onFieldsSyncStatusChange = this.onFieldsSyncStatusChange.bind(this);
 
     let stateConfiguration: StateConfig | null = null;
 
@@ -487,7 +497,9 @@ class MaterialLoader extends React.Component<
       !isEqual(this.state.stateConfiguration, nextState.stateConfiguration) ||
       this.state.answersVisible !== nextState.answersVisible ||
       this.state.answersChecked !== nextState.answersChecked ||
-      this.state.answerRegistry !== nextState.answerRegistry
+      this.state.answerRegistry !== nextState.answerRegistry ||
+      this.state.fieldsAllSynced !== nextState.fieldsAllSynced ||
+      this.state.fieldsHasSyncErrors !== nextState.fieldsHasSyncErrors
     );
   }
 
@@ -629,6 +641,10 @@ class MaterialLoader extends React.Component<
    * @param params params
    */
   onPushAnswer(params?: any) {
+    // if not all fields are synced, do not push the answer
+    if (!this.state.fieldsAllSynced) {
+      return;
+    }
     //So now we need that juicy success state
     if (this.state.stateConfiguration?.successState) {
       //Get the composite reply
@@ -722,6 +738,28 @@ class MaterialLoader extends React.Component<
 
     this.props.onAnswerCheckableChange &&
       this.props.onAnswerCheckableChange(answerCheckable);
+  }
+
+  /**
+   * onFieldsSyncStatusChange - Handles the fields sync status change
+   * @param status status
+   */
+  onFieldsSyncStatusChange(status: FieldsSyncStatus) {
+    const updates: Partial<MaterialLoaderState> = {};
+
+    if (status.allSynced !== this.state.fieldsAllSynced) {
+      updates.fieldsAllSynced = status.allSynced;
+    }
+    if (status.hasSyncErrors !== this.state.fieldsHasSyncErrors) {
+      updates.fieldsHasSyncErrors = status.hasSyncErrors;
+    }
+    if (Object.keys(updates).length) {
+      this.setState({
+        ...this.state,
+        ...updates,
+      });
+    }
+    this.props.onFieldsSyncStatusChange?.(status);
   }
 
   /**
@@ -842,6 +880,7 @@ class MaterialLoader extends React.Component<
           onAnswerCheckableChange: this.onAnswerCheckableChange,
           onPushAnswer: this.onPushAnswer,
           onToggleAnswersVisible: this.toggleAnswersVisible,
+          onFieldsSyncStatusChange: this.onFieldsSyncStatusChange,
         },
         this.state,
         this.state.stateConfiguration
