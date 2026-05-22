@@ -10,20 +10,21 @@ import org.scribe.utils.OAuthEncoder;
 
 public class PyramusApi20 extends DefaultApi20 {
 
-  public PyramusApi20(String authorizationUrl, String tokenUri) {
-    this.authorizationUrl = authorizationUrl;
-    this.tokenUri = tokenUri;
+  private final static String AUTHORIZATION_PATH = "/users/authorize.page?client_id=%s&response_type=code&redirect_uri=%s&scope=%s";
+  private final static String TOKEN_PATH = "/1/oauth/token";
+  
+  public PyramusApi20(String pyramusOrigin) {
+    this.pyramusUri = pyramusOrigin;
   }
   
   @Override
   public String getAccessTokenEndpoint() {
-    return tokenUri;
+    return pyramusUri + TOKEN_PATH;
   }
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    // Not the best approach as this assumes the authorizationUrl is in a very specific style - should probably be reworked
-    return String.format(authorizationUrl, config.getApiKey(), OAuthEncoder.encode(config.getCallback()), config.getScope());
+    return String.format(pyramusUri + AUTHORIZATION_PATH, config.getApiKey(), OAuthEncoder.encode(config.getCallback()), config.getScope());
   }
 
   @Override
@@ -41,6 +42,5 @@ public class PyramusApi20 extends DefaultApi20 {
     return new PyramusApi20ServiceImpl(this, config);
   }
   
-  private String authorizationUrl;
-  private String tokenUri;
+  private String pyramusUri;
 }

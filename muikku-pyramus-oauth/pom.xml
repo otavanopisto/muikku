@@ -68,6 +68,11 @@
       <artifactId>plugin</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>muikku-school-data-pyramus</artifactId>
+    </dependency>
+
     <!-- Pyramus -->
 
     <dependency>
