@@ -60,6 +60,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         logout();
         mockBuilder.clearLoginMock();
+        navigate("", false);
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         selectFinnishLocale();
         assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Opiskelijaksi kurssille");
@@ -109,6 +110,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        sleep(5000);
         updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
         logout();
         mockBuilder.mockLogin(student);
@@ -119,6 +121,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());  
       }
     }finally{
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -141,18 +145,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).addCourse(course1).build();
       login();
-      
-
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        sleep(5000);
         updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
         logout(); // logout admin
-        
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
@@ -161,6 +162,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());  
       }
     }finally{
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -194,6 +197,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
+      sleep(5000);
       updateWorkspaceAccessInUI("workspaceAccessLoggedin", workspace);
       logout();
       mockBuilder.clearLoginMock();
@@ -201,6 +205,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       assertTextIgnoreCase("div#loginRequired", "Kirjaudu sisään");
       assertNotPresent(".hero--workspace h1.hero__workspace-title");
     }finally{
+      archiveUserByEmail(admin.getEmail());
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -239,6 +244,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        sleep(5000);
         updateWorkspaceAccessInUI("workspaceAccessLoggedin", workspace);
         logout();
         mockBuilder.mockLogin(student);
@@ -249,6 +255,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());  
       }
     }finally{
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -286,6 +294,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        sleep(5000);
         updateWorkspaceAccessInUI("workspaceAccessLoggedin", workspace);
         logout();
         mockBuilder.mockLogin(student);
@@ -296,6 +305,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());  
       }
     }finally{
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -329,6 +340,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
+      sleep(5000);
       updateWorkspaceAccessInUI("workspaceAccessMembers", workspace);
       logout();
       mockBuilder.clearLoginMock();
@@ -336,6 +348,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       assertTextIgnoreCase("div#loginRequired", "Kirjaudu sisään");
       assertNotPresent(".hero--workspace h1.hero__workspace-title");
     }finally{
+      archiveUserByEmail(admin.getEmail());
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -374,6 +387,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        sleep(5000);
         updateWorkspaceAccessInUI("workspaceAccessMembers", workspace);
         logout();
         mockBuilder.clearLoginMock();
@@ -385,6 +399,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());  
       }
     }finally{
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }
@@ -415,6 +431,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        sleep(5000);
         updateWorkspaceAccessInUI("workspaceAccessMembers", workspace);
         logout();
         mockBuilder.mockLogin(student);
@@ -426,6 +443,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());  
       }
     }finally{
+      archiveUserByEmail(admin.getEmail());
+      archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
     }
   }

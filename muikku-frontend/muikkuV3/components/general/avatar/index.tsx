@@ -51,6 +51,9 @@ const UserAvatar = (props: UserAvatarProps) => {
     showTooltip,
   } = props;
 
+  const displayName = typeof name === "string" ? name : "";
+  const avatarInitial = displayName.charAt(0) || "?";
+
   const category = React.useMemo(() => {
     if (userCategory) return userCategory;
     if (id) {
@@ -75,7 +78,7 @@ const UserAvatar = (props: UserAvatarProps) => {
         size ? "avatar--" + size : ""
       } ${modifier ? "avatar--" + modifier : ""} `}
     >
-      {name[0]}
+      {avatarInitial}
     </div>
   );
 
@@ -87,7 +90,7 @@ const UserAvatar = (props: UserAvatarProps) => {
       aria-hidden={avatarAriaHidden}
     >
       {showTooltip ? (
-        <Dropdown openByHover key="avatar" content={name}>
+        <Dropdown openByHover key="avatar" content={displayName}>
           {avatarContent}
         </Dropdown>
       ) : (

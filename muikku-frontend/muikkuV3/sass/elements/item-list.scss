@@ -16,7 +16,9 @@
   padding: 5px 0 10px 15px;
 }
 
+
 .item-list--student-counselors,
+.item-list--student-guardians,
 .item-list--student-contact-info {
   align-items: flex-start;
   display: flex;
@@ -52,6 +54,36 @@
 .item-list--matriculation-results {
   width: 100%;
 }
+
+.item-list__user-state {
+  background-color: lighten($color-info, 40%);
+  border-radius: 10px;
+  padding: 10px;
+
+}
+
+.item-list__user-state--APPROVED {
+  background: lighten($color-passed, 45%);
+  
+  .item-list__user-state-icon {
+    color: $color-passed;
+    margin-right: 5px;
+    padding: 2px;
+
+  }
+}
+
+.item-list__user-state--DENIED {
+  background: lighten($color-fatal, 45%);
+
+  .item-list__user-state-icon {
+    color: $color-fatal;
+    margin-right: 5px;
+    padding: 2px;
+  }
+}
+
+
 
 // Item-list items BASE
 .item-list__item {
