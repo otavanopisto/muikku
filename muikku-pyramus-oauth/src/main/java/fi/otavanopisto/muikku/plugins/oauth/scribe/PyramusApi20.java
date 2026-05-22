@@ -14,17 +14,17 @@ public class PyramusApi20 extends DefaultApi20 {
   private final static String TOKEN_PATH = "/1/oauth/token";
   
   public PyramusApi20(String pyramusOrigin) {
-    this.pyramusUri = pyramusOrigin;
+    this.pyramusOrigin = pyramusOrigin;
   }
   
   @Override
   public String getAccessTokenEndpoint() {
-    return pyramusUri + TOKEN_PATH;
+    return pyramusOrigin + TOKEN_PATH;
   }
 
   @Override
   public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(pyramusUri + AUTHORIZATION_PATH, config.getApiKey(), OAuthEncoder.encode(config.getCallback()), config.getScope());
+    return String.format(pyramusOrigin + AUTHORIZATION_PATH, config.getApiKey(), OAuthEncoder.encode(config.getCallback()), config.getScope());
   }
 
   @Override
@@ -42,5 +42,5 @@ public class PyramusApi20 extends DefaultApi20 {
     return new PyramusApi20ServiceImpl(this, config);
   }
   
-  private String pyramusUri;
+  private String pyramusOrigin;
 }
