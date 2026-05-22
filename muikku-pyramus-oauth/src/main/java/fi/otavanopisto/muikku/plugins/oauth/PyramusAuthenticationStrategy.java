@@ -31,11 +31,14 @@ import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.security.AuthSource;
 import fi.otavanopisto.muikku.plugins.oauth.scribe.PyramusApi20;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 
 public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy implements AuthenticationProvider {
 
+  protected final static String WHOAMI_PATH = "/1/system/whoami";
+  
   @Inject
   private Logger logger;
 
@@ -50,16 +53,13 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     super("legacy");
   }
   
-  private String getAuthUrl() {
-    return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.authUrl");
-  }
-
-  private String getTokenUri() {
-    return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.tokenUri");
+  private String getPyramusHost() {
+    return pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusOrigin");
   }
   
   private String getWhoAmIUrl() {
-    return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.whoamiUrl");
+    String origin = getPyramusHost();
+    return origin != null ? origin + WHOAMI_PATH : null;
   }
   
   @Override
@@ -89,7 +89,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   
   @Override
   protected Api getApi() {
-    return new PyramusApi20(getAuthUrl(), getTokenUri());
+    return new PyramusApi20(getPyramusHost());
   }
 
   @Override
