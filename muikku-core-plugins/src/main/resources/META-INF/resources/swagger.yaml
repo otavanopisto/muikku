@@ -10901,7 +10901,7 @@ paths:
                     description: Reason what caused conflict
         "500":
           description: Internal server error
-          
+
   /rest/workspace/workspaceMaterials/{workspaceMaterialId}/state/{state}:
     post:
       operationId: updateWorkspaceMaterialState
@@ -10921,12 +10921,12 @@ paths:
           description: Requested state; some enum value of MaterialCompositeReplyStateType
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/MaterialCompositeReplyStateType"
       responses:
         "204":
           description: State changed successfully
         "400":
-          description: Invalid state 
+          description: Invalid state
         "403":
           description: Workspace material not found
 
