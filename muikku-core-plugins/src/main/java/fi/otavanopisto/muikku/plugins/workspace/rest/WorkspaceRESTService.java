@@ -140,7 +140,6 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSettingsRestModel;
@@ -2678,128 +2677,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
-  @Deprecated
-  @GET
-  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
-  @RESTPermitUnimplemented
-  public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    if (loggedUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build();
-    }
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
-    }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root folder").build();
-    }
-
-    if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
-    }
-
-    WorkspaceMaterialReply materialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, loggedUser);
-    if (materialReply != null) {
-      return Response.ok(createRestModel(new WorkspaceMaterialReply[] { materialReply })).build();
-    } else {
-      return Response.ok(createRestModel(new WorkspaceMaterialReply[] { })).build();
-    }
-  }
-  
-  @Deprecated
-  @POST
-  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReplyRestModel payload) {
-    if (payload == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
-    }
-
-    if (payload.getState() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("State is missing").build();
-    }
-
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    if (loggedUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build();
-    }
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
-    }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root folder").build();
-    }
-
-    if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
-    }
-
-    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser, false);
-
-    return Response.ok(createRestModel(workspaceMaterialReply)).build();
-  }
-
-  @Deprecated
-  @PUT
-  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam ("REPLYID") Long workspaceMaterialReplyId, WorkspaceMaterialReplyRestModel payload) {
-    if (payload == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
-    }
-
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    if (loggedUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build();
-    }
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
-    }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root folder").build();
-    }
-
-    if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
-    }
-
-    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(workspaceMaterialReplyId);
-    if (workspaceMaterialReply == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material reply").build();
-    }
-
-    workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, payload.getState());
-
-    return Response.noContent().build();
-  }
-
   private List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialProducer> createRestModel(WorkspaceMaterialProducer... materialProducers) {
     List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialProducer> result = new ArrayList<>();
 
@@ -2842,20 +2719,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return result;
-  }
-
-  private List<WorkspaceMaterialReplyRestModel> createRestModel(WorkspaceMaterialReply... entries) {
-    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel> result = new ArrayList<>();
-
-    for (WorkspaceMaterialReply entry : entries) {
-      result.add(createRestModel(entry));
-    }
-
-    return result;
-  }
-
-  private WorkspaceMaterialReplyRestModel createRestModel(WorkspaceMaterialReply entity) {
-    return new WorkspaceMaterialReplyRestModel(entity.getId(), entity.getState());
   }
 
   private List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial> createRestModel(WorkspaceMaterial... entries) {
