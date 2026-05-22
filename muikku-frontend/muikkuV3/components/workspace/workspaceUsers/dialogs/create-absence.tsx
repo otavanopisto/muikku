@@ -10,11 +10,12 @@ import {
   User,
   GetWorkspaceStudentsRequest,
 } from "~/generated/client";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-
+import { displayNotification } from "~/actions/base/notifications";
+import { useDispatch } from "react-redux";
 /**
  * CreateAbsenceDialogProps
  */
@@ -131,7 +132,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     undefined,
     createInitialAbsenceEventFormState
   );
-
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   /**
    * studentsLoader
@@ -166,17 +167,41 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     onClose: () => void
   ) => {
     const { title, description, startDate, endDate } = absenceEvent;
-    await muikkuEventApi.createEvent({
-      muikkuEvent: {
-        title,
-        description,
-        start: startDate?.toISOString(),
-        end: endDate?.toISOString(),
-        type: "ABSENCE",
-        eventContainerId: workspaceEventContainerId,
-      },
-      users: formState.selectedUsers.map((u) => u.value.id),
-    });
+    try {
+      await muikkuEventApi.createEvent({
+        muikkuEvent: {
+          title,
+          description,
+          start: startDate?.toISOString(),
+          end: endDate?.toISOString(),
+          type: "ABSENCE",
+          eventContainerId: workspaceEventContainerId,
+        },
+        users: formState.selectedUsers.map((u) => u.value.id),
+      });
+      dispatch(
+        displayNotification(
+          t("notifications.createSuccess", {
+            ns: "events",
+            context: "absence",
+          }),
+          "success"
+        )
+      );
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+      dispatch(
+        displayNotification(
+          t("notifications.createError", {
+            ns: "events",
+            context: "absence",
+          }),
+          "error"
+        )
+      );
+    }
 
     onConfirm?.(formState);
     onClose();
@@ -299,8 +324,9 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   return (
     <Dialog
       onClose={handleClose}
+      closeOnOverlayClick={false}
       modifier="create-absence"
-      title="Create Absence"
+      title={t("labels.newAbsence", { ns: "events" })}
       content={content}
       footer={footer}
     >

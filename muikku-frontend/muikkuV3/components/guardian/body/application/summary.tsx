@@ -41,7 +41,7 @@ const Summary = (props: SummaryProps) => {
     (state: StateType) => state.guardian
   );
   const dependantAbsences =
-    absencesByDependantId[currentDependant.dependantInfo.userEntityId];
+    absencesByDependantId[currentDependant.dependantInfo?.userEntityId];
 
   React.useEffect(() => {
     if (

@@ -2623,21 +2623,24 @@
       "absence": "Poissaolo",
       "absences": "Poissaolot",
       "absence_explanation": "Selitys poissaololle",
+      "end": "Päättyy",
       "event": "Tapahtuma",
       "events": "Tapahtumat",
-      "reason": "Syy",
-      "start": "Alkaa",
-      "end": "Päättyy",
+      "newAbsence": "Uusi poissaolo",
       "property": "Tuntematon ominaisuus",
-      "property_ABSENCE_REASON": "Poissaolon syy"
+      "property_ABSENCE_REASON": "Poissaolon syy",
+      "reason": "Syy",
+      "start": "Alkaa"
     },
-
     "content": {
       "empty": "Ei tapahtumia",
       "removing": "Oletko varma, että haluat poistaa tapahtuman?"
     },
     "notifications": {
       "createError": "Tapahtuman luonti epäonnistui",
+      "createError_absence": "Poissaolon luonti epäonnistui",
+      "createSuccess": "Tapahtuman luonti onnistui",
+      "createSuccess_absence": "Poissaolon luonti onnistui",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
       "loadError": "Tapahtumien lataus epäonnistui",

@@ -2617,18 +2617,18 @@
       "remove": "Remove event"
     },
     "labels": {
-      "absence": "Poissaolo",
-      "absences": "Poissaolot",
-      "absence_explanation": "Selitys poissaololle",
-      "event": "Tapahtuma",
-      "events": "Tapahtumat",
-      "reason": "Syy",
-      "start": "Alkaa",
-      "end": "Päättyy",
-      "property": "Tuntematon ominaisuus",
-      "property_ABSENCE_REASON": "Poissaolon syy"
+      "absence": "Absence",
+      "absences": "Absences",
+      "absence_explanation": "Absence_explanation",
+      "end": "Ends",
+      "event": "Event",
+      "events": "Events",
+      "newAbsence": "New absence",
+      "property": "Unkown property",
+      "property_ABSENCE_REASON": "Absence reason",
+      "reason": "Reason",
+      "start": "Begins"
     },
-
     "content": {
       "empty": "Ei tapahtumia",
       "removing": "Oletko varma, että haluat poistaa tapahtuman?"
