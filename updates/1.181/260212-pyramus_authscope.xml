@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
+  <sql>
+    delete from PluginSetting
+    where key_id in (
+      select id 
+      from PluginSettingKey
+      where plugin = 'pyramus-oauth' and name in ('oauth.tokenUri', 'oauth.whoamiUrl', 'oauth.authUrl')
+    );
+  </sql>    
+
+  <sql>
+    delete from PluginSettingKey
+    where plugin = 'pyramus-oauth' and name in ('oauth.tokenUri', 'oauth.whoamiUrl', 'oauth.authUrl');
+  </sql>    
+
 </update>
