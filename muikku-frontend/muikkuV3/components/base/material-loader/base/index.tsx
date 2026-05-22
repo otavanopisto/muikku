@@ -369,10 +369,7 @@ class Base extends React.Component<BaseProps, BaseState> {
     // and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     // registering this event on all the field-answer-saved events
     if (
-      actualData.materialId === this.props.material.materialId &&
-      actualData.workspaceMaterialId ===
-        this.props.material.workspaceMaterialId &&
-      actualData.workspaceEntityId === this.props.workspace.id
+      actualData.workspaceMaterialId === this.props.material.workspaceMaterialId
     ) {
       // We clear the timeout that would mark the field as unsynced given the time had passed
       clearTimeout(this.timeoutConnectionFailedRegistry[actualData.fieldName]);
@@ -495,9 +492,7 @@ class Base extends React.Component<BaseProps, BaseState> {
       // Tell the server thru the websocket to save
       const messageData = JSON.stringify({
         answer: newValue,
-        materialId: this.props.material.materialId,
         fieldName: name,
-        workspaceEntityId: this.props.workspace.id,
         workspaceMaterialId: this.props.material.workspaceMaterialId,
         userEntityId: this.props.status.userId,
       });
