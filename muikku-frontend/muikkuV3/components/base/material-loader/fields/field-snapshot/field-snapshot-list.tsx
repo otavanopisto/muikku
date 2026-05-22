@@ -4,6 +4,7 @@ import { MaterialAnswerSnapshot } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { FieldSnapshotItem } from "./field-snapshot-item";
 import "~/sass/elements/field-snapshot.scss";
+import { useTranslation } from "react-i18next";
 
 /**
  * Field snapshot list props
@@ -32,6 +33,8 @@ export const FieldSnapshotList = (props: FieldSnapshotListProps) => {
     className = "field-snapshot-list",
   } = props;
 
+  const { t } = useTranslation("materials");
+
   const sortedSnapshots = useMemo(
     () => [...snapshots].sort((a, b) => b.date.getTime() - a.date.getTime()),
     [snapshots]
@@ -50,7 +53,9 @@ export const FieldSnapshotList = (props: FieldSnapshotListProps) => {
           label={
             formatLabel
               ? formatLabel(snapshot)
-              : `Snapshot ${localize.date(snapshot.date, "l LT")}`
+              : `${t("labels.snapshot", {
+                  ns: "materials",
+                })} ${localize.date(snapshot.date, "l LT")}`
           }
           onDelete={
             onDeleteFieldSnapshot

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { IconButton } from "~/components/general/button";
 import { FieldSnapshotAccordion } from "./field-snapshot-accordion";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * Field snapshot item props
@@ -39,6 +40,8 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
     defaultOpen = false,
   } = props;
 
+  const { t } = useTranslation("materials");
+
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -59,7 +62,10 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
         </button>
 
         {onDelete && (
-          <Dropdown content="Delete snapshot" openByHover>
+          <Dropdown
+            content={t("labels.deleteSnapshot", { ns: "materials" })}
+            openByHover
+          >
             <IconButton
               buttonModifiers="snapshot-delete"
               icon="trash"

@@ -672,7 +672,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           {answerExampleComponent}
           {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
             this.props.onTakeFieldSnapshot && (
-              <Dropdown content="Snapshot" openByHover>
+              <Dropdown
+                content={t("labels.takeSnapshot", { ns: "materials" })}
+                openByHover
+              >
                 <IconButton
                   buttonModifiers="snapshot"
                   icon="plus"
