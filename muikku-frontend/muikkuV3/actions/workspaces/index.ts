@@ -1808,10 +1808,9 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
     };
   };
 
-//Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
-//that is no answers
 /**
- * updateAssignmentState
+ * Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
+ * that is no answers
  * @param successState successState
  * @param workspaceMaterialId workspaceMaterialId
  * @param shouldUpdateServer shouldUpdateServer
