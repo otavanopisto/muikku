@@ -36,9 +36,9 @@ export const DeleteSnapshotDialog = (props: DeleteSnapshotDialogProps) => {
   const content = (closeDialog: () => void) => (
     <div>
       <p>
-        {t("content.deleteSnapshot", {
-          defaultValue: "Are you sure you want to delete this snapshot?",
-          ns: "evaluation",
+        {t("content.removing", {
+          context: "snapshot",
+          ns: "materials",
         })}
       </p>
     </div>
@@ -72,7 +72,7 @@ export const DeleteSnapshotDialog = (props: DeleteSnapshotDialogProps) => {
       modifier="delete-snapshot"
       title={t("labels.deleteSnapshot", {
         defaultValue: "Delete snapshot",
-        ns: "evaluation",
+        ns: "materials",
       })}
       content={content}
       footer={footer}

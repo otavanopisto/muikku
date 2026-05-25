@@ -65,7 +65,15 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
         {onDelete && (
           <DeleteSnapshotDialog onDelete={onDelete}>
             <Dropdown
-              content={t("labels.deleteSnapshot", { ns: "materials" })}
+              alignSelfVertically="top"
+              content={
+                <p>
+                  {t("content.removing", {
+                    context: "snapshot",
+                    ns: "materials",
+                  })}
+                </p>
+              }
               openByHover
             >
               <IconButton
