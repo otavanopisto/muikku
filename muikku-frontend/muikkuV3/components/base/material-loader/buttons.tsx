@@ -12,7 +12,6 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
   answerCheckable: boolean;
   answersVisible: boolean;
   fieldsAllSynced?: boolean;
-  fieldsHasSyncErrors?: boolean;
 }
 
 /**
