@@ -24,7 +24,8 @@
     border-color: $color-priority-high;
   }
   
-  &.state-OVERDUE, &.state-REVIEW_PENDING {
+  &.state-OVERDUE, 
+  &.state-REVIEW-PENDING {
     animation: border 1s ease-in alternate infinite;
     border-left: 3px solid $color-priority-high;
   }

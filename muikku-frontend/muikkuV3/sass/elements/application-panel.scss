@@ -172,7 +172,6 @@
 
 // Component's actions aside when there's no toolbar
 .application-panel__actions-aside--no-toolbar {
-
   @include breakpoint($breakpoint-pad) {
     flex-grow: 1;
   }

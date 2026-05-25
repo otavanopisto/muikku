@@ -69,6 +69,7 @@
     @include breakpoint($breakpoint-pad) {
       height: $input-height-desktop;
     }
+
     @include form-focus;
   }
 
@@ -84,9 +85,11 @@
     @include breakpoint($breakpoint-pad) {
       height: auto;
     }
+
     @include form-focus;
   }
 }
+
 .form__row-header {
   display: flex;
   justify-content: space-between;
