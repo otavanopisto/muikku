@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "muikkuEvent_id", "userEntityId" }) })
 public class MuikkuEventParticipant {
   
   public MuikkuEventParticipant() {
