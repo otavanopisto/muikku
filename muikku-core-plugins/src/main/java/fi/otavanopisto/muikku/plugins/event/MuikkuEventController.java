@@ -228,6 +228,8 @@ public class MuikkuEventController {
           participant.getUserEntityId());
       if (oldParticipant == null) {
         eventParticipantDAO.create(event, participant.getUserEntityId(), EventAttendance.UNCONFIRMED);
+      } else {
+        oldParticipants.remove(oldParticipant);
       }
     }
 
@@ -468,9 +470,23 @@ public class MuikkuEventController {
     }
 
     // student & StudentParent
-    if (sessionController.hasAnyRole(EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDENT_PARENT)) {
+    if (sessionController.hasAnyRole(
+        EnvironmentRoleArchetype.STUDENT,
+        EnvironmentRoleArchetype.STUDENT_PARENT)) {
 
-      if (event.isEditableByUser() && event.getType() != EventType.ABSENCE) {
+      boolean isOwnEvent = event.getUserEntityId() == loggedUser.getId();
+
+      // non-editable events owned by another user cannot be edited
+      if (!isOwnEvent && !event.isEditableByUser()) {
+        return false;
+      }
+
+      boolean editableOwnEvent =
+          event.isEditableByUser()
+              && event.getType() != EventType.ABSENCE
+              && isOwnEvent;
+
+      if (editableOwnEvent) {
         return true;
       }
     }

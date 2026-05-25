@@ -156,7 +156,7 @@ public class MuikkuEvent {
 
   @NotNull
   @Column(nullable = false)
-  private Boolean allDay;
+  private boolean allDay;
   
   @NotNull
   @Column(nullable = false)

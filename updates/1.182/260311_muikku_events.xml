@@ -52,5 +52,7 @@
        foreign key (muikkuEvent_id) 
        references MuikkuEvent (id);
     </sql>
-
+   <sql>
+      create index IDXg5ce8k6bj8m863vnqhvqkmuft on MuikkuEvent (start, end, type, userEntityId);
+   </sql>
 </update>
