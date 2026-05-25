@@ -514,7 +514,8 @@
     padding: 0 8px;
   }
 
-  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+  .cke {
+    // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
     border: 2px solid $color-interim-evaluation;
     border-radius: 2px;
@@ -567,7 +568,7 @@
 // Word Definition
 mark[data-muikku-word-definition] {
   background: transparent;
-  border-bottom: 1px dashed  $color-material-word-definition-color;
+  border-bottom: 1px dashed $color-material-word-definition-color;
   color: $color-material-word-definition-color;
   cursor: help;
   font-weight: 400;
@@ -607,7 +608,7 @@ mark[data-muikku-word-definition] {
     margin: 20px 0 0;
     padding: 20px;
   }
-  
+
   .material-page__assignment-locked-icon {
     color: $color-info;
   }
@@ -716,7 +717,7 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-grade-data--incomplete,
-  .material-page__assignment-assessment-points-data--incomplete {
+.material-page__assignment-assessment-points-data--incomplete {
   font-size: 0.625rem;
   text-transform: uppercase;
 }
@@ -731,7 +732,8 @@ mark[data-muikku-word-definition] {
   top: 10px;
 }
 
-.material-page__assignment-assessment-date {
+.material-page__assignment-assessment-date,
+.material-page__assignment-assessment-assessor {
   @include assessment-text;
 
   align-items: center;
@@ -743,12 +745,14 @@ mark[data-muikku-word-definition] {
   margin: 0 0 10px;
 }
 
-.material-page__assignment-assessment-date-label {
+.material-page__assignment-assessment-date-label,
+.material-page__assignment-assessment-assessor-label {
   font-weight: 600;
   padding: 0 10px 0 0;
 }
 
-.material-page__assignment-assessment-date-data {
+.material-page__assignment-assessment-date-data,
+.material-page__assignment-assessment-assessor-data {
   @include assessment-text;
 
   line-height: 1.375rem;
@@ -1171,7 +1175,7 @@ mark[data-muikku-word-definition] {
   font-style: italic;
   line-height: 40px;
   padding: 10px 35px;
-  quotes: "\201C""\201D";
+  quotes: "\201C" "\201D";
 
   > p {
     display: inline;
@@ -1208,7 +1212,7 @@ mark[data-muikku-word-definition] {
   font-style: normal;
   padding: 12px 12px 12px 50px;
   position: relative;
-  quotes: "\201C""\201D";
+  quotes: "\201C" "\201D";
   text-shadow: none;
 
   &::before {

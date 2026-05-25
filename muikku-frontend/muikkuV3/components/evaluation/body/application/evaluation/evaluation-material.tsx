@@ -10,6 +10,7 @@ import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-l
 import { StateType } from "~/reducers/index";
 import { useSelector } from "react-redux";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
+import { MaterialLoaderAssessor } from "~/components/base/material-loader/assessor";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import {
   InterimEvaluationRequest,
@@ -99,6 +100,7 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
                 className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
               ></div>
 
+              <MaterialLoaderAssessor {...props} {...state} />
               <MaterialLoaderAssesment {...props} {...state} />
             </div>
           ) : null}
@@ -124,6 +126,7 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
                     className={`material-page__assignment-assessment-icon material-page__assignment-assessment--interminEvaluation ${evalStateIcon}`}
                   ></div>
 
+                  <MaterialLoaderAssessor {...props} {...state} />
                   <MaterialLoaderAssesment {...props} {...state} />
                 </div>
               )}

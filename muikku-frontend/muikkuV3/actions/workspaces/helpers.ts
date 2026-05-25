@@ -8,7 +8,7 @@ import {
   WorkspacesStatePatch,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
-import { ReducerStateType } from "~/reducers/workspaces/journals";
+import { ReducerStatusType } from "~/reducers/types";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
 import MApi, { isMApiError } from "~/api/api";
@@ -265,7 +265,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
   const currentWorkspace = state.workspaces.currentWorkspace;
 
   let currentJournalState = state.journals;
-  let journalNextstate: ReducerStateType;
+  let journalNextstate: ReducerStatusType;
   //If it's for the first time
   if (initial) {
     //We set this state to loading

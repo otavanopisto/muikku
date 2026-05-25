@@ -6088,7 +6088,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/user/contacts/{userIdentifier}/contactInfos/{contactInfoId}:
+  /rest/user/contacts/{userIdentifier}/contactInfos/{contactInfoId}/allowStudyDiscussions:
     put:
       operationId: updateUserContactAllowStudyDiscussions
       summary: Sets allowStudyDiscussions property of a contact info
@@ -6109,21 +6109,19 @@ paths:
           schema:
             type: number
             format: int64
-        - name: allowStudyDiscussions
-          in: query
-          description: allowStudyDiscussions
-          required: true
-          schema:
-            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: boolean
       responses:
         "200":
           description: UserContact
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserContact"
+                $ref: "#/components/schemas/UserContact"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -9649,12 +9647,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: continuedViewPermission
-          in: query
-          description: continuedViewPermission
-          required: true
-          schema:
-            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: boolean
       responses:
         "200":
           description: Student's Guardians
@@ -16501,6 +16499,7 @@ components:
         - grade
         - date
         - audioAssessments
+        - assessorName
       properties:
         id:
           description: The id of the evaluation
@@ -16534,20 +16533,20 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AudioAssessment"
+        assessorName:
+          description: Name of the assessing user
+          type: string
+          nullable: true
 
     MaterialAnswer:
       type: object
       description: MaterialAnswer object
       required:
-        - embedId
         - fieldName
         - materialId
         - value
         - workspaceMaterialId
       properties:
-        embedId:
-          description: Id of the answer field
-          type: string
         fieldName:
           description: Name of the answer field
           type: string
@@ -18076,11 +18075,14 @@ components:
           required:
             - curriculumName
             - matriculationEligibility
+            - under18
           properties:
             curriculumName:
               type: string
               nullable: true
             matriculationEligibility:
+              type: boolean
+            under18:
               type: boolean
             permissions:
               type: object
@@ -19185,6 +19187,9 @@ components:
           allOf:
             - $ref: "#/components/schemas/LocaleType"
         hasEvaluationFees:
+          type: boolean
+          nullable: true
+        under18:
           type: boolean
           nullable: true
         isDefaultOrganization:

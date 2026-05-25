@@ -3,27 +3,26 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/note.scss";
 import WallItem from "./components/wall-item";
 import { MuikkuEvent } from "~/generated/client";
-import moment from "moment";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/wall-event.scss";
 
 /**
- * WallEventsProps
+ * WallAbsenceEventsProps
  */
-interface WallEventsProps {
+interface WallAbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
+  isUnder18?: boolean;
   actions?: React.ReactElement;
-  //  onStatusUpdate: (id: number, status: NoteStatusType) => void;
-  //  onUpdate: (id: number, update: UpdateNoteRequest) => void;
 }
 
 /**
- * A simple note componet for panel use
- * @param props NoteProps
+ * A Wall absence event component
+ * @param props WallAbsenceEventPRops
  * @returns JSX.Element
  */
-const WallEvent: React.FC<WallEventsProps> = (props) => {
-  const { modifier, event, actions } = props;
+const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
+  const { modifier, event, actions, isUnder18 = true } = props;
   const { t } = useTranslation("tasks");
   const absenceEventProperty = event.properties.find(
     (prop) => prop.name === "ABSENCE_REASON"
@@ -31,7 +30,9 @@ const WallEvent: React.FC<WallEventsProps> = (props) => {
   const absenceState =
     absenceEventProperty && absenceEventProperty.value !== ""
       ? "REVIEWED"
-      : "REVIEW_PENDING";
+      : isUnder18
+        ? "REVIEW_PENDING"
+        : "REVIEWED";
 
   return (
     <WallItem modifier={modifier} state={absenceState} title={event.title}>
@@ -39,8 +40,9 @@ const WallEvent: React.FC<WallEventsProps> = (props) => {
         <div className="wall-event__header">
           <div className="wall-event__description">{event.description}</div>
           <div className="wall-event__date">
-            {moment(event.start).format("D.M.YYYY")} -
-            {moment(event.end).format("D.M.YYYY")}
+            {localize.date(event.start, "l - LT")}
+            <span className="icon icon-long-arrow-right wall-event__date-decoration" />
+            {localize.date(event.end, "l - LT")}
           </div>
         </div>
         <div className="wall-event__body">
@@ -60,4 +62,4 @@ const WallEvent: React.FC<WallEventsProps> = (props) => {
   );
 };
 
-export default WallEvent;
+export default WallAbsenceEvent;

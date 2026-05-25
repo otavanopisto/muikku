@@ -107,7 +107,7 @@ public class ExamRESTService {
           for (WorkspaceMaterialField field : fields) {
             try {
               String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-              WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+              WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
               answers.add(answer);
             }
             catch (WorkspaceFieldIOException e) {

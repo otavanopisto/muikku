@@ -19,7 +19,6 @@ import {
   UserStaffSearchResult,
   StaffMember,
   User,
-  WorkspaceStudent,
 } from "~/generated/client";
 import MApi from "~/api/api";
 import { isUser } from "~/helper-functions/type-guards";

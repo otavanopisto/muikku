@@ -12,7 +12,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import WallNote from "./wall/wall-note";
-import WallEvent from "./wall/walll-event";
+import WallAbsenceEvent from "./wall/walll-event";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MuikkuEvents } from "~/reducers/base/muikku-events";
 
@@ -67,7 +67,11 @@ const WallPanel: React.FC<WallProps> = (props) => {
           </Panel.BodyTitle>
           <Panel.BodyContent>
             {absenceEvents.events.map((event) => (
-              <WallEvent key={event.id} event={event} />
+              <WallAbsenceEvent
+                key={event.id}
+                isUnder18={status.isUnder18}
+                event={event}
+              />
             ))}
           </Panel.BodyContent>
         </>

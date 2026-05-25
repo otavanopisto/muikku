@@ -1201,6 +1201,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             payload: { property: "contactInfos", value: contactInfos },
           });
         }),
+        userApi
+          .getStudentsGuardians({ studentIdentifier: id })
+          .then((guardians) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "guardians", value: guardians },
+            });
+          }),
 
         usergroupApi
           .getUsergroups({ userIdentifier: id })

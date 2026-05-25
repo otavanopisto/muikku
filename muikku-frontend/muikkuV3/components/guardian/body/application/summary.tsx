@@ -12,12 +12,8 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import StudyProgress from "./study-progress";
 import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
-import { MuikkuEventProperty } from "~/generated/client";
 import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
-import {
-  updateAbsenceEventProperty,
-  loadAbsenceEvents,
-} from "~/actions/base/muikku-events";
+import { loadDependantAbsenceEvents } from "~/actions/main-function/guardian";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
 
 /**
@@ -38,28 +34,15 @@ const Summary = (props: SummaryProps) => {
     "materials",
     "common",
   ]);
-  const { status, muikkuEvents } = useSelector((state: StateType) => state);
+  const { status } = useSelector((state: StateType) => state);
+
   const dispatch = useDispatch();
-  const currentDependant = useSelector(
-    (state: StateType) => state.guardian.currentDependant
+  const { currentDependant, absencesByDependantId } = useSelector(
+    (state: StateType) => state.guardian
   );
+  const dependantAbsences =
+    absencesByDependantId[currentDependant.dependantInfo?.userEntityId];
 
-  /**
-   * handles confirming feedback for an absence event
-   * @param explanation the feedback explanation provided by the user
-   * @param eventId the ID of the absence event for which feedback is being provided
-   */
-  const handleConfirmFeedback = (explanation: string, eventId: number) => {
-    const property: MuikkuEventProperty = {
-      eventId,
-      userEntityId: currentDependant.dependantInfo.userEntityId,
-      date: new Date().toISOString(),
-      name: "ABSENCE_REASON",
-      value: explanation,
-    };
-
-    dispatch(updateAbsenceEventProperty(property));
-  };
   React.useEffect(() => {
     if (
       currentDependant.dependantInfoStatus !== "READY" ||
@@ -67,7 +50,9 @@ const Summary = (props: SummaryProps) => {
     ) {
       return;
     }
-    dispatch(loadAbsenceEvents(currentDependant.dependantInfo.userEntityId));
+    dispatch(
+      loadDependantAbsenceEvents(currentDependant.dependantInfo.userEntityId)
+    );
   }, [
     dispatch,
     currentDependant.dependantInfo?.userEntityId,
@@ -95,28 +80,30 @@ const Summary = (props: SummaryProps) => {
           {t("labels.absences", { ns: "events" })}
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-          {muikkuEvents.absenceEvents.events.map((e) => (
-            <WallEvent
-              key={e.id}
-              event={e}
-              actions={
-                <AbsenceFeedbackDialog
-                  absenceEvent={e}
-                  onConfirm={handleConfirmFeedback}
-                >
-                  <Button
-                    disabled={e.properties.some(
-                      (p) =>
-                        p.name === "ABSENCE_REASON" && p.value.trim() !== ""
-                    )}
-                    className="button button--primary-function-content"
+          {dependantAbsences.events.map((e) => {
+            const hasFeedback = e.properties.find(
+              (property) =>
+                property.name == "ABSENCE_REASON" && property.value !== ""
+            );
+            return (
+              <WallEvent
+                key={e.id}
+                event={e}
+                actions={
+                  <AbsenceFeedbackDialog
+                    studentId={currentDependant.dependantInfo.userEntityId}
+                    absenceEvent={e}
                   >
-                    {t("actions.giveFeedback", { ns: "events" })}
-                  </Button>
-                </AbsenceFeedbackDialog>
-              }
-            />
-          ))}
+                    <Button className="button button--primary-function-content">
+                      {hasFeedback
+                        ? t("actions.editFeedback", { ns: "events" })
+                        : t("actions.giveFeedback", { ns: "events" })}
+                    </Button>
+                  </AbsenceFeedbackDialog>
+                }
+              />
+            );
+          })}
         </div>
       </div>
     );
@@ -352,8 +339,8 @@ const Summary = (props: SummaryProps) => {
 
     return (
       <section>
-        {muikkuEvents.absenceEvents.events &&
-          muikkuEvents.absenceEvents.events.length > 0 &&
+        {dependantAbsences.events &&
+          dependantAbsences.events.length > 0 &&
           absences}
         {studentCounselors}
         {studentBasicInfo}

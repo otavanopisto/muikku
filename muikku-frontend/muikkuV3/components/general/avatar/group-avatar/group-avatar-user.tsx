@@ -41,6 +41,9 @@ const GroupAvatarUser = (props: GroupAvatarUserProps) => {
     avatarAriaHidden,
   } = props;
 
+  const displayName = typeof name === "string" ? name : "";
+  const avatarInitial = displayName.charAt(0) || "?";
+
   const category = React.useMemo(() => {
     if (userCategory) return userCategory;
     if (id) {
@@ -73,11 +76,11 @@ const GroupAvatarUser = (props: GroupAvatarUserProps) => {
               size ? "avatar--" + size : ""
             } ${modifier ? "avatar--" + modifier : ""} `}
           >
-            {name[0]}
+            {avatarInitial}
           </div>
         )}
       </div>
-      <div className="avatar__group-user-text">{name}</div>
+      <div className="avatar__group-user-text">{displayName}</div>
       <div className="avatar__group-user-actions">{action(id)}</div>
     </div>
   );
