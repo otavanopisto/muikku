@@ -42,6 +42,12 @@
         muikkuEvent_id bigint,
         primary key (id)
     );</sql>
+    <sql>
+      alter table MuikkuEvent 
+       add constraint FKelh3r8bbikwy35of8xqcwvap0 
+       foreign key (eventContainerId) 
+       references MuikkuEventContainer (id);
+    </sql>
     <sql>alter table MuikkuEventParticipant 
        add constraint FK71b91rs6y627rfjd8reh2xub9 
        foreign key (muikkuEvent_id) 
@@ -54,5 +60,9 @@
     </sql>
    <sql>
       create index IDXg5ce8k6bj8m863vnqhvqkmuft on MuikkuEvent (start, end, type, userEntityId);
+   </sql>
+   <sql>
+      alter table MuikkuEventParticipant 
+       add constraint UKq4wy3bjklas1lkyd5kxf1k912 unique (muikkuEvent_id, userEntityId);
    </sql>
 </update>
