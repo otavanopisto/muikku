@@ -4,6 +4,7 @@ import { IconButton } from "~/components/general/button";
 import { FieldSnapshotAccordion } from "./field-snapshot-accordion";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { DeleteSnapshotDialog } from "./delete-snapshot-dialog";
 
 /**
  * Field snapshot item props
@@ -62,17 +63,18 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
         </button>
 
         {onDelete && (
-          <Dropdown
-            content={t("labels.deleteSnapshot", { ns: "materials" })}
-            openByHover
-          >
-            <IconButton
-              buttonModifiers="snapshot-delete"
-              icon="trash"
-              disabled={deleteDisabled}
-              onClick={onDelete}
-            />
-          </Dropdown>
+          <DeleteSnapshotDialog onDelete={onDelete}>
+            <Dropdown
+              content={t("labels.deleteSnapshot", { ns: "materials" })}
+              openByHover
+            >
+              <IconButton
+                buttonModifiers="snapshot-delete"
+                icon="trash"
+                disabled={deleteDisabled}
+              />
+            </Dropdown>
+          </DeleteSnapshotDialog>
         )}
       </div>
 
