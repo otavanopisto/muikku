@@ -9,7 +9,7 @@ import {
 } from "~/actions/main-function/guardian";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { on } from "events";
+
 /**
  * AbsenceFeedbackDialogProps
  */
@@ -20,11 +20,15 @@ interface AbsenceFeedbackDialogProps {
   onClose?: () => void;
 }
 
-export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = ({
-  children,
-  studentId,
-  absenceEvent,
-}) => {
+/**
+ * Absence feedback dialog
+ * @param props dialog props
+ * @returns JSX.Element
+ */
+export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
+  props
+) => {
+  const { children, studentId, absenceEvent } = props;
   const dispatch = useDispatch();
   const currentAbsenceProperty = absenceEvent.properties.find(
     (property) => property.name === "ABSENCE_REASON"
