@@ -1028,7 +1028,7 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
   };
 
 /**
- * loadDependantAbsenceEvents
+ * loadDependantAbsenceEvents thunk function
  * @param dependantId dependantId
  */
 const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
@@ -1078,7 +1078,7 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
   };
 
 /**
- * createAbsenceEventProperty
+ * createAbsenceEventProperty thunk function
  * @param userId user id
  * @param data data for creation
  */
@@ -1126,7 +1126,7 @@ const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType
   };
 
 /**
- * updateAbsenceEventProperty
+ * updateAbsenceEventProperty thunk function
  * @param userId student user id
  * @param data data for creatio0n
  */
