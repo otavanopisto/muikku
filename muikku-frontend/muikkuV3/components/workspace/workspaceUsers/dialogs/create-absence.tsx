@@ -16,6 +16,7 @@ import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { displayNotification } from "~/actions/base/notifications";
 import { useDispatch } from "react-redux";
+import { FloatingPortal } from "@floating-ui/react";
 /**
  * CreateAbsenceDialogProps
  */
@@ -222,9 +223,11 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    * @returns JSX.Element
    */
   const content = (onClose: () => void) => (
-    <div>
+    <form>
       <div className="form__row">
-        <label htmlFor="absent-students">Valitse poissaolijat</label>
+        <label htmlFor="absent-students">
+          {t("labels.pickAbsenceStudents", { ns: "events" })}
+        </label>
         <InputContactsAutofill
           modifier="absence-dialog"
           loaders={{ studentsLoader }}
@@ -240,7 +243,9 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         />
       </div>
       <div className="form__row form__row--absence-event">
-        <label htmlFor="absence-event">Poissaolotapahtuman nimi</label>
+        <label htmlFor="absence-event">
+          {t("labels.absenceEventName", { ns: "events" })}
+        </label>
         <input
           id="absence-event"
           type="text"
@@ -251,7 +256,9 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         />
       </div>
       <div className="form__row form__row--absence-event">
-        <label htmlFor="absence-description">Poissaolotapahtuma kuvaus</label>
+        <label htmlFor="absence-description">
+          {t("labels.absenceEventDescription", { ns: "events" })}
+        </label>
         <textarea
           className="form-element__textarea"
           id="absence-description"
@@ -265,7 +272,9 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         />
       </div>
       <div className="form__row form__row--absence-event">
-        <label htmlFor="absence-start">Tapahtuman alku</label>
+        <label htmlFor="absence-start">
+          {t("labels.eventBeginning", { ns: "events" })}
+        </label>
         <DatePicker
           id="absence-start"
           selected={formState.startDate}
@@ -279,7 +288,10 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         />
       </div>
       <div className="form__row form__row--absence-event">
-        <label htmlFor="absence-end">Tapahtuman loppu</label>
+        <label htmlFor="absence-end">
+          {" "}
+          {t("labels.eventEnding", { ns: "events" })}
+        </label>
         <DatePicker
           id="absence-end"
           selected={formState.endDate}
@@ -293,7 +305,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           locale={outputCorrectDatePickerLocale(localize.language)}
         />
       </div>
-    </div>
+    </form>
   );
 
   /**
