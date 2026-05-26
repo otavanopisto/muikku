@@ -21,6 +21,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String educationTypeCode,
               boolean hasImage, 
               boolean hasEvaluationFees,
+              Boolean under18,
               String curriculumIdentifier,
               String curriculumName,
               String organizationIdentifier,
@@ -42,6 +43,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.studyProgrammeName = studyProgrammeName;
     this.studyProgrammeIdentifier = studyProgrammeIdentifier;
     this.hasEvaluationFees = hasEvaluationFees;
+    this.under18 = under18;
     this.curriculumIdentifier = curriculumIdentifier;
     this.curriculumName = curriculumName;
     this.organizationIdentifier = organizationIdentifier;
@@ -230,6 +232,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.educationTypeCode = educationTypeCode;
   }
 
+  public Boolean isUnder18() {
+    return under18;
+  }
+
+  public void setUnder18(Boolean under18) {
+    this.under18 = under18;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -251,5 +261,5 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private Set<EnvironmentRoleArchetype> roles;
   private UserWhoAmIInfoServices services;
   private String educationTypeCode; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
-
+  private Boolean under18;
 }

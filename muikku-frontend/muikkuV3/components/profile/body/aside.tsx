@@ -9,6 +9,7 @@ import NavigationMenu, {
 import { StatusType } from "~/reducers/base/status";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { ProfileState } from "../../../reducers/main-function/profile";
+import { ContactsState } from "~/reducers/base/contacts";
 
 /**
  * NavigationProps
@@ -16,6 +17,7 @@ import { ProfileState } from "../../../reducers/main-function/profile";
 interface NavigationProps extends WithTranslation<["common"]> {
   location: string;
   status: StatusType;
+  contacts: ContactsState;
   profile: ProfileState;
 }
 
@@ -51,6 +53,12 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       case "vacation":
       case "chat":
         return !isOnlyStudentParent;
+      case "contacts":
+        return (
+          this.props.status.isStudent &&
+          (this.props.contacts.guardians?.list.length > 0 ||
+            this.props.contacts.others?.list.length > 0)
+        );
       case "work":
         return (
           !this.props.status.isStudent &&
@@ -81,6 +89,10 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       {
         name: this.props.t("labels.contactInfo"),
         hash: "contact",
+      },
+      {
+        name: this.props.t("labels.contacts", { ns: "users" }),
+        hash: "guardians",
       },
       {
         name: this.props.t("labels.signIn"),
@@ -135,6 +147,7 @@ function mapStateToProps(state: StateType) {
     location: state.profile.location,
     status: state.status,
     profile: state.profile,
+    contacts: state.contacts,
   };
 }
 
