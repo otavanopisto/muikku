@@ -1,6 +1,7 @@
 import { SpecificActionType, AnyActionType } from "~/actions";
 import notificationActions from "~/actions/base/notifications";
 import i18n from "~/locales/i18n";
+import { MuikkuEvent } from "~/generated/client";
 import { LoadingState } from "~/@types/shared";
 import { Dispatch, Action } from "redux";
 import MApi, { isMApiError } from "~/api/api";
@@ -8,6 +9,11 @@ import MApi, { isMApiError } from "~/api/api";
 export type EVENTS_SET_ABSENCE_EVENTS_STATE = SpecificActionType<
   "EVENTS_SET_ABSENCE_EVENTS_STATE",
   LoadingState
+>;
+
+export type EVENTS_SET_ABSENCE_EVENTS = SpecificActionType<
+  "EVENTS_SET_ABSENCE_EVENTS",
+  MuikkuEvent[]
 >;
 
 /**
