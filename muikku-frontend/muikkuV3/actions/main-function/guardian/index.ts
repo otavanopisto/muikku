@@ -332,7 +332,9 @@ export interface CreateDependantAbsenceEventPropertyTriggerType {
  * @returns Thunk function to load dependants
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (dispatch, getState) => {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
     try {
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
@@ -379,7 +381,10 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
  */
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   function loadDependantWorkspaces(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
 
       let dependantWorkspaces =
@@ -455,37 +460,6 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   };
 
 /**
- * loadDependantAbsenceEvents
- * @param dependantId dependantId
- */
-const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
-  function loadDependantAbsenceEvents(dependantId: number) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      const end = new Date();
-      const start = new Date(end);
-      start.setMonth(start.getMonth() - 6);
-
-      const events = await eventsApi.listEvents({
-        user: dependantId,
-        type: "ABSENCE",
-        start,
-        end,
-        adjustTimes: true,
-      });
-
-      dispatch({
-        type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
-        payload: {
-          dependantId: dependantId,
-          absences: events,
-        },
-      });
-    };
-  };
-
-/**
  * Thunk function to load current dependant study activity
  * @param data data
  * @returns Thunk function to load current dependant study activity
@@ -493,7 +467,10 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
 const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTriggerType =
   function loadCurrentDependantStudyActivity(data) {
     const { dependantIdentifier, educationTypeCode } = data;
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
       const entry =
         state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
@@ -545,7 +522,10 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
 const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerType =
   function loadCurrentDependantCourseMatrix(data) {
     const { dependantIdentifier, educationTypeCode } = data;
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
       const entry =
         state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
@@ -619,7 +599,10 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
  */
 const loadCurrentDependantStudentInfo: LoadCurrentDependantStudentInfoTriggerType =
   function loadCurrentDependantStudentInfo(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
 
       if (state.guardian.currentDependant.dependantInfoStatus === "READY") {
@@ -699,7 +682,10 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
     groupName: ContactGroupNames,
     dependantIdentifier: string
   ) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
       const isActiveUser = state.status.isActiveUser;
 
@@ -774,7 +760,10 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
  */
 const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDataTriggerType =
   function loadCurrentDependantActivityGraphData(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
 
       if (
@@ -880,7 +869,10 @@ const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDa
  */
 const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAccessTriggerType =
   function loadCurrentDependantPedagogyFormAccess(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       const state = getState();
 
       if (
@@ -929,7 +921,9 @@ const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAc
  */
 const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerType =
   function updateCurrentDependantIdentifier(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
       dispatch({
         type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
         payload: dependantIdentifier,
@@ -979,7 +973,9 @@ const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSel
  */
 const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTriggerType =
   function loadCurrentDependantEducationTypes(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
       const educationTypes = await userApi.getStudentEducationTypes({
         studentIdentifier: dependantIdentifier,
       });
@@ -998,7 +994,10 @@ const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTrig
  */
 const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentialsTriggerType =
   function initializeCurrentDependantEssentials(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
       // Update the current dependant identifier.
       // This will reset the current dependant state so we will wait for it to complete.
       await dispatch(updateCurrentDependantIdentifier(dependantIdentifier));
@@ -1025,6 +1024,56 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
           educationTypeCode: defaultEducationTypeCode,
         })
       );
+    };
+  };
+
+/**
+ * loadDependantAbsenceEvents
+ * @param dependantId dependantId
+ */
+const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
+  function loadDependantAbsenceEvents(dependantId: number) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      try {
+        const end = new Date();
+        const start = new Date(end);
+        start.setMonth(start.getMonth() - 6);
+
+        const events = await eventsApi.listEvents({
+          user: dependantId,
+          type: "ABSENCE",
+          start,
+          end,
+          adjustTimes: true,
+        });
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
+          payload: {
+            dependantId: dependantId,
+            absences: events,
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
     };
   };
 
