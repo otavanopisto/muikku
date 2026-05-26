@@ -362,69 +362,57 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * getActive
    */
   getActive() {
-    //gets the current active node
     let winner: number = null;
 
-    //when you are at the bottom the active is the last one
-    const isAllTheWayToTheBottom =
-      document.documentElement.scrollHeight -
-        document.documentElement.scrollTop ===
-      document.documentElement.clientHeight;
-
-    if (!isAllTheWayToTheBottom) {
-      let winnerTop: number = null;
-      let winnerVisibleWeight: number = null;
-
-      // Iterate through the material refs map instead of this.refs
-      for (const [refKey, ref] of this.materialRefs) {
-        if (!ref.current) {
-          continue;
-        }
-        const element = ref.current.getComponent();
-        const elementTop = element.getBoundingClientRect().top;
-        const elementBottom = element.getBoundingClientRect().bottom;
-        const isVisible =
-          elementTop < window.innerHeight &&
-          elementBottom >=
-            (document.querySelector("#stick") as HTMLElement).offsetHeight;
-
-        if (isVisible) {
-          let cropBottom = window.innerHeight - elementBottom;
-
-          if (cropBottom > 0) {
-            cropBottom = 0;
-          }
-
-          let cropTop = elementTop;
-
-          if (cropTop > 0) {
-            cropTop = 0;
-          }
-
-          const cropTotal = -cropTop - cropBottom;
-
-          const visibleFraction =
-            (element.offsetHeight - cropTotal) / element.offsetHeight;
-          let weight = visibleFraction;
-
-          if (!winner || elementTop < winnerTop) {
-            weight += 0.4;
-          }
-
-          if (!winnerVisibleWeight || weight >= winnerVisibleWeight) {
-            winner = refKey;
-            winnerTop = elementTop;
-            winnerVisibleWeight = weight;
-          }
+    const stickEl = document.querySelector("#stick") as HTMLElement;
+    const readingLine = stickEl?.offsetHeight ?? DEFAULT_OFFSET;
+    // Page whose block contains the reading line (just under the navbar)
+    let containsReadingLine: number = null;
+    let containsReadingLineTop: number = null;
+    // Fallbacks when no page straddles the line
+    let topmostAboveLine: number = null;
+    let topmostAboveLineTop: number = null;
+    let topmostBelowLine: number = null;
+    let topmostBelowLineTop: number = null;
+    for (const [refKey, ref] of this.materialRefs) {
+      if (!ref.current) {
+        continue;
+      }
+      const element = ref.current.getComponent();
+      if (!element) {
+        continue;
+      }
+      const elementTop = element.getBoundingClientRect().top;
+      const elementBottom = element.getBoundingClientRect().bottom;
+      const intersectsViewport =
+        elementTop < window.innerHeight && elementBottom > readingLine;
+      if (!intersectsViewport) {
+        continue;
+      }
+      if (elementTop <= readingLine && elementBottom > readingLine) {
+        if (
+          containsReadingLine === null ||
+          elementTop < containsReadingLineTop
+        ) {
+          containsReadingLine = refKey;
+          containsReadingLineTop = elementTop;
         }
       }
-    } else {
-      winner =
-        this.flattenedMaterial[this.flattenedMaterial.length - 1]
-          .workspaceMaterialId;
+      if (elementTop < readingLine) {
+        if (topmostAboveLine === null || elementTop > topmostAboveLineTop) {
+          topmostAboveLine = refKey;
+          topmostAboveLineTop = elementTop;
+        }
+      }
+      if (elementTop >= readingLine) {
+        if (topmostBelowLine === null || elementTop < topmostBelowLineTop) {
+          topmostBelowLine = refKey;
+          topmostBelowLineTop = elementTop;
+        }
+      }
     }
-
-    winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
+    winner = containsReadingLine ?? topmostAboveLine ?? topmostBelowLine;
+    winner = winner || this.flattenedMaterial[0]?.workspaceMaterialId;
     return winner;
   }
 

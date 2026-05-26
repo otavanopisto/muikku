@@ -68,6 +68,7 @@ interface ContentProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   doNotSetHashes?: boolean;
   enableTouch?: boolean;
+  onTocNavigate?: (id: number) => void;
 }
 
 /**
@@ -534,6 +535,45 @@ class ContentComponent extends SessionStateComponent<
   };
 
   /**
+   * Handles navigation to a page or section
+   * Material content component is used to navigate to a page or section,
+   * so when navigating to a page or section, we need to ignore scroll events
+   * to prevent another scroll event from being triggered.
+   * @param opts { type: "page" | "section"; id: number }
+   */
+  handleTocNavigate =
+    (opts: { type: "page"; id: number } | { type: "section"; id: number }) =>
+    () => {
+      if (!this.props.onTocNavigate) {
+        return;
+      }
+      let pageId: number = null;
+      if (opts.type === "page") {
+        pageId = opts.id;
+      } else {
+        const section = this.props.materials.find(
+          (m) => m.workspaceMaterialId === opts.id
+        );
+        const firstPage =
+          section?.children?.find((c) => !c.hidden) ?? section?.children?.[0];
+        pageId = firstPage?.workspaceMaterialId;
+      }
+      if (!pageId) {
+        return;
+      }
+
+      // Ignore scroll events to prevent another scroll event from being triggered.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).IGNORE_SCROLL_EVENTS = true;
+      this.props.onTocNavigate(pageId);
+      window.setTimeout(() => {
+        // Reset ignore scroll events to allow scroll events to be triggered again.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).IGNORE_SCROLL_EVENTS = false;
+      }, 600);
+    };
+
+  /**
    * Sets ref to topic
    * @param index index
    */
@@ -896,6 +936,10 @@ class ContentComponent extends SessionStateComponent<
                 `s-${node.workspaceMaterialId}`
               )}
               language={node.titleLanguage || this.props.workspace.language}
+              onNavigate={this.handleTocNavigate({
+                type: "section",
+                id: node.workspaceMaterialId,
+              })}
             >
               {!isTocTopicViewRestrictedFromUser &&
                 filteredChildren.map((subnode, subNodeIndex) => {
@@ -1074,6 +1118,10 @@ class ContentComponent extends SessionStateComponent<
                         this.props.workspace.language
                       }
                       aria-label={ariaLabel}
+                      onNavigate={this.handleTocNavigate({
+                        type: "page",
+                        id: subnode.workspaceMaterialId,
+                      })}
                     >
                       {subnode.title}
                     </TocElement>

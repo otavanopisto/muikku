@@ -118,7 +118,11 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         id: "table-of-contents",
         type: "workspace-table-of-contents",
         name: this.props.t("labels.tableOfContents", { ns: "materials" }),
-        component: <TableOfContentsComponent />,
+        component: (
+          <TableOfContentsComponent
+            onTocNavigate={this.props.onActiveNodeIdChange}
+          />
+        ),
       },
     ];
 

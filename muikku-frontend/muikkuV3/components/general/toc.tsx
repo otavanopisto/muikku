@@ -69,6 +69,7 @@ interface TocTopicProps {
   iconAfterColor?: string;
   children?: React.ReactNode;
   onTitleKeyDown?: (e: React.KeyboardEvent) => void;
+  onNavigate?: () => void;
 }
 
 export type TocTopicRef = {
@@ -162,7 +163,10 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
             className={`toc__section-title-container ${
               props.isHidden ? "hidden" : ""
             }`}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onNavigate?.();
+            }}
             onKeyDown={handleTitleKeyDown}
             aria-controls={`topic-elements-${props.topicId}`}
             aria-label={
@@ -232,6 +236,7 @@ interface TocElementProps
   iconAfter?: string;
   iconAfterTitle?: string;
   iconAfterColor?: string;
+  onNavigate?: () => void;
 }
 
 export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
@@ -247,6 +252,7 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
       iconAfterTitle,
       iconAfterColor,
       className,
+      onNavigate,
       ...anchorProps
     } = props;
 
@@ -255,6 +261,7 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
      * @param e e
      */
     const handleLinkClick = (e: React.MouseEvent) => {
+      onNavigate?.();
       const pageElement = document.getElementById(hash as string);
 
       if (pageElement) {

@@ -66,6 +66,8 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import WorkspaceExamsBody from "~/components/workspace/workspaceExams";
 import { initializeExams } from "~/actions/workspaces/exams";
+import { WorkspaceMaterialReferenceType } from "~/reducers/workspaces";
+
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -100,7 +102,7 @@ export default class Workspace extends React.Component<
   private prevPathName: string;
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
-
+  private lastWorkspacesSaveTimer: ReturnType<typeof setTimeout> | null = null;
   /**
    * constructor
    * @param props props
@@ -209,7 +211,19 @@ export default class Workspace extends React.Component<
       const hashvalue = window.location.hash.replace("#", "");
       // the scroll can be buggy and it can attempt to load sections
       // like usual browser scrolling that is very unpredictable
-      if (!hashvalue.startsWith("s-")) {
+      if (hashvalue.startsWith("s-")) {
+        const sectionId = parseInt(hashvalue.replace("s-", ""), 10);
+        const materials =
+          this.props.store.getState().workspaces.currentMaterials;
+        const section = materials?.find(
+          (m) => m.workspaceMaterialId === sectionId
+        );
+        const firstPage =
+          section?.children?.find((c) => !c.hidden) ?? section?.children?.[0];
+        if (firstPage) {
+          this.loadWorkspaceMaterialsData(firstPage.workspaceMaterialId);
+        }
+      } else {
         const supposedLoadedSection =
           hashvalue &&
           parseInt(window.location.hash.replace("#", "").replace("p-", ""));
@@ -255,6 +269,20 @@ export default class Workspace extends React.Component<
   }
 
   /**
+   * scheduleUpdateLastWorkspaces
+   * @param reference reference
+   */
+  scheduleUpdateLastWorkspaces(reference: WorkspaceMaterialReferenceType) {
+    if (this.lastWorkspacesSaveTimer) {
+      clearTimeout(this.lastWorkspacesSaveTimer);
+    }
+    this.lastWorkspacesSaveTimer = setTimeout(() => {
+      this.props.store.dispatch(updateLastWorkspaces(reference) as Action);
+      this.lastWorkspacesSaveTimer = null;
+    }, 400);
+  }
+
+  /**
    * onWorkspaceMaterialsBodyActiveNodeIdChange
    * @param newId newId
    */
@@ -279,15 +307,13 @@ export default class Workspace extends React.Component<
         );
 
         if (state.workspaces.currentWorkspace.isCourseMember) {
-          this.props.store.dispatch(
-            updateLastWorkspaces({
-              url: location.origin + location.pathname,
-              workspaceId: state.workspaces.currentWorkspace.id,
-              workspaceName: workspaceName,
-              materialName:
-                state.workspaces.currentMaterials[0].children[0].title,
-            }) as Action
-          );
+          this.scheduleUpdateLastWorkspaces({
+            url: location.origin + location.pathname,
+            workspaceId: state.workspaces.currentWorkspace.id,
+            workspaceName: workspaceName,
+            materialName:
+              state.workspaces.currentMaterials[0].children[0].title,
+          });
         }
       }
     } else {
@@ -324,14 +350,12 @@ export default class Workspace extends React.Component<
           return index !== -1;
         });
         if (indexFound !== -1) {
-          this.props.store.dispatch(
-            updateLastWorkspaces({
-              url: location.origin + location.pathname + newHash,
-              workspaceId: state.workspaces.currentWorkspace.id,
-              workspaceName: workspaceName,
-              materialName: materialChapter.children[indexFound].title,
-            }) as Action
-          );
+          this.scheduleUpdateLastWorkspaces({
+            url: location.origin + location.pathname + newHash,
+            workspaceId: state.workspaces.currentWorkspace.id,
+            workspaceName: workspaceName,
+            materialName: materialChapter.children[indexFound].title,
+          });
         }
       }
     }
