@@ -39,14 +39,14 @@ public class WorkspaceMaterialFieldController {
   @Inject
   private Event<WorkspaceMaterialFieldUpdateEvent> workspaceMaterialFieldUpdateEvent;
 
-  public WorkspaceMaterialField createWorkspaceMaterialField(WorkspaceMaterial workspaceMaterial, QueryField queryField, String embedId) {
-    WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.create(queryField, workspaceMaterial, embedId);
+  public WorkspaceMaterialField createWorkspaceMaterialField(WorkspaceMaterial workspaceMaterial, QueryField queryField) {
+    WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.create(queryField, workspaceMaterial);
     workspaceMaterialFieldCreateEvent.fire(new WorkspaceMaterialFieldCreateEvent(workspaceMaterialField));
     return workspaceMaterialField;
   }
   
-  public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(WorkspaceMaterial workspaceMaterial, QueryField queryField, String embedId) {
-    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, embedId); 
+  public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryField(WorkspaceMaterial workspaceMaterial, QueryField queryField) {
+    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndQueryField(workspaceMaterial, queryField); 
   }
   
   public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial){

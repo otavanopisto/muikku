@@ -2308,7 +2308,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialField field : fields) {
         String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
         Material material = field.getQueryField().getMaterial();
-        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
         answers.add(answer);
       }
 
@@ -2398,7 +2398,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         for (WorkspaceMaterialField field : fields) {
           String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
           Material material = field.getQueryField().getMaterial();
-          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
           answers.add(answer);
         }
 

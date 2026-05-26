@@ -210,7 +210,8 @@ class PyramusRestClient implements Serializable {
       .param("code", code)
       .param("redirect_uri", redirectUrl)
       .param("client_id", clientId)
-      .param("client_secret", clientSecret);
+      .param("client_secret", clientSecret)
+      .param("scope", "legacy");
 
     WebTarget target = client.target(url + "/oauth/token");
 
