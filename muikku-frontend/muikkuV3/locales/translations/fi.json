@@ -1838,7 +1838,7 @@
       "create_chapter": "Lisää uusi osio",
       "create_examChapter": "Lisää uusi koeosio",
       "create_page": "Lisää uusi sivu",
-      "deleteSnapshot": "Poista vastausversion",
+      "deleteSnapshot": "Poista vastausversio",
       "diaryEntry": "Oppimispäiväkirjamerkintä",
       "edit": "$t(labels.edit)",
       "edit_chapter": "Muokkaa osiota",
