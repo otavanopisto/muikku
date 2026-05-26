@@ -492,10 +492,10 @@ public class MuikkuEventRESTService {
       }
     }
     
-    // UI convenience flags to edit or delete event
+    // flags to edit or delete event
     
-    restEvent.setEditable(myEvent);
-    restEvent.setRemovable(isParticipant);
+    restEvent.setEditable(event.isEditableByUser());
+    restEvent.setRemovable(event.isRemovableByUser());
 
     // Event properties
     
