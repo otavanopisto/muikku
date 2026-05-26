@@ -1,10 +1,8 @@
 import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import {
-  NoteDefaultLocation,
-  ReducerStateType,
-} from "~/reducers/notebook/notebook";
+import { NoteDefaultLocation } from "~/reducers/notebook/notebook";
+import { ReducerStatusType } from "~/reducers/types";
 import { displayNotification } from "../base/notifications";
 import { materialShowOrHideExtraTools } from "../workspaces/material";
 import update from "immutability-helper";
@@ -16,7 +14,7 @@ import { CreateWorkspaceNoteRequest, WorkspaceNote } from "~/generated/client";
 
 export type NOTEBOOK_UPDATE_STATE = SpecificActionType<
   "NOTEBOOK_UPDATE_STATE",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 export type NOTEBOOK_LOAD_ENTRIES = SpecificActionType<

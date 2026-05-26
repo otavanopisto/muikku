@@ -1,23 +1,29 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState } from "~/@types/shared";
-import { GuidanceCounselorContact } from "~/generated/client";
+import {
+  Guardian,
+  GuidanceCounselorContact,
+  UserContact,
+} from "~/generated/client";
 
 export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
 
 /**
  * ContactGroup
  */
-export interface ContactGroup {
+export interface ContactGroup<T> {
   state: LoadingState;
-  list: GuidanceCounselorContact[];
+  list: T[];
 }
 
 /**
  * CredentialsState
  */
 export interface ContactsState {
-  counselors: ContactGroup;
+  counselors: ContactGroup<GuidanceCounselorContact>;
+  guardians: ContactGroup<Guardian>;
+  others: ContactGroup<UserContact>;
 }
 
 export type ContactGroupNames = keyof ContactsState;
@@ -27,6 +33,14 @@ export type ContactGroupNames = keyof ContactsState;
  */
 const initialContactsState: ContactsState = {
   counselors: {
+    state: "WAITING",
+    list: [],
+  },
+  guardians: {
+    state: "WAITING",
+    list: [],
+  },
+  others: {
     state: "WAITING",
     list: [],
   },
@@ -59,7 +73,38 @@ export const contacts: Reducer<ContactsState> = (
 
       return { ...state, [groupName]: { ...group } };
     }
+    case "CONTACT_UPDATE_GUARDIAN": {
+      const updatedGuardian = action.payload;
+      const updatedGuardianList = [...state.guardians.list];
+      const updateGuardianIndex = updatedGuardianList.findIndex(
+        (guardian) => guardian.identifier === updatedGuardian.identifier
+      );
+      if (updateGuardianIndex === -1) {
+        return state;
+      }
+      updatedGuardianList[updateGuardianIndex] = updatedGuardian;
 
+      return {
+        ...state,
+        guardians: { ...state.guardians, list: updatedGuardianList },
+      };
+    }
+    case "CONTACT_UPDATE_CONTACT": {
+      const updatedContact = action.payload;
+      const updatedContactList = [...state.others.list];
+      const updateContactIndex = updatedContactList.findIndex(
+        (contact) => contact.id === updatedContact.id
+      );
+      if (updateContactIndex === -1) {
+        return state;
+      }
+      updatedContactList[updateContactIndex] = updatedContact;
+
+      return {
+        ...state,
+        others: { ...state.others, list: updatedContactList },
+      };
+    }
     default:
       return state;
   }

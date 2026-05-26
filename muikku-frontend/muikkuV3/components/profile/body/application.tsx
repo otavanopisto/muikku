@@ -11,6 +11,7 @@ import WorkList from "./application/work-list";
 import Purchases from "./application/purchases";
 import Authorizations from "./application/authorizations";
 import ChatSettings from "./application/chat-settings";
+import Contacts from "./application/contacts";
 
 /**
  * ProfileApplicationProps
@@ -52,6 +53,7 @@ class ProfileApplication extends React.Component<
           <VacationSettings />
           <WorkList />
           <Purchases />
+          <Contacts />
           <Authorizations />
         </ApplicationPanel>
       </>
