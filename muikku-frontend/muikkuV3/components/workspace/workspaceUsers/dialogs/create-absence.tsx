@@ -289,7 +289,6 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       </div>
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-end">
-          {" "}
           {t("labels.eventEnding", { ns: "events" })}
         </label>
         <DatePicker
