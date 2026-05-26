@@ -1,25 +1,13 @@
 import { SpecificActionType, AnyActionType } from "~/actions";
-import { MuikkuEventProperty } from "~/generated/client";
-import { MuikkuEvent } from "~/generated/client";
+import notificationActions from "~/actions/base/notifications";
+import i18n from "~/locales/i18n";
 import { LoadingState } from "~/@types/shared";
 import { Dispatch, Action } from "redux";
-import MApi from "~/api/api";
-import {
-  CreateEventPropertyRequest,
-  UpdateEventPropertyRequest,
-} from "~/generated/client";
-export type EVENTS_SET_ABSENCE_EVENTS = SpecificActionType<
-  "EVENTS_SET_ABSENCE_EVENTS",
-  MuikkuEvent[]
->;
+import MApi, { isMApiError } from "~/api/api";
+
 export type EVENTS_SET_ABSENCE_EVENTS_STATE = SpecificActionType<
   "EVENTS_SET_ABSENCE_EVENTS_STATE",
   LoadingState
->;
-
-export type EVENTS_UPDATE_ABSENCE_EVENT_PROPERTY = SpecificActionType<
-  "EVENTS_UPDATE_ABSENCE_EVENT_PROPERTY",
-  MuikkuEventProperty
 >;
 
 /**
@@ -27,20 +15,6 @@ export type EVENTS_UPDATE_ABSENCE_EVENT_PROPERTY = SpecificActionType<
  */
 export interface LoadAbsenceEventsTriggerType {
   (userId: number): AnyActionType;
-}
-
-/**
- * CreateDependantAbsenceEventPropertyTriggerType
- */
-export interface CreateAbsenceEventPropertyTriggerType {
-  (data: CreateEventPropertyRequest): AnyActionType;
-}
-
-/**
- * UpdateDependantAbsenceEventPropertyTriggerType
- */
-export interface UpdateAbsenceEventPropertyTriggerType {
-  (data: UpdateEventPropertyRequest): AnyActionType;
 }
 
 const eventsApi = MApi.getEventsApi();
@@ -53,62 +27,41 @@ const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
-      const end = new Date();
-      const start = new Date(end);
-      start.setMonth(start.getMonth() - 6);
+      try {
+        const end = new Date();
+        const start = new Date(end);
+        start.setMonth(start.getMonth() - 6);
 
-      const events = await eventsApi.listEvents({
-        user: userId,
-        start,
-        end,
-        adjustTimes: true,
-        type: "ABSENCE",
-      });
-      dispatch({
-        type: "EVENTS_SET_ABSENCE_EVENTS",
-        payload: events,
-      });
+        const events = await eventsApi.listEvents({
+          user: userId,
+          start,
+          end,
+          adjustTimes: true,
+          type: "ABSENCE",
+        });
+        dispatch({
+          type: "EVENTS_SET_ABSENCE_EVENTS",
+          payload: events,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
     };
   };
 
-/**
- * createAbsenceEventProperty
- * @param data data for creation
- */
-const createAbsenceEventProperty: CreateAbsenceEventPropertyTriggerType =
-  function createAbsenceEventProperty(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      const property = await eventsApi.createEventProperty(data);
-
-      dispatch({
-        type: "EVENTS_UPDATE_ABSENCE_EVENT_PROPERTY",
-        payload: property,
-      });
-    };
-  };
-
-/**
- * updateAbsenceEventProperty
- * @param data data for creatio0n
- */
-const updateAbsenceEventProperty: UpdateAbsenceEventPropertyTriggerType =
-  function updateAbsenceEventProperty(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      const property = await eventsApi.updateEventProperty(data);
-
-      dispatch({
-        type: "EVENTS_UPDATE_ABSENCE_EVENT_PROPERTY",
-        payload: property,
-      });
-    };
-  };
-
-export {
-  loadAbsenceEvents,
-  updateAbsenceEventProperty,
-  createAbsenceEventProperty,
-};
+export { loadAbsenceEvents };

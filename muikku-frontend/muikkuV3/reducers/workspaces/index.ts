@@ -115,7 +115,7 @@ export interface WorkspaceDataType {
   urlName: string;
   organizationEntityId: number;
   // Workspace "calendar" event container id
-  workspaceEventContainerId: number;
+  workspaceEventContainerId?: number;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccess; // This exists in settings

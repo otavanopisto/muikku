@@ -1038,18 +1038,47 @@ const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
-      const property = await eventsApi.createEventProperty(data);
+      try {
+        const property = await eventsApi.createEventProperty(data);
 
-      dispatch({
-        type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-        payload: { userId, property },
-      });
+        dispatch({
+          type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+          payload: { userId, property },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createPropertySuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createPropertyError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
     };
   };
 
 /**
  * updateAbsenceEventProperty
- * @param userId user id
+ * @param userId student user id
  * @param data data for creatio0n
  */
 const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
@@ -1057,12 +1086,41 @@ const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
-      const property = await eventsApi.updateEventProperty(data);
+      try {
+        const property = await eventsApi.updateEventProperty(data);
 
-      dispatch({
-        type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-        payload: { userId, property },
-      });
+        dispatch({
+          type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+          payload: { userId, property },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updatePropertySuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          return dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updatePropertyError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
     };
   };
 
