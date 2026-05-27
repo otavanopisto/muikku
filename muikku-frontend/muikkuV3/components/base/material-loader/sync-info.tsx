@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
  */
 interface MaterialLoaderSyncInfoProps extends MaterialLoaderProps {
   stateConfiguration: StateConfig;
-  fieldsHasSyncErrors?: boolean;
+  fieldsHasSyncErrors: boolean;
 }
 
 /**
@@ -26,8 +26,7 @@ export function MaterialLoaderSyncInfo(props: MaterialLoaderSyncInfoProps) {
 
   return (
     <div className="material-page__sync-info">
-      {props.fieldsHasSyncErrors &&
-        t("notifications.syncError", { ns: "materials" })}
+      {t("notifications.syncError", { ns: "materials" })}
     </div>
   );
 }
