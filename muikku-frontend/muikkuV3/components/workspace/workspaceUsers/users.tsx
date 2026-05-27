@@ -308,8 +308,6 @@ class WorkspaceUsers extends React.Component<
         workspaceEventContainerId={
           this.props.workspace?.workspaceEventContainerId
         }
-        onClose={() => {}}
-        onConfirm={() => {}}
       >
         <Button buttonModifiers={["primary-function", "no-toolbar"]}>
           {this.props.t("actions.createAbsence", {
