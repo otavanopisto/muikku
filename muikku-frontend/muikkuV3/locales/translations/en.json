@@ -203,6 +203,8 @@
       "people": "People",
       "personalInfo": "Personal info",
       "planned": "Planned",
+      "planned_dateRange": "{{startDate}} - {{endDate}} (planned)",
+      "planned_date": "{{startDate}} (planned)",
       "phone": "Phone",
       "postalCode": "Postalcode",
       "postOffice": "City",

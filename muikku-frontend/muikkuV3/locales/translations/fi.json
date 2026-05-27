@@ -203,6 +203,8 @@
       "people": "Ihmiset",
       "personalInfo": "Omat tiedot",
       "planned": "Suunniteltu",
+      "planned_dateRange": "{{startDate}} - {{endDate}} (suunniteltu)",
+      "planned_date": "{{startDate}} (suunniteltu)",
       "phone": "Puhelinnumero",
       "postalCode": "Postinumero",
       "postOffice": "Postitoimipaikka",
