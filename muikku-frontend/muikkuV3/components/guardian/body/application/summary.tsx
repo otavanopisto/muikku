@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { Instructions } from "~/components/general/instructions";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
