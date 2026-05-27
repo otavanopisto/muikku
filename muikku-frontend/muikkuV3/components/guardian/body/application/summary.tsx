@@ -36,29 +36,11 @@ const Summary = (props: SummaryProps) => {
   ]);
   const { status } = useSelector((state: StateType) => state);
 
-  const dispatch = useDispatch();
   const { currentDependant, absencesByDependantId } = useSelector(
     (state: StateType) => state.guardian
   );
   const dependantAbsences =
     absencesByDependantId[currentDependant.dependantInfo?.userEntityId];
-
-  React.useEffect(() => {
-    if (
-      currentDependant.dependantInfoStatus !== "READY" ||
-      currentDependant.dependantContactGroups.counselors.status !== "READY"
-    ) {
-      return;
-    }
-    dispatch(
-      loadDependantAbsenceEvents(currentDependant.dependantInfo.userEntityId)
-    );
-  }, [
-    dispatch,
-    currentDependant.dependantInfo?.userEntityId,
-    currentDependant.dependantInfoStatus,
-    currentDependant.dependantContactGroups.counselors.status,
-  ]);
 
   const currentDependantStudyData =
     currentDependant.dependantStudyDataByEducationTypeCode[

@@ -48,24 +48,6 @@ export const muikkuEvents: Reducer<MuikkuEventsState> = (
         absenceEvents: { ...state.absenceEvents, state: action.payload },
       };
     }
-    case "EVENTS_UPDATE_ABSENCE_EVENT_PROPERTY": {
-      const { eventId } = action.payload;
-      return {
-        ...state,
-        absenceEvents: {
-          ...state.absenceEvents,
-          events: state.absenceEvents.events.map((event) => {
-            if (event.id === eventId) {
-              return {
-                ...event,
-                properties: [action.payload],
-              };
-            }
-            return event;
-          }),
-        },
-      };
-    }
     default:
       return state;
   }
