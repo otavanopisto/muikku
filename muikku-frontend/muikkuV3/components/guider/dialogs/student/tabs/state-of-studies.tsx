@@ -271,8 +271,8 @@ class StateOfStudies extends React.Component<
       </ApplicationSubPanel>
     );
 
-    const absences = this.props.guider.currentStudent.absenceEvents?.length >
-      0 && (
+    const absences = (this.props.guider.currentStudent.absenceEvents ?? [])
+      .length > 0 && (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
           {this.props.i18n.t("labels.absences", { ns: "events" })}
