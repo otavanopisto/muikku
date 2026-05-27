@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
 import { Instructions } from "~/components/general/instructions";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
@@ -13,7 +12,6 @@ import StudyProgress from "./study-progress";
 import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
 import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
-import { loadDependantAbsenceEvents } from "~/actions/main-function/guardian";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
 
 /**
