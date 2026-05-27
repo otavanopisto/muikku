@@ -124,3 +124,23 @@ export type StaticDataset =
   | LinkDataset
   | ImageDataset
   | IframeDataset;
+
+/**
+ * Fields sync status interface
+ */
+export interface FieldsSyncStatus {
+  /** true when every registered field is synced and has no syncError */
+  allSynced: boolean;
+  /** true if any field has syncError set */
+  hasSyncErrors: boolean;
+  /** count of fields in nameContextRegistry that are not fully synced */
+  pendingCount: number;
+}
+
+/**
+ * Field sync state patch interface
+ */
+export interface FieldSyncStatePatch {
+  synced?: boolean;
+  syncError?: string | null;
+}

@@ -138,6 +138,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             fieldSnapshotCapabilities={props.fieldSnapshotCapabilities}
             onTakeFieldSnapshot={props.onTakeFieldSnapshot}
             onDeleteFieldSnapshot={props.onDeleteFieldSnapshot}
+            onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
           />
         )}
       </div>

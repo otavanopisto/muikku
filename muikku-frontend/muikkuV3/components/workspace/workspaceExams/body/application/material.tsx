@@ -12,6 +12,7 @@ import { MaterialLoaderContent } from "~/components/base/material-loader/content
 import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
 import { MaterialCompositeReply } from "~/generated/client";
 import { updateAssignmentState } from "~/actions/workspaces/exams";
+import { MaterialLoaderSyncInfo } from "~/components/base/material-loader/sync-info";
 
 /**
  * WorkspaceMaterialProps
@@ -79,6 +80,7 @@ const ExamMaterial = (props: ExamMaterialProps) => {
             {...state}
             stateConfiguration={stateConfiguration}
           />
+          <MaterialLoaderSyncInfo {...props} {...state} />
         </div>
       )}
     </MaterialLoader>
