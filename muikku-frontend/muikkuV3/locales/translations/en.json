@@ -1948,6 +1948,7 @@
       "saving": "Saving answer",
       "saveError": "Saving the answer failed: ({{error}})",
       "saveError_audio": "Saving the recording failed",
+      "syncError": "Some answers failed to save. Stay on the page – we're trying to save them again.",
       "updateError": "$t(common:notifications.updateError)",
       "updateError_page": "Updating the material page failed",
       "updateError_answers": "Changing the assignment state failed",

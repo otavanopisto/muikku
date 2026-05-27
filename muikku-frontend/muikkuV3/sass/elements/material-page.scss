@@ -252,7 +252,8 @@
   }
 }
 
-.material-page__buttonset {
+.material-page__buttonset,
+.material-page__sync-info {
   align-items: center;
   display: flex;
   flex-flow: row wrap;
@@ -264,6 +265,11 @@
     margin: 20px 0;
     padding: 0 20px;
   }
+}
+
+.material-page__sync-info {
+  color: darken($color-warn, 5%);
+  font-weight: bold;
 }
 
 // METADATA
