@@ -1414,7 +1414,8 @@ public class UserRESTService extends AbstractRESTService {
     if (sessionController.getLoggedUser().equals(studentIdentifier) 
         || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
         || userSchoolDataController.amICounselor(studentIdentifier) 
-        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        || workspaceUserEntityController.isWorkspaceTeacherOf(sessionController.getLoggedUserEntity(), studentUSDI)) {
       List<Guardian> studentsGuardians = userSchoolDataController.listStudentsGuardians(studentIdentifier);
       return Response.ok(createRestModel(studentsGuardians)).build();
     } else {

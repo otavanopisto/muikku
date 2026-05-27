@@ -142,11 +142,9 @@ class StateOfStudies extends React.Component<
     // You can use the cheat && after the property
     // eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
 
-    const defaultEmailAddress =
-      this.props.guider.currentStudent.contactInfos &&
-      this.props.guider.currentStudent.contactInfos.find(
-        (e) => e.defaultContact
-      ).email;
+    const defaultEmailAddress = (
+      this.props.guider.currentStudent.contactInfos ?? []
+    ).find((e) => e.defaultContact)?.email;
 
     const avatar = (
       <Avatar
@@ -542,9 +540,9 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
             </ApplicationSubPanel>
 
-            {this.props.guider.currentStudent.contactInfos.length > 0 &&
+            {(this.props.guider.currentStudent.contactInfos ?? []).length > 0 &&
               contacts}
-            {this.props.guider.currentStudent.guardians.length > 0 &&
+            {(this.props.guider.currentStudent.guardians ?? []).length > 0 &&
               studentGuardians}
             <ApplicationSubPanel modifier="counselors">
               <ApplicationSubPanel.Header modifier="with-instructions">
