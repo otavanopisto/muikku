@@ -54,12 +54,10 @@ const ExamMaterial = (props: ExamMaterialProps) => {
         dispatch(
           updateAssignmentState({
             successState: args[0],
-            avoidServerCall: args[1],
-            workspaceId: args[2],
-            workspaceMaterialId: args[3],
-            existantReplyId: args[4],
-            successMessage: args[5],
-            callback: args[6],
+            workspaceMaterialId: args[1],
+            shouldUpdateServer: args[2],
+            successMessage: args[3],
+            callback: args[4],
           })
         );
       }}
