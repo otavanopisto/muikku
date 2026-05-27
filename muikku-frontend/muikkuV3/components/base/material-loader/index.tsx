@@ -36,10 +36,8 @@ import {
 export interface AssignmentStateChangeCallback {
   (
     newState: MaterialCompositeReplyStateType,
-    shouldUpdateServer: boolean,
-    workspaceId: number,
     workspaceMaterialId: number,
-    workspaceMaterialReplyId?: number,
+    shouldUpdateServer?: boolean,
     successText?: string,
     onComplete?: () => void
   ): void;
@@ -545,22 +543,16 @@ class MaterialLoader extends React.Component<
     }
     //So now we need that juicy success state
     if (this.state.stateConfiguration?.successState) {
-      //Get the composite reply
-      const compositeReplies =
-        this.props.compositeReplies || this.state.compositeRepliesInState;
       //We make it be the success state that was given, call this function
       //We set first the state we want
-      //false because we want to call and update the state server side
+      //true because we want to call and update the state server side
       //we put the required workspace id and workspace material id
-      //add a worspaceMaterialReplyId if we have one, and hopefully we will, for most of the cases that is
       //We add the success text if we have one, ofc it is a string to translate
       this.props.onUpdateAssignmentState &&
         this.props.onUpdateAssignmentState(
           this.state.stateConfiguration?.successState,
-          false,
-          this.props.workspace.id,
           this.props.material.workspaceMaterialId,
-          compositeReplies && compositeReplies.workspaceMaterialReplyId,
+          true,
           this.state.stateConfiguration?.successText
             ? this.state.stateConfiguration?.successText
             : undefined,

@@ -38,26 +38,20 @@ public class WorkspaceMaterialReplyController {
 
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial,
       WorkspaceMaterialReplyState state, UserEntity userEntity, boolean locked) {
-
-    // #5013: Race condition with field save websocket messages might mean this user
-    // already has a reply for this page
-
-    WorkspaceMaterialReply reply = findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial,
-        userEntity);
-    if (reply == null) {
-      Date created = new Date();
-      Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
-      Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
-      reply = workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), 1L, created, created,
-          submitted, withdrawn, locked);
-
-      // Activity logging
-
-      if (state == WorkspaceMaterialReplyState.SUBMITTED) {
-        logAssignmentActivity(userEntity.getId(), workspaceMaterial);
-      }
+    Date now = new Date();
+    WorkspaceMaterialReply reply = workspaceMaterialReplyDAO.create(
+        workspaceMaterial,
+        state,
+        userEntity.getId(),
+        1L, // numberOfTries
+        now,
+        now,
+        state == WorkspaceMaterialReplyState.SUBMITTED ? now : null,
+        state == WorkspaceMaterialReplyState.WITHDRAWN ? now : null,
+        locked); 
+    if (state == WorkspaceMaterialReplyState.SUBMITTED) {
+      logAssignmentActivity(userEntity.getId(), workspaceMaterial);
     }
-
     return reply;
   }
 

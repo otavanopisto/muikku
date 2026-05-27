@@ -302,6 +302,22 @@ class Base extends React.Component<BaseProps, BaseState> {
   }
 
   /**
+   * componentWillUnmount - When it unmounts we remove everything
+   */
+  componentWillUnmount() {
+    if (this.props.websocketState.websocket) {
+      this.props.websocketState.websocket.removeEventCallback(
+        "workspace:field-answer-saved",
+        this.onAnswerSavedAtServer
+      );
+      this.props.websocketState.websocket.removeEventCallback(
+        "workspace:field-answer-error",
+        this.onAnswerSavedAtServer
+      );
+    }
+  }
+
+  /**
    * componentDidUpdate - Updates everything if we get brand new HTML
    * @param prevProps previous props
    */
@@ -401,10 +417,7 @@ class Base extends React.Component<BaseProps, BaseState> {
     // and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     // registering this event on all the field-answer-saved events
     if (
-      actualData.materialId === this.props.material.materialId &&
-      actualData.workspaceMaterialId ===
-        this.props.material.workspaceMaterialId &&
-      actualData.workspaceEntityId === this.props.workspace.id
+      actualData.workspaceMaterialId === this.props.material.workspaceMaterialId
     ) {
       // We clear the timeout that would mark the field as unsynced given the time had passed
       clearTimeout(this.timeoutConnectionFailedRegistry[actualData.fieldName]);
@@ -428,7 +441,8 @@ class Base extends React.Component<BaseProps, BaseState> {
       }
 
       // The answer has been modified so we bubble this event
-      this.props.onConfirmedAndSyncedModification();
+      this.props.onConfirmedAndSyncedModification &&
+        this.props.onConfirmedAndSyncedModification();
 
       if (this.nameContextRegistry[actualData.fieldName]) {
         // we check the name context registry to see if it had been synced, said if you lost connection to the server
@@ -533,9 +547,7 @@ class Base extends React.Component<BaseProps, BaseState> {
       // Tell the server thru the websocket to save
       const messageData = JSON.stringify({
         answer: newValue,
-        materialId: this.props.material.materialId,
         fieldName: name,
-        workspaceEntityId: this.props.workspace.id,
         workspaceMaterialId: this.props.material.workspaceMaterialId,
         userEntityId: this.props.status.userId,
       });
