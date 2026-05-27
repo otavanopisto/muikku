@@ -215,15 +215,24 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
                   {plannedCourseInfo && (
                     <div className="ops-course__card-dates">
                       <div className="ops-course__card-dates-item">
-                        {calculatedEndDate ? (
-                          <>
-                            {`${localize.date(new Date(plannedCourseInfo.startDate))} - ${localize.date(new Date(calculatedEndDate))} (suunniteltu)`}
-                          </>
-                        ) : (
-                          <>
-                            {`${localize.date(new Date(plannedCourseInfo.startDate))} (suunniteltu)`}
-                          </>
-                        )}
+                        {calculatedEndDate
+                          ? t("labels.planned", {
+                              ns: "common",
+                              context: "dateRange",
+                              startDate: localize.date(
+                                new Date(plannedCourseInfo.startDate)
+                              ),
+                              endDate: localize.date(
+                                new Date(calculatedEndDate)
+                              ),
+                            })
+                          : t("labels.planned", {
+                              ns: "common",
+                              context: "date",
+                              startDate: localize.date(
+                                new Date(plannedCourseInfo.startDate)
+                              ),
+                            })}
                       </div>
                     </div>
                   )}
