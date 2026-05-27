@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -384,7 +385,25 @@ public class WorkspaceUserEntityController {
   private SchoolDataIdentifier toSchoolDataIdentifier(UserEntity userEntity) {
     return userEntity.defaultSchoolDataIdentifier();
   }
+  
+  /**
+   * Returns true if the teacher has a role TEACHER and
+   * student has a role STUDENT and they have shared workspaces.
+   * 
+   * @param teacher
+   * @param student
+   * @return
+   */
+  public boolean isWorkspaceTeacherOf(UserEntity teacher, UserSchoolDataIdentifier student) {
+    UserSchoolDataIdentifier teacherUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(teacher);
 
+    if (teacherUSDI != null && teacherUSDI.hasRole(EnvironmentRoleArchetype.TEACHER) && student.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return haveSharedWorkspaces(teacher, student.getUserEntity());
+    }
+    
+    return false;
+  }
+  
   /**
    * Returns true if user1 and user2 have any shared workspaces.
    * @param user1 User 1

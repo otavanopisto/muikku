@@ -23,6 +23,7 @@ import { MaterialLoaderAssesment } from "~/components/base/material-loader/asses
 import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import { MaterialLoaderAssessor } from "~/components/base/material-loader/assessor";
+import { MaterialLoaderSyncInfo } from "~/components/base/material-loader/sync-info";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -225,11 +226,14 @@ class WorkspaceMaterial extends React.Component<
                 <div className="material-page__de-floater"></div>
                 {!isEvaluatedAsPassed &&
                 !props.material.contentHiddenForUser ? (
-                  <MaterialLoaderButtons
-                    {...props}
-                    {...state}
-                    stateConfiguration={stateConfiguration}
-                  />
+                  <>
+                    <MaterialLoaderButtons
+                      {...props}
+                      {...state}
+                      stateConfiguration={stateConfiguration}
+                    />
+                    <MaterialLoaderSyncInfo {...props} {...state} />
+                  </>
                 ) : null}
                 <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
                 <MaterialLoaderAssignmentLock {...props} {...state} />

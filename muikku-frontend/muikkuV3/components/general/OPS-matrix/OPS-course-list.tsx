@@ -17,6 +17,8 @@ import {
   getNonOPSTransferedActivities,
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
+import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * Interface for parameters passed to the course item renderer
@@ -36,6 +38,7 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
   studentUserEntityId: number;
   curriculumName: string;
   studyProgrammeName: string;
+  plannedCourses?: PlannedCourseWithIdentifier[];
   renderCourseItem?: (params: RenderItemParams) => JSX.Element;
 }
 
@@ -217,11 +220,11 @@ const DefaultCourseItem = (props: DefaultCourseItemProps) => {
         <Dropdown
           content={
             <div className="hops-container__study-tool-dropdown-container">
-              <div className="hops-container__study-tool-dropdow-title">
-                {MANDATORITY_MANDATORY_VALUES.includes(course.mandatority)
-                  ? course.name
-                  : `${course.name}*`}
-              </div>
+              <OPSCourseCard innerContainerModifiers={["mandatory"]}>
+                <OPSCourseCardHeader>
+                  <span className="ops-course__card-title">{course.name}</span>
+                </OPSCourseCardHeader>
+              </OPSCourseCard>
             </div>
           }
         >

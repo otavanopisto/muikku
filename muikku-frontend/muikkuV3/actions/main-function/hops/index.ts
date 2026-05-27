@@ -462,7 +462,7 @@ export interface InitializeHopsTriggerType {
  */
 export interface LoadStudyPlanDataTriggerType {
   (data: {
-    userIdentifier: string;
+    userIdentifier?: string;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -2267,9 +2267,10 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
 
       const { userIdentifier } = data;
 
-      const studentIdentifier = userIdentifier
-        ? userIdentifier
-        : state.status.userSchoolDataIdentifier;
+      const studentIdentifier =
+        userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
 
       if (state.hopsNew.hopsStudyPlanStatus === "READY") {
         return;
