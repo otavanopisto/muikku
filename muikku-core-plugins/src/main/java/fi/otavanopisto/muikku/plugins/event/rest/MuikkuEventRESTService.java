@@ -359,10 +359,11 @@ public class MuikkuEventRESTService {
       // Access to specific event
       boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
       
-      // If this is a staff member's event, the event can be returned as blocked (only the start and end time will be returned)
       if (!hasAccess) { 
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-        if (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER)){
+        
+        // If this is a staff member's event and the logged-in user is a student or a studentParent, the event may be returned as blocked, with only the start and end times included
+        if (!userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER)){
           MuikkuEventRestModel blockEvent = new MuikkuEventRestModel();
           
           blockEvent.setStart(toOffsetDateTime(event.getStart()));

@@ -33,7 +33,6 @@ import {
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
   GetWorkspaceStudentsRequest,
-  MaterialReply,
   MaterialCompositeReplyStateType,
   EducationType,
   WorkspaceSettings,
@@ -139,7 +138,6 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
     {
       state: MaterialCompositeReplyStateType;
       workspaceMaterialId: number;
-      workspaceMaterialReplyId: number;
     }
   >;
 
@@ -1127,10 +1125,8 @@ export interface SignupIntoWorkspaceTriggerType {
 export interface UpdateAssignmentStateTriggerType {
   (
     successState: MaterialCompositeReplyStateType,
-    avoidServerCall: boolean,
-    workspaceId: number,
     workspaceMaterialId: number,
-    existantReplyId?: number,
+    shouldUpdateServer?: boolean,
     successMessage?: string,
     callback?: () => void
   ): AnyActionType;
@@ -1823,25 +1819,20 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
     };
   };
 
-//Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
-//that is no answers
 /**
- * updateAssignmentState
+ * Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
+ * that is no answers
  * @param successState successState
- * @param avoidServerCall avoidServerCall
- * @param workspaceId workspaceId
  * @param workspaceMaterialId workspaceMaterialId
- * @param existantReplyId existantReplyId
+ * @param shouldUpdateServer shouldUpdateServer
  * @param successMessage successMessage
  * @param callback callback
  */
 const updateAssignmentState: UpdateAssignmentStateTriggerType =
   function updateAssignmentState(
     successState,
-    avoidServerCall,
-    workspaceId,
     workspaceMaterialId,
-    existantReplyId,
+    shouldUpdateServer = false,
     successMessage,
     callback
   ) {
@@ -1849,49 +1840,17 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
-        let replyId: number = existantReplyId;
-        if (!avoidServerCall) {
-          let replyGenerated: MaterialReply = null;
-
-          if (existantReplyId) {
-            replyGenerated = await workspaceApi.updateWorkspaceMaterialReply({
-              workspaceEntityId: workspaceId,
-              workspaceMaterialId: workspaceMaterialId,
-              replyId: existantReplyId,
-              updateWorkspaceMaterialReplyRequest: {
-                state: successState,
-              },
-            });
-          } else {
-            replyGenerated = await workspaceApi.createWorkspaceMaterialReply({
-              workspaceEntityId: workspaceId,
-              workspaceMaterialId: workspaceMaterialId,
-              createWorkspaceMaterialReplyRequest: {
-                state: successState,
-              },
-            });
-          }
-
-          replyId = replyGenerated ? replyGenerated.id : existantReplyId;
-        }
-        if (!replyId) {
-          const result = await workspaceApi.getWorkspaceMaterialReplies({
-            workspaceEntityId: workspaceId,
+        if (shouldUpdateServer) {
+          await workspaceApi.updateWorkspaceMaterialState({
+            state: successState,
             workspaceMaterialId: workspaceMaterialId,
           });
-
-          if (result[0] && result[0].id) {
-            replyId = result[0].id;
-          }
         }
 
         dispatch({
           type: "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
           payload: {
-            workspaceMaterialReplyId: replyId,
             state: successState,
             workspaceMaterialId,
           },
