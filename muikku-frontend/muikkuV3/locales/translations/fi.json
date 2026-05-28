@@ -2630,7 +2630,7 @@
 
   "events": {
     "actions": {
-      "createAbsence": "Luo poissaolo",
+      "createAbsence": "Merkitse poissaolo",
       "giveFeedback": "Anna selvitys",
       "editFeedback": "Muokkaa selvitystä",
       "create": "Luo tapahtuma",
@@ -2639,14 +2639,14 @@
     },
     "labels": {
       "absence": "Poissaolo",
-      "absenceEventName": "Poissaolotapahtuman nimi",
-      "absenceEventDescription": "Poissaolotapahtuma kuvaus",
+      "absenceEventName": "Aihe",
+      "absenceEventDescription": "Lisätiedot (valinnaine)",
       "absences": "Poissaolot",
       "absence_explanation": "Selitys poissaololle",
       "end": "Päättyy",
       "event": "Tapahtuma",
-      "eventBeginning": "Tapahtuman alku",
-      "eventEnding": "Tapahtuman loppu",
+      "eventBeginning": "Alkaa",
+      "eventEnding": "Päättyy",
       "events": "Tapahtumat",
       "newAbsence": "Uusi poissaolo",
       "pickAbsenceStudents": "Valitse poissaolijat",
@@ -2662,13 +2662,13 @@
     "notifications": {
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui",
       "createError": "Tapahtuman luonti epäonnistui: {{error}}",
-      "createError_absence": "Poissaolon luonti epäonnistui: {{error}}",
+      "createError_absence": "Poissaolon merkitseminen epäonnistui: {{error}}",
       "createPropertyError": "Tapahtuman ominaisuuden luonti epäonnistui: {{error}}",
       "createPropertyError_absence": "Poissaoloselvityksen luonti epäonnistui: {{error}}",
       "createPropertySuccess": "Tapahtuman ominaisuuden luonti onnistui",
       "createPropertySuccess_absence": "Poisssaoloselvityksen luonti onnistui",
       "createSuccess": "Tapahtuman luonti onnistui",
-      "createSuccess_absence": "Poissaolon luonti onnistui",
+      "createSuccess_absence": "Poissaolon merkitseminen onnistui",
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
