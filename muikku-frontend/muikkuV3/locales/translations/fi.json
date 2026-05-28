@@ -2643,7 +2643,7 @@
     "labels": {
       "absence": "Poissaolo",
       "absenceEventName": "Aihe",
-      "absenceEventDescription": "Lisätiedot (valinnaine)",
+      "absenceEventDescription": "Lisätiedot (valinnainen)",
       "absences": "Poissaolot",
       "absence_explanation": "Selitys poissaololle",
       "end": "Päättyy",
