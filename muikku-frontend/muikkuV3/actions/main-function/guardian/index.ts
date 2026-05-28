@@ -26,6 +26,10 @@ import {
 } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { MuikkuEvent, MuikkuEventProperty } from "~/generated/client";
+import {
+  CreateEventPropertyRequest,
+  UpdateEventPropertyRequest,
+} from "~/generated/client";
 
 const meApi = MApi.getMeApi();
 const hopsApi = MApi.getHopsApi();
@@ -36,10 +40,6 @@ const workspaceApi = MApi.getWorkspaceApi();
 const evaluationApi = MApi.getEvaluationApi();
 const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 const pedagogyApi = MApi.getPedagogyApi();
-import {
-  CreateEventPropertyRequest,
-  UpdateEventPropertyRequest,
-} from "~/generated/client";
 
 // GUARDIAN DEPENDANTS ACTIONS
 export type GUARDIAN_UPDATE_DEPENDANTS = SpecificActionType<
@@ -332,9 +332,7 @@ export interface CreateDependantAbsenceEventPropertyTriggerType {
  * @returns Thunk function to load dependants
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-  ) => {
+  return async (dispatch) => {
     try {
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
@@ -381,10 +379,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
  */
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   function loadDependantWorkspaces(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       let dependantWorkspaces =
@@ -467,10 +462,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
 const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTriggerType =
   function loadCurrentDependantStudyActivity(data) {
     const { dependantIdentifier, educationTypeCode } = data;
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const entry =
         state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
@@ -522,10 +514,7 @@ const loadCurrentDependantStudyActivity: LoadCurrentDependantStudyActivityTrigge
 const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerType =
   function loadCurrentDependantCourseMatrix(data) {
     const { dependantIdentifier, educationTypeCode } = data;
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const entry =
         state.guardian.currentDependant.dependantStudyDataByEducationTypeCode[
@@ -599,10 +588,7 @@ const loadCurrentDependantCourseMatrix: LoadCurrentDependantCourseMatrixTriggerT
  */
 const loadCurrentDependantStudentInfo: LoadCurrentDependantStudentInfoTriggerType =
   function loadCurrentDependantStudentInfo(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (state.guardian.currentDependant.dependantInfoStatus === "READY") {
@@ -682,10 +668,7 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
     groupName: ContactGroupNames,
     dependantIdentifier: string
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const isActiveUser = state.status.isActiveUser;
 
@@ -760,10 +743,7 @@ const loadCurrentDependantContactGroups: LoadCurrentDependantContactGroupsTrigge
  */
 const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDataTriggerType =
   function loadCurrentDependantActivityGraphData(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (
@@ -869,10 +849,7 @@ const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDa
  */
 const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAccessTriggerType =
   function loadCurrentDependantPedagogyFormAccess(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (
@@ -921,9 +898,7 @@ const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAc
  */
 const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerType =
   function updateCurrentDependantIdentifier(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       dispatch({
         type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
         payload: dependantIdentifier,
@@ -940,10 +915,7 @@ const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSel
   function updateCurrentDependantSelectedEducationTypeCode(
     educationTypeCode: string
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       dispatch({
@@ -973,9 +945,7 @@ const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSel
  */
 const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTriggerType =
   function loadCurrentDependantEducationTypes(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       const educationTypes = await userApi.getStudentEducationTypes({
         studentIdentifier: dependantIdentifier,
       });
@@ -994,10 +964,7 @@ const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTrig
  */
 const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentialsTriggerType =
   function initializeCurrentDependantEssentials(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       // Update the current dependant identifier.
       // This will reset the current dependant state so we will wait for it to complete.
       await dispatch(updateCurrentDependantIdentifier(dependantIdentifier));
@@ -1005,9 +972,12 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
       // Then load the current dependant student info.
       await dispatch(loadCurrentDependantStudentInfo(dependantIdentifier));
 
+      // Then load absence events based on dependant info
+      const dependantInfo = getState().guardian.currentDependant.dependantInfo;
+      await dispatch(loadDependantAbsenceEvents(dependantInfo.userEntityId));
+
       // Get the default education type code.
-      const defaultEducationTypeCode =
-        getState().guardian.currentDependant.dependantInfo.educationTypeCode;
+      const defaultEducationTypeCode = dependantInfo.educationTypeCode;
 
       // Load the current dependant course matrix.
       dispatch(
@@ -1033,9 +1003,14 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
  */
 const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
   function loadDependantAbsenceEvents(dependantId: number) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch, getState) => {
+      if (
+        getState().guardian.absencesByDependantId[dependantId]?.state ===
+        "READY"
+      ) {
+        return;
+      }
+
       try {
         const end = new Date();
         const start = new Date(end);
@@ -1084,9 +1059,7 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
  */
 const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
   function createAbsenceEventProperty(userId, data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       try {
         const property = await eventsApi.createEventProperty(data);
 
@@ -1132,9 +1105,7 @@ const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType
  */
 const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
   function updateAbsenceEventProperty(userId, data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       try {
         const property = await eventsApi.updateEventProperty(data);
 
