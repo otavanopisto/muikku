@@ -299,15 +299,24 @@ public class MuikkuEventController {
 
   public boolean canViewEvent(UserEntity userEntity, MuikkuEvent event) {
 
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-
     // Private event
     if (event.isPrivate()) {
-      return event.getCreatorEntityId().equals(loggedUser.getId());
+      return event.getCreatorEntityId().equals(userEntity.getId());
     }
 
     // Own events
-    if (event.getUserEntityId() != null && event.getUserEntityId().equals(loggedUser.getId())) {
+    if (event.getUserEntityId() != null && event.getUserEntityId().equals(userEntity.getId())) {
+      return true;
+    }
+    
+    // Event creators can always view events they created
+    if (event.getCreatorEntityId() != null
+        && event.getCreatorEntityId().equals(userEntity.getId())) {
+      return true;
+    }
+    
+    // DEFAULT event without target user -> visible
+    if (event.getUserEntityId() == null && event.getType() == EventType.DEFAULT) {
       return true;
     }
 
@@ -323,8 +332,20 @@ public class MuikkuEventController {
       }
     }
 
+    // A null check is needed at this point to avoid a NullPointerException when checking relations etc
+    if (event.getUserEntityId() == null) {
+      return false;
+    }
+
+    UserEntity targetUserEntity = userEntityController.findUserEntityById(
+        event.getUserEntityId());
+
+    if (targetUserEntity == null) {
+      return false;
+    }
+    
     // Relations
-    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+    SchoolDataIdentifier identifier = targetUserEntity.defaultSchoolDataIdentifier();
 
     StudentGuidanceRelation relation = userController.getGuidanceRelation(identifier.getDataSource(),
         identifier.getIdentifier());
@@ -341,15 +362,13 @@ public class MuikkuEventController {
 
     // Course teacher check
     if (courseTeacher && relation != null) {
-      courseTeacher = hasSharedWorkspacesWithLoggedUser(userEntity);
+      courseTeacher = hasSharedWorkspacesWithLoggedUser(targetUserEntity);
     }
 
     // Absence
     if (event.getType() == EventType.ABSENCE) {
 
-      boolean isOwn = loggedUser.getId().equals(userEntity.getId());
-
-      if (!(guidanceCounselor || courseTeacher || studentParent || isOwn)) {
+      if (!(guidanceCounselor || courseTeacher || studentParent)) {
         return false;
       }
     }
