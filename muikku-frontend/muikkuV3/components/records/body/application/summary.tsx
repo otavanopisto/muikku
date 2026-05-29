@@ -317,7 +317,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
-          {absences}
+          {absenceEvents && absenceEvents.events.length > 0 && absences}
           {studentBasicInfo}
           {studentCounselors}
           {contacts.others.list.length > 0 && studentContacts}

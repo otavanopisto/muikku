@@ -463,7 +463,7 @@ class StateOfStudies extends React.Component<
                 <ApplicationSubPanel.Body modifier="labels">
                   <div className="labels">
                     {studentLabels}
-                    {absences}
+
                     {this.props.guider.currentStudent.basic.hasPedagogyForm ? (
                       <Dropdown
                         alignSelfVertically="top"
@@ -528,6 +528,9 @@ class StateOfStudies extends React.Component<
                   </div>
                 </ApplicationSubPanel.Body>
               ) : null}
+            </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="student-absences">
+              {absences}
             </ApplicationSubPanel>
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel modifier="student-data-primary">
