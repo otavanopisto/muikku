@@ -108,9 +108,8 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
   );
 
   // Build records rows from matrix and study activity
-  const { rows, transferedActivities, nonOPSActivities } = React.useMemo(() => {
-    if (!courseMatrix)
-      return { rows: [], transferedActivities: [], nonOPSActivities: [] };
+  const { rows, nonOPSActivities } = React.useMemo(() => {
+    if (!courseMatrix) return { rows: [], nonOPSActivities: [] };
     return buildRecordsRowsFromMatrix(courseMatrix, studyActivity);
   }, [courseMatrix, studyActivity]);
 
@@ -144,21 +143,6 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
       activeStateFilters.includes(item.state)
     );
   }, [nonOPSActivities, activeStateFilters, showMatrixStructure]);
-
-  // If no filters are applied, return all transfered activities
-  // If "TRANSFERRED" filter is applied, return all transfered activities
-  // Otherwise, return empty array
-  const filteredTransferedActivities = React.useMemo(() => {
-    if (
-      showMatrixStructure ||
-      activeStateFilters.length === 0 ||
-      activeStateFilters.includes("TRANSFERRED")
-    ) {
-      return transferedActivities;
-    }
-
-    return [];
-  }, [transferedActivities, activeStateFilters, showMatrixStructure]);
 
   // Enriches matrix rows so that any row whose matched items belong to a combination
   // workspace (same courseId shared by 2+ items) gets the full set of studyActivityItems
@@ -728,8 +712,7 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
           )}
 
           {/* Transfered activities and non OPS activities, so using RecordsActivityRow and RecordsActivityRowTransfered */}
-          {(filteredTransferedActivities.length > 0 ||
-            filteredNonOPSActivities.length > 0) && (
+          {filteredNonOPSActivities.length > 0 && (
             <>
               <div className="application-list__subheader-container">
                 <h3 className="application-list__subheader">
@@ -738,23 +721,22 @@ const RecordsMatrixView: React.FC<RecordsMatrixViewProps> = (props) => {
                   })}
                 </h3>
               </div>
-              {filteredNonOPSActivities.length > 0 &&
-                filteredNonOPSActivities.map((item) => (
+              {filteredNonOPSActivities.map((item, i) =>
+                item.state === "TRANSFERRED" ? (
+                  <RecordsActivityRowTransfered
+                    key={`transfered-activity-item-${i}`}
+                    studyActivityItem={item}
+                    educationType={studyActivity.educationTypeCode}
+                  />
+                ) : (
                   <RecordsActivityRow
                     key={`non-ops-activity-item-${item.courseId}`}
                     studyActivityItems={[item]}
                     isCombinationWorkspace={false}
                     educationType={studyActivity.educationTypeCode}
                   />
-                ))}
-              {filteredTransferedActivities.length > 0 &&
-                filteredTransferedActivities.map((tItem, i) => (
-                  <RecordsActivityRowTransfered
-                    key={`transfered-activity-item-${i}`}
-                    studyActivityItem={tItem}
-                    educationType={studyActivity.educationTypeCode}
-                  />
-                ))}
+                )
+              )}
             </>
           )}
         </ApplicationList>

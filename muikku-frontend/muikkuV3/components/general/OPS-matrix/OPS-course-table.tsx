@@ -9,7 +9,7 @@ import {
   CourseMatrixSubject,
 } from "~/generated/client";
 import {
-  getNonOPSTransferedActivities,
+  getNonOPSActivities,
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
 import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
@@ -56,6 +56,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     matrix,
     currentMaxCourses,
     transferedList,
+    gradedList,
     renderCourseCell,
     renderEmptyCell,
   } = props;
@@ -70,10 +71,9 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     );
   }
 
-  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
-    matrix,
-    transferedList
-  );
+  const items = [...transferedList, ...gradedList];
+
+  const nonOPSActivities = getNonOPSActivities(matrix, items);
 
   /**
    * renderRows
@@ -198,11 +198,11 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
    * renderOtherSubjects
    */
   const renderOtherSubjects = () => {
-    if (nonOPSTransferedActivities.length === 0) {
+    if (nonOPSActivities.length === 0) {
       return null;
     }
 
-    const renderRows = nonOPSTransferedActivities.map((tStudy, i) => {
+    const renderRows = nonOPSActivities.map((tStudy, i) => {
       let courseName = tStudy.courseName;
 
       const modifiers = ["centered", "course"];
@@ -214,7 +214,14 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         modifiers.push("OPTIONAL");
       }
 
-      modifiers.push("APPROVAL");
+      switch (tStudy.state) {
+        case "TRANSFERRED":
+          modifiers.push("APPROVAL");
+          break;
+        case "GRADED":
+          modifiers.push("COMPLETED");
+          break;
+      }
 
       if (tStudy.passing) {
         modifiers.push("PASSED-GRADE");
