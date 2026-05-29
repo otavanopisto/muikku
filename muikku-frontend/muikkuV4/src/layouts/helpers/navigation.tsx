@@ -1,22 +1,18 @@
-import { type User } from "~/src/services/auth";
+import { type User } from "src/services/auth";
 import {
   IconHome,
   IconBuilding,
   IconMail,
   IconList,
   IconEdit,
-  IconBuildingStore,
   IconUser,
   IconSettings,
   IconLogout,
   IconLogin,
-  IconHelp,
-  IconCalendar,
-  IconBook,
 } from "@tabler/icons-react";
 import { type Params, type To } from "react-router";
-import type { WorkspacePermissions } from "~/src/services/permissions";
-import { StudentNavigationContent } from "~/src/router/components/StudentNavigationContent/StudentNavigationContent";
+import type { WorkspacePermissions } from "src/services/permissions";
+import { StudentNavigationContent } from "src/router/components/StudentNavigationContent/StudentNavigationContent";
 
 export type NavigationContext = "environment" | "workspace";
 
@@ -25,12 +21,13 @@ export type NavigationContext = "environment" | "workspace";
  */
 export interface BaseNavigationItem {
   label: string;
+  description?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: React.FC<any>;
   canAccess?: (
     user: User | null,
     workspacePermissions?: WorkspacePermissions | null
   ) => boolean;
-  contents?: NavigationContent[];
 }
 
 /**
@@ -64,21 +61,122 @@ export interface NavigationDynamicContent {
   component: React.ReactNode;
 }
 
-// Union for content items (nested items)
-export type NavigationContent =
-  | NavigationLink
-  | NavigationQueryLink
-  | NavigationDynamicContent;
-
-// Union for top-level navigation items
-export type TopLevelNavigationItem = NavigationLink | NavigationQueryLink;
-
 // Union for any navigation item
 export type NavigationItem =
   | NavigationLink
   | NavigationQueryLink
-  | NavigationContent;
+  | NavigationDynamicContent;
 
+// Coursepicker sub-items
+export const coursepickerSubItems: NavigationItem[] = [
+  {
+    type: "queryLink",
+    label: "Kaikki kurssit",
+    link: "/coursepicker?search=All",
+    queryName: "search",
+    queryValue: "All",
+  },
+  {
+    type: "queryLink",
+    label: "Omat kurssit",
+    link: "/coursepicker?search=MyCourses",
+    queryName: "search",
+    queryValue: "Coursepicker",
+  },
+  {
+    type: "queryLink",
+    label: "Julkaisemattomat kurssit",
+    link: "/coursepicker?search=Unpublished",
+    queryName: "search",
+    queryValue: "Unpublished",
+  },
+];
+
+// Communicator sub-items
+export const communicatorSubItems: NavigationItem[] = [
+  {
+    type: "queryLink",
+    label: "Saapuneet",
+    link: "?tab=Inbox",
+    queryName: "tab",
+    queryValue: "Inbox",
+  },
+  {
+    type: "queryLink",
+    label: "Lukemattomat",
+    link: "?tab=Unread",
+    queryName: "tab",
+    queryValue: "Unread",
+  },
+  {
+    type: "queryLink",
+    label: "Lähetetyt",
+    link: "?tab=Sent",
+    queryName: "tab",
+    queryValue: "Sent",
+  },
+  {
+    type: "queryLink",
+    label: "Roskakori",
+    link: "?tab=Trash",
+    queryName: "tab",
+    queryValue: "Trash",
+  },
+];
+
+// Guider sub-items
+export const guiderSubItems: NavigationItem[] = [
+  { type: "link", label: "Opiskelijalistaus", link: "/guider" },
+  { type: "link", label: "Tehtävät", link: "/guider/tasks" },
+  {
+    type: "component",
+    id: "guider-student_item",
+    component: <StudentNavigationContent />,
+  },
+];
+
+// Announcer sub-items
+export const announcerSubItems: NavigationItem[] = [
+  {
+    type: "queryLink",
+    label: "Aktiiviset",
+    link: "/announcements?search=Active",
+    queryName: "search",
+    queryValue: "Active",
+  },
+  {
+    type: "queryLink",
+    label: "Vanhentuneet",
+    link: "/announcements?search=Expired",
+    queryName: "search",
+    queryValue: "Expired",
+  },
+  {
+    type: "queryLink",
+    label: "Omat",
+    link: "/announcements?search=My",
+    queryName: "search",
+    queryValue: "My",
+  },
+  {
+    type: "queryLink",
+    label: "Arkistoidut",
+    link: "/announcements?search=Archived",
+    queryName: "search",
+    queryValue: "Archived",
+  },
+];
+
+// Evaluation sub-items
+export const evaluationSubItems: NavigationItem[] = [
+  {
+    type: "link",
+    label: "Yhteenveto",
+    link: "/evaluation",
+  },
+];
+
+// Environment navigation items
 export const navigationItemsEnviroment: NavigationItem[] = [
   {
     type: "link",
@@ -106,36 +204,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Viestin",
     icon: IconMail,
     link: "/communicator?tab=Inbox",
-    contents: [
-      {
-        type: "queryLink",
-        label: "Saapuneet",
-        link: "?tab=Inbox",
-        queryName: "tab",
-        queryValue: "Inbox",
-      },
-      {
-        type: "queryLink",
-        label: "Lukemattomat",
-        link: "?tab=Unread",
-        queryName: "tab",
-        queryValue: "Unread",
-      },
-      {
-        type: "queryLink",
-        label: "Lähetetyt",
-        link: "?tab=Sent",
-        queryName: "tab",
-        queryValue: "Sent",
-      },
-      {
-        type: "queryLink",
-        label: "Roskakori",
-        link: "?tab=Trash",
-        queryName: "tab",
-        queryValue: "Trash",
-      },
-    ],
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
@@ -143,15 +211,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Ohjaamo",
     icon: IconList,
     link: "/guider",
-    contents: [
-      { type: "link", label: "Opiskelijalistaus", link: "/guider" },
-      { type: "link", label: "Tehtävät", link: "/guider/tasks" },
-      {
-        type: "component",
-        id: "guider-student_item",
-        component: <StudentNavigationContent />,
-      },
-    ],
     canAccess: (user) =>
       (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
   },
@@ -162,14 +221,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconEdit,
     link: "/evaluation",
     canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
-  },
-  {
-    type: "link",
-    label: "Organisaation hallinta",
-    icon: IconBuildingStore,
-    link: "/organization",
-    canAccess: (user) =>
-      (user?.loggedIn && user?.permissions?.ORGANIZATION_VIEW) ?? false,
   },
   {
     type: "link",
@@ -201,11 +252,11 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   },
 ];
 
+// Workspace navigation items
 const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Etusivu",
-    icon: IconHome,
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
       workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
@@ -213,7 +264,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Hallinta",
-    icon: IconBuildingStore,
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceManagement`,
     canAccess: (user, workspacePermissions) =>
@@ -223,7 +273,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Ohjeet",
-    icon: IconHelp,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceHelp`,
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_GUIDES_VISIBLE) ??
@@ -232,7 +281,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Materiaalit",
-    icon: IconBook,
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceMaterials`,
     canAccess: (user, workspacePermissions) =>
@@ -242,7 +290,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Oppimispäiväkirja",
-    icon: IconCalendar,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceJournal`,
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_JOURNAL_VISIBLE) ??
@@ -251,18 +298,10 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     type: "link",
     label: "Käyttäjät",
-    icon: IconUser,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceUsers`,
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_USERS_VISIBLE) ??
       false, // Always visible
-  },
-  {
-    type: "link",
-    label: "Kirjaudu ulos",
-    icon: IconLogout,
-    link: "/logout",
-    canAccess: (user) => user?.loggedIn ?? false,
   },
 ];
 
