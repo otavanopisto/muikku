@@ -5,14 +5,11 @@ import {
   ExamAttendance,
   MaterialCompositeReply,
   MaterialCompositeReplyStateType,
-  MaterialReply,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import {
-  ReducerStateInfo,
-  ReducerStateType,
-} from "~/reducers/workspaces/exams";
+import { ReducerStateInfo } from "~/reducers/workspaces/exams";
+import { ReducerStatusType } from "~/reducers/types";
 import { displayNotification } from "../base/notifications";
 import _ from "lodash";
 import { ExamTimerRegistry } from "~/util/exam-timer";
@@ -23,7 +20,7 @@ const workspaceApi = MApi.getWorkspaceApi();
 // OVERALL EXAM STATUS
 export type EXAMS_INITIALIZE_STATUS = SpecificActionType<
   "EXAMS_INITIALIZE_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 // EXAMS
@@ -34,7 +31,7 @@ export type EXAMS_UPDATE_EXAMS = SpecificActionType<
 
 export type EXAMS_UPDATE_EXAMS_STATUS = SpecificActionType<
   "EXAMS_UPDATE_EXAMS_STATUS",
-  ReducerStateType
+  ReducerStatusType
 >;
 
 // EXAMS_COMPOSITE_REPLIES
@@ -49,7 +46,6 @@ export type EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
     {
       state: MaterialCompositeReplyStateType;
       workspaceMaterialId: number;
-      workspaceMaterialReplyId: number;
     }
   >;
 
@@ -125,10 +121,8 @@ interface EndExamTriggerType {
 interface UpdateAssignmentStateTriggerType {
   (data: {
     successState: MaterialCompositeReplyStateType;
-    avoidServerCall: boolean;
-    workspaceId: number;
     workspaceMaterialId: number;
-    existantReplyId?: number;
+    shouldUpdateServer?: boolean;
     successMessage?: string;
     callback?: () => void;
   }): AnyActionType;
@@ -390,54 +384,22 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
     ) => {
       const {
         successState,
-        avoidServerCall,
-        workspaceId,
         workspaceMaterialId,
-        existantReplyId,
+        shouldUpdateServer = false,
         callback,
       } = data;
 
       try {
-        let replyId: number = existantReplyId;
-        if (!avoidServerCall) {
-          let replyGenerated: MaterialReply = null;
-
-          if (existantReplyId) {
-            replyGenerated = await workspaceApi.updateWorkspaceMaterialReply({
-              workspaceEntityId: workspaceId,
-              workspaceMaterialId: workspaceMaterialId,
-              replyId: existantReplyId,
-              updateWorkspaceMaterialReplyRequest: {
-                state: successState,
-              },
-            });
-          } else {
-            replyGenerated = await workspaceApi.createWorkspaceMaterialReply({
-              workspaceEntityId: workspaceId,
-              workspaceMaterialId: workspaceMaterialId,
-              createWorkspaceMaterialReplyRequest: {
-                state: successState,
-              },
-            });
-          }
-
-          replyId = replyGenerated ? replyGenerated.id : existantReplyId;
-        }
-        if (!replyId) {
-          const result = await workspaceApi.getWorkspaceMaterialReplies({
-            workspaceEntityId: workspaceId,
+        if (shouldUpdateServer) {
+          await workspaceApi.updateWorkspaceMaterialState({
+            state: successState,
             workspaceMaterialId: workspaceMaterialId,
           });
-
-          if (result[0] && result[0].id) {
-            replyId = result[0].id;
-          }
         }
 
         dispatch({
           type: "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
           payload: {
-            workspaceMaterialReplyId: replyId,
             state: successState,
             workspaceMaterialId,
           },

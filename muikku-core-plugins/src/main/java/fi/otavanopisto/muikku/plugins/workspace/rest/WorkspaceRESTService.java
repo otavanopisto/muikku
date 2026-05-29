@@ -140,7 +140,6 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSettingsRestModel;
@@ -2318,7 +2317,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialField field : fields) {
         String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
         Material material = field.getQueryField().getMaterial();
-        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
         answers.add(answer);
       }
 
@@ -2408,7 +2407,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         for (WorkspaceMaterialField field : fields) {
           String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
           Material material = field.getQueryField().getMaterial();
-          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
           answers.add(answer);
         }
 
@@ -2661,122 +2660,30 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
 
-  @GET
-  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
-  @RESTPermitUnimplemented
-  public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    if (loggedUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build();
-    }
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
-    }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root folder").build();
-    }
-
-    if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
-    }
-
-    WorkspaceMaterialReply materialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, loggedUser);
-    if (materialReply != null) {
-      return Response.ok(createRestModel(new WorkspaceMaterialReply[] { materialReply })).build();
-    } else {
-      return Response.ok(createRestModel(new WorkspaceMaterialReply[] { })).build();
-    }
-  }
-
   @POST
-  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  @Path ("/workspaceMaterials/{WORKSPACEMATERIALID}/state/{STATE}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReplyRestModel payload) {
-    if (payload == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
+  public Response updateWorkspaceMaterialState(@PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("STATE") WorkspaceMaterialReplyState state) {
+    if (state == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing state").build();
     }
-
-    if (payload.getState() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("State is missing").build();
-    }
-
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    if (loggedUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build();
-    }
-
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
     }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root folder").build();
-    }
-
-    if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
-    }
-
-    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser, false);
-
-    return Response.ok(createRestModel(workspaceMaterialReply)).build();
-  }
-
-  @PUT
-  @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam ("REPLYID") Long workspaceMaterialReplyId, WorkspaceMaterialReplyRestModel payload) {
-    if (payload == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
-    }
-
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    if (loggedUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build();
-    }
-
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build();
-    }
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material").build();
-    }
-
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    if (workspaceRootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find workspace root folder").build();
-    }
-
-    if (!workspaceRootFolder.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
-    }
-
-    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(workspaceMaterialReplyId);
+    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(
+        workspaceMaterial,
+        sessionController.getLoggedUserEntity());
     if (workspaceMaterialReply == null) {
-      return Response.status(Status.NOT_FOUND).entity("Could not find workspace material reply").build();
+      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(
+          workspaceMaterial,
+          state,
+          sessionController.getLoggedUserEntity(),
+          false);
     }
-
-    workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, payload.getState());
-
+    else {
+      workspaceMaterialReply = workspaceMaterialReplyController.updateWorkspaceMaterialReply(workspaceMaterialReply, state);
+    }
     return Response.noContent().build();
   }
 
@@ -2822,20 +2729,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return result;
-  }
-
-  private List<WorkspaceMaterialReplyRestModel> createRestModel(WorkspaceMaterialReply... entries) {
-    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel> result = new ArrayList<>();
-
-    for (WorkspaceMaterialReply entry : entries) {
-      result.add(createRestModel(entry));
-    }
-
-    return result;
-  }
-
-  private WorkspaceMaterialReplyRestModel createRestModel(WorkspaceMaterialReply entity) {
-    return new WorkspaceMaterialReplyRestModel(entity.getId(), entity.getState());
   }
 
   private List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial> createRestModel(WorkspaceMaterial... entries) {

@@ -1,19 +1,27 @@
 import { Button } from "@mantine/core";
 import { useAtomValue } from "jotai";
-import { currentStudentAtom } from "~/src/atoms/guider";
-import { ActionBar } from "~/src/components/ActionBar/ActionBar";
-import { AsyncState } from "~/src/components/AsyncState/AsyncState";
-import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
+import { currentStudentAtom } from "src/atoms/guider";
+import { ActionBar } from "src/components/ActionBar/ActionBar";
+import { AsyncState } from "src/components/AsyncState/AsyncState";
+import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import {
   createAsyncError,
   parseAsyncStateFromQuery,
-} from "~/src/utils/AtomHelpers";
+} from "src/utils/AtomHelpers";
+import { guiderSubItems } from "~/src/layouts/helpers/navigation";
+import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 
 /**
  * Guider - Guider page
  */
 export function GuiderStudent() {
   const studentState = useAtomValue(currentStudentAtom);
+
+  useRootNav({
+    title: "Ohjaamo",
+    items: guiderSubItems,
+    customWidth: 500,
+  });
 
   return (
     <PageLayout title="Ohjaamo">

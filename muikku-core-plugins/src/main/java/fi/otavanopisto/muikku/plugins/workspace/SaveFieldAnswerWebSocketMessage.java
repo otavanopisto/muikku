@@ -10,22 +10,6 @@ public class SaveFieldAnswerWebSocketMessage {
     this.answer = answer;
   }
 
-  public String getEmbedId() {
-    return embedId;
-  }
-
-  public void setEmbedId(String embedId) {
-    this.embedId = embedId;
-  }
-
-  public Long getMaterialId() {
-    return materialId;
-  }
-
-  public void setMaterialId(Long materialId) {
-    this.materialId = materialId;
-  }
-
   public String getFieldName() {
     return fieldName;
   }
@@ -40,14 +24,6 @@ public class SaveFieldAnswerWebSocketMessage {
   
   public void setOriginTicket(String originTicket) {
     this.originTicket = originTicket;
-  }
-  
-  public Long getWorkspaceEntityId() {
-    return workspaceEntityId;
-  }
-  
-  public void setWorkspaceEntityId(Long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
   }
   
   public Long getWorkspaceMaterialId() {
@@ -67,11 +43,9 @@ public class SaveFieldAnswerWebSocketMessage {
   }
 
   private String answer;
-  private String embedId;
-  private Long materialId;
   private String fieldName;
   private String originTicket;
   private Long workspaceMaterialId;
-  private Long workspaceEntityId;
   private Long userEntityId;
+
 }

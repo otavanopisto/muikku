@@ -1,13 +1,15 @@
-import { Container, Title, Text, Paper } from "@mantine/core";
+import { Title, Text, Paper } from "@mantine/core";
 import { useParams } from "react-router";
+import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
 
 /**
  * WorkspaceSettings - Workspace settings page
  */
 export function WorkspaceSettings() {
   const { workspaceUrlName } = useParams();
+
   return (
-    <Container size="lg">
+    <PageLayout title="Workspace Settings">
       <Paper p="xl" withBorder>
         <Title order={1} mb="md">
           Workspace Settings
@@ -19,6 +21,6 @@ export function WorkspaceSettings() {
           <b>Workspace:</b> {workspaceUrlName}
         </Text>
       </Paper>
-    </Container>
+    </PageLayout>
   );
 }

@@ -3,6 +3,12 @@ import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import {
+  OPSCourseCard,
+  OPSCourseCardContent,
+  OPSCourseCardHeader,
+  OPSCourseCardLabel,
+} from "~/components/general/OPS-matrix/OPS-course-card";
+import {
   OPSCourseTableContent,
   OPSCourseTableProps,
   RenderItemParams,
@@ -11,12 +17,14 @@ import SuggestionList from "~/components/general/suggestion-list/suggestion-list
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import { WorkspaceSuggestion } from "~/generated/client";
 import {
-  getCourseDropdownName,
   getCourseInfo,
   getHighestCourseNumber,
   MANDATORITY_OPTIONAL_VALUES,
   MANDATORITY_MANDATORY_VALUES,
+  getCourseStateLabel,
 } from "~/helper-functions/study-matrix";
+import { localize } from "~/locales/i18n";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * Props interface for the ProgressTableStudySummary component.
@@ -29,6 +37,7 @@ interface ProgressTableProps
     | "renderOptionalCourseCellContent"
     | "currentMaxCourses"
   > {
+  curriculumConfig: CurriculumConfig;
   /** Callback function to handle student sign-up for a workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
@@ -49,6 +58,8 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     gradedList,
     onGoingList,
     needSupplementationList,
+    plannedCourses,
+    curriculumConfig,
     onSignUp,
   } = props;
 
@@ -64,17 +75,27 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;
 
-    const { modifiers, canBeSelected, grade, needsSupplementation } =
-      getCourseInfo(
-        tdModifiers,
-        subject,
-        course,
-        suggestedNextList,
-        transferedList,
-        gradedList,
-        onGoingList,
-        needSupplementationList
-      );
+    const {
+      modifiers,
+      canBeSelected,
+      grade,
+      needsSupplementation,
+      currentActivityItem,
+    } = getCourseInfo(
+      tdModifiers,
+      subject,
+      course,
+      suggestedNextList,
+      transferedList,
+      gradedList,
+      onGoingList,
+      needSupplementationList
+    );
+
+    const currentActivityItemLabel = getCourseStateLabel(
+      currentActivityItem,
+      t
+    );
 
     const suggestionList = (
       <SuggestionList
@@ -108,10 +129,12 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       </SuggestionList>
     );
 
-    // By default content is mandatory or option shorthand
-    let courseTdContent = MANDATORITY_MANDATORY_VALUES.includes(
+    const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
       course.mandatority
-    )
+    );
+
+    // By default content is mandatory or option shorthand
+    let courseTdContent = isMandatory
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
       : t("labels.optionalShorthand", { ns: "studyMatrix" });
 
@@ -127,19 +150,96 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
       courseTdContent = grade;
     }
 
+    const plannedCourseInfo = plannedCourses?.find(
+      (plannedCourse) =>
+        plannedCourse.subjectCode === subject.code &&
+        plannedCourse.courseNumber === course.courseNumber
+    );
+
+    // Calculates the end date of the planned course
+    const calculatedEndDate = plannedCourseInfo?.duration
+      ? new Date(
+          plannedCourseInfo.startDate.getTime() + plannedCourseInfo.duration
+        )
+      : null;
+
     return (
       <Td key={`${subject.code}-${course.courseNumber}`} modifiers={modifiers}>
         <Dropdown
           content={
             <div className="hops-container__study-tool-dropdown-container">
-              <div className="hops-container__study-tool-dropdow-title">
-                {getCourseDropdownName(
-                  subject,
-                  course,
-                  matrix.type === "UPPER_SECONDARY"
-                )}
-              </div>
-              {canBeSelected && suggestionList}
+              <OPSCourseCard
+                innerContainerModifiers={
+                  isMandatory ? ["mandatory"] : ["optional"]
+                }
+              >
+                <OPSCourseCardHeader>
+                  <span className="ops-course__card-title">
+                    <b>{`${subject.code}${course.courseNumber}`}</b>{" "}
+                    {curriculumConfig
+                      ? `${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`
+                      : `${course.name}`}
+                  </span>
+                </OPSCourseCardHeader>
+                <OPSCourseCardContent>
+                  <div className="ops-course__card-labels">
+                    <OPSCourseCardLabel
+                      modifiers={[isMandatory ? "mandatory" : "optional"]}
+                    >
+                      {isMandatory
+                        ? t("labels.mandatory", {
+                            ns: "common",
+                          })
+                        : t("labels.optional", {
+                            ns: "common",
+                          })}
+                    </OPSCourseCardLabel>
+
+                    {currentActivityItemLabel && (
+                      <OPSCourseCardLabel
+                        modifiers={[currentActivityItemLabel.state]}
+                      >
+                        {currentActivityItemLabel.label}
+                      </OPSCourseCardLabel>
+                    )}
+
+                    {plannedCourseInfo && (
+                      <OPSCourseCardLabel modifiers={["planned"]}>
+                        {t("labels.planned", {
+                          ns: "common",
+                        })}
+                      </OPSCourseCardLabel>
+                    )}
+                  </div>
+
+                  {plannedCourseInfo && (
+                    <div className="ops-course__card-dates">
+                      <div className="ops-course__card-dates-item">
+                        {calculatedEndDate
+                          ? t("labels.planned", {
+                              ns: "common",
+                              context: "dateRange",
+                              startDate: localize.date(
+                                new Date(plannedCourseInfo.startDate)
+                              ),
+                              endDate: localize.date(
+                                new Date(calculatedEndDate)
+                              ),
+                            })
+                          : t("labels.planned", {
+                              ns: "common",
+                              context: "date",
+                              startDate: localize.date(
+                                new Date(plannedCourseInfo.startDate)
+                              ),
+                            })}
+                      </div>
+                    </div>
+                  )}
+
+                  {canBeSelected && suggestionList}
+                </OPSCourseCardContent>
+              </OPSCourseCard>
             </div>
           }
         >

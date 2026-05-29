@@ -110,7 +110,7 @@ import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
-import { loadContactGroup } from "~/actions/base/contacts";
+import { loadAllContactGroups } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
@@ -335,6 +335,9 @@ export default class MainFunction extends React.Component<
           userIdentifier: originalData.c,
         }) as Action
       );
+      this.props.store.dispatch(
+        loadStudyPlanData({ userIdentifier: originalData.c }) as Action
+      );
     }
   }
 
@@ -350,11 +353,12 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
-      // Summary needs counselors
-      this.props.store.dispatch(
-        loadContactGroup("counselors", userId) as Action
-      );
+      // Counselors, Guardians and other contact types are loaded in summary view
+      this.props.store.dispatch(loadAllContactGroups(userId) as Action);
+
       this.props.store.dispatch(updateSummary(userId) as Action);
+
+      this.props.store.dispatch(loadStudyPlanData({}) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords(userId) as Action
@@ -427,6 +431,15 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadProfileData(location: string) {
+    const status = this.props.store.getState().status;
+
+    if (status.isStudent) {
+      this.props.store.dispatch(
+        loadAllContactGroups(
+          status.userSchoolDataIdentifier
+        ) as Action as Action
+      );
+    }
     this.props.store.dispatch(setProfileLocation(location) as Action);
     this.props.store.dispatch(loadProfileAuthorizations() as Action);
 

@@ -1,5 +1,5 @@
 import type { AtomWithQueryResult } from "jotai-tanstack-query";
-import type { AsyncState, AsyncStateError } from "~/src/types/AsyncState";
+import type { AsyncState, AsyncStateError } from "src/types/AsyncState";
 
 /**
  * getAsyncStateValue - Get async state value

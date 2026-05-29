@@ -387,6 +387,14 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
         <div
           className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
         ></div>
+        <div className="material-page__assignment-assessment-assessor">
+          <span className="material-page__assignment-assessment-assessor-label">
+            {t("labels.assessor")}:
+          </span>
+          <span className="material-page__assignment-assessment-assessor-data">
+            {evaluationInfo.assessorName}
+          </span>
+        </div>
         <div className="material-page__assignment-assessment-literal">
           <div className="material-page__assignment-assessment-literal-label">
             {t("labels.literalEvaluation", { ns: "evaluation" })}

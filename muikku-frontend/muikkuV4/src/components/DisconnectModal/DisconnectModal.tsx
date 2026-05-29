@@ -1,5 +1,5 @@
 import { Modal } from "@mantine/core";
-import { websocketDisconnectedAtom } from "~/src/atoms/websocket";
+import { websocketDisconnectedAtom } from "src/atoms/websocket";
 import { useAtom } from "jotai";
 
 /**

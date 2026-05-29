@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useRef, useEffect } from "react";
 import type { Workspace } from "../types";
-import { MuikkuWebsocket } from "~/src/utils/websocket";
+import { MuikkuWebsocket } from "src/utils/websocket";
 import type { MaterialContentNode } from "~/generated/client";
 
 // Constants for timing
@@ -73,7 +73,6 @@ export function useFieldManager(
         // Send message to server
         const messageData = JSON.stringify({
           answer: newValue,
-          embedId: "",
           materialId: material.materialId,
           fieldName: name,
           workspaceEntityId: workspace.id,

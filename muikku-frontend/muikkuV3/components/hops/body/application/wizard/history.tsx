@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { ReducerStateType } from "~/reducers/hops";
+import { ReducerStatusType } from "~/reducers/types";
 import { localize } from "~/locales/i18n";
 import { HopsFormType } from "~/@types/hops";
 import {
@@ -27,7 +27,7 @@ interface HopsHistoryProps {
   status: StatusType;
   formType: HopsFormType;
   formHistory: HopsHistoryEntry[];
-  formHistoryStatus: ReducerStateType;
+  formHistoryStatus: ReducerStatusType;
 }
 
 /**

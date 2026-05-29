@@ -39,7 +39,7 @@ import StudyProgress from "./study-progress";
 import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
-import moment from "moment";
+import ContactCard, { ContactState } from "~/components/general/contact-card";
 
 /**
  * StateOfStudiesProps
@@ -142,11 +142,9 @@ class StateOfStudies extends React.Component<
     // You can use the cheat && after the property
     // eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
 
-    const defaultEmailAddress =
-      this.props.guider.currentStudent.contactInfos &&
-      this.props.guider.currentStudent.contactInfos.find(
-        (e) => e.defaultContact
-      ).email;
+    const defaultEmailAddress = (
+      this.props.guider.currentStudent.contactInfos ?? []
+    ).find((e) => e.defaultContact)?.email;
 
     const avatar = (
       <Avatar
@@ -163,6 +161,111 @@ class StateOfStudies extends React.Component<
           this.props.guider.currentStudent.basic.firstName
         }
       ></Avatar>
+    );
+    const contacts = (
+      <ApplicationSubPanel modifier="contact-infos">
+        <ApplicationSubPanel.Header>
+          {this.props.i18n.t("labels.contactInfo", {
+            ns: "users",
+          })}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          <div className="item-list item-list--student-contact-info">
+            {this.props.guider.currentStudent.contactInfos?.map((contact) => {
+              const contactState: ContactState = contact.allowStudyDiscussions
+                ? {
+                    modifier: "APPROVED",
+                    icon: "icon-thumb-up",
+                    text: this.props.i18n.t(
+                      "labels.hasContinuedDiscussionPermission",
+                      {
+                        ns: "users",
+                      }
+                    ),
+                  }
+                : {
+                    modifier: "DENIED",
+                    icon: "icon-cross",
+                    text: this.props.i18n.t(
+                      "labels.noContinuedDiscussionPermission",
+                      {
+                        ns: "users",
+                      }
+                    ),
+                  };
+              return (
+                <ContactCard
+                  key={contact.id}
+                  tag={contact.contactType}
+                  email={contact.email}
+                  phone={contact.phoneNumber}
+                  streetAddress={contact.streetAddress}
+                  postalCode={contact.postalCode}
+                  city={contact.city}
+                  country={contact.country}
+                  fullName={contact.name}
+                  state={
+                    contact.contactType && // if there's a contact type for the user we show the state
+                    !this.props.guider.currentStudent.basic.under18 && // if the student is underaged, we do not show the state
+                    contactState
+                  }
+                />
+              );
+            })}
+          </div>
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+    );
+    const studentGuardians = (
+      <ApplicationSubPanel modifier="guardians">
+        <ApplicationSubPanel.Header>
+          {this.props.i18n.t("labels.guardians", {
+            ns: "users",
+          })}
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          <div className="item-list item-list--student-guardians">
+            {this.props.guider.currentStudent.guardians?.length > 0 &&
+              this.props.guider.currentStudent.guardians?.map(
+                (guardian, index) => {
+                  const guardianState: ContactState =
+                    guardian.continuedViewPermission
+                      ? {
+                          modifier: "APPROVED",
+                          icon: "icon-thumb-up",
+                          text: this.props.i18n.t(
+                            "labels.hasContinuedViewPermission",
+                            {
+                              ns: "users",
+                            }
+                          ),
+                        }
+                      : {
+                          modifier: "DENIED",
+                          icon: "icon-cross",
+                          text: this.props.i18n.t(
+                            "labels.noContinuedViewPermission",
+                            {
+                              ns: "users",
+                            }
+                          ),
+                        };
+
+                  return (
+                    <ContactCard
+                      key={"guardian" + index}
+                      fullName={getName(guardian, true)}
+                      state={
+                        !this.props.guider.currentStudent.basic.under18 &&
+                        guardianState
+                      }
+                    />
+                  );
+                }
+              )}
+          </div>
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
     );
 
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
@@ -437,86 +540,10 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
             </ApplicationSubPanel>
 
-            {this.props.guider.currentStudent.contactInfos && (
-              <ApplicationSubPanel modifier="contact-infos">
-                <ApplicationSubPanel.Header>
-                  {this.props.i18n.t("labels.contactInfo", {
-                    ns: "users",
-                  })}
-                </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
-                  <div className="item-list item-list--student-contact-info">
-                    {this.props.guider.currentStudent.contactInfos.map(
-                      (contactInfo) => (
-                        <div
-                          className="item-list__item item-list__item--student-contact-info"
-                          key={contactInfo.id}
-                        >
-                          {contactInfo.contactType && (
-                            <div className="label label--guider-contact-type">
-                              <span className="label__text">
-                                {contactInfo.contactType}
-                              </span>
-                            </div>
-                          )}
-                          <div className="item-list__text-body item-list__text-body--multiline">
-                            {contactInfo.name && (
-                              <div className="item-list__user-name">
-                                {contactInfo.name}
-                              </div>
-                            )}
-                            <div className="item-list__user-email">
-                              <div className="glyph icon-envelope"></div>
-                              {contactInfo.email}
-                            </div>
-
-                            {contactInfo.phoneNumber && (
-                              <div className="item-list__user-phone">
-                                <div className="glyph icon-phone"></div>
-                                {contactInfo.phoneNumber}
-                              </div>
-                            )}
-                            {contactInfo.streetAddress && (
-                              <div className="item-list__user-street-address">
-                                {contactInfo.streetAddress}
-                              </div>
-                            )}
-                            {(contactInfo.postalCode || contactInfo.city) && (
-                              <div className="item-list__user-postal-address">
-                                {contactInfo.postalCode &&
-                                  contactInfo.postalCode}{" "}
-                                {contactInfo.city && contactInfo.city}
-                              </div>
-                            )}
-                            {contactInfo.country && (
-                              <div className="item-list__user-country">
-                                {contactInfo.country}
-                              </div>
-                            )}
-
-                            {contactInfo.allowStudyDiscussions && (
-                              <div className="item-list__user-consent-study-discussions">
-                                <div className="label label--guider-concent">
-                                  <span className="label__text">
-                                    {this.props.i18n.t(
-                                      "labels.concentToDiscussStudies",
-                                      {
-                                        ns: "users",
-                                      }
-                                    )}
-                                  </span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </ApplicationSubPanel.Body>
-              </ApplicationSubPanel>
-            )}
-
+            {(this.props.guider.currentStudent.contactInfos ?? []).length > 0 &&
+              contacts}
+            {(this.props.guider.currentStudent.guardians ?? []).length > 0 &&
+              studentGuardians}
             <ApplicationSubPanel modifier="counselors">
               <ApplicationSubPanel.Header modifier="with-instructions">
                 {this.props.i18n.t("labels.counselors", {
@@ -549,156 +576,77 @@ class StateOfStudies extends React.Component<
                     .length > 0 ? (
                     this.props.guider.currentStudent.basic.guidanceCounselors.map(
                       (counselor) => {
-                        let displayVacationPeriod =
-                          !!counselor.properties["profile-vacation-start"];
-                        if (counselor.properties["profile-vacation-end"]) {
-                          // we must check for the ending
-                          const vacationEndsAt = moment(
-                            counselor.properties["profile-vacation-end"]
-                          );
-                          const today = moment();
-                          // if it's before or it's today then we display, otherwise nope
-                          displayVacationPeriod =
-                            vacationEndsAt.isAfter(today, "day") ||
-                            vacationEndsAt.isSame(today, "day");
-                        }
-                        return (
-                          <div
-                            className="item-list__item item-list__item--student-counselor"
-                            key={counselor.userEntityId}
-                          >
-                            <div className="item-list__profile-picture">
-                              <Avatar
-                                id={counselor.userEntityId}
-                                userCategory={3}
-                                name={counselor.firstName}
-                                hasImage={counselor.hasImage}
+                        const {
+                          userEntityId,
+                          email,
+                          hasImage,
+                          groupAdvisor,
+                          studyAdvisor,
+                          properties,
+                        } = counselor;
+                        const councelorActions = (
+                          <>
+                            <CommunicatorNewMessage
+                              extraNamespace="guidance-counselor"
+                              initialSelectedItems={[
+                                {
+                                  type: "staff",
+                                  value: {
+                                    id: userEntityId,
+                                    name: getName(counselor, true),
+                                  },
+                                },
+                              ]}
+                            >
+                              <ButtonPill
+                                icon="envelope"
+                                aria-label={this.props.i18n.t("labels.send", {
+                                  ns: "messaging",
+                                })}
+                                title={this.props.i18n.t("labels.send", {
+                                  ns: "messaging",
+                                })}
+                                buttonModifiers={[
+                                  "new-message",
+                                  "new-message-to-staff",
+                                ]}
+                              ></ButtonPill>
+                            </CommunicatorNewMessage>
+                            {properties["profile-phone"] &&
+                            properties["profile-whatsapp"] ? (
+                              <WhatsappButtonLink
+                                mobileNumber={properties["profile-phone"]}
                               />
-                            </div>
-                            <div className="item-list__text-body item-list__text-body--multiline">
-                              <div className="item-list__user-name">
-                                {counselor.firstName} {counselor.lastName}
-                              </div>
-                              <div className="item-list__counselors labels">
-                                {counselor.groupAdvisor && (
-                                  <span className="label">
-                                    <span className="label__text">
-                                      {this.props.i18n.t(
-                                        "labels.groupCounselor",
-                                        {
-                                          ns: "users",
-                                        }
-                                      )}
-                                    </span>
-                                  </span>
+                            ) : null}
+                            {properties["profile-appointmentCalendar"] ? (
+                              <ButtonPill
+                                aria-label={this.props.i18n.t(
+                                  "labels.appointment"
                                 )}
-                                {counselor.studyAdvisor && (
-                                  <span className="label">
-                                    <span className="label__text">
-                                      {this.props.i18n.t(
-                                        "labels.studyCounselor",
-                                        {
-                                          ns: "users",
-                                        }
-                                      )}
-                                    </span>
-                                  </span>
-                                )}
-                              </div>
-                              <div className="item-list__user-contact-info">
-                                <div className="item-list__user-email">
-                                  <div className="glyph icon-envelope"></div>
-                                  {counselor.email}
-                                </div>
-                                {counselor.properties["profile-phone"] ? (
-                                  <div className="item-list__user-phone">
-                                    <div className="glyph icon-phone"></div>
-                                    {counselor.properties["profile-phone"]}
-                                  </div>
-                                ) : null}
-                              </div>
-                              {displayVacationPeriod ? (
-                                <div className="item-list__user-vacation-period">
-                                  {this.props.i18n.t("labels.status", {
-                                    context: "xa",
-                                  })}
-                                  &nbsp;
-                                  {localize.date(
-                                    counselor.properties[
-                                      "profile-vacation-start"
-                                    ]
-                                  )}
-                                  {counselor.properties["profile-vacation-end"]
-                                    ? "–" +
-                                      localize.date(
-                                        counselor.properties[
-                                          "profile-vacation-end"
-                                        ]
-                                      )
-                                    : null}
-                                </div>
-                              ) : null}
-                              <div className="item-list__user-actions">
-                                <CommunicatorNewMessage
-                                  extraNamespace="guidance-counselor"
-                                  initialSelectedItems={[
-                                    {
-                                      type: "staff",
-                                      value: {
-                                        id: counselor.userEntityId,
-                                        name: getName(counselor, true),
-                                      },
-                                    },
-                                  ]}
-                                >
-                                  <ButtonPill
-                                    icon="envelope"
-                                    aria-label={this.props.i18n.t(
-                                      "labels.send",
-                                      {
-                                        ns: "messaging",
-                                      }
-                                    )}
-                                    title={this.props.i18n.t("labels.send", {
-                                      ns: "messaging",
-                                    })}
-                                    buttonModifiers={[
-                                      "new-message",
-                                      "new-message-to-staff",
-                                    ]}
-                                  ></ButtonPill>
-                                </CommunicatorNewMessage>
-                                {counselor.properties["profile-phone"] &&
-                                counselor.properties["profile-whatsapp"] ? (
-                                  <WhatsappButtonLink
-                                    mobileNumber={
-                                      counselor.properties["profile-phone"]
-                                    }
-                                  />
-                                ) : null}
-                                {counselor.properties[
-                                  "profile-appointmentCalendar"
-                                ] ? (
-                                  <ButtonPill
-                                    aria-label={this.props.i18n.t(
-                                      "labels.appointment"
-                                    )}
-                                    title={this.props.i18n.t(
-                                      "labels.appointment"
-                                    )}
-                                    icon="clock"
-                                    buttonModifiers="appointment-calendar"
-                                    openInNewTab="_blank"
-                                    href={
-                                      counselor.properties[
-                                        "profile-appointmentCalendar"
-                                      ]
-                                    }
-                                  />
-                                ) : null}
-                              </div>
-                            </div>
-                          </div>
+                                title={this.props.i18n.t("labels.appointment")}
+                                icon="clock"
+                                buttonModifiers="appointment-calendar"
+                                openInNewTab="_blank"
+                                href={properties["profile-appointmentCalendar"]}
+                              />
+                            ) : null}
+                          </>
+                        );
+
+                        return (
+                          <ContactCard
+                            key={userEntityId}
+                            actions={councelorActions}
+                            fullName={getName(counselor, true)}
+                            hasImage={hasImage}
+                            id={userEntityId}
+                            email={email}
+                            phone={properties["profile-phone"]}
+                            groupAdvisor={groupAdvisor}
+                            studyAdvisor={studyAdvisor}
+                            vacationStart={properties["profile-vacationStart"]}
+                            vacationEnd={properties["profile-vacationEnd"]}
+                          />
                         );
                       }
                     )

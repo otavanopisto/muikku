@@ -20,6 +20,7 @@ export interface StatusType {
   permissions: any;
   contextPath: string;
   isActiveUser: boolean;
+  isUnder18: boolean;
   roles: Role[];
   isStudent: boolean;
   hasFees: boolean;
@@ -91,6 +92,7 @@ export default function status(
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: false, // check if role is STUDENT
+    isUnder18: false, // lets assume adult first
     currentWorkspaceInfo: null,
     hasImage: false,
     imgVersion: new Date().getTime(),

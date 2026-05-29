@@ -775,7 +775,7 @@ public class UserRESTService extends AbstractRESTService {
 
     BridgeResponse<UserContact> response = userController.updateContactInfoAllowStudyDiscussions(userIdentifier, contactInfoId, allowStudyDiscussions.booleanValue());
     if (response.ok()) {
-      return Response.noContent().build();
+      return Response.ok(createRestModel(response.getEntity())).build();
     }
     else {
       return Response.status(Status.fromStatusCode(response.getStatusCode())).build();
@@ -1405,18 +1405,22 @@ public class UserRESTService extends AbstractRESTService {
   public Response listStudentsGuardians(
       @PathParam("IDENTIFIER") SchoolDataIdentifier studentIdentifier) {
 
-    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
-    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    // Check that the target is a student
+    UserSchoolDataIdentifier studentUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (studentUSDI == null || !studentUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (sessionController.getLoggedUser().equals(studentIdentifier) 
+        || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
+        || userSchoolDataController.amICounselor(studentIdentifier) 
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        || workspaceUserEntityController.isWorkspaceTeacherOf(sessionController.getLoggedUserEntity(), studentUSDI)) {
+      List<Guardian> studentsGuardians = userSchoolDataController.listStudentsGuardians(studentIdentifier);
+      return Response.ok(createRestModel(studentsGuardians)).build();
+    } else {
       return Response.status(Status.NOT_FOUND).build();
     }
-
-    List<Guardian> studentsGuardians = userSchoolDataController.listStudentsGuardians(studentIdentifier);
-    
-    return Response.ok(createRestModel(studentsGuardians)).build();
   }
   
   @PUT

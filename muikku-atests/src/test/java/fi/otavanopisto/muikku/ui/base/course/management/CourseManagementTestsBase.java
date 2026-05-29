@@ -69,7 +69,11 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
 
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        waitForExpectedText(".hero__workspace-title", "Test", 10, 1000 );
+        waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
+        waitForVisible("#wokspaceName");
         waitAndClick("input[name=\"wokspace-name\"]");
         clearElement("input[name=\"wokspace-name\"]");
         sendKeys("input[name=\"wokspace-name\"]", "Testing course");
