@@ -99,7 +99,7 @@ public class MuikkuEventController {
             restEvent.isAllDay(), 
             restEvent.getTitle(),
             restEvent.getDescription(), 
-            EventType.valueOf(restEvent.getType()), 
+            restEvent.getType(), 
             userEntity.getId(),
             loggedUserEntity.getId(), 
             restEvent.isEditable(), 

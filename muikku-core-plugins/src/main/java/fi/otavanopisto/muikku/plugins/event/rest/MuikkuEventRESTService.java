@@ -153,7 +153,7 @@ public class MuikkuEventRESTService {
         restEvent.isAllDay(), 
         restEvent.getTitle(), 
         restEvent.getDescription(), 
-        EventType.valueOf(restEvent.getType()), 
+        restEvent.getType(), 
         restEvent.isEditable(), 
         restEvent.isPrivate(), 
         restEvent.isRemovable());
@@ -450,7 +450,7 @@ public class MuikkuEventRESTService {
     restEvent.setAllDay(event.getAllDay());
     restEvent.setTitle(event.getTitle());
     restEvent.setDescription(event.getDescription());
-    restEvent.setType(event.getType().name());
+    restEvent.setType(event.getType());
     restEvent.setUserEntityId(event.getUserEntityId());
     restEvent.setCreator(event.getCreatorEntityId());
     List<MuikkuEventParticipant> participants = eventController.listParticipants(event);
