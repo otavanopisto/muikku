@@ -101,7 +101,7 @@ public class MuikkuEventRESTService {
     }
 
     // Cannot create events in a container that they cannot even see
-    if (!eventController.canViewEventContainer(payloadContainer)) {
+    if (!eventController.canViewEventContainer(payloadContainer, null)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -207,15 +207,10 @@ public class MuikkuEventRESTService {
     
     // Access checks
     
-    WorkspaceEntity workspaceEntity = null;
-    if (event.getEventContainer().getWorkspaceEntityId() != null) {
-      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(event.getEventContainer().getWorkspaceEntityId());
-    }
-    
-    boolean hasAccess = eventController.canEditEvent(workspaceEntity, event);
+    boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
     
     if (!hasAccess) {
-      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to edit event %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
+      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to edit event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
     }
     
     MuikkuEventProperty property = eventController.createEventProperty(event, name, value, sessionController.getLoggedUserEntity().getId(), new Date());
