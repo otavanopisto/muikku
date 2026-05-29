@@ -10900,54 +10900,13 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies:
-    get:
-      operationId: getWorkspaceMaterialReplies
-      summary: Returns list of workspace material replies
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: workspaceMaterialId
-          in: path
-          description: Workspace material id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Workspace material replies results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MaterialReply"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
+  /rest/workspace/workspaceMaterials/{workspaceMaterialId}/state/{state}:
     post:
-      operationId: createWorkspaceMaterialReply
-      summary: Create and returns workspace material reply
+      operationId: updateWorkspaceMaterialState
+      summary: Updates the reply state of the given workspace material for the curren tuser
       tags:
         - Workspace
       parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
@@ -10955,63 +10914,19 @@ paths:
           schema:
             type: integer
             format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/MaterialReplyCreateRequestBody"
+        - name: state
+          in: path
+          description: Requested state; some enum value of MaterialCompositeReplyStateType
+          required: true
+          schema:
+            $ref: "#/components/schemas/MaterialCompositeReplyStateType"
       responses:
-        "200":
-          description: Workspace material reply created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MaterialReply"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies/{replyId}:
-    put:
-      operationId: updateWorkspaceMaterialReply
-      summary: Updates and returns workspace material reply
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: workspaceMaterialId
-          in: path
-          description: Workspace material id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: replyId
-          in: path
-          description: Reply id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/MaterialReplyUpdateRequestBody"
-      responses:
-        "200":
-          description: Workspace material reply updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MaterialReply"
         "204":
-          description: Workspace material reply updated successfully
+          description: State changed successfully
         "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
+          description: Invalid state
+        "403":
+          description: Workspace material not found
 
   /rest/workspace/workspaces/{workspaceEntityId}/permissions:
     get:
@@ -13799,31 +13714,6 @@ components:
                 type: string
               base64Data:
                 type: string
-
-    MaterialReplyCreateRequestBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            description: MaterialReplyCreateRequestBody object
-            required:
-              - state
-            properties:
-              state:
-                $ref: "#/components/schemas/MaterialCompositeReplyStateType"
-
-    MaterialReplyUpdateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: MaterialReplyUpdateRequestBody object
-            required:
-              - state
-            properties:
-              state:
-                $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
     MatriculationEnrollmentStateUpdateRequestBody:
       required: true

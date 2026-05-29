@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import type { MaterialContentNode } from "~/generated/client";
 import MuikkuMaterialEditor from "~/src/components/tiptap-templates/muikku-material-editor/muikku-material-editor";
 
+// For testing purposes. Please don't remove this yet
 /* const sampleHTML = String.raw`
   <div>
     <h1>Test Material</h1>
@@ -89,7 +90,6 @@ const htmlOnlyParser = (node: MaterialContentNode): MaterialContentNode[] => {
  */
 export function Dashboard() {
   const user = useAtomValue(userAtom);
-  //const materialHtml = useAtomValue(materialHtmlAtom);
   const materialContentNodes = useAtomValue(materialContentNodesAtom);
   const [materialHtml, setMaterialHtml] = useState<string>("");
   const [temporaryMaterialHtml, setTemporaryMaterialHtml] =
@@ -195,6 +195,7 @@ export function Dashboard() {
         </Paper>
       ))} */}
 
+      {/* For testing purposes. Please don't remove this yet */}
       {/* <Paper p="xl" mt="md" withBorder>
         <SimpleMaterialLoader html={sampleHTML} />
       </Paper> */}
