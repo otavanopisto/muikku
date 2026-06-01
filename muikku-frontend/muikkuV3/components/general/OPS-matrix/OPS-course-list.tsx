@@ -14,7 +14,7 @@ import {
   CourseMatrixSubject,
 } from "~/generated/client";
 import {
-  getNonOPSTransferedActivities,
+  getNonOPSActivities,
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
 import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
@@ -49,7 +49,8 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
  * @returns Rendered list of courses
  */
 export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
-  const { children, matrix, transferedList, renderCourseItem } = props;
+  const { children, matrix, transferedList, gradedList, renderCourseItem } =
+    props;
 
   const { t } = useTranslation("studyMatrix");
 
@@ -61,10 +62,9 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
     );
   }
 
-  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
-    matrix,
-    transferedList
-  );
+  const items = [...transferedList, ...gradedList];
+
+  const nonOPSActivities = getNonOPSActivities(matrix, items);
 
   /**
    * renderRows
@@ -126,11 +126,11 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
    * @returns Rendered other subjects
    */
   const renderOtherSubjects = () => {
-    if (nonOPSTransferedActivities.length === 0) {
+    if (nonOPSActivities.length === 0) {
       return null;
     }
 
-    const renderRows = nonOPSTransferedActivities.map((tStudy, i) => {
+    const renderRows = nonOPSActivities.map((tStudy, i) => {
       const listItemIndicatormodifiers = ["course"];
 
       if (tStudy.mandatority === "MANDATORY") {
@@ -139,7 +139,14 @@ export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
         listItemIndicatormodifiers.push("OPTIONAL");
       }
 
-      listItemIndicatormodifiers.push("APPROVAL");
+      switch (tStudy.state) {
+        case "TRANSFERRED":
+          listItemIndicatormodifiers.push("APPROVAL");
+          break;
+        case "GRADED":
+          listItemIndicatormodifiers.push("COMPLETED");
+          break;
+      }
 
       if (tStudy.passing) {
         listItemIndicatormodifiers.push("PASSED-GRADE");

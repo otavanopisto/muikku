@@ -369,35 +369,6 @@ export const getCourseInfo = (
 };
 
 /**
- * getNonOPSTransferedActivities
- * @param matrix matrix
- * @param transferedList transfered list
- * @returns non OPS transfered activities
- */
-export const getNonOPSTransferedActivities = (
-  matrix: CourseMatrix,
-  transferedList: StudyActivityItem[]
-) => {
-  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
-
-  const allTransferedSubjects = transferedList.map((item) => item.subject);
-
-  // Joined list of non OPS transfered subjects
-  const allNonOPSTransferedSubjects = allTransferedSubjects
-    .filter((subject) => !allOPSSubjects.includes(subject))
-    .join(",");
-
-  // List of non OPS transfered subjects without duplicates
-  const listOfallNonOPSTransferedSubjects = Array.from(
-    new Set(allNonOPSTransferedSubjects.split(","))
-  );
-
-  return transferedList.filter((tStudies) =>
-    listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
-  );
-};
-
-/**
  * getNonOPSActivities
  * @param matrix matrix
  * @param items items
@@ -421,10 +392,7 @@ export const getNonOPSActivities = (
   );
 
   // Filter out non OPS subjects that have courseId (course instance exists)
-  return items.filter(
-    (item) =>
-      listOfallNonOPSSubjects.includes(item.subject) && item.courseId !== null
-  );
+  return items.filter((item) => listOfallNonOPSSubjects.includes(item.subject));
 };
 
 /**
@@ -452,16 +420,10 @@ export const buildRecordsRowsFromMatrix = (
   studyActivity: StudyActivity | null
 ): {
   rows: RecordsMatrixRow[];
-  transferedActivities: StudyActivityItem[];
   nonOPSActivities: StudyActivityItem[];
 } => {
   const items = (studyActivity?.items ?? []).filter(
     (item) => item.state !== "SUGGESTED_NEXT"
-  );
-  const transferedList = items.filter((item) => item.state === "TRANSFERRED");
-  const transferedActivities = getNonOPSTransferedActivities(
-    matrix,
-    transferedList
   );
 
   const nonOPSActivities = getNonOPSActivities(matrix, items);
@@ -484,7 +446,7 @@ export const buildRecordsRowsFromMatrix = (
     }
   }
 
-  return { rows, transferedActivities, nonOPSActivities };
+  return { rows, nonOPSActivities };
 };
 
 /**

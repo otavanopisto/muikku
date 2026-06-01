@@ -1,7 +1,7 @@
 import { Container, Title, Text, Paper } from "@mantine/core";
 import { useParams } from "react-router";
 import { useAtomValue } from "jotai";
-import { workspaceInfoAtom } from "~/src/atoms/workspace";
+import { workspaceInfoAtom } from "src/atoms/workspace";
 
 /**
  * WorkspaceJournal - Workspace journal page

@@ -28,6 +28,8 @@ export default defineConfig(({ mode }) => {
       // Alias for the src directory
       alias: {
         "~": path.resolve(__dirname, "./"),
+        "@": path.resolve(__dirname, "./src"),
+        src: "/src",
       },
     },
     define: {

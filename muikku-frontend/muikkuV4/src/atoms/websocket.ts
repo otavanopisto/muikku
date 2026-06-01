@@ -4,7 +4,7 @@ import {
   type WebSocketCallbacks,
   type WebSocketInitOptions,
   type WebSocketListener,
-} from "~/src/utils/websocket";
+} from "src/utils/websocket";
 import { userAtom } from "./auth";
 
 // WebSocket state

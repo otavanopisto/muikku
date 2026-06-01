@@ -1,0 +1,16 @@
+.ProseMirror .muikku-anchor-deco::before {
+  content: "🚩";
+  margin-right: 0.15em;
+  pointer-events: none;
+}
+
+.ProseMirror .muikku-anchor-placeholder-deco {
+  display: inline-block;
+  width: 1em; // gives it “something” to render
+  line-height: 1;
+  vertical-align: baseline;
+}
+.ProseMirror .muikku-anchor-placeholder-deco::before {
+  content: "🚩";
+  pointer-events: none;
+}

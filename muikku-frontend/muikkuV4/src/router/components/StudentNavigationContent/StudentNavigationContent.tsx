@@ -1,7 +1,7 @@
 import { Group, Text, Loader, Title } from "@mantine/core";
-import { currentStudentAtom } from "~/src/atoms/guider";
+import { currentStudentAtom } from "src/atoms/guider";
 import { useAtomValue } from "jotai";
-import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
+import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 
 /**
  * StudentNavigationContentProps - Props for student navigation content

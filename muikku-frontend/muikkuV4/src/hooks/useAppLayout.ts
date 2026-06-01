@@ -1,86 +1,21 @@
 import { useAtom } from "jotai";
-import {
-  secondaryNavOpenedAtom,
-  primaryNavOpenedAtom,
-  selectedNavItemAtom,
-} from "../atoms/layout";
-import type { NavigationItem } from "../layouts/helpers/navigation";
+import { asideOpenedAtom, navOpenedAtom } from "../atoms/layout";
 
 /**
  * Hook for managing the app layout
  * @returns Object containing sidebar state and control functions
  */
 export const useAppLayout = () => {
-  const [primaryNavOpened, setPrimaryNavOpened] = useAtom(primaryNavOpenedAtom);
-  const [secondaryNavOpened, setSecondaryNavOpened] = useAtom(
-    secondaryNavOpenedAtom
-  );
-  const [selectedNavItem, setSelectedNavItem] = useAtom(selectedNavItemAtom);
+  const [navOpened, setNavOpened] = useAtom(navOpenedAtom);
+  const [asideOpened, setAsideOpened] = useAtom(asideOpenedAtom);
 
-  /**
-   * Open the sidebar
-   */
-  const openPrimaryNav = () => {
-    setPrimaryNavOpened(true);
-  };
-
-  /**
-   * Close the sidebar
-   */
-  const closePrimaryNav = () => {
-    setPrimaryNavOpened(false);
-  };
-
-  /**
-   * Toggle the sidebar
-   */
-  const togglePrimaryNav = () => {
-    setPrimaryNavOpened(!primaryNavOpened);
-  };
-
-  /**
-   * Open the secondary sidebar
-   */
-  const openSecondaryNav = () => {
-    setSecondaryNavOpened(true);
-  };
-
-  /**
-   * Close the secondary sidebar
-   */
-  const closeSecondaryNav = () => {
-    setSecondaryNavOpened(false);
-  };
-
-  /**
-   * Toggle the secondary sidebar
-   */
-  const toggleSecondaryNav = () => {
-    setSecondaryNavOpened(!secondaryNavOpened);
-  };
-
-  const selectNavItem = (item: NavigationItem) => {
-    setSelectedNavItem(item);
-
-    if ("contents" in item && item.contents && item.contents.length > 0) {
-      closePrimaryNav();
-      openSecondaryNav();
-    } else {
-      openPrimaryNav();
-      closeSecondaryNav();
-    }
-  };
+  const toggleNav = () => setNavOpened(!navOpened);
+  const toggleAside = () => setAsideOpened(!asideOpened);
 
   return {
-    primaryNavOpened,
-    openPrimaryNav,
-    closePrimaryNav,
-    togglePrimaryNav,
-    secondaryNavOpened,
-    openSecondaryNav,
-    closeSecondaryNav,
-    toggleSecondaryNav,
-    selectedNavItem,
-    selectNavItem,
+    navOpened,
+    toggleNav,
+    asideOpened,
+    toggleAside,
   };
 };
