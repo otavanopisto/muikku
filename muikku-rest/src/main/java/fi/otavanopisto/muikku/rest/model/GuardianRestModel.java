@@ -1,15 +1,18 @@
 package fi.otavanopisto.muikku.rest.model;
 
+import java.time.OffsetDateTime;
+
 public class GuardianRestModel {
 
   public GuardianRestModel() {
   }
 
-  public GuardianRestModel(String identifier, String firstName, String lastName, boolean continuedViewPermission) {
+  public GuardianRestModel(String identifier, String firstName, String lastName, boolean continuedViewPermission, OffsetDateTime continuedViewPermissionModified) {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
     this.continuedViewPermission = continuedViewPermission;
+    this.continuedViewPermissionModified = continuedViewPermissionModified;
   }
   
   public String getIdentifier() {
@@ -44,8 +47,17 @@ public class GuardianRestModel {
     this.continuedViewPermission = continuedViewPermission;
   }
 
+  public OffsetDateTime getContinuedViewPermissionModified() {
+    return continuedViewPermissionModified;
+  }
+
+  public void setContinuedViewPermissionModified(OffsetDateTime continuedViewPermissionModified) {
+    this.continuedViewPermissionModified = continuedViewPermissionModified;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
   private boolean continuedViewPermission;
+  private OffsetDateTime continuedViewPermissionModified;
 }
