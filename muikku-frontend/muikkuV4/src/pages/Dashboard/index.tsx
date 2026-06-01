@@ -4,8 +4,9 @@ import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
 import { SimpleMaterialLoader } from "src/materials/MaterialLoader";
 import { materialContentNodesAtom } from "~/src/atoms/materials";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { MaterialContentNode } from "~/generated/client";
+import MuikkuMaterialEditor from "~/src/components/tiptap-templates/muikku-material-editor/muikku-material-editor";
 
 // For testing purposes. Please don't remove this yet
 /* const sampleHTML = String.raw`
@@ -90,11 +91,31 @@ const htmlOnlyParser = (node: MaterialContentNode): MaterialContentNode[] => {
 export function Dashboard() {
   const user = useAtomValue(userAtom);
   const materialContentNodes = useAtomValue(materialContentNodesAtom);
+  const [materialHtml, setMaterialHtml] = useState<string>("");
+  const [temporaryMaterialHtml, setTemporaryMaterialHtml] =
+    useState<string>("");
 
   const htmlOnlyList = useMemo(
     () => materialContentNodes?.flatMap(htmlOnlyParser) ?? [],
     [materialContentNodes]
   );
+
+  /**
+   * Handles the change of the material HTML
+   * @param html - The new HTML content
+   */
+  const handleMaterialHtmlChange = (html: string) => {
+    setTemporaryMaterialHtml(html);
+  };
+
+  /**
+   * Handles the saving of the material HTML
+   */
+  const handleSaveMaterialHtml = () => {
+    setMaterialHtml(temporaryMaterialHtml);
+  };
+
+  //console.log(materialHtml?.html ?? "No material HTML");
 
   return (
     <Container size="lg">
@@ -131,40 +152,59 @@ export function Dashboard() {
         </Group>
       </Paper>
 
-      {/* For testing purposes. Please don't remove this yet */}
-      {/* {materialHtml && (
+      {/* {sampleHTML && (
         <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mt="md">
           <Paper p="xl" withBorder>
             <Title order={4}>MathLive</Title>
             <SimpleMaterialLoader
-              html={materialHtml.html}
+              html={sampleHTML}
               mathEngine="mathlive"
             />
           </Paper>
           <Paper p="xl" withBorder>
             <Title order={4}>KaTeX</Title>
-            <SimpleMaterialLoader html={materialHtml.html} mathEngine="katex" />
+            <SimpleMaterialLoader html={sampleHTML} mathEngine="katex" />
           </Paper>
           <Paper p="xl" withBorder>
             <Title order={4}>MathJax</Title>
             <SimpleMaterialLoader
-              html={materialHtml.html}
+              html={sampleHTML}
               mathEngine="mathjax"
             />
           </Paper>
         </SimpleGrid>
       )} */}
 
-      {htmlOnlyList.map((node) => (
+      <Paper p="xl" withBorder>
+        <Title order={1} mb="md">
+          Here is your workspace: bi1-elama-ja-evoluutio
+        </Title>
+
+        <Group mt="lg" justify="flex-start">
+          <Button onClick={handleSaveMaterialHtml} variant="default">
+            Save Material HTML
+          </Button>
+        </Group>
+
+        <MuikkuMaterialEditor onChange={handleMaterialHtmlChange} />
+      </Paper>
+
+      {/* {htmlOnlyList.map((node) => (
         <Paper key={node.materialId} p="xl" withBorder>
-          <SimpleMaterialLoader html={node.html} mathEngine="mathlive" />
+          <SimpleMaterialLoader html={node.html} mathEngine="mathjax" />
         </Paper>
-      ))}
+      ))} */}
 
       {/* For testing purposes. Please don't remove this yet */}
       {/* <Paper p="xl" mt="md" withBorder>
         <SimpleMaterialLoader html={sampleHTML} />
       </Paper> */}
+
+      {materialHtml && (
+        <Paper p="xl" mt="md" withBorder>
+          <SimpleMaterialLoader html={materialHtml} mathEngine="mathlive" />
+        </Paper>
+      )}
     </Container>
   );
 }

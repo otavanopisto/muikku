@@ -7,6 +7,7 @@ import { DevTools } from "jotai-devtools";
 import { jotaiStore } from "./jotaiStore";
 import { DebugAtoms } from "src/utils/DebugAtoms";
 import App from "./App.tsx";
+import "src/index.css";
 import { theme } from "./theme";
 import { MathJaxContext } from "better-react-mathjax";
 

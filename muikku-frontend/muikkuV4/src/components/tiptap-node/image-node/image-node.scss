@@ -1,0 +1,121 @@
+.tiptap.ProseMirror {
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  p > img {
+    display: inline-block;
+  }
+
+  > img:not([data-type="emoji"] img) {
+    outline: 0.125rem solid transparent;
+    border-radius: var(--tt-radius-xs, 0.25rem);
+  }
+
+  img:not([data-type="emoji"] img).ProseMirror-selectednode {
+    outline-color: var(--tt-brand-color-500);
+  }
+
+  .node-imageFigure.ProseMirror-selectednode
+    figure[data-type="muikku-image-figure"],
+  .node-image.ProseMirror-selectednode span[data-type="muikku-image"] {
+    outline: 0.125rem solid var(--tt-brand-color-500);
+    outline-offset: 2px;
+    border-radius: var(--tt-radius-xs, 0.25rem);
+  }
+
+  // Thread image handling
+  .tiptap-thread:has(> img) {
+    margin: 2rem 0;
+
+    img {
+      outline: 0.125rem solid transparent;
+      border-radius: var(--tt-radius-xs, 0.25rem);
+    }
+  }
+
+  .tiptap-thread img {
+    margin: 0;
+  }
+
+  figure {
+    margin: 1rem 0;
+    > img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    > figcaption {
+      font-size: 0.875rem;
+      line-height: 1.4;
+      color: var(--tt-gray-light-a-700, #555);
+      margin-top: 0.25rem;
+      text-align: center;
+      min-height: 1.4em;
+    }
+  }
+  /* CKEditor-style float on figures */
+  figure[style*="float:left"],
+  figure[style*="float: left"] {
+    float: left;
+    margin: 0.25rem 1rem 0.5rem 0;
+  }
+  figure[style*="float:right"],
+  figure[style*="float: right"] {
+    float: right;
+    margin: 0.25rem 0 0.5rem 1rem;
+  }
+  figure[style*="float:none"][style*="margin-left:auto"] {
+    float: none;
+    display: block;
+  }
+  figure.ProseMirror-selectednode {
+    outline: 0.125rem solid var(--tt-brand-color-500);
+    border-radius: var(--tt-radius-xs, 0.25rem);
+  }
+
+  /* Resize handles (MuikkuImageView) */
+  [data-image-resize-overlay] {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+  }
+
+  [data-image-resize-handle] {
+    pointer-events: auto;
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    width: 6px;
+    height: 50px;
+    border-radius: 999px;
+    background: var(--tt-brand-color-500);
+  }
+
+  [data-image-resize-handle="left"],
+  [data-image-resize-handle="right"] {
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: auto;
+  }
+  [data-image-resize-handle="left"] {
+    left: 5px;
+    cursor: ew-resize;
+  }
+  [data-image-resize-handle="right"] {
+    right: 5px;
+    cursor: ew-resize;
+  }
+
+  /* Show handles only when selected */
+  span[data-type="muikku-image"]:hover [data-image-resize-overlay] {
+    display: block;
+  }
+
+  figure[data-type="muikku-image-figure"]:hover [data-image-resize-overlay] {
+    display: block;
+  }
+}

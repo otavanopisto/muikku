@@ -115,7 +115,6 @@
 }
 
 .mainContent {
-  overflow: auto;
   padding: var(--mantine-spacing-md);
   width: 100%;
   margin-left: 250px;

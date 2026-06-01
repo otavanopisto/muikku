@@ -286,7 +286,9 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
      * @returns boolean
      */
     shouldProcessHTMLElement: (tagname, element) =>
-      tagname === "span" && element.classList.contains("math-tex"),
+      tagname === "span" &&
+      (element.classList.contains("math-tex") ||
+        element.getAttribute("data-type") === "math-equation"),
     /**
      * processingFunction
      * @param _tag tag
