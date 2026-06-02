@@ -15337,6 +15337,9 @@ components:
         allowStudyDiscussions:
           type: boolean
           description: Is the contact a Guardian etc who can be contacted for study discussions, null for other contacts
+        allowStudyDiscussionsModified:
+          type: string
+          format: date-time
 
     Guardian:
       type: object
@@ -15355,6 +15358,9 @@ components:
           type: string
         continuedViewPermission:
           type: boolean
+        continuedViewPermissionModified:
+          type: string
+          format: date-time
 
     GuidanceCounselorContact:
       type: object

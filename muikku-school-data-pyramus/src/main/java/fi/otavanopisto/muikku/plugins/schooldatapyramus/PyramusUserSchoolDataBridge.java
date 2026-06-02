@@ -1914,7 +1914,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           studentParentInvitation.getFirstName(),
           studentParentInvitation.getLastName(),
           GuardianState.INVITED,
-          studentParentInvitation.isContinuedViewPermission()
+          studentParentInvitation.isContinuedViewPermission(),
+          studentParentInvitation.getContinuedViewPermissionModified()
         ));
       }
     }
@@ -1930,7 +1931,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           studentParentRelation.getFirstName(), 
           studentParentRelation.getLastName(),
           studentParentRelation.isActiveParent() ? GuardianState.ACTIVE : GuardianState.INACTIVE,
-          studentParentRelation.isContinuedViewPermission()
+          studentParentRelation.isContinuedViewPermission(),
+          studentParentRelation.getContinuedViewPermissionModified()
         ));
       }
     }
@@ -1958,7 +1960,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           studentParentInvitation.getFirstName(),
           studentParentInvitation.getLastName(),
           GuardianState.INVITED,
-          studentParentInvitation.isContinuedViewPermission()
+          studentParentInvitation.isContinuedViewPermission(),
+          studentParentInvitation.getContinuedViewPermissionModified()
         );
         return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
       }
@@ -1980,7 +1983,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           studentParentRelation.getFirstName(), 
           studentParentRelation.getLastName(),
           studentParentRelation.isActiveParent() ? GuardianState.ACTIVE : GuardianState.INACTIVE,
-          studentParentRelation.isContinuedViewPermission()
+          studentParentRelation.isContinuedViewPermission(),
+          studentParentRelation.getContinuedViewPermissionModified()
         );
         return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
       }
@@ -2018,7 +2022,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
         UserContact contact = new UserContact(userContact.getId() ,userContact.getName(), userContact.getPhoneNumber(),
             userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), 
-            userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact(), userContact.getAllowStudyDiscussions());
+            userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact(), userContact.getAllowStudyDiscussions(),
+            userContact.getAllowStudyDiscussionsModified());
         
         result.add(contact);
       }
@@ -2044,7 +2049,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       fi.otavanopisto.pyramus.rest.model.UserContact userContact = response.getEntity();
       UserContact contact = new UserContact(userContact.getId() ,userContact.getName(), userContact.getPhoneNumber(),
           userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), 
-          userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact(), userContact.getAllowStudyDiscussions());
+          userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact(), userContact.getAllowStudyDiscussions(), 
+          userContact.getAllowStudyDiscussionsModified());
       return new BridgeResponse<UserContact>(response.getStatusCode(), contact, response.getMessage());
     }
     
