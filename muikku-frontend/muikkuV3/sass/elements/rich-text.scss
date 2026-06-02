@@ -153,6 +153,11 @@
 
     &.button-icon--snapshot {
       color: $color-info;
+
+      &.disabled {
+        background: transparent;
+        color: $color-disabled;
+      }
     }
 
     &.button-icon--snapshot-delete {
