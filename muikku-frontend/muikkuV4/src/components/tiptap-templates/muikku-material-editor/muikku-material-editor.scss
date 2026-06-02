@@ -1,0 +1,225 @@
+/* NOTE:
+  The Google Fonts import is global by nature. Prefer moving it to a global place
+  (e.g. your app shell) if you actually want these fonts site-wide or want to
+  control loading. Leaving it here makes it easy to accidentally ship extra fonts.
+*/
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* Everything below is scoped to the editor wrapper */
+.muikkuTiptap {
+  background-color: var(--tt-bg-color);
+
+  --muikku-editor-text: var(--tt-gray-light-a-900);
+
+  .dark & {
+    --muikku-editor-text: var(--tt-gray-dark-a-900);
+  }
+
+  /* Scrollbars (scoped; no longer global) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--tt-scrollbar-color) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .source-mode-textarea {
+    width: 100%;
+    min-height: 750px;
+    resize: none;
+    outline: none;
+    text-align: left;
+    tab-size: 4;
+    font-family: "Courier New", Monospace;
+    font-size: small;
+    background-color: #fff;
+    white-space: pre-wrap;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: block;
+  }
+
+  .iframe-placeholder {
+    background-image: url("https://cdn.muikkuverkko.fi/libs/ckeditor/4.12.1/plugins/iframe/images/placeholder.png?t=JSS8");
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1px solid #a9a9a9;
+    box-sizing: border-box;
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+
+  .details {
+    border: 1px solid var(--tt-border-color, rgba(0, 0, 0, 0.15));
+    border-radius: 0.75rem;
+    background: var(--tt-bg-color, #fff);
+    overflow: hidden;
+    margin: 0.75rem 0;
+    // remove default marker spacing quirks
+    summary {
+      list-style: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    &[open] .details__summary {
+      border-bottom: 1px solid var(--tt-border-color, rgba(0, 0, 0, 0.12));
+    }
+  }
+  .details__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    cursor: text;
+    user-select: none;
+    // subtle header background like in the picture
+    background: color-mix(in srgb, var(--tt-bg-color, #fff) 92%, #000 8%);
+    // focus ring when navigating with keyboard
+    outline: none;
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--tt-brand-color-500, #3b82f6) inset;
+    }
+    // caret (CSS-only)
+    &::after {
+      content: "";
+      cursor: pointer;
+      width: 0.55rem;
+      height: 0.55rem;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg);
+      opacity: 0.7;
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+  }
+
+  .details__summaryText {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .details[open] .details__summary::after {
+    transform: rotate(-135deg);
+  }
+  .details__content {
+    padding: 0.85rem 0.9rem;
+    // tighten first/last block spacing
+    > :first-child {
+      margin-top: 0;
+    }
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  /* Table-specific styling */
+  table {
+    border-collapse: collapse;
+    margin: 0;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+
+    td,
+    th {
+      border: 1px solid black;
+      box-sizing: border-box;
+      min-width: 1em;
+      padding: 6px 8px;
+      position: relative;
+      vertical-align: top;
+
+      > * {
+        margin-bottom: 0;
+      }
+    }
+
+    th {
+      background-color: grey;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .selectedCell:after {
+      background: rgb(85, 85, 85);
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .column-resize-handle {
+      background-color: rgb(122, 82, 255);
+      bottom: -2px;
+      pointer-events: none;
+      position: absolute;
+      right: -2px;
+      top: 0;
+      width: 4px;
+    }
+  }
+
+  .tableWrapper {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  &.resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
+  }
+
+  /* Editor typography (scoped) */
+  .tiptap.ProseMirror {
+    color: var(--muikku-editor-text);
+    background: transparent;
+    font-family: "DM Sans", sans-serif;
+  }
+
+  /* Template layout (scoped) */
+  .simple-editor-wrapper {
+    height: 100vh;
+    overflow: auto;
+  }
+
+  .simple-editor-content {
+    max-width: 648px;
+    width: 100%;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    flex: 1;
+    padding: 3rem 3rem 30vh;
+  }
+
+  @media screen and (max-width: 480px) {
+    .simple-editor-content .tiptap.ProseMirror.simple-editor {
+      padding: 1rem 1.5rem 30vh;
+    }
+  }
+}

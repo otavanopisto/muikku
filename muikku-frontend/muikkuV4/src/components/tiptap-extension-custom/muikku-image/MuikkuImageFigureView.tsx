@@ -1,0 +1,197 @@
+import React from "react";
+import { NodeSelection } from "@tiptap/pm/state";
+import {
+  NodeViewContent,
+  NodeViewWrapper,
+  type ReactNodeViewProps,
+} from "@tiptap/react";
+import { useImageResize } from "./useImageResize";
+import { openImagePropertiesModal } from "./helpers";
+
+/**
+ * The function to get the rendered image size.
+ * @param root - The root element.
+ * @returns The rendered image size.
+ */
+const getRenderedImgSize = (root: HTMLElement | null) => {
+  const img = root?.querySelector("img");
+  const rect = img?.getBoundingClientRect();
+  return {
+    width: rect?.width ? Math.round(rect.width) : 0,
+    height: rect?.height ? Math.round(rect.height) : 0,
+  };
+};
+
+/**
+ * The props for the Muikku image figure view component.
+ */
+interface MuikkuImageFigureViewProps extends ReactNodeViewProps {}
+
+type Align = "left" | "center" | "right" | null;
+
+/**
+ * The style for the Muikku image figure view component.
+ * @param align - The align of the image figure.
+ * @returns The style for the Muikku image figure view component.
+ */
+function wrapperStyleForAlign(align: Align): React.CSSProperties {
+  if (align === "left") {
+    return { float: "left", margin: "0.25rem 1rem 0.5rem 0" };
+  }
+  if (align === "right") {
+    return { float: "right", margin: "0.25rem 0 0.5rem 1rem" };
+  }
+  if (align === "center") {
+    return {
+      float: "none",
+      display: "block",
+      marginLeft: "auto",
+      marginRight: "auto",
+    };
+  }
+  return {};
+}
+
+/**
+ * The Muikku image figure view component.
+ * @param props - The props for the Muikku image figure view component.
+ * @returns The Muikku image figure view component.
+ */
+export function MuikkuImageFigureView(props: MuikkuImageFigureViewProps) {
+  const { editor, node, getPos, selected } = props;
+  const attrs = node.attrs ?? {};
+  const align = (attrs.align ?? null) as Align;
+
+  const { onPointerDown, onPointerMove, onPointerUp } = useImageResize({
+    onSizeChange: ({ width, height }) => {
+      props.updateAttributes({ width, height });
+    },
+    minWidth: 80,
+    maxWidth: 1200,
+  });
+
+  /**
+   * Handles the mouse down event.
+   * @param e - The mouse down event.
+   */
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+
+    const target = e.target as HTMLElement | null;
+
+    // Don't hijack caption editing
+    if (target?.closest?.("figcaption")) return;
+
+    // Don't hijack resize handles (add this attribute to handles later)
+    if (target?.closest?.("[data-image-resize-handle]")) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const pos = getPos();
+    const { state, view } = editor;
+    view.dispatch(
+      state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
+    );
+    view.focus();
+  };
+
+  /**
+   * Handles the double click event.
+   * @param e - The double click event.
+   */
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // ensure the node is selected, so modal reads correct attrs
+    const pos = getPos();
+    const { state, view } = editor;
+    view.dispatch(
+      state.tr.setSelection(NodeSelection.create(state.doc, pos ?? 0))
+    );
+    view.focus();
+    openImagePropertiesModal({ mode: "edit" });
+  };
+
+  const figureStyle: React.CSSProperties = {
+    position: "relative",
+    cursor: "pointer",
+    zIndex: align ? 2 : 0, // keeps it clickable over wrapping text when floated
+    ...wrapperStyleForAlign(align),
+  };
+
+  /**
+   * The handleLeftResizePointerDown function.
+   * @param e - The pointer event.
+   */
+  const handleLeftResizePointerDown = (e: React.PointerEvent) => {
+    const root = e.currentTarget.closest<HTMLElement>(
+      'figure[data-type="muikku-image-figure"]'
+    );
+    onPointerDown(e, "left", getRenderedImgSize(root));
+  };
+
+  /**
+   * The handleRightResizePointerDown function.
+   * @param e - The pointer event.
+   */
+  const handleRightResizePointerDown = (e: React.PointerEvent) => {
+    const root = e.currentTarget.closest<HTMLElement>(
+      'figure[data-type="muikku-image-figure"]'
+    );
+    onPointerDown(e, "right", getRenderedImgSize(root));
+  };
+
+  const widthAttr = Number.isFinite(Number(attrs.width))
+    ? Number(attrs.width)
+    : undefined;
+  const heightAttr = Number.isFinite(Number(attrs.height))
+    ? Number(attrs.height)
+    : undefined;
+  const hasExplicitSize = typeof widthAttr === "number" && widthAttr > 0;
+
+  const imgStyle: React.CSSProperties = hasExplicitSize
+    ? { display: "block", height: "auto" }
+    : { display: "block", width: "100%", height: "auto" };
+
+  return (
+    <NodeViewWrapper
+      as="figure"
+      className={typeof attrs.class === "string" ? attrs.class : "image"}
+      data-type="muikku-image-figure"
+      data-selected={selected ? "true" : "false"}
+      onMouseDown={handleMouseDown}
+      style={figureStyle}
+      onDoubleClick={handleDoubleClick}
+    >
+      <img
+        src={typeof attrs.src === "string" ? attrs.src : ""}
+        alt={typeof attrs.alt === "string" ? attrs.alt : ""}
+        title={typeof attrs.title === "string" ? attrs.title : ""}
+        width={hasExplicitSize ? widthAttr : undefined}
+        height={hasExplicitSize ? heightAttr : undefined}
+        draggable={false}
+        style={imgStyle}
+      />
+
+      <span data-image-resize-overlay contentEditable={false}>
+        <span
+          data-image-resize-handle="left"
+          onPointerDown={handleLeftResizePointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+        />
+        <span
+          data-image-resize-handle="right"
+          onPointerDown={handleRightResizePointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+        />
+      </span>
+
+      <figcaption>
+        <NodeViewContent />
+      </figcaption>
+    </NodeViewWrapper>
+  );
+}

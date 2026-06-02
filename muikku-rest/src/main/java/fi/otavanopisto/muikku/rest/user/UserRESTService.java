@@ -1702,7 +1702,8 @@ public class UserRESTService extends AbstractRESTService {
         userContact.getCountry(),
         userContact.getContactType(),
         userContact.isDefaultContact(),
-        userContact.getAllowStudyDiscussions());
+        userContact.getAllowStudyDiscussions(),
+        userContact.getAllowStudyDiscussionsModified());
   }
   
   private String toId(SchoolDataIdentifier identifier) {
@@ -1838,7 +1839,8 @@ public class UserRESTService extends AbstractRESTService {
         studentsGuardian.getIdentifier().toId(),
         studentsGuardian.getFirstName(), 
         studentsGuardian.getLastName(),
-        studentsGuardian.isContinuedViewPermission()
+        studentsGuardian.isContinuedViewPermission(),
+        studentsGuardian.getContinuedViewPermissionModified()
     );
   }
 
