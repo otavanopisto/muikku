@@ -68,7 +68,7 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
               alignSelfVertically="top"
               content={
                 <p>
-                  {t("content.removing", {
+                  {t("labels.remove", {
                     context: "snapshot",
                     ns: "materials",
                   })}
