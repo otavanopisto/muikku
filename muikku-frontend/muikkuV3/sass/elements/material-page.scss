@@ -1432,3 +1432,15 @@ audio {
     border: 2px solid $color-material-visually-guided-styles-search-border;
   }
 }
+
+.material-highlight {
+  background: rgba(255, 230, 128, 0.65);
+  border-radius: 2px;
+}
+.material-highlight--comment {
+  background: rgba(255, 220, 120, 0.75);
+  text-decoration: underline;
+}
+.material-highlight--highlight {
+  background: rgba(160, 220, 255, 0.55);
+}
