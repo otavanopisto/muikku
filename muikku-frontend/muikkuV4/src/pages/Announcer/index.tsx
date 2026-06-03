@@ -1,10 +1,17 @@
 import { Text, Paper } from "@mantine/core";
-import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
+import { PageLayout } from "src/layouts/PageLayout/PageLayout";
+import { announcerSubItems } from "~/src/layouts/helpers/navigation";
+import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 
 /**
  * Announcer - Announcer page
  */
 export function Announcer() {
+  useRootNav({
+    title: "Announcer",
+    items: announcerSubItems,
+  });
+
   return (
     <PageLayout title="Announcer">
       <Paper p="xl" withBorder>

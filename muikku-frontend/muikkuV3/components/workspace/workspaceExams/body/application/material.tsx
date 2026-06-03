@@ -12,6 +12,7 @@ import { MaterialLoaderContent } from "~/components/base/material-loader/content
 import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
 import { MaterialCompositeReply } from "~/generated/client";
 import { updateAssignmentState } from "~/actions/workspaces/exams";
+import { MaterialLoaderSyncInfo } from "~/components/base/material-loader/sync-info";
 
 /**
  * WorkspaceMaterialProps
@@ -53,12 +54,10 @@ const ExamMaterial = (props: ExamMaterialProps) => {
         dispatch(
           updateAssignmentState({
             successState: args[0],
-            avoidServerCall: args[1],
-            workspaceId: args[2],
-            workspaceMaterialId: args[3],
-            existantReplyId: args[4],
-            successMessage: args[5],
-            callback: args[6],
+            workspaceMaterialId: args[1],
+            shouldUpdateServer: args[2],
+            successMessage: args[3],
+            callback: args[4],
           })
         );
       }}
@@ -79,6 +78,7 @@ const ExamMaterial = (props: ExamMaterialProps) => {
             {...state}
             stateConfiguration={stateConfiguration}
           />
+          <MaterialLoaderSyncInfo {...props} {...state} />
         </div>
       )}
     </MaterialLoader>

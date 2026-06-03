@@ -5,7 +5,6 @@ import {
   ExamAttendance,
   MaterialCompositeReply,
   MaterialCompositeReplyStateType,
-  MaterialReply,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { StateType } from "~/reducers";
@@ -47,7 +46,6 @@ export type EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
     {
       state: MaterialCompositeReplyStateType;
       workspaceMaterialId: number;
-      workspaceMaterialReplyId: number;
     }
   >;
 
@@ -123,10 +121,8 @@ interface EndExamTriggerType {
 interface UpdateAssignmentStateTriggerType {
   (data: {
     successState: MaterialCompositeReplyStateType;
-    avoidServerCall: boolean;
-    workspaceId: number;
     workspaceMaterialId: number;
-    existantReplyId?: number;
+    shouldUpdateServer?: boolean;
     successMessage?: string;
     callback?: () => void;
   }): AnyActionType;
@@ -388,54 +384,22 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
     ) => {
       const {
         successState,
-        avoidServerCall,
-        workspaceId,
         workspaceMaterialId,
-        existantReplyId,
+        shouldUpdateServer = false,
         callback,
       } = data;
 
       try {
-        let replyId: number = existantReplyId;
-        if (!avoidServerCall) {
-          let replyGenerated: MaterialReply = null;
-
-          if (existantReplyId) {
-            replyGenerated = await workspaceApi.updateWorkspaceMaterialReply({
-              workspaceEntityId: workspaceId,
-              workspaceMaterialId: workspaceMaterialId,
-              replyId: existantReplyId,
-              updateWorkspaceMaterialReplyRequest: {
-                state: successState,
-              },
-            });
-          } else {
-            replyGenerated = await workspaceApi.createWorkspaceMaterialReply({
-              workspaceEntityId: workspaceId,
-              workspaceMaterialId: workspaceMaterialId,
-              createWorkspaceMaterialReplyRequest: {
-                state: successState,
-              },
-            });
-          }
-
-          replyId = replyGenerated ? replyGenerated.id : existantReplyId;
-        }
-        if (!replyId) {
-          const result = await workspaceApi.getWorkspaceMaterialReplies({
-            workspaceEntityId: workspaceId,
+        if (shouldUpdateServer) {
+          await workspaceApi.updateWorkspaceMaterialState({
+            state: successState,
             workspaceMaterialId: workspaceMaterialId,
           });
-
-          if (result[0] && result[0].id) {
-            replyId = result[0].id;
-          }
         }
 
         dispatch({
           type: "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
           payload: {
-            workspaceMaterialReplyId: replyId,
             state: successState,
             workspaceMaterialId,
           },

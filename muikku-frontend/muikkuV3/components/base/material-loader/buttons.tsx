@@ -11,6 +11,7 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
   stateConfiguration: StateConfig;
   answerCheckable: boolean;
   answersVisible: boolean;
+  fieldsAllSynced?: boolean;
 }
 
 /**
@@ -57,6 +58,7 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
         <Button
           buttonModifiers={props.stateConfiguration.buttonClass}
           onClick={props.onPushAnswer}
+          disabled={!props.fieldsAllSynced}
         >
           {t(props.stateConfiguration.buttonText, {
             ns: namespace(),

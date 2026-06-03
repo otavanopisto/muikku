@@ -9,9 +9,11 @@ import {
   CourseMatrixSubject,
 } from "~/generated/client";
 import {
-  getNonOPSTransferedActivities,
+  getNonOPSActivities,
   MANDATORITY_MANDATORY_VALUES,
 } from "~/helper-functions/study-matrix";
+import { OPSCourseCard, OPSCourseCardHeader } from "./OPS-course-card";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * Interface for parameters used when rendering individual course items in the progress table
@@ -32,6 +34,7 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
   currentMaxCourses: number | null;
   curriculumName: string;
   studyProgrammeName: string;
+  plannedCourses?: PlannedCourseWithIdentifier[];
   renderCourseCell?: (params: RenderItemParams) => JSX.Element;
   renderEmptyCell?: (params: {
     index: number;
@@ -53,6 +56,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     matrix,
     currentMaxCourses,
     transferedList,
+    gradedList,
     renderCourseCell,
     renderEmptyCell,
   } = props;
@@ -67,10 +71,9 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
     );
   }
 
-  const nonOPSTransferedActivities = getNonOPSTransferedActivities(
-    matrix,
-    transferedList
-  );
+  const items = [...transferedList, ...gradedList];
+
+  const nonOPSActivities = getNonOPSActivities(matrix, items);
 
   /**
    * renderRows
@@ -122,9 +125,13 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
               <Dropdown
                 content={
                   <div className="hops-container__study-tool-dropdown-container">
-                    <div className="hops-container__study-tool-dropdow-title">
-                      {courseDropdownName}
-                    </div>
+                    <OPSCourseCard innerContainerModifiers={["mandatory"]}>
+                      <OPSCourseCardHeader>
+                        <span className="ops-course__card-title">
+                          {courseDropdownName}
+                        </span>
+                      </OPSCourseCardHeader>
+                    </OPSCourseCard>
                   </div>
                 }
               >
@@ -156,9 +163,13 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
             <Dropdown
               content={
                 <div className="hops-container__study-tool-dropdown-container">
-                  <div className="hops-container__study-tool-dropdow-title">
-                    {`${courseDropdownName}*`}
-                  </div>
+                  <OPSCourseCard innerContainerModifiers={["optional"]}>
+                    <OPSCourseCardHeader>
+                      <span className="ops-course__card-title">
+                        {`${courseDropdownName}*`}
+                      </span>
+                    </OPSCourseCardHeader>
+                  </OPSCourseCard>
                 </div>
               }
             >
@@ -187,11 +198,11 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
    * renderOtherSubjects
    */
   const renderOtherSubjects = () => {
-    if (nonOPSTransferedActivities.length === 0) {
+    if (nonOPSActivities.length === 0) {
       return null;
     }
 
-    const renderRows = nonOPSTransferedActivities.map((tStudy, i) => {
+    const renderRows = nonOPSActivities.map((tStudy, i) => {
       let courseName = tStudy.courseName;
 
       const modifiers = ["centered", "course"];
@@ -203,7 +214,14 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
         modifiers.push("OPTIONAL");
       }
 
-      modifiers.push("APPROVAL");
+      switch (tStudy.state) {
+        case "TRANSFERRED":
+          modifiers.push("APPROVAL");
+          break;
+        case "GRADED":
+          modifiers.push("COMPLETED");
+          break;
+      }
 
       if (tStudy.passing) {
         modifiers.push("PASSED-GRADE");

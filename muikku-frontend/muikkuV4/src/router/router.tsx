@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router";
-import { routeLoaders } from "~/src/router/routeLoaders";
+import { routeLoaders } from "src/router/routeLoaders";
 import {
   authMiddleware,
   permissionMiddlewares,
   workspaceMiddleware,
-} from "~/src/router/middleware";
+} from "src/router/middleware";
 import {
   Home,
   Dashboard,
@@ -14,7 +14,6 @@ import {
   Hops,
   Guider,
   Evaluation,
-  Organization,
   Announcements,
   Announcer,
   Profile,
@@ -28,9 +27,9 @@ import {
   NotFound,
   GuiderStudent,
   ErrorBoundary,
-} from "~/src/pages/";
-import { ErrorBoundaryRoot } from "~/src/components";
-import { SharedLayout, ErrorBoundaryLayout } from "~/src/layouts";
+} from "src/pages/";
+import { ErrorBoundaryRoot } from "src/components";
+import { RootLayout } from "src/layouts";
 
 // Router
 export const router = createBrowserRouter([
@@ -45,8 +44,8 @@ export const router = createBrowserRouter([
         middleware: [authMiddleware, permissionMiddlewares.homeView],
       },
       {
-        element: <SharedLayout />,
-        errorElement: <ErrorBoundaryLayout />,
+        element: <RootLayout />,
+        errorElement: <RootLayout isErrorBoundary />,
         loader: () => null,
         middleware: [authMiddleware],
         children: [
@@ -155,12 +154,7 @@ export const router = createBrowserRouter([
                 //loader: evaluationLoader,
                 middleware: [permissionMiddlewares.evaluationView],
               },
-              {
-                path: "organization",
-                element: <Organization />,
-                //loader: organizationLoader,
-                middleware: [permissionMiddlewares.organizationView],
-              },
+
               {
                 path: "announcements",
                 element: <Announcements />,
@@ -204,8 +198,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "/workspace/:workspaceUrlName",
-        element: <SharedLayout context="workspace" />,
-        errorElement: <ErrorBoundaryLayout context="workspace" />,
+        element: <RootLayout />,
+        errorElement: <RootLayout isErrorBoundary />,
         middleware: [authMiddleware, workspaceMiddleware],
         loader: routeLoaders.workspaceLoader,
         children: [

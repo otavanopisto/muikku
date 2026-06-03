@@ -1414,7 +1414,8 @@ public class UserRESTService extends AbstractRESTService {
     if (sessionController.getLoggedUser().equals(studentIdentifier) 
         || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
         || userSchoolDataController.amICounselor(studentIdentifier) 
-        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        || workspaceUserEntityController.isWorkspaceTeacherOf(sessionController.getLoggedUserEntity(), studentUSDI)) {
       List<Guardian> studentsGuardians = userSchoolDataController.listStudentsGuardians(studentIdentifier);
       return Response.ok(createRestModel(studentsGuardians)).build();
     } else {
@@ -1701,7 +1702,8 @@ public class UserRESTService extends AbstractRESTService {
         userContact.getCountry(),
         userContact.getContactType(),
         userContact.isDefaultContact(),
-        userContact.getAllowStudyDiscussions());
+        userContact.getAllowStudyDiscussions(),
+        userContact.getAllowStudyDiscussionsModified());
   }
   
   private String toId(SchoolDataIdentifier identifier) {
@@ -1837,7 +1839,8 @@ public class UserRESTService extends AbstractRESTService {
         studentsGuardian.getIdentifier().toId(),
         studentsGuardian.getFirstName(), 
         studentsGuardian.getLastName(),
-        studentsGuardian.isContinuedViewPermission()
+        studentsGuardian.isContinuedViewPermission(),
+        studentsGuardian.getContinuedViewPermissionModified()
     );
   }
 

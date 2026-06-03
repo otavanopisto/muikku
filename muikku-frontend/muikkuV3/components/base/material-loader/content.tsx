@@ -34,6 +34,7 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
   //the state gets changed to ANSWERED from UNANSWERED but our client side
   //tree is not aware of this change
   const compositeReplies = props.compositeReplies;
+
   //So we check if it is UNASWERED or has no reply in which case is unanswered too
   if (!compositeReplies || compositeReplies.state === "UNANSWERED") {
     //We make the call using true to avoid the server call since that would be redundant
@@ -42,10 +43,8 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
     //that is why the true flag is there not to call the server
     props.onUpdateAssignmentState(
       "ANSWERED",
-      true,
-      props.workspace.id,
       props.material.workspaceMaterialId,
-      compositeReplies && compositeReplies.workspaceMaterialReplyId,
+      false,
       props.stateConfiguration &&
         props.stateConfiguration.successText !== undefined
         ? i18n.t(props.stateConfiguration.successText, {
@@ -65,6 +64,7 @@ function onModification(props: MaterialLoaderContentProps) {
   //We use this function to basically modify the state with the modify state
   //Currently only used in exercises when the modify state sends them back to be answered
   const compositeReplies = props.compositeReplies;
+
   if (
     props.stateConfiguration &&
     props.stateConfiguration.modifyState &&
@@ -74,10 +74,8 @@ function onModification(props: MaterialLoaderContentProps) {
     //The modify state is forced in so we use false to call to the server
     props.onUpdateAssignmentState(
       props.stateConfiguration.modifyState,
-      false,
-      props.workspace.id,
       props.material.workspaceMaterialId,
-      compositeReplies && compositeReplies.workspaceMaterialReplyId,
+      false,
       props.stateConfiguration &&
         props.stateConfiguration.successText !== undefined
         ? i18n.t(props.stateConfiguration.successText, {
@@ -95,6 +93,17 @@ function onModification(props: MaterialLoaderContentProps) {
  * @param props props
  */
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
+  /**
+   * handleConfirmedAndSynced
+   */
+  const handleConfirmedAndSynced = () =>
+    onConfirmedAndSyncedModification(props);
+
+  /**
+   * handleModification
+   */
+  const handleModification = () => onModification(props);
+
   let className = "material-page__content-wrapper";
 
   if (props.material.contentHiddenForUser) {
@@ -121,11 +130,8 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             usedAs={props.usedAs}
             workspace={props.workspace}
             websocketState={props.websocket}
-            onConfirmedAndSyncedModification={onConfirmedAndSyncedModification.bind(
-              this,
-              props
-            )}
-            onModification={onModification.bind(this, props)}
+            onConfirmedAndSyncedModification={handleConfirmedAndSynced}
+            onModification={handleModification}
             compositeReplies={props.compositeReplies}
             displayCorrectAnswers={props.answersVisible}
             checkAnswers={props.answersChecked}
@@ -135,6 +141,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             readOnly={props.readOnly}
             answerable={props.answerable}
             answerRegistry={props.answerRegistry}
+            onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
           />
         )}
       </div>

@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
   CourseMatrix,
@@ -263,6 +264,21 @@ export const getCourseInfo = (
   let canBeSelected = true;
   let needsSupplementation = false;
   let grade: string | undefined = undefined;
+  let currentActivityItem: StudyActivityItem | undefined = undefined;
+
+  const allActivityItems = [
+    ...suggestedNextList,
+    ...transferedList,
+    ...gradedList,
+    ...onGoingList,
+    ...needSupplementationList,
+  ];
+
+  currentActivityItem = allActivityItems.find(
+    (activityItem) =>
+      activityItem.subject === subject.code &&
+      activityItem.courseNumber === course.courseNumber
+  );
 
   if (
     suggestedNextList.find(
@@ -348,36 +364,8 @@ export const getCourseInfo = (
     canBeSelected,
     grade,
     needsSupplementation,
+    currentActivityItem,
   };
-};
-
-/**
- * getNonOPSTransferedActivities
- * @param matrix matrix
- * @param transferedList transfered list
- * @returns non OPS transfered activities
- */
-export const getNonOPSTransferedActivities = (
-  matrix: CourseMatrix,
-  transferedList: StudyActivityItem[]
-) => {
-  const allOPSSubjects = matrix.subjects.map((subject) => subject.code);
-
-  const allTransferedSubjects = transferedList.map((item) => item.subject);
-
-  // Joined list of non OPS transfered subjects
-  const allNonOPSTransferedSubjects = allTransferedSubjects
-    .filter((subject) => !allOPSSubjects.includes(subject))
-    .join(",");
-
-  // List of non OPS transfered subjects without duplicates
-  const listOfallNonOPSTransferedSubjects = Array.from(
-    new Set(allNonOPSTransferedSubjects.split(","))
-  );
-
-  return transferedList.filter((tStudies) =>
-    listOfallNonOPSTransferedSubjects.includes(tStudies.subject)
-  );
 };
 
 /**
@@ -404,10 +392,7 @@ export const getNonOPSActivities = (
   );
 
   // Filter out non OPS subjects that have courseId (course instance exists)
-  return items.filter(
-    (item) =>
-      listOfallNonOPSSubjects.includes(item.subject) && item.courseId !== null
-  );
+  return items.filter((item) => listOfallNonOPSSubjects.includes(item.subject));
 };
 
 /**
@@ -435,16 +420,10 @@ export const buildRecordsRowsFromMatrix = (
   studyActivity: StudyActivity | null
 ): {
   rows: RecordsMatrixRow[];
-  transferedActivities: StudyActivityItem[];
   nonOPSActivities: StudyActivityItem[];
 } => {
   const items = (studyActivity?.items ?? []).filter(
     (item) => item.state !== "SUGGESTED_NEXT"
-  );
-  const transferedList = items.filter((item) => item.state === "TRANSFERRED");
-  const transferedActivities = getNonOPSTransferedActivities(
-    matrix,
-    transferedList
   );
 
   const nonOPSActivities = getNonOPSActivities(matrix, items);
@@ -467,7 +446,7 @@ export const buildRecordsRowsFromMatrix = (
     }
   }
 
-  return { rows, transferedActivities, nonOPSActivities };
+  return { rows, nonOPSActivities };
 };
 
 /**
@@ -534,4 +513,81 @@ export const enrichMatrixRowsWithCombinationWorkspace = (
       isCombinationWorkspace: true,
     };
   });
+};
+
+/**
+ * Gets course state
+ * @param activityItem activity item
+ * @param t translation function
+ * @returns course state
+ */
+export const getCourseStateLabel = (
+  activityItem: StudyActivityItem,
+  t: TFunction
+) => {
+  if (activityItem) {
+    switch (activityItem.state) {
+      case "GRADED": {
+        if (!activityItem.passing && activityItem.grade === "K") {
+          return {
+            state: "aborted",
+            label: t("labels.aborted", {
+              ns: "common",
+            }),
+          };
+        }
+
+        return activityItem.passing
+          ? {
+              state: "completed",
+              label: t("labels.completed", {
+                ns: "common",
+              }),
+            }
+          : {
+              state: "failed",
+              label: t("labels.failed", {
+                ns: "common",
+              }),
+            };
+      }
+      case "TRANSFERRED":
+        return {
+          state: "transferred",
+          label: t("labels.transferredCredit", {
+            ns: "common",
+          }),
+        };
+      case "ONGOING":
+      case "PENDING":
+      case "INTERIM_EVALUATION_REQUEST":
+      case "INTERIM_EVALUATION":
+        return {
+          state: "inprogress",
+          label: t("labels.inProgress", {
+            ns: "common",
+          }),
+        };
+      case "SUPPLEMENTATIONREQUEST":
+        return {
+          state: "supplementation-request",
+          label: t("labels.incomplete", {
+            ns: "common",
+          }),
+        };
+
+      case "SUGGESTED_NEXT":
+        return {
+          state: "suggested-next",
+          label: t("labels.suggested", {
+            ns: "common",
+          }),
+        };
+
+      default:
+        return { state: null, label: null };
+    }
+  }
+
+  return { state: null, label: null };
 };
