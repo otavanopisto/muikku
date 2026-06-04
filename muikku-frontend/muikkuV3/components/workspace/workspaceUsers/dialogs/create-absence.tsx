@@ -16,6 +16,7 @@ import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { displayNotification } from "~/actions/base/notifications";
 import { useDispatch } from "react-redux";
+import { AbsenceEventEnum } from "~/reducers/base/muikku-events";
 
 /**
  * CreateAbsenceDialogProps
@@ -33,7 +34,7 @@ interface CreateAbsenceDialogProps {
  */
 export interface AbsenceEventFormState {
   selectedUsers: ContactRecipientType[];
-  title: string;
+  type: AbsenceEventEnum;
   description: string;
   startDate: Date | null;
   endDate: Date | null;
@@ -45,8 +46,8 @@ type AbsenceEventFormAction =
       payload: ContactRecipientType[];
     }
   | {
-      type: "SET_TITLE";
-      payload: string;
+      type: "SET_TYPE";
+      payload: AbsenceEventEnum;
     }
   | {
       type: "SET_DESCRIPTION";
@@ -73,7 +74,7 @@ const muikkuEventApi = MApi.getEventsApi();
  */
 const createInitialAbsenceEventFormState = (): AbsenceEventFormState => ({
   selectedUsers: [],
-  title: "",
+  type: AbsenceEventEnum.Lesson,
   description: "",
   startDate: new Date(),
   endDate: new Date(),
@@ -93,8 +94,8 @@ const absenceEventFormReducer = (
     case "SET_SELECTED_USERS":
       return { ...state, selectedUsers: action.payload };
 
-    case "SET_TITLE":
-      return { ...state, title: action.payload };
+    case "SET_TYPE":
+      return { ...state, type: action.payload };
 
     case "SET_DESCRIPTION":
       return { ...state, description: action.payload };
@@ -167,11 +168,11 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     absenceEvent: AbsenceEventFormState,
     onClose: () => void
   ) => {
-    const { title, description, startDate, endDate } = absenceEvent;
+    const { type, description, startDate, endDate } = absenceEvent;
     try {
       await muikkuEventApi.createEvent({
         muikkuEvent: {
-          title,
+          title: type,
           description,
           start: startDate?.toISOString(),
           end: endDate?.toISOString(),
@@ -243,17 +244,26 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         />
       </div>
       <div className="form__row form__row--absence-event">
-        <label htmlFor="absence-event">
-          {t("labels.absenceEventName", { ns: "events" })}
+        <label htmlFor="absence-type">
+          {t("labels.absenceType", { ns: "events" })}
         </label>
-        <input
-          id="absence-event"
-          type="text"
-          value={formState.title}
+        <select
+          id="absence-type"
+          className="form-element__select"
+          value={formState.type}
           onChange={(event) =>
-            dispatchForm({ type: "SET_TITLE", payload: event.target.value })
+            dispatchForm({
+              type: "SET_TYPE",
+              payload: event.target.value as AbsenceEventEnum,
+            })
           }
-        />
+        >
+          {Object.values(AbsenceEventEnum).map((type) => (
+            <option key={type} value={type}>
+              {t(`types.${type}`, { ns: "events", defaultValue: type })}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-description">
@@ -263,6 +273,9 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           className="form-element__textarea"
           id="absence-description"
           value={formState.description}
+          placeholder={t("labels.absenceEventDescriptionPlaceholder", {
+            ns: "events",
+          })}
           onChange={(event) =>
             dispatchForm({
               type: "SET_DESCRIPTION",
@@ -337,7 +350,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       onClose={handleClose}
       closeOnOverlayClick={false}
       modifier="create-absence"
-      title={t("labels.newAbsence", { ns: "events" })}
+      title={t("labels.markAbsence", { ns: "events" })}
       content={content}
       footer={footer}
     >

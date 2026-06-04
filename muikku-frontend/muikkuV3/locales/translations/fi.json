@@ -2642,8 +2642,12 @@
     },
     "labels": {
       "absence": "Poissaolo",
-      "absenceEventName": "Aihe",
-      "absenceEventDescription": "Lisätiedot (valinnainen)",
+      "absenceDetails": "Poissaolotapahtuman tiedot",
+      "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
+      "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
+      "absentFrom": "Mistä oli poissa:",
+      "absencePeriod": "Ajankohta:",
+      "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
       "absence_explanation": "Selitys poissaololle",
       "end": "Päättyy",
@@ -2651,16 +2655,32 @@
       "eventBeginning": "Alkaa",
       "eventEnding": "Päättyy",
       "events": "Tapahtumat",
+      "explainAbsence": "Selvitä poissaolo",
       "newAbsence": "Uusi poissaolo",
+      "makeUpInstructions": "Ohjeet poissaolon korvaamiseen:",
+      "markAbsence": "Merkitse poissaolo",
       "pickAbsenceStudents": "Valitse poissaolijat",
       "property": "Tuntematon ominaisuus",
       "property_ABSENCE_REASON": "Poissaolon syy",
       "reason": "Syy",
-      "start": "Alkaa"
+      "start": "Alkaa",
+      "selectAbsenceReason": "Valitse poissaolon syy"
     },
     "content": {
       "empty": "Ei tapahtumia",
       "removing": "Oletko varma, että haluat poistaa tapahtuman?"
+    },
+    "types": {
+      "LESSON": "Oppitunti",
+      "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
+      "EXAM": "Koe",
+      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
+    },
+    "reasons": {
+      "MEDICAL_REASON": "Terveydellinen syy",
+      "OTHER_AUTHORIZED_REASON": "Muu luvallinen syy",
+      "UNAUTHORIZED_ABSENCE_EXPLAINED": "Poissaololle ei ollut lupaa (selvitetty)"
     },
     "notifications": {
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui",

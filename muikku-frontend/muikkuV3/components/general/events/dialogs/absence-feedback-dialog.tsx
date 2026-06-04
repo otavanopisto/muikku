@@ -9,6 +9,12 @@ import {
 } from "~/actions/main-function/guardian";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import {
+  AbsenceEventEnum,
+  AbsenceReasonEnum,
+  isAbsenceReasonEnum,
+} from "~/reducers/base/muikku-events";
+import { localize } from "~/locales/i18n";
 
 /**
  * AbsenceFeedbackDialogProps
@@ -34,12 +40,32 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
     (property) => property.name === "ABSENCE_REASON"
   );
   const { t } = useTranslation();
-  const [absenceReason, setAbsenceReason] = useState<string>(
-    currentAbsenceProperty?.value
+  const initialReason = currentAbsenceProperty?.value ?? "";
+  const [absenceReason, setAbsenceReason] = useState<AbsenceReasonEnum | "">(
+    isAbsenceReasonEnum(initialReason) ? initialReason : ""
   );
 
   const hasCurrentAbsenceReason =
     currentAbsenceProperty && currentAbsenceProperty.value !== "";
+
+  /**
+   * Returns the label for the absent from
+   * @returns string
+   */
+  const absentFromLabel = () => {
+    switch (absenceEvent.title as AbsenceEventEnum) {
+      case AbsenceEventEnum.Lesson:
+        return t("types.LESSON", { ns: "events" });
+      case AbsenceEventEnum.LessonPreArranged:
+        return t("types.LESSON_PRE_ARRANGED", { ns: "events" });
+      case AbsenceEventEnum.Exam:
+        return t("types.EXAM", { ns: "events" });
+      case AbsenceEventEnum.SkillsDemonstrationMeeting:
+        return t("types.SKILLS_DEMONSTRATION_MEETING", { ns: "events" });
+      case AbsenceEventEnum.GuidanceOrSupportSession:
+        return t("types.GUIDANCE_OR_SUPPORT_SESSION", { ns: "events" });
+    }
+  };
 
   /**
    * Renders the content of the dialog
@@ -47,17 +73,53 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
    * @returns JSX.Element
    */
   const content = (onClose: () => void) => (
-    <div>
+    <form>
       <div className="form__row form__row--absence-event">
-        <label htmlFor="absence-reason">Poissaolotapahtuman selitys</label>
-        <textarea
-          className="form-element__textarea"
-          id="absence-reason"
-          value={absenceReason}
-          onChange={(e) => setAbsenceReason(e.target.value)}
-        />
+        <div className="absence-feedback__details">
+          <h3 className="absence-feedback__details-title">
+            {t("labels.absenceDetails", { ns: "events" })}
+          </h3>
+          <dl className="absence-feedback__details-list">
+            <dt>{t("labels.absentFrom", { ns: "events" })}</dt>
+            <dd>{absentFromLabel()}</dd>
+            <dt>{t("labels.absencePeriod", { ns: "events" })}</dt>
+            <dd>
+              {localize.date(absenceEvent.start, "l - LT")} -{" "}
+              {localize.date(absenceEvent.end, "l - LT")}
+            </dd>
+            {absenceEvent.description?.trim() && (
+              <>
+                <dt>{t("labels.makeUpInstructions", { ns: "events" })}</dt>
+                <dd>{absenceEvent.description}</dd>
+              </>
+            )}
+          </dl>
+        </div>
       </div>
-    </div>
+
+      <div className="form__row form__row--absence-event">
+        <label htmlFor="absence-reason">
+          {t("labels.selectAbsenceReason", { ns: "events" })}
+        </label>
+        <select
+          id="absence-reason"
+          className="form-element__select"
+          value={absenceReason}
+          onChange={(e) =>
+            setAbsenceReason(e.target.value as AbsenceReasonEnum)
+          }
+        >
+          <option value="" disabled>
+            {t("labels.selectAbsenceReason", { ns: "events" })}
+          </option>
+          {Object.values(AbsenceReasonEnum).map((reason) => (
+            <option key={reason} value={reason}>
+              {t(`reasons.${reason}`, { ns: "events", defaultValue: reason })}
+            </option>
+          ))}
+        </select>
+      </div>
+    </form>
   );
 
   /**
@@ -71,6 +133,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
         <Button
           className="button button--execute button--standard-ok"
           onClick={() => handleConfirm(onClose)}
+          disabled={!absenceReason || absenceReason.trim() === ""}
         >
           {t("actions.save")}
         </Button>
@@ -114,7 +177,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
   return (
     <Dialog
       modifier="absence-feedback"
-      title="Absence Feedback"
+      title={t("labels.explainAbsence", { ns: "events" })}
       content={content}
       footer={footer}
     >
