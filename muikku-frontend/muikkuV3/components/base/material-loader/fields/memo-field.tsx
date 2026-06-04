@@ -23,6 +23,7 @@ import { CommonFieldProps } from "../types";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
+import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
 
 /**
  * MemoFieldProps
@@ -696,71 +697,20 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                   ? this.props.onDeleteFieldSnapshot
                   : undefined
               }
-              renderSnapshot={(snapshot) => {
-                const isHTML = isValidHTML(snapshot.value || "");
-                const rawText = isHTML
-                  ? $(snapshot.value).text()
-                  : snapshot.value;
-                const words = getWords(rawText).length;
-                const characters = getCharacters(rawText).length;
-                const snapshotValue = isHTML
-                  ? snapshot.value || ""
-                  : "<p>" +
-                    this.replaceNewlinesWithBreaks(snapshot.value || "") +
-                    "</p>";
-                const snapshotField = isHTML ? (
-                  <div
-                    className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-                    dangerouslySetInnerHTML={{ __html: snapshotValue }}
-                  />
-                ) : (
-                  <TextareaAutosize
-                    readOnly
-                    className="memofield memofield--evaluation"
-                    value={snapshot.value}
-                  />
-                );
-                return (
-                  <span className="memofield-wrapper rs_skip_always">
-                    {snapshotField}
-                    <span className="memofield__counter-wrapper">
-                      <span
-                        className={`memofield__word-count-container ${
-                          words >= parseInt(this.props.content.maxWords)
-                            ? "LIMIT-REACHED"
-                            : ""
-                        }`}
-                      >
-                        <span className="memofield__word-count-title">
-                          {t("labels.wordCount", { ns: "materials" })}
-                        </span>
-                        <span className="memofield__word-count">
-                          {" "}
-                          {words}{" "}
-                          {this.props.content.maxWords &&
-                            ` / ${this.props.content.maxWords}`}
-                        </span>
-                      </span>
-                      <span
-                        className={`memofield__character-count-container ${
-                          characters >= parseInt(this.props.content.maxChars)
-                            ? "LIMIT-REACHED"
-                            : ""
-                        }`}
-                      >
-                        <span className="memofield__character-count-title">
-                          {t("labels.characterCount", { ns: "materials" })}
-                        </span>
-                        <span className="memofield__character-count">
-                          {characters}{" "}
-                          {this.props.content.maxChars &&
-                            ` / ${this.props.content.maxChars}`}
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                );
-              }}
+              renderSnapshot={(snapshot) => (
+                <MemoSnapshotContent
+                  value={snapshot.value}
+                  maxWords={this.props.content.maxWords}
+                  maxChars={this.props.content.maxChars}
+                  replaceNewlinesWithBreaks={this.replaceNewlinesWithBreaks}
+                  getWords={getWords}
+                  getCharacters={getCharacters}
+                  wordCountLabel={t("labels.wordCount", { ns: "materials" })}
+                  characterCountLabel={t("labels.characterCount", {
+                    ns: "materials",
+                  })}
+                />
+              )}
             />
           )}
         </span>
