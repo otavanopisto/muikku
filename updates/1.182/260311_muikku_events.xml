@@ -65,4 +65,14 @@
       alter table MuikkuEventParticipant 
        add constraint UKq4wy3bjklas1lkyd5kxf1k912 unique (muikkuEvent_id, userEntityId);
    </sql>
+   <sql>
+      alter table MuikkuEventContainer 
+       add constraint UKhmgtsvqnd7iflgo4n83a1ib7a unique (workspaceEntityId, userEntityId);
+   </sql>
+   <sql>
+      drop table CalendarParticipant;
+   </sql>
+   <sql>
+      drop table CalendarEvent;
+   </sql>
 </update>

@@ -2,8 +2,8 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
-  getCourseDropdownName,
   getCourseInfo,
+  getCourseStateLabel,
   MANDATORITY_MANDATORY_VALUES,
   MANDATORITY_OPTIONAL_VALUES,
 } from "~/helper-functions/study-matrix";
@@ -12,6 +12,13 @@ import OPSCourseList, {
   RenderItemParams,
 } from "~/components/general/OPS-matrix/OPS-course-list";
 import { useTranslation } from "react-i18next";
+import { CurriculumConfig } from "~/util/curriculum-config";
+import {
+  OPSCourseCard,
+  OPSCourseCardContent,
+  OPSCourseCardHeader,
+  OPSCourseCardLabel,
+} from "~/components/general/OPS-matrix/OPS-course-card";
 
 /**
  * Component that displays a summary of a student's study progress in a list format.
@@ -22,7 +29,9 @@ interface ProgressListProps
   extends Omit<
     OPSCourseListProps,
     "renderMandatoryCourseItemContent" | "renderOptionalCourseItemContent"
-  > {}
+  > {
+  curriculumConfig: CurriculumConfig;
+}
 
 /**
  * Component that renders a list of courses with their progress status and available
@@ -39,6 +48,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     gradedList,
     onGoingList,
     needSupplementationList,
+    curriculumConfig,
   } = props;
   const { t } = useTranslation(["studyMatrix", "workspace"]);
 
@@ -50,21 +60,29 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   const renderCourseItem = (params: RenderItemParams) => {
     const { subject, course, listItemModifiers } = params;
 
-    const { modifiers, grade, needsSupplementation } = getCourseInfo(
-      listItemModifiers,
-      subject,
-      course,
-      suggestedNextList,
-      transferedList,
-      gradedList,
-      onGoingList,
-      needSupplementationList
+    const { modifiers, grade, needsSupplementation, currentActivityItem } =
+      getCourseInfo(
+        listItemModifiers,
+        subject,
+        course,
+        suggestedNextList,
+        transferedList,
+        gradedList,
+        onGoingList,
+        needSupplementationList
+      );
+
+    const currentActivityItemLabel = getCourseStateLabel(
+      currentActivityItem,
+      t
+    );
+
+    const isMandatory = MANDATORITY_MANDATORY_VALUES.includes(
+      course.mandatority
     );
 
     // By default content is mandatory or option shorthand
-    let courseTdContent = MANDATORITY_MANDATORY_VALUES.includes(
-      course.mandatority
-    )
+    let courseTdContent = isMandatory
       ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
       : t("labels.optionalShorthand", { ns: "studyMatrix" });
 
@@ -89,13 +107,39 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
           <Dropdown
             content={
               <div className="hops-container__study-tool-dropdown-container">
-                <div className="hops-container__study-tool-dropdow-title">
-                  {getCourseDropdownName(
-                    subject,
-                    course,
-                    matrix.type === "UPPER_SECONDARY"
-                  )}
-                </div>
+                <OPSCourseCard
+                  innerContainerModifiers={
+                    isMandatory ? ["mandatory"] : ["optional"]
+                  }
+                >
+                  <OPSCourseCardHeader>
+                    <span className="ops-course__card-title">
+                      <b>{`${subject.code}${course.courseNumber}`}</b>{" "}
+                      {curriculumConfig
+                        ? `${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course.length)}`
+                        : `${course.name}`}
+                    </span>
+                  </OPSCourseCardHeader>
+                  <OPSCourseCardContent>
+                    <div className="ops-course__card-labels">
+                      <OPSCourseCardLabel
+                        modifiers={[isMandatory ? "mandatory" : "optional"]}
+                      >
+                        {isMandatory
+                          ? t("labels.mandatory", { ns: "common" })
+                          : t("labels.optional", { ns: "common" })}
+                      </OPSCourseCardLabel>
+
+                      {currentActivityItemLabel && (
+                        <OPSCourseCardLabel
+                          modifiers={[currentActivityItemLabel.state]}
+                        >
+                          {currentActivityItemLabel.label}
+                        </OPSCourseCardLabel>
+                      )}
+                    </div>
+                  </OPSCourseCardContent>
+                </OPSCourseCard>
               </div>
             }
           >

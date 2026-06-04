@@ -143,11 +143,9 @@ class StateOfStudies extends React.Component<
     // You can use the cheat && after the property
     // eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
 
-    const defaultEmailAddress =
-      this.props.guider.currentStudent.contactInfos &&
-      this.props.guider.currentStudent.contactInfos.find(
-        (e) => e.defaultContact
-      ).email;
+    const defaultEmailAddress = (
+      this.props.guider.currentStudent.contactInfos ?? []
+    ).find((e) => e.defaultContact)?.email;
 
     const avatar = (
       <Avatar
@@ -271,8 +269,8 @@ class StateOfStudies extends React.Component<
       </ApplicationSubPanel>
     );
 
-    const absences = this.props.guider.currentStudent.absenceEvents?.length >
-      0 && (
+    const absences = (this.props.guider.currentStudent.absenceEvents ?? [])
+      .length > 0 && (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
           {this.props.i18n.t("labels.absences", { ns: "events" })}
@@ -465,7 +463,7 @@ class StateOfStudies extends React.Component<
                 <ApplicationSubPanel.Body modifier="labels">
                   <div className="labels">
                     {studentLabels}
-                    {absences}
+
                     {this.props.guider.currentStudent.basic.hasPedagogyForm ? (
                       <Dropdown
                         alignSelfVertically="top"
@@ -531,6 +529,9 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               ) : null}
             </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="student-absences">
+              {absences}
+            </ApplicationSubPanel>
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel modifier="student-data-primary">
                 {studentBasicInfo}
@@ -560,9 +561,9 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanel>
             </ApplicationSubPanel>
 
-            {this.props.guider.currentStudent.contactInfos.length > 0 &&
+            {(this.props.guider.currentStudent.contactInfos ?? []).length > 0 &&
               contacts}
-            {this.props.guider.currentStudent.guardians.length > 0 &&
+            {(this.props.guider.currentStudent.guardians ?? []).length > 0 &&
               studentGuardians}
             <ApplicationSubPanel modifier="counselors">
               <ApplicationSubPanel.Header modifier="with-instructions">

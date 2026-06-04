@@ -23,166 +23,7 @@ import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
 import { STATES } from "./helpers";
-import { StateConfig } from "./types";
-
-/* i18n.t("", { ns: "materials" }); */
-
-//These represent the states assignments and exercises can be in
-/* const STATES = [
-  {
-    "assignment-type": "EXERCISE",
-    //usually exercises cannot be withdrawn but they might be in extreme cases when a evaluated has
-    //been modified
-    state: ["UNANSWERED", "ANSWERED", "WITHDRAWN"],
-
-    //when an exercise is in the state unanswered answered or withdrawn then it doesn't
-    //display this button
-    "displays-hide-show-answers-on-request-button-if-allowed": false,
-    "button-class": "muikku-submit-exercise",
-
-    //This is what by default appears on the button
-    "button-text": "actions.send_exercise",
-
-    //Buttons are not disabled
-    "button-disabled": false,
-
-    //When the button is pressed, the composite reply will change state to this one
-    "success-state": "SUBMITTED",
-
-    //Whether or not the fields are read only
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "EXERCISE",
-    state: ["SUBMITTED"],
-
-    //With this property active whenever in this state the answers will be checked
-    "checks-answers": true,
-    "displays-hide-show-answers-on-request-button-if-allowed": true,
-    "button-class": "muikku-submit-exercise",
-    "button-text": "actions.cancel_exercise",
-    "button-disabled": false,
-    "success-state": "ANSWERED",
-    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
-    "modify-state": "ANSWERED",
-  },
-  {
-    "assignment-type": "EXERCISE",
-    state: ["PASSED", "FAILED", "INCOMPLETE"],
-
-    //With this property active whenever in this state the answers will be checked
-    "checks-answers": true,
-    "displays-hide-show-answers-on-request-button-if-allowed": true,
-    "button-class": "muikku-submit-exercise",
-    "button-text": "actions.sent",
-    "button-disabled": false,
-
-    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
-    "modify-state": "ANSWERED",
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: ["UNANSWERED", "ANSWERED"],
-    "button-class": "muikku-submit-assignment",
-    "button-text": "actions.send_assignment",
-    //Represents a message that will be shown once the state changes to the success state
-    "success-text": "notifications.assignmentSubmitted",
-    "button-disabled": false,
-    "success-state": "SUBMITTED",
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: "SUBMITTED",
-    "button-class": "muikku-withdraw-assignment",
-    "button-text": "actions.cancel_assignment",
-    "success-text": "notifications.assignmentWithdrawn",
-    "button-disabled": false,
-    "success-state": "WITHDRAWN",
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: ["FAILED"],
-    "button-class": "muikku-withdraw-assignment",
-    "button-text": "actions.cancel_assignment",
-    "success-text": "notifications.assignmentWithdrawn",
-    "button-disabled": true,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: ["INCOMPLETE"],
-    "button-class": "muikku-withdraw-assignment",
-    "button-text": "actions.cancel_assignment",
-    "success-text": "notifications.assignmentWithdrawn",
-    "button-disabled": false,
-    "success-state": "WITHDRAWN",
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: "WITHDRAWN",
-    "button-class": "muikku-update-assignment",
-    "button-text": "actions.update",
-    "success-text": "notifications.assignmentUpdated",
-    "button-disabled": false,
-    "success-state": "SUBMITTED",
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "EVALUATED",
-    state: "PASSED",
-    "button-class": "muikku-evaluated-assignment",
-    "button-text": "actions.evaluated",
-    "button-disabled": true,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "JOURNAL",
-    state: ["UNANSWERED", "ANSWERED"],
-    "button-class": "muikku-submit-journal",
-    "button-text": "actions.save",
-    "success-state": "SUBMITTED",
-    "button-disabled": false,
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "JOURNAL",
-    state: "SUBMITTED",
-    "button-class": "muikku-submit-journal",
-    "button-text": "actions.edit",
-    "success-state": "ANSWERED",
-    "button-disabled": false,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "INTERIM_EVALUATION",
-    state: ["UNANSWERED", "ANSWERED"],
-    "button-class": "muikku-submit-interim-evaluation",
-    "button-text": "actions.send_interimEvaluationRequest",
-    "success-state": "SUBMITTED",
-    "button-disabled": false,
-    "fields-read-only": false,
-  },
-  {
-    "assignment-type": "INTERIM_EVALUATION",
-    state: "SUBMITTED",
-    "button-class": "muikku-submit-interim-evaluation",
-    "button-text": "actions.cancel_interimEvaluationRequest",
-    "success-state": "ANSWERED",
-    "button-disabled": false,
-    "fields-read-only": true,
-  },
-  {
-    "assignment-type": "INTERIM_EVALUATION",
-    state: "PASSED",
-    "button-class": "muikku-evaluated-assignment",
-    "button-text": "actions.evaluated",
-    "button-disabled": true,
-    "fields-read-only": true,
-  },
-]; */
+import { FieldsSyncStatus, StateConfig } from "./types";
 
 /**
  * Callback parameter types for MaterialLoader
@@ -190,10 +31,8 @@ import { StateConfig } from "./types";
 export interface AssignmentStateChangeCallback {
   (
     newState: MaterialCompositeReplyStateType,
-    shouldUpdateServer: boolean,
-    workspaceId: number,
     workspaceMaterialId: number,
-    workspaceMaterialReplyId?: number,
+    shouldUpdateServer?: boolean,
     successText?: string,
     onComplete?: () => void
   ): void;
@@ -329,6 +168,8 @@ export interface MaterialLoaderProps {
   readspeakerComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
+  onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
+
   children?: (
     props: MaterialLoaderProps,
     state: MaterialLoaderState,
@@ -361,6 +202,9 @@ interface MaterialLoaderState {
   //A registry for the right and wrong answers as told by the material
   answerRegistry: { [name: string]: any };
   stateConfiguration: StateConfig | null;
+
+  fieldsAllSynced: boolean;
+  fieldsHasSyncErrors: boolean;
 }
 
 //A cheap cache for material replies and composite replies used by the hack
@@ -411,6 +255,10 @@ class MaterialLoader extends React.Component<
       //The rightness registry start empty
       answerRegistry: {},
       stateConfiguration: null,
+
+      // initially all fields are synced and have no sync errors
+      fieldsAllSynced: true,
+      fieldsHasSyncErrors: false,
     };
 
     //A sync version of the answer registry, it can change so fast
@@ -422,6 +270,7 @@ class MaterialLoader extends React.Component<
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
+    this.onFieldsSyncStatusChange = this.onFieldsSyncStatusChange.bind(this);
 
     let stateConfiguration: StateConfig | null = null;
 
@@ -487,7 +336,9 @@ class MaterialLoader extends React.Component<
       !isEqual(this.state.stateConfiguration, nextState.stateConfiguration) ||
       this.state.answersVisible !== nextState.answersVisible ||
       this.state.answersChecked !== nextState.answersChecked ||
-      this.state.answerRegistry !== nextState.answerRegistry
+      this.state.answerRegistry !== nextState.answerRegistry ||
+      this.state.fieldsAllSynced !== nextState.fieldsAllSynced ||
+      this.state.fieldsHasSyncErrors !== nextState.fieldsHasSyncErrors
     );
   }
 
@@ -629,24 +480,22 @@ class MaterialLoader extends React.Component<
    * @param params params
    */
   onPushAnswer(params?: any) {
+    // if not all fields are synced, do not push the answer
+    if (!this.state.fieldsAllSynced) {
+      return;
+    }
     //So now we need that juicy success state
     if (this.state.stateConfiguration?.successState) {
-      //Get the composite reply
-      const compositeReplies =
-        this.props.compositeReplies || this.state.compositeRepliesInState;
       //We make it be the success state that was given, call this function
       //We set first the state we want
-      //false because we want to call and update the state server side
+      //true because we want to call and update the state server side
       //we put the required workspace id and workspace material id
-      //add a worspaceMaterialReplyId if we have one, and hopefully we will, for most of the cases that is
       //We add the success text if we have one, ofc it is a string to translate
       this.props.onUpdateAssignmentState &&
         this.props.onUpdateAssignmentState(
           this.state.stateConfiguration?.successState,
-          false,
-          this.props.workspace.id,
           this.props.material.workspaceMaterialId,
-          compositeReplies && compositeReplies.workspaceMaterialReplyId,
+          true,
           this.state.stateConfiguration?.successText
             ? this.state.stateConfiguration?.successText
             : undefined,
@@ -722,6 +571,28 @@ class MaterialLoader extends React.Component<
 
     this.props.onAnswerCheckableChange &&
       this.props.onAnswerCheckableChange(answerCheckable);
+  }
+
+  /**
+   * onFieldsSyncStatusChange - Handles the fields sync status change
+   * @param status status
+   */
+  onFieldsSyncStatusChange(status: FieldsSyncStatus) {
+    const updates: Partial<MaterialLoaderState> = {};
+
+    if (status.allSynced !== this.state.fieldsAllSynced) {
+      updates.fieldsAllSynced = status.allSynced;
+    }
+    if (status.hasSyncErrors !== this.state.fieldsHasSyncErrors) {
+      updates.fieldsHasSyncErrors = status.hasSyncErrors;
+    }
+    if (Object.keys(updates).length) {
+      this.setState({
+        ...this.state,
+        ...updates,
+      });
+    }
+    this.props.onFieldsSyncStatusChange?.(status);
   }
 
   /**
@@ -842,6 +713,7 @@ class MaterialLoader extends React.Component<
           onAnswerCheckableChange: this.onAnswerCheckableChange,
           onPushAnswer: this.onPushAnswer,
           onToggleAnswersVisible: this.toggleAnswersVisible,
+          onFieldsSyncStatusChange: this.onFieldsSyncStatusChange,
         },
         this.state,
         this.state.stateConfiguration

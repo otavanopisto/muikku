@@ -34,7 +34,7 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class MuikkuEventController {
-
+  
   @Inject
   private SessionController sessionController;
 
@@ -99,7 +99,7 @@ public class MuikkuEventController {
             restEvent.isAllDay(), 
             restEvent.getTitle(),
             restEvent.getDescription(), 
-            EventType.valueOf(restEvent.getType()), 
+            restEvent.getType(), 
             userEntity.getId(),
             loggedUserEntity.getId(), 
             restEvent.isEditable(), 
@@ -257,7 +257,9 @@ public class MuikkuEventController {
     return participants.stream().filter(p -> userEntityId.equals(p.getUserEntityId())).findFirst().orElse(null);
   }
 
-  public boolean canViewEventContainer(MuikkuEventContainer container) {
+  public boolean canViewEventContainer(
+      MuikkuEventContainer container,
+      UserEntity targetUserEntity) {
 
     if (container == null) {
       return false;
@@ -265,22 +267,19 @@ public class MuikkuEventController {
 
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
 
-    boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
-
-    // Admin -> always true
-    if (isAdmin) {
+    // Admin
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return true;
     }
 
     // User container
     if (container.getUserEntityId() != null) {
 
-      // The students only sees their own container
       if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         return loggedUser.getId().equals(container.getUserEntityId());
       }
 
-      return true; // Other roles can see the user container
+      return true;
     }
 
     // Workspace container
@@ -290,24 +289,68 @@ public class MuikkuEventController {
       return false;
     }
 
-    Set<Long> userWorkspaceIds = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(loggedUser)
-        .stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
+    // Logged user belongs to workspace
+    boolean ownWorkspaceAccess =
+        workspaceUserEntityController
+            .listActiveWorkspaceEntitiesByUserEntity(loggedUser)
+            .stream()
+            .map(WorkspaceEntity::getId)
+            .anyMatch(id -> id.equals(workspaceEntityId));
 
-    // Course relation
-    return userWorkspaceIds.contains(workspaceEntityId);
+    if (ownWorkspaceAccess) {
+      return true;
+    }
+
+    // Relation-based access
+    if (targetUserEntity != null) {
+
+      SchoolDataIdentifier identifier =
+          targetUserEntity.defaultSchoolDataIdentifier();
+
+      StudentGuidanceRelation relation =
+          userController.getGuidanceRelation(
+              identifier.getDataSource(),
+              identifier.getIdentifier());
+
+      if (relation != null &&
+          (relation.isGuidanceCounselor()
+              || relation.isCourseTeacher()
+              || relation.isStudentParent())) {
+
+        boolean targetInWorkspace =
+            workspaceUserEntityController
+                .listActiveWorkspaceEntitiesByUserEntity(targetUserEntity)
+                .stream()
+                .map(WorkspaceEntity::getId)
+                .anyMatch(id -> id.equals(workspaceEntityId));
+
+        return targetInWorkspace;
+      }
+    }
+
+    return false;
   }
 
   public boolean canViewEvent(UserEntity userEntity, MuikkuEvent event) {
 
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-
     // Private event
     if (event.isPrivate()) {
-      return event.getCreatorEntityId().equals(loggedUser.getId());
+      return event.getCreatorEntityId().equals(userEntity.getId());
     }
 
     // Own events
-    if (event.getUserEntityId() != null && event.getUserEntityId().equals(loggedUser.getId())) {
+    if (event.getUserEntityId() != null && event.getUserEntityId().equals(userEntity.getId())) {
+      return true;
+    }
+    
+    // Event creators can always view events they created
+    if (event.getCreatorEntityId() != null
+        && event.getCreatorEntityId().equals(userEntity.getId())) {
+      return true;
+    }
+    
+    // DEFAULT event without target user -> visible
+    if (event.getUserEntityId() == null && event.getType() == EventType.DEFAULT) {
       return true;
     }
 
@@ -316,15 +359,21 @@ public class MuikkuEventController {
       return true;
     }
 
-    // You can't edit an event if you can't access the container.
-    if (event.getEventContainer() != null) {
-      if (!canViewEventContainer(event.getEventContainer())) {
-        return false;
-      }
+
+    // A null check is needed at this point to avoid a NullPointerException when checking relations etc
+    if (event.getUserEntityId() == null) {
+      return false;
     }
 
+    UserEntity targetUserEntity = userEntityController.findUserEntityById(
+        event.getUserEntityId());
+
+    if (targetUserEntity == null) {
+      return false;
+    }
+    
     // Relations
-    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+    SchoolDataIdentifier identifier = targetUserEntity.defaultSchoolDataIdentifier();
 
     StudentGuidanceRelation relation = userController.getGuidanceRelation(identifier.getDataSource(),
         identifier.getIdentifier());
@@ -332,24 +381,30 @@ public class MuikkuEventController {
     boolean guidanceCounselor = false;
     boolean courseTeacher = false;
     boolean studentParent = false;
-
+    
     if (relation != null) {
       guidanceCounselor = relation.isGuidanceCounselor();
       courseTeacher = relation.isCourseTeacher();
       studentParent = relation.isStudentParent();
     }
+    
+    // You can't edit an event if you can't access the container.
+    // container access
+    if (event.getEventContainer() != null) {
+      if (!canViewEventContainer(event.getEventContainer(), targetUserEntity)) {
+        return false;
+      }
+    }
 
     // Course teacher check
     if (courseTeacher && relation != null) {
-      courseTeacher = hasSharedWorkspacesWithLoggedUser(userEntity);
+      courseTeacher = hasSharedWorkspacesWithLoggedUser(targetUserEntity);
     }
 
     // Absence
     if (event.getType() == EventType.ABSENCE) {
 
-      boolean isOwn = loggedUser.getId().equals(userEntity.getId());
-
-      if (!(guidanceCounselor || courseTeacher || studentParent || isOwn)) {
+      if (!(guidanceCounselor || courseTeacher || studentParent)) {
         return false;
       }
     }
@@ -493,7 +548,8 @@ public class MuikkuEventController {
 
     // You can't edit an event if you can't access the container.
     if (event.getEventContainer() != null) {
-      if (!canViewEventContainer(event.getEventContainer())) {
+      UserEntity targetUserEntity = userEntityController.findUserEntityById(event.getUserEntityId());
+      if (!canViewEventContainer(event.getEventContainer(), targetUserEntity)) {
         return false;
       }
     }

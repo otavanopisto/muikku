@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.event.model.EventType;
+
 public class MuikkuEventRestModel {
 
   public Long getId() {
@@ -130,11 +132,11 @@ public class MuikkuEventRestModel {
     this.end = end;
   }
 
-  public String getType() {
+  public EventType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(EventType type) {
     this.type = type;
   }
 
@@ -155,7 +157,7 @@ public class MuikkuEventRestModel {
   private boolean allDay;
   private String title;
   private String description;
-  private String type;
+  private EventType type;
   private boolean isPrivate;
   private Long userEntityId;
   private Long creator;

@@ -101,7 +101,7 @@ public class MuikkuEventRESTService {
     }
 
     // Cannot create events in a container that they cannot even see
-    if (!eventController.canViewEventContainer(payloadContainer)) {
+    if (!eventController.canViewEventContainer(payloadContainer, null)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -153,7 +153,7 @@ public class MuikkuEventRESTService {
         restEvent.isAllDay(), 
         restEvent.getTitle(), 
         restEvent.getDescription(), 
-        EventType.valueOf(restEvent.getType()), 
+        restEvent.getType(), 
         restEvent.isEditable(), 
         restEvent.isPrivate(), 
         restEvent.isRemovable());
@@ -207,15 +207,10 @@ public class MuikkuEventRESTService {
     
     // Access checks
     
-    WorkspaceEntity workspaceEntity = null;
-    if (event.getEventContainer().getWorkspaceEntityId() != null) {
-      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(event.getEventContainer().getWorkspaceEntityId());
-    }
-    
-    boolean hasAccess = eventController.canEditEvent(workspaceEntity, event);
+    boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
     
     if (!hasAccess) {
-      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to edit event %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
+      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to edit event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
     }
     
     MuikkuEventProperty property = eventController.createEventProperty(event, name, value, sessionController.getLoggedUserEntity().getId(), new Date());
@@ -359,10 +354,11 @@ public class MuikkuEventRESTService {
       // Access to specific event
       boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
       
-      // If this is a staff member's event, the event can be returned as blocked (only the start and end time will be returned)
       if (!hasAccess) { 
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-        if (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER)){
+        
+        // If this is a staff member's event and the logged-in user is a student or a studentParent, the event may be returned as blocked, with only the start and end times included
+        if (!userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER)){
           MuikkuEventRestModel blockEvent = new MuikkuEventRestModel();
           
           blockEvent.setStart(toOffsetDateTime(event.getStart()));
@@ -454,7 +450,7 @@ public class MuikkuEventRESTService {
     restEvent.setAllDay(event.getAllDay());
     restEvent.setTitle(event.getTitle());
     restEvent.setDescription(event.getDescription());
-    restEvent.setType(event.getType().name());
+    restEvent.setType(event.getType());
     restEvent.setUserEntityId(event.getUserEntityId());
     restEvent.setCreator(event.getCreatorEntityId());
     List<MuikkuEventParticipant> participants = eventController.listParticipants(event);

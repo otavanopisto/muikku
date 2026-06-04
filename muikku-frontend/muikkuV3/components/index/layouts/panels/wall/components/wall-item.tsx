@@ -12,6 +12,7 @@ interface WallItemProps {
   state: string;
   title: string;
   dueDate?: string;
+  customDate?: string | React.ReactNode;
   modifier?: string;
   isCreator?: boolean;
   children?: React.ReactElement;
@@ -23,7 +24,7 @@ interface WallItemProps {
  * @returns JSX.Element
  */
 const WallItem: React.FC<WallItemProps> = (props) => {
-  const { modifier, state, title, dueDate, children } = props;
+  const { modifier, state, title, dueDate, children, customDate } = props;
   const { t } = useTranslation("tasks");
   const overdue = isOverdue(dueDate);
   const [showDescription, setShowDescription] = React.useState(false);
@@ -60,7 +61,8 @@ const WallItem: React.FC<WallItemProps> = (props) => {
               {t("labels.status", { context: "overdue" })}
             </span>
           ) : null}
-          {dueDate ? <span>{moment(dueDate).format("D.M.YYYY")}</span> : null}
+          {dueDate && <span>{moment(dueDate).format("D.M.YYYY")}</span>}
+          {customDate && <span>{customDate}</span>}
         </span>
       </div>
       <AnimateHeight height={showDescription ? "auto" : 0}>

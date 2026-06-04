@@ -33,17 +33,24 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
       : isUnder18
         ? "REVIEW-PENDING"
         : "REVIEWED";
-
+  const eventDate = (
+    <>
+      {" "}
+      {localize.date(event.start, "l - LT")}
+      <span className="icon icon-long-arrow-right wall-event__date-decoration" />
+      {localize.date(event.end, "l - LT")}
+    </>
+  );
   return (
-    <WallItem modifier={modifier} state={absenceState} title={event.title}>
+    <WallItem
+      customDate={eventDate}
+      modifier={modifier}
+      state={absenceState}
+      title={event.title}
+    >
       <div className="wall-event">
         <div className="wall-event__header">
           <div className="wall-event__description">{event.description}</div>
-          <div className="wall-event__date">
-            {localize.date(event.start, "l - LT")}
-            <span className="icon icon-long-arrow-right wall-event__date-decoration" />
-            {localize.date(event.end, "l - LT")}
-          </div>
         </div>
         <div className="wall-event__body">
           {event.properties &&

@@ -16,7 +16,7 @@ import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { displayNotification } from "~/actions/base/notifications";
 import { useDispatch } from "react-redux";
-import { FloatingPortal } from "@floating-ui/react";
+
 /**
  * CreateAbsenceDialogProps
  */
@@ -189,6 +189,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           "success"
         )
       );
+      dispatchForm({ type: "RESET" });
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
@@ -206,7 +207,6 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
     onConfirm?.(formState);
     onClose();
-    dispatchForm({ type: "RESET" });
   };
 
   /**
