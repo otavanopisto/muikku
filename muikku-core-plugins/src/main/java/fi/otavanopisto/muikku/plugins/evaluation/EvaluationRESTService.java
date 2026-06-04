@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -67,12 +68,20 @@ import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendanceRestModel;
 import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
+import fi.otavanopisto.muikku.plugins.material.MaterialController;
+import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
+import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
@@ -131,7 +140,19 @@ public class EvaluationRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
+  private MaterialController materialController;
+
+  @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceMaterialFieldController workspaceMaterialFieldController;
+
+  @Inject
+  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
+  
+  @Inject
+  private QueryFieldController queryFieldController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -527,6 +548,71 @@ public class EvaluationRESTService extends PluginRESTService {
     
     events.sort(Comparator.comparing(RestEvaluationEvent::getDate));
     return Response.ok(events).build();
+  }
+  
+  @POST
+  @Path("/user/{USERENTITYID}/workspaceMaterial/{WORKSPACEMATERIALID}/field/{FIELDNAME}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createSnapshot(
+      @PathParam("USERENTITYID") Long userEntityId,
+      @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
+      @PathParam("FIELDNAME") String fieldName) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User not found").build();
+    }
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
+    }
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    if (reply == null) {
+      return Response.status(Status.NOT_FOUND).entity("Reply not found").build();
+    }
+    Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("Material not found").build();
+    }
+    QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, fieldName);
+    if (queryField == null) {
+      return Response.status(Status.NOT_FOUND).entity("Query field not found").build();
+    }
+    WorkspaceMaterialField field = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryField(workspaceMaterial, queryField);
+    if (field == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace material field not found").build();
+    }
+    try {
+      WorkspaceMaterialFieldAnswerSnapshot snapshot = workspaceMaterialFieldAnswerController.createSnapshot(field, reply);
+      return Response.ok(new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswerSnapshot(
+          snapshot.getId(),
+          snapshot.getDate(),
+          snapshot.getValue()
+      )).build();
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, String.format("Snapshot failure: %s", e.getMessage()), e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+  
+  @DELETE
+  @Path("/snapshot/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteSnapshot(@PathParam("ID") Long id) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    WorkspaceMaterialFieldAnswerSnapshot snapshot = workspaceMaterialFieldAnswerController.findSnapshotById(id);
+    if (snapshot == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    else {
+      workspaceMaterialFieldAnswerController.deleteSnapshot(snapshot);
+    }
+    return Response.noContent().build();
   }
 
   @POST

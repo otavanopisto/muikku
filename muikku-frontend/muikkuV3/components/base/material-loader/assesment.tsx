@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 import RecordingsList from "../../general/voice-recorder/recordings-list";
 import { RecordValue } from "../../../@types/recorder";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 /**
  * MaterialLoaderAssesmentProps
  */
-type MaterialLoaderAssesmentProps = MaterialLoaderProps;
+type MaterialLoaderAssesmentProps = MaterialLoaderRenderProps;
 
 /**
  * MaterialLoaderAssesment

@@ -99,15 +99,15 @@ public class ExamRESTService {
         chosenAssignmentIds = examController.listExamAssignmentIds(workspaceFolderId);
       }
       for (Long id : chosenAssignmentIds) {
-        WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(id);
-        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, sessionController.getLoggedUserEntity());
+        WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(id);
+        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
         if (reply != null) {
           List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-          List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(material);
+          List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
           for (WorkspaceMaterialField field : fields) {
             try {
               String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-              WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
+              WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), field.getQueryField().getName(), value);
               answers.add(answer);
             }
             catch (WorkspaceFieldIOException e) {

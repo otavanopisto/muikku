@@ -8,7 +8,7 @@ import { MaterialLoaderContent } from "~/components/base/material-loader/content
 import "~/sass/elements/evaluation.scss";
 import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
 import { StateType } from "~/reducers/index";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderAssessor } from "~/components/base/material-loader/assessor";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
@@ -16,6 +16,12 @@ import {
   InterimEvaluationRequest,
   MaterialCompositeReply,
 } from "~/generated/client";
+import {
+  createFieldSnapshot,
+  deleteFieldSnapshot,
+} from "~/actions/main-function/evaluation/evaluationActions";
+import { resolveEvaluationFieldSnapshotCapabilities } from "~/components/base/material-loader/helpers";
+import { FieldSnapshotCapabilities } from "~/components/base/material-loader/types";
 
 /**
  * EvaluationMaterialProps
@@ -36,6 +42,7 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
   const { material, compositeReply, workspace, userEntityId } = props;
 
   const { status, websocket } = useSelector((state: StateType) => state);
+  const dispatch = useDispatch();
 
   const isAssignment =
     material.assignment &&
@@ -76,6 +83,52 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
     }
   }
 
+  /**
+   * Handles taking a field snapshot
+   * @param fieldName fieldName
+   * @param cap cap
+   */
+  const handleTakeFieldSnapshot = (
+    fieldName: string,
+    cap: FieldSnapshotCapabilities
+  ) => {
+    if (!cap.snapshotCanTake) {
+      return;
+    }
+
+    dispatch(
+      createFieldSnapshot({
+        userEntityId: userEntityId,
+        workspaceMaterialId: compositeReply.workspaceMaterialId,
+        fieldName: fieldName,
+      })
+    );
+  };
+
+  /**
+   * Handles deleting a field snapshot
+   * @param fieldName fieldName
+   * @param snapshotId snapshotId
+   * @param cap cap
+   */
+  const handleDeleteFieldSnapshot = (
+    fieldName: string,
+    snapshotId: number,
+    cap: FieldSnapshotCapabilities
+  ) => {
+    if (!cap.snapshotCanDelete) {
+      return;
+    }
+
+    dispatch(
+      deleteFieldSnapshot({
+        snapshotId: snapshotId,
+        workspaceMaterialId: compositeReply.workspaceMaterialId,
+        fieldName: fieldName,
+      })
+    );
+  };
+
   return (
     <MaterialLoader
       material={material}
@@ -88,6 +141,9 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
       userEntityId={userEntityId}
       answerable={true}
       status={status}
+      fieldSnapshotPolicy={resolveEvaluationFieldSnapshotCapabilities}
+      onTakeFieldSnapshot={handleTakeFieldSnapshot}
+      onDeleteFieldSnapshot={handleDeleteFieldSnapshot}
       websocket={websocket}
     >
       {(props, state, stateConfiguration) => (
