@@ -34,8 +34,8 @@
 .wall-item__header {
   align-items: center;
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
+  justify-content: space-between;
   padding: 5px;
 
   &.state-OVERDUE {
@@ -43,9 +43,11 @@
     font-weight: 600;
   }
 }
+
 .wall-item__title {
   font-weight: 500;
 }
+
 .wall-item__date {
   border-radius: 10px;
   font-size: 0.8rem;
