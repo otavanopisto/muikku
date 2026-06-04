@@ -1,3 +1,5 @@
+import { MemoFieldContentFormat } from "./memo-content-format";
+
 /**
  * Checks if the string is a valid HTML
  * @param str string to check
@@ -29,10 +31,17 @@ export const htmlToPlainText = (html: string): string => {
 /**
  * Converts an HTML string to a memo display HTML string.
  * @param value value
+ * @param format format
  * @param replaceNewlinesWithBreaks replace newlines with breaks
  * @returns memo display HTML string
  */
 export const toMemoDisplayHtml = (
   value: string,
+  format: MemoFieldContentFormat,
   replaceNewlinesWithBreaks: (str: string) => string
-): string => "<p>" + replaceNewlinesWithBreaks(escapeHtml(value)) + "</p>";
+): string => {
+  if (format === "html") {
+    return value;
+  }
+  return "<p>" + replaceNewlinesWithBreaks(escapeHtml(value)) + "</p>";
+};

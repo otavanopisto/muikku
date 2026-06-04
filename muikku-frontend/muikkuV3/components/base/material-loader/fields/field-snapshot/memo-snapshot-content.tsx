@@ -71,7 +71,11 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
       <div
         className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
         dangerouslySetInnerHTML={{
-          __html: toMemoDisplayHtml(value, replaceNewlinesWithBreaks),
+          __html: toMemoDisplayHtml(
+            value,
+            resolvedFormat,
+            replaceNewlinesWithBreaks
+          ),
         }}
       />
     ) : (
