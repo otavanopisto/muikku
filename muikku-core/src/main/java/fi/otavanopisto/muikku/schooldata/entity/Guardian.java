@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
+import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class Guardian {
@@ -7,12 +9,13 @@ public class Guardian {
   public Guardian() {
   }
   
-  public Guardian(SchoolDataIdentifier identifier, String firstName, String lastName, GuardianState state, boolean continuedViewPermission) {
+  public Guardian(SchoolDataIdentifier identifier, String firstName, String lastName, GuardianState state, boolean continuedViewPermission, OffsetDateTime continuedViewPermissionModified) {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
     this.state = state;
     this.continuedViewPermission = continuedViewPermission;
+    this.continuedViewPermissionModified = continuedViewPermissionModified;
   }
   
   public String getFirstName() {
@@ -55,9 +58,18 @@ public class Guardian {
     this.state = state;
   }
 
+  public OffsetDateTime getContinuedViewPermissionModified() {
+    return continuedViewPermissionModified;
+  }
+
+  public void setContinuedViewPermissionModified(OffsetDateTime continuedViewPermissionModified) {
+    this.continuedViewPermissionModified = continuedViewPermissionModified;
+  }
+
   private SchoolDataIdentifier identifier;
   private String firstName;
   private String lastName;
   private GuardianState state;
   private boolean continuedViewPermission;
+  private OffsetDateTime continuedViewPermissionModified;
 }

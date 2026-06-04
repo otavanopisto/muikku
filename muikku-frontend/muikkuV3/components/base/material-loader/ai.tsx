@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 
 /**
  * MaterialLoaderTitleProps
  */
-interface MaterialLoaderAIProps extends MaterialLoaderProps {}
+interface MaterialLoaderAIProps extends MaterialLoaderRenderProps {}
 
 /* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
   e.stopPropagation();

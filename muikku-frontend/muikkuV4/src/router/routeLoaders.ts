@@ -2,13 +2,18 @@ import { type LoaderFunction } from "react-router";
 import {
   currentStudentIdAtom,
   guiderStudentsQueryAtom,
-} from "~/src/atoms/guider";
-import { setAtomValue } from "~/src/jotaiStore";
+} from "src/atoms/guider";
+import { executeAtomAction, setAtomValue } from "src/jotaiStore";
+import { loadMaterialContentNodesAtom } from "../atoms/materials";
 
 export const routeLoaders: Record<string, LoaderFunction> = {
   environmentLoader: () => null,
   homeLoader: () => null,
-  dashboardLoader: () => null,
+  dashboardLoader: () => {
+    void executeAtomAction(loadMaterialContentNodesAtom, 158);
+
+    return null;
+  },
   communicatorLoader: () => null,
   guiderLoader: ({ request }) => {
     const url = new URL(request.url);

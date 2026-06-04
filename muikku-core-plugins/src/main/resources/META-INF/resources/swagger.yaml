@@ -2801,6 +2801,67 @@ paths:
           description: Attempted to make a call with unauthorized client
 
   #EVALUATION
+  
+  /rest/evaluation/user/{userEntityId}/workspaceMaterial/{workspaceMaterialId}/field/{fieldName}:
+    post:
+      operationId: createFieldAnswerSnapshot
+      summary: For the given user, workspace material, and field name, create a snapshot of the field's current value
+      description: For the given user, workspace material, and field name, create a snapshot of the field's current value
+      tags:
+        - Evaluation
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: workspaceMaterialId
+          in: path
+          description: Workspace material id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: fieldName
+          in: path
+          description: Field name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Created snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialAnswerSnapshot"
+        "403":
+          description: Unallowed access
+        "404":
+          description: Some required element not found
+
+  /rest/evaluation/snapshot/{id}:
+    delete:
+      operationId: deleteFieldAnswerSnapshot
+      summary: Deletes the snapshot with the given id
+      tags:
+        - Evaluation
+      parameters:
+        - name: id
+          in: path
+          description: Snapshot id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Snapshot deleted successfully
+        "403":
+          description: Unallowed access
+  
   /rest/evaluation/compositeAssessmentRequests:
     get:
       operationId: getCompositeAssessmentRequests
@@ -10897,6 +10958,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: includeSnapshots
+          in: query
+          description: Should answer snapshots be included in the reply
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Workspace composite replies
@@ -11398,6 +11465,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: includeSnapshots
+          in: query
+          description: Should answer snapshots be included in the reply
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Workspace user composite reply
@@ -15579,6 +15652,9 @@ components:
         allowStudyDiscussions:
           type: boolean
           description: Is the contact a Guardian etc who can be contacted for study discussions, null for other contacts
+        allowStudyDiscussionsModified:
+          type: string
+          format: date-time
 
     Guardian:
       type: object
@@ -15597,6 +15673,9 @@ components:
           type: string
         continuedViewPermission:
           type: boolean
+        continuedViewPermissionModified:
+          type: string
+          format: date-time
 
     GuidanceCounselorContact:
       type: object
@@ -16416,22 +16495,37 @@ components:
           type: string
           nullable: true
 
+    MaterialAnswerSnapshot:
+      type: object
+      description: MaterialAnswer snapshot object
+      required:
+        - id
+        - date
+        - value
+      properties:
+        id:
+          description: Snapshot id
+          type: integer
+          format: int64
+        date:
+          description: When the snapshot was taken
+          type: string
+          format: date-time
+        value:
+          description: Field value
+          type: string
+    
     MaterialAnswer:
       type: object
       description: MaterialAnswer object
       required:
         - fieldName
-        - materialId
         - value
         - workspaceMaterialId
       properties:
         fieldName:
           description: Name of the answer field
           type: string
-        materialId:
-          description: The id of the material
-          type: integer
-          format: int64
         value:
           description: Value of the answer
           type: string
@@ -16439,6 +16533,11 @@ components:
           description: The id of the workspace material
           type: integer
           format: int64
+        snapshots:
+          description: Answers of the material assignment
+          type: array
+          items:
+            $ref: "#/components/schemas/MaterialAnswerSnapshot"
 
     MaterialCompositeReplyStateType:
       description: Material composite reply state type enum

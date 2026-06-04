@@ -200,28 +200,26 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
    * componentWillUnmount
    */
   componentWillUnmount() {
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+      this.hoverTimeout = null;
+    }
+    this.portalRef.current?.closePortal(true);
     this.isUnmounted = true;
     this.props.persistent &&
       window.removeEventListener("scroll", this.handleScroll);
-
     if (this.props.closeOnOutsideClick) {
       document.removeEventListener("mousedown", this.handleOutsideClick);
     }
-
     let element = this.activatorRef.current;
     if (!(element instanceof HTMLElement)) {
       element = findDOMNode(element) as HTMLElement;
     }
-
     if (element) {
       element.removeEventListener(
         "keydown",
         this.handleActivatorKeyDown as any
       );
-    }
-
-    if (this.hoverTimeout) {
-      clearTimeout(this.hoverTimeout);
     }
   }
 
@@ -444,9 +442,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
    */
   beforeClose(DOMNode: HTMLElement, removeFromDOM: Function) {
     if (this.isUnmounted) {
+      removeFromDOM();
       return;
     }
-
     this.setState({
       visible: false,
     });
@@ -601,9 +599,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       clearTimeout(this.hoverTimeout);
     }
     this.hoverTimeout = setTimeout(() => {
-      if (this.state.visible) {
-        this.close();
-      }
+      this.close();
     }, 150); // Small delay to prevent flickering when moving between elements
   };
 

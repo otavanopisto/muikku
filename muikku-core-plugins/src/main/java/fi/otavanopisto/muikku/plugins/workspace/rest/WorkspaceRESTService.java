@@ -125,6 +125,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
@@ -2250,7 +2251,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/compositeReply")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+  public Response getWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("includeSnapshots") boolean includeSnapshots) {
 
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -2263,6 +2264,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
+    }
+    if (includeSnapshots && !userEntityController.isStaffMember(sessionController.getLoggedUserEntity())) {
+      includeSnapshots = false;
     }
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
@@ -2306,9 +2310,18 @@ public class WorkspaceRESTService extends PluginRESTService {
       List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
       for (WorkspaceMaterialField field : fields) {
         String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-        Material material = field.getQueryField().getMaterial();
-        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
+        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), field.getQueryField().getName(), value);
         answers.add(answer);
+        if (includeSnapshots) {
+          List<WorkspaceMaterialFieldAnswerSnapshot> snapshots = workspaceMaterialFieldAnswerController.listSnapshots(field, userEntity);
+          for (WorkspaceMaterialFieldAnswerSnapshot snapshot : snapshots) {
+            answer.addSnapshot(new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswerSnapshot(
+              snapshot.getId(),
+              snapshot.getDate(),
+              snapshot.getValue()
+            ));
+          }
+        }
       }
 
       WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
@@ -2336,13 +2349,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/compositeReplies")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userEntityId") Long userEntityId) {
+  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userEntityId") Long userEntityId, @QueryParam("includeSnapshots") boolean includeSnapshots) {
 
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
     }
-
     if (userEntityId == null) {
       userEntityId = sessionController.getLoggedUserEntity().getId();
     }
@@ -2352,6 +2364,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
+    }
+    if (includeSnapshots && !userEntityController.isStaffMember(sessionController.getLoggedUserEntity())) {
+      includeSnapshots = false;
     }
     
     // #7352: Figure out scenarios in which all pages would be locked
@@ -2396,9 +2411,18 @@ public class WorkspaceRESTService extends PluginRESTService {
         List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
         for (WorkspaceMaterialField field : fields) {
           String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-          Material material = field.getQueryField().getMaterial();
-          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getQueryField().getName(), value);
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), field.getQueryField().getName(), value);
           answers.add(answer);
+          if (includeSnapshots) {
+            List<WorkspaceMaterialFieldAnswerSnapshot> snapshots = workspaceMaterialFieldAnswerController.listSnapshots(field, userEntity);
+            for (WorkspaceMaterialFieldAnswerSnapshot snapshot : snapshots) {
+              answer.addSnapshot(new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswerSnapshot(
+                snapshot.getId(),
+                snapshot.getDate(),
+                snapshot.getValue()
+              ));
+            }
+          }
         }
 
         WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(

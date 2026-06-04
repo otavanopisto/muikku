@@ -16,7 +16,7 @@ interface PageLayoutProps {
  * @param props
  */
 export function PageLayout(props: PageLayoutProps) {
-  const { title, subtitle, children, loading } = props;
+  const { title, subtitle, children } = props;
   return (
     <Container size="lg" py="md">
       {/* View/Feature Name Section */}
