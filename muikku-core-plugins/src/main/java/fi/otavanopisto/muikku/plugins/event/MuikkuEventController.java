@@ -427,13 +427,17 @@ public class MuikkuEventController {
 
     // Workspace-specific events
     if (isWorkspaceContainer) {
-
       if (!workspaceUserEntityController.isWorkspaceMember(
           targetUserEntity.defaultSchoolDataIdentifier(),
           workspaceEntity)) {
         return false;
       }
-
+      
+      // Users can always create events for themselves
+      if (loggedUserEntity.getId().equals(targetUserEntity.getId())){
+        return true;
+      }
+      
       // student → only self
       if (isStudent && !loggedUserEntity.getId().equals(targetUserEntity.getId())) {
         return false;
@@ -454,25 +458,20 @@ public class MuikkuEventController {
         studentParent = relation.isStudentParent();
       }
 
-      if (courseTeacher) {
-
-        if (!loggedUserEntity.getId().equals(targetUserEntity.getId())) {
-          return hasSharedWorkspacesWithLoggedUser(targetUserEntity);
-        }
-
-        return true;
-      }
-
       boolean hasAdminOrLeaderRole =
           sessionController.hasAnyRole(
               EnvironmentRoleArchetype.ADMINISTRATOR,
               EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
 
-      if (!studentParent && !hasAdminOrLeaderRole && !guidanceCounselor) {
-        return false;
+      if (studentParent || guidanceCounselor || hasAdminOrLeaderRole) {
+        return true;
       }
 
-      return true;
+      if (courseTeacher) {
+        return hasSharedWorkspacesWithLoggedUser(targetUserEntity);
+      }
+
+      return false;
     }
 
     // User-specific events
