@@ -49,7 +49,8 @@ import {
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
-import SelectionContextPopover from "~/components/general/selection-context-menu/selection-context-popover";
+import MaterialSelectionPopover from "./material-selection-popover";
+import { MaterialHighlight } from "~/components/base/material-loader/types";
 
 /**
  * WorkspaceMaterialsProps
@@ -78,6 +79,7 @@ interface WorkspaceMaterialsProps extends WithTranslation {
 interface WorkspaceMaterialsState {
   defaultOffset: number;
   redirect: string;
+  highlights: { [workspaceMaterialId: number]: MaterialHighlight[] };
 }
 
 const DEFAULT_OFFSET = 67;
@@ -105,6 +107,39 @@ class WorkspaceMaterials extends React.Component<
     this.state = {
       defaultOffset: DEFAULT_OFFSET,
       redirect: null,
+      highlights: {
+        3694: [
+          {
+            id: 2,
+            workspaceMaterialId: 3694,
+            fieldName: null,
+            start: "Laaja kulttuurikä",
+            end: "aalikäsityksiin.",
+            index: 0,
+            kind: "comment",
+          },
+          {
+            id: 3,
+            workspaceMaterialId: 3694,
+            fieldName: null,
+            start: "Sanomalehden ku",
+            end: "ja elokuvia.",
+            index: 0,
+            kind: "comment",
+          },
+        ],
+        3696: [
+          {
+            end: "ulaarikulttuuria",
+            fieldName: null,
+            id: 2,
+            index: 0,
+            kind: "highlight",
+            start: "populaarikulttuu",
+            workspaceMaterialId: 3696,
+          },
+        ],
+      },
     };
 
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
@@ -152,6 +187,74 @@ class WorkspaceMaterials extends React.Component<
       this.getFlattenedMaterials(nextProps);
     }
   }
+
+  /**
+   * handleMakeHighlight
+   * @param start start
+   * @param end end
+   * @param index index
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleMakeHighlight = (
+    start: string,
+    end: string,
+    index: number,
+    workspaceMaterialId: number
+  ) => {
+    this.setState({
+      ...this.state,
+      highlights: {
+        ...this.state.highlights,
+        [workspaceMaterialId]: [
+          ...this.state.highlights[workspaceMaterialId],
+          {
+            fieldName: null,
+            index,
+            id: this.state.highlights[workspaceMaterialId].length + 1,
+            workspaceMaterialId,
+            start,
+            end,
+            kind: "highlight",
+          },
+        ],
+      },
+    });
+  };
+
+  /**
+   * handleAddNote
+   * @param text text
+   * @param start start
+   * @param end end
+   * @param index index
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleAddNote = (
+    text: string,
+    start: string,
+    end: string,
+    index: number,
+    workspaceMaterialId: number
+  ) => {
+    this.setState({
+      ...this.state,
+      highlights: {
+        ...this.state.highlights,
+        [workspaceMaterialId]: [
+          ...this.state.highlights[workspaceMaterialId],
+          {
+            fieldName: null,
+            index,
+            id: this.state.highlights[workspaceMaterialId].length + 1,
+            workspaceMaterialId,
+            start,
+            end,
+            kind: "comment",
+          },
+        ],
+      },
+    });
+  };
 
   /**
    * toggleSectionHiddenStatus
@@ -915,6 +1018,9 @@ class WorkspaceMaterials extends React.Component<
               >
                 {/*TOP OF THE PAGE*/}
                 <WorkspaceMaterial
+                  highlights={
+                    this.state.highlights[node.workspaceMaterialId] || []
+                  }
                   folder={section}
                   materialContentNode={node}
                   workspace={this.props.workspace}
@@ -933,9 +1039,12 @@ class WorkspaceMaterials extends React.Component<
                   }
                 />
                 {/*SELECTION CONTEXT POPOVER*/}
-                <SelectionContextPopover
-                  boundarySelector={`#p-${node.workspaceMaterialId}`}
-                  readspeakerButtonId={`readspeaker_button${pageI + 1}`}
+                <MaterialSelectionPopover
+                  workspaceMaterialId={node.workspaceMaterialId}
+                  pageIndex={pageI}
+                  materialHtml={node.html}
+                  onMakeHighlight={this.handleMakeHighlight}
+                  onAddNote={this.handleAddNote}
                 />
               </ContentPanelItem>
             );

@@ -3,9 +3,9 @@ import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 import i18n from "~/locales/i18n";
-import { MaterialHighlight, StateConfig } from "./types";
+import { StateConfig } from "./types";
 
-const HIGHLIGHT_MOCKS: MaterialHighlight[] = [
+/* const HIGHLIGHT_MOCKS: MaterialHighlight[] = [
   {
     id: 2,
     workspaceMaterialId: 456,
@@ -33,7 +33,7 @@ const HIGHLIGHT_MOCKS: MaterialHighlight[] = [
     index: 0,
     kind: "highlight",
   },
-];
+]; */
 
 /**
  * MaterialLoaderContentProps
@@ -172,7 +172,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             answerable={props.answerable}
             answerRegistry={props.answerRegistry}
             onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
-            highlights={HIGHLIGHT_MOCKS}
+            highlights={props.highlights}
           />
         )}
       </div>

@@ -146,10 +146,13 @@ export function useTextSelectionPopover(
     };
   }, [close, enabled, loggedIn, editMode, rspkrLoaded, boundarySelector]);
 
+  const getSavedRange = React.useCallback(() => savedRangeRef.current, []);
+
   return {
     ...state,
     close,
     restoreSelection,
+    getSavedRange,
     selectionElementRef,
     savedRangeRef,
   };

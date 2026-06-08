@@ -49,6 +49,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import { MaterialHighlight } from "~/components/base/material-loader/types";
 
 /**
  * WorkspaceMaterialProps
@@ -62,7 +63,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   workspace: WorkspaceDataType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
-
+  highlights: MaterialHighlight[];
   // Redux state properties
   status: StatusType;
   websocket: WebsocketStateType;
@@ -181,6 +182,7 @@ class WorkspaceMaterial extends React.Component<
             folder={this.props.folder}
             editable={this.props.workspaceEditMode.active}
             material={this.props.materialContentNode}
+            highlights={this.props.highlights}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
             answerable={

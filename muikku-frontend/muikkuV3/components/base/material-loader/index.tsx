@@ -23,7 +23,7 @@ import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
 import { STATES } from "./helpers";
-import { FieldsSyncStatus, StateConfig } from "./types";
+import { FieldsSyncStatus, MaterialHighlight, StateConfig } from "./types";
 
 /**
  * Callback parameter types for MaterialLoader
@@ -99,6 +99,7 @@ export interface MaterialLoaderProps {
   id?: string;
   websocket: WebsocketStateType;
   isInFrontPage?: boolean;
+  highlights?: MaterialHighlight[];
 
   /**
    * Can be defined for fetching current students compositereplies for

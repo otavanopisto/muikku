@@ -1,148 +1,108 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { useReadspeakerContext } from "~/components/context/readspeaker-context";
-import {
-  findReadspeakerPlayButtonInBoundary,
-  resolveBoundaryElement,
-} from "./selection-eligibility";
 import { useTextSelectionPopover } from "./use-text-selection-popover";
+import { SelectionActionRuntimeContext, SelectionContextAction } from "./types";
 
 type SelectionContextPopoverProps = {
   boundarySelector: string;
-  readspeakerButtonId?: string;
-  loggedIn: boolean;
-  editMode: boolean;
-  onMakeHighlight?: (text: string) => void;
+  actions: SelectionContextAction[];
 };
 
 /**
- * Floating toolbar shown when user selects text in material content.
+ * SelectionContextPopover component
  * @param props props
+ * @returns SelectionContextPopover
  */
 function SelectionContextPopover(props: SelectionContextPopoverProps) {
-  const { rspkr, rspkrLoaded } = useReadspeakerContext();
+  const { rspkrLoaded } = useReadspeakerContext();
 
-  const { open, context, close, restoreSelection } = useTextSelectionPopover({
-    enabled: props.loggedIn && !props.editMode && rspkrLoaded,
-    loggedIn: props.loggedIn,
-    editMode: props.editMode,
-    rspkrLoaded,
-    boundarySelector: props.boundarySelector,
-  });
+  const { loggedIn } = useSelector((state: StateType) => state.status);
+  const editMode = useSelector(
+    (state: StateType) => state.workspaces.editMode.active
+  );
 
-  /**
-   * handleListenMouseDown
-   * @param event event
-   */
-  const handleListenMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!context?.canUseReadSpeaker) {
-      return;
-    }
-
-    restoreSelection();
-
-    const boundary = resolveBoundaryElement(props.boundarySelector);
-
-    const rs = rspkr.current;
-    const playButton = boundary
-      ? findReadspeakerPlayButtonInBoundary(props.readspeakerButtonId, boundary)
-      : null;
-
-    if (!playButton) {
-      close();
-      return;
-    }
-
-    rs?.API?.setSelectionPlayer?.(playButton);
-    playButton.click();
-
-    close();
-  };
+  const { open, context, close, restoreSelection, getSavedRange } =
+    useTextSelectionPopover({
+      enabled: loggedIn && !editMode && rspkrLoaded,
+      loggedIn,
+      editMode,
+      rspkrLoaded,
+      boundarySelector: props.boundarySelector,
+    });
 
   if (!open || !context) {
     return null;
   }
 
-  const style: React.CSSProperties = {
-    position: "fixed",
-    top: context.position.y,
-    left: context.position.x,
-    zIndex: 10000,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    gap: "0.25rem",
-    padding: "0.25rem",
-    border: "1px solid #e0e0e0",
-    borderRadius: "4px",
-    boxShadow: "0 4px 12px rgba(0 0 0 / 15%)",
-    backgroundColor: "white",
+  const runtimeContext: SelectionActionRuntimeContext = {
+    text: context.text,
+    readAreaId: context.readAreaId,
+    canUseReadSpeaker: context.canUseReadSpeaker,
+    isInActionableContent: context.isInActionableContent,
+    restoreSelection,
+    getSavedRange,
+    close,
   };
+
+  const visibleActions = props.actions.filter(
+    (action) => !action.isVisible || action.isVisible(runtimeContext)
+  );
+
+  if (visibleActions.length === 0) {
+    return null;
+  }
 
   return (
     <div
       className="selection-context-popover rs_skip_always"
-      style={style}
+      style={{
+        position: "fixed",
+        top: context.position.y,
+        left: context.position.x,
+        zIndex: 10000,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "0.25rem",
+        padding: "0.25rem",
+        border: "1px solid #e0e0e0",
+        borderRadius: "4px",
+        boxShadow: "0 4px 12px rgba(0 0 0 / 15%)",
+        backgroundColor: "white",
+      }}
       role="toolbar"
       aria-label="Text selection actions"
       onMouseDown={(event) => event.preventDefault()}
     >
-      {context.canUseReadSpeaker && (
-        <Button
-          icon="paper-plane"
-          iconPosition="left"
-          aria-label="Kuuntele valittu teksti"
-          title="Kuuntele valittu teksti"
-          onClick={handleListenMouseDown}
-        >
-          Kuuntele valittu teksti
-        </Button>
-      )}
+      {visibleActions.map((action) => {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        const handler = (event: React.MouseEvent) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (action.disabled) return;
+          action.onAction(runtimeContext, event);
+        };
 
-      {context.isInActionableContent && (
-        <Button
-          icon="pencil"
-          iconPosition="left"
-          aria-label="Lisää muistiinpano"
-          title="Lisää muistiinpano"
-          disabled
-        >
-          Lisää muistiinpano
-        </Button>
-      )}
+        return (
+          <Button
+            key={action.id}
+            icon={action.icon}
+            iconPosition="left"
+            aria-label={action.label}
+            title={action.title ?? action.label}
+            disabled={action.disabled}
+            onMouseDown={action.triggerOn === "mousedown" ? handler : undefined}
+            onClick={action.triggerOn === "mousedown" ? undefined : handler}
+          >
+            {action.label}
+          </Button>
+        );
+      })}
     </div>
   );
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    loggedIn: state.status.loggedIn,
-    editMode: state.workspaces.editMode.active,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SelectionContextPopover);
+export default SelectionContextPopover;

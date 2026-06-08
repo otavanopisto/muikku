@@ -40,7 +40,7 @@ import {
   WordDefinitionDataset,
 } from "../types";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { injectHighlights } from "../helpers/inject-highlight";
+import { injectHtmlAnnotations } from "~/util/html";
 
 //These are all our supported objects as for now
 const fieldComponents: { [key: string]: any } = {
@@ -150,7 +150,7 @@ function buildElementsFromHtml(html: string, highlights: MaterialHighlight[]) {
   // Inject highlights into the DOM copy BEFORE preprocessor.
   // IMPORTANT: use ALL top-level nodes, not just $dom[0].
   const roots = $dom.toArray() as HTMLElement[];
-  injectHighlights(roots, highlights || []);
+  injectHtmlAnnotations(roots, highlights || []);
   return preprocessor($dom).toArray() as HTMLElement[];
 }
 
