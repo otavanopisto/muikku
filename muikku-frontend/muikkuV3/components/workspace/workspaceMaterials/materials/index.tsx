@@ -49,6 +49,7 @@ import {
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
+import SelectionContextPopover from "~/components/general/selection-context-menu/selection-context-popover";
 
 /**
  * WorkspaceMaterialsProps
@@ -930,6 +931,11 @@ class WorkspaceMaterials extends React.Component<
                       }
                     />
                   }
+                />
+                {/*SELECTION CONTEXT POPOVER*/}
+                <SelectionContextPopover
+                  boundarySelector={`#p-${node.workspaceMaterialId}`}
+                  readspeakerButtonId={`readspeaker_button${pageI + 1}`}
                 />
               </ContentPanelItem>
             );

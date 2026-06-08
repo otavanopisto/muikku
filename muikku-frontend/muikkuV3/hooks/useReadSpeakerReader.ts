@@ -107,5 +107,12 @@ export const useReadSpeakerReader = (
     };
   }, [displayNotification]);
 
+  console.log("rspkr", rspkr);
+
+  if (rspkr.current) {
+    console.log("rspkr.current.API", Object.keys(rspkr.current.API));
+    console.log("rspkr.current.Popup", Object.keys(rspkr.current.Popup));
+  }
+
   return { rspkr, rspkrLoaded };
 };
