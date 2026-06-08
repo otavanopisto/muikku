@@ -2635,7 +2635,6 @@
       "durationRunningOut": "Huomio! Sinulla on alle {{timeLeft}} minuuttia aikaa jäljellä!"
     }
   },
-
   "events": {
     "actions": {
       "createAbsence": "Merkitse poissaolo",
@@ -2669,8 +2668,7 @@
       "property_ABSENCE_REASON": "Poissaolon syy",
       "reason": "Syy",
       "start": "Alkaa",
-      "selectAbsenceReason": "Poissaolon syy",
-      "selectAbsenceOption": "Valitse"
+      "selectAbsenceReason": "Poissaolon syy"
     },
     "content": {
       "empty": "Ei tapahtumia",

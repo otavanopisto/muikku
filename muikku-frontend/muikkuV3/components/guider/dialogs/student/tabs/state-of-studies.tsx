@@ -529,7 +529,7 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               ) : null}
             </ApplicationSubPanel>
-            {this.props.guider.currentStudent.absenceEvents.length > 0 && (
+            {absences && (
               <ApplicationSubPanel modifier="student-absences">
                 {absences}
               </ApplicationSubPanel>

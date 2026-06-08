@@ -1897,6 +1897,7 @@
       "relations": "Relations",
       "remove": "$t(common:labels.remove)",
       "remove_page": "Delete page",
+      "remove_snapshot": "Delete snapshot",
       "remove_instructionVisibilityRestriction": "Remove visibility restriction for instructions",
       "remove_materialVisibilityRestriction": "Disable material view restrictions",
       "remove_recording": "Delete recording",
