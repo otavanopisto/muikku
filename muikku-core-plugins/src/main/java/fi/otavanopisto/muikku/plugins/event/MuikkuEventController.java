@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -523,28 +524,6 @@ public class MuikkuEventController {
       return true;
     }
 
-    // student & StudentParent
-    if (sessionController.hasAnyRole(
-        EnvironmentRoleArchetype.STUDENT,
-        EnvironmentRoleArchetype.STUDENT_PARENT)) {
-
-      boolean isOwnEvent = event.getUserEntityId() == loggedUser.getId();
-
-      // non-editable events owned by another user cannot be edited
-      if (!isOwnEvent && !event.isEditableByUser()) {
-        return false;
-      }
-
-      boolean editableOwnEvent =
-          event.isEditableByUser()
-              && event.getType() != EventType.ABSENCE
-              && isOwnEvent;
-
-      if (editableOwnEvent) {
-        return true;
-      }
-    }
-
     // You can't edit an event if you can't access the container.
     if (event.getEventContainer() != null) {
       UserEntity targetUserEntity = userEntityController.findUserEntityById(event.getUserEntityId());
@@ -558,20 +537,50 @@ public class MuikkuEventController {
 
     // User event
     if (event.getUserEntityId() != null) {
-      UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
-      SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
 
-      StudentGuidanceRelation relation = userController.getGuidanceRelation(identifier.getDataSource(),
-          identifier.getIdentifier());
-      // Teacher absence edit
-      boolean courseTeacher = false;
+      UserEntity targetUserEntity =
+          userEntityController.findUserEntityById(event.getUserEntityId());
+      
+      if (targetUserEntity == null) {
+        return false;
+      }
+      
+      SchoolDataIdentifier identifier = targetUserEntity.defaultSchoolDataIdentifier();
 
-      if (relation != null && relation.isCourseTeacher()) {
-        courseTeacher = hasSharedWorkspacesWithLoggedUser(userEntity);
+      StudentGuidanceRelation relation =
+          userController.getGuidanceRelation(identifier.getDataSource(), identifier.getIdentifier());
+
+      boolean studentParent = false;
+
+      if (relation != null) {
+        studentParent = relation.isStudentParent();
+      }
+      
+      // student & StudentParent
+      if (sessionController.hasAnyRole(
+          EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDENT_PARENT)) {
+
+        boolean isOwnEvent = Objects.equals(event.getUserEntityId(), loggedUser.getId());
+        
+        // non-editable events owned by another user cannot be edited
+        if (!isOwnEvent && !event.isEditableByUser()) {
+          return false;
+        }
+
+        boolean editableOwnEvent =
+            event.isEditableByUser()
+                && event.getType() != EventType.ABSENCE
+                && (isOwnEvent || studentParent);
+
+        if (editableOwnEvent) {
+          return true;
+        }
+        
+        return false;
       }
 
-      // teacher can edit absence events for their students
-      if (courseTeacher && event.getType() == EventType.ABSENCE) {
+      if (targetUserEntity != null
+          && hasSharedWorkspacesWithLoggedUser(targetUserEntity)) {
         return true;
       }
     }
@@ -586,6 +595,36 @@ public class MuikkuEventController {
       }
     }
 
+    return false;
+  }
+  
+  public boolean canEditEventProperty(MuikkuEventProperty property) {
+    // Property creator always
+    if (sessionController.getLoggedUserEntity().getId() == property.getUserEntityId()) {
+      return true;
+    }
+
+    // In all other cases, editing is allowed only if the event is associated with a student and the editor of the property is a parent/guardian of that student
+    MuikkuEvent event = property.getEvent();
+    
+    if (event.getUserEntityId() != null) {
+      
+      UserEntity targetUserEntity = userEntityController.findUserEntityById(event.getUserEntityId());
+      
+      if (targetUserEntity == null) {
+        return false;
+      }
+      
+      SchoolDataIdentifier identifier = targetUserEntity.defaultSchoolDataIdentifier();
+
+      StudentGuidanceRelation relation = userController.getGuidanceRelation(identifier.getDataSource(),
+          identifier.getIdentifier());
+      
+      if (relation != null) {
+        return relation.isStudentParent();
+      }
+    }
+    
     return false;
   }
 

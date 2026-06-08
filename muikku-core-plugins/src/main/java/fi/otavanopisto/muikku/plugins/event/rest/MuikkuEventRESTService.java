@@ -238,7 +238,7 @@ public class MuikkuEventRESTService {
     }
     
     // User can update properties only if created by themselves
-    if (sessionController.getLoggedUserEntity().getId() == property.getUserEntityId()) {
+    if (eventController.canEditEventProperty(property)) {
       property = eventController.updateEventProperty(property, value, new Date());
     }
     
