@@ -2639,7 +2639,7 @@
   "events": {
     "actions": {
       "createAbsence": "Merkitse poissaolo",
-      "giveFeedback": "Anna selvitys",
+      "giveFeedback": "Selvitä poissaolo",
       "editFeedback": "Muokkaa selvitystä",
       "create": "Luo tapahtuma",
       "edit": "Muokkaa tapahtumaa",
@@ -2647,7 +2647,7 @@
     },
     "labels": {
       "absence": "Poissaolo",
-      "absenceDetails": "Poissaolotapahtuman tiedot",
+      "absenceDetails": "Poissaolon tiedot",
       "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
       "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
       "absentFrom": "Mistä oli poissa:",
@@ -2669,7 +2669,8 @@
       "property_ABSENCE_REASON": "Poissaolon syy",
       "reason": "Syy",
       "start": "Alkaa",
-      "selectAbsenceReason": "Valitse poissaolon syy"
+      "selectAbsenceReason": "Poissaolon syy",
+      "selectAbsenceOption": "Valitse"
     },
     "content": {
       "empty": "Ei tapahtumia",

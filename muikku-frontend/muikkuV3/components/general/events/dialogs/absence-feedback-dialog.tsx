@@ -110,7 +110,7 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
           }
         >
           <option value="" disabled>
-            {t("labels.selectAbsenceReason", { ns: "events" })}
+            {t("labels.select", { ns: "common" })}
           </option>
           {Object.values(AbsenceReasonEnum).map((reason) => (
             <option key={reason} value={reason}>

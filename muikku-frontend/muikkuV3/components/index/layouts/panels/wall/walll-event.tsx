@@ -90,17 +90,20 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
     >
       <div className="wall-event">
         {event.description && (
-          <div className="wall-event__header">
-            <div className="wall-event__description">{event.description}</div>
+          <div className="wall-event__description rich-text">
+            {event.description}
           </div>
         )}
-        <div className="wall-event__body">
-          {event.properties &&
-            event.properties.map((prop) =>
+        {event.properties && (
+          <div className="wall-event__body">
+            {event.properties.map((prop) =>
               prop.name === "ABSENCE_REASON" ? (
                 <div key={prop.id} className="wall-event__property">
                   <span className="wall-event__property-name">
-                    {t("labels.property", { ns: "events", context: prop.name })}
+                    {t("labels.property", {
+                      ns: "events",
+                      context: prop.name,
+                    })}
                     :
                   </span>
                   <span className="wall-event__property-value">
@@ -110,7 +113,10 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
               ) : (
                 <div key={prop.id} className="wall-event__property">
                   <span className="wall-event__property-name">
-                    {t("labels.property", { ns: "events", context: prop.name })}
+                    {t("labels.property", {
+                      ns: "events",
+                      context: prop.name,
+                    })}
                     :
                   </span>
                   <span className="wall-event__property-value">
@@ -119,7 +125,9 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
                 </div>
               )
             )}
-        </div>
+          </div>
+        )}
+
         {actions && <div className="wall-event__footer">{actions}</div>}
       </div>
     </WallItem>
