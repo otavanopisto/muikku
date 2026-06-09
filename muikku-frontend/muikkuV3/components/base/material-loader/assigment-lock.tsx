@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 
 /**
  * MaterialLoaderAssignmentLockProps
  */
-interface MaterialLoaderAssignmentLockProps extends MaterialLoaderProps {}
+interface MaterialLoaderAssignmentLockProps extends MaterialLoaderRenderProps {}
 
 /**
  * MaterialLoaderAssessmentLock

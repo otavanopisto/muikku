@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
@@ -19,6 +21,7 @@ import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerClipDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerSnapshotDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
@@ -29,10 +32,12 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterField
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
@@ -47,6 +52,12 @@ public class WorkspaceMaterialFieldAnswerController {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private WorkspaceMaterialFieldController workspaceMaterialFieldController;
+  
+  @Inject
+  private WorkspaceMaterialFieldAnswerSnapshotDAO workspaceMaterialFieldAnswerSnapshotDAO;
 
   @Inject
   private WorkspaceMaterialTextFieldAnswerDAO workspaceMaterialTextFieldAnswerDAO;
@@ -89,6 +100,27 @@ public class WorkspaceMaterialFieldAnswerController {
   
   @Inject
   private FileAnswerUtils fileAnswerUtils;
+  
+  public WorkspaceMaterialFieldAnswerSnapshot createSnapshot(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException {
+    String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+    return workspaceMaterialFieldAnswerSnapshotDAO.create(field.getId(), reply.getUserEntityId(), value);
+  }
+  
+  public WorkspaceMaterialFieldAnswerSnapshot findSnapshotById(Long id) {
+    return workspaceMaterialFieldAnswerSnapshotDAO.findById(id);
+  }
+  
+  public List<WorkspaceMaterialFieldAnswerSnapshot> listSnapshots(WorkspaceMaterialField field, UserEntity userEntity) {
+    List<WorkspaceMaterialFieldAnswerSnapshot> snapshots = workspaceMaterialFieldAnswerSnapshotDAO.listByWorkspaceMaterialFieldIdAndUserEntityId(
+        field.getId(),
+        userEntity.getId());
+    snapshots.sort(Comparator.comparing(WorkspaceMaterialFieldAnswerSnapshot::getDate));
+    return snapshots;
+  }
+  
+  public void deleteSnapshot(WorkspaceMaterialFieldAnswerSnapshot snapshot) {
+    workspaceMaterialFieldAnswerSnapshotDAO.delete(snapshot);
+  }
   
   /* TextField */
 

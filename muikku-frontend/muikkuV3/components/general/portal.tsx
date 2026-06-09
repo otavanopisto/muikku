@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-find-dom-node */
 
 /**
@@ -136,7 +137,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
 
     this.isUnmounted = true;
-    this.closePortal();
+    this.closePortal(true);
   }
 
   /**
@@ -191,47 +192,55 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   }
 
   /**
-   * closePortal
+   * Removes portal content from DOM and resets internal state.
    */
-  closePortal() {
-    this.isClosing = true;
-
-    /**
-     * resetPortalState
-     */
-    const resetPortalState = () => {
-      if (this.node) {
-        unmountComponentAtNode(this.node);
-
-        if (this.props.localElementId) {
-          const localElement = document.getElementById(
-            this.props.localElementId
-          );
-          if (localElement) {
-            localElement.removeChild(this.node);
-          } else {
-            document.body.removeChild(this.node);
-          }
+  private resetPortalState = () => {
+    if (this.node) {
+      unmountComponentAtNode(this.node);
+      if (this.props.localElementId) {
+        const localElement = document.getElementById(this.props.localElementId);
+        if (localElement) {
+          localElement.removeChild(this.node);
         } else {
           document.body.removeChild(this.node);
         }
+      } else {
+        document.body.removeChild(this.node);
       }
-      this.portal = null;
-      this.node = null;
+    }
+    this.portal = null;
+    this.node = null;
+    this.isClosing = false;
+    if (!this.isUnmounted) {
+      this.setState({ active: false });
+    }
+  };
+
+  /**
+   * closePortal
+   * @param immediate skip beforeClose animation (e.g. on unmount)
+   */
+  closePortal(immediate = false) {
+    this.isClosing = true;
+    if (!this.state.active && !this.node) {
       this.isClosing = false;
-
-      if (!this.isUnmounted) {
-        this.setState({ active: false });
-      }
-    };
-
+      return;
+    }
+    if (immediate || this.isUnmounted) {
+      this.resetPortalState();
+      this.props.onClose && this.props.onClose();
+      return;
+    }
     if (this.state.active) {
       if (this.props.beforeClose) {
-        this.props.beforeClose(this.node, resetPortalState);
+        this.props.beforeClose(this.node, this.resetPortalState);
       } else {
-        resetPortalState();
+        this.resetPortalState();
       }
-
+      this.props.onClose && this.props.onClose();
+    } else if (this.node) {
+      // active is false but DOM node still exists — sync cleanup
+      this.resetPortalState();
       this.props.onClose && this.props.onClose();
     }
   }

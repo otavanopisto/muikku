@@ -39,6 +39,7 @@ import StudyProgress from "./study-progress";
 import Dropdown from "~/components/general/dropdown";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
+import WallAbsenceEvent from "~/components/index/layouts/panels/wall/walll-event";
 import ContactCard, { ContactState } from "~/components/general/contact-card";
 
 /**
@@ -268,6 +269,23 @@ class StateOfStudies extends React.Component<
       </ApplicationSubPanel>
     );
 
+    const absences = (this.props.guider.currentStudent.absenceEvents ?? [])
+      .length > 0 && (
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__header">
+          {this.props.i18n.t("labels.absences", { ns: "events" })}
+        </div>
+        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+          {this.props.guider.currentStudent.absenceEvents.map((event) => (
+            <WallAbsenceEvent
+              isUnder18={this.props.guider.currentStudent.basic.under18}
+              key={event.id}
+              event={event}
+            />
+          ))}
+        </div>
+      </div>
+    );
     const studentBasicHeader = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanelViewHeader
         decoration={avatar}
@@ -511,6 +529,11 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               ) : null}
             </ApplicationSubPanel>
+            {absences && (
+              <ApplicationSubPanel modifier="student-absences">
+                {absences}
+              </ApplicationSubPanel>
+            )}
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel modifier="student-data-primary">
                 {studentBasicInfo}

@@ -31,6 +31,7 @@ import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialCompositeReply } from "~/generated/client";
 import {
   CommonFieldProps,
+  FieldSnapshotCapabilities,
   FieldsSyncStatus,
   FieldSyncStatePatch,
   IframeDataset,
@@ -120,6 +121,11 @@ interface BaseProps extends WithTranslation {
   usedAs: UsedAs;
   invisible: boolean;
   answerRegistry?: { [name: string]: any };
+
+  // Field snapshot capabilities
+  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  onTakeFieldSnapshot?: (fieldName: string) => any;
+  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
   onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
   highlights?: MaterialHighlight[];
 }
@@ -509,12 +515,13 @@ class Base extends React.Component<BaseProps, BaseState> {
     const commonProps = extractCommonFieldProps(element, props, key);
 
     // Extract field-specific initial value
-    const initialValue = extractFieldInitialValue(
+    const answer = extractFieldAnswer(
       commonProps.content,
       props.compositeReplies
     );
 
-    commonProps.initialValue = initialValue;
+    commonProps.initialValue = (answer && answer.value) || "";
+    commonProps.snapshots = answer ? answer.snapshots : [];
     commonProps.onChange = this.onValueChange.bind(this);
 
     // and we return that thing
@@ -1091,6 +1098,11 @@ export function extractCommonFieldProps(
     invisible: props.invisible,
     userId: props.status.userId,
 
+    // Field snapshot capabilities
+    fieldSnapshotCapabilities: props.fieldSnapshotCapabilities,
+    onTakeFieldSnapshot: props.onTakeFieldSnapshot,
+    onDeleteFieldSnapshot: props.onDeleteFieldSnapshot,
+
     // React key
     key: key,
   };
@@ -1099,18 +1111,21 @@ export function extractCommonFieldProps(
 }
 
 /**
- * Extract field-specific initial value from composite replies
+ * Extract field-specific answer from composite replies
  * @param content Field content object
  * @param compositeReplies Composite replies from props
- * @returns Initial value for the field
+ * @returns Answer for the field
  */
-export function extractFieldInitialValue(content: any, compositeReplies: any) {
+export function extractFieldAnswer(
+  content: any,
+  compositeReplies: MaterialCompositeReply
+) {
   if (!compositeReplies?.answers || !content?.name) {
     return null;
   }
 
   const answer = compositeReplies.answers.find(
-    (answer: any) => answer.fieldName === content.name
+    (answer) => answer.fieldName === content.name
   );
 
   if (!answer) {
@@ -1118,5 +1133,5 @@ export function extractFieldInitialValue(content: any, compositeReplies: any) {
   }
 
   // Handle .value field if it exists
-  return typeof answer.value !== "undefined" ? answer.value : answer;
+  return answer;
 }

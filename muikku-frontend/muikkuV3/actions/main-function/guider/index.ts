@@ -1028,6 +1028,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
     const hopsApi = MApi.getHopsApi();
+    const eventsApi = MApi.getEventsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -1157,6 +1158,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         dispatch(updateAvailablePurchaseProducts());
       }
 
+      // Event range for student absence events
+      const end = new Date();
+      const start = new Date(end);
+      start.setMonth(start.getMonth() - 6);
+
       // Other promises
       const promises = [
         studentStudyEssentialsPromise(currentStudent.educationTypeCode),
@@ -1171,6 +1177,21 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 property: "pedagogyFormAvailable",
                 value: pedagogyFormAvaibility,
               },
+            });
+          }),
+
+        eventsApi
+          .listEvents({
+            user: currentStudent.userEntityId,
+            type: "ABSENCE",
+            start,
+            end,
+            adjustTimes: true,
+          })
+          .then((absences) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "absenceEvents", value: absences },
             });
           }),
 

@@ -170,6 +170,14 @@
   }
 }
 
+// Component's actions aside when there's no toolbar
+.application-panel__actions-aside--no-toolbar {
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 1;
+  }
+}
+
+
 // Component's actions main container which contains the .application-panel__toolbar
 .application-panel__actions-main {
   background: $color-default;

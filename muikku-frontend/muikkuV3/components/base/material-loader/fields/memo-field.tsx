@@ -20,6 +20,10 @@ import {
 import "~/sass/elements/memofield.scss";
 import { isValidHTML } from "~/util/html";
 import { CommonFieldProps } from "../types";
+import { IconButton } from "~/components/general/button";
+import Dropdown from "~/components/general/dropdown";
+import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
+import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
 
 /**
  * MemoFieldProps
@@ -179,7 +183,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * replaceNewlinesWithBreaks
-   * @param str
+   * @param str str
    * @returns string with \ replaced with <br />
    */
   replaceNewlinesWithBreaks = (str: string): string =>
@@ -210,13 +214,18 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       this.state.modified !== nextState.modified ||
       this.state.synced !== nextState.synced ||
       this.state.syncError !== nextState.syncError ||
-      nextProps.invisible !== this.props.invisible
+      nextProps.invisible !== this.props.invisible ||
+      !equals(nextProps.snapshots, this.props.snapshots) ||
+      !equals(
+        nextProps.fieldSnapshotCapabilities,
+        this.props.fieldSnapshotCapabilities
+      )
     );
   }
 
   /**
    * trimPastedContent - Trims the pasted content if it exceeds the character or word limit
-   * @param content
+   * @param content content
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
@@ -268,7 +277,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * A function tha checks if it is the last word we are writing
-   * @param value
+   * @param value value
    * @returns boolean
    */
   isInsideLastWord = (value: string) => {
@@ -288,9 +297,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   };
 
   /**
-   * onInputPaste - paste handling for memofield
-   *
-   * @param e e
+   * onInputPaste - paste handling for memofield   *
    */
   onInputPaste() {
     this.setState({ isPasting: true });
@@ -348,8 +355,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * onCkeditorPaste
-   * @param event ckeditor event
-   * @param isPasting isPasting state
    */
   onCkeditorPaste() {
     this.setState({
@@ -488,6 +493,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     ) {
       let unloadedField;
       if (this.props.readOnly) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const value = (unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
@@ -665,6 +671,48 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
+          {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
+            this.props.onTakeFieldSnapshot && (
+              <Dropdown
+                content={t("labels.takeSnapshot", { ns: "materials" })}
+                openByHover
+              >
+                <IconButton
+                  buttonModifiers="snapshot"
+                  icon="plus"
+                  disabled={!this.state.value}
+                  onClick={() =>
+                    this.props.onTakeFieldSnapshot(this.props.content.name)
+                  }
+                />
+              </Dropdown>
+            )}
+
+          {this.props.fieldSnapshotCapabilities?.snapshotCanView && (
+            <FieldSnapshotList
+              snapshots={this.props.snapshots}
+              fieldName={this.props.content.name}
+              onDeleteFieldSnapshot={
+                this.props.fieldSnapshotCapabilities?.snapshotCanDelete
+                  ? this.props.onDeleteFieldSnapshot
+                  : undefined
+              }
+              renderSnapshot={(snapshot) => (
+                <MemoSnapshotContent
+                  value={snapshot.value}
+                  maxWords={this.props.content.maxWords}
+                  maxChars={this.props.content.maxChars}
+                  replaceNewlinesWithBreaks={this.replaceNewlinesWithBreaks}
+                  getWords={getWords}
+                  getCharacters={getCharacters}
+                  wordCountLabel={t("labels.wordCount", { ns: "materials" })}
+                  characterCountLabel={t("labels.characterCount", {
+                    ns: "materials",
+                  })}
+                />
+              )}
+            />
+          )}
         </span>
       </>
     );

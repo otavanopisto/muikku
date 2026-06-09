@@ -24,6 +24,7 @@ import {
   Guardian,
 } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
+import { MuikkuEvent } from "~/generated/client";
 
 /**
  * GuiderFiltersType
@@ -101,6 +102,7 @@ export interface GuiderStudentStudyData {
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
+  absenceEvents: MuikkuEvent[];
   contactLogState: LoadingState;
   currentWorkspacesState: LoadingState;
   pastStudiesState: LoadingState;
@@ -234,6 +236,7 @@ const initialGuiderState: GuiderState = {
   selectedStudentsIds: [],
   toggleAllStudentsActive: false,
   currentStudent: {
+    absenceEvents: [],
     contactLogState: "LOADING",
     currentWorkspacesState: "LOADING",
     pastStudiesState: "LOADING",

@@ -1,12 +1,11 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
-import { isOverdue } from "~/helper-functions/dates";
-import moment from "moment";
 import { useTranslation } from "react-i18next";
 import NotesItemEdit from "~/components/general/notes/notes-item-edit";
 import Link from "~/components/general/link";
 import "~/sass/elements/note.scss";
 import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import WallItem from "./components/wall-item";
+
 /**
  * NoteProps
  */
@@ -23,20 +22,11 @@ interface NoteProps {
  * @param props NoteProps
  * @returns JSX.Element
  */
-export const NoteComponent: React.FC<NoteProps> = (props) => {
+const WallNote: React.FC<NoteProps> = (props) => {
   const { modifier, note, isCreator, onStatusUpdate, onUpdate } = props;
   const { t } = useTranslation("tasks");
-  const overdue = isOverdue(note.dueDate);
-  const [showDescription, setShowDescription] = React.useState(false);
 
   const updateButtonLocale = isCreator ? "actions.approve" : "actions.send";
-
-  /**
-   * toggles description visibility
-   */
-  const toggleShowDescription = () => {
-    setShowDescription(!showDescription);
-  };
 
   /**
    * Handles status change
@@ -50,32 +40,14 @@ export const NoteComponent: React.FC<NoteProps> = (props) => {
   };
 
   return (
-    <div
-      className={`note ${modifier ? "note--" + modifier : ""} state-${
-        note.priority
-      } ${overdue ? "state-OVERDUE" : ""}`}
+    <WallItem
+      modifier={modifier}
+      isCreator={isCreator}
+      state={note.priority}
+      title={note.title}
+      dueDate={note.dueDate}
     >
-      <div
-        onClick={toggleShowDescription}
-        className={`note__header ${overdue ? "state-OVERDUE" : ""}`}
-      >
-        <span className="note__title">{note.title}</span>
-
-        <span
-          className="note__date
-        "
-        >
-          {overdue ? (
-            <span className="note__overdue-tag">
-              {t("labels.status", { context: "overdue" })}
-            </span>
-          ) : null}
-          {note.dueDate ? (
-            <span>{moment(note.dueDate).format("D.M.YYYY")}</span>
-          ) : null}
-        </span>
-      </div>
-      <AnimateHeight height={showDescription ? "auto" : 0}>
+      <>
         <div
           className="note__description rich-text"
           dangerouslySetInnerHTML={{ __html: note.description }}
@@ -93,7 +65,9 @@ export const NoteComponent: React.FC<NoteProps> = (props) => {
             </NotesItemEdit>
           )}
         </div>
-      </AnimateHeight>
-    </div>
+      </>
+    </WallItem>
   );
 };
+
+export default WallNote;

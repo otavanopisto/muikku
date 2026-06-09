@@ -1,24 +1,19 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class WorkspaceMaterialFieldAnswer {
 
   public WorkspaceMaterialFieldAnswer() {
   }
 
-  public WorkspaceMaterialFieldAnswer(Long workspaceMaterialId, Long materialId, String fieldName, String value) {
-    super();
+  public WorkspaceMaterialFieldAnswer(Long workspaceMaterialId, String fieldName, String value) {
     this.workspaceMaterialId = workspaceMaterialId;
-    this.materialId = materialId;
     this.fieldName = fieldName;
     this.value = value;
-  }
-  
-  public Long getMaterialId() {
-    return materialId;
-  }
-  
-  public void setMaterialId(Long materialId) {
-    this.materialId = materialId;
   }
 
   public String getFieldName() {
@@ -45,8 +40,22 @@ public class WorkspaceMaterialFieldAnswer {
     this.workspaceMaterialId = workspaceMaterialId;
   }
   
-  private Long materialId;
+  @JsonIgnore
+  public void addSnapshot(WorkspaceMaterialFieldAnswerSnapshot snapshot) {
+    snapshots.add(snapshot);
+  }
+  
+  public List<WorkspaceMaterialFieldAnswerSnapshot> getSnapshots() {
+    return snapshots;
+  }
+
+  public void setSnapshots(List<WorkspaceMaterialFieldAnswerSnapshot> snapshots) {
+    this.snapshots = snapshots;
+  }
+
   private Long workspaceMaterialId;
   private String fieldName;
   private String value;
+  private List<WorkspaceMaterialFieldAnswerSnapshot> snapshots = new ArrayList<>();
+
 }

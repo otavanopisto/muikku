@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UsedAs } from "~/@types/shared";
 import {
+  MaterialAnswerSnapshot,
   MaterialAssigmentType,
+  MaterialCompositeReply,
   MaterialCompositeReplyStateType,
 } from "~/generated/client";
 import { StatusType } from "~/reducers/base/status";
@@ -35,6 +37,7 @@ export interface CommonFieldProps {
   status: StatusType;
   usedAs: UsedAs;
   content: any;
+  snapshots?: MaterialAnswerSnapshot[];
   onChange?: (
     context: React.Component<any, any>,
     name: string,
@@ -44,7 +47,42 @@ export interface CommonFieldProps {
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
+
+  // Field snapshot capabilities
+  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  onTakeFieldSnapshot?: (fieldName: string) => any;
+  onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
 }
+
+/**
+ * Field snapshot capabilities
+ */
+export interface FieldSnapshotCapabilities {
+  /** Master switch: no snapshot UI at all */
+  snapshotEnabled: boolean;
+  /** Show list / accordions (read-only history) */
+  snapshotCanView: boolean;
+  /** Show “take snapshot” control */
+  snapshotCanTake: boolean;
+  /** Show delete on each snapshot */
+  snapshotCanDelete: boolean;
+}
+
+/**
+ * Field snapshot policy context
+ */
+export interface FieldSnapshotPolicyContext {
+  compositeReply?: MaterialCompositeReply;
+  usedAs: UsedAs;
+  lock?: MaterialCompositeReply["lock"];
+}
+
+/**
+ * Field snapshot policy
+ */
+export type FieldSnapshotPolicy =
+  | FieldSnapshotCapabilities
+  | ((ctx: FieldSnapshotPolicyContext) => FieldSnapshotCapabilities);
 
 // DATASETS
 /**
