@@ -2,15 +2,20 @@
 import * as React from "react";
 import {
   findReadspeakerPlayButtonInBoundary,
+  isSelectionInScope,
+  isSelectionSkipped,
   resolveBoundaryElement,
 } from "./selection-eligibility";
 import { SelectionContextAction } from "./types";
 import { buildAnnotationFromSelection } from "~/util/html";
 
 type ReadSpeakerListenActionOptions = {
+  /** Page/panel boundary, e.g. #p-123 */
   boundarySelector: string;
   readspeakerButtonId?: string;
   rspkr: React.MutableRefObject<any>;
+  /** loggedIn && !editMode && rspkrLoaded */
+  enabled: boolean;
 };
 
 /**
@@ -27,11 +32,18 @@ export function createReadSpeakerListenAction(
     icon: "paper-plane",
     triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isVisible: (ctx) => ctx.canUseReadSpeaker,
+    isVisible: (ctx) =>
+      options.enabled &&
+      !!ctx.readAreaId &&
+      !isSelectionSkipped(ctx.getSavedRange()) &&
+      isSelectionInScope(
+        ctx.getSavedRange(),
+        options.boundarySelector,
+        options.boundarySelector
+      ),
     // eslint-disable-next-line jsdoc/require-jsdoc
     onAction: (ctx) => {
       ctx.restoreSelection();
-
       const boundary = resolveBoundaryElement(options.boundarySelector);
       const playButton = boundary
         ? findReadspeakerPlayButtonInBoundary(
@@ -39,12 +51,10 @@ export function createReadSpeakerListenAction(
             boundary
           )
         : null;
-
       if (!playButton) {
         ctx.close();
         return;
       }
-
       options.rspkr.current?.API?.setSelectionPlayer?.(playButton);
       playButton.click();
       ctx.close();
@@ -54,7 +64,10 @@ export function createReadSpeakerListenAction(
 
 type CreateHighlightActionOptions = {
   materialHtml: string;
-  boundarySelector: string;
+  /** Page/panel root, e.g. #p-123 */
+  pageBoundarySelector: string;
+  /** Annotatable content scope inside page */
+  annotatableSelector: string;
   onMakeHighlight: (start: string, end: string, index: number) => void;
 };
 
@@ -70,23 +83,30 @@ export function createHighlightAction(
     id: "highlight",
     label: "Korosta",
     icon: "pencil",
+    triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isVisible: (ctx) => ctx.isInActionableContent,
+    isVisible: (ctx) =>
+      isSelectionInScope(
+        ctx.getSavedRange(),
+        options.pageBoundarySelector,
+        options.annotatableSelector
+      ),
     // eslint-disable-next-line jsdoc/require-jsdoc
     onAction: (ctx) => {
-      const range = ctx.getSavedRange();
-      if (!range) {
-        console.log("No range found");
-        return;
-      }
+      ctx.restoreSelection();
+      const sel = window.getSelection();
+      const range =
+        sel?.rangeCount && !sel.isCollapsed
+          ? sel.getRangeAt(0)
+          : ctx.getSavedRange();
+      if (!range) return;
       const built = buildAnnotationFromSelection(
         options.materialHtml,
-        options.boundarySelector,
+        options.pageBoundarySelector,
         range,
         ctx.text
       );
       if (!built) {
-        console.log("No built annotation found");
         ctx.close();
         return;
       }
@@ -98,7 +118,8 @@ export function createHighlightAction(
 
 type CreateNoteActionOptions = {
   materialHtml: string;
-  boundarySelector: string;
+  pageBoundarySelector: string;
+  annotatableSelector: string;
   onAddNote: (text: string, start: string, end: string, index: number) => void;
 };
 
@@ -114,18 +135,27 @@ export function createNoteAction(
     id: "note",
     label: "Lisää muistiinpano",
     icon: "note-add",
+    triggerOn: "mousedown",
     disabled: !options.onAddNote,
     // eslint-disable-next-line jsdoc/require-jsdoc
-    isVisible: (ctx) => ctx.isInActionableContent,
+    isVisible: (ctx) =>
+      isSelectionInScope(
+        ctx.getSavedRange(),
+        options.pageBoundarySelector,
+        options.annotatableSelector
+      ),
     // eslint-disable-next-line jsdoc/require-jsdoc
     onAction: (ctx) => {
-      const range = ctx.getSavedRange();
-      if (!range) {
-        return;
-      }
+      ctx.restoreSelection();
+      const sel = window.getSelection();
+      const range =
+        sel?.rangeCount && !sel.isCollapsed
+          ? sel.getRangeAt(0)
+          : ctx.getSavedRange();
+      if (!range) return;
       const built = buildAnnotationFromSelection(
         options.materialHtml,
-        options.boundarySelector,
+        options.pageBoundarySelector,
         range,
         ctx.text
       );

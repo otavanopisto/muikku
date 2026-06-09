@@ -60,50 +60,36 @@ export function isInsideContentPanel(el: Element | null): boolean {
 }
 
 /**
- * Builds selection context used by the popover.
+ * Builds selection context used by the popover (shell only).
+ * Action-specific eligibility lives in action creators.
  * @param selection selection
  * @param range range
- * @param mousePosition mouse position at mouseup (viewport coordinates)
- * @param boundary boundary element
- * @param options options
+ * @param mousePosition mouse position
+ * @param boundary boundary
+ * @param _options options
+ * @returns SelectionContext | null
  */
 export function buildSelectionContext(
   selection: Selection,
   range: Range,
   mousePosition: SelectionPosition,
   boundary: Element,
-  options: SelectionEligibilityOptions
+  _options: SelectionEligibilityOptions
 ): SelectionContext | null {
   const text = selection.toString().trim();
   if (!text || selection.isCollapsed) {
     return null;
   }
-
   if (!isRangeFullyInsideBoundary(range, boundary)) {
     return null;
   }
-
   const el = getElementFromSelection(selection);
   if (!el || !isInsideContentPanel(el)) {
     return null;
   }
-
-  const readAreaId = getReadAreaId(el);
-  const skipped = isInsideSkippedContent(el);
-
-  const canUseReadSpeaker =
-    options.loggedIn &&
-    !options.editMode &&
-    options.rspkrLoaded &&
-    !!readAreaId &&
-    !skipped;
-
-  const isInActionableContent = !!readAreaId && !skipped;
-
-  if (!canUseReadSpeaker && !isInActionableContent) {
+  if (isInsideSkippedContent(el)) {
     return null;
   }
-
   const position = resolvePopoverPosition(range, mousePosition, boundary);
   if (!position) {
     return null;
@@ -111,10 +97,64 @@ export function buildSelectionContext(
   return {
     text,
     position,
-    readAreaId,
-    canUseReadSpeaker,
-    isInActionableContent,
+    readAreaId: getReadAreaId(el),
   };
+}
+
+/**
+ * Resolve a scoped element inside a root (e.g. content inside #p-*).
+ * @param rootSelector page/panel root selector
+ * @param scopeSelector narrower scope inside root
+ */
+export function resolveScopedElement(
+  rootSelector: string,
+  scopeSelector: string
+): Element | null {
+  const root = document.querySelector(rootSelector);
+  if (!root) return null;
+  if (scopeSelector === rootSelector) return root;
+  return root.querySelector(scopeSelector);
+}
+
+/**
+ * Whether entire selection stays inside an element.
+ * @param range range
+ * @param element element
+ */
+export function isRangeFullyInsideElement(
+  range: Range,
+  element: Element
+): boolean {
+  return isRangeFullyInsideBoundary(range, element);
+}
+
+/**
+ * Whether selection is fully inside a scope within a root.
+ * @param range range
+ * @param rootSelector page/panel root selector
+ * @param scopeSelector narrower scope inside root
+ */
+export function isSelectionInScope(
+  range: Range | null,
+  rootSelector: string,
+  scopeSelector: string
+): boolean {
+  if (!range) return false;
+  const scope = resolveScopedElement(rootSelector, scopeSelector);
+  if (!scope) return false;
+  return isRangeFullyInsideElement(range, scope);
+}
+
+/**
+ * Whether selection anchor is inside skippable ReadSpeaker content.
+ * @param range range
+ */
+export function isSelectionSkipped(range: Range | null): boolean {
+  if (!range) return true;
+  const node = range.commonAncestorContainer;
+  const el =
+    node.nodeType === Node.TEXT_NODE ? node.parentElement : (node as Element);
+  return isInsideSkippedContent(el);
 }
 
 /**

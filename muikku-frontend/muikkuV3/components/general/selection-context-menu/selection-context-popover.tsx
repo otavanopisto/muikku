@@ -40,8 +40,6 @@ function SelectionContextPopover(props: SelectionContextPopoverProps) {
   const runtimeContext: SelectionActionRuntimeContext = {
     text: context.text,
     readAreaId: context.readAreaId,
-    canUseReadSpeaker: context.canUseReadSpeaker,
-    isInActionableContent: context.isInActionableContent,
     restoreSelection,
     getSavedRange,
     close,

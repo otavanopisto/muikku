@@ -7,6 +7,9 @@ import {
   createReadSpeakerListenAction,
 } from "~/components/general/selection-context-menu/actions";
 import { SelectionContextAction } from "~/components/general/selection-context-menu/types";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
+import { MATERIAL_CONTENT_SELECTOR } from "~/util/html";
 
 export type MaterialSelectionPopoverProps = {
   workspaceMaterialId: number;
@@ -35,17 +38,23 @@ export type MaterialSelectionPopoverProps = {
  * @param props props
  */
 function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
-  const { rspkr } = useReadspeakerContext();
+  const { rspkr, rspkrLoaded } = useReadspeakerContext();
+  const { loggedIn } = useSelector((state: StateType) => state.status);
+  const editMode = useSelector(
+    (state: StateType) => state.workspaces.editMode.active
+  );
 
-  const boundarySelector = `#p-${props.workspaceMaterialId}`;
+  const pageBoundarySelector = `#p-${props.workspaceMaterialId}`;
   const readspeakerButtonId = `readspeaker_button${props.pageIndex + 1}`;
+  const listenEnabled = loggedIn && !editMode && rspkrLoaded;
 
   const actions = React.useMemo(() => {
     const baseActions: SelectionContextAction[] = [
       createReadSpeakerListenAction({
-        boundarySelector,
+        boundarySelector: pageBoundarySelector,
         readspeakerButtonId,
         rspkr,
+        enabled: listenEnabled,
       }),
     ];
 
@@ -53,7 +62,8 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
       baseActions.push(
         createHighlightAction({
           materialHtml: props.materialHtml,
-          boundarySelector,
+          pageBoundarySelector,
+          annotatableSelector: MATERIAL_CONTENT_SELECTOR,
           // eslint-disable-next-line jsdoc/require-jsdoc
           onMakeHighlight: (start, end, index) =>
             props.onMakeHighlight!(
@@ -70,7 +80,8 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
       baseActions.push(
         createNoteAction({
           materialHtml: props.materialHtml,
-          boundarySelector,
+          pageBoundarySelector,
+          annotatableSelector: MATERIAL_CONTENT_SELECTOR,
           // eslint-disable-next-line jsdoc/require-jsdoc
           onAddNote: (text, start, end, index) =>
             props.onAddNote!(
@@ -90,9 +101,10 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
 
     return baseActions;
   }, [
-    boundarySelector,
+    pageBoundarySelector,
     readspeakerButtonId,
     rspkr,
+    listenEnabled,
     props.onMakeHighlight,
     props.onAddNote,
     props.extraActions,
@@ -102,7 +114,7 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
 
   return (
     <SelectionContextPopover
-      boundarySelector={boundarySelector}
+      boundarySelector={pageBoundarySelector}
       actions={actions}
     />
   );
