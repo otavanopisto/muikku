@@ -10,7 +10,8 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(uniqueConstraints = {
-    @UniqueConstraint( columnNames = {"workspaceEntityId", "userEntityId"} )
+    @UniqueConstraint( columnNames = {"workspaceEntityId"}),
+    @UniqueConstraint( columnNames = {"userEntityId"})
   })
 
 public class MuikkuEventContainer {

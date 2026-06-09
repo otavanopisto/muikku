@@ -67,7 +67,11 @@
    </sql>
    <sql>
       alter table MuikkuEventContainer 
-       add constraint UKhmgtsvqnd7iflgo4n83a1ib7a unique (workspaceEntityId, userEntityId);
+       add constraint UKj41m6wy04u3ovfrrldfb4mpmf unique (workspaceEntityId);
+   </sql>
+   <sql>
+    alter table MuikkuEventContainer 
+       add constraint UKdle60jsch8vsxaocvw7f8x5i7 unique (userEntityId);
    </sql>
    <sql>
       drop table CalendarParticipant;
