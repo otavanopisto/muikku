@@ -1177,6 +1177,7 @@
       "contact": "Contact us",
       "country": "Country",
       "continue": "Continue studies",
+      "events": "Events",
       "followUs": "Follow Otavia",
       "instagram": "Follow us at Instagram",
       "lastMessages": "Latest messages",
@@ -1896,6 +1897,7 @@
       "relations": "Relations",
       "remove": "$t(common:labels.remove)",
       "remove_page": "Delete page",
+      "remove_snapshot": "Delete snapshot",
       "remove_instructionVisibilityRestriction": "Remove visibility restriction for instructions",
       "remove_materialVisibilityRestriction": "Disable material view restrictions",
       "remove_recording": "Delete recording",
@@ -2543,6 +2545,7 @@
       "removeError_evaluation": "Deleting evaluation event failed: {{error}}",
       "removeError_evaluationRequest": "Deleting evaluation request failed: {{error}}",
       "removeError_interimRequest": "Deleting interim evaluation request failed: {{error}}",
+      "removeError_nodeEvaluation": "Virhe tehtäväarvioinnin poistossa: {{error}}",
       "removeError_supplementationRequest": "Deleting supplementation request failed: {{error}}",
       "removeError_student": "Archiving student failed: {{error}}",
       "removeSuccess": "$t(common:notifications.removeSuccess)",
@@ -2632,13 +2635,75 @@
       "durationRunningOut": "Attention! You have less than {{timeLeft}} minutes remaining!"
     }
   },
-  "calendar": {
+  "events": {
+    "actions": {
+      "createAbsence": "Create absence",
+      "giveFeedback": "Give feedback",
+      "editFeedback": "Edit feedback",
+      "create": "Create event",
+      "edit": "Edit event",
+      "remove": "Remove event"
+    },
+    "labels": {
+      "absence": "Absence",
+      "absenceDetails": "Absence details",
+      "absenceEventDescription": "Instructions for making up the absence",
+      "absenceEventDescriptionPlaceholder": "Enter the assignments or instructions for the student to make up the absence here.",
+      "absentFrom": "Absent from:",
+      "absencePeriod": "Absence period:",
+      "absenceType": "Absence type",
+      "absences": "Absences",
+      "absence_explanation": "Absence_explanation",
+      "end": "Ends",
+      "event": "Event",
+      "eventBeginning": "Tapahtuman alku",
+      "eventEnding": "Tapahtuman loppu",
+      "events": "Events",
+      "explainAbsence": "Explain absence",
+      "newAbsence": "New absence",
+      "makeUpInstructions": "Instructions for making up the absence:",
+      "markAbsence": "Mark absence",
+      "pickAbsenceStudents": "(Select absent students",
+      "property": "Unkown property",
+      "property_ABSENCE_REASON": "Absence reason",
+      "reason": "Reason",
+      "start": "Starts",
+      "selectAbsenceReason": "Select absence reason"
+    },
+    "content": {
+      "empty": "No events",
+      "removing": "Are you sure you want to remove the event?"
+    },
+    "types": {
+      "LESSON": "Lesson",
+      "LESSON_PRE_ARRANGED": "Lesson (pre-arranged)",
+      "EXAM": "Exam",
+      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session"
+    },
+    "reasons": {
+      "MEDICAL_REASON": "Medical reason",
+      "OTHER_AUTHORIZED_REASON": "Other authorized reason",
+      "UNAUTHORIZED_ABSENCE_EXPLAINED": "Unauthorized absence (explained)"
+    },
     "notifications": {
+      "attendanceError": "Updating the attendees failed. Please try again.",
       "createError": "Creating the event failed",
+      "createError_absence": "Marking the absence failed: {{error}}",
+      "createPropertyError": "Creating the event property failed: {{error}}",
+      "createPropertyError_absence": "Creating the absence explanation failed: {{error}}",
+      "createPropertySuccess": "The event property was created successfully",
+      "createPropertySuccess_absence": "The absence explanation was marked successfully",
+      "createSuccess": "The event was created successfully",
+      "createSuccess_absence": "The absence was marked successfully",
+      "loadError": "Loading the events failed. Please try again",
+      "loadError_absence": "Loading absences failed: {{error}}",
       "removeError": "Removing the event failed. Please try again.",
       "updateError": "Updating the event failed. Please try again.",
-      "loadError": "Loading the events failed. Please try again",
-      "attendanceError": "Updating the attendees failed. Please try again."
+      "updatePropertyError": "Updating the event property failed: {{error}}. Please try again.",
+      "updatePropertyError_absence": "Updating the absence explanation failed: {{error}}. Please try again.",
+      "updatePropertySuccess": "The event property was updated successfully",
+      "updatePropertySuccess_absence": "The absence explanation was updated successfully"
     }
   },
   "orders": {

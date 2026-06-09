@@ -51,6 +51,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
     const workspaceApi = MApi.getWorkspaceApi();
     const activitylogsApi = MApi.getActivitylogsApi();
+    const eventsApi = MApi.getEventsApi();
     const state = getState();
     try {
       // Get user id
@@ -61,6 +62,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
       if (state.summary.status === "READY") {
         return null;
       }
+
+      const studentId = getState().status.userId;
+      const absenceEventsLoaded =
+        getState().muikkuEvents.absenceEvents.state === "READY";
 
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
@@ -77,6 +82,53 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         to: new Date(),
       });
 
+      // If the absence events are not loaded (fe. when records are refreshed, we load them)
+      if (!absenceEventsLoaded) {
+        dispatch({
+          type: "EVENTS_SET_ABSENCE_EVENTS_STATE",
+          payload: "LOADING",
+        });
+        try {
+          // Event range for student absence events
+          const end = new Date();
+          const start = new Date(end);
+          start.setMonth(start.getMonth() - 6);
+          const absenceEvents = await eventsApi.listEvents({
+            user: studentId,
+            type: "ABSENCE",
+            start,
+            end,
+            adjustTimes: true,
+          });
+
+          dispatch({
+            type: "EVENTS_SET_ABSENCE_EVENTS",
+            payload: absenceEvents,
+          });
+
+          dispatch({
+            type: "EVENTS_SET_ABSENCE_EVENTS_STATE",
+            payload: "READY",
+          });
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+          dispatch(
+            actions.displayNotification(
+              i18n.t("notifications.loadError", {
+                ns: "events",
+                context: "absence",
+              }),
+              "error"
+            )
+          );
+          dispatch({
+            type: "EVENTS_SET_ABSENCE_EVENTS_STATE",
+            payload: "ERROR",
+          });
+        }
+      }
       // We need returned exercises and evaluated courses
       const assignmentsDone: ActivityLogType[] = [];
       const coursesDone: ActivityLogType[] = [];

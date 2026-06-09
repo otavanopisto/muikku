@@ -3,7 +3,10 @@ import "~/sass/elements/dependant.scss"; // Styles
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
 import { useDispatch, useSelector } from "react-redux";
-import { loadDependantWorkspaces } from "~/actions/main-function/guardian";
+import {
+  loadDependantWorkspaces,
+  loadDependantAbsenceEvents,
+} from "~/actions/main-function/guardian";
 import { getName } from "~/util/modifiers"; // getName function
 import { Link } from "react-router-dom"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
@@ -12,6 +15,9 @@ import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
 import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
+import WallEvent from "../wall/walll-event";
+import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+
 /**
  * DependantProps
  */
@@ -31,9 +37,20 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
       state.guardian.workspacesByDependantIdentifier[dependant.identifier]
         ?.workspaces || []
   );
+
+  const absenceEvents = useSelector(
+    (state: StateType) =>
+      state.guardian.absencesByDependantId[dependant.userEntityId]?.events || []
+  );
+
   const dispatch = useDispatch();
   const { t } = useTranslation(["frontPage", "workspace"]);
   const [showWorkspaces, setShowWorkspaces] = React.useState(false);
+
+  React.useEffect(() => {
+    dispatch(loadDependantAbsenceEvents(dependant.userEntityId));
+  }, [dispatch, dependant.userEntityId]);
+
   /**
    * toggles description visibility
    */
@@ -95,6 +112,37 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           {t("labels.latestLogin", {
             ns: "frontPage",
             date: localize.date(dependant.latestLogin),
+          })}
+        </div>
+      )}
+      {absenceEvents.length > 0 && (
+        <div className="dependant__absences-container">
+          <h3 className="dependant__absences-title">
+            {t("labels.absences", { ns: "events" })}
+          </h3>
+          {absenceEvents.map((event) => {
+            const hasFeedback = event.properties.find(
+              (property) =>
+                property.name == "ABSENCE_REASON" && property.value !== ""
+            );
+            return (
+              <WallEvent
+                key={event.id}
+                actions={
+                  <AbsenceFeedbackDialog
+                    studentId={dependant.userEntityId}
+                    absenceEvent={event}
+                  >
+                    <Button className="button button--primary-function-content">
+                      {hasFeedback
+                        ? t("actions.editFeedback", { ns: "events" })
+                        : t("actions.giveFeedback", { ns: "events" })}
+                    </Button>
+                  </AbsenceFeedbackDialog>
+                }
+                event={event}
+              />
+            );
           })}
         </div>
       )}

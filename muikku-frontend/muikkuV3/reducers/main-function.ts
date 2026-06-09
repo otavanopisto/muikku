@@ -33,6 +33,7 @@ import { exams } from "./workspaces/exams";
 import { pedagogySupport } from "./pedagogy-support";
 import { studyActivity } from "./study-activity";
 import { guardian } from "./main-function/guardian";
+import { muikkuEvents } from "./base/muikku-events";
 
 export default combineReducers({
   announcements,
@@ -67,4 +68,5 @@ export default combineReducers({
   exams,
   pedagogySupport,
   studyActivity,
+  muikkuEvents,
 });
