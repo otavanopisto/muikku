@@ -474,6 +474,7 @@ export const MATERIAL_CONTENT_SELECTOR = ".material-page__content.rich-text";
  * Build annotation from selection
  * @param materialHtml material html
  * @param boundarySelector boundary selector
+ * @param annotatableSelector annotatable selector
  * @param range range
  * @param selectedText selected text
  * @returns BuiltAnnotationSelection | null
@@ -481,35 +482,40 @@ export const MATERIAL_CONTENT_SELECTOR = ".material-page__content.rich-text";
 export function buildAnnotationFromSelection(
   materialHtml: string,
   boundarySelector: string,
+  annotatableSelector: string,
   range: Range,
   selectedText: string
 ): BuiltAnnotationSelection | null {
   const trimmed = selectedText.trim();
   if (!trimmed) return null;
+
   const boundary = document.querySelector(boundarySelector);
+  const contentRoot = boundary?.querySelector(annotatableSelector);
+  if (!contentRoot) return null;
+
   const htmlSearchable = getSearchableFromMaterialHtml(materialHtml);
-  const liveSearchable = getSearchableFromRoots([boundary as HTMLElement]);
-  const rawOffsets = rangeOffsetsWithinRoot(range, boundary);
-  if (!rawOffsets) {
-    return null;
-  }
+  const liveSearchable = getSearchableFromRoots([contentRoot as HTMLElement]);
+
+  const rawOffsets = rangeOffsetsWithinRoot(range, contentRoot);
+  if (!rawOffsets) return null;
+
   const liveOffsets = toTrimmedOffsets(
     liveSearchable.text,
     rawOffsets.start,
     rawOffsets.end
   );
-  if (!liveOffsets || liveOffsets.trimmed !== trimmed) {
-    return null;
-  }
+
+  if (!liveOffsets || liveOffsets.trimmed !== trimmed) return null;
+
   const htmlOffsets = mapContentOffsetToHtml(
     htmlSearchable.text,
     liveSearchable.text,
     liveOffsets.start,
     liveOffsets.trimmed
   );
-  if (!htmlOffsets) {
-    return null;
-  }
+
+  if (!htmlOffsets) return null;
+
   const { start, end } = buildAnnotationAnchors(trimmed);
   const index = computeAnnotationIndex(
     htmlSearchable.text,

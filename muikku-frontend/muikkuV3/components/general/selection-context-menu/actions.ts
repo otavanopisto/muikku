@@ -103,6 +103,7 @@ export function createHighlightAction(
       const built = buildAnnotationFromSelection(
         options.materialHtml,
         options.pageBoundarySelector,
+        options.annotatableSelector,
         range,
         ctx.text
       );
@@ -156,6 +157,7 @@ export function createNoteAction(
       const built = buildAnnotationFromSelection(
         options.materialHtml,
         options.pageBoundarySelector,
+        options.annotatableSelector,
         range,
         ctx.text
       );
