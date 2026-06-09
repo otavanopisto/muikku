@@ -34,6 +34,7 @@ import {
   UpdateBilledPriceRequest,
   InterimEvaluationRequest,
   ExamAttendance,
+  MaterialAnswerSnapshot,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -142,6 +143,24 @@ export type EVALUATION_SEARCH_CHANGE = SpecificActionType<
 export type EVALUATION_COMPOSITE_REPLIES_LOAD = SpecificActionType<
   "EVALUATION_COMPOSITE_REPLIES_LOAD",
   MaterialCompositeReply[]
+>;
+
+export type EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_CREATE = SpecificActionType<
+  "EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_CREATE",
+  {
+    snapshot: MaterialAnswerSnapshot;
+    fieldName: string;
+    workspaceMaterialId: number;
+  }
+>;
+
+export type EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_DELETE = SpecificActionType<
+  "EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_DELETE",
+  {
+    snapshotId: number;
+    fieldName: string;
+    workspaceMaterialId: number;
+  }
 >;
 
 export type EVALUATION_IMPORTANCE_UPDATE = SpecificActionType<
@@ -662,6 +681,32 @@ export interface UpdateEvaluationExamEvaluationInfoTriggerType {
   (data: {
     workspaceNodeId: number;
     userEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * CreateFieldSnapshotTriggerType
+ */
+export interface CreateFieldSnapshotTriggerType {
+  (data: {
+    userEntityId: number;
+    workspaceMaterialId: number;
+    fieldName: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteFieldSnapshotTriggerType
+ */
+export interface DeleteFieldSnapshotTriggerType {
+  (data: {
+    snapshotId: number;
+    workspaceMaterialId: number;
+    fieldName: string;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -1349,6 +1394,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
           await workspaceApi.getWorkspaceCompositeReplies({
             workspaceEntityId: workspaceId,
             userEntityId,
+            includeSnapshots: true,
           });
 
         dispatch({
@@ -2059,6 +2105,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
             workspaceEntityId: data.workspaceId,
             workspaceMaterialId: data.workspaceMaterialId,
             userEntityId: data.userEntityId,
+            includeSnapshots: true,
           });
 
         const index = updatedCompositeReplies.findIndex(
@@ -2956,6 +3003,87 @@ const updateEvaluationExamEvaluationInfo: UpdateEvaluationExamEvaluationInfoTrig
     };
   };
 
+/**
+ * Creates a field snapshot
+ * @param data data
+ */
+const createFieldSnapshot: CreateFieldSnapshotTriggerType =
+  function createFieldSnapshot(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const {
+        userEntityId,
+        workspaceMaterialId,
+        fieldName,
+        onSuccess,
+        onFail,
+      } = data;
+
+      try {
+        const snapshot = await evaluationApi.createFieldAnswerSnapshot({
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+          fieldName: fieldName,
+        });
+
+        dispatch({
+          type: "EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_CREATE",
+          payload: {
+            snapshot: snapshot,
+            workspaceMaterialId: workspaceMaterialId,
+            fieldName: fieldName,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Deletes a field snapshot
+ * @param data data
+ */
+const deleteFieldSnapshot: DeleteFieldSnapshotTriggerType =
+  function deleteFieldSnapshot(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { snapshotId, workspaceMaterialId, fieldName, onSuccess, onFail } =
+        data;
+
+      try {
+        await evaluationApi.deleteFieldAnswerSnapshot({
+          id: snapshotId,
+        });
+
+        dispatch({
+          type: "EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_DELETE",
+          payload: {
+            snapshotId: snapshotId,
+            workspaceMaterialId: workspaceMaterialId,
+            fieldName: fieldName,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        onFail?.();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2995,4 +3123,6 @@ export {
   toggleLockedAssignment,
   loadEvaluationExamsFromServer,
   updateEvaluationExamEvaluationInfo,
+  createFieldSnapshot,
+  deleteFieldSnapshot,
 };

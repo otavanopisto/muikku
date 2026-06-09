@@ -11,14 +11,17 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { NoteComponent } from "./wall/note";
+import WallNote from "./wall/wall-note";
+import WallAbsenceEvent from "./wall/walll-event";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MuikkuEvents } from "~/reducers/base/muikku-events";
 
 /**
  * Wall properties
  */
 export interface WallProps extends WithTranslation {
   status: StatusType;
+  absenceEvents: MuikkuEvents;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -27,7 +30,7 @@ export interface WallProps extends WithTranslation {
  * @param props WallProps
  */
 const WallPanel: React.FC<WallProps> = (props) => {
-  const { status, displayNotification, t } = props;
+  const { status, displayNotification, t, absenceEvents } = props;
   const { notes, updateNoteStatus, updateNote } = useOnGoingNotes(
     status,
     displayNotification
@@ -43,7 +46,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
       <Panel.BodyContent>
         {notes.length > 0 ? (
           notes.map((note) => (
-            <NoteComponent
+            <WallNote
               isCreator={note.creator === status.userId}
               key={note.id}
               note={note}
@@ -57,6 +60,22 @@ const WallPanel: React.FC<WallProps> = (props) => {
           </div>
         )}
       </Panel.BodyContent>
+      {absenceEvents.events.length > 0 && (
+        <>
+          <Panel.BodyTitle>
+            {t("labels.absences", { ns: "events" })}
+          </Panel.BodyTitle>
+          <Panel.BodyContent>
+            {absenceEvents.events.map((event) => (
+              <WallAbsenceEvent
+                key={event.id}
+                isUnder18={status.isUnder18}
+                event={event}
+              />
+            ))}
+          </Panel.BodyContent>
+        </>
+      )}
     </Panel>
   );
 };
@@ -68,6 +87,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
+    absenceEvents: state.muikkuEvents.absenceEvents,
   };
 }
 

@@ -1177,6 +1177,7 @@
       "contact": "Ota yhteyttä",
       "country": "Maa",
       "continue": "Jatka opintoja",
+      "events": "Tapahtumia",
       "followUs": "Seuraa Otaviaa",
       "instagram": "Seuraa meitä Instagramissa",
       "lastMessages": "Uusimmat viestit",
@@ -1783,6 +1784,7 @@
       "removeDisabled": "Tiedoston poistaminen ei ole mahdollista",
       "removeDisabled_audio": "Äänityksen poistaminen ei ole mahdollista",
       "removing": "$t(common:content.removing)",
+      "removing_snapshot": "Oletko varma, että haluat poistaa vastausversion?",
       "removing_page": "Oletko varma, että haluat poistaa sivun?",
       "removing_attachment": "Oletko varma, että haluat poistaa liitteen \"{{name}}\"?",
       "removing_audio": "Oletko varma, että haluat poistaa tehtävään liitetyn äänitiedoston?",
@@ -1839,6 +1841,7 @@
       "create_chapter": "Lisää uusi osio",
       "create_examChapter": "Lisää uusi koeosio",
       "create_page": "Lisää uusi sivu",
+      "deleteSnapshot": "Poista vastausversio",
       "diaryEntry": "Oppimispäiväkirjamerkintä",
       "edit": "$t(labels.edit)",
       "edit_chapter": "Muokkaa osiota",
@@ -1894,6 +1897,7 @@
       "relations": "Relaatiot",
       "remove": "$t(common:labels.remove)",
       "remove_page": "Poista sivu",
+      "remove_snapshot": "Poista vastausversio",
       "remove_instructionVisibilityRestriction": "Poista ohjeiden näkyvyyden rajoitus",
       "remove_materialVisibilityRestriction": "Poista materiaalin näkyvyyden rajoitus",
       "remove_recording": "Poista äänitys",
@@ -1909,12 +1913,14 @@
       "showAnswersAlways": "Tehtävän vastaukset näytetään aina",
       "showAnswersNever": "Tehtävän vastauksia ei näytetä koskaan",
       "showAnswersOnRequest": "Tehtävän vastaukset näytetään opiskelijan pyynnöstä",
+      "snapshot": "Vastausversio",
       "textOrLink": "Teksti tai linkki",
       "setTheory": "Joukko-oppi",
       "setVisible": "Aseta näkyviin",
       "source": "Lähde",
       "symbols": "Symbolit",
       "tableOfContents": "Sisällysluettelo",
+      "takeSnapshot": "Tallenna vastausversio",
       "teacherMessage": "Viesti kurssin opettajalle",
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
@@ -2629,13 +2635,75 @@
       "durationRunningOut": "Huomio! Sinulla on alle {{timeLeft}} minuuttia aikaa jäljellä!"
     }
   },
-  "calendar": {
+  "events": {
+    "actions": {
+      "createAbsence": "Merkitse poissaolo",
+      "giveFeedback": "Selvitä poissaolo",
+      "editFeedback": "Muokkaa selvitystä",
+      "create": "Luo tapahtuma",
+      "edit": "Muokkaa tapahtumaa",
+      "remove": "Poista tapahtuma"
+    },
+    "labels": {
+      "absence": "Poissaolo",
+      "absenceDetails": "Poissaolon tiedot",
+      "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
+      "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
+      "absentFrom": "Mistä oli poissa:",
+      "absencePeriod": "Ajankohta:",
+      "absenceType": "Poissaolotyyppi",
+      "absences": "Poissaolot",
+      "absence_explanation": "Selitys poissaololle",
+      "end": "Päättyy",
+      "event": "Tapahtuma",
+      "eventBeginning": "Alkaa",
+      "eventEnding": "Päättyy",
+      "events": "Tapahtumat",
+      "explainAbsence": "Selvitä poissaolo",
+      "newAbsence": "Uusi poissaolo",
+      "makeUpInstructions": "Ohjeet poissaolon korvaamiseen:",
+      "markAbsence": "Merkitse poissaolo",
+      "pickAbsenceStudents": "Valitse poissaolijat",
+      "property": "Tuntematon ominaisuus",
+      "property_ABSENCE_REASON": "Poissaolon syy",
+      "reason": "Syy",
+      "start": "Alkaa",
+      "selectAbsenceReason": "Poissaolon syy"
+    },
+    "content": {
+      "empty": "Ei tapahtumia",
+      "removing": "Oletko varma, että haluat poistaa tapahtuman?"
+    },
+    "types": {
+      "LESSON": "Oppitunti",
+      "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
+      "EXAM": "Koe",
+      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
+    },
+    "reasons": {
+      "MEDICAL_REASON": "Terveydellinen syy",
+      "OTHER_AUTHORIZED_REASON": "Muu luvallinen syy",
+      "UNAUTHORIZED_ABSENCE_EXPLAINED": "Poissaololle ei ollut lupaa (selvitetty)"
+    },
     "notifications": {
-      "createError": "Tapahtuman luonti epäonnistui",
+      "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui",
+      "createError": "Tapahtuman luonti epäonnistui: {{error}}",
+      "createError_absence": "Poissaolon merkitseminen epäonnistui: {{error}}",
+      "createPropertyError": "Tapahtuman ominaisuuden luonti epäonnistui: {{error}}",
+      "createPropertyError_absence": "Poissaoloselvityksen luonti epäonnistui: {{error}}",
+      "createPropertySuccess": "Tapahtuman ominaisuuden luonti onnistui",
+      "createPropertySuccess_absence": "Poisssaoloselvityksen luonti onnistui",
+      "createSuccess": "Tapahtuman luonti onnistui",
+      "createSuccess_absence": "Poissaolon merkitseminen onnistui",
+      "loadError": "Tapahtumien lataus epäonnistui",
+      "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
-      "loadError": "Tapahtumien lataus epäonnistui",
-      "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui"
+      "updatePropertyError": "Tapahtuman ominaisuuden päivitys epäonnistui: {{error}}. Yritä uudelleen.",
+      "updatePropertyError_absence": "Poissaoloselvityksen päivitys epäonnistui: {{error}}. Yritä uudelleen.",
+      "updatePropertySuccess": "Tapahtuman ominaisuuden päivitys onnistui",
+      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui"
     }
   },
   "orders": {

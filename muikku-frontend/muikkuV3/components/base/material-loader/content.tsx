@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 import i18n from "~/locales/i18n";
@@ -8,7 +8,7 @@ import { StateConfig } from "./types";
 /**
  * MaterialLoaderContentProps
  */
-interface MaterialLoaderContentProps extends MaterialLoaderProps {
+interface MaterialLoaderContentProps extends MaterialLoaderRenderProps {
   answersChecked: boolean;
   answersVisible: boolean;
   stateConfiguration: StateConfig;
@@ -141,6 +141,9 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             readOnly={props.readOnly}
             answerable={props.answerable}
             answerRegistry={props.answerRegistry}
+            fieldSnapshotCapabilities={props.fieldSnapshotCapabilities}
+            onTakeFieldSnapshot={props.onTakeFieldSnapshot}
+            onDeleteFieldSnapshot={props.onDeleteFieldSnapshot}
             onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
           />
         )}

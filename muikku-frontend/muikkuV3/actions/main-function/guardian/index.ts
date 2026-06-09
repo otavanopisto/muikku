@@ -25,10 +25,16 @@ import {
   getCurriculumConfig,
 } from "~/util/curriculum-config";
 import { WorkspaceDataType } from "~/reducers/workspaces";
+import { MuikkuEvent, MuikkuEventProperty } from "~/generated/client";
+import {
+  CreateEventPropertyRequest,
+  UpdateEventPropertyRequest,
+} from "~/generated/client";
 
 const meApi = MApi.getMeApi();
 const hopsApi = MApi.getHopsApi();
 const userApi = MApi.getUserApi();
+const eventsApi = MApi.getEventsApi();
 const activitylogsApi = MApi.getActivitylogsApi();
 const workspaceApi = MApi.getWorkspaceApi();
 const evaluationApi = MApi.getEvaluationApi();
@@ -64,6 +70,29 @@ export type GUARDIAN_UPDATE_WORKSPACES_BY_DEPENDANT_IDENTIFIER_WORKSPACES =
       workspaces: UserGuardiansDependantWorkspace[];
     }
   >;
+
+// GUARDIAN DEPENDANT EVENTS ACTIONS
+
+export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES = SpecificActionType<
+  "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
+  {
+    dependantId: number;
+    absences: MuikkuEvent[];
+  }
+>;
+
+export type GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY = SpecificActionType<
+  "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+  { userId: number; property: MuikkuEventProperty }
+>;
+
+export type GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS = SpecificActionType<
+  "GUARDIAN_UPDATE_DEPENDANT_ABSENCES_STATUS",
+  {
+    dependantId: number;
+    status: ReducerStatusType;
+  }
+>;
 
 // GUARDIAN CURRENT DEPENDANT ACTIONS
 export type GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER = SpecificActionType<
@@ -203,6 +232,13 @@ export interface LoadDependantWorkspacesTriggerType {
 }
 
 /**
+ * LoadDependantAbsenceEventsTriggerType
+ */
+export interface LoadDependantAbsenceEventsTriggerType {
+  (dependantId: number): AnyActionType;
+}
+
+/**
  * InitializeCurrentDependantEssentialsTriggerType
  */
 export interface InitializeCurrentDependantEssentialsTriggerType {
@@ -279,11 +315,24 @@ export interface UpdateCurrentDependantSelectedEducationTypeCodeTriggerType {
 }
 
 /**
+ * UpdateDependantAbsenceEventPropertyTriggerType
+ */
+export interface UpdateDependantAbsenceEventPropertyTriggerType {
+  (userId: number, data: UpdateEventPropertyRequest): AnyActionType;
+}
+
+/**
+ * UpdateDependantAbsenceEventPropertyTriggerType
+ */
+export interface CreateDependantAbsenceEventPropertyTriggerType {
+  (userId: number, data: CreateEventPropertyRequest): AnyActionType;
+}
+/**
  * Thunk function to load dependants
  * @returns Thunk function to load dependants
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       dispatch({
         type: "GUARDIAN_UPDATE_DEPENDANTS_STATUS",
@@ -849,7 +898,7 @@ const loadCurrentDependantPedagogyFormAccess: LoadCurrentDependantPedagogyFormAc
  */
 const updateCurrentDependantIdentifier: UpdateCurrentDependantIdentifierTriggerType =
   function updateCurrentDependantIdentifier(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
       dispatch({
         type: "GUARDIAN_UPDATE_CURRENT_DEPENDANT_IDENTIFIER",
         payload: dependantIdentifier,
@@ -866,10 +915,7 @@ const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSel
   function updateCurrentDependantSelectedEducationTypeCode(
     educationTypeCode: string
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       dispatch({
@@ -899,7 +945,7 @@ const updateCurrentDependantSelectedEducationTypeCode: UpdateCurrentDependantSel
  */
 const loadCurrentDependantEducationTypes: LoadCurrentDependantEducationTypesTriggerType =
   function loadCurrentDependantEducationTypes(dependantIdentifier: string) {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
       const educationTypes = await userApi.getStudentEducationTypes({
         studentIdentifier: dependantIdentifier,
       });
@@ -926,9 +972,12 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
       // Then load the current dependant student info.
       await dispatch(loadCurrentDependantStudentInfo(dependantIdentifier));
 
+      // Then load absence events based on dependant info
+      const dependantInfo = getState().guardian.currentDependant.dependantInfo;
+      await dispatch(loadDependantAbsenceEvents(dependantInfo.userEntityId));
+
       // Get the default education type code.
-      const defaultEducationTypeCode =
-        getState().guardian.currentDependant.dependantInfo.educationTypeCode;
+      const defaultEducationTypeCode = dependantInfo.educationTypeCode;
 
       // Load the current dependant course matrix.
       dispatch(
@@ -948,10 +997,160 @@ const initializeCurrentDependantEssentials: InitializeCurrentDependantEssentials
     };
   };
 
+/**
+ * loadDependantAbsenceEvents thunk function
+ * @param dependantId dependantId
+ */
+const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
+  function loadDependantAbsenceEvents(dependantId: number) {
+    return async (dispatch, getState) => {
+      if (
+        getState().guardian.absencesByDependantId[dependantId]?.state ===
+        "READY"
+      ) {
+        return;
+      }
+
+      try {
+        const end = new Date();
+        const start = new Date(end);
+        start.setMonth(start.getMonth() - 6);
+
+        const events = await eventsApi.listEvents({
+          user: dependantId,
+          type: "ABSENCE",
+          start,
+          end,
+          adjustTimes: true,
+        });
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCES",
+          payload: {
+            dependantId: dependantId,
+            absences: events,
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * createAbsenceEventProperty thunk function
+ * @param userId user id
+ * @param data data for creation
+ */
+const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
+  function createAbsenceEventProperty(userId, data) {
+    return async (dispatch) => {
+      try {
+        const property = await eventsApi.createEventProperty(data);
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+          payload: { userId, property },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createPropertySuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createPropertyError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * updateAbsenceEventProperty thunk function
+ * @param userId student user id
+ * @param data data for creatio0n
+ */
+const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
+  function updateAbsenceEventProperty(userId, data) {
+    return async (dispatch) => {
+      try {
+        const property = await eventsApi.updateEventProperty(data);
+
+        dispatch({
+          type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
+          payload: { userId, property },
+        });
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updatePropertySuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          return dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updatePropertyError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   initializeCurrentDependantEssentials,
   loadDependants,
   loadDependantWorkspaces,
+  loadDependantAbsenceEvents,
+  updateAbsenceEventProperty,
+  createAbsenceEventProperty,
   loadCurrentDependantStudyActivity,
   loadCurrentDependantCourseMatrix,
   loadCurrentDependantStudentInfo,

@@ -1,4 +1,8 @@
-import { StateConfig } from "./types";
+import {
+  FieldSnapshotPolicyContext,
+  FieldSnapshotCapabilities,
+  StateConfig,
+} from "./types";
 
 //These represent the states assignments and exercises can be in
 export const STATES: StateConfig[] = [
@@ -156,3 +160,43 @@ export const STATES: StateConfig[] = [
     fieldsReadOnly: true,
   },
 ];
+
+// Default field snapshot capabilities
+export const DEFAULT_FIELD_SNAPSHOT_CAPABILITIES: FieldSnapshotCapabilities = {
+  snapshotEnabled: false,
+  snapshotCanView: false,
+  snapshotCanTake: false,
+  snapshotCanDelete: false,
+};
+
+/**
+ * Resolves the field snapshot capabilities for an evaluation
+ * @param ctx ctx
+ * @returns FieldSnapshotCapabilities
+ */
+export function resolveEvaluationFieldSnapshotCapabilities(
+  ctx: FieldSnapshotPolicyContext
+): FieldSnapshotCapabilities {
+  const { compositeReply, usedAs } = ctx;
+
+  // If not an evaluation tool or no composite reply, return disabled
+  if (usedAs !== "evaluationTool" || !compositeReply) {
+    return DEFAULT_FIELD_SNAPSHOT_CAPABILITIES;
+  }
+
+  // Check the composite reply state
+  const state = compositeReply.state;
+  const isSubmitted = state === "SUBMITTED";
+  const isIncomplete = state === "INCOMPLETE";
+
+  const canTake = isSubmitted || isIncomplete;
+
+  const view = true; // hide history until student has submitted something meaningful
+  const canDelete = canTake;
+  return {
+    snapshotEnabled: view || canTake,
+    snapshotCanView: view,
+    snapshotCanTake: canTake,
+    snapshotCanDelete: canDelete,
+  };
+}

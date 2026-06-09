@@ -65,7 +65,7 @@ export default class ApplicationPanelBody extends React.Component<
             <div
               className={`application-panel__actions-aside ${
                 modifier ? "application-panel__actions-aside--" + modifier : ""
-              }`}
+              } ${toolbar ? "" : "application-panel__actions-aside--no-toolbar"}`}
             >
               {primaryOption}
             </div>
