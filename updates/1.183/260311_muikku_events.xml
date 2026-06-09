@@ -74,7 +74,7 @@
        add constraint UKdle60jsch8vsxaocvw7f8x5i7 unique (userEntityId);
    </sql>
    <sql>
-      drop table CalendarParticipant;
+      drop table CalendarEventParticipant;
    </sql>
    <sql>
       drop table CalendarEvent;
