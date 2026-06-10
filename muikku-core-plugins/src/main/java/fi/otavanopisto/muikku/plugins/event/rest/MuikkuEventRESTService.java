@@ -411,9 +411,8 @@ public class MuikkuEventRESTService {
   
   @Path("/workspace/{WORKSPACEENTITYID}/container")
   @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(handling = Handling.INLINE)
   public Response getWorkspaceEventContainerId(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     
