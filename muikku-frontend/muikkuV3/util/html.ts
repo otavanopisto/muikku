@@ -162,24 +162,6 @@ export function buildAnnotationAnchors(selectedText: string): {
 }
 
 /**
- * Resolve short annotation (start === end)
- * @param text searchable text
- * @param anchor anchor
- * @param index occurrence index
- */
-function resolveShort(
-  text: string,
-  anchor: string,
-  index: number
-): { start: number; end: number } | null {
-  const positions = findAllOccurrences(text, anchor);
-  if (index < 0 || index >= positions.length) return null;
-
-  const start = positions[index];
-  return { start, end: start + anchor.length };
-}
-
-/**
  * Build long-rule candidate ranges
  * @param text searchable text
  * @param startAnchor start anchor
@@ -205,42 +187,50 @@ function buildLongCandidates(
 }
 
 /**
- * Resolve long annotation (start !== end)
- * @param text searchable text
- * @param startAnchor start anchor
- * @param endAnchor end anchor
- * @param index occurrence index
- */
-function resolveLong(
-  text: string,
-  startAnchor: string,
-  endAnchor: string,
-  index: number
-): { start: number; end: number } | null {
-  const candidates = buildLongCandidates(text, startAnchor, endAnchor);
-  if (index < 0 || index >= candidates.length) return null;
-  return candidates[index];
-}
-
-/**
- * Resolve stored annotation to offset range
+ * Classify whether an annotation resolves in searchable text.
  * @param annotation annotation
  * @param searchableText searchable text
  */
-function resolveAnnotation(
+export function classifyAnnotation(
   annotation: Pick<MaterialHighlight, "start" | "end" | "index">,
   searchableText: string
-): { start: number; end: number } | null {
-  if (annotation.start === annotation.end) {
-    return resolveShort(searchableText, annotation.start, annotation.index);
+): AnnotationResolveStatus {
+  const { start: startAnchor, end: endAnchor, index } = annotation;
+  if (!startAnchor || !endAnchor) {
+    return { status: "orphaned", reason: "anchor_missing" };
+  }
+  if (startAnchor === endAnchor) {
+    const positions = findAllOccurrences(searchableText, startAnchor);
+    if (positions.length === 0) {
+      return { status: "orphaned", reason: "anchor_missing" };
+    }
+    if (index < 0 || index >= positions.length) {
+      return { status: "orphaned", reason: "index_out_of_range" };
+    }
+    const start = positions[index];
+    return {
+      status: "active",
+      range: { start, end: start + startAnchor.length },
+    };
   }
 
-  return resolveLong(
+  const startPositions = findAllOccurrences(searchableText, startAnchor);
+  const endPositions = findAllOccurrences(searchableText, endAnchor);
+  if (startPositions.length === 0 || endPositions.length === 0) {
+    return { status: "orphaned", reason: "anchor_missing" };
+  }
+  const candidates = buildLongCandidates(
     searchableText,
-    annotation.start,
-    annotation.end,
-    annotation.index
+    startAnchor,
+    endAnchor
   );
+  if (candidates.length === 0) {
+    return { status: "orphaned", reason: "unresolvable" };
+  }
+  if (index < 0 || index >= candidates.length) {
+    return { status: "orphaned", reason: "index_out_of_range" };
+  }
+  return { status: "active", range: candidates[index] };
 }
 
 /**
@@ -289,6 +279,55 @@ export function computeAnnotationIndex(
     (c) => c.start <= selectionStart && c.end >= selectionEnd
   );
   return idx >= 0 ? idx : 0;
+}
+
+/**
+ * Classify all annotations for a material html fragment.
+ * Same searchable stream as inject (via getSearchableFromMaterialHtml).
+ * @param materialHtml material html
+ * @param annotations annotations
+ */
+export function classifyAnnotationsForMaterialHtml(
+  materialHtml: string,
+  annotations: MaterialHighlight[]
+): AnnotationClassification[] {
+  if (!annotations?.length) return [];
+  const searchable = getSearchableFromMaterialHtml(materialHtml);
+  return annotations.map((annotation) => ({
+    id: String(annotation.id),
+    annotation,
+    result: classifyAnnotation(annotation, searchable.text),
+  }));
+}
+
+/**
+ * Map annotation id -> resolve status.
+ * @param classifications classifications
+ */
+export function annotationStatusById(
+  classifications: AnnotationClassification[]
+): Map<string, AnnotationResolveStatus> {
+  return new Map(classifications.map((c) => [c.id, c.result]));
+}
+
+/**
+ * Whether annotation is orphaned.
+ * @param status status
+ */
+export function isAnnotationOrphaned(
+  status: AnnotationResolveStatus | undefined
+): boolean {
+  return status?.status === "orphaned";
+}
+
+/**
+ * Orphan reason if annotation is orphaned.
+ * @param status status
+ */
+export function getAnnotationOrphanReason(
+  status: AnnotationResolveStatus | undefined
+): AnnotationOrphanReason | null {
+  return status?.status === "orphaned" ? status.reason : null;
 }
 
 // =============================================================================
@@ -356,25 +395,20 @@ export function injectHtmlAnnotations(
   annotations: MaterialHighlight[]
 ) {
   if (!annotations?.length) return;
-
   const searchable = getSearchableFromRoots(roots);
-
   const resolved = annotations
     .map((annotation) => {
-      const range = resolveAnnotation(annotation, searchable.text);
-      if (!range) return null;
-
+      const result = classifyAnnotation(annotation, searchable.text);
+      if (result.status !== "active") return null;
       return {
         id: String(annotation.id),
         kind: annotation.kind,
-        start: range.start,
-        end: range.end,
+        start: result.range.start,
+        end: result.range.end,
       };
     })
     .filter(Boolean);
-
   resolved.sort((a, b) => b.start - a.start || b.end - a.end);
-
   for (const r of resolved) {
     wrapOffsetsWithSpan(searchable.segments, r.start, r.end, r.id, r.kind);
   }
@@ -527,6 +561,26 @@ export function buildAnnotationFromSelection(
   );
   return { start, end, index };
 }
+
+export type AnnotationOrphanReason =
+  | "anchor_missing"
+  | "index_out_of_range"
+  | "unresolvable";
+
+export type AnnotationResolveStatus =
+  | { status: "active"; range: { start: number; end: number } }
+  | { status: "orphaned"; reason: AnnotationOrphanReason };
+
+export type AnnotationClassification = {
+  id: string;
+  annotation: MaterialHighlight;
+  result: AnnotationResolveStatus;
+};
+
+// =============================================================================
+// TO HTML UTILITIES
+// =============================================================================
+
 /**
  * Escapes HTML characters in a string.
  * @param str string to escape
