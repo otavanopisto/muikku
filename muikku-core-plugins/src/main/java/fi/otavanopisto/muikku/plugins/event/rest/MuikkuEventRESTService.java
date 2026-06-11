@@ -37,16 +37,15 @@ import fi.otavanopisto.muikku.plugins.event.model.EventAttendance;
 import fi.otavanopisto.muikku.plugins.event.model.EventType;
 import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant;
 import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventProperty;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -82,9 +81,6 @@ public class MuikkuEventRESTService {
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-  
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Path("/event")
   @POST
@@ -428,16 +424,8 @@ public class MuikkuEventRESTService {
     
     // If the container is not found, create one
     if (container == null) {
-      Workspace workspace;
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        workspace = workspaceController.findWorkspace(workspaceEntity);
-      }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
-      }
-      
-      container = eventController.createEventContainer(workspaceEntityId, null, workspace != null ? workspace.getName() : null);
+      WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
+      container = eventController.createEventContainer(workspaceEntityId, null, workspaceEntityName != null ? workspaceEntityName.getName() : null);
     }
     
     return Response.ok(container != null ? container.getId() : null).build();
