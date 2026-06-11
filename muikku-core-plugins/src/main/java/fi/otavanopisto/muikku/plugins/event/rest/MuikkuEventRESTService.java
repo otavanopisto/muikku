@@ -37,6 +37,7 @@ import fi.otavanopisto.muikku.plugins.event.model.EventAttendance;
 import fi.otavanopisto.muikku.plugins.event.model.EventType;
 import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant;
 import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventProperty;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -81,6 +82,9 @@ public class MuikkuEventRESTService {
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Path("/event")
   @POST
@@ -411,7 +415,7 @@ public class MuikkuEventRESTService {
   
   @Path("/workspace/{WORKSPACEENTITYID}/container")
   @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(handling = Handling.INLINE)
   public Response getWorkspaceEventContainerId(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     
     
@@ -425,8 +429,16 @@ public class MuikkuEventRESTService {
     
     // If the container is not found, create one
     if (container == null) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      container = eventController.createEventContainer(workspaceEntityId, null, workspace.getName());
+      Workspace workspace;
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        workspace = workspaceController.findWorkspace(workspaceEntity);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      container = eventController.createEventContainer(workspaceEntityId, null, workspace != null ? workspace.getName() : null);
     }
     
     return Response.ok(container != null ? container.getId() : null).build();
