@@ -23,10 +23,6 @@ export function getNotebookNoteListTitle(note: NotebookNote): string {
     return note.title || "";
   }
 
-  if (isNotebookContextHighlight(note)) {
-    return note.text || "";
-  }
-
   return "";
 }
 
@@ -45,7 +41,7 @@ export function getNotebookNoteBodyHtml(note: NotebookNote): string {
   }
 
   if (isNotebookContextHighlight(note)) {
-    return `<p><mark>${note.text}</mark></p>`;
+    return `<blockquote><p>${note.text}</p></blockquote>`;
   }
 
   return "";

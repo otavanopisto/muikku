@@ -1453,3 +1453,28 @@ audio {
 .material-highlight--highlight {
   background: rgba(160, 220, 255, 0.55);
 }
+
+// Active ring follows the same palette as each highlight kind
+.material-highlight--active {
+  outline-offset: 2px;
+}
+.material-highlight--active[data-muikku-highlight-kind="highlight"] {
+  outline: 2px solid rgba(90, 175, 215, 0.95);
+  box-shadow: 0 0 0 2px rgba(160, 220, 255, 0.55);
+  background: rgba(160, 220, 255, 0.75);
+}
+.material-highlight--active[data-muikku-highlight-kind="note"] {
+  outline: 2px solid rgba(210, 150, 40, 0.95);
+  box-shadow: 0 0 0 2px rgba(255, 220, 120, 0.5);
+  background: rgba(255, 220, 120, 0.9);
+}
+.material-highlight--active[data-muikku-highlight-kind="note-draft"] {
+  outline: 2px dashed rgba(255, 165, 0, 0.95);
+  box-shadow: 0 0 0 2px rgba(255, 200, 80, 0.35);
+  background: rgba(255, 220, 120, 0.65);
+}
+// Fallback: spans without kind (base .material-highlight only)
+.material-highlight--active:not([data-muikku-highlight-kind]) {
+  outline: 2px solid rgba(255, 200, 80, 0.95);
+  box-shadow: 0 0 0 2px rgba(255, 230, 128, 0.45);
+}

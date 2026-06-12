@@ -23,7 +23,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     owner: MOCK_NOTEBOOK_OWNER,
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     title: "Kurssimuistiinpano",
-    text: "<p>Yleinen muistiinpano koko kurssista.</p>",
+    text: "<p>Nulla facilisi. Mauris nibh arcu, vehicula eu molestie in, tempor eu eros. Suspendisse at dolor dapibus ligula vehicula pellentesque. Nulla ac consectetur neque. Mauris ut finibus arcu. Nam vitae purus pharetra, pretium libero eu, scelerisque nibh. Duis aliquet ligula eu accumsan sodales. Nulla eu lacinia ante. Curabitur et porttitor neque. Pellentesque fringilla at orci eu sodales. In volutpat molestie ultrices. Morbi malesuada, massa ac vulputate lobortis, massa tellus tempor sem, nec tempus diam tellus a justo. Aliquam et venenatis sapien, a vehicula lacus. Suspendisse velit dui, mollis non erat id, tincidunt aliquet justo. Aliquam vitae arcu nisi. Nulla consequat, enim rutrum gravida rutrum, erat mauris lacinia sem, nec mattis ipsum tellus ut ex</p>",
   },
   {
     type: NotebookNoteType.Workspace,
@@ -31,7 +31,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     owner: MOCK_NOTEBOOK_OWNER,
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     title: "Kurssimuistiinpano 2",
-    text: "<p>Toinen muistiinpano koko kurssista.</p>",
+    text: "<p>Pellentesque suscipit posuere nibh, eget pretium sapien congue quis. Proin at ligula vitae dui aliquam rhoncus eget et urna. Pellentesque dignissim, arcu sit amet dictum sagittis, dolor nibh pretium sem, vel placerat odio nibh sed massa. Curabitur aliquet porttitor turpis, id molestie erat. Ut id lacinia lorem. Sed luctus tempus quam sed venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In nisl turpis, facilisis a lobortis vel, mollis nec lectus.</p>",
   },
   {
     type: NotebookNoteType.Workspace,
@@ -39,7 +39,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     owner: MOCK_NOTEBOOK_OWNER,
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     title: "Kurssimuistiinpano 3",
-    text: "<p>Kolmas muistiinpano koko kurssista.</p>",
+    text: "<p> Curabitur velit leo, scelerisque sit amet ornare id, porta at dui. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas mollis mauris sed nibh gravida laoreet.</p>",
   },
   {
     type: NotebookNoteType.Workspace,
@@ -47,7 +47,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     owner: MOCK_NOTEBOOK_OWNER,
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     title: "Kurssimuistiinpano 4",
-    text: "<p>Neljäs muistiinpano koko kurssista.</p>",
+    text: "<p> Morbi a viverra eros. Quisque et feugiat nunc. Interdum et malesuada fames ac ante ipsum primis in faucibus. In pulvinar vehicula quam eget finibus. Cras eget enim id nunc hendrerit consequat et ac nisi. Nunc vel libero eu mauris gravida vestibulum a ac tellus. Sed dapibus rutrum nisl a rhoncus.</p>",
   },
 
   // ── WORKSPACE_MATERIAL ───────────────────────────────────
@@ -58,7 +58,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     workspaceMaterialId: MOCK_WORKSPACE_MATERIAL_IDS.page3694,
     title: "Luvun 1 muistiinpanot",
-    text: "<p>Muistiinpano koko materiaalisivusta, ei valintaan sidottu.</p>",
+    text: "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tempus euismod ligula ac facilisis. Donec consequat mi lacus, vel pharetra ex scelerisque quis. Phasellus malesuada, ante nec cursus rhoncus, tortor tortor cursus ex, nec aliquet leo diam vel quam. Duis rutrum vestibulum nulla. Morbi a viverra eros. Quisque et feugiat nunc. Interdum et malesuada fames ac ante ipsum primis in faucibus. In pulvinar vehicula quam eget finibus. Cras eget enim id nunc hendrerit consequat et ac nisi. Nunc vel libero eu mauris gravida vestibulum a ac tellus. Sed dapibus rutrum nisl a rhoncus. Nulla eu felis interdum purus egestas ornare a sollicitudin nunc. Nullam pharetra magna convallis purus dignissim condimentum.</p>",
   },
 
   // ── WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT (short rule) ─────
@@ -108,7 +108,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     workspaceMaterialId: MOCK_WORKSPACE_MATERIAL_IDS.page3694,
     title: "Kommentti kulttuurikäsityksestä",
-    text: "<p>Tämä liittyy valittuun tekstikatkelmaan.</p>",
+    text: "<p>Ut pharetra nulla in lorem sagittis, sit amet mollis turpis elementum. Proin bibendum cursus elementum. Aenean vel tortor viverra, rutrum lorem ut, aliquet velit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer accumsan elit eu rutrum vestibulum. Cras quis dictum nibh. Nunc consectetur metus vitae enim lobortis, nec maximus arcu blandit. Duis eget magna diam. Nulla convallis dapibus lectus, vitae dictum arcu vestibulum id. Aenean vitae arcu ligula. Ut nec tincidunt erat, ac viverra lorem.</p>",
     start: "Sanomalehden ku",
     end: "ja elokuvia.",
     index: 0,
@@ -121,7 +121,7 @@ export const MOCK_NOTEBOOK_NOTES: NotebookNote[] = [
     workspaceEntityId: MOCK_WORKSPACE_ENTITY_ID,
     workspaceMaterialId: MOCK_WORKSPACE_MATERIAL_IDS.page3696,
     title: "Toinen esiintymä",
-    text: "<p>Muistiinpano toisesta kohdasta samalla sivulla.</p>",
+    text: "<p>Suspendisse dapibus odio ac neque mattis malesuada. Phasellus ut tincidunt lacus. In hac habitasse platea dictumst. Nunc facilisis massa condimentum ex mattis, eu malesuada nisl venenatis. Donec viverra sapien sem, nec gravida elit imperdiet vel. Nulla venenatis nisl risus, vel sodales nulla tincidunt vitae. Curabitur velit leo, scelerisque sit amet ornare id, porta at dui. Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas mollis mauris sed nibh gravida laoreet. In hac habitasse platea dictumst. Nulla facilisi. Suspendisse aliquet eleifend erat at porta. Morbi mauris metus, accumsan sed efficitur tincidunt, dignissim quis dolor. Nam mollis, augue quis finibus ornare, augue elit auctor dui, eget venenatis eros nulla vel purus.</p>",
     start: "kulttuurintutkim",
     end: "rintutkimuksessa",
     index: 0,

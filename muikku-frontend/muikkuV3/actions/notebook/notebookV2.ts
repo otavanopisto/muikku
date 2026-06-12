@@ -61,6 +61,14 @@ export type NOTEBOOK_V2_UI_CLEAR_NOTEBOOK_TAB_REQUEST = SpecificActionType<
   "NOTEBOOK_V2_UI_CLEAR_NOTEBOOK_TAB_REQUEST",
   void
 >;
+export type NOTEBOOK_V2_SET_ACTIVE_ITEM = SpecificActionType<
+  "NOTEBOOK_V2_SET_ACTIVE_ITEM",
+  number
+>;
+export type NOTEBOOK_V2_CLEAR_ACTIVE_ITEM = SpecificActionType<
+  "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM",
+  void
+>;
 
 /**
  * LoadNotebookV2Entries
@@ -236,6 +244,23 @@ export interface ClearNotebookV2NotebookTabRequest {
 }
 
 /**
+ * SetNotebookV2ActiveItem
+ * @param noteId noteId
+ * @returns AnyActionType
+ */
+export interface SetNotebookV2ActiveItem {
+  (noteId: number): AnyActionType;
+}
+
+/**
+ * ClearNotebookV2ActiveItem
+ * @returns AnyActionType
+ */
+export interface ClearNotebookV2ActiveItem {
+  (): AnyActionType;
+}
+
+/**
  * ReloadNotebookV2EntriesForCurrentWorkspace
  * @param dispatch dispatch
  * @param getState getState
@@ -347,6 +372,9 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
     ) => {
       removeMockNotebookNote(data.noteId);
       reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
+      if (getState().notebookV2.activeItemId === data.noteId) {
+        dispatch({ type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM", payload: undefined });
+      }
       data.success?.();
     };
   };
@@ -516,7 +544,7 @@ const beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft =
             start: data.start,
             end: data.end,
             index: data.index,
-            text: "<p></p>",
+            text: `<blockquote><p>${data.selectedText}</p></blockquote>`,
           },
           openNotebookTab: data.openNotebookTab ?? true,
         },
@@ -669,6 +697,7 @@ const saveNotebookV2ContextNoteDraft: SaveNotebookV2ContextNoteDraft =
         index: draft.index,
       });
       dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
+      dispatch({ type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM", payload: undefined });
       reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
       dispatch(
         displayNotification(
@@ -677,6 +706,29 @@ const saveNotebookV2ContextNoteDraft: SaveNotebookV2ContextNoteDraft =
         )
       );
       data.success?.();
+    };
+  };
+
+/**
+ * SetNotebookV2ActiveItem
+ * @param noteId noteId
+ * @returns AnyActionType
+ */
+const setNotebookV2ActiveItem: SetNotebookV2ActiveItem =
+  function setNotebookV2ActiveItem(noteId) {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_SET_ACTIVE_ITEM", payload: noteId });
+    };
+  };
+
+/**
+ * ClearNotebookV2ActiveItem
+ * @returns AnyActionType
+ */
+const clearNotebookV2ActiveItem: ClearNotebookV2ActiveItem =
+  function clearNotebookV2ActiveItem() {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM", payload: undefined });
     };
   };
 
@@ -698,4 +750,6 @@ export {
   saveNotebookV2WorkspaceDraft,
   saveNotebookV2MaterialDraft,
   saveNotebookV2ContextNoteDraft,
+  setNotebookV2ActiveItem,
+  clearNotebookV2ActiveItem,
 };

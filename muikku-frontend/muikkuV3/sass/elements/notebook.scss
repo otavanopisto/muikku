@@ -91,6 +91,12 @@
     border: 2px solid $color-fatal;
     padding: 9px;
   }
+
+  &.state-ACTIVE {
+    border: 2px solid blue;
+    padding: 9px;
+    box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
+  }
 }
 
 .notebook__item-delete-container {

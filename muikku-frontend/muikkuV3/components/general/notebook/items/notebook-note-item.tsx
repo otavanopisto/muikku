@@ -3,13 +3,14 @@ import { NotebookNote, NotebookNoteType } from "~/generated/client";
 import { IconButton } from "../../button";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   cancelNotebookV2Draft,
   deleteNotebookV2Entry,
   saveNotebookV2ContextNoteDraft,
   saveNotebookV2MaterialDraft,
   saveNotebookV2WorkspaceDraft,
+  setNotebookV2ActiveItem,
   updateEditedNotebookV2Entry,
 } from "~/actions/notebook/notebookV2";
 import {
@@ -20,12 +21,19 @@ import {
   isNotebookNoteDeletable,
   isNotebookNoteEditable,
 } from "../helpers/notebook-display";
+import {
+  isNotebookMaterialLinkedItem,
+  resolveWorkspaceMaterialIdForActiveItem,
+  scrollToActiveMaterialItem,
+  syncActiveMaterialHighlight,
+} from "../helpers/notebook-active-item";
 import { isNotebookDraftId } from "../helpers/notebook-drafts";
 import NotebookItemShell from "./notebook-item-shell";
 import NotebookItemDeleteConfirm from "./notebook-item-delete-confirm";
 import NotebookNoteEditor from "../notebook-note-editor";
 import { resolveNotebookContextOrphanStatus } from "../helpers/notebook-annotation-status";
 import NotebookItemOrphanBadge from "./notebook-item-orphan-badge";
+import { StateType } from "~/reducers";
 
 /**
  * NotebookNoteItemProps
@@ -47,6 +55,12 @@ const NotebookNoteItem = (props: NotebookNoteItemProps) => {
   const { note, open, onToggle, materialHtml, isDraft: isDraftProp } = props;
   const { t } = useTranslation("notebook");
   const dispatch = useDispatch();
+
+  const activeItemId = useSelector(
+    (state: StateType) => state.notebookV2.activeItemId
+  );
+  const notes = useSelector((state: StateType) => state.notebookV2.notes);
+  const drafts = useSelector((state: StateType) => state.notebookV2.drafts);
 
   const isDraft = isDraftProp ?? isNotebookDraftId(note.id);
   const [isEditing, setIsEditing] = React.useState(isDraft);
@@ -157,6 +171,29 @@ const NotebookNoteItem = (props: NotebookNoteItemProps) => {
     );
   };
 
+  /**
+   * Handle activate
+   */
+  const handleActivate = () => {
+    const willDeactivate = activeItemId === note.id;
+    dispatch(setNotebookV2ActiveItem(note.id));
+    if (willDeactivate) {
+      syncActiveMaterialHighlight(null);
+      return;
+    }
+    if (!isNotebookMaterialLinkedItem(note)) {
+      return;
+    }
+    const workspaceMaterialId = resolveWorkspaceMaterialIdForActiveItem(
+      note.id,
+      notes,
+      drafts
+    );
+    if (workspaceMaterialId != null) {
+      scrollToActiveMaterialItem(workspaceMaterialId, note.id);
+    }
+  };
+
   const extraActions = (
     <>
       {canEdit && !isEditing && (
@@ -182,6 +219,9 @@ const NotebookNoteItem = (props: NotebookNoteItemProps) => {
 
   return (
     <NotebookItemShell
+      noteId={note.id}
+      active={activeItemId === note.id}
+      onActivate={handleActivate}
       title={getNotebookNoteListTitle(note)}
       bodyHtml={getNotebookNoteBodyHtml(note)}
       open={isDraft || isEditing ? true : open}

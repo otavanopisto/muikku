@@ -64,6 +64,7 @@ import {
   getContextNoteDraftHighlightsForPage,
   NotebookContextNoteDraft,
 } from "~/components/general/notebook/helpers/notebook-drafts";
+import { syncActiveMaterialHighlight } from "~/components/general/notebook/helpers/notebook-active-item";
 
 /**
  * WorkspaceMaterialsProps
@@ -79,6 +80,7 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   navigation: React.ReactElement<any>;
   activeNodeId: number;
   workspaceEditMode: WorkspaceEditModeStateType;
+  activeNotebookItemId: number | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
@@ -155,6 +157,26 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: WorkspaceMaterialsProps) {
+    if (this.props.materials !== prevProps.materials) {
+      this.getFlattenedMaterials(this.props);
+    }
+    if (
+      this.props.activeNotebookItemId !== prevProps.activeNotebookItemId ||
+      this.props.noteBookNotes !== prevProps.noteBookNotes ||
+      this.props.notebookContextNoteDrafts !==
+        prevProps.notebookContextNoteDrafts
+    ) {
+      window.requestAnimationFrame(() => {
+        syncActiveMaterialHighlight(this.props.activeNotebookItemId);
+      });
+    }
+  }
+
+  /**
    * componentWillUnmount
    */
   componentWillUnmount() {
@@ -195,11 +217,11 @@ class WorkspaceMaterials extends React.Component<
    * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
+  /* UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
     if (this.props.materials !== nextProps.materials) {
       this.getFlattenedMaterials(nextProps);
     }
-  }
+  } */
 
   /**
    * handleMakeHighlight
@@ -1189,6 +1211,7 @@ function mapStateToProps(state: StateType) {
     workspaceEditMode: state.workspaces.editMode,
     noteBookNotes: state.notebookV2.notes,
     notebookContextNoteDrafts: state.notebookV2.drafts.contextNotes,
+    activeNotebookItemId: state.notebookV2.activeItemId,
   };
 }
 

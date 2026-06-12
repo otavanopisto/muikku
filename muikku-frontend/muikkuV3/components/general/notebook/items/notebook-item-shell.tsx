@@ -9,6 +9,9 @@ import { useTranslation } from "react-i18next";
  * NotebookItemShellProps
  */
 export interface NotebookItemShellProps {
+  noteId?: number;
+  active?: boolean;
+  onActivate?: () => void;
   title: string;
   open: boolean;
   onToggle: () => void;
@@ -31,6 +34,9 @@ export interface NotebookItemShellProps {
  */
 const NotebookItemShell = (props: NotebookItemShellProps) => {
   const {
+    noteId,
+    active = false,
+    onActivate,
     title,
     open,
     titleAdornment,
@@ -53,6 +59,7 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
     editing ? "state-EDITING" : "",
     deleting ? "state-DELETING" : "",
     orphaned ? "state-ORPHANED" : "",
+    active ? "state-ACTIVE" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -62,15 +69,14 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
   return (
     <div
       className={itemClasses}
+      data-notebook-item-id={noteId != null ? String(noteId) : undefined}
       data-notebook-draft-id={
         draftClientId != null ? String(draftClientId) : undefined
       }
+      onClick={() => onActivate?.()}
     >
       <div className="notebook__item-header">
-        <div
-          className="notebook__item-title"
-          onClick={editing ? undefined : onToggle}
-        >
+        <div className="notebook__item-title">
           {titleAdornment}
           <span className="notebook__item-title-text">{title}</span>
         </div>

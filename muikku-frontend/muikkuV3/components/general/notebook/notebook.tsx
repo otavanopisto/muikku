@@ -7,12 +7,14 @@ import { NoteList } from "./notebook-notes-list";
 import {
   loadNotebookV2Entries,
   clearNotebookV2FocusDraft,
+  clearNotebookV2ActiveItem,
 } from "~/actions/notebook/notebookV2";
 import { useNotebookViewModel } from "./hooks/useNotebookViewModel";
 import NotebookWorkspaceSection from "./sections/notebook-workspace-section";
 import NotebookMaterialSection from "./sections/notebook-material-section";
 import { useDragDropManager } from "react-dnd";
 import { useScroll } from "./hooks/useScroll";
+import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
 
 /**
  * NotebookProps
@@ -33,6 +35,9 @@ const Notebook = (props: NotebookProps) => {
   const userId = useSelector((state: StateType) => state.status.userId);
   const focusDraftClientId = useSelector(
     (state: StateType) => state.notebookV2.focusDraftClientId
+  );
+  const activeItemId = useSelector(
+    (state: StateType) => state.notebookV2.activeItemId
   );
   const viewModel = useNotebookViewModel();
   const { notes, state } = notebookV2;
@@ -72,6 +77,15 @@ const Notebook = (props: NotebookProps) => {
     });
     return () => window.cancelAnimationFrame(frame);
   }, [dispatch, focusDraftClientId]);
+
+  /**
+   * Handle dismiss active item
+   */
+  const handleDismissActiveItem = React.useCallback(() => {
+    dispatch(clearNotebookV2ActiveItem());
+  }, [dispatch]);
+
+  useDismissNotebookActiveItem(activeItemId, handleDismissActiveItem);
 
   const isLoading = state === "LOADING" || notes === null;
 
