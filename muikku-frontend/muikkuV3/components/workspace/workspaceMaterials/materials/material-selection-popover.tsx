@@ -16,6 +16,7 @@ export type MaterialSelectionPopoverProps = {
   pageIndex: number;
   materialHtml: string;
   onMakeHighlight?: (
+    text: string,
     start: string,
     end: string,
     index: number,
@@ -65,8 +66,9 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
           pageBoundarySelector,
           annotatableSelector: MATERIAL_CONTENT_SELECTOR,
           // eslint-disable-next-line jsdoc/require-jsdoc
-          onMakeHighlight: (start, end, index) =>
+          onMakeHighlight: (text, start, end, index) =>
             props.onMakeHighlight!(
+              text,
               start,
               end,
               index,

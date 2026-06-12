@@ -46,11 +46,24 @@ import {
 import {
   MaterialCompositeReply,
   MaterialViewRestriction,
+  NotebookNote,
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 import MaterialSelectionPopover from "./material-selection-popover";
 import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { getMaterialHighlightsByPageFromNotes } from "~/helper-functions/notebook";
+import {
+  beginNotebookV2ContextNoteDraft,
+  BeginNotebookV2ContextNoteDraft,
+  saveNewNotebookV2ContextHighlight,
+  SaveNewNotebookV2ContextHighlight,
+} from "~/actions/notebook/notebookV2";
+import { filterActiveMaterialHighlights } from "~/util/html";
+import {
+  getContextNoteDraftHighlightsForPage,
+  NotebookContextNoteDraft,
+} from "~/components/general/notebook/helpers/notebook-drafts";
 
 /**
  * WorkspaceMaterialsProps
@@ -60,6 +73,8 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   workspace: WorkspaceDataType;
   materials: MaterialContentNodeWithIdAndLogic[];
   materialReplies: MaterialCompositeReply[];
+  noteBookNotes: NotebookNote[];
+  notebookContextNoteDrafts: NotebookContextNoteDraft[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
@@ -71,6 +86,8 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
   displayNotification: DisplayNotificationTriggerType;
+  saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight;
+  beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft;
 }
 
 /**
@@ -79,7 +96,6 @@ interface WorkspaceMaterialsProps extends WithTranslation {
 interface WorkspaceMaterialsState {
   defaultOffset: number;
   redirect: string;
-  highlights: { [workspaceMaterialId: number]: MaterialHighlight[] };
 }
 
 const DEFAULT_OFFSET = 67;
@@ -107,39 +123,6 @@ class WorkspaceMaterials extends React.Component<
     this.state = {
       defaultOffset: DEFAULT_OFFSET,
       redirect: null,
-      highlights: {
-        3694: [
-          {
-            id: 2,
-            workspaceMaterialId: 3694,
-            fieldName: null,
-            start: "Laaja kulttuurikä",
-            end: "aalikäsityksiin.",
-            index: 0,
-            kind: "comment",
-          },
-          {
-            id: 3,
-            workspaceMaterialId: 3694,
-            fieldName: null,
-            start: "Sanomalehden ku",
-            end: "ja elokuvia.",
-            index: 0,
-            kind: "comment",
-          },
-        ],
-        3696: [
-          {
-            end: "ulaarikulttuuria",
-            fieldName: null,
-            id: 2,
-            index: 0,
-            kind: "highlight",
-            start: "populaarikulttuu",
-            workspaceMaterialId: 3696,
-          },
-        ],
-      },
     };
 
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
@@ -179,6 +162,36 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
+   * getHighlightsForPage
+   * Saved context items + preview for unsaved context note drafts.
+   * @param workspaceMaterialId workspaceMaterialId
+   * @param materialHtml materialHtml
+   * @returns MaterialHighlight[]
+   */
+  private getHighlightsForPage(
+    workspaceMaterialId: number,
+    materialHtml: string
+  ): MaterialHighlight[] {
+    const fromNotebook =
+      getMaterialHighlightsByPageFromNotes(this.props.noteBookNotes ?? [])[
+        workspaceMaterialId
+      ] ?? [];
+    const savedHighlights = filterActiveMaterialHighlights(
+      materialHtml,
+      fromNotebook
+    );
+    const draftHighlights = getContextNoteDraftHighlightsForPage(
+      this.props.notebookContextNoteDrafts ?? [],
+      workspaceMaterialId
+    );
+    const activeDraftHighlights = filterActiveMaterialHighlights(
+      materialHtml,
+      draftHighlights
+    );
+    return [...savedHighlights, ...activeDraftHighlights];
+  }
+
+  /**
    * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
@@ -190,34 +203,25 @@ class WorkspaceMaterials extends React.Component<
 
   /**
    * handleMakeHighlight
+   * @param text text
    * @param start start
    * @param end end
    * @param index index
    * @param workspaceMaterialId workspaceMaterialId
    */
   handleMakeHighlight = (
+    text: string,
     start: string,
     end: string,
     index: number,
     workspaceMaterialId: number
   ) => {
-    this.setState({
-      ...this.state,
-      highlights: {
-        ...this.state.highlights,
-        [workspaceMaterialId]: [
-          ...this.state.highlights[workspaceMaterialId],
-          {
-            fieldName: null,
-            index,
-            id: this.state.highlights[workspaceMaterialId].length + 1,
-            workspaceMaterialId,
-            start,
-            end,
-            kind: "highlight",
-          },
-        ],
-      },
+    this.props.saveNewNotebookV2ContextHighlight({
+      workspaceMaterialId,
+      text,
+      start,
+      end,
+      index,
     });
   };
 
@@ -236,23 +240,13 @@ class WorkspaceMaterials extends React.Component<
     index: number,
     workspaceMaterialId: number
   ) => {
-    this.setState({
-      ...this.state,
-      highlights: {
-        ...this.state.highlights,
-        [workspaceMaterialId]: [
-          ...this.state.highlights[workspaceMaterialId],
-          {
-            fieldName: null,
-            index,
-            id: this.state.highlights[workspaceMaterialId].length + 1,
-            workspaceMaterialId,
-            start,
-            end,
-            kind: "comment",
-          },
-        ],
-      },
+    this.props.beginNotebookV2ContextNoteDraft({
+      workspaceMaterialId,
+      selectedText: text,
+      start,
+      end,
+      index,
+      openNotebookTab: true,
     });
   };
 
@@ -1018,9 +1012,10 @@ class WorkspaceMaterials extends React.Component<
               >
                 {/*TOP OF THE PAGE*/}
                 <WorkspaceMaterial
-                  highlights={
-                    this.state.highlights[node.workspaceMaterialId] || []
-                  }
+                  highlights={this.getHighlightsForPage(
+                    node.workspaceMaterialId,
+                    node.html
+                  )}
                   folder={section}
                   materialContentNode={node}
                   workspace={this.props.workspace}
@@ -1192,6 +1187,8 @@ function mapStateToProps(state: StateType) {
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
+    noteBookNotes: state.notebookV2.notes,
+    notebookContextNoteDrafts: state.notebookV2.drafts.contextNotes,
   };
 }
 
@@ -1207,6 +1204,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       updateWorkspaceMaterialContentNode,
       materialShowOrHideExtraTools,
       displayNotification,
+      saveNewNotebookV2ContextHighlight,
+      beginNotebookV2ContextNoteDraft,
     },
     dispatch
   );

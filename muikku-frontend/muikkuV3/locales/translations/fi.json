@@ -1998,7 +1998,8 @@
       "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
     },
     "labels": {
-      "defaultPosition": "Oletussijainti"
+      "defaultPosition": "Oletussijainti",
+      "orphanedNote": "Vanhentunut"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

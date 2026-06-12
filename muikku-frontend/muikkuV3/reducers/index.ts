@@ -33,6 +33,7 @@ import { PedagogySupportState } from "./pedagogy-support";
 import { StudyActivityState } from "./study-activity";
 import { GuardianState } from "./main-function/guardian";
 import { MuikkuEventsState } from "./base/muikku-events";
+import { NoteBookV2State } from "./notebook/notebookV2";
 
 /**
  * StateType
@@ -66,6 +67,7 @@ export interface StateType {
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
   notebook?: NoteBookState;
+  notebookV2?: NoteBookV2State;
   hopsNew?: HopsState;
   exams?: ExamsState;
   muikkuEvents: MuikkuEventsState;

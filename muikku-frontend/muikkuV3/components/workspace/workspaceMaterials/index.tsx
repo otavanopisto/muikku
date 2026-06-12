@@ -5,7 +5,7 @@ import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
 import Tabs, { Tab } from "~/components/general/tabs";
-import NoteBook from "~/components/general/note-book/note-book";
+//import NoteBook from "~/components/general/note-book/note-book";
 import {
   DndProvider,
   MouseTransition,
@@ -20,6 +20,13 @@ import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialEditorV2 } from "~/components/base/material-editorV2";
+import Notebook from "~/components/general/notebook/notebook";
+import {
+  clearNotebookV2NotebookTabRequest,
+  ClearNotebookV2NotebookTabRequest,
+} from "~/actions/notebook/notebookV2";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -50,6 +57,8 @@ interface WorkspaceMaterialsBodyProps extends WithTranslation {
   onCloseEnrollmentDialog: () => void;
   onCloseSignupDialog: () => void;
   status: StatusType;
+  openNotebookTabRequest: boolean;
+  clearNotebookV2NotebookTabRequest: ClearNotebookV2NotebookTabRequest;
 }
 
 /**
@@ -102,6 +111,25 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
+  componentDidUpdate(
+    prevProps: WorkspaceMaterialsBodyProps,
+    prevState: WorkspaceMaterialBodyState
+  ) {
+    if (
+      this.props.openNotebookTabRequest &&
+      !prevProps.openNotebookTabRequest &&
+      this.state.activeTab !== "notebook"
+    ) {
+      this.setStateAndStore({ activeTab: "notebook" }, this.state.draftId);
+      this.props.clearNotebookV2NotebookTabRequest();
+    }
+  }
+
+  /**
    * handleActiveTabChange
    * @param tab change to
    */
@@ -129,7 +157,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         name: this.props.t("labels.notes", { ns: "materials" }),
         component: (
           <DndProvider options={HTML5toTouch}>
-            <NoteBook />
+            <Notebook />
           </DndProvider>
         ),
       });
@@ -177,13 +205,26 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
+    openNotebookTabRequest: state.notebookV2.openNotebookTabRequest,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      clearNotebookV2NotebookTabRequest,
+    },
+    dispatch
+  );
+}
 const componentWithTranslation = withTranslation("materials", {
   withRef: true,
 })(WorkspaceMaterialsBody);
 
-export default connect(mapStateToProps, null, null, {
+export default connect(mapStateToProps, mapDispatchToProps, null, {
   forwardRef: true,
 })(componentWithTranslation);

@@ -1998,7 +1998,8 @@
       "remove": "Are you sure you wish to deöete the note?"
     },
     "labels": {
-      "defaultPosition": "Default position"
+      "defaultPosition": "Default position",
+      "orphanedNote": "Obsolete"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",

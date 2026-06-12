@@ -2801,7 +2801,7 @@ paths:
           description: Attempted to make a call with unauthorized client
 
   #EVALUATION
-  
+
   /rest/evaluation/user/{userEntityId}/workspaceMaterial/{workspaceMaterialId}/field/{fieldName}:
     post:
       operationId: createFieldAnswerSnapshot
@@ -2861,7 +2861,7 @@ paths:
           description: Snapshot deleted successfully
         "403":
           description: Unallowed access
-  
+
   /rest/evaluation/compositeAssessmentRequests:
     get:
       operationId: getCompositeAssessmentRequests
@@ -16514,7 +16514,7 @@ components:
         value:
           description: Field value
           type: string
-    
+
     MaterialAnswer:
       type: object
       description: MaterialAnswer object
@@ -20057,6 +20057,185 @@ components:
           type: boolean
         archivable:
           type: boolean
+
+    NotebookNote:
+      discriminator:
+        propertyName: type
+        mapping:
+          WORKSPACE: "#/components/schemas/NotebookWorkspaceNote"
+          WORKSPACE_MATERIAL: "#/components/schemas/NotebookWorkspaceMaterialNote"
+          WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT: "#/components/schemas/NotebookWorkspaceMaterialContextHighlight"
+          WORKSPACE_MATERIAL_CONTEXT_NOTE: "#/components/schemas/NotebookWorkspaceMaterialContextNote"
+      oneOf:
+        - $ref: "#/components/schemas/NotebookWorkspaceNote"
+        - $ref: "#/components/schemas/NotebookWorkspaceMaterialNote"
+        - $ref: "#/components/schemas/NotebookWorkspaceMaterialContextNote"
+        - $ref: "#/components/schemas/NotebookWorkspaceMaterialContextHighlight"
+
+    NotebookNoteType:
+      type: string
+      enum:
+        - WORKSPACE
+        - WORKSPACE_MATERIAL
+        - WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT
+        - WORKSPACE_MATERIAL_CONTEXT_NOTE
+
+    NotebookWorkspaceNote:
+      type: object
+      description: WorkspaceNote object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - title
+        - text
+        - type
+      properties:
+        id:
+          type: integer
+          format: int64
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        title:
+          description: The title of the note
+          type: string
+        text:
+          description: Rich text content of the note
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+
+    NotebookWorkspaceMaterialNote:
+      type: object
+      description: WorkspaceMaterialNote object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - workspaceMaterialId
+        - title
+        - text
+        - type
+      properties:
+        id:
+          type: integer
+          format: int64
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        workspaceMaterialId:
+          description: The id of the material in the workspace
+          type: integer
+          format: int64
+        title:
+          description: The title of the note
+          type: string
+        text:
+          description: Rich text content of the note
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+
+    NotebookWorkspaceMaterialContextHighlight:
+      type: object
+      description: WorkspaceMaterialContextHighlight object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - workspaceMaterialId
+        - text
+        - type
+        - start
+        - end
+        - index
+      properties:
+        id:
+          type: integer
+          format: int64
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        workspaceMaterialId:
+          description: The id of the material in the workspace
+          type: integer
+          format: int64
+        text:
+          description: Rich text content of the quoted highlighted text
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+        start:
+          description: First 16 characters of the highlighted text or full selection if shorter than 16 characters.
+          type: string
+        end:
+          description: Last 16 characters of the highlighted text or full selection if shorter than 16 characters.
+          type: string
+        index:
+          description: Index of the occurence of the selected text. Default is 0 if no occurence is found.
+          type: integer
+          format: int64
+
+    NotebookWorkspaceMaterialContextNote:
+      type: object
+      description: WorkspaceMaterialContextNote object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - workspaceMaterialId
+        - title
+        - text
+        - type
+        - start
+        - end
+        - index
+      properties:
+        id:
+          type: integer
+          format: int64
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        workspaceMaterialId:
+          description: The id of the material in the workspace
+          type: integer
+          format: int64
+        title:
+          description: The title of the note
+          type: string
+        text:
+          description: Rich text content of the note
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+        start:
+          description: First 16 characters of the selected text or full selection if shorter than 16 characters.
+          type: string
+        end:
+          description: Last 16 characters of the selected text or full selection if shorter than 16 characters.
+          type: string
+        index:
+          description: Index of the occurence of the selected text. Default is 0 if no occurence is found.
+          type: integer
+          format: int64
 
     WorkspaceNote:
       type: object

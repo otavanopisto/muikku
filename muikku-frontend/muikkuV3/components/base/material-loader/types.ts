@@ -145,7 +145,7 @@ export interface FieldSyncStatePatch {
   syncError?: string | null;
 }
 
-export type MaterialHighlightKind = "comment" | "highlight";
+export type MaterialHighlightKind = "note" | "note-draft" | "highlight";
 
 /**
  * MaterialHighlight

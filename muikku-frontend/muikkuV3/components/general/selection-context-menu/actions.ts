@@ -68,7 +68,12 @@ type CreateHighlightActionOptions = {
   pageBoundarySelector: string;
   /** Annotatable content scope inside page */
   annotatableSelector: string;
-  onMakeHighlight: (start: string, end: string, index: number) => void;
+  onMakeHighlight: (
+    text: string,
+    start: string,
+    end: string,
+    index: number
+  ) => void;
 };
 
 /**
@@ -111,7 +116,7 @@ export function createHighlightAction(
         ctx.close();
         return;
       }
-      options.onMakeHighlight(built.start, built.end, built.index);
+      options.onMakeHighlight(ctx.text, built.start, built.end, built.index);
       ctx.close();
     },
   };

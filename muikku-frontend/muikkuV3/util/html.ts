@@ -321,6 +321,37 @@ export function isAnnotationOrphaned(
 }
 
 /**
+ * Keep only annotations that resolve as active for this page HTML.
+ * Same rules as notebook orphan badge (classifyAnnotationsForMaterialHtml).
+ * @param materialHtml material html
+ * @param annotations annotations
+ */
+export function filterActiveMaterialHighlights(
+  materialHtml: string,
+  annotations: MaterialHighlight[]
+): MaterialHighlight[] {
+  if (!materialHtml || !annotations?.length) return [];
+
+  return classifyAnnotationsForMaterialHtml(materialHtml, annotations)
+    .filter((c) => !isAnnotationOrphaned(c.result))
+    .map((c) => c.annotation);
+}
+
+/**
+ * Resolve anchor + index to character offsets in searchable text.
+ * Caller must pre-filter orphans (filterActiveMaterialHighlights).
+ * @param annotation annotation
+ * @param searchableText searchable text
+ */
+function resolveAnnotationRange(
+  annotation: Pick<MaterialHighlight, "start" | "end" | "index">,
+  searchableText: string
+): { start: number; end: number } | null {
+  const result = classifyAnnotation(annotation, searchableText);
+  return result.status === "active" ? result.range : null;
+}
+
+/**
  * Orphan reason if annotation is orphaned.
  * @param status status
  */
@@ -398,13 +429,13 @@ export function injectHtmlAnnotations(
   const searchable = getSearchableFromRoots(roots);
   const resolved = annotations
     .map((annotation) => {
-      const result = classifyAnnotation(annotation, searchable.text);
-      if (result.status !== "active") return null;
+      const range = resolveAnnotationRange(annotation, searchable.text);
+      if (!range) return null;
       return {
         id: String(annotation.id),
         kind: annotation.kind,
-        start: result.range.start,
-        end: result.range.end,
+        start: range.start,
+        end: range.end,
       };
     })
     .filter(Boolean);

@@ -5,36 +5,6 @@ import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 import i18n from "~/locales/i18n";
 import { StateConfig } from "./types";
 
-/* const HIGHLIGHT_MOCKS: MaterialHighlight[] = [
-  {
-    id: 2,
-    workspaceMaterialId: 456,
-    fieldName: null,
-    start: "Laaja kulttuurikä",
-    end: "aalikäsityksiin.",
-    index: 0,
-    kind: "comment",
-  },
-  {
-    id: 3,
-    workspaceMaterialId: 456,
-    fieldName: null,
-    start: "Sanomalehden ku",
-    end: "ja elokuvia.",
-    index: 0,
-    kind: "comment",
-  },
-  {
-    id: 4,
-    workspaceMaterialId: 456,
-    fieldName: null,
-    start: "Laajan kulttuur",
-    end: "tavat ja lukijat.",
-    index: 0,
-    kind: "highlight",
-  },
-]; */
-
 /**
  * MaterialLoaderContentProps
  */

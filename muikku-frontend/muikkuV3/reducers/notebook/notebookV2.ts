@@ -1,0 +1,112 @@
+import { Reducer } from "redux";
+import { ActionType } from "~/actions";
+import { NotebookNote } from "~/generated/client";
+import { ReducerStatusType } from "~/reducers/types";
+import {
+  EMPTY_NOTEBOOK_V2_DRAFTS,
+  NotebookV2DraftsState,
+  removeDraftByClientId,
+} from "~/components/general/notebook/helpers/notebook-drafts";
+
+/**
+ * NoteBookV2State
+ */
+export interface NoteBookV2State {
+  notes: NotebookNote[] | null;
+  state: ReducerStatusType;
+  drafts: NotebookV2DraftsState;
+  focusDraftClientId: number | null;
+  openNotebookTabRequest: boolean;
+}
+
+const initialState: NoteBookV2State = {
+  notes: null,
+  state: "IDLE",
+  drafts: EMPTY_NOTEBOOK_V2_DRAFTS,
+  focusDraftClientId: null,
+  openNotebookTabRequest: false,
+};
+
+/**
+ * Reducer function for notebook V2
+ * @param state - Current state
+ * @param action - Action
+ * @returns New state
+ */
+export const notebookV2: Reducer<NoteBookV2State> = (
+  state = initialState,
+  action: ActionType
+) => {
+  switch (action.type) {
+    case "NOTEBOOK_V2_UPDATE_STATE":
+      return { ...state, state: action.payload };
+
+    case "NOTEBOOK_V2_LOAD_ENTRIES":
+      return { ...state, notes: action.payload };
+
+    case "NOTEBOOK_V2_BEGIN_WORKSPACE_DRAFT":
+      return {
+        ...state,
+        drafts: {
+          ...state.drafts,
+          workspaceNote: action.payload,
+        },
+      };
+
+    case "NOTEBOOK_V2_BEGIN_MATERIAL_DRAFT":
+      return {
+        ...state,
+        drafts: {
+          ...state.drafts,
+          materialNotes: {
+            ...state.drafts.materialNotes,
+            [action.payload.workspaceMaterialId]: action.payload,
+          },
+        },
+      };
+
+    case "NOTEBOOK_V2_BEGIN_CONTEXT_NOTE_DRAFT":
+      return {
+        ...state,
+        drafts: {
+          ...state.drafts,
+          contextNotes: [...state.drafts.contextNotes, action.payload.draft],
+        },
+        focusDraftClientId: action.payload.draft.clientId,
+        openNotebookTabRequest: action.payload.openNotebookTab ?? false,
+      };
+
+    case "NOTEBOOK_V2_CANCEL_DRAFT":
+      return {
+        ...state,
+        drafts: removeDraftByClientId(state.drafts, action.payload),
+        focusDraftClientId:
+          state.focusDraftClientId === action.payload
+            ? null
+            : state.focusDraftClientId,
+      };
+
+    case "NOTEBOOK_V2_DRAFTS_CLEAR_ALL":
+      return {
+        ...state,
+        drafts: EMPTY_NOTEBOOK_V2_DRAFTS,
+        focusDraftClientId: null,
+        openNotebookTabRequest: false,
+      };
+
+    case "NOTEBOOK_V2_FOCUS_DRAFT_CLEAR":
+      return {
+        ...state,
+        focusDraftClientId: null,
+      };
+
+    case "NOTEBOOK_V2_UI_CLEAR_NOTEBOOK_TAB_REQUEST":
+      return {
+        ...state,
+        openNotebookTabRequest: false,
+      };
+
+    default:
+      return state;
+  }
+};

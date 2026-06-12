@@ -222,3 +222,83 @@
   margin: 5px 0 0;
   padding: 5px 0 0;
 }
+
+.notebook__section {
+  margin-bottom: 1.5rem;
+}
+
+.notebook__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.notebook__section-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.notebook__section-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.notebook__page-group {
+  margin-bottom: 1.25rem;
+}
+
+.notebook__page-group-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.notebook__page-group-divider {
+  border-top: 1px solid $color-default-separator-border;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.notebook__section-editor {
+  margin-bottom: 1rem;
+}
+
+.notebook__item-editor {
+  margin-top: 0.5rem;
+}
+
+.notebook__item.state-EDITING {
+  .notebook__item-title {
+    cursor: default;
+  }
+}
+
+.notebook__item-title {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.notebook__item-title-text {
+  min-width: 0;
+}
+
+.notebook__item-orphan-badge {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 3px;
+  color: #856404;
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.125rem 0.375rem;
+  text-transform: uppercase;
+}
+
+.notebook__item.state-ORPHANED {
+  .notebook__item-title-text {
+    opacity: 0.85;
+  }
+}
