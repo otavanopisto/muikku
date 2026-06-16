@@ -482,10 +482,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        sleep(2000);
         waitForVisible(".memofield__ckeditor-replacement--evaluation p");
         waitAndClick(".button-icon--snapshot");
-        sleep(2000);
         waitForVisible(".field-snapshot-list .field-snapshot");
         
         waitAndClickAndConfirm(".dialog--evaluation.dialog--visible a.button--evaluation-add-supplementation", ".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents", 10, 5000);
@@ -536,11 +534,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        sleep(2000);
         waitForVisible(".memofield__ckeditor-replacement--evaluation p");
         assertText(".memofield__ckeditor-replacement--evaluation p", "Something additional I just learned.");
         waitAndClick(".field-snapshot__row .field-snapshot__toggle");
-        sleep(2000);
         waitForVisible(".field-snapshot__accordion .memofield__ckeditor-replacement--evaluation");
         assertText(".field-snapshot__accordion .memofield__ckeditor-replacement--evaluation", contentInput);
       } finally {
