@@ -13,7 +13,7 @@ public abstract class CorePluginsDAO<T> extends PluginDAO<T> {
     return entityManager;
   }
 
-  @PersistenceContext (unitName = "muikku-core-plugins")
+  @PersistenceContext (unitName = "muikku")
   private EntityManager entityManager;
   
 }
