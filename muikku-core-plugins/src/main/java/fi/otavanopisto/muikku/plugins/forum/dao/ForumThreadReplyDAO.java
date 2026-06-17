@@ -11,13 +11,13 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply_;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread_;
+import fi.otavanopisto.muikku.model.forum.ForumArea;
+import fi.otavanopisto.muikku.model.forum.ForumThread;
+import fi.otavanopisto.muikku.model.forum.ForumThreadReply;
+import fi.otavanopisto.muikku.model.forum.ForumThreadReply_;
+import fi.otavanopisto.muikku.model.forum.ForumThread_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 
 
 

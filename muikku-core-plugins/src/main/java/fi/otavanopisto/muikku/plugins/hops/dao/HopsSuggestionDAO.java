@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.hops.HopsSuggestion;
+import fi.otavanopisto.muikku.model.hops.HopsSuggestion_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion_;
 
 public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
 

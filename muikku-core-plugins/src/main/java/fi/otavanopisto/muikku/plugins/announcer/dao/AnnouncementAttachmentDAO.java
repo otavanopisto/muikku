@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.announcer.AnnouncementAttachment;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementAttachment_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment_;
 
 public class AnnouncementAttachmentDAO extends CorePluginsDAO<AnnouncementAttachment> {
 

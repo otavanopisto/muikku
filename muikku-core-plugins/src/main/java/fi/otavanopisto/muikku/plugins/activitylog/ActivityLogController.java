@@ -5,9 +5,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.activitylog.ActivityLog;
+import fi.otavanopisto.muikku.model.activitylog.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.activitylog.dao.ActivityLogDAO;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLog;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 
 public class ActivityLogController {
 

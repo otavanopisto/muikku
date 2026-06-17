@@ -7,9 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.chat.ChatRead;
+import fi.otavanopisto.muikku.model.chat.ChatRead_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatRead;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatRead_;
 
 public class ChatReadDAO extends CorePluginsDAO<ChatRead> {
 

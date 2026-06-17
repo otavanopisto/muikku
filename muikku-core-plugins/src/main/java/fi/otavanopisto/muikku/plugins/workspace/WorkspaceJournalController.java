@@ -8,10 +8,10 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalComment;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalCommentDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalEntryDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 
 public class WorkspaceJournalController {
 

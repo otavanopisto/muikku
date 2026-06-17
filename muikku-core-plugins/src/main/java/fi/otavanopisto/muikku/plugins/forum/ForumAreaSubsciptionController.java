@@ -5,12 +5,12 @@ import java.util.List;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.forum.ForumArea;
+import fi.otavanopisto.muikku.model.forum.ForumAreaSubscription;
+import fi.otavanopisto.muikku.model.forum.WorkspaceForumArea;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.forum.dao.WorkspaceForumAreaDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
-import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscription;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscriptionDAO;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;

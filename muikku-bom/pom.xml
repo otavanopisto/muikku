@@ -219,12 +219,6 @@
 
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>core-plugins-persistence</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>forum-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>

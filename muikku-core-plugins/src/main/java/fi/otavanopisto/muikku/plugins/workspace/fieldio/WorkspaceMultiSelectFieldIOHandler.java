@@ -8,14 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectField;
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectFieldOption;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialMultiSelectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialMultiSelectFieldAnswerOption;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceMultiSelectFieldIOHandler implements WorkspaceFieldIOHandler {
 

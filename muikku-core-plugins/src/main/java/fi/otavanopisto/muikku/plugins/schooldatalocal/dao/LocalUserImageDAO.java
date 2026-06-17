@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage_;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUser;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserImage;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserImage_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 
 
 public class LocalUserImageDAO extends CorePluginsDAO<LocalUserImage> {

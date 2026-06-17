@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.hops.HopsPlannedCourse;
+import fi.otavanopisto.muikku.model.hops.HopsPlannedCourse_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse_;
 
 public class HopsPlannedCourseDAO extends CorePluginsDAO<HopsPlannedCourse> {
 

@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.timednotifications.StudyTimeNotification;
+import fi.otavanopisto.muikku.model.timednotifications.StudyTimeNotification_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class StudyTimeNotificationDAO extends CorePluginsDAO<StudyTimeNotification> {

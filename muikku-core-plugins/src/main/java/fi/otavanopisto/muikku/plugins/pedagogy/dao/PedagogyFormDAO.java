@@ -7,9 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyForm;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyForm_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm_;
 
 public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
 

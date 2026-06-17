@@ -9,6 +9,13 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorLabel;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageIdLabel;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipientUserGroup;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -16,13 +23,6 @@ import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdLabe
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientWorkspaceGroupDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;

@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorUserLabel_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel_;
 
 public class CommunicatorUserLabelDAO extends CorePluginsDAO<CommunicatorUserLabel> {
 	

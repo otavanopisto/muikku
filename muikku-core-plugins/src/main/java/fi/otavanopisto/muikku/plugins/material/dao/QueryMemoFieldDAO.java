@@ -5,10 +5,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.material.model.QueryMemoField_;
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryMemoField;
+import fi.otavanopisto.muikku.model.material.QueryMemoField_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMemoField;
 
 public class QueryMemoFieldDAO extends CorePluginsDAO<QueryMemoField> {
 

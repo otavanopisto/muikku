@@ -3,9 +3,9 @@ package fi.otavanopisto.muikku.plugins.material;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryMemoField;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMemoFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMemoField;
 
 @Dependent
 public class QueryMemoFieldController {

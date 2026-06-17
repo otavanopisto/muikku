@@ -35,7 +35,22 @@ import fi.otavanopisto.muikku.dao.users.FlagDAO;
 import fi.otavanopisto.muikku.dao.users.FlagStudentDAO;
 import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.otavanopisto.muikku.model.announcer.Announcement;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementCategory;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.model.forum.EnvironmentForumArea;
+import fi.otavanopisto.muikku.model.forum.ForumArea;
+import fi.otavanopisto.muikku.model.forum.ForumAreaGroup;
+import fi.otavanopisto.muikku.model.forum.ForumThread;
+import fi.otavanopisto.muikku.model.forum.ForumThreadReply;
+import fi.otavanopisto.muikku.model.forum.ForumThreadSubscription;
+import fi.otavanopisto.muikku.model.forum.WorkspaceForumArea;
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -46,37 +61,27 @@ import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceFolder;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalEntry;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
-import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
-import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
@@ -84,11 +89,6 @@ import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -337,7 +337,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     for (CommunicatorMessageRecipient x : communicatorController.listAllRecipients())
       communicatorController.delete(x);
 
-    for (fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message : communicatorController.listAllMessages()) {
+    for (fi.otavanopisto.muikku.model.communicator.CommunicatorMessage message : communicatorController.listAllMessages()) {
       communicatorController.delete(message);
     }
     
@@ -422,7 +422,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     UserRecipientList recipientsList = new UserRecipientList();
     recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
 
-    fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipientsList, 
+    fi.otavanopisto.muikku.model.communicator.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipientsList, 
         categoryEntity, payload.getCaption(), payload.getContent(), tagList);
     Long communicatorMessageId2 = message.getCommunicatorMessageId().getId();
     fi.otavanopisto.muikku.atests.CommunicatorMessage result = new fi.otavanopisto.muikku.atests.CommunicatorMessage(message.getId(), communicatorMessageId2, message.getSender(), payload.getCategoryName(), message.getCaption(), message.getContent(), message.getCreated(), payload.getTags(), payload.getRecipientIds(), payload.getRecipientGroupIds(), payload.getRecipientStudentsWorkspaceIds(), payload.getRecipientTeachersWorkspaceIds());

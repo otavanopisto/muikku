@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.chat.ChatClosedConvo;
+import fi.otavanopisto.muikku.model.chat.ChatClosedConvo_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatClosedConvo;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatClosedConvo_;
 
 public class ChatClosedConvoDAO extends CorePluginsDAO<ChatClosedConvo> {
 

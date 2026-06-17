@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.notes.Note;
+import fi.otavanopisto.muikku.model.notes.NoteReceiver;
+import fi.otavanopisto.muikku.model.notes.NoteStatus;
 import fi.otavanopisto.muikku.plugins.notes.dao.NoteRecipientDAO;
-import fi.otavanopisto.muikku.plugins.notes.model.Note;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 
 public class NoteReceiverController {
 

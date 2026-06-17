@@ -10,9 +10,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.evaluation.InterimEvaluationRequest;
+import fi.otavanopisto.muikku.model.evaluation.InterimEvaluationRequest_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
-import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest_;
 
 public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluationRequest> {
 

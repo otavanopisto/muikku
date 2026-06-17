@@ -20,9 +20,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.feed.Feed;
+import fi.otavanopisto.muikku.model.feed.FeedItem;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.feed.model.Feed;
-import fi.otavanopisto.muikku.plugins.feed.model.FeedItem;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 

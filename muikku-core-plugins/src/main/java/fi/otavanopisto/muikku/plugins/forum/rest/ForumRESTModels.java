@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.plugins.forum.rest;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.forum.ForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;

@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class WorkspaceFolder {
 

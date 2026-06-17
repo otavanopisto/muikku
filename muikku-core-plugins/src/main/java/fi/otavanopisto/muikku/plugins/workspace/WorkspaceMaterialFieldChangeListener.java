@@ -16,6 +16,15 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectField;
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectFieldOption;
+import fi.otavanopisto.muikku.model.material.QuerySelectField;
+import fi.otavanopisto.muikku.model.material.QuerySelectFieldOption;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialMultiSelectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialOrganizerFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialSelectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialSorterFieldAnswer;
 import fi.otavanopisto.muikku.plugins.material.MaterialFieldMetaParsingExeption;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
@@ -25,21 +34,12 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSorterFieldAnswer;
 
 public class WorkspaceMaterialFieldChangeListener {
   

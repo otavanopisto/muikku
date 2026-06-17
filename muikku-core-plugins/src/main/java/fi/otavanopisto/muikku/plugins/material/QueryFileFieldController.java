@@ -3,9 +3,9 @@ package fi.otavanopisto.muikku.plugins.material;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryFileField;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryFileFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryFileField;
 
 @Dependent
 public class QueryFileFieldController {

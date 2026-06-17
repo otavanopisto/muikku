@@ -21,7 +21,7 @@ import org.apache.commons.io.IOUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageAttachment;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageAttachment;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 

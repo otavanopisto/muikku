@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalComment;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalComment_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment_;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 
 public class WorkspaceJournalCommentDAO extends CorePluginsDAO<WorkspaceJournalComment> {
 

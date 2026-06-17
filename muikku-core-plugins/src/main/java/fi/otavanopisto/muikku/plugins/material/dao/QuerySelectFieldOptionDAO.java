@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption_;
+import fi.otavanopisto.muikku.model.material.QuerySelectField;
+import fi.otavanopisto.muikku.model.material.QuerySelectFieldOption;
+import fi.otavanopisto.muikku.model.material.QuerySelectFieldOption_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 
 
 public class QuerySelectFieldOptionDAO extends CorePluginsDAO<QuerySelectFieldOption> {

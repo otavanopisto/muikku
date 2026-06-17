@@ -4,9 +4,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import fi.otavanopisto.muikku.model.internalauth.InternalAuth;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.internalauth.dao.InternalAuthDAO;
-import fi.otavanopisto.muikku.plugins.internalauth.model.InternalAuth;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class InternalAuthController {

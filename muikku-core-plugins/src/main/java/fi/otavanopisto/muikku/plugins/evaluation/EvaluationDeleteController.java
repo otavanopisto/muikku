@@ -7,16 +7,16 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluationAudioClip;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 
 public class EvaluationDeleteController {
 

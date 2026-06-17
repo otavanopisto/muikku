@@ -11,10 +11,10 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.timednotifications.NoPassedCoursesNotification;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.NoPassedCoursesNotificationDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;

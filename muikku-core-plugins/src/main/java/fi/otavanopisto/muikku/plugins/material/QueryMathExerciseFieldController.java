@@ -3,9 +3,9 @@ package fi.otavanopisto.muikku.plugins.material;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryMathExerciseField;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMathExerciseFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMathExerciseField;
 
 @Dependent
 public class QueryMathExerciseFieldController {

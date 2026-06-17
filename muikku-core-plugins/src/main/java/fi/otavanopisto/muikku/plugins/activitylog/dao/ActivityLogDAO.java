@@ -10,10 +10,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.activitylog.ActivityLog;
+import fi.otavanopisto.muikku.model.activitylog.ActivityLogType;
+import fi.otavanopisto.muikku.model.activitylog.ActivityLog_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLog;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLog_;
 
 public class ActivityLogDAO extends CorePluginsDAO<ActivityLog>{
   

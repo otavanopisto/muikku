@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntityFile;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntityFile_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile_;
 
 public class WorkspaceEntityFileDAO extends CorePluginsDAO<WorkspaceEntityFile> {
 

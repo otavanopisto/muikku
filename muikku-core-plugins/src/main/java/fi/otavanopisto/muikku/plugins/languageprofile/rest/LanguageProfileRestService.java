@@ -19,10 +19,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfile;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSample;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.plugins.languageprofile.LanguageProfileController;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSample;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;

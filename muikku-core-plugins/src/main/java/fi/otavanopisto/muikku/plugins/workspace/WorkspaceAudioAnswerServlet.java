@@ -18,11 +18,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAudioFieldAnswerClip;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -78,7 +78,7 @@ public class WorkspaceAudioAnswerServlet extends HttpServlet {
       return;
     }
     
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerClip.getFieldAnswer().getReply();
+    fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply workspaceMaterialReply = answerClip.getFieldAnswer().getReply();
     WorkspaceMaterial workspaceMaterial = workspaceMaterialReply.getWorkspaceMaterial();
     if (workspaceMaterial == null) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

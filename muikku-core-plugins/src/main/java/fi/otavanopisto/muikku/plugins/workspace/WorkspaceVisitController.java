@@ -8,12 +8,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.activitylog.ActivityLogType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceVisit;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceVisitDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceVisit;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;

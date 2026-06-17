@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.feed.Feed;
+import fi.otavanopisto.muikku.model.feed.Feed_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.feed.model.Feed;
-import fi.otavanopisto.muikku.plugins.feed.model.Feed_;
 
 public class FeedDAO extends CorePluginsDAO<Feed> {
   private static final long serialVersionUID = 5636966026090215803L;

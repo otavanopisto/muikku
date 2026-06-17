@@ -26,17 +26,17 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.event.EventAttendance;
+import fi.otavanopisto.muikku.model.event.EventType;
+import fi.otavanopisto.muikku.model.event.MuikkuEvent;
+import fi.otavanopisto.muikku.model.event.MuikkuEventContainer;
+import fi.otavanopisto.muikku.model.event.MuikkuEventParticipant;
+import fi.otavanopisto.muikku.model.event.MuikkuEventProperty;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.event.MuikkuEventController;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventContainer;
-import fi.otavanopisto.muikku.plugins.event.model.EventAttendance;
-import fi.otavanopisto.muikku.plugins.event.model.EventType;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventProperty;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;

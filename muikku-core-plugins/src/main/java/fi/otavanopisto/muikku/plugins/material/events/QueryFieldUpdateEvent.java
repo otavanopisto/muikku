@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.material.events;
 
+import fi.otavanopisto.muikku.model.material.QueryField;
 import fi.otavanopisto.muikku.plugins.material.MaterialField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 
 public class QueryFieldUpdateEvent extends QueryFieldEvent {
 

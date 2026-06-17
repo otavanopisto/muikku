@@ -8,11 +8,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfile;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSample;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSampleType;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSample_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSample;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSampleType;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSample_;
 
 public class LanguageProfileSampleDAO  extends CorePluginsDAO<LanguageProfileSample> {
 

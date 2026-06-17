@@ -9,12 +9,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread_;
+import fi.otavanopisto.muikku.model.forum.ForumArea;
+import fi.otavanopisto.muikku.model.forum.ForumThread;
+import fi.otavanopisto.muikku.model.forum.ForumThread_;
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 
 
 

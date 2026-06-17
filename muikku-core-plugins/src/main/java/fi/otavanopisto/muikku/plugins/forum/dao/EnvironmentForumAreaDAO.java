@@ -7,12 +7,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea_;
+import fi.otavanopisto.muikku.model.forum.EnvironmentForumArea;
+import fi.otavanopisto.muikku.model.forum.EnvironmentForumArea_;
+import fi.otavanopisto.muikku.model.forum.ForumAreaGroup;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
 
 public class EnvironmentForumAreaDAO extends CorePluginsDAO<EnvironmentForumArea> {
 

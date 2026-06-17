@@ -10,20 +10,20 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryField;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.websocket.MuikkuWebSocketEvent;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessage;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessageEvent;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class SaveFieldAnswerWebSocketMessageHandler {
@@ -124,7 +124,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField);
     }
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
     if (reply == null) {
       reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.ANSWERED, userEntity, false);
     }

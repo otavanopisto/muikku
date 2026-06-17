@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.plugins.ceepos.dao;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.model.ceepos.CeeposOrderState;
+import fi.otavanopisto.muikku.model.ceepos.CeeposStudyTimeOrder;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposStudyTimeOrder;
 
 public class CeeposStudyTimeOrderDAO extends CorePluginsDAO<CeeposStudyTimeOrder> {
 

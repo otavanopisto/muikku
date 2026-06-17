@@ -5,10 +5,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.chat.ChatUser;
+import fi.otavanopisto.muikku.model.chat.ChatUserVisibility;
+import fi.otavanopisto.muikku.model.chat.ChatUser_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatUser_;
 
 public class ChatUserDAO extends CorePluginsDAO<ChatUser> {
 

@@ -9,10 +9,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.feed.Feed;
+import fi.otavanopisto.muikku.model.feed.FeedItem;
+import fi.otavanopisto.muikku.model.feed.FeedItem_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.feed.model.Feed;
-import fi.otavanopisto.muikku.plugins.feed.model.FeedItem;
-import fi.otavanopisto.muikku.plugins.feed.model.FeedItem_;
 
 public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
 

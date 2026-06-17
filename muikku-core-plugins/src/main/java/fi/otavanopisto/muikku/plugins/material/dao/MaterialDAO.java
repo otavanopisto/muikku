@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.material.dao;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class MaterialDAO extends CorePluginsDAO<Material> {
 

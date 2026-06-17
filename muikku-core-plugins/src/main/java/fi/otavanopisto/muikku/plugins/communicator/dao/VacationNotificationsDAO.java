@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.communicator.VacationNotifications;
+import fi.otavanopisto.muikku.model.communicator.VacationNotifications_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications_;
-import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 
 public class VacationNotificationsDAO extends CorePluginsDAO<VacationNotifications> {
 

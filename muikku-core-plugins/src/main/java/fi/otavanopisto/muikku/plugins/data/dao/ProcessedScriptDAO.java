@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.data.model.ProcessedScript_;
+import fi.otavanopisto.muikku.model.data.ProcessedScript;
+import fi.otavanopisto.muikku.model.data.ProcessedScript_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.data.model.ProcessedScript;
 
 public class ProcessedScriptDAO extends CorePluginsDAO<ProcessedScript> {
 

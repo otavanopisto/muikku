@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.events;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceFolder;
 
 public abstract class WorkspaceFolderEvent extends WorkspaceNodeEvent<WorkspaceFolder> {
 

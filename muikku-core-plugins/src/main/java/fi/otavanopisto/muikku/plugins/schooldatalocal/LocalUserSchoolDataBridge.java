@@ -12,11 +12,11 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUser;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserEmail;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserPropertyImpl;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;

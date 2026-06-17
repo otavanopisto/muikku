@@ -26,6 +26,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.ceepos.CeeposAssessmentRequestOrder;
+import fi.otavanopisto.muikku.model.ceepos.CeeposOrderState;
+import fi.otavanopisto.muikku.model.ceepos.CeeposProduct;
+import fi.otavanopisto.muikku.model.ceepos.CeeposProductType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -34,10 +38,6 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestControl
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestPermissions;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposController;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;

@@ -6,18 +6,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.activitylog.ActivityLogType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 public class WorkspaceMaterialReplyController {
 

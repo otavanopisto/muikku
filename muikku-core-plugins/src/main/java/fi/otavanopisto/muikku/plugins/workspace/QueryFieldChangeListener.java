@@ -11,6 +11,13 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryConnectField;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldCounterpart;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldTerm;
+import fi.otavanopisto.muikku.model.material.QueryField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialConnectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.material.MaterialFieldMetaParsingExeption;
 import fi.otavanopisto.muikku.plugins.material.QueryConnectFieldController;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
@@ -21,16 +28,9 @@ import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
-import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 
 public class QueryFieldChangeListener {
   

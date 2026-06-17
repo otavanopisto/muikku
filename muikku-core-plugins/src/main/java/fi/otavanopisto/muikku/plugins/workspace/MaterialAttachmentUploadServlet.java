@@ -22,13 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
+import fi.otavanopisto.muikku.model.material.BinaryMaterial;
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.material.BinaryMaterialController;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
-import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;

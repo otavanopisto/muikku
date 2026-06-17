@@ -8,11 +8,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply_;
 
 public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialReply> {
 	

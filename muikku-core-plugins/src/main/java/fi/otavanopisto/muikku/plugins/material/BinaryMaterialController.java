@@ -4,11 +4,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.BinaryMaterial;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.dao.BinaryMaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.events.BinaryMaterialCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.BinaryMaterialUpdateEvent;
-import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 @Dependent
 public class BinaryMaterialController {

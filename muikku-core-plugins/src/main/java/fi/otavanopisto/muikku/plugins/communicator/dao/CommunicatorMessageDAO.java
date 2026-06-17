@@ -20,19 +20,19 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorLabel;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageIdLabel;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageIdLabel_;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId_;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient_;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel_;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId_;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage_;
 
 
 public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> {

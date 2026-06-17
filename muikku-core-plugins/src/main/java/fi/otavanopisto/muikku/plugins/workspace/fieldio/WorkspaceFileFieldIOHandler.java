@@ -14,12 +14,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFileFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFileFieldAnswerFile;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
   

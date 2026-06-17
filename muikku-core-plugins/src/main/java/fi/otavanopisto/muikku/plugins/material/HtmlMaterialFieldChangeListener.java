@@ -9,6 +9,14 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.QueryConnectField;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldCounterpart;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldTerm;
+import fi.otavanopisto.muikku.model.material.QueryField;
+import fi.otavanopisto.muikku.model.material.QueryMathExerciseField;
+import fi.otavanopisto.muikku.model.material.QueryMemoField;
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectField;
+import fi.otavanopisto.muikku.model.material.QuerySelectField;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.AudioFieldMeta;
@@ -26,14 +34,6 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.TextFieldMeta;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
-import fi.otavanopisto.muikku.plugins.material.model.QueryField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMathExerciseField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMemoField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
 
 public class HtmlMaterialFieldChangeListener {
   

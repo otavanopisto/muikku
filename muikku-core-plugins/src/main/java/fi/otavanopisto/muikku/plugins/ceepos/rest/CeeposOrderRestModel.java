@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.ceepos.rest;
 
 import java.time.OffsetDateTime;
 
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
+import fi.otavanopisto.muikku.model.ceepos.CeeposOrderState;
 
 public class CeeposOrderRestModel {
 

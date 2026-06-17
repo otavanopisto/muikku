@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.exam.ExamAttendance;
+import fi.otavanopisto.muikku.model.exam.ExamAttendance_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
-import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance_;
 
 public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
 

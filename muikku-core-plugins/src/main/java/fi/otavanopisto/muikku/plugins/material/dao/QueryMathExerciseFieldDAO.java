@@ -5,10 +5,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryMathExerciseField;
+import fi.otavanopisto.muikku.model.material.QueryMathExerciseField_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMathExerciseField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMathExerciseField_;
 
 public class QueryMathExerciseFieldDAO extends CorePluginsDAO<QueryMathExerciseField> {
 

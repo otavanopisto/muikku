@@ -10,9 +10,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.chat.ChatMessage;
+import fi.otavanopisto.muikku.model.chat.ChatMessage_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage_;
 
 public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
 

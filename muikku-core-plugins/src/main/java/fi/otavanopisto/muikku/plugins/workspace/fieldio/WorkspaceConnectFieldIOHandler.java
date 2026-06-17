@@ -12,14 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.QueryConnectField;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldCounterpart;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldTerm;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialConnectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.material.QueryConnectFieldController;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceConnectFieldIOHandler implements WorkspaceFieldIOHandler {
 

@@ -9,14 +9,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder_;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceFolder;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceFolderType;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceFolder_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 
 public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 

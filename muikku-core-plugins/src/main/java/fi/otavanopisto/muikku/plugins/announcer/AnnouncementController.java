@@ -13,6 +13,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import fi.otavanopisto.muikku.model.announcer.Announcement;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementAttachment;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementCategory;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementRecipient;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementUserGroup;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -25,12 +31,6 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementRecipientDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementWorkspaceDAO;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
-import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;

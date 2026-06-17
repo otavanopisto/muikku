@@ -8,11 +8,11 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QuerySorterField;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySorterFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SorterFieldMeta;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySorterField;
 
 @Dependent
 public class QuerySorterFieldController {

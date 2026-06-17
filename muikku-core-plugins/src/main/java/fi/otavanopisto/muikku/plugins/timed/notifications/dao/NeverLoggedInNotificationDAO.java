@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.timednotifications.NeverLoggedInNotification;
+import fi.otavanopisto.muikku.model.timednotifications.NeverLoggedInNotification_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NeverLoggedInNotification;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NeverLoggedInNotification_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class NeverLoggedInNotificationDAO extends CorePluginsDAO<NeverLoggedInNotification> {

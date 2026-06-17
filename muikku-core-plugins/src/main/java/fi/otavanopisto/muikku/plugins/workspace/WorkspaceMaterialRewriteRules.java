@@ -22,9 +22,9 @@ import org.ocpsoft.rewrite.servlet.config.Substitute;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 
+import fi.otavanopisto.muikku.model.material.Material;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 
 @RewriteConfiguration

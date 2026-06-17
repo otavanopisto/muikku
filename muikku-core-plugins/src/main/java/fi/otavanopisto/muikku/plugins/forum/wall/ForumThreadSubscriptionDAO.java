@@ -7,9 +7,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.forum.ForumThread;
+import fi.otavanopisto.muikku.model.forum.ForumThreadSubscription;
+import fi.otavanopisto.muikku.model.forum.ForumThreadSubscription_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 
 public class ForumThreadSubscriptionDAO extends CorePluginsDAO<ForumThreadSubscription> {
 

@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.matriculation.SavedMatriculationEnrollment;
+import fi.otavanopisto.muikku.model.matriculation.SavedMatriculationEnrollment_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
-import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class SavedMatriculationEnrollmentDAO extends CorePluginsDAO<SavedMatriculationEnrollment> {

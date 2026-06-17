@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluationAudioClip;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluationAudioClip_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip_;
 
 public class WorkspaceNodeEvaluationAudioClipDAO extends CorePluginsDAO<WorkspaceNodeEvaluationAudioClip> {
 

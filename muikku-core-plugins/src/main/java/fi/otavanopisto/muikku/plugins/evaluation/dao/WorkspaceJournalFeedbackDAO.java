@@ -7,9 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceJournalFeedback;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceJournalFeedback_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback_;
 
 public class WorkspaceJournalFeedbackDAO extends CorePluginsDAO<WorkspaceJournalFeedback> {
 

@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode_;
 
 public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 

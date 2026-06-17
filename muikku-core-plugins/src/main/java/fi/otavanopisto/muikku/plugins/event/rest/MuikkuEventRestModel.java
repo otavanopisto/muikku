@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.event.model.EventType;
+import fi.otavanopisto.muikku.model.event.EventType;
 
 public class MuikkuEventRestModel {
 

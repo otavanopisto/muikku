@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.plugins.pedagogy.rest;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormHistoryType;
 
 public class PedagogyFormHistoryRestModel {
 

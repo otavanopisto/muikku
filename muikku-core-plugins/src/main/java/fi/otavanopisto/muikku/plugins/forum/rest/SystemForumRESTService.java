@@ -15,10 +15,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
+import fi.otavanopisto.muikku.model.forum.ForumArea;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;

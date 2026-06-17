@@ -11,14 +11,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QuerySelectField;
+import fi.otavanopisto.muikku.model.material.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 
 @Dependent
 public class QuerySelectFieldController {

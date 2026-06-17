@@ -20,20 +20,20 @@ import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import fi.otavanopisto.muikku.model.announcer.Announcement;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementCategory;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementRecipient;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementRecipient_;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementUserGroup;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementUserGroup_;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementWorkspace_;
+import fi.otavanopisto.muikku.model.announcer.Announcement_;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient_;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup_;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement_;
-import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
-import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace_;
 
 public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 	

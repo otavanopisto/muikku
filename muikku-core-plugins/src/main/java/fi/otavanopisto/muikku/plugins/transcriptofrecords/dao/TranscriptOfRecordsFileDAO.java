@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.transcriptofrecords.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.model.transcriptofrecords.TranscriptOfRecordsFile_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile_;
 
 public class TranscriptOfRecordsFileDAO extends CorePluginsDAO<TranscriptOfRecordsFile>{
   private static final long serialVersionUID = 1L;

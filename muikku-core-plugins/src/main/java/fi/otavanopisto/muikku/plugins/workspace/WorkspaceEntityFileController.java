@@ -6,8 +6,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceEntityFileDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 
 public class WorkspaceEntityFileController {
 

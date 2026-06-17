@@ -9,14 +9,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipientGroup;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient_;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientGroup;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage_;
 
 
 public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<CommunicatorMessageRecipient> {

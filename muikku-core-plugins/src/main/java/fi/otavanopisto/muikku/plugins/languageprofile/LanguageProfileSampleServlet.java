@@ -29,10 +29,10 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfile;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSample;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSample;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.plugins.languageprofile.rest.LanguageProfileSampleRestModel;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;

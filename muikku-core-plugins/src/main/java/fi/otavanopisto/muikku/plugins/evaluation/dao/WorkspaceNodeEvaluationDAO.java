@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluationType;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluation_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationType;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation_;
 
 public class WorkspaceNodeEvaluationDAO extends CorePluginsDAO<WorkspaceNodeEvaluation> {
 

@@ -5,10 +5,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRootFolder_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 
 public class WorkspaceRootFolderDAO extends CorePluginsDAO<WorkspaceRootFolder> {

@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.chat.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
+import fi.otavanopisto.muikku.model.chat.ChatUserVisibility;
 
 public class ChatUserRestModel {
   

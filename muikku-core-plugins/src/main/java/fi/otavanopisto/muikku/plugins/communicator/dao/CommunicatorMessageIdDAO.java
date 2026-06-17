@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.communicator.dao;
 
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 
 
 public class CommunicatorMessageIdDAO extends CorePluginsDAO<CommunicatorMessageId> {

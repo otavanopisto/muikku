@@ -13,13 +13,13 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAI;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialCorrectAnswersDisplay;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAI;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial_;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 
 public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	

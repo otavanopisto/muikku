@@ -11,12 +11,12 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.event.EventType;
+import fi.otavanopisto.muikku.model.event.MuikkuEvent;
+import fi.otavanopisto.muikku.model.event.MuikkuEventContainer;
+import fi.otavanopisto.muikku.model.event.MuikkuEventContainer_;
+import fi.otavanopisto.muikku.model.event.MuikkuEvent_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.event.model.EventType;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventContainer;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventContainer_;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent_;
 
 public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
 

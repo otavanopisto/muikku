@@ -17,12 +17,12 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.dao.base.SystemSettingDAO;
 import fi.otavanopisto.muikku.model.base.SystemSetting;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAudioFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAudioFieldAnswerClip;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFileFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerClipDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 
 public class FileAnswerUtils {
   

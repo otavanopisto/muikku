@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageAttachment;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageAttachmentDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageAttachment;
 
 @Dependent
 public class CommunicatorAttachmentController {

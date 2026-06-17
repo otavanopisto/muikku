@@ -10,11 +10,11 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import fi.otavanopisto.muikku.model.announcer.Announcement;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementWorkspace_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
-import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
-import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace_;
 
 public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspace> {
 	

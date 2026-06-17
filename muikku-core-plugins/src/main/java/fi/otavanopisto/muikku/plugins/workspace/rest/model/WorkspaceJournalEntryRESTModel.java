@@ -2,8 +2,8 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 
 public class WorkspaceJournalEntryRESTModel {
 

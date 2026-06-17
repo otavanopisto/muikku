@@ -9,6 +9,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.StringUtils;
 
+import fi.otavanopisto.muikku.model.hops.Hops;
+import fi.otavanopisto.muikku.model.hops.HopsGoals;
+import fi.otavanopisto.muikku.model.hops.HopsHistory;
+import fi.otavanopisto.muikku.model.hops.HopsPlannedCourse;
+import fi.otavanopisto.muikku.model.hops.HopsStudentChoice;
+import fi.otavanopisto.muikku.model.hops.HopsStudyPlannerNote;
+import fi.otavanopisto.muikku.model.hops.HopsSuggestion;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -24,13 +31,6 @@ import fi.otavanopisto.muikku.plugins.hops.dao.HopsPlannedCourseDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudyPlannerNoteDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
-import fi.otavanopisto.muikku.plugins.hops.model.Hops;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyPlannerNote;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;

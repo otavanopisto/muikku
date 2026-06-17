@@ -7,11 +7,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty_;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUser;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserProperty;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserPropertyKey;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserProperty_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserPropertyKey;
 
 
 public class LocalUserPropertyDAO extends CorePluginsDAO<LocalUserProperty> {

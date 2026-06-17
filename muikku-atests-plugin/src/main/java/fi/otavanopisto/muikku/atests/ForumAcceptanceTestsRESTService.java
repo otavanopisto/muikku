@@ -11,11 +11,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.otavanopisto.muikku.model.forum.ForumArea;
+import fi.otavanopisto.muikku.model.forum.ForumThread;
+import fi.otavanopisto.muikku.model.forum.ForumThreadReply;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.security.rest.RESTPermit;

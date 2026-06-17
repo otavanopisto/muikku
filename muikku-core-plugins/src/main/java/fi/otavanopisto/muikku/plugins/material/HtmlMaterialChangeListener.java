@@ -8,12 +8,12 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
+import fi.otavanopisto.muikku.model.material.QueryField;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 

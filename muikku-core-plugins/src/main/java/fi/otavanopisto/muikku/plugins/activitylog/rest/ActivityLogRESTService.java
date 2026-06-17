@@ -17,11 +17,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.otavanopisto.muikku.model.activitylog.ActivityLog;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLog;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;

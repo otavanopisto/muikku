@@ -33,6 +33,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyForm;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormHistory;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormImplementedActions;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -42,9 +45,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyFormLockWSMessage;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyFormWebsocketMessenger;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;

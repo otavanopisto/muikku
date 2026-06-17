@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormImplementedActions;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormImplementedActions_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions_;
 
 public class PedagogyFormImplementedActionsDAO extends CorePluginsDAO<PedagogyFormImplementedActions> {
   

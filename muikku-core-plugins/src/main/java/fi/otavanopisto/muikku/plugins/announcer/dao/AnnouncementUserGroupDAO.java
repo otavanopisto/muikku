@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup_;
+import fi.otavanopisto.muikku.model.announcer.Announcement;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementUserGroup;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementUserGroup_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 
 public class AnnouncementUserGroupDAO extends CorePluginsDAO<AnnouncementUserGroup> {
 	

@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
-import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
+import fi.otavanopisto.muikku.model.chat.ChatUserVisibility;
 
 public class ChatSettingsRestModel {
 

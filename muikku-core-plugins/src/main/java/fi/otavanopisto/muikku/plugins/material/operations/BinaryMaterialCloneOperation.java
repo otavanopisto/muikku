@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.BinaryMaterial;
+import fi.otavanopisto.muikku.model.material.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.BinaryMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
-import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 
 public class BinaryMaterialCloneOperation implements MaterialCloneOperation<BinaryMaterial> {
   

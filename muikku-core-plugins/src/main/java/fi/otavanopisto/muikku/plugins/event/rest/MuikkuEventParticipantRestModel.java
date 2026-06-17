@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.event.rest;
 
-import fi.otavanopisto.muikku.plugins.event.model.EventAttendance;
+import fi.otavanopisto.muikku.model.event.EventAttendance;
 
 public class MuikkuEventParticipantRestModel {
 

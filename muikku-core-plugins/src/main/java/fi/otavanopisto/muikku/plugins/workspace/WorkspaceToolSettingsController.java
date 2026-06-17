@@ -3,8 +3,8 @@ package fi.otavanopisto.muikku.plugins.workspace;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceToolSettings;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceToolSettingsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceToolSettings;
 
 public class WorkspaceToolSettingsController {
 

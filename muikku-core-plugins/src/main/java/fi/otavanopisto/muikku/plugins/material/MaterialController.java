@@ -10,11 +10,11 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.MaterialProducer;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialProducerDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.operations.MaterialCloneOperation;
 
 @Dependent

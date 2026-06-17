@@ -7,11 +7,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.event.EventAttendance;
+import fi.otavanopisto.muikku.model.event.MuikkuEvent;
+import fi.otavanopisto.muikku.model.event.MuikkuEventParticipant;
+import fi.otavanopisto.muikku.model.event.MuikkuEventParticipant_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent;
-import fi.otavanopisto.muikku.plugins.event.model.EventAttendance;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventParticipant_;
 
 public class MuikkuEventParticipantDAO extends CorePluginsDAO<MuikkuEventParticipant> {
 

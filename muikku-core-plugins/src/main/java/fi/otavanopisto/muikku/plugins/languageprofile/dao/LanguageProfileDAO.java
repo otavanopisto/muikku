@@ -7,9 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfile;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfile_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile_;
 
 public class LanguageProfileDAO  extends CorePluginsDAO<LanguageProfile> {
 

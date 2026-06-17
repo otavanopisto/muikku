@@ -5,11 +5,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.notes.Note;
+import fi.otavanopisto.muikku.model.notes.NotePriority;
+import fi.otavanopisto.muikku.model.notes.NoteType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.notes.dao.NoteDAO;
-import fi.otavanopisto.muikku.plugins.notes.model.Note;
-import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.session.SessionController;
 
 public class NotesController {

@@ -7,11 +7,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.notes.Note;
+import fi.otavanopisto.muikku.model.notes.NoteReceiver;
+import fi.otavanopisto.muikku.model.notes.NoteReceiver_;
+import fi.otavanopisto.muikku.model.notes.NoteStatus;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.notes.model.Note;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver_;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 
 public class NoteRecipientDAO extends CorePluginsDAO<NoteReceiver> {
   

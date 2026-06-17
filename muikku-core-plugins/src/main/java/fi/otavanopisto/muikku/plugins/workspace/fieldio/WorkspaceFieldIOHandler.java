@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.fieldio;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
 
 public interface WorkspaceFieldIOHandler {
 

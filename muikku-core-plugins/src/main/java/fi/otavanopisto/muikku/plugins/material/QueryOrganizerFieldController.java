@@ -8,11 +8,11 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryOrganizerField;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryOrganizerFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.OrganizerFieldMeta;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryOrganizerField;
 
 @Dependent
 public class QueryOrganizerFieldController {

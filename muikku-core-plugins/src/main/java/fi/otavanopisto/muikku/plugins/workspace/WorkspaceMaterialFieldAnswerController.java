@@ -9,15 +9,29 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldCounterpart;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldTerm;
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectField;
+import fi.otavanopisto.muikku.model.material.QueryMultiSelectFieldOption;
+import fi.otavanopisto.muikku.model.material.QuerySelectField;
+import fi.otavanopisto.muikku.model.material.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAudioFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAudioFieldAnswerClip;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialConnectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFieldAnswerSnapshot;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFileFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFileFieldAnswerFile;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialMultiSelectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialMultiSelectFieldAnswerOption;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialOrganizerFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialSelectFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialSorterFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialTextFieldAnswer;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectFieldOption;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
-import fi.otavanopisto.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerClipDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
@@ -33,20 +47,6 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAn
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialOrganizerFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSorterFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 
 public class WorkspaceMaterialFieldAnswerController {
   

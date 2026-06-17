@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.schooldatalocal.dao;
 
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUser;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 
 public class LocalUserDAO extends CorePluginsDAO<LocalUser> {
 

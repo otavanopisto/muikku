@@ -3,9 +3,9 @@ package fi.otavanopisto.muikku.plugins.material;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.material.QueryAudioField;
 import fi.otavanopisto.muikku.plugins.material.dao.QueryAudioFieldDAO;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.QueryAudioField;
 
 @Dependent
 public class QueryAudioFieldController {

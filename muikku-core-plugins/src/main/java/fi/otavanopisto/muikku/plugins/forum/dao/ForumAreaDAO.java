@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.forum.dao;
 
 
+import fi.otavanopisto.muikku.model.forum.ForumArea;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 
 
 

@@ -18,12 +18,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.material.Material;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -148,7 +148,7 @@ public class MaterialRESTService extends PluginRESTService {
     }
     
     return Response
-      .ok(createRestModel(materialController.listMaterialProducers(material).toArray(new fi.otavanopisto.muikku.plugins.material.model.MaterialProducer[0])))
+      .ok(createRestModel(materialController.listMaterialProducers(material).toArray(new fi.otavanopisto.muikku.model.material.MaterialProducer[0])))
       .build();
   }  
   
@@ -169,7 +169,7 @@ public class MaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("Material %d not found", materialId)).build();
     }
     
-    fi.otavanopisto.muikku.plugins.material.model.MaterialProducer materialProducer = materialController.findMaterialProducer(producerId);
+    fi.otavanopisto.muikku.model.material.MaterialProducer materialProducer = materialController.findMaterialProducer(producerId);
     materialController.deleteMaterialProducer(materialProducer);
     
     return Response
@@ -177,17 +177,17 @@ public class MaterialRESTService extends PluginRESTService {
       .build();
   } 
 
-  private List<MaterialProducer> createRestModel(fi.otavanopisto.muikku.plugins.material.model.MaterialProducer... producers) {
+  private List<MaterialProducer> createRestModel(fi.otavanopisto.muikku.model.material.MaterialProducer... producers) {
     List<MaterialProducer> result = new ArrayList<>();
     
-    for (fi.otavanopisto.muikku.plugins.material.model.MaterialProducer producer : producers) {
+    for (fi.otavanopisto.muikku.model.material.MaterialProducer producer : producers) {
       result.add(createRestModel(producer));
     }
     
     return result;
   }
   
-  private MaterialProducer createRestModel(fi.otavanopisto.muikku.plugins.material.model.MaterialProducer entity) {
+  private MaterialProducer createRestModel(fi.otavanopisto.muikku.model.material.MaterialProducer entity) {
     Long materialId = entity.getMaterial() != null ? entity.getMaterial().getId() : null;
     return new MaterialProducer(entity.getId(), entity.getName(), materialId);
   } 

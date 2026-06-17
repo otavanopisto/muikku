@@ -18,12 +18,12 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
+import fi.otavanopisto.muikku.model.communicator.VacationNotifications;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
-import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 

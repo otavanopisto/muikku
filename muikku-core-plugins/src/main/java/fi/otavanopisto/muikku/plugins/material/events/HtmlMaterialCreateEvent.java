@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material.events;
 
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
 
 public class HtmlMaterialCreateEvent extends MaterialCreateEvent<HtmlMaterial> {
 

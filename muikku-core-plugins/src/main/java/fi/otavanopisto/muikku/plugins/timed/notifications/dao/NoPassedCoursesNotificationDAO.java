@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.timednotifications.NoPassedCoursesNotification;
+import fi.otavanopisto.muikku.model.timednotifications.NoPassedCoursesNotification_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class NoPassedCoursesNotificationDAO extends CorePluginsDAO<NoPassedCoursesNotification> {

@@ -5,9 +5,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceToolSettings_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceToolSettings;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceToolSettings_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceToolSettings;
 
 public class WorkspaceToolSettingsDAO extends CorePluginsDAO<WorkspaceToolSettings> {
 

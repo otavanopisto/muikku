@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNote;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNote;
 import fi.otavanopisto.muikku.plugins.workspacenotes.dao.WorkspaceNoteDAO;
 
 public class WorkspaceNoteController {

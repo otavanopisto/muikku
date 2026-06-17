@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart_;
+import fi.otavanopisto.muikku.model.material.QueryConnectField;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldCounterpart;
+import fi.otavanopisto.muikku.model.material.QueryConnectFieldCounterpart_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
-import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 
 
 public class QueryConnectFieldCounterpartDAO extends CorePluginsDAO<QueryConnectFieldCounterpart> {

@@ -3,8 +3,8 @@ package fi.otavanopisto.muikku.plugins.notes;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
+import fi.otavanopisto.muikku.model.notes.NotePriority;
+import fi.otavanopisto.muikku.model.notes.NoteType;
 
 public class NoteRestModel {
 

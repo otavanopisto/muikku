@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.material.events;
 
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.MaterialField;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 
 public class HtmlMaterialFieldUpdateEvent {
 

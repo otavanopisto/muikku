@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 
 public class BinaryRestMaterial extends RestMaterial {
 

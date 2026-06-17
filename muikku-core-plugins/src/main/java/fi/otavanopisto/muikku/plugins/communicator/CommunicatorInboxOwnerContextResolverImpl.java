@@ -2,9 +2,9 @@ package fi.otavanopisto.muikku.plugins.communicator;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageSignature;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.security.UserContextResolver;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.ContextReference;

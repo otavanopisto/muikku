@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.ceepos.CeeposAssessmentRequestOrder;
+import fi.otavanopisto.muikku.model.ceepos.CeeposAssessmentRequestOrder_;
+import fi.otavanopisto.muikku.model.ceepos.CeeposOrderState;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder_;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
 
 public class CeeposAssessmentRequestOrderDAO extends CorePluginsDAO<CeeposAssessmentRequestOrder> {
 

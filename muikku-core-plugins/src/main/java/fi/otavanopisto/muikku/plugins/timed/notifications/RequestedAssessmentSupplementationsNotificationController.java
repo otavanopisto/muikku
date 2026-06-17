@@ -9,10 +9,10 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.timednotifications.RequestedAssessmentSupplementationNotification;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.RequestedAssessmentSupplementationNotificationDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.RequestedAssessmentSupplementationNotification;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;

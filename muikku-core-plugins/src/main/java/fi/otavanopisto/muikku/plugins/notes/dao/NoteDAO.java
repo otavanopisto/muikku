@@ -9,14 +9,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.notes.Note;
+import fi.otavanopisto.muikku.model.notes.NotePriority;
+import fi.otavanopisto.muikku.model.notes.NoteReceiver;
+import fi.otavanopisto.muikku.model.notes.NoteReceiver_;
+import fi.otavanopisto.muikku.model.notes.NoteType;
+import fi.otavanopisto.muikku.model.notes.Note_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.notes.model.Note;
-import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver_;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
-import fi.otavanopisto.muikku.plugins.notes.model.Note_;
 
 public class NoteDAO extends CorePluginsDAO<Note> {
 

@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.languageprofile.rest;
 
 import java.util.Date;
 
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSampleType;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSampleType;
 
 public class LanguageProfileSampleRestModel {
 

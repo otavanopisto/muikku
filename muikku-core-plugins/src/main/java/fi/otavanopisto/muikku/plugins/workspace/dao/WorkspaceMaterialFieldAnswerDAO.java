@@ -7,11 +7,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer_;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFieldAnswer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFieldAnswer_;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 
 
 public class WorkspaceMaterialFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialFieldAnswer> {

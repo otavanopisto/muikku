@@ -10,10 +10,10 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessage;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 
 @Startup

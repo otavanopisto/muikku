@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAI;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAI;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialCorrectAnswersDisplay;
 
 public class ContentNode {
 

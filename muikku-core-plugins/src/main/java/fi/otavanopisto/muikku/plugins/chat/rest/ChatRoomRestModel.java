@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
-import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
+import fi.otavanopisto.muikku.model.chat.ChatRoomType;
 
 public class ChatRoomRestModel {
   

@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.timednotifications.NoLoggedInForTwoMonthsNotification;
+import fi.otavanopisto.muikku.model.timednotifications.NoLoggedInForTwoMonthsNotification_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoLoggedInForTwoMonthsNotification;
-import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoLoggedInForTwoMonthsNotification_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class NoLoggedInForTwoMonthsNotificationDAO extends CorePluginsDAO<NoLoggedInForTwoMonthsNotification> {

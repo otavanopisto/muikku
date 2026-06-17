@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.events;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.material.MaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 
 public class WorkspaceMaterialFieldUpdateEvent extends WorkspaceMaterialFieldEvent {
 

@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.chat.ChatRoom;
+import fi.otavanopisto.muikku.model.chat.ChatRoomType;
+import fi.otavanopisto.muikku.model.chat.ChatRoom_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom_;
 
 public class ChatRoomDAO extends CorePluginsDAO<ChatRoom> {
 

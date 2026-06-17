@@ -6,17 +6,17 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
+import fi.otavanopisto.muikku.model.material.MaterialViewRestrict;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent

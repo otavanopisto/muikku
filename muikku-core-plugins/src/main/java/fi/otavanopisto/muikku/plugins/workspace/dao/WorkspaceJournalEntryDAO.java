@@ -14,9 +14,9 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalEntry;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceJournalEntry_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry_;
 
 public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEntry> {
 

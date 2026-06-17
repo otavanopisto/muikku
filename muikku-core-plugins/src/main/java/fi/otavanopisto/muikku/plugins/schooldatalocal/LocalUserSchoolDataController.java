@@ -7,17 +7,17 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.dao.users.RoleEntityDAO;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUser;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserEmail;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserImage;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserProperty;
+import fi.otavanopisto.muikku.model.schooldatalocal.LocalUserPropertyKey;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.dao.LocalUserDAO;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.dao.LocalUserEmailDAO;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.dao.LocalUserImageDAO;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.dao.LocalUserPropertyDAO;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.dao.LocalUserPropertyKeyDAO;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserPropertyKey;
 
 public class LocalUserSchoolDataController {
 	

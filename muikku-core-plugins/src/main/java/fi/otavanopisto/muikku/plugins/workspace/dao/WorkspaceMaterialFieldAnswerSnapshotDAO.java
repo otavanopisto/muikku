@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFieldAnswerSnapshot;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialFieldAnswerSnapshot_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot_;
 
 public class WorkspaceMaterialFieldAnswerSnapshotDAO extends CorePluginsDAO<WorkspaceMaterialFieldAnswerSnapshot> {
 

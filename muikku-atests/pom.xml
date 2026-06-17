@@ -153,11 +153,6 @@
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>core-plugins-persistence</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
     </dependency>
 

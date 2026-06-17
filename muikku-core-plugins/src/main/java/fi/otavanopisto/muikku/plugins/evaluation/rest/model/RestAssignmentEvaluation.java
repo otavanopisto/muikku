@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationType;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluationType;
 
 public class RestAssignmentEvaluation {
 

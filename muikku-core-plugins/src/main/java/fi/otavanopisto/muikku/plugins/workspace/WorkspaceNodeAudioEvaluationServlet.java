@@ -17,14 +17,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.model.evaluation.WorkspaceNodeEvaluationAudioClip;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNode;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationFileStorageUtils;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;

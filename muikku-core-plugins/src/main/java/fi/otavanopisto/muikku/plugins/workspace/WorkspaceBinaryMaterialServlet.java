@@ -15,11 +15,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.model.material.BinaryMaterial;
+import fi.otavanopisto.muikku.model.material.HtmlMaterial;
+import fi.otavanopisto.muikku.model.material.Material;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
-import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 

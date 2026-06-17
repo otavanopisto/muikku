@@ -7,10 +7,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.ceepos.CeeposProduct;
+import fi.otavanopisto.muikku.model.ceepos.CeeposProductType;
+import fi.otavanopisto.muikku.model.ceepos.CeeposProduct_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
-import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct_;
 
 public class CeeposProductDAO extends CorePluginsDAO<CeeposProduct> {
 

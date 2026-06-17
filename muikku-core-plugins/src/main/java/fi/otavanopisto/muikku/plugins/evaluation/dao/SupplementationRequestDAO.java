@@ -10,9 +10,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.evaluation.SupplementationRequest;
+import fi.otavanopisto.muikku.model.evaluation.SupplementationRequest_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
-import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationRequest> {

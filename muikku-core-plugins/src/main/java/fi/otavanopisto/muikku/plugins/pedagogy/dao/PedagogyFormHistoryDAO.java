@@ -8,11 +8,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyForm;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormHistory;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormHistoryType;
+import fi.otavanopisto.muikku.model.pedagogy.PedagogyFormHistory_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory_;
 
 public class PedagogyFormHistoryDAO extends CorePluginsDAO<PedagogyFormHistory> {
 

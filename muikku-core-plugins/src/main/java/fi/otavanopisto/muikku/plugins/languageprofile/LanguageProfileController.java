@@ -7,14 +7,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfile;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSample;
+import fi.otavanopisto.muikku.model.languageprofile.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.languageprofile.dao.LanguageProfileDAO;
 import fi.otavanopisto.muikku.plugins.languageprofile.dao.LanguageProfileSampleDAO;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSample;
-import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.session.SessionController;

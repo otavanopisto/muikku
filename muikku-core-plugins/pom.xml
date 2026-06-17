@@ -167,7 +167,7 @@
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>core-plugins-persistence</artifactId>
+      <artifactId>persistence</artifactId>
     </dependency>
 
     <dependency>

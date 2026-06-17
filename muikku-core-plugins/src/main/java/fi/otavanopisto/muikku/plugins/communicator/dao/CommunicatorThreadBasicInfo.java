@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.communicator.dao;
 
 import java.util.Date;
 
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.model.communicator.CommunicatorMessageId;
 
 public class CommunicatorThreadBasicInfo {
 

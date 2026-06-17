@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material.events;
 
-import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
+import fi.otavanopisto.muikku.model.material.BinaryMaterial;
 
 public class BinaryMaterialCreateEvent extends MaterialCreateEvent<BinaryMaterial> {
 

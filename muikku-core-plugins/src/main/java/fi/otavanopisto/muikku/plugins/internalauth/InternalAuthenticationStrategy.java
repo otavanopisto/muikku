@@ -13,9 +13,9 @@ import fi.otavanopisto.muikku.auth.AbstractAuthenticationStrategy;
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
 import fi.otavanopisto.muikku.auth.AuthenticationResult;
 import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
+import fi.otavanopisto.muikku.model.internalauth.InternalAuth;
 import fi.otavanopisto.muikku.model.security.AuthSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.internalauth.model.InternalAuth;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class InternalAuthenticationStrategy extends AbstractAuthenticationStrategy implements AuthenticationProvider {

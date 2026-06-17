@@ -18,8 +18,8 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceNote;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNote;
 import fi.otavanopisto.muikku.plugins.workspacenotes.WorkspaceNoteController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;

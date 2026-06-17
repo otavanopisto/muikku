@@ -28,8 +28,8 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
-import fi.otavanopisto.muikku.plugins.feed.model.Feed;
-import fi.otavanopisto.muikku.plugins.feed.model.FeedItem;
+import fi.otavanopisto.muikku.model.feed.Feed;
+import fi.otavanopisto.muikku.model.feed.FeedItem;
 
 @Singleton
 public class FeedSynchronizer {

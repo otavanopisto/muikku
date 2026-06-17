@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.activitylog.rest;
 
 import java.util.Date;
 
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
+import fi.otavanopisto.muikku.model.activitylog.ActivityLogType;
 
 public class LogDataEntryRESTModel {
 

@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
-import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
+import fi.otavanopisto.muikku.model.notes.NoteStatus;
 
 public class NoteReceiverRestModel {
 

@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.evaluation.AssessmentRequestCancellation;
+import fi.otavanopisto.muikku.model.evaluation.AssessmentRequestCancellation_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation_;
 
 public class AssessmentRequestCancellationDAO extends CorePluginsDAO<AssessmentRequestCancellation> {
 

@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.event.MuikkuEvent;
+import fi.otavanopisto.muikku.model.event.MuikkuEventProperty;
+import fi.otavanopisto.muikku.model.event.MuikkuEventProperty_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEvent;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventProperty;
-import fi.otavanopisto.muikku.plugins.event.model.MuikkuEventProperty_;
 
 public class MuikkuEventPropertyDAO extends CorePluginsDAO<MuikkuEventProperty> {
   

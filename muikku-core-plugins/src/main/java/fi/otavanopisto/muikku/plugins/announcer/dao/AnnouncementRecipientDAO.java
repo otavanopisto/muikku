@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.announcer.Announcement;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementRecipient;
+import fi.otavanopisto.muikku.model.announcer.AnnouncementRecipient_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
-import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient_;
 
 public class AnnouncementRecipientDAO extends CorePluginsDAO<AnnouncementRecipient> {
 	
