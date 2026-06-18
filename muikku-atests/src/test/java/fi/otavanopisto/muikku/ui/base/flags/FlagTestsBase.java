@@ -322,8 +322,7 @@ public class FlagTestsBase extends AbstractUITest {
       waitAndClick(".application-panel__content-aside .icon-more_vert");
       waitAndClick(".menu__item-dropdown-list #deleteOption");
       waitAndClick(".button--fatal.button--standard-ok");
-      waitForNotVisible(".application-panel__content-aside .icon-more_vert");
-      
+      sleep(2000);
       assertNotPresent(".application-panel__content-aside .icon-more_vert");
     } finally {
       deleteFlags();
