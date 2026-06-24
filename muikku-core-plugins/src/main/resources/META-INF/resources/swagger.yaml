@@ -11980,7 +11980,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/NotebookNoteNote"
+                  $ref: "#/components/schemas/NotebookNote"
         "400":
           description: Invalid request was sent to the server
         "500":
