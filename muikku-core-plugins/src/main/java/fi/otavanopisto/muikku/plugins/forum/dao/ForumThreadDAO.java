@@ -170,15 +170,6 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     return query.getResultList();
   }
   
-  public ForumThread toggleLock(ForumThread thread, LockForumThread lock, Long userEntityId) {
-    thread.setLocked(lock);
-    thread.setLockBy(userEntityId);
-    thread.setLockDate(new Date());
-    getEntityManager().persist(thread);
-    
-    return thread;
-  }
-  
   @Override
   public void delete(ForumThread e) {
     super.delete(e);

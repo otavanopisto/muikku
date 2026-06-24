@@ -121,14 +121,6 @@ public class AssessmentRequestController {
     return activityInfo.getActivities().get(0).getAssessmentStates();
   }
 
-  public void deleteWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, SchoolDataIdentifier assessmentRequestIdentifier) {
-    gradingController.deleteWorkspaceAssessmentRequest(
-        assessmentRequestIdentifier.getDataSource(),
-        assessmentRequestIdentifier.getIdentifier(),
-        workspaceUserEntity.getWorkspaceEntity().getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-  }
-  
   public WorkspaceAssessmentRequest archiveWorkspaceAssessmentRequest(WorkspaceAssessmentRequest assessmentRequest, WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
     
     // #7000: Requesting assessment sets supplementation request handled so this is vice versa

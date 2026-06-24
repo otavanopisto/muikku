@@ -190,10 +190,6 @@ public class WorkspaceEntityController {
         .collect(Collectors.toList());
   }
   
-  public List<Long> listPublishedWorkspaceEntityIds() {
-    return workspaceEntityDAO.listPublishedWorkspaceEntityIds();
-  }
-
   public Set<Long> findWorkspaceEntityIdsByIdentifiers(Collection<SchoolDataIdentifier> identifiers) {
     Set<Long> result = new HashSet<>();
     
