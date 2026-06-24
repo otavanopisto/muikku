@@ -14,7 +14,7 @@
       alter table WorkspaceNote
          add column `start` varchar(16),
          add column `end` varchar(16),
-         add column `index` bigint,
+         add column `noteIndex` bigint,
          add column `type` varchar(255) not null,
          add column workspaceMaterialId bigint;
    </sql>

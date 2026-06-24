@@ -125,7 +125,7 @@ public class WorkspaceNote {
   @Column(length=16)
   private String end;
   
-  @Column
+  @Column(name = "noteIndex")
   private Long index;
   
   @NotNull
