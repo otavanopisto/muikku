@@ -48,7 +48,7 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
 
   @Override
-  public boolean hasWorkspacePermissionImpl(String permission, WorkspaceEntity workspaceEntity) {
+  protected boolean hasWorkspacePermissionImpl(String permission, WorkspaceEntity workspaceEntity) {
     return hasPermissionImpl(permission, workspaceEntity);
   }
   
