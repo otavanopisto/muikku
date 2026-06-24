@@ -189,9 +189,7 @@ public class HopsController {
   }
   
   public HopsGoals createHopsGoals(HopsStudent hopsStudent, String data) {
-    HopsGoals hopsGoals = hopsGoalsDAO.create(hopsStudent.getUserEntityId(), hopsStudent.getEducationTypeCode(), data);
-
-    return hopsGoals;
+    return hopsGoalsDAO.create(hopsStudent.getUserEntityId(), hopsStudent.getEducationTypeCode(), data);
   }
 
   public HopsGoals updateHopsGoals(HopsGoals hopsGoals, String goals) {
