@@ -52,14 +52,8 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
 
   @Override
-  @Deprecated
-  public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
-    return implementation.hasCoursePermission(permission, course);
-  }
-
-  @Override
   public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
-    return implementation.hasCoursePermission(permission, workspaceEntity);
+    return implementation.hasWorkspacePermission(permission, workspaceEntity);
   }
   
   @Override
