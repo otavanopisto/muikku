@@ -19,7 +19,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
-import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
@@ -50,10 +49,6 @@ public class CoursePickerController {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-
-  public List<Subject> listSubjects() {
-    return courseMetaController.listSubjects();
-  }
 
   /**
    * Returns a list curriculums the user should be able to find workspaces under.

@@ -156,26 +156,6 @@ public class AnnouncementController {
     return announcementDAO.findById(id);
   }
   
-  public List<Announcement> listActiveByWorkspaceEntities(OrganizationEntity organizationEntity, List<WorkspaceEntity> workspaceEntities,  Integer firstResult, Integer maxResults) {
-    List<Long> workspaceEntityIds = new ArrayList<>(workspaceEntities.size());
-    
-    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-      workspaceEntityIds.add(workspaceEntity.getId());
-    }
-    
-    List<Announcement> result = new ArrayList<>(announcementDAO.listAnnouncements(organizationEntity,
-        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false, null, false, firstResult, maxResults, new ArrayList<AnnouncementCategory>()));
-
-    
-    Collections.sort(result, new Comparator<Announcement>() {
-      public int compare(Announcement o1, Announcement o2) {
-        return o2.getStartDate().compareTo(o1.getStartDate());
-      }
-    });
-    
-    return result;
-  }
-  
   public List<AnnouncementUserGroup> listAnnouncementUserGroups(Announcement announcement) {
     return announcementUserGroupDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
   }

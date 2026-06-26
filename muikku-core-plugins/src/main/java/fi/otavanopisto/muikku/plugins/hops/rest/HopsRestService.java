@@ -766,7 +766,7 @@ public class HopsRestService {
 
           long matches = response.getEntity().getItems()
               .stream()
-              .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()) && Objects.equals(s.getCourseId(), suggestion.getWorkspaceEntityId()))
+              .filter(s -> s.getSubject().equals(suggestion.getSubject()) && Objects.equals(s.getCourseNumber(), suggestion.getCourseNumber()))
               .count();
           if (matches == 0) {
             WorkspaceEntity workspaceEntity = null;

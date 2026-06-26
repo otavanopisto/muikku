@@ -87,14 +87,8 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   @Override
-  @Deprecated
-  public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
-    return hasCoursePermissionImpl(permission, course);
-  }
-  
-  @Override
   public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
-    return hasCoursePermission(permission, workspaceEntity);
+    return hasWorkspacePermissionImpl(permission, workspaceEntity);
   }
   
   /**
@@ -150,8 +144,8 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   @Override
-  protected boolean hasCoursePermissionImpl(String permission, WorkspaceEntity course) {
-    return hasPermissionImpl(permission, course);
+  protected boolean hasWorkspacePermissionImpl(String permission, WorkspaceEntity workspaceEntity) {
+    return hasPermissionImpl(permission, workspaceEntity);
   }
   
   @Override

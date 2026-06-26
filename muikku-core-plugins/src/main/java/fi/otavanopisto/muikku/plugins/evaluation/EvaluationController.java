@@ -737,10 +737,6 @@ public class EvaluationController {
     return supplementationRequestDAO.listByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
   }
 
-  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier subjectIdentifier, Boolean handled, Boolean archived) {
-    return supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(studentEntityId, workspaceEntityId, subjectIdentifier.toId(), handled, archived);
-  }
-
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
   }

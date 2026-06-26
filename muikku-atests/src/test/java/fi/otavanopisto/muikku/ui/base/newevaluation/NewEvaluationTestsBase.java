@@ -438,9 +438,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-        "Test exercise", "text/html;editor=CKEditor", 
-        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
-        "EVALUATED");
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.memo\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
+          + "value=\"{&quot;name&quot;:&quot;muikku-field-DZWZRbQoPNOcxXN9BGxY5WGe&quot;,&quot;rows&quot;:&quot;&quot;,&quot;example&quot;:&quot;&quot;,&quot;richedit&quot;:true}\" /></object></p>",
+          "EVALUATED");
+      
       try{        
         logout();
         mockBuilder.mockLogin(student);
@@ -448,14 +450,16 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
-        waitForPresent(".textfield-wrapper.state-SAVED");
+        String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
+            + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
+            + "Nulla consectetur quam mi.";
+        
+        waitForPresent(".content-panel__chapter-title-text");
+        addTextToCKEditor(".memofield-wrapper", contentInput);
+        waitForPresent(".memofield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
-        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");    
         
         courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         
@@ -475,6 +479,12 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         selectFinnishLocale();
         navigate(String.format("/evaluation"), false);
         waitAndClick(".button-pill--evaluate");
+        
+        waitAndClick(".evaluation-modal__item-header-title--assignment");
+        waitUntilAnimationIsDone(".rah-static");
+        waitForVisible(".memofield__ckeditor-replacement--evaluation p");
+        waitAndClick(".button-icon--snapshot");
+        waitForVisible(".field-snapshot-list .field-snapshot");
         
         waitAndClickAndConfirm(".dialog--evaluation.dialog--visible a.button--evaluation-add-supplementation", ".evaluation-modal__evaluate-drawer .evaluation-modal__evaluate-drawer-content--workspace .cke_contents", 10, 5000);
         
@@ -504,6 +514,31 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
         assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Kurssi merkitty täydennettäväksi");
+        
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".content-panel__chapter-title-text");
+        waitAndClick(".button--muikku-withdraw-assignment");
+        clearCKEditor(".memofield-wrapper");
+        addTextToCKEditor(".memofield-wrapper", "Something additional I just learned.");
+        waitForPresent(".memofield-wrapper.state-SAVED");
+        waitAndClick(".button--muikku-update-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");    
+        
+        logout();
+        mockBuilder.mockLogin(admin);
+        login();
+        selectFinnishLocale();
+        navigate(String.format("/evaluation"), false);
+        waitAndClick(".button-pill--evaluate");
+        
+        waitAndClick(".evaluation-modal__item-header-title--assignment");
+        waitUntilAnimationIsDone(".rah-static");
+        waitForVisible(".memofield__ckeditor-replacement--evaluation p");
+        assertText(".memofield__ckeditor-replacement--evaluation p", "Something additional I just learned.");
+        waitAndClick(".field-snapshot__row .field-snapshot__toggle");
+        waitForVisible(".field-snapshot__accordion .memofield__ckeditor-replacement--evaluation");
+        assertText(".field-snapshot__accordion .memofield__ckeditor-replacement--evaluation", contentInput);
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

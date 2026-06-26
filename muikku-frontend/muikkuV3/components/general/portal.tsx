@@ -227,6 +227,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       return;
     }
     if (immediate || this.isUnmounted) {
+      this.props.beforeClose &&
+        this.props.beforeClose(this.node, this.resetPortalState);
       this.resetPortalState();
       this.props.onClose && this.props.onClose();
       return;

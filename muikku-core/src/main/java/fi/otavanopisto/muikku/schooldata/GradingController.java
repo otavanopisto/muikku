@@ -266,10 +266,6 @@ public class GradingController {
         handled);
   }
 
-  public void deleteWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {
-    gradingSchoolDataController.deleteWorkspaceAssessmentRequest(schoolDataSource, identifier, workspaceIdentifier, studentIdentifier);
-  }
-
   public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier) {
     return gradingSchoolDataController.listStudentTransferCredits(studentIdentifier);
   }
