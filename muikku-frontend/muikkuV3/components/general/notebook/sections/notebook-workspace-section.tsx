@@ -66,16 +66,30 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
     setEditOrder((prev) => !prev);
   };
 
+  /**
+   * handleElementDrag
+   * @param dragIndex dragIndex
+   * @param hoverIndex hoverIndex
+   */
   const handleElementDrag = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
-      dispatch(updateNotebookV2WorkspaceNotesOrder(dragIndex, hoverIndex));
+      dispatch(
+        updateNotebookV2WorkspaceNotesOrder(dragIndex, hoverIndex, true)
+      );
     },
     [dispatch]
   );
 
+  /**
+   * handleElementDrop
+   * @param dragIndex dragIndex
+   * @param hoverIndex hoverIndex
+   */
   const handleElementDrop = React.useCallback(
     (dragIndex: number, hoverIndex: number) => {
-      dispatch(updateNotebookV2WorkspaceNotesOrder(dragIndex, hoverIndex));
+      dispatch(
+        updateNotebookV2WorkspaceNotesOrder(dragIndex, hoverIndex, true)
+      );
     },
     [dispatch]
   );

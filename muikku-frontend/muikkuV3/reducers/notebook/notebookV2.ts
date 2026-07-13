@@ -13,6 +13,7 @@ import {
  */
 export interface NoteBookV2State {
   notes: NotebookNote[] | null;
+  workspaceNotesOrder: number[];
   state: ReducerStatusType;
   drafts: NotebookV2DraftsState;
   focusDraftClientId: number | null;
@@ -22,6 +23,7 @@ export interface NoteBookV2State {
 
 const initialState: NoteBookV2State = {
   notes: null,
+  workspaceNotesOrder: [],
   state: "IDLE",
   drafts: EMPTY_NOTEBOOK_V2_DRAFTS,
   focusDraftClientId: null,
@@ -45,6 +47,9 @@ export const notebookV2: Reducer<NoteBookV2State> = (
 
     case "NOTEBOOK_V2_LOAD_ENTRIES":
       return { ...state, notes: action.payload };
+
+    case "NOTEBOOK_V2_SET_WORKSPACE_NOTES_ORDER":
+      return { ...state, workspaceNotesOrder: action.payload };
 
     case "NOTEBOOK_V2_BEGIN_WORKSPACE_DRAFT":
       return {

@@ -12,7 +12,21 @@ import {
   NotebookMaterialNoteDraft,
   NotebookWorkspaceNoteDraft,
 } from "~/components/general/notebook/helpers/notebook-drafts";
+import {
+  appendWorkspaceNoteToOrder,
+  areWorkspaceNotesOrdersEqual,
+  getWorkspaceNotesFromNotes,
+  loadWorkspaceNotesOrderProperty,
+  reconcileWorkspaceNotesOrder,
+  removeWorkspaceNoteFromOrder,
+  reorderWorkspaceNotesOrderIds,
+  saveWorkspaceNotesOrderProperty,
+} from "~/components/general/notebook/helpers/notebook-workspace-order";
 import MApi, { isMApiError } from "~/api/api";
+import { isNotebookWorkspaceNote } from "~/helper-functions/notebook";
+
+const workspaceNotesApi = MApi.getWorkspaceNotesApi();
+const userApi = MApi.getUserApi();
 
 export type NOTEBOOK_V2_UPDATE_STATE = SpecificActionType<
   "NOTEBOOK_V2_UPDATE_STATE",
@@ -22,6 +36,11 @@ export type NOTEBOOK_V2_UPDATE_STATE = SpecificActionType<
 export type NOTEBOOK_V2_LOAD_ENTRIES = SpecificActionType<
   "NOTEBOOK_V2_LOAD_ENTRIES",
   NotebookNote[]
+>;
+
+export type NOTEBOOK_V2_SET_WORKSPACE_NOTES_ORDER = SpecificActionType<
+  "NOTEBOOK_V2_SET_WORKSPACE_NOTES_ORDER",
+  number[]
 >;
 
 export type NOTEBOOK_V2_BEGIN_WORKSPACE_DRAFT = SpecificActionType<
@@ -106,7 +125,7 @@ export interface DeleteNotebookV2Entry {
  * UpdateNotebookV2WorkspaceNotesOrder
  */
 export interface UpdateNotebookV2WorkspaceNotesOrder {
-  (dragIndex: number, hoverIndex: number): AnyActionType;
+  (dragIndex: number, hoverIndex: number, persist?: boolean): AnyActionType;
 }
 
 /**
@@ -280,52 +299,6 @@ function notifyNotebookV2Error(
 }
 
 /**
- * Optimistic workspace-note reorder in Redux only.
- * TODO: replace with dedicated order endpoint when backend is ready.
- * @param notes notes
- * @param workspaceEntityId workspaceEntityId
- * @param dragIndex dragIndex
- * @param hoverIndex hoverIndex
- * @returns NotebookNote[]
- */
-function reorderWorkspaceNotesInEntries(
-  notes: NotebookNote[],
-  workspaceEntityId: number,
-  dragIndex: number,
-  hoverIndex: number
-): NotebookNote[] {
-  const workspaceNotes = notes.filter(
-    (note) =>
-      note.workspaceEntityId === workspaceEntityId &&
-      note.type === NotebookNoteType.Workspace
-  );
-  if (
-    dragIndex < 0 ||
-    hoverIndex < 0 ||
-    dragIndex >= workspaceNotes.length ||
-    hoverIndex >= workspaceNotes.length ||
-    dragIndex === hoverIndex
-  ) {
-    return notes;
-  }
-  const reordered = [...workspaceNotes];
-  const [moved] = reordered.splice(dragIndex, 1);
-  reordered.splice(hoverIndex, 0, moved);
-  let workspaceIndex = 0;
-  return notes.map((note) => {
-    if (
-      note.workspaceEntityId === workspaceEntityId &&
-      note.type === NotebookNoteType.Workspace
-    ) {
-      const next = reordered[workspaceIndex];
-      workspaceIndex += 1;
-      return next;
-    }
-    return note;
-  });
-}
-
-/**
  * Replaces the notebook V2 notes array in the store.
  * @param dispatch dispatch
  * @param notes notes
@@ -392,7 +365,82 @@ function removeNotebookV2Note(
   );
 }
 
-const workspaceNotesApi = MApi.getWorkspaceNotesApi();
+/**
+ * Sets the workspace notes order.
+ * @param dispatch dispatch
+ * @param orderIds orderIds
+ */
+function setNotebookV2WorkspaceNotesOrder(
+  dispatch: NotebookV2Dispatch,
+  orderIds: number[]
+) {
+  dispatch({
+    type: "NOTEBOOK_V2_SET_WORKSPACE_NOTES_ORDER",
+    payload: orderIds,
+  });
+}
+
+/**
+ * Persists the workspace notes order.
+ * @param workspaceEntityId workspaceEntityId
+ * @param orderIds orderIds
+ * @returns Promise<void>
+ */
+async function persistWorkspaceNotesOrder(
+  workspaceEntityId: number,
+  orderIds: number[]
+) {
+  await saveWorkspaceNotesOrderProperty(userApi, workspaceEntityId, orderIds);
+}
+
+/**
+ * Appends a workspace note to the order and persists the new order.
+ * @param dispatch dispatch
+ * @param getState getState
+ * @param note note
+ */
+async function appendWorkspaceNoteOrderAndPersist(
+  dispatch: NotebookV2Dispatch,
+  getState: () => StateType,
+  note: NotebookNote
+) {
+  if (!isNotebookWorkspaceNote(note)) {
+    return;
+  }
+  const workspaceId = getState().workspaces.currentWorkspace?.id;
+  if (!workspaceId) {
+    return;
+  }
+  const newOrder = appendWorkspaceNoteToOrder(
+    getState().notebookV2.workspaceNotesOrder,
+    note.id
+  );
+  setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
+  await persistWorkspaceNotesOrder(workspaceId, newOrder);
+}
+
+/**
+ * Removes a workspace note from the order and persists the new order.
+ * @param dispatch dispatch
+ * @param getState getState
+ * @param noteId noteId
+ */
+async function removeWorkspaceNoteOrderAndPersist(
+  dispatch: NotebookV2Dispatch,
+  getState: () => StateType,
+  noteId: number
+) {
+  const workspaceId = getState().workspaces.currentWorkspace?.id;
+  if (!workspaceId) {
+    return;
+  }
+  const newOrder = removeWorkspaceNoteFromOrder(
+    getState().notebookV2.workspaceNotesOrder,
+    noteId
+  );
+  setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
+  await persistWorkspaceNotesOrder(workspaceId, newOrder);
+}
 
 /**
  * Fetches all notebook notes for the current workspace from the API.
@@ -408,13 +456,23 @@ async function reloadNotebookV2EntriesForCurrentWorkspace(
   const workspaceId = state.workspaces.currentWorkspace?.id;
   if (!workspaceId) {
     dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: [] });
+    setNotebookV2WorkspaceNotesOrder(dispatch, []);
     return;
   }
-  const entries = await workspaceNotesApi.getWorkspaceNotes({
-    workspaceId,
-    owner: state.status.userId,
-  });
+  const [entries, storedOrder] = await Promise.all([
+    workspaceNotesApi.getWorkspaceNotes({
+      workspaceId,
+      owner: state.status.userId,
+    }),
+    loadWorkspaceNotesOrderProperty(userApi, workspaceId),
+  ]);
+  const workspaceNotes = getWorkspaceNotesFromNotes(entries);
+  const orderIds = reconcileWorkspaceNotesOrder(storedOrder, workspaceNotes);
   dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: entries });
+  setNotebookV2WorkspaceNotesOrder(dispatch, orderIds);
+  if (storedOrder && !areWorkspaceNotesOrdersEqual(storedOrder, orderIds)) {
+    await persistWorkspaceNotesOrder(workspaceId, orderIds);
+  }
 }
 
 /**
@@ -463,6 +521,7 @@ const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
           },
         });
         appendNotebookV2Note(dispatch, getState, note);
+        await appendWorkspaceNoteOrderAndPersist(dispatch, getState, note);
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
@@ -520,7 +579,22 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
         await workspaceNotesApi.archiveWorkspaceNote({
           id: data.noteId,
         });
+
+        const deletedNote = getState().notebookV2.notes?.find(
+          (note) => note.id === data.noteId
+        );
+
         removeNotebookV2Note(dispatch, getState, data.noteId);
+
+        // Remove from order if it was a workspace note
+        if (deletedNote && isNotebookWorkspaceNote(deletedNote)) {
+          await removeWorkspaceNoteOrderAndPersist(
+            dispatch,
+            getState,
+            data.noteId
+          );
+        }
+
         if (getState().notebookV2.activeItemId === data.noteId) {
           dispatch({
             type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM",
@@ -543,26 +617,43 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
  * dragIndex / hoverIndex are indices in the workspace-notes list only.
  * @param dragIndex - Index of the note to drag
  * @param hoverIndex - Index to hover over
+ * @param persist - Whether to persist the new order
  * @returns AnyActionType
  */
 const updateNotebookV2WorkspaceNotesOrder: UpdateNotebookV2WorkspaceNotesOrder =
-  function updateNotebookV2WorkspaceNotesOrder(dragIndex, hoverIndex) {
-    return (dispatch, getState) => {
+  function updateNotebookV2WorkspaceNotesOrder(
+    dragIndex,
+    hoverIndex,
+    persist = false
+  ) {
+    return async (dispatch, getState) => {
       const state = getState();
       const workspaceId = state.workspaces.currentWorkspace?.id;
-      const notes = state.notebookV2.notes;
-      if (!workspaceId || !notes?.length) {
+      const currentOrder = state.notebookV2.workspaceNotesOrder;
+      if (!workspaceId || !currentOrder.length) {
         return;
       }
-      dispatch({
-        type: "NOTEBOOK_V2_LOAD_ENTRIES",
-        payload: reorderWorkspaceNotesInEntries(
-          notes,
-          workspaceId,
-          dragIndex,
-          hoverIndex
-        ),
-      });
+      const newOrder = reorderWorkspaceNotesOrderIds(
+        currentOrder,
+        dragIndex,
+        hoverIndex
+      );
+      setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
+      if (!persist) {
+        return;
+      }
+      try {
+        await persistWorkspaceNotesOrder(workspaceId, newOrder);
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(
+          dispatch,
+          "notifications.updateError",
+          "noteOrder"
+        );
+      }
     };
   };
 
@@ -812,6 +903,7 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
         });
         dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
         appendNotebookV2Note(dispatch, getState, note);
+        await appendWorkspaceNoteOrderAndPersist(dispatch, getState, note);
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
