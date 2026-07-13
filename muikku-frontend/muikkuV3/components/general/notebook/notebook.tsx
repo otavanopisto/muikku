@@ -7,6 +7,7 @@ import { NoteList } from "./notebook-notes-list";
 import {
   loadNotebookV2Entries,
   clearNotebookV2FocusDraft,
+  clearNotebookV2DraftsAll,
   clearNotebookV2ActiveItem,
 } from "~/actions/notebook/notebookV2";
 import { useNotebookViewModel } from "./hooks/useNotebookViewModel";
@@ -46,10 +47,12 @@ const Notebook = (props: NotebookProps) => {
   const materialOpenStorageKey = `opened-notes-v2-material-${currentWorkspace?.id}-${userId}`;
 
   React.useEffect(() => {
-    if (notes === null) {
-      dispatch(loadNotebookV2Entries());
+    if (!currentWorkspace?.id) {
+      return;
     }
-  }, [dispatch, notes]);
+    dispatch(clearNotebookV2DraftsAll());
+    dispatch(loadNotebookV2Entries());
+  }, [dispatch, currentWorkspace?.id]);
 
   const notebookBodyRef = React.useRef<HTMLDivElement>(null);
   const { updatePosition } = useScroll(notebookBodyRef);

@@ -1,18 +1,8 @@
 import { Action, Dispatch } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { NotebookNote } from "~/generated/client";
+import { NotebookNote, NotebookNoteType } from "~/generated/client";
 import { ReducerStatusType } from "~/reducers/types";
-import {
-  createMockWorkspaceNotebookNote,
-  getMockNotebookNotesByWorkspace,
-  removeMockNotebookNote,
-  upsertMockNotebookNote,
-  reorderMockWorkspaceNotesForWorkspace,
-  createMockContextNote,
-  createMockContextHighlight,
-  createMockWorkspaceMaterialNotebookNote,
-} from "~/mock/notebook-notes-store";
 import { isNotebookNoteEditable } from "~/components/general/notebook/helpers/notebook-display";
 import { displayNotification } from "../base/notifications";
 import i18n from "~/locales/i18n";
@@ -22,6 +12,7 @@ import {
   NotebookMaterialNoteDraft,
   NotebookWorkspaceNoteDraft,
 } from "~/components/general/notebook/helpers/notebook-drafts";
+import MApi, { isMApiError } from "~/api/api";
 
 export type NOTEBOOK_V2_UPDATE_STATE = SpecificActionType<
   "NOTEBOOK_V2_UPDATE_STATE",
@@ -260,20 +251,169 @@ export interface ClearNotebookV2ActiveItem {
   (): AnyActionType;
 }
 
+type NotebookV2Dispatch = (
+  arg: AnyActionType
+) => Dispatch<Action<AnyActionType>>;
+
 /**
- * ReloadNotebookV2EntriesForCurrentWorkspace
+ * Shows a notebook V2 error notification and sets reducer state to ERROR.
+ * @param dispatch dispatch
+ * @param messageKey messageKey
+ * @param context context
+ */
+function notifyNotebookV2Error(
+  dispatch: NotebookV2Dispatch,
+  messageKey:
+    | "notifications.loadError"
+    | "notifications.saveError"
+    | "notifications.updateError"
+    | "notifications.removeError",
+  context?: string
+) {
+  dispatch({ type: "NOTEBOOK_V2_UPDATE_STATE", payload: "ERROR" });
+  dispatch(
+    displayNotification(
+      i18n.t(messageKey, { ns: "notebook", context }),
+      "error"
+    )
+  );
+}
+
+/**
+ * Optimistic workspace-note reorder in Redux only.
+ * TODO: replace with dedicated order endpoint when backend is ready.
+ * @param notes notes
+ * @param workspaceEntityId workspaceEntityId
+ * @param dragIndex dragIndex
+ * @param hoverIndex hoverIndex
+ * @returns NotebookNote[]
+ */
+function reorderWorkspaceNotesInEntries(
+  notes: NotebookNote[],
+  workspaceEntityId: number,
+  dragIndex: number,
+  hoverIndex: number
+): NotebookNote[] {
+  const workspaceNotes = notes.filter(
+    (note) =>
+      note.workspaceEntityId === workspaceEntityId &&
+      note.type === NotebookNoteType.Workspace
+  );
+  if (
+    dragIndex < 0 ||
+    hoverIndex < 0 ||
+    dragIndex >= workspaceNotes.length ||
+    hoverIndex >= workspaceNotes.length ||
+    dragIndex === hoverIndex
+  ) {
+    return notes;
+  }
+  const reordered = [...workspaceNotes];
+  const [moved] = reordered.splice(dragIndex, 1);
+  reordered.splice(hoverIndex, 0, moved);
+  let workspaceIndex = 0;
+  return notes.map((note) => {
+    if (
+      note.workspaceEntityId === workspaceEntityId &&
+      note.type === NotebookNoteType.Workspace
+    ) {
+      const next = reordered[workspaceIndex];
+      workspaceIndex += 1;
+      return next;
+    }
+    return note;
+  });
+}
+
+/**
+ * Replaces the notebook V2 notes array in the store.
+ * @param dispatch dispatch
+ * @param notes notes
+ */
+function setNotebookV2Notes(
+  dispatch: NotebookV2Dispatch,
+  notes: NotebookNote[]
+) {
+  dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: notes });
+}
+
+/**
+ * Appends a newly created note to the store.
+ * @param dispatch dispatch
+ * @param getState getState
+ * @param note note
+ */
+function appendNotebookV2Note(
+  dispatch: NotebookV2Dispatch,
+  getState: () => StateType,
+  note: NotebookNote
+) {
+  const currentNotes = getState().notebookV2.notes ?? [];
+  setNotebookV2Notes(dispatch, [...currentNotes, note]);
+}
+
+/**
+ * Replaces an existing note in the store (by id).
+ * @param dispatch dispatch
+ * @param getState getState
+ * @param note note
+ */
+function replaceNotebookV2Note(
+  dispatch: NotebookV2Dispatch,
+  getState: () => StateType,
+  note: NotebookNote
+) {
+  const currentNotes = getState().notebookV2.notes ?? [];
+  const index = currentNotes.findIndex((entry) => entry.id === note.id);
+  if (index < 0) {
+    setNotebookV2Notes(dispatch, [...currentNotes, note]);
+    return;
+  }
+  const updatedNotes = [...currentNotes];
+  updatedNotes[index] = note;
+  setNotebookV2Notes(dispatch, updatedNotes);
+}
+
+/**
+ * Removes a note from the store by id.
+ * @param dispatch dispatch
+ * @param getState getState
+ * @param noteId noteId
+ */
+function removeNotebookV2Note(
+  dispatch: NotebookV2Dispatch,
+  getState: () => StateType,
+  noteId: number
+) {
+  const currentNotes = getState().notebookV2.notes ?? [];
+  setNotebookV2Notes(
+    dispatch,
+    currentNotes.filter((note) => note.id !== noteId)
+  );
+}
+
+const workspaceNotesApi = MApi.getWorkspaceNotesApi();
+
+/**
+ * Fetches all notebook notes for the current workspace from the API.
+ * Used for initial load only — mutations should patch the store locally.
  * @param dispatch dispatch
  * @param getState getState
  */
-function reloadNotebookV2EntriesForCurrentWorkspace(
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+async function reloadNotebookV2EntriesForCurrentWorkspace(
+  dispatch: NotebookV2Dispatch,
   getState: () => StateType
 ) {
-  const workspaceId = getState().workspaces.currentWorkspace?.id;
-  const entries = workspaceId
-    ? getMockNotebookNotesByWorkspace(workspaceId)
-    : [];
-
+  const state = getState();
+  const workspaceId = state.workspaces.currentWorkspace?.id;
+  if (!workspaceId) {
+    dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: [] });
+    return;
+  }
+  const entries = await workspaceNotesApi.getWorkspaceNotes({
+    workspaceId,
+    owner: state.status.userId,
+  });
   dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: entries });
 }
 
@@ -282,13 +422,21 @@ function reloadNotebookV2EntriesForCurrentWorkspace(
  */
 const loadNotebookV2Entries: LoadNotebookV2Entries =
   function loadNotebookV2Entries() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({ type: "NOTEBOOK_V2_UPDATE_STATE", payload: "LOADING" });
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      dispatch({ type: "NOTEBOOK_V2_UPDATE_STATE", payload: "READY" });
+      try {
+        await reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
+        dispatch({ type: "NOTEBOOK_V2_UPDATE_STATE", payload: "READY" });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(
+          dispatch,
+          "notifications.loadError",
+          "courseNotes"
+        );
+      }
     };
   };
 
@@ -298,35 +446,37 @@ const loadNotebookV2Entries: LoadNotebookV2Entries =
  */
 const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
   function saveNewNotebookV2Entry(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const workspaceId = state.workspaces.currentWorkspace?.id;
-
       if (!workspaceId) {
         data.fail?.();
         return;
       }
-
-      createMockWorkspaceNotebookNote({
-        owner: String(state.status.userId),
-        workspaceEntityId: workspaceId,
-        title: data.title,
-        text: data.text,
-      });
-
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-          "success"
-        )
-      );
-
-      data.success?.();
+      try {
+        const note = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: {
+            title: data.title,
+            text: data.text,
+            workspaceEntityId: workspaceId,
+            type: NotebookNoteType.Workspace,
+          },
+        });
+        appendNotebookV2Note(dispatch, getState, note);
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
     };
   };
 
@@ -336,27 +486,26 @@ const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
  */
 const updateEditedNotebookV2Entry: UpdateEditedNotebookV2Entry =
   function updateEditedNotebookV2Entry(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       if (!isNotebookNoteEditable(data.editedEntry)) {
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.updateError", {
-              ns: "notebook",
-              context: "note",
-            }),
-            "error"
-          )
-        );
+        notifyNotebookV2Error(dispatch, "notifications.updateError", "note");
         data.fail?.();
         return;
       }
-
-      upsertMockNotebookNote(data.editedEntry);
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      data.success?.();
+      try {
+        const updatedNote = await workspaceNotesApi.updateWorkspaceNote({
+          id: data.editedEntry.id,
+          notebookNote: data.editedEntry,
+        });
+        replaceNotebookV2Note(dispatch, getState, updatedNote);
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.updateError", "note");
+        data.fail?.();
+      }
     };
   };
 
@@ -366,16 +515,26 @@ const updateEditedNotebookV2Entry: UpdateEditedNotebookV2Entry =
  */
 const deleteNotebookV2Entry: DeleteNotebookV2Entry =
   function deleteNotebookV2Entry(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      removeMockNotebookNote(data.noteId);
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      if (getState().notebookV2.activeItemId === data.noteId) {
-        dispatch({ type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM", payload: undefined });
+    return async (dispatch, getState) => {
+      try {
+        await workspaceNotesApi.archiveWorkspaceNote({
+          id: data.noteId,
+        });
+        removeNotebookV2Note(dispatch, getState, data.noteId);
+        if (getState().notebookV2.activeItemId === data.noteId) {
+          dispatch({
+            type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM",
+            payload: undefined,
+          });
+        }
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.removeError", "note");
+        data.fail?.();
       }
-      data.success?.();
     };
   };
 
@@ -388,16 +547,22 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
  */
 const updateNotebookV2WorkspaceNotesOrder: UpdateNotebookV2WorkspaceNotesOrder =
   function updateNotebookV2WorkspaceNotesOrder(dragIndex, hoverIndex) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const workspaceId = getState().workspaces.currentWorkspace?.id;
-      if (!workspaceId) {
+    return (dispatch, getState) => {
+      const state = getState();
+      const workspaceId = state.workspaces.currentWorkspace?.id;
+      const notes = state.notebookV2.notes;
+      if (!workspaceId || !notes?.length) {
         return;
       }
-      reorderMockWorkspaceNotesForWorkspace(workspaceId, dragIndex, hoverIndex);
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
+      dispatch({
+        type: "NOTEBOOK_V2_LOAD_ENTRIES",
+        payload: reorderWorkspaceNotesInEntries(
+          notes,
+          workspaceId,
+          dragIndex,
+          hoverIndex
+        ),
+      });
     };
   };
 
@@ -415,23 +580,34 @@ const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
         data.fail?.();
         return;
       }
-      createMockContextHighlight({
-        owner: String(state.status.userId),
-        workspaceEntityId: workspaceId,
-        workspaceMaterialId: data.workspaceMaterialId,
-        text: data.text.trim(),
-        start: data.start,
-        end: data.end,
-        index: data.index,
-      });
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-          "success"
-        )
-      );
-      data.success?.();
+      try {
+        const note = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: {
+            title: "",
+            text: data.text.trim(),
+            workspaceEntityId: workspaceId,
+            workspaceMaterialId: data.workspaceMaterialId,
+            type: NotebookNoteType.WorkspaceMaterialContextHighlight,
+            start: data.start,
+            end: data.end,
+            index: data.index,
+          },
+        });
+        appendNotebookV2Note(dispatch, getState, note);
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
     };
   };
 
@@ -452,24 +628,34 @@ const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
       const trimmed = data.selectedText.trim();
       const title =
         trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}...`;
-      createMockContextNote({
-        owner: String(state.status.userId),
-        workspaceEntityId: workspaceId,
-        workspaceMaterialId: data.workspaceMaterialId,
-        title,
-        text: "<p></p>", // empty body; user edits in notebook
-        start: data.start,
-        end: data.end,
-        index: data.index,
-      });
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-          "success"
-        )
-      );
-      data.success?.();
+      try {
+        const note = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: {
+            title,
+            text: "<p></p>",
+            workspaceEntityId: workspaceId,
+            workspaceMaterialId: data.workspaceMaterialId,
+            type: NotebookNoteType.WorkspaceMaterialContextNote,
+            start: data.start,
+            end: data.end,
+            index: data.index,
+          },
+        });
+        appendNotebookV2Note(dispatch, getState, note);
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
     };
   };
 
@@ -615,21 +801,31 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
         data.fail?.();
         return;
       }
-      createMockWorkspaceNotebookNote({
-        owner: String(state.status.userId),
-        workspaceEntityId: workspaceId,
-        title: data.title,
-        text: data.text,
-      });
-      dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-          "success"
-        )
-      );
-      data.success?.();
+      try {
+        const note = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: {
+            title: data.title,
+            text: data.text,
+            workspaceEntityId: workspaceId,
+            type: NotebookNoteType.Workspace,
+          },
+        });
+        dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
+        appendNotebookV2Note(dispatch, getState, note);
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
     };
   };
 
@@ -650,22 +846,32 @@ const saveNotebookV2MaterialDraft: SaveNotebookV2MaterialDraft =
         data.fail?.();
         return;
       }
-      createMockWorkspaceMaterialNotebookNote({
-        owner: String(state.status.userId),
-        workspaceEntityId: workspaceId,
-        workspaceMaterialId: draftEntry.workspaceMaterialId,
-        title: data.title,
-        text: data.text,
-      });
-      dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-          "success"
-        )
-      );
-      data.success?.();
+      try {
+        const note = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: {
+            title: data.title,
+            text: data.text,
+            workspaceEntityId: workspaceId,
+            workspaceMaterialId: draftEntry.workspaceMaterialId,
+            type: NotebookNoteType.WorkspaceMaterial,
+          },
+        });
+        dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
+        appendNotebookV2Note(dispatch, getState, note);
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
     };
   };
 
@@ -686,26 +892,36 @@ const saveNotebookV2ContextNoteDraft: SaveNotebookV2ContextNoteDraft =
         data.fail?.();
         return;
       }
-      createMockContextNote({
-        owner: String(state.status.userId),
-        workspaceEntityId: workspaceId,
-        workspaceMaterialId: draft.workspaceMaterialId,
-        title: data.title,
-        text: data.text,
-        start: draft.start,
-        end: draft.end,
-        index: draft.index,
-      });
-      dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
-      dispatch({ type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM", payload: undefined });
-      reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-          "success"
-        )
-      );
-      data.success?.();
+      try {
+        const note = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: {
+            title: data.title,
+            text: data.text,
+            workspaceEntityId: workspaceId,
+            workspaceMaterialId: draft.workspaceMaterialId,
+            type: NotebookNoteType.WorkspaceMaterialContextNote,
+            start: draft.start,
+            end: draft.end,
+            index: draft.index,
+          },
+        });
+        dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
+        dispatch({ type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM", payload: undefined });
+        appendNotebookV2Note(dispatch, getState, note);
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
     };
   };
 
