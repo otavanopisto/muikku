@@ -128,6 +128,21 @@ export const notebookV2: Reducer<NoteBookV2State> = (
         activeItemId: null,
       };
 
+    case "NOTEBOOK_V2_SET_WORKSPACE_DRAFT_POSITION":
+      if (!state.drafts.workspaceNote) {
+        return state;
+      }
+      return {
+        ...state,
+        drafts: {
+          ...state.drafts,
+          workspaceNote: {
+            ...state.drafts.workspaceNote,
+            position: action.payload,
+          },
+        },
+      };
+
     default:
       return state;
   }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -12,6 +13,7 @@ import { useNotebookOpenItems } from "../hooks/useNotebookOpenItems";
 import NotebookNoteItem from "../items/notebook-note-item";
 import {
   beginNotebookV2WorkspaceDraft,
+  setNotebookV2WorkspaceDraftPosition,
   updateNotebookV2WorkspaceNotesOrder,
 } from "~/actions/notebook/notebookV2";
 
@@ -21,6 +23,7 @@ import {
 interface NotebookWorkspaceSectionProps {
   notes: WorkspaceNotebookNote[];
   workspaceDraftNote: WorkspaceNotebookNote | null;
+  workspaceDraftNotePosition: number | null;
   storageKey: string;
 }
 
@@ -30,7 +33,8 @@ interface NotebookWorkspaceSectionProps {
  * @returns React.ReactNode
  */
 const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
-  const { notes, workspaceDraftNote, storageKey } = props;
+  const { notes, workspaceDraftNote, workspaceDraftNotePosition, storageKey } =
+    props;
   const { t } = useTranslation("notebook");
   const dispatch = useDispatch();
   const { isOpen, toggle, openAll, closeAll } =
@@ -65,6 +69,17 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
   const handleEditEntriesOrderClick = () => {
     setEditOrder((prev) => !prev);
   };
+
+  /**
+   * handleSetDraftPosition
+   * @param position position
+   */
+  const handleSetDraftPosition = React.useCallback(
+    (position: number) => {
+      dispatch(setNotebookV2WorkspaceDraftPosition(position));
+    },
+    [dispatch]
+  );
 
   /**
    * handleElementDrag
@@ -165,13 +180,38 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
         />
       )}
 
-      {notes.map((note, index) => {
+      {notes.map((note, index, array) => {
+        const isFirst = index === 0;
+        const isLast = index === array.length - 1;
+
         const item = (
-          <NotebookNoteItem
-            note={note}
-            open={isOpen(note.id)}
-            onToggle={toggle}
-          />
+          <>
+            {workspaceDraftNote && isFirst && (
+              <AddHere
+                isActive={workspaceDraftNotePosition === 0}
+                onClick={() => handleSetDraftPosition(0)}
+              />
+            )}
+
+            <NotebookNoteItem
+              note={note}
+              open={isOpen(note.id)}
+              onToggle={toggle}
+            />
+
+            {workspaceDraftNote &&
+              (isLast ? (
+                <AddHere
+                  isActive={workspaceDraftNotePosition === array.length}
+                  onClick={() => handleSetDraftPosition(array.length)}
+                />
+              ) : (
+                <AddHere
+                  isActive={workspaceDraftNotePosition === index + 1}
+                  onClick={() => handleSetDraftPosition(index + 1)}
+                />
+              ))}
+          </>
         );
 
         if (!editOrder) {
@@ -192,6 +232,46 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
         );
       })}
     </section>
+  );
+};
+
+/**
+ * AddHereProps
+ */
+interface AddHereProps {
+  isActive: boolean;
+  onClick: React.MouseEventHandler<unknown>;
+}
+
+/**
+ * AddHere
+ * @param props props
+ * @returns JSX.Element
+ */
+const AddHere = (props: AddHereProps) => {
+  const { isActive, onClick } = props;
+
+  const handleIconClick = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      onClick(e);
+    },
+    [onClick]
+  );
+
+  return (
+    <div
+      className={
+        isActive
+          ? "notebook__set-note-location notebook__set-note-location--selected"
+          : "notebook__set-note-location"
+      }
+    >
+      <span
+        className="notebook__set-note-location-icon icon-list-add"
+        onClick={handleIconClick}
+      />
+    </div>
   );
 };
 

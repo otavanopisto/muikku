@@ -41,7 +41,10 @@ const Notebook = (props: NotebookProps) => {
     (state: StateType) => state.notebookV2.activeItemId
   );
   const viewModel = useNotebookViewModel();
-  const { notes, state } = notebookV2;
+
+  const { notes, state, drafts } = notebookV2;
+
+  const workspaceDraftNotePosition = drafts.workspaceNote?.position;
 
   const workspaceOpenStorageKey = `opened-notes-v2-workspace-${currentWorkspace?.id}-${userId}`;
   const materialOpenStorageKey = `opened-notes-v2-material-${currentWorkspace?.id}-${userId}`;
@@ -104,6 +107,7 @@ const Notebook = (props: NotebookProps) => {
                 notes={viewModel.workspaceNotes}
                 storageKey={workspaceOpenStorageKey}
                 workspaceDraftNote={viewModel.workspaceDraftNote}
+                workspaceDraftNotePosition={workspaceDraftNotePosition}
               />
               <NotebookMaterialSection
                 groups={viewModel.materialGroups}

@@ -100,23 +100,6 @@ export function reconcileWorkspaceNotesOrder(
 }
 
 /**
- * Appends a workspace note to the order.
- * @param orderIds orderIds
- * @param noteId noteId
- * @returns number[]
- */
-export function appendWorkspaceNoteToOrder(
-  orderIds: number[],
-  noteId: number
-): number[] {
-  if (orderIds.includes(noteId)) {
-    return orderIds;
-  }
-
-  return [...orderIds, noteId];
-}
-
-/**
  * Removes a workspace note from the order.
  * @param orderIds orderIds
  * @param noteId noteId
@@ -224,4 +207,22 @@ export async function saveWorkspaceNotesOrderProperty(
       value: JSON.stringify(orderIds),
     },
   });
+}
+
+/**
+ * Inserts a new note id at the given position in the order list.
+ * @param orderIds orderIds
+ * @param noteId noteId
+ * @param position position
+ * @returns number[]
+ */
+export function insertWorkspaceNoteIdAtPosition(
+  orderIds: number[],
+  noteId: number,
+  position: number
+): number[] {
+  const next = [...orderIds];
+  const insertAt = Math.max(0, Math.min(position, next.length));
+  next.splice(insertAt, 0, noteId);
+  return next;
 }

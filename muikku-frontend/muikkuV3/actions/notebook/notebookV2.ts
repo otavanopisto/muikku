@@ -13,9 +13,9 @@ import {
   NotebookWorkspaceNoteDraft,
 } from "~/components/general/notebook/helpers/notebook-drafts";
 import {
-  appendWorkspaceNoteToOrder,
   areWorkspaceNotesOrdersEqual,
   getWorkspaceNotesFromNotes,
+  insertWorkspaceNoteIdAtPosition,
   loadWorkspaceNotesOrderProperty,
   reconcileWorkspaceNotesOrder,
   removeWorkspaceNoteFromOrder,
@@ -58,6 +58,10 @@ export type NOTEBOOK_V2_BEGIN_CONTEXT_NOTE_DRAFT = SpecificActionType<
 export type NOTEBOOK_V2_CANCEL_DRAFT = SpecificActionType<
   "NOTEBOOK_V2_CANCEL_DRAFT",
   number
+>;
+export type NOTEBOOK_V2_SET_WORKSPACE_DRAFT_POSITION = SpecificActionType<
+  "NOTEBOOK_V2_SET_WORKSPACE_DRAFT_POSITION",
+  number | null
 >;
 export type NOTEBOOK_V2_DRAFTS_CLEAR_ALL = SpecificActionType<
   "NOTEBOOK_V2_DRAFTS_CLEAR_ALL",
@@ -255,8 +259,6 @@ export interface ClearNotebookV2NotebookTabRequest {
 
 /**
  * SetNotebookV2ActiveItem
- * @param noteId noteId
- * @returns AnyActionType
  */
 export interface SetNotebookV2ActiveItem {
   (noteId: number): AnyActionType;
@@ -264,10 +266,16 @@ export interface SetNotebookV2ActiveItem {
 
 /**
  * ClearNotebookV2ActiveItem
- * @returns AnyActionType
  */
 export interface ClearNotebookV2ActiveItem {
   (): AnyActionType;
+}
+
+/**
+ * SetNotebookV2WorkspaceDraftPosition
+ */
+export interface SetNotebookV2WorkspaceDraftPosition {
+  (position: number | null): AnyActionType;
 }
 
 type NotebookV2Dispatch = (
@@ -394,32 +402,6 @@ async function persistWorkspaceNotesOrder(
 }
 
 /**
- * Appends a workspace note to the order and persists the new order.
- * @param dispatch dispatch
- * @param getState getState
- * @param note note
- */
-async function appendWorkspaceNoteOrderAndPersist(
-  dispatch: NotebookV2Dispatch,
-  getState: () => StateType,
-  note: NotebookNote
-) {
-  if (!isNotebookWorkspaceNote(note)) {
-    return;
-  }
-  const workspaceId = getState().workspaces.currentWorkspace?.id;
-  if (!workspaceId) {
-    return;
-  }
-  const newOrder = appendWorkspaceNoteToOrder(
-    getState().notebookV2.workspaceNotesOrder,
-    note.id
-  );
-  setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
-  await persistWorkspaceNotesOrder(workspaceId, newOrder);
-}
-
-/**
  * Removes a workspace note from the order and persists the new order.
  * @param dispatch dispatch
  * @param getState getState
@@ -502,7 +484,7 @@ const loadNotebookV2Entries: LoadNotebookV2Entries =
  * SaveNewNotebookV2Entry
  * @param data data
  */
-const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
+/* const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
   function saveNewNotebookV2Entry(data) {
     return async (dispatch, getState) => {
       const state = getState();
@@ -537,7 +519,7 @@ const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
         data.fail?.();
       }
     };
-  };
+  }; */
 
 /**
  * UpdateEditedNotebookV2Entry
@@ -765,6 +747,7 @@ const beginNotebookV2WorkspaceDraft: BeginNotebookV2WorkspaceDraft =
         type: "NOTEBOOK_V2_BEGIN_WORKSPACE_DRAFT",
         payload: {
           clientId,
+          position: null,
           workspaceEntityId: workspaceId,
           title: "",
           text: "<p></p>",
@@ -903,7 +886,16 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
         });
         dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
         appendNotebookV2Note(dispatch, getState, note);
-        await appendWorkspaceNoteOrderAndPersist(dispatch, getState, note);
+
+        const currentOrder = getState().notebookV2.workspaceNotesOrder;
+        const insertPosition = draft.position ?? currentOrder.length;
+        const newOrder = insertWorkspaceNoteIdAtPosition(
+          currentOrder,
+          note.id,
+          insertPosition
+        );
+        setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
+        await persistWorkspaceNotesOrder(workspaceId, newOrder);
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
@@ -1040,9 +1032,23 @@ const clearNotebookV2ActiveItem: ClearNotebookV2ActiveItem =
     };
   };
 
+/**
+ * SetNotebookV2WorkspaceDraftPosition
+ * @param position position
+ * @returns AnyActionType
+ */
+const setNotebookV2WorkspaceDraftPosition: SetNotebookV2WorkspaceDraftPosition =
+  function setNotebookV2WorkspaceDraftPosition(position) {
+    return (dispatch) => {
+      dispatch({
+        type: "NOTEBOOK_V2_SET_WORKSPACE_DRAFT_POSITION",
+        payload: position,
+      });
+    };
+  };
+
 export {
   loadNotebookV2Entries,
-  saveNewNotebookV2Entry,
   updateEditedNotebookV2Entry,
   deleteNotebookV2Entry,
   updateNotebookV2WorkspaceNotesOrder,
@@ -1060,4 +1066,5 @@ export {
   saveNotebookV2ContextNoteDraft,
   setNotebookV2ActiveItem,
   clearNotebookV2ActiveItem,
+  setNotebookV2WorkspaceDraftPosition,
 };
