@@ -344,12 +344,15 @@ function replaceNotebookV2Note(
   getState: () => StateType,
   note: NotebookNote
 ) {
+  // Get the current notes
   const currentNotes = getState().notebookV2.notes ?? [];
+  // Find the index of the note in the current notes
   const index = currentNotes.findIndex((entry) => entry.id === note.id);
   if (index < 0) {
     setNotebookV2Notes(dispatch, [...currentNotes, note]);
     return;
   }
+  // Create a new array with the updated note
   const updatedNotes = [...currentNotes];
   updatedNotes[index] = note;
   setNotebookV2Notes(dispatch, updatedNotes);
@@ -416,11 +419,14 @@ async function removeWorkspaceNoteOrderAndPersist(
   if (!workspaceId) {
     return;
   }
+  // Remove the note from the workspace notes order
   const newOrder = removeWorkspaceNoteFromOrder(
     getState().notebookV2.workspaceNotesOrder,
     noteId
   );
+  // Set the workspace notes order
   setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
+  // Persist the workspace notes order
   await persistWorkspaceNotesOrder(workspaceId, newOrder);
 }
 
@@ -436,11 +442,13 @@ async function reloadNotebookV2EntriesForCurrentWorkspace(
 ) {
   const state = getState();
   const workspaceId = state.workspaces.currentWorkspace?.id;
+  // If no workspace id, set the notes and workspace notes order to empty
   if (!workspaceId) {
     dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: [] });
     setNotebookV2WorkspaceNotesOrder(dispatch, []);
     return;
   }
+  // Get the notebook entries and the stored workspace notes order
   const [entries, storedOrder] = await Promise.all([
     workspaceNotesApi.getWorkspaceNotes({
       workspaceId,
@@ -448,23 +456,28 @@ async function reloadNotebookV2EntriesForCurrentWorkspace(
     }),
     loadWorkspaceNotesOrderProperty(userApi, workspaceId),
   ]);
+  // Get the workspace notes from the entries
   const workspaceNotes = getWorkspaceNotesFromNotes(entries);
+  // Reconcile the workspace notes order
   const orderIds = reconcileWorkspaceNotesOrder(storedOrder, workspaceNotes);
   dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: entries });
   setNotebookV2WorkspaceNotesOrder(dispatch, orderIds);
+  // If the stored workspace notes order is different from the reconciled workspace notes order, persist the new order
   if (storedOrder && !areWorkspaceNotesOrdersEqual(storedOrder, orderIds)) {
     await persistWorkspaceNotesOrder(workspaceId, orderIds);
   }
 }
 
 /**
- * LoadNotebookV2Entries
+ * Loads the notebook entries.
  */
 const loadNotebookV2Entries: LoadNotebookV2Entries =
   function loadNotebookV2Entries() {
     return async (dispatch, getState) => {
+      // Update the state to loading
       dispatch({ type: "NOTEBOOK_V2_UPDATE_STATE", payload: "LOADING" });
       try {
+        // Reload the notebook entries for the current workspace
         await reloadNotebookV2EntriesForCurrentWorkspace(dispatch, getState);
         dispatch({ type: "NOTEBOOK_V2_UPDATE_STATE", payload: "READY" });
       } catch (err) {
@@ -481,63 +494,26 @@ const loadNotebookV2Entries: LoadNotebookV2Entries =
   };
 
 /**
- * SaveNewNotebookV2Entry
- * @param data data
- */
-/* const saveNewNotebookV2Entry: SaveNewNotebookV2Entry =
-  function saveNewNotebookV2Entry(data) {
-    return async (dispatch, getState) => {
-      const state = getState();
-      const workspaceId = state.workspaces.currentWorkspace?.id;
-      if (!workspaceId) {
-        data.fail?.();
-        return;
-      }
-      try {
-        const note = await workspaceNotesApi.createWorkspaceNote({
-          createWorkspaceNoteRequest: {
-            title: data.title,
-            text: data.text,
-            workspaceEntityId: workspaceId,
-            type: NotebookNoteType.Workspace,
-          },
-        });
-        appendNotebookV2Note(dispatch, getState, note);
-        await appendWorkspaceNoteOrderAndPersist(dispatch, getState, note);
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-            "success"
-          )
-        );
-        data.success?.();
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
-        data.fail?.();
-      }
-    };
-  }; */
-
-/**
- * UpdateEditedNotebookV2Entry
+ * Updates the edited notebook entry.
  * @param data data
  */
 const updateEditedNotebookV2Entry: UpdateEditedNotebookV2Entry =
   function updateEditedNotebookV2Entry(data) {
     return async (dispatch, getState) => {
+      // Check if the note is editable
       if (!isNotebookNoteEditable(data.editedEntry)) {
+        // Display the notification
         notifyNotebookV2Error(dispatch, "notifications.updateError", "note");
         data.fail?.();
         return;
       }
       try {
+        // Update the note
         const updatedNote = await workspaceNotesApi.updateWorkspaceNote({
           id: data.editedEntry.id,
           notebookNote: data.editedEntry,
         });
+        // Replace the note in the store
         replaceNotebookV2Note(dispatch, getState, updatedNote);
         data.success?.();
       } catch (err) {
@@ -551,21 +527,24 @@ const updateEditedNotebookV2Entry: UpdateEditedNotebookV2Entry =
   };
 
 /**
- * DeleteNotebookV2Entry
+ * Deletes the notebook entry.
  * @param data data
  */
 const deleteNotebookV2Entry: DeleteNotebookV2Entry =
   function deleteNotebookV2Entry(data) {
     return async (dispatch, getState) => {
       try {
+        // Archive the note
         await workspaceNotesApi.archiveWorkspaceNote({
           id: data.noteId,
         });
 
+        // Find the deleted note
         const deletedNote = getState().notebookV2.notes?.find(
           (note) => note.id === data.noteId
         );
 
+        // Remove the note from the store
         removeNotebookV2Note(dispatch, getState, data.noteId);
 
         // Remove from order if it was a workspace note
@@ -577,6 +556,7 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
           );
         }
 
+        // Clear the active item if it was the deleted note
         if (getState().notebookV2.activeItemId === data.noteId) {
           dispatch({
             type: "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM",
@@ -595,12 +575,11 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
   };
 
 /**
- * Reorder workspace notes within the workspace section (mock store).
+ * Reorder workspace notes within the workspace section.
  * dragIndex / hoverIndex are indices in the workspace-notes list only.
  * @param dragIndex - Index of the note to drag
  * @param hoverIndex - Index to hover over
  * @param persist - Whether to persist the new order
- * @returns AnyActionType
  */
 const updateNotebookV2WorkspaceNotesOrder: UpdateNotebookV2WorkspaceNotesOrder =
   function updateNotebookV2WorkspaceNotesOrder(
@@ -615,15 +594,21 @@ const updateNotebookV2WorkspaceNotesOrder: UpdateNotebookV2WorkspaceNotesOrder =
       if (!workspaceId || !currentOrder.length) {
         return;
       }
+
+      // Reorder the workspace notes order ids
       const newOrder = reorderWorkspaceNotesOrderIds(
         currentOrder,
         dragIndex,
         hoverIndex
       );
+      // Set the workspace notes order
       setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
+      // If not persisting, abort
       if (!persist) {
         return;
       }
+
+      // Persist the workspace notes order
       try {
         await persistWorkspaceNotesOrder(workspaceId, newOrder);
       } catch (err) {
@@ -642,7 +627,6 @@ const updateNotebookV2WorkspaceNotesOrder: UpdateNotebookV2WorkspaceNotesOrder =
 /**
  * Saves a new workspace material context highlight
  * @param data data
- * @returns AnyActionType
  */
 const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
   function saveNewNotebookV2ContextHighlight(data) {
@@ -654,6 +638,7 @@ const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
         return;
       }
       try {
+        // Create the note
         const note = await workspaceNotesApi.createWorkspaceNote({
           createWorkspaceNoteRequest: {
             title: "",
@@ -666,7 +651,9 @@ const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
             index: data.index,
           },
         });
+        // Append the note
         appendNotebookV2Note(dispatch, getState, note);
+        // Display the notification
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
@@ -687,7 +674,6 @@ const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
 /**
  * Saves a new workspace material context note
  * @param data data
- * @returns AnyActionType
  */
 const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
   function saveNewNotebookV2ContextNote(data) {
@@ -698,10 +684,15 @@ const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
         data.fail?.();
         return;
       }
+      // Trim the selected text
       const trimmed = data.selectedText.trim();
+
+      // Generate the title from the selected text
+      // If the selected text is longer than 60 characters, truncate it and add "..."
       const title =
         trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}...`;
       try {
+        // Create the note
         const note = await workspaceNotesApi.createWorkspaceNote({
           createWorkspaceNoteRequest: {
             title,
@@ -714,7 +705,9 @@ const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
             index: data.index,
           },
         });
+        // Append the note
         appendNotebookV2Note(dispatch, getState, note);
+        // Display the notification
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
@@ -733,8 +726,7 @@ const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
   };
 
 /**
- * BeginNotebookV2WorkspaceDraft
- * @returns AnyActionType
+ * Begins the workspace draft.
  */
 const beginNotebookV2WorkspaceDraft: BeginNotebookV2WorkspaceDraft =
   function beginNotebookV2WorkspaceDraft() {
@@ -742,7 +734,10 @@ const beginNotebookV2WorkspaceDraft: BeginNotebookV2WorkspaceDraft =
       const state = getState();
       const workspaceId = state.workspaces.currentWorkspace?.id;
       if (!workspaceId) return;
+      // Get temporary client id for the draft
       const clientId = nextNotebookDraftClientId(state.notebookV2.drafts);
+
+      // Begin the workspace draft
       dispatch({
         type: "NOTEBOOK_V2_BEGIN_WORKSPACE_DRAFT",
         payload: {
@@ -757,9 +752,8 @@ const beginNotebookV2WorkspaceDraft: BeginNotebookV2WorkspaceDraft =
   };
 
 /**
- * BeginNotebookV2MaterialNoteDraft
+ * Begins the material note draft.
  * @param workspaceMaterialId workspaceMaterialId
- * @returns AnyActionType
  */
 const beginNotebookV2MaterialNoteDraft: BeginNotebookV2MaterialNoteDraft =
   function beginNotebookV2MaterialNoteDraft(workspaceMaterialId) {
@@ -767,7 +761,10 @@ const beginNotebookV2MaterialNoteDraft: BeginNotebookV2MaterialNoteDraft =
       const state = getState();
       const workspaceId = state.workspaces.currentWorkspace?.id;
       if (!workspaceId) return;
+      // Get temporary client id for the draft
       const clientId = nextNotebookDraftClientId(state.notebookV2.drafts);
+
+      // Begin the material note draft
       dispatch({
         type: "NOTEBOOK_V2_BEGIN_MATERIAL_DRAFT",
         payload: {
@@ -782,9 +779,8 @@ const beginNotebookV2MaterialNoteDraft: BeginNotebookV2MaterialNoteDraft =
   };
 
 /**
- * BeginNotebookV2ContextNoteDraft
+ * Begins the context note draft.
  * @param data data
- * @returns AnyActionType
  */
 const beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft =
   function beginNotebookV2ContextNoteDraft(data) {
@@ -792,7 +788,10 @@ const beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft =
       const state = getState();
       const workspaceId = state.workspaces.currentWorkspace?.id;
       if (!workspaceId) return;
+      // Get temporary client id for the draft
       const clientId = nextNotebookDraftClientId(state.notebookV2.drafts);
+
+      // Begin the context note draft
       dispatch({
         type: "NOTEBOOK_V2_BEGIN_CONTEXT_NOTE_DRAFT",
         payload: {
@@ -813,9 +812,8 @@ const beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft =
   };
 
 /**
- * CancelNotebookV2Draft
+ * Cancels the draft.
  * @param clientId clientId
- * @returns AnyActionType
  */
 const cancelNotebookV2Draft: CancelNotebookV2Draft =
   function cancelNotebookV2Draft(clientId) {
@@ -825,8 +823,7 @@ const cancelNotebookV2Draft: CancelNotebookV2Draft =
   };
 
 /**
- * ClearNotebookV2DraftsAll
- * @returns AnyActionType
+ * Clears all drafts.
  */
 const clearNotebookV2DraftsAll: ClearNotebookV2DraftsAll =
   function clearNotebookV2DraftsAll() {
@@ -836,8 +833,7 @@ const clearNotebookV2DraftsAll: ClearNotebookV2DraftsAll =
   };
 
 /**
- * ClearNotebookV2FocusDraft
- * @returns AnyActionType
+ * Clears the focus draft.
  */
 const clearNotebookV2FocusDraft: ClearNotebookV2FocusDraft =
   function clearNotebookV2FocusDraft() {
@@ -847,8 +843,7 @@ const clearNotebookV2FocusDraft: ClearNotebookV2FocusDraft =
   };
 
 /**
- * ClearNotebookV2NotebookTabRequest
- * @returns AnyActionType
+ * Clears the notebook tab request.
  */
 const clearNotebookV2NotebookTabRequest: ClearNotebookV2NotebookTabRequest =
   function clearNotebookV2NotebookTabRequest() {
@@ -861,9 +856,8 @@ const clearNotebookV2NotebookTabRequest: ClearNotebookV2NotebookTabRequest =
   };
 
 /**
- * SaveNotebookV2WorkspaceDraft
+ * Saves the workspace draft.
  * @param data data
- * @returns AnyActionType
  */
 const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
   function saveNotebookV2WorkspaceDraft(data) {
@@ -876,6 +870,7 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
         return;
       }
       try {
+        // Create the note
         const note = await workspaceNotesApi.createWorkspaceNote({
           createWorkspaceNoteRequest: {
             title: data.title,
@@ -884,9 +879,12 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
             type: NotebookNoteType.Workspace,
           },
         });
+        // Cancel the draft
         dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
+        // Append the note
         appendNotebookV2Note(dispatch, getState, note);
 
+        // Update the workspace notes order
         const currentOrder = getState().notebookV2.workspaceNotesOrder;
         const insertPosition = draft.position ?? currentOrder.length;
         const newOrder = insertWorkspaceNoteIdAtPosition(
@@ -894,8 +892,10 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
           note.id,
           insertPosition
         );
+        // Set and persist the workspace notes order
         setNotebookV2WorkspaceNotesOrder(dispatch, newOrder);
         await persistWorkspaceNotesOrder(workspaceId, newOrder);
+        // Display the notification
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
@@ -914,9 +914,8 @@ const saveNotebookV2WorkspaceDraft: SaveNotebookV2WorkspaceDraft =
   };
 
 /**
- * SaveNotebookV2MaterialDraft
+ * Saves the material draft.
  * @param data data
- * @returns AnyActionType
  */
 const saveNotebookV2MaterialDraft: SaveNotebookV2MaterialDraft =
   function saveNotebookV2MaterialDraft(data) {
@@ -931,6 +930,7 @@ const saveNotebookV2MaterialDraft: SaveNotebookV2MaterialDraft =
         return;
       }
       try {
+        // Create the note
         const note = await workspaceNotesApi.createWorkspaceNote({
           createWorkspaceNoteRequest: {
             title: data.title,
@@ -940,8 +940,11 @@ const saveNotebookV2MaterialDraft: SaveNotebookV2MaterialDraft =
             type: NotebookNoteType.WorkspaceMaterial,
           },
         });
+        // Cancel the draft
         dispatch({ type: "NOTEBOOK_V2_CANCEL_DRAFT", payload: data.clientId });
+        // Append the note
         appendNotebookV2Note(dispatch, getState, note);
+        // Display the notification
         dispatch(
           displayNotification(
             i18n.t("notifications.saveSuccess", { ns: "notebook" }),
@@ -960,9 +963,8 @@ const saveNotebookV2MaterialDraft: SaveNotebookV2MaterialDraft =
   };
 
 /**
- * SaveNotebookV2ContextNoteDraft
+ * Saves the context note draft.
  * @param data data
- * @returns AnyActionType
  */
 const saveNotebookV2ContextNoteDraft: SaveNotebookV2ContextNoteDraft =
   function saveNotebookV2ContextNoteDraft(data) {
@@ -1010,9 +1012,8 @@ const saveNotebookV2ContextNoteDraft: SaveNotebookV2ContextNoteDraft =
   };
 
 /**
- * SetNotebookV2ActiveItem
+ * Sets the active item.
  * @param noteId noteId
- * @returns AnyActionType
  */
 const setNotebookV2ActiveItem: SetNotebookV2ActiveItem =
   function setNotebookV2ActiveItem(noteId) {
@@ -1022,8 +1023,7 @@ const setNotebookV2ActiveItem: SetNotebookV2ActiveItem =
   };
 
 /**
- * ClearNotebookV2ActiveItem
- * @returns AnyActionType
+ * Clears the active item.
  */
 const clearNotebookV2ActiveItem: ClearNotebookV2ActiveItem =
   function clearNotebookV2ActiveItem() {
@@ -1033,9 +1033,8 @@ const clearNotebookV2ActiveItem: ClearNotebookV2ActiveItem =
   };
 
 /**
- * SetNotebookV2WorkspaceDraftPosition
+ * Sets the workspace draft position.
  * @param position position
- * @returns AnyActionType
  */
 const setNotebookV2WorkspaceDraftPosition: SetNotebookV2WorkspaceDraftPosition =
   function setNotebookV2WorkspaceDraftPosition(position) {
