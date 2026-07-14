@@ -255,6 +255,12 @@
   margin-bottom: 1.25rem;
 }
 
+.notebook__page-group-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
 .notebook__page-group-title {
   font-size: 0.875rem;
   font-weight: 600;
