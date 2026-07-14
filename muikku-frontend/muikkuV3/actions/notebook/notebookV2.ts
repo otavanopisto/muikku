@@ -24,6 +24,10 @@ import {
 } from "~/components/general/notebook/helpers/notebook-workspace-order";
 import MApi, { isMApiError } from "~/api/api";
 import { isNotebookWorkspaceNote } from "~/helper-functions/notebook";
+import {
+  buildUpgradedContextNote,
+  isContextHighlightNote,
+} from "~/components/general/notebook/helpers/notebook-context-upgrade";
 
 const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 const userApi = MApi.getUserApi();
@@ -276,6 +280,19 @@ export interface ClearNotebookV2ActiveItem {
  */
 export interface SetNotebookV2WorkspaceDraftPosition {
   (position: number | null): AnyActionType;
+}
+
+/**
+ * UpgradeNotebookV2ContextHighlight
+ */
+export interface UpgradeNotebookV2ContextHighlight {
+  (data: {
+    highlightId: number;
+    title: string;
+    text: string;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
 }
 
 type NotebookV2Dispatch = (
@@ -1046,6 +1063,67 @@ const setNotebookV2WorkspaceDraftPosition: SetNotebookV2WorkspaceDraftPosition =
     };
   };
 
+/**
+ * Upgrade notebook V2 context highlight.
+ * @param data data
+ */
+const upgradeNotebookV2ContextHighlight: UpgradeNotebookV2ContextHighlight =
+  function upgradeNotebookV2ContextHighlight(data) {
+    return async (dispatch, getState) => {
+      const notes = getState().notebookV2.notes ?? [];
+      const highlight = notes.find((n) => n.id === data.highlightId);
+
+      if (!highlight || !isContextHighlightNote(highlight)) {
+        data.fail?.();
+        return;
+      }
+
+      const upgradedNote = buildUpgradedContextNote(
+        highlight,
+        data.title,
+        data.text
+      );
+
+      /* if (!NOTEBOOK_V2_CONTEXT_HIGHLIGHT_UPGRADE_API_ENABLED) {
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.upgradeUnavailable", { ns: "notebook" }),
+            "info"
+          )
+        );
+        data.fail?.();
+        return;
+      } */
+
+      try {
+        // Update the note
+        const saved = await workspaceNotesApi.updateWorkspaceNote({
+          id: upgradedNote.id,
+          notebookNote: upgradedNote,
+        });
+
+        // Replace the note
+        replaceNotebookV2Note(dispatch, getState, saved);
+        dispatch({ type: "NOTEBOOK_V2_SET_ACTIVE_ITEM", payload: saved.id });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
+        );
+
+        data.success?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        notifyNotebookV2Error(dispatch, "notifications.saveError", "note");
+        data.fail?.();
+      }
+    };
+  };
+
 export {
   loadNotebookV2Entries,
   updateEditedNotebookV2Entry,
@@ -1066,4 +1144,5 @@ export {
   setNotebookV2ActiveItem,
   clearNotebookV2ActiveItem,
   setNotebookV2WorkspaceDraftPosition,
+  upgradeNotebookV2ContextHighlight,
 };
