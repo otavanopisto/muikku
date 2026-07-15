@@ -594,6 +594,7 @@ export function buildAnnotationFromSelection(
 }
 
 export type AnnotationOrphanReason =
+  | "html_missing"
   | "anchor_missing"
   | "index_out_of_range"
   | "unresolvable";

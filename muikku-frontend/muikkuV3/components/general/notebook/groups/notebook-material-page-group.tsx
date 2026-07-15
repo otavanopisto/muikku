@@ -34,6 +34,8 @@ const NotebookMaterialPageGroupView = (
   const hasMaterialNotes = materialNotes.length > 0;
   const hasContextItems = contextItems.length > 0;
 
+  const pageExists = page.html !== undefined;
+
   if (!hasMaterialNotes && !hasContextItems) {
     return null;
   }
@@ -48,18 +50,23 @@ const NotebookMaterialPageGroupView = (
   return (
     <div className="notebook__page-group">
       <div className="notebook__page-group-header">
-        <h4 className="notebook__page-group-title">{page.title}</h4>
-        <div className="notebook__page-group-actions">
-          <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
-            <IconButton
-              icon="plus"
-              aria-label={t("actions.add")}
-              buttonModifiers={["notebook-action"]}
-              onClick={handleAddClick}
-              disablePropagation={true}
-            />
-          </Dropdown>
-        </div>
+        <h4 className="notebook__page-group-title">
+          {page.title} {!pageExists ? "(Page does not exist)" : ""}
+        </h4>
+
+        {pageExists && (
+          <div className="notebook__page-group-actions">
+            <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
+              <IconButton
+                icon="plus"
+                aria-label={t("actions.add")}
+                buttonModifiers={["notebook-action"]}
+                onClick={handleAddClick}
+                disablePropagation={true}
+              />
+            </Dropdown>
+          </div>
+        )}
       </div>
 
       {hasMaterialNotes &&
