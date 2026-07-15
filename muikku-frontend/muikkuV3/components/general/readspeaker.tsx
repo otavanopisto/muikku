@@ -49,7 +49,8 @@ interface ReadSpeakerReaderProps {
 const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
   const { readParameterType, editMode, entityId, status } = props;
 
-  const { rspkr, rspkrLoaded } = useReadspeakerContext();
+  const { rspkr, rspkrLoaded, notifyReadSpeakerReadAreas } =
+    useReadspeakerContext();
 
   React.useEffect(() => {
     const rspkrValue = rspkrLoaded ? rspkr.current : undefined;
@@ -72,13 +73,40 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
       rspkrValue.ui.destroyActivePlayer();
     }
 
+    const buttonId = entityId
+      ? `readspeaker_button${entityId}`
+      : "readspeaker_button0";
+    const playLink = document
+      .getElementById(buttonId)
+      ?.querySelector<HTMLAnchorElement>(".rsbtn_play");
+
+    /**
+     * Register read areas before ReadSpeaker handles the click.
+     */
+    const handlePlayPointerDown = () => {
+      if (props.readParameters.length > 0) {
+        notifyReadSpeakerReadAreas(props.readParameters);
+      }
+    };
+
+    playLink?.addEventListener("pointerdown", handlePlayPointerDown, true);
+
     // Close player when component is unmounted
     return () => {
+      playLink?.removeEventListener("pointerdown", handlePlayPointerDown, true);
+
       if (rspkrValue && rspkrValue.ui && rspkrValue.ui.getActivePlayer()) {
         rspkrValue.ui.getActivePlayer().close();
       }
     };
-  }, [rspkr, rspkrLoaded, editMode]);
+  }, [
+    rspkr,
+    rspkrLoaded,
+    editMode,
+    entityId,
+    props.readParameters,
+    notifyReadSpeakerReadAreas,
+  ]);
 
   const readParameters =
     props.readParameters.length > 0
