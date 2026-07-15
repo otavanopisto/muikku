@@ -6,7 +6,6 @@ import {
   setNotebookV2ActiveItem,
 } from "~/actions/notebook/notebookV2";
 import {
-  isNotebookMaterialLinkedItem,
   resolveWorkspaceMaterialIdForActiveItem,
   scrollToActiveMaterialItem,
   syncActiveMaterialHighlight,
@@ -61,10 +60,6 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
 
     if (willDeactivate) {
       syncActiveMaterialHighlight(null);
-      return;
-    }
-
-    if (!isNotebookMaterialLinkedItem(note)) {
       return;
     }
 
