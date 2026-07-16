@@ -790,6 +790,7 @@ const beginNotebookV2MaterialNoteDraft: BeginNotebookV2MaterialNoteDraft =
           workspaceMaterialId,
           title: "",
           text: "<p></p>",
+          openNotebookTab: true,
         },
       });
     };

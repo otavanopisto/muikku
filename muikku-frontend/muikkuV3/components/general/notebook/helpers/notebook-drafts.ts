@@ -28,6 +28,7 @@ export type NotebookMaterialNoteDraft = {
   workspaceMaterialId: number;
   title?: string;
   text?: string;
+  openNotebookTab?: boolean;
 };
 
 export type NotebookV2DraftsState = {

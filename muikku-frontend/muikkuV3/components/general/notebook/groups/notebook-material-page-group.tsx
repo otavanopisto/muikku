@@ -46,7 +46,8 @@ const NotebookMaterialPageGroupView = (
   const hasContextItems = contextItems.length > 0;
   const pageExists = page.html !== undefined;
 
-  if (!hasMaterialNotes && !hasContextItems) {
+  // If there are no material notes, context items, and not even a draft, return null
+  if (!hasMaterialNotes && !hasContextItems && !materialNoteDraft) {
     return null;
   }
 

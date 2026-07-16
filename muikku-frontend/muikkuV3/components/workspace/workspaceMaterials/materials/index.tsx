@@ -20,7 +20,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./material";
-import Button, { ButtonPill } from "~/components/general/button";
+import Button, { ButtonPill, IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -58,6 +58,8 @@ import {
   BeginNotebookV2ContextNoteDraft,
   saveNewNotebookV2ContextHighlight,
   SaveNewNotebookV2ContextHighlight,
+  beginNotebookV2MaterialNoteDraft,
+  BeginNotebookV2MaterialNoteDraft,
 } from "~/actions/notebook/notebookV2";
 import { filterActiveMaterialHighlights } from "~/util/html";
 import {
@@ -90,6 +92,7 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight;
   beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft;
+  beginNotebookV2MaterialNoteDraft: BeginNotebookV2MaterialNoteDraft;
 }
 
 /**
@@ -747,6 +750,45 @@ class WorkspaceMaterials extends React.Component<
   };
 
   /**
+   * renderNotebookAddNoteButton
+   * @param workspaceMaterialId workspaceMaterialId
+   * @returns JSX.Element | null
+   */
+  renderNotebookAddNoteButton = (workspaceMaterialId: number) => {
+    if (!this.props.status.loggedIn) {
+      return null;
+    }
+    return (
+      <span className="material-page__title-notebook-action">
+        <Dropdown
+          openByHover
+          content={
+            <p>
+              {this.props.t("actions.addNote", {
+                ns: "notebook",
+                defaultValue: "Add note",
+              })}
+            </p>
+          }
+        >
+          <IconButton
+            icon="plus"
+            aria-label={this.props.t("actions.addNote", {
+              ns: "notebook",
+              defaultValue: "Add note",
+            })}
+            buttonModifiers={["notebook-action"]}
+            disablePropagation={true}
+            onClick={() =>
+              this.props.beginNotebookV2MaterialNoteDraft(workspaceMaterialId)
+            }
+          />
+        </Dropdown>
+      </span>
+    );
+  };
+
+  /**
    * render
    */
   render() {
@@ -1044,6 +1086,9 @@ class WorkspaceMaterials extends React.Component<
                   compositeReplies={compositeReplies}
                   isViewRestricted={false}
                   showEvenIfHidden={showEvenIfHidden}
+                  notebookAddNoteComponent={this.renderNotebookAddNoteButton(
+                    node.workspaceMaterialId
+                  )}
                   readspeakerComponent={readSpeakerComponent}
                   anchorItem={
                     <BackToToc
@@ -1229,6 +1274,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       displayNotification,
       saveNewNotebookV2ContextHighlight,
       beginNotebookV2ContextNoteDraft,
+      beginNotebookV2MaterialNoteDraft,
     },
     dispatch
   );

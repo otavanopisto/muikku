@@ -67,9 +67,17 @@ export const notebookV2: Reducer<NoteBookV2State> = (
           ...state.drafts,
           materialNotes: {
             ...state.drafts.materialNotes,
-            [action.payload.workspaceMaterialId]: action.payload,
+            [action.payload.workspaceMaterialId]: {
+              clientId: action.payload.clientId,
+              workspaceEntityId: action.payload.workspaceEntityId,
+              workspaceMaterialId: action.payload.workspaceMaterialId,
+              title: action.payload.title,
+              text: action.payload.text,
+            },
           },
         },
+        focusDraftClientId: action.payload.clientId,
+        openNotebookTabRequest: action.payload.openNotebookTab ?? false,
       };
 
     case "NOTEBOOK_V2_BEGIN_CONTEXT_NOTE_DRAFT":
