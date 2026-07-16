@@ -16,6 +16,7 @@ import {
   setNotebookV2WorkspaceDraftPosition,
   updateNotebookV2WorkspaceNotesOrder,
 } from "~/actions/notebook/notebookV2";
+import { NotebookAnimatedDrawer } from "../notebook-animate-drawer";
 
 /**
  * NotebookWorkspaceSectionProps
@@ -170,15 +171,19 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
         </div>
       </div>
 
-      {workspaceDraftNote && (
-        <NotebookNoteItem
-          key={workspaceDraftNote.id}
-          note={workspaceDraftNote}
-          isDraft
-          open={true}
-          onToggle={() => {}}
-        />
-      )}
+      <div className="notebook__section-editor">
+        <NotebookAnimatedDrawer isOpen={!!workspaceDraftNote}>
+          {workspaceDraftNote && (
+            <NotebookNoteItem
+              key={workspaceDraftNote.id}
+              note={workspaceDraftNote}
+              isDraft
+              open={true}
+              onToggle={() => {}}
+            />
+          )}
+        </NotebookAnimatedDrawer>
+      </div>
 
       {notes.map((note, index, array) => {
         const isFirst = index === 0;

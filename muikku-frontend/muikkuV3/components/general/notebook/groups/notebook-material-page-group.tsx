@@ -7,6 +7,7 @@ import { IconButton } from "../../button";
 import { useDispatch } from "react-redux";
 import { beginNotebookV2MaterialNoteDraft } from "~/actions/notebook/notebookV2";
 import { useTranslation } from "react-i18next";
+import { NotebookAnimatedDrawer } from "../notebook-animate-drawer";
 
 /**
  * NotebookMaterialPageGroupProps
@@ -31,9 +32,18 @@ const NotebookMaterialPageGroupView = (
   const dispatch = useDispatch();
   const { t } = useTranslation("notebook");
 
-  const hasMaterialNotes = materialNotes.length > 0;
-  const hasContextItems = contextItems.length > 0;
+  // Drafts and non-drafts are included in the materialNotes array.
+  // We need to separate them to display the draft in the editor and the non-drafts in the list.
+  const materialNoteDraft = materialNotes.find((note) =>
+    isNotebookDraftId(note.id)
+  );
+  const materialNoteNonDrafts = materialNotes.filter(
+    (note) => !isNotebookDraftId(note.id)
+  );
 
+  // boolean flags to check if there are material notes or context items
+  const hasMaterialNotes = materialNoteNonDrafts.length > 0;
+  const hasContextItems = contextItems.length > 0;
   const pageExists = page.html !== undefined;
 
   if (!hasMaterialNotes && !hasContextItems) {
@@ -69,8 +79,22 @@ const NotebookMaterialPageGroupView = (
         )}
       </div>
 
+      <div className="notebook__page-group-editor">
+        <NotebookAnimatedDrawer isOpen={!!materialNoteDraft}>
+          {materialNoteDraft && (
+            <NotebookNoteItem
+              note={materialNoteDraft}
+              isDraft
+              open
+              materialHtml={page.html}
+              onToggle={() => {}}
+            />
+          )}
+        </NotebookAnimatedDrawer>
+      </div>
+
       {hasMaterialNotes &&
-        materialNotes.map((note) => (
+        materialNoteNonDrafts.map((note) => (
           <NotebookNoteItem
             key={note.id}
             note={note}
