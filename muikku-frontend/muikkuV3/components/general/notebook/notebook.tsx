@@ -16,6 +16,8 @@ import NotebookMaterialSection from "./sections/notebook-material-section";
 import { useDragDropManager } from "react-dnd";
 import { useScroll } from "./hooks/useScroll";
 import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
+import { clearNotebookV2FocusNote } from "~/actions/notebook/notebookV2";
+import { scrollToNotebookItem } from "./helpers/notebook-active-item";
 
 /**
  * NotebookProps
@@ -40,6 +42,11 @@ const Notebook = (props: NotebookProps) => {
   const activeItemId = useSelector(
     (state: StateType) => state.notebookV2.activeItemId
   );
+
+  const focusNoteId = useSelector(
+    (state: StateType) => state.notebookV2.focusNoteId
+  );
+
   const viewModel = useNotebookViewModel();
 
   const { notes, state, drafts } = notebookV2;
@@ -49,6 +56,7 @@ const Notebook = (props: NotebookProps) => {
   const workspaceOpenStorageKey = `opened-notes-v2-workspace-${currentWorkspace?.id}-${userId}`;
   const materialOpenStorageKey = `opened-notes-v2-material-${currentWorkspace?.id}-${userId}`;
 
+  // Load notebook entries
   React.useEffect(() => {
     if (!currentWorkspace?.id) {
       return;
@@ -62,6 +70,7 @@ const Notebook = (props: NotebookProps) => {
   const dragDropManager = useDragDropManager();
   const monitor = dragDropManager.getMonitor();
 
+  // Notebook scroll handling
   React.useEffect(() => {
     const unsubscribe = monitor.subscribeToOffsetChange(() => {
       const offset = monitor.getSourceClientOffset()?.y as number;
@@ -70,6 +79,7 @@ const Notebook = (props: NotebookProps) => {
     return unsubscribe;
   }, [monitor, updatePosition]);
 
+  // Focus draft scroll target handling
   React.useEffect(() => {
     if (focusDraftClientId == null) {
       return;
@@ -83,6 +93,20 @@ const Notebook = (props: NotebookProps) => {
     });
     return () => window.cancelAnimationFrame(frame);
   }, [dispatch, focusDraftClientId]);
+
+  // Focus note scroll target handling
+  React.useEffect(() => {
+    if (focusNoteId == null) {
+      return;
+    }
+
+    // Scroll to focus note and clear focus note after scroll
+    const frame = window.requestAnimationFrame(() => {
+      scrollToNotebookItem(focusNoteId);
+      dispatch(clearNotebookV2FocusNote());
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [dispatch, focusNoteId]);
 
   /**
    * Handle dismiss active item

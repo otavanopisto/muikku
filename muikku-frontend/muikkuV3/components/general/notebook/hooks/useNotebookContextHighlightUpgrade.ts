@@ -1,14 +1,18 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getContextHighlightUpgradeEditorDefaults,
   ContextHighlightNote,
 } from "../helpers/notebook-context-upgrade";
-import { upgradeNotebookV2ContextHighlight } from "~/actions/notebook/notebookV2";
+import {
+  cancelNotebookV2ContextHighlightUpgrade,
+  upgradeNotebookV2ContextHighlight,
+} from "~/actions/notebook/notebookV2";
+import { StateType } from "~/reducers";
+import { isNotebookNoteUpgrading } from "~/reducers/notebook/notebookV2";
 
 type UseNotebookContextHighlightUpgradeArgs = {
   note: ContextHighlightNote;
-  onExitUpgradeMode: () => void;
 };
 
 /**
@@ -18,10 +22,14 @@ type UseNotebookContextHighlightUpgradeArgs = {
 export function useNotebookContextHighlightUpgrade(
   args: UseNotebookContextHighlightUpgradeArgs
 ) {
-  const { note, onExitUpgradeMode } = args;
+  const { note } = args;
   const dispatch = useDispatch();
 
-  const [isUpgrading, setIsUpgrading] = React.useState(false);
+  const noteUiById = useSelector(
+    (state: StateType) => state.notebookV2.noteUiById
+  );
+
+  const isUpgrading = isNotebookNoteUpgrading(noteUiById, note.id);
 
   const editorDefaults = React.useMemo(
     () => getContextHighlightUpgradeEditorDefaults(note),
@@ -29,13 +37,15 @@ export function useNotebookContextHighlightUpgrade(
   );
 
   const beginUpgrade = React.useCallback(() => {
-    setIsUpgrading(true);
-  }, []);
+    dispatch({
+      type: "NOTEBOOK_V2_SET_NOTE_UI",
+      payload: { noteId: note.id, mode: { kind: "upgrading" } },
+    });
+  }, [dispatch, note.id]);
 
   const cancelUpgrade = React.useCallback(() => {
-    setIsUpgrading(false);
-    onExitUpgradeMode();
-  }, [onExitUpgradeMode]);
+    dispatch(cancelNotebookV2ContextHighlightUpgrade(note.id));
+  }, [dispatch, note.id]);
 
   const saveUpgrade = React.useCallback(
     (title: string, text: string) => {
@@ -44,19 +54,10 @@ export function useNotebookContextHighlightUpgrade(
           highlightId: note.id,
           title,
           text,
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          success: () => {
-            setIsUpgrading(false);
-            onExitUpgradeMode();
-          },
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          fail: () => {
-            // Stay in upgrade mode so user can retry or cancel
-          },
         })
       );
     },
-    [dispatch, note.id, onExitUpgradeMode]
+    [dispatch, note.id]
   );
 
   return {

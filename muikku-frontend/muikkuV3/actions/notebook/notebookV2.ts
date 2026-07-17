@@ -3,7 +3,10 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
 import { ReducerStatusType } from "~/reducers/types";
-import { isNotebookNoteEditable } from "~/components/general/notebook/helpers/notebook-display";
+import {
+  isNotebookNoteEditable,
+  isNotebookNoteDeletable,
+} from "~/components/general/notebook/helpers/notebook-display";
 import { displayNotification } from "../base/notifications";
 import i18n from "~/locales/i18n";
 import {
@@ -28,9 +31,12 @@ import {
   buildUpgradedContextNote,
   isContextHighlightNote,
 } from "~/components/general/notebook/helpers/notebook-context-upgrade";
+import { NotebookNoteUiMode } from "~/reducers/notebook/notebookV2";
 
 const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 const userApi = MApi.getUserApi();
+
+// ACTION TYPES
 
 export type NOTEBOOK_V2_UPDATE_STATE = SpecificActionType<
   "NOTEBOOK_V2_UPDATE_STATE",
@@ -87,6 +93,32 @@ export type NOTEBOOK_V2_CLEAR_ACTIVE_ITEM = SpecificActionType<
   "NOTEBOOK_V2_CLEAR_ACTIVE_ITEM",
   void
 >;
+export type NOTEBOOK_V2_SET_NOTE_UI = SpecificActionType<
+  "NOTEBOOK_V2_SET_NOTE_UI",
+  { noteId: number; mode: NotebookNoteUiMode }
+>;
+export type NOTEBOOK_V2_CLEAR_NOTE_UI = SpecificActionType<
+  "NOTEBOOK_V2_CLEAR_NOTE_UI",
+  number
+>;
+export type NOTEBOOK_V2_CLEAR_ALL_NOTE_UI = SpecificActionType<
+  "NOTEBOOK_V2_CLEAR_ALL_NOTE_UI",
+  void
+>;
+export type NOTEBOOK_V2_FOCUS_NOTE = SpecificActionType<
+  "NOTEBOOK_V2_FOCUS_NOTE",
+  number
+>;
+export type NOTEBOOK_V2_FOCUS_NOTE_CLEAR = SpecificActionType<
+  "NOTEBOOK_V2_FOCUS_NOTE_CLEAR",
+  void
+>;
+export type NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST = SpecificActionType<
+  "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
+  void
+>;
+
+// ACTION CREATOR INTERFACES
 
 /**
  * LoadNotebookV2Entries
@@ -295,6 +327,50 @@ export interface UpgradeNotebookV2ContextHighlight {
   }): AnyActionType;
 }
 
+/**
+ * BeginNotebookV2ContextHighlightUpgrade
+ */
+export interface BeginNotebookV2ContextHighlightUpgrade {
+  (highlightId: number): AnyActionType;
+}
+
+/**
+ * CancelNotebookV2ContextHighlightUpgrade
+ */
+export interface CancelNotebookV2ContextHighlightUpgrade {
+  (highlightId: number): AnyActionType;
+}
+
+/**
+ * BeginNotebookV2NoteDelete
+ */
+export interface BeginNotebookV2NoteDelete {
+  (noteId: number): AnyActionType;
+}
+
+/**
+ * CancelNotebookV2NoteDelete
+ */
+export interface CancelNotebookV2NoteDelete {
+  (noteId: number): AnyActionType;
+}
+
+/**
+ * ClearNotebookV2FocusNote
+ */
+export interface ClearNotebookV2FocusNote {
+  (): AnyActionType;
+}
+
+/**
+ * BeginNotebookV2NoteDeleteFromMaterial
+ */
+export interface BeginNotebookV2NoteDeleteFromMaterial {
+  (noteId: number): AnyActionType;
+}
+
+// SMALL Helper functions
+
 type NotebookV2Dispatch = (
   arg: AnyActionType
 ) => Dispatch<Action<AnyActionType>>;
@@ -420,6 +496,8 @@ async function persistWorkspaceNotesOrder(
 ) {
   await saveWorkspaceNotesOrderProperty(userApi, workspaceEntityId, orderIds);
 }
+
+// ACTION CREATORS
 
 /**
  * Removes a workspace note from the order and persists the new order.
@@ -572,6 +650,11 @@ const deleteNotebookV2Entry: DeleteNotebookV2Entry =
             data.noteId
           );
         }
+
+        dispatch({
+          type: "NOTEBOOK_V2_CLEAR_NOTE_UI",
+          payload: data.noteId,
+        });
 
         // Clear the active item if it was the deleted note
         if (getState().notebookV2.activeItemId === data.noteId) {
@@ -1065,6 +1148,89 @@ const setNotebookV2WorkspaceDraftPosition: SetNotebookV2WorkspaceDraftPosition =
   };
 
 /**
+ * Begin context highlight upgrade in notebook UI.
+ * @param highlightId highlightId
+ */
+const beginNotebookV2ContextHighlightUpgrade: BeginNotebookV2ContextHighlightUpgrade =
+  function beginNotebookV2ContextHighlightUpgrade(highlightId) {
+    return (dispatch, getState) => {
+      const state = getState();
+      const notes = state.notebookV2.notes ?? [];
+      const highlight = notes.find((n) => n.id === highlightId);
+      if (!highlight || !isContextHighlightNote(highlight)) {
+        return;
+      }
+      if (state.notebookV2.activeItemId !== highlightId) {
+        dispatch({
+          type: "NOTEBOOK_V2_SET_ACTIVE_ITEM",
+          payload: highlightId,
+        });
+      }
+      dispatch({
+        type: "NOTEBOOK_V2_SET_NOTE_UI",
+        payload: { noteId: highlightId, mode: { kind: "upgrading" } },
+      });
+      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE", payload: highlightId });
+      // Open notebook tab (same flag drafts use)
+      dispatch({
+        type: "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
+        payload: undefined,
+      });
+    };
+  };
+
+/**
+ * Cancel context highlight upgrade UI.
+ * @param highlightId highlightId
+ */
+const cancelNotebookV2ContextHighlightUpgrade: CancelNotebookV2ContextHighlightUpgrade =
+  function cancelNotebookV2ContextHighlightUpgrade(highlightId) {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_CLEAR_NOTE_UI", payload: highlightId });
+    };
+  };
+
+/**
+ * Begin delete confirmation UI for a saved note.
+ * @param noteId noteId
+ */
+const beginNotebookV2NoteDelete: BeginNotebookV2NoteDelete =
+  function beginNotebookV2NoteDelete(noteId) {
+    return (dispatch, getState) => {
+      const notes = getState().notebookV2.notes ?? [];
+      const note = notes.find((n) => n.id === noteId);
+      if (!note || !isNotebookNoteDeletable(note)) {
+        return;
+      }
+      dispatch({
+        type: "NOTEBOOK_V2_SET_NOTE_UI",
+        payload: { noteId, mode: { kind: "deleting" } },
+      });
+    };
+  };
+
+/**
+ * Cancel delete confirmation UI for a note.
+ * @param noteId noteId
+ */
+const cancelNotebookV2NoteDelete: CancelNotebookV2NoteDelete =
+  function cancelNotebookV2NoteDelete(noteId) {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_CLEAR_NOTE_UI", payload: noteId });
+    };
+  };
+
+/**
+ * Clears saved-note focus scroll target.
+ */
+const clearNotebookV2FocusNote: ClearNotebookV2FocusNote =
+  function clearNotebookV2FocusNote() {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE_CLEAR", payload: undefined });
+    };
+  };
+
+/**
  * Upgrade notebook V2 context highlight.
  * @param data data
  */
@@ -1105,6 +1271,10 @@ const upgradeNotebookV2ContextHighlight: UpgradeNotebookV2ContextHighlight =
 
         // Replace the note
         replaceNotebookV2Note(dispatch, getState, saved);
+        dispatch({
+          type: "NOTEBOOK_V2_CLEAR_NOTE_UI",
+          payload: data.highlightId,
+        });
         dispatch({ type: "NOTEBOOK_V2_SET_ACTIVE_ITEM", payload: saved.id });
 
         dispatch(
@@ -1125,25 +1295,74 @@ const upgradeNotebookV2ContextHighlight: UpgradeNotebookV2ContextHighlight =
     };
   };
 
+/**
+ * Begin delete confirmation in notebook from material highlight menu.
+ * @param noteId noteId
+ */
+const beginNotebookV2NoteDeleteFromMaterial: BeginNotebookV2NoteDeleteFromMaterial =
+  function beginNotebookV2NoteDeleteFromMaterial(noteId) {
+    return (dispatch, getState) => {
+      const notes = getState().notebookV2.notes ?? [];
+      const note = notes.find((n) => n.id === noteId);
+      if (!note || !isNotebookNoteDeletable(note)) {
+        return;
+      }
+      if (getState().notebookV2.activeItemId !== noteId) {
+        dispatch({
+          type: "NOTEBOOK_V2_SET_ACTIVE_ITEM",
+          payload: noteId,
+        });
+      }
+      dispatch({
+        type: "NOTEBOOK_V2_SET_NOTE_UI",
+        payload: { noteId, mode: { kind: "deleting" } },
+      });
+      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE", payload: noteId });
+      dispatch({
+        type: "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
+        payload: undefined,
+      });
+    };
+  };
+
 export {
+  // Load & persisted note mutations
   loadNotebookV2Entries,
   updateEditedNotebookV2Entry,
   deleteNotebookV2Entry,
   updateNotebookV2WorkspaceNotesOrder,
+
+  // Material: immediate create (selection menu → API)
   saveNewNotebookV2ContextHighlight,
   saveNewNotebookV2ContextNote,
+
+  // Drafts: begin → save → cancel / layout
   beginNotebookV2WorkspaceDraft,
   beginNotebookV2MaterialNoteDraft,
   beginNotebookV2ContextNoteDraft,
-  cancelNotebookV2Draft,
-  clearNotebookV2DraftsAll,
-  clearNotebookV2FocusDraft,
-  clearNotebookV2NotebookTabRequest,
   saveNotebookV2WorkspaceDraft,
   saveNotebookV2MaterialDraft,
   saveNotebookV2ContextNoteDraft,
+  cancelNotebookV2Draft,
+  setNotebookV2WorkspaceDraftPosition,
+  clearNotebookV2DraftsAll,
+
+  // Selection (notebook ↔ material)
   setNotebookV2ActiveItem,
   clearNotebookV2ActiveItem,
-  setNotebookV2WorkspaceDraftPosition,
+
+  // Shell navigation (scroll / tab — consumed after dispatch)
+  clearNotebookV2FocusDraft,
+  clearNotebookV2FocusNote,
+  clearNotebookV2NotebookTabRequest,
+
+  // Saved note UI: context highlight upgrade
+  beginNotebookV2ContextHighlightUpgrade,
+  cancelNotebookV2ContextHighlightUpgrade,
   upgradeNotebookV2ContextHighlight,
+
+  // Saved note UI: delete confirm
+  beginNotebookV2NoteDelete,
+  cancelNotebookV2NoteDelete,
+  beginNotebookV2NoteDeleteFromMaterial,
 };

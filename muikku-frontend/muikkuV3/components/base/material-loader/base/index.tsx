@@ -38,10 +38,12 @@ import {
   ImageDataset,
   LinkDataset,
   MaterialHighlight,
+  MaterialHighlightKind,
   WordDefinitionDataset,
 } from "../types";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { injectHtmlAnnotations } from "~/util/html";
+import MaterialHighlightComponent from "../highlights/material-highlight";
 
 //These are all our supported objects as for now
 const fieldComponents: { [key: string]: any } = {
@@ -1014,18 +1016,20 @@ class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const highlightId = element.getAttribute("data-muikku-highlight-id");
-          const kind =
-            element.getAttribute("data-muikku-highlight-kind") || undefined;
+          const highlightIdRaw = element.getAttribute(
+            "data-muikku-highlight-id"
+          );
+          const highlightId = Number(highlightIdRaw);
+          const kind = (element.getAttribute("data-muikku-highlight-kind") ||
+            "highlight") as MaterialHighlightKind;
           return (
-            <span
+            <MaterialHighlightComponent
               key={props.key}
-              className={`material-highlight${kind ? ` material-highlight--${kind}` : ""}`}
-              data-muikku-highlight-id={highlightId || ""}
-              data-muikku-highlight-kind={kind}
+              highlightId={highlightId}
+              kind={kind}
             >
               {children}
-            </span>
+            </MaterialHighlightComponent>
           );
         },
       },

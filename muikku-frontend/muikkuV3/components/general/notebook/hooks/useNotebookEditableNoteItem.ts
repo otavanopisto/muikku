@@ -48,7 +48,7 @@ export function useNotebookEditableNoteItem(
    * Handles the edit click action.
    */
   const handleEditClick = React.useCallback(() => {
-    core.setDeleteActive(false);
+    core.cancelDelete();
     setIsEditing(true);
   }, [core]);
 

@@ -71,3 +71,14 @@ export function scrollToActiveMaterialItem(
     syncActiveMaterialHighlight(activeItemId);
   });
 }
+
+/**
+ * Scroll notebook panel to a saved note row.
+ * @param noteId noteId
+ */
+export function scrollToNotebookItem(noteId: number): void {
+  window.requestAnimationFrame(() => {
+    const el = document.querySelector(`[data-notebook-item-id="${noteId}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+}

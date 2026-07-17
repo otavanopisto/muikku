@@ -61,7 +61,7 @@ export const NotebookWorkspaceNoteItem = (
         <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
           <IconButton
             icon="trash"
-            onClick={() => item.setDeleteActive(!item.deleteActive)}
+            onClick={item.toggleDelete}
             buttonModifiers={["notebook-item-action"]}
           />
         </Dropdown>
@@ -87,7 +87,7 @@ export const NotebookWorkspaceNoteItem = (
         <NotebookItemDeleteConfirm
           active={item.deleteActive}
           onConfirm={item.handleDeleteConfirm}
-          onCancel={() => item.setDeleteActive(false)}
+          onCancel={item.cancelDelete}
         />
       }
       editPanel={
@@ -142,7 +142,7 @@ export const NotebookMaterialNoteItem = (
         <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
           <IconButton
             icon="trash"
-            onClick={() => item.setDeleteActive(!item.deleteActive)}
+            onClick={item.toggleDelete}
             buttonModifiers={["notebook-item-action"]}
           />
         </Dropdown>
@@ -168,7 +168,7 @@ export const NotebookMaterialNoteItem = (
         <NotebookItemDeleteConfirm
           active={item.deleteActive}
           onConfirm={item.handleDeleteConfirm}
-          onCancel={() => item.setDeleteActive(false)}
+          onCancel={item.cancelDelete}
         />
       }
       editPanel={
@@ -237,7 +237,7 @@ export const NotebookContextNoteItem = (
         <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
           <IconButton
             icon="trash"
-            onClick={() => item.setDeleteActive(!item.deleteActive)}
+            onClick={item.toggleDelete}
             buttonModifiers={["notebook-item-action"]}
           />
         </Dropdown>
@@ -265,7 +265,7 @@ export const NotebookContextNoteItem = (
         <NotebookItemDeleteConfirm
           active={item.deleteActive}
           onConfirm={item.handleDeleteConfirm}
-          onCancel={() => item.setDeleteActive(false)}
+          onCancel={item.cancelDelete}
         />
       }
       editPanel={
@@ -303,11 +303,7 @@ export const NotebookContextHighlightItem = (
   const { t } = useTranslation("notebook");
 
   const item = useNotebookNoteItemCore({ note, isDraft });
-  const upgrade = useNotebookContextHighlightUpgrade({
-    note,
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    onExitUpgradeMode: () => item.setDeleteActive(false),
-  });
+  const upgrade = useNotebookContextHighlightUpgrade({ note });
 
   const orphanStatus = React.useMemo(
     () =>
@@ -323,13 +319,13 @@ export const NotebookContextHighlightItem = (
 
   const extraActions = (
     <>
-      {!upgrade.isUpgrading && (
+      {!upgrade.isUpgrading && !item.deleteActive && (
         <Dropdown openByHover content={<p>Upgrade to note</p>}>
           <IconButton
             icon="plus"
             aria-label="Upgrade to note"
             onClick={() => {
-              item.setDeleteActive(false);
+              item.cancelDelete();
               upgrade.beginUpgrade();
             }}
             buttonModifiers={["notebook-item-action"]}
@@ -340,7 +336,7 @@ export const NotebookContextHighlightItem = (
         <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
           <IconButton
             icon="trash"
-            onClick={() => item.setDeleteActive(!item.deleteActive)}
+            onClick={item.toggleDelete}
             buttonModifiers={["notebook-item-action"]}
           />
         </Dropdown>
@@ -366,7 +362,7 @@ export const NotebookContextHighlightItem = (
         <NotebookItemDeleteConfirm
           active={item.deleteActive}
           onConfirm={item.handleDeleteConfirm}
-          onCancel={() => item.setDeleteActive(false)}
+          onCancel={item.cancelDelete}
         />
       }
       editPanel={
