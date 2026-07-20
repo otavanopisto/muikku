@@ -7,7 +7,10 @@ import {
   resolveBoundaryElement,
 } from "./selection-eligibility";
 import { SelectionContextAction } from "./types";
-import { buildAnnotationFromSelection } from "~/util/html";
+import {
+  buildAnnotationFromSelection,
+  selectionIntersectsAnnotation,
+} from "~/util/html";
 
 type ReadSpeakerListenActionOptions = {
   /** Page/panel boundary, e.g. #p-123 */
@@ -102,6 +105,7 @@ export function createHighlightAction(
     triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
@@ -156,6 +160,7 @@ export function createNoteAction(
     disabled: !options.onAddNote,
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
