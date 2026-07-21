@@ -28,13 +28,5 @@ export const initializeAuthStatusAtom = atom(null, async (get, set) => {
   // Initialize the auth status
   const user = await AuthService.checkAuthenticationStatus();
   set(userAtom, user);
+  set(authInitializedAtom, true);
 });
-
-// Derived authentication states
-// export const isStudentAtom = atom((get) =>
-//   get(userRolesAtom).includes("STUDENT")
-// );
-// export const isTeacherAtom = atom((get) =>
-//   get(userRolesAtom).includes("TEACHER")
-// );
-// export const isAdminAtom = atom((get) => get(userRolesAtom).includes("ADMIN"));

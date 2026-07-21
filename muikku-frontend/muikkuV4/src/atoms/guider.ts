@@ -35,9 +35,6 @@ export const currentStudentQueryAtom = atomWithQuery((get) => {
         throw new Error("Student ID is required");
       }
 
-      // Your 5-second test delay
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
       try {
         const currentStudent = await guiderApi.getGuiderStudent({
           studentId,

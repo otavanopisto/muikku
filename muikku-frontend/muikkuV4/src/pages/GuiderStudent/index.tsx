@@ -1,5 +1,6 @@
 import { Button } from "@mantine/core";
 import { useAtomValue } from "jotai";
+import { Outlet } from "react-router";
 import { currentStudentAtom } from "src/atoms/guider";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
 import { AsyncState } from "src/components/AsyncState/AsyncState";
@@ -36,6 +37,8 @@ export function GuiderStudent() {
           <Button>Uusi tehtävä</Button>
           {/* List-specific actions */}
         </ActionBar>
+
+        <Outlet />
       </AsyncState>
     </PageLayout>
   );

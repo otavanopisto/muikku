@@ -140,7 +140,7 @@ export function RootLayout(props: RootLayoutProps) {
             <NavbarLink
               key={item.label}
               {...item}
-              exactMatch
+              exactMatch={item.exactMatch ?? false}
               collapsed={collapsed}
             />
           </motion.li>

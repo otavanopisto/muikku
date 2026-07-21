@@ -40,6 +40,7 @@ export interface NavigationLink extends BaseNavigationItem {
   replaceState?: boolean;
   active?: boolean;
   loading?: boolean;
+  exactMatch?: boolean;
 }
 
 /**
@@ -81,7 +82,7 @@ export const coursepickerSubItems: NavigationItem[] = [
     label: "Omat kurssit",
     link: "/coursepicker?search=MyCourses",
     queryName: "search",
-    queryValue: "Coursepicker",
+    queryValue: "MyCourses",
   },
   {
     type: "queryLink",
@@ -126,8 +127,14 @@ export const communicatorSubItems: NavigationItem[] = [
 
 // Guider sub-items
 export const guiderSubItems: NavigationItem[] = [
-  { type: "link", label: "Opiskelijalistaus", link: "/guider" },
-  { type: "link", label: "Tehtävät", link: "/guider/tasks" },
+  { type: "link", label: "Yhteenveto", link: "/guider", exactMatch: true },
+  {
+    type: "link",
+    label: "Opiskelijalistaus",
+    link: "/guider/students",
+    exactMatch: true,
+  },
+  { type: "link", label: "Tehtävät", link: "/guider/tasks", exactMatch: true },
   {
     type: "component",
     id: "guider-student_item",
@@ -213,6 +220,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     link: "/guider",
     canAccess: (user) =>
       (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
+    exactMatch: false,
   },
 
   {

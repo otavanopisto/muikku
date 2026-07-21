@@ -1,9 +1,9 @@
-import { Paper, Button } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
-import StudentsList from "./StudentsList";
 import { useRootNav } from "~/src/layouts/helpers/useRootNav";
 import { guiderSubItems } from "~/src/layouts/helpers/navigation";
+import { Outlet } from "react-router";
 
 /**
  * Guider - Guider page
@@ -31,9 +31,10 @@ export function Guider() {
         <Link to="/guider/PYRAMUS-STUDENT-XX">Testi studentti XX</Link>
         <Link to="/guider/PYRAMUS-STUDENT-102">Testi studentti</Link>
       </Paper> */}
-      <Paper p="xl" withBorder>
+      {/* <Paper p="xl" withBorder>
         <StudentsList />
-      </Paper>
+      </Paper> */}
+      <Outlet />
     </PageLayout>
   );
 }

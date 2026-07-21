@@ -6,7 +6,6 @@ import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 /**
  * StudentNavigationContentProps - Props for student navigation content
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StudentNavigationContentProps {}
 
 /**
@@ -46,7 +45,7 @@ export function StudentNavigationContent(
       {/* Student-specific sub-links */}
       <NavbarLink
         label="Perustiedot | Tilanne"
-        link={`/guider/${currentStudentData.id}/`}
+        link={`/guider/${currentStudentData.id}`}
         exactMatch
       />
       <NavbarLink

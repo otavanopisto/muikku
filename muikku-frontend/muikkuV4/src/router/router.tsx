@@ -84,20 +84,14 @@ export const router = createBrowserRouter([
               },
               {
                 path: "guider",
-                element: <Guider />,
+                element: <Guider />, // becomes layout (with <Outlet />)
                 loader: routeLoaders.guiderLoader,
                 middleware: [permissionMiddlewares.guiderView],
                 children: [
-                  {
-                    index: false,
-                    element: <>Opiskelijalistaus</>,
-                    //loader: guiderHomeLoader,
-                  },
-                  {
-                    path: "tasks",
-                    element: <>Tehtävät</>,
-                    //loader: guiderHomeLoader,
-                  },
+                  { index: true, element: <>Yhteenveto</> }, // /guider
+                  { path: "students", element: <>Opiskelijalistaus</> }, // /guider/students
+                  { path: "tasks", element: <>Tehtävät</> }, // /guider/tasks
+                  // other future guider root subroutes...
                 ],
               },
               {
@@ -134,11 +128,6 @@ export const router = createBrowserRouter([
                   {
                     path: "study-history",
                     element: <>Opintohistoria</>,
-                    //loader: guiderHomeLoader,
-                  },
-                  {
-                    path: "files",
-                    element: <>Tiedostot</>,
                     //loader: guiderHomeLoader,
                   },
                   {
