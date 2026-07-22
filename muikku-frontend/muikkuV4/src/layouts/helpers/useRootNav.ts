@@ -1,5 +1,5 @@
 import { useSetAtom } from "jotai";
-import type { NavigationItem } from "./navigation";
+import type { NavigationItem } from "../../navigation/navigation";
 import { useEffect } from "react";
 import { secondaryNavConfigAtom } from "~/src/atoms/layout";
 

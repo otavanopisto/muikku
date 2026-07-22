@@ -1,18 +1,12 @@
 import { Text, Paper, Box, Burger } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { useAppLayout } from "src/hooks/useAppLayout";
-import { evaluationSubItems } from "src/layouts/helpers/navigation";
 import { useRootAside } from "src/layouts/helpers/useRootAside";
-import { useRootNav } from "src/layouts/helpers/useRootNav";
 
 /**
  * Evaluation - Evaluation page
  */
 export function Evaluation() {
-  useRootNav({
-    title: "Arviointi",
-    items: evaluationSubItems,
-  });
   useRootAside({
     component: <div>Hello Evaluation</div>,
   });

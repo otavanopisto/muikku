@@ -1,20 +1,12 @@
 import { Button } from "@mantine/core";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
-import { useRootNav } from "~/src/layouts/helpers/useRootNav";
-import { guiderSubItems } from "~/src/layouts/helpers/navigation";
 import { Outlet } from "react-router";
 
 /**
  * Guider - Guider page
  */
 export function Guider() {
-  useRootNav({
-    title: "Ohjaamo",
-    items: guiderSubItems,
-    customWidth: 500,
-  });
-
   return (
     <PageLayout title="Ohjaamo">
       <ActionBar variant="primary">

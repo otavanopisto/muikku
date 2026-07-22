@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 import {
   getNavigationItems,
   type NavigationItem,
-} from "src/layouts/helpers/navigation";
+} from "~/src/navigation/navigation";
 import classes from "./RootLayout.module.css";
 import { workspacePermissionsAtom } from "src/atoms/permissions";
 import { useAppLayout } from "src/hooks/useAppLayout";
@@ -19,6 +19,7 @@ import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { workspaceInfoAtom } from "~/src/atoms/workspace";
 import { ErrorBoundary } from "~/src/pages";
 import { useMemo } from "react";
+import { useDeepestHandleValue } from "~/src/router/hooks/useTypedMatches";
 
 const navigationVariants: Variants = {
   collapsed: {
@@ -77,11 +78,23 @@ export function RootLayout(props: RootLayoutProps) {
 
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
-  const secondaryNavConfig = useAtomValue(secondaryNavConfigAtom);
+  const secondaryNavFromHandle = useDeepestHandleValue("secondaryNav");
+  const secondaryNavFromAtom = useAtomValue(secondaryNavConfigAtom);
   const asideConfig = useAtomValue(asideConfigAtom);
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
 
   const { navOpened, toggleNav, asideOpened, toggleAside } = useAppLayout();
+
+  const secondaryNavConfig = secondaryNavFromHandle
+    ? {
+        config: {
+          title: secondaryNavFromHandle.title,
+          subTitle: secondaryNavFromHandle.subTitle,
+          items: secondaryNavFromHandle.items,
+        },
+        customWidth: secondaryNavFromHandle.customWidth,
+      }
+    : secondaryNavFromAtom;
 
   // Memoized primary navigation items
   const primaryNavItems = useMemo(

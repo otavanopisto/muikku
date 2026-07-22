@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { NavLink, Tooltip } from "@mantine/core";
 import { useParams, useResolvedPath, useMatch, Link } from "react-router";
-import type { NavigationLink } from "src/layouts/helpers/navigation";
+import type { NavigationLink } from "~/src/navigation/navigation";
 
 /**
  * NavbarLinkProps - Interface for navbar link props

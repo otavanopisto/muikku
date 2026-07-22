@@ -30,6 +30,12 @@ import {
 } from "src/pages/";
 import { ErrorBoundaryRoot } from "src/components";
 import { RootLayout } from "src/layouts";
+import {
+  communicatorSubItems,
+  coursepickerSubItems,
+  evaluationSubItems,
+  guiderSubItems,
+} from "../navigation/navigation";
 
 // Router
 export const router = createBrowserRouter([
@@ -63,12 +69,24 @@ export const router = createBrowserRouter([
                 element: <Communicator />,
                 loader: routeLoaders.communicatorLoader,
                 middleware: [permissionMiddlewares.communicatorView],
+                handle: {
+                  secondaryNav: {
+                    title: "Viestit",
+                    items: communicatorSubItems,
+                  },
+                },
               },
               {
                 path: "coursepicker",
                 element: <Coursepicker />,
                 //loader: coursepickerLoader,
                 middleware: [permissionMiddlewares.coursepickerView],
+                handle: {
+                  secondaryNav: {
+                    title: "Kurssipoimuri",
+                    items: coursepickerSubItems,
+                  },
+                },
               },
               {
                 path: "studies",
@@ -87,6 +105,12 @@ export const router = createBrowserRouter([
                 element: <Guider />, // becomes layout (with <Outlet />)
                 loader: routeLoaders.guiderLoader,
                 middleware: [permissionMiddlewares.guiderView],
+                handle: {
+                  secondaryNav: {
+                    title: "Ohjaamo",
+                    items: guiderSubItems,
+                  },
+                },
                 children: [
                   { index: true, element: <>Yhteenveto</> }, // /guider
                   { path: "students", element: <>Opiskelijalistaus</> }, // /guider/students
@@ -99,6 +123,12 @@ export const router = createBrowserRouter([
                 element: <GuiderStudent />,
                 loader: routeLoaders.guiderStudentLoader,
                 middleware: [permissionMiddlewares.guiderView],
+                handle: {
+                  secondaryNav: {
+                    title: "Ohjaamo",
+                    items: guiderSubItems,
+                  },
+                },
                 children: [
                   {
                     index: true,
@@ -142,6 +172,12 @@ export const router = createBrowserRouter([
                 element: <Evaluation />,
                 //loader: evaluationLoader,
                 middleware: [permissionMiddlewares.evaluationView],
+                handle: {
+                  secondaryNav: {
+                    title: "Arviointi",
+                    items: evaluationSubItems,
+                  },
+                },
               },
 
               {

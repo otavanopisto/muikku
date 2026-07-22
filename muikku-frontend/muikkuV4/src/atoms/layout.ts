@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import type { NavigationItem } from "../layouts/helpers/navigation";
+import type { NavigationItem } from "../navigation/navigation";
 
 export const navOpenedAtom = atom<boolean>(false);
 export const asideOpenedAtom = atom<boolean>(false);
