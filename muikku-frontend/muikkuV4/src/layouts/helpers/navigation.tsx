@@ -196,7 +196,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Etusivu",
     icon: IconHome,
     link: "/",
-    canAccess: isLoggedIn, // Only visible if user is unauthenticated
+    canAccess: (user) => !isLoggedIn(user), // Only visible if user is unauthenticated
   },
   {
     type: "link",

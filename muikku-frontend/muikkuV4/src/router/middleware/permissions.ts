@@ -114,7 +114,7 @@ export const permissionMiddlewares = {
   homeView: createPermissionMiddleware({
     redirectPath: "/dashboard",
     customCheck(user) {
-      return !user?.loggedIn;
+      return !isLoggedIn(user);
     },
   }),
 
