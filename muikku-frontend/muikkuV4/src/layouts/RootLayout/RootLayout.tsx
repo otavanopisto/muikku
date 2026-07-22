@@ -12,7 +12,7 @@ import { Box, Burger, Group, ScrollArea, Title } from "@mantine/core";
 import { Drawer } from "@mantine/core";
 import { IconBuilding, IconHome } from "@tabler/icons-react";
 import { UserButton } from "~/src/components/UserButton/UserButton";
-import { asideConfigAtom, secondaryNavConfigAtom } from "~/src/atoms/layout";
+import { asideConfigAtom } from "~/src/atoms/layout";
 import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
 import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
@@ -79,7 +79,6 @@ export function RootLayout(props: RootLayoutProps) {
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   const secondaryNavFromHandle = useDeepestHandleValue("secondaryNav");
-  const secondaryNavFromAtom = useAtomValue(secondaryNavConfigAtom);
   const asideConfig = useAtomValue(asideConfigAtom);
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
 
@@ -94,7 +93,7 @@ export function RootLayout(props: RootLayoutProps) {
         },
         customWidth: secondaryNavFromHandle.customWidth,
       }
-    : secondaryNavFromAtom;
+    : undefined;
 
   // Memoized primary navigation items
   const primaryNavItems = useMemo(

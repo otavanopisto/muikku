@@ -31,6 +31,7 @@ import {
 import { ErrorBoundaryRoot } from "src/components";
 import { RootLayout } from "src/layouts";
 import {
+  announcerSubItems,
   communicatorSubItems,
   coursepickerSubItems,
   evaluationSubItems,
@@ -191,6 +192,12 @@ export const router = createBrowserRouter([
                 element: <Announcer />,
                 //loader: announcerLoader,
                 middleware: [permissionMiddlewares.announcerView],
+                handle: {
+                  secondaryNav: {
+                    title: "Tiedotin",
+                    items: announcerSubItems,
+                  },
+                },
               },
               {
                 path: "profile",

@@ -4,15 +4,6 @@ import type { NavigationItem } from "../navigation/navigation";
 export const navOpenedAtom = atom<boolean>(false);
 export const asideOpenedAtom = atom<boolean>(false);
 
-export const secondaryNavConfigAtom = atom<{
-  config: {
-    title?: string;
-    subTitle?: string;
-    items: NavigationItem[];
-  };
-  customWidth?: number;
-} | null>(null);
-
 export const asideConfigAtom = atom<{
   config: {
     title?: string;
