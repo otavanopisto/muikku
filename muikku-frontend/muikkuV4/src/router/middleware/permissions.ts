@@ -128,9 +128,7 @@ export const permissionMiddlewares = {
   // Communicator view
   communicatorView: createPermissionMiddleware({
     requireAuth: true,
-    customCheck(user) {
-      return isActiveUser(user);
-    },
+    customCheck: (user) => isActiveUser(user),
   }),
 
   // Coursepicker view
