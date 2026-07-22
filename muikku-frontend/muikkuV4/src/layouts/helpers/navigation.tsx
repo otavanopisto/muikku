@@ -13,6 +13,12 @@ import {
 import { type Params, type To } from "react-router";
 import type { WorkspacePermissions } from "src/services/permissions";
 import { StudentNavigationContent } from "src/router/components/StudentNavigationContent/StudentNavigationContent";
+import {
+  hasUserPermission,
+  hasWorkspacePermission,
+  isActiveUser,
+  isLoggedIn,
+} from "~/src/services/access";
 
 export type NavigationContext = "environment" | "workspace";
 
@@ -190,14 +196,14 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Etusivu",
     icon: IconHome,
     link: "/",
-    canAccess: (user) => !(user?.loggedIn ?? false), // Only visible if user is unauthenticated
+    canAccess: isLoggedIn, // Only visible if user is unauthenticated
   },
   {
     type: "link",
     label: "Etusivu",
     icon: IconHome,
     link: "/dashboard",
-    canAccess: (user) => user?.loggedIn ?? false, // Only visible if user is authenticated
+    canAccess: isLoggedIn, // Only visible if user is authenticated
   },
   {
     type: "link",
@@ -211,7 +217,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Viestin",
     icon: IconMail,
     link: "/communicator?tab=Inbox",
-    canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
+    canAccess: (user) => isLoggedIn(user) && isActiveUser(user),
   },
   {
     type: "link",
@@ -219,7 +225,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconList,
     link: "/guider",
     canAccess: (user) =>
-      (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
+      isLoggedIn(user) && hasUserPermission("GUIDER_VIEW", user),
     exactMatch: false,
   },
 
@@ -228,14 +234,14 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Arviointi",
     icon: IconEdit,
     link: "/evaluation",
-    canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
+    canAccess: (user) => hasUserPermission("EVALUATION_VIEW_INDEX", user),
   },
   {
     type: "link",
     label: "Omat tiedot",
     icon: IconUser,
     link: "/profile",
-    canAccess: (user) => user?.loggedIn ?? false,
+    canAccess: isLoggedIn,
   },
   {
     type: "link",
@@ -249,14 +255,14 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Kirjaudu sisään",
     icon: IconLogin,
     link: "/login",
-    canAccess: (user) => !(user?.loggedIn ?? false),
+    canAccess: (user) => !isLoggedIn(user),
   },
   {
     type: "link",
     label: "Kirjaudu ulos",
     icon: IconLogout,
     link: "/logout",
-    canAccess: (user) => user?.loggedIn ?? false,
+    canAccess: isLoggedIn,
   },
 ];
 
@@ -267,7 +273,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
     label: "Etusivu",
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
-      workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
+      hasWorkspacePermission("WORKSPACE_HOME_VISIBLE", workspacePermissions), // Always visible
   },
   {
     type: "link",
@@ -275,16 +281,19 @@ const navigationItemsWorkspace: NavigationItem[] = [
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceManagement`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_MANAGE_WORKSPACE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission(
+        "WORKSPACE_MANAGE_WORKSPACE",
+        workspacePermissions
+      ),
   },
   {
     type: "link",
     label: "Ohjeet",
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceHelp`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_GUIDES_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission("WORKSPACE_GUIDES_VISIBLE", workspacePermissions),
   },
   {
     type: "link",
@@ -292,24 +301,27 @@ const navigationItemsWorkspace: NavigationItem[] = [
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceMaterials`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_MATERIALS_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission(
+        "WORKSPACE_MATERIALS_VISIBLE",
+        workspacePermissions
+      ),
   },
   {
     type: "link",
     label: "Oppimispäiväkirja",
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceJournal`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_JOURNAL_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission("WORKSPACE_JOURNAL_VISIBLE", workspacePermissions),
   },
   {
     type: "link",
     label: "Käyttäjät",
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceUsers`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_USERS_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission("WORKSPACE_USERS_VISIBLE", workspacePermissions),
   },
 ];
 
