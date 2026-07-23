@@ -274,6 +274,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
       hasWorkspacePermission("WORKSPACE_HOME_VISIBLE", workspacePermissions), // Always visible
+    exactMatch: true,
   },
   {
     type: "link",

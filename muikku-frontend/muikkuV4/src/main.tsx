@@ -33,8 +33,8 @@ createRoot(document.getElementById("app")!).render(
         <Provider store={jotaiStore}>
           {process.env.NODE_ENV === "development" && (
             <>
-              <DebugAtoms />
-              <DevTools store={jotaiStore} />
+              {/* <DebugAtoms /> */}
+              {/* <DevTools store={jotaiStore} /> */}
             </>
           )}
           <App />

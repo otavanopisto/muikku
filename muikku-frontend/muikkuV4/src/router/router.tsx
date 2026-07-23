@@ -234,6 +234,11 @@ export const router = createBrowserRouter([
         errorElement: <RootLayout isErrorBoundary />,
         middleware: [authMiddleware, workspaceMiddleware],
         loader: routeLoaders.workspaceLoader,
+        handle: {
+          secondaryNav: {
+            type: "workspace",
+          },
+        },
         children: [
           {
             errorElement: <ErrorBoundary />,

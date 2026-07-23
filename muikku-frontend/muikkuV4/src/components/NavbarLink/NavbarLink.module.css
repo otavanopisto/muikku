@@ -1,19 +1,29 @@
-.link {
-  display: block;
-  width: 100%;
-  padding: var(--mantine-spacing-xs);
-  color: var(--mantine-color-text);
-  text-decoration: none;
+.root {
   border-radius: var(--mantine-radius-sm);
-  transition: all 0.2s ease;
+  margin-bottom: var(--mantine-spacing-xs);
 }
 
-.link:hover {
-  background-color: var(--mantine-color-gray-0);
-  color: var(--mantine-color-text);
+.root[data-active="true"] {
+  background-color: var(--mantine-color-blue-light);
+  color: var(--mantine-color-blue-light-color);
 }
 
-.link.active {
-  background-color: var(--mantine-color-blue-0);
-  color: var(--mantine-color-blue-6);
+.section {
+  color: inherit;
+}
+
+.body {
+  min-width: 0;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

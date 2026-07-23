@@ -1,128 +1,121 @@
-@import url("/src/css/variables.css");
-
-.appLayout {
-  display: flex;
-  flex-flow: row nowrap;
-  height: 100vh;
-  width: 100%;
-}
-
-.mobileHeader {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  width: 100%;
-  height: 60px;
-  position: fixed;
-  padding: var(--mantine-spacing-md);
-}
-
-.mobileDrawer {
-  display: flex;
-  flex-direction: column;
-}
-
-.mobileDrawerContent {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.mobileDrawerHeader {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: space-between;
-  position: absolute;
-  right: 0;
-}
-
-.mobileDrawerBody {
-  display: flex;
-  flex: 1;
-  padding: 0;
-  width: 250px;
-}
-
 .desktopNav {
-  width: 250px;
   position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
 }
 
 .navWrapper {
-  display: flex;
-  flex-flow: row nowrap;
-  width: 250px;
   position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.secondaryNavLayer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  background: var(--mantine-color-body);
+}
+
+.mainNavLayer {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  overflow: hidden;
+  background: var(--mantine-color-body);
+  border-right: 1px solid var(--mantine-color-default-border);
 }
 
 .mainNav {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
+}
+
+.mainNavInner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .mainNavHeader {
-  &[data-collapsed="true"] {
-    width: 50px;
-    overflow: hidden;
-  }
+  flex-shrink: 0;
+  height: 60px;
 }
 
 .mainNavLinks {
   display: flex;
   flex-direction: column;
-  width: 100%;
   flex: 1;
-
-  &[data-collapsed="true"] {
-    width: 50px;
-    overflow: hidden;
-  }
+  min-height: 0;
 }
 
 .mainNavFooter {
-  &[data-collapsed="true"] {
-    width: 50px;
-    overflow: hidden;
-  }
+  flex-shrink: 0;
+  border-top: 1px solid var(--mantine-color-default-border);
+  padding: var(--mantine-spacing-xs);
 }
 
 .secondaryNav {
   display: flex;
   flex-direction: column;
-  width: 200px;
-  flex: 1;
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid var(--mantine-color-default-border);
+}
+
+.header {
+  flex-shrink: 0;
+  height: 60px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.headerContent {
+  width: 100%;
+  padding-inline: calc(var(--mantine-spacing-xs) + var(--mantine-spacing-sm));
+}
+
+.headerIconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.titleGroup {
+  min-width: 0;
+}
+
+.title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .links {
   display: flex;
   flex: 1;
+  min-height: 0;
 }
 
 .linksInner {
   list-style: none;
-  padding: 0;
   margin: 0;
-}
-
-.desktopAside {
-  width: 400px;
-  position: fixed;
-  right: 0;
-  height: 100vh;
-  border-left: 1px solid var(--mantine-color-gray-2);
-}
-
-.mainContent {
-  padding: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-xs);
   width: 100%;
-  margin-left: 250px;
+  box-sizing: border-box;
+}
 
-  @mixin smaller-than $mantine-breakpoint-md {
-    position: fixed;
-    top: 60px;
-    margin-left: 0;
-    margin-right: 0;
-  }
+.linksInner > li {
+  list-style: none;
+}
+
+.listItem {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

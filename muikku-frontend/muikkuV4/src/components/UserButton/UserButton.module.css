@@ -11,3 +11,12 @@
     );
   }
 }
+
+.fadeText {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.collapsed :global(.mantine-NavLink-section[data-position="left"]) {
+  margin-inline-end: 0;
+}

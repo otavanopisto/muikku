@@ -2,9 +2,10 @@ import { useMemo } from "react";
 import { NavLink, Tooltip } from "@mantine/core";
 import { useParams, useResolvedPath, useMatch, Link } from "react-router";
 import type { NavigationLink } from "~/src/navigation/navigation";
+import { navLinkClassNames } from "./navLinkClassnames";
 
 /**
- * NavbarLinkProps - Interface for navbar link props
+ * Props for the NavbarLink component.
  */
 interface NavbarLinkProps extends Omit<NavigationLink, "type"> {
   collapsed?: boolean;
@@ -13,9 +14,9 @@ interface NavbarLinkProps extends Omit<NavigationLink, "type"> {
 }
 
 /**
- * NavbarLink - Simple navigation link component
- * @param props - NavbarLinkProps
- * @returns NavbarLink component
+ * NavbarLink component.
+ * @param props - Props for the NavbarLink component.
+ * @returns NavbarLink component.
  */
 export function NavbarLink(props: NavbarLinkProps) {
   const {
@@ -39,23 +40,25 @@ export function NavbarLink(props: NavbarLinkProps) {
   const resolved = useResolvedPath(linkValue);
   const match = useMatch({ path: resolved.pathname, end: exactMatch });
 
-  return collapsed ? (
-    <Tooltip label={label} position="right" withArrow>
-      <NavLink
-        component={Link}
-        to={linkValue}
-        leftSection={Icon ? <Icon size={20} /> : null}
-        active={match !== null}
-      />
-    </Tooltip>
-  ) : (
+  const navLink = (
     <NavLink
       component={Link}
       to={linkValue}
-      label={label}
-      description={description}
-      leftSection={Icon ? <Icon size={20} /> : null}
+      label={collapsed ? undefined : label}
+      description={collapsed ? undefined : description}
+      leftSection={Icon ? <Icon size={20} stroke={1.5} /> : null}
       active={match !== null}
+      classNames={navLinkClassNames}
     />
   );
+
+  if (collapsed) {
+    return (
+      <Tooltip label={label} position="right" withArrow>
+        {navLink}
+      </Tooltip>
+    );
+  }
+
+  return navLink;
 }

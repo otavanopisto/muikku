@@ -9,6 +9,7 @@ export interface SecondaryNavHandleConfig {
   subTitle?: string;
   items: NavigationItem[];
   customWidth?: number;
+  type?: "environment" | "workspace";
 }
 
 /**
