@@ -119,3 +119,11 @@
   margin: 0;
   padding: 0;
 }
+
+.mobileDrawerBody {
+  padding: 0;
+}
+
+.mobileDrawerBody .navWrapper {
+  height: calc(100vh - 60px);
+}

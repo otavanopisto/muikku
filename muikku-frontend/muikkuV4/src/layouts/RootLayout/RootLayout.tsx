@@ -64,7 +64,7 @@ export function RootLayout(props: RootLayoutProps) {
       <Drawer
         opened={navOpened}
         onClose={toggleNav}
-        size="xs"
+        size="256px"
         className={classes.mobileDrawer}
         hiddenFrom="md"
         classNames={{
@@ -80,7 +80,7 @@ export function RootLayout(props: RootLayoutProps) {
         <Drawer
           opened={asideOpened}
           onClose={toggleAside}
-          size="xs"
+          size="256px"
           className={classes.mobileDrawer}
           hiddenFrom="md"
           position="right"
