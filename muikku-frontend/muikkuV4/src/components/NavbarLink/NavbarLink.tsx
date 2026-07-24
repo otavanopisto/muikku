@@ -1,23 +1,21 @@
-import { useMemo } from "react";
-import { Indicator, NavLink } from "@mantine/core";
-import { useParams, useResolvedPath, useMatch, Link } from "react-router";
+import { Indicator, NavLink, Text, Tooltip } from "@mantine/core";
+import { Link } from "react-router";
 import type { NavigationLink } from "~/src/navigation/navigation";
+import { useNavLinkMatch } from "./useNavLinkMatch";
 import { navLinkClassNames } from "./navLinkClassnames";
 
 /**
  * Props for the NavbarLink component.
  */
-interface NavbarLinkProps extends Omit<NavigationLink, "type"> {
+interface NavbarLinkProps extends Omit<NavigationLink, "type" | "badgeKey"> {
+  /** main = icon rail (collapsible); secondary = panel links (default) */
+  variant?: "main" | "secondary";
   collapsed?: boolean;
-  onSelect?: () => void;
-  exactMatch?: boolean;
   badgeCount?: number;
 }
 
 /**
- * NavbarLink component.
- * @param props - Props for the NavbarLink component.
- * @returns NavbarLink component.
+ * Shared sidebar NavLink for main rail and secondary panel.
  */
 export function NavbarLink(props: NavbarLinkProps) {
   const {
@@ -25,62 +23,75 @@ export function NavbarLink(props: NavbarLinkProps) {
     label,
     description,
     link,
+    variant = "secondary",
     collapsed = false,
     exactMatch = false,
     badgeCount = 0,
   } = props;
 
-  const params = useParams();
+  const { to, isActive } = useNavLinkMatch(link, exactMatch);
+  const isMain = variant === "main";
 
-  const linkValue = useMemo(() => {
-    if (link instanceof Function) {
-      return link(params);
-    }
-    return link;
-  }, [link, params]);
+  if (isMain && !Icon) {
+    return null;
+  }
 
-  const resolved = useResolvedPath(linkValue);
-  const match = useMatch({ path: resolved.pathname, end: exactMatch });
-
-  const count = badgeCount;
-
-  const leftSection = Icon && (
+  const iconNode = Icon ? (
     <Indicator
+      display="flex"
       size={16}
       color="cyan"
-      processing={false}
-      label={count}
+      label={badgeCount}
       maxValue={99}
       showZero={false}
-      disabled={!collapsed}
+      disabled={!isMain || !collapsed || badgeCount < 1}
     >
       <Icon size={20} stroke={1.5} />
     </Indicator>
-  );
+  ) : undefined;
 
-  const rightSection = (
+  const leftSection =
+    isMain && collapsed && iconNode ? (
+      <Tooltip
+        label={<Text size="sm">{label}</Text>}
+        position="right"
+        withArrow
+      >
+        {iconNode}
+      </Tooltip>
+    ) : (
+      iconNode
+    );
+
+  const rightSection = isMain ? (
     <Indicator
       size={16}
       color="cyan"
-      label={count}
+      label={badgeCount}
       maxValue={99}
       showZero={false}
-      disabled={collapsed}
+      disabled={collapsed || badgeCount < 1}
     />
-  );
+  ) : badgeCount > 0 ? (
+    <Indicator
+      size={16}
+      color="cyan"
+      label={badgeCount}
+      maxValue={99}
+      showZero={false}
+    />
+  ) : undefined;
 
-  const navLink = (
+  return (
     <NavLink
       component={Link}
-      to={linkValue}
+      to={to}
       label={label}
-      description={description}
+      description={isMain ? undefined : description}
       leftSection={leftSection}
       rightSection={rightSection}
-      active={match !== null}
+      active={isActive}
       classNames={navLinkClassNames}
     />
   );
-
-  return navLink;
 }

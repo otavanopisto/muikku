@@ -44,36 +44,43 @@ export function StudentNavigationContent(
 
       {/* Student-specific sub-links */}
       <NavbarLink
+        variant="secondary"
         label="Perustiedot | Tilanne"
         link={`/guider/${currentStudentData.id}`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Aktiivisuus"
         link={`/guider/${currentStudentData.id}/activity`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Opiskelusuunnitelma (HOPS)"
         link={`/guider/${currentStudentData.id}/hops`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Oppimisen tuki"
         link={`/guider/${currentStudentData.id}/pedagogy-support`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Ohjaussuhde"
         link={`/guider/${currentStudentData.id}/guidance-relationship`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Opintohistoria"
         link={`/guider/${currentStudentData.id}/study-history`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Tiedostot"
         link={`/guider/${currentStudentData.id}/files`}
         exactMatch

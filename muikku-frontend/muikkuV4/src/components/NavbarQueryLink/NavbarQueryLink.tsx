@@ -9,10 +9,8 @@ import { navLinkClassNames } from "~/src/components/NavbarLink/navLinkClassnames
 interface NavbarQueryLinkProps extends Omit<NavigationQueryLink, "type"> {}
 
 /**
- * NavbarSubQueryLink - Sub-query-link component for navigation groups.
- * @param props - NavbarSubQueryLinkProps
- * @returns NavbarSubQueryLink component
- * */
+ * Query-param toggle link for secondary navigation.
+ */
 export function NavbarQueryLink(props: NavbarQueryLinkProps) {
   const { icon: Icon, label, queryName, queryValue: linkQueryValue } = props;
   const location = useLocation();

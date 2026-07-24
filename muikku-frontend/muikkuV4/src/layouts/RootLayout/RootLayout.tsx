@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { useAppLayout } from "src/hooks/useAppLayout";
 import { asideConfigAtom } from "~/src/atoms/layout";
 import { ErrorBoundary } from "~/src/pages";
-import { AppNavigation } from "./components/AppNavigation";
 import { AppAside } from "./components/AppAside";
 import { useRootLayoutNav } from "./hooks/useRootLayoutNav";
-import { getNavWidth } from "./components/navigationLayout";
-import { NAV_TRANSITION } from "./components/navigationVariants";
 import { useIsBreakpoint } from "~/src/hooks/use-is-breakpoint";
 import classes from "./RootLayout.module.css";
+import { AppNavigation } from "./components/AppNavigation";
+import { NAV_V2_TRANSITION as NAV_TRANSITION } from "./helpers/navigationVariants";
+import { getNavWidth } from "./helpers/navigationLayout";
 
 /**
  * Props for the RootLayout component.
@@ -61,12 +61,13 @@ export function RootLayout(props: RootLayoutProps) {
         <span className={classes.headerTitle}>{title}</span>
       </Box>
 
-      <Drawer
+      {/* <Drawer
         opened={navOpened}
         onClose={toggleNav}
-        size="256px"
+        size={`${navWidth}px`}
         className={classes.mobileDrawer}
         hiddenFrom="md"
+        
         classNames={{
           header: classes.mobileDrawerHeader,
           content: classes.mobileDrawerContent,
@@ -74,13 +75,32 @@ export function RootLayout(props: RootLayoutProps) {
         }}
       >
         {navigationContent}
-      </Drawer>
+      </Drawer> */}
+
+      <Drawer.Root
+        opened={navOpened}
+        onClose={toggleNav}
+        className={classes.mobileDrawer}
+        size={`${navWidth}px`}
+        hiddenFrom="md"
+        position="left"
+        classNames={{
+          header: classes.mobileDrawerHeader,
+          content: classes.mobileDrawerContent,
+          body: classes.mobileDrawerBody,
+        }}
+      >
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Body>{navigationContent}</Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
 
       {asideConfig && (
-        <Drawer
+        <Drawer.Root
           opened={asideOpened}
           onClose={toggleAside}
-          size="256px"
+          size={`${navWidth}px`}
           className={classes.mobileDrawer}
           hiddenFrom="md"
           position="right"
@@ -90,8 +110,13 @@ export function RootLayout(props: RootLayoutProps) {
             body: classes.mobileDrawerBody,
           }}
         >
-          {asideConfig.config.component}
-        </Drawer>
+          <Drawer.Overlay />
+          <Drawer.Content>
+            <Drawer.Body>
+              <AppAside>{asideConfig?.config.component}</AppAside>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Root>
       )}
 
       <Box

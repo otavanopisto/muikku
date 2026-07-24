@@ -1,9 +1,9 @@
 import { Box, Group, ScrollArea, Title } from "@mantine/core";
-import { AnimatePresence, motion } from "framer-motion";
 import type { NavigationItem } from "~/src/navigation/navigation";
 import { NavItemList } from "./NavItemList";
-import { navigationItemVariants } from "./navigationVariants";
-import classes from "../RootLayout.module.css";
+import classes from "./SecondaryNav.module.css";
+import { AnimatePresence, motion } from "framer-motion";
+import { navigationItemVariants } from "../helpers/navigationVariants";
 
 /**
  * Props for the SecondaryNav component.
@@ -14,23 +14,17 @@ interface SecondaryNavProps {
 }
 
 /**
- * Route-specific secondary navigation panel.
- * @param props - Props for the SecondaryNav component.
+ * Secondary navigation panel (same width as expanded main; no collapse).
  */
 export function SecondaryNav(props: SecondaryNavProps) {
   const { title, items } = props;
 
   return (
     <Box component="nav" className={classes.secondaryNav}>
-      <Box
-        className={classes.header}
-        style={{
-          height: "60px",
-        }}
-      >
+      <Box className={classes.header}>
         <Group p="sm" className={classes.headerContent}>
           <Group align="center" className={classes.titleGroup}>
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence initial={false} mode="wait">
               {title ? (
                 <motion.div
                   key={title}
@@ -50,9 +44,18 @@ export function SecondaryNav(props: SecondaryNavProps) {
       </Box>
 
       <Box className={classes.links} component={ScrollArea}>
-        <ul className={classes.linksInner}>
-          <NavItemList items={items} animateItems />
-        </ul>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.ul
+            key={title} // or a stable section id
+            className={classes.linksInner}
+            variants={navigationItemVariants}
+            initial="entering"
+            animate="visible"
+            exit="exiting"
+          >
+            <NavItemList items={items} variant="secondary" />
+          </motion.ul>
+        </AnimatePresence>
       </Box>
     </Box>
   );

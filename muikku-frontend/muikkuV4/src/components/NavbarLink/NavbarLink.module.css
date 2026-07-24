@@ -1,6 +1,9 @@
 .root {
   border-radius: var(--mantine-radius-sm);
   margin-bottom: var(--mantine-spacing-xs);
+  overflow: hidden;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .root[data-active="true"] {
@@ -12,18 +15,21 @@
   color: inherit;
 }
 
+.section[data-position="left"] {
+  flex-shrink: 0;
+}
+
 .body {
   min-width: 0;
+  overflow: hidden;
 }
 
 .label {
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .description {
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
