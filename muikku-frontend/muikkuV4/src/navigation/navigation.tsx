@@ -5,10 +5,7 @@ import {
   IconMail,
   IconList,
   IconEdit,
-  IconUser,
-  IconSettings,
-  IconLogout,
-  IconLogin,
+  IconBell,
 } from "@tabler/icons-react";
 import { type Params, type To } from "react-router";
 import type { WorkspacePermissions } from "src/services/permissions";
@@ -20,7 +17,13 @@ import {
   isLoggedIn,
 } from "~/src/services/access";
 
+export const navigationBadges = [
+  "communicatorUnread",
+  "announcerUnread",
+] as const;
+
 export type NavigationContext = "environment" | "workspace";
+export type NavigationBadgeKey = (typeof navigationBadges)[number];
 
 /**
  * BaseNavigationItem - Base interface for all navigation items
@@ -47,6 +50,7 @@ export interface NavigationLink extends BaseNavigationItem {
   active?: boolean;
   loading?: boolean;
   exactMatch?: boolean;
+  badgeKey?: NavigationBadgeKey;
 }
 
 /**
@@ -207,28 +211,38 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   },
   {
     type: "link",
-    label: "Kurssipoimuri",
+    label: "Kurssit",
     icon: IconBuilding,
     link: "/coursepicker",
     canAccess: () => true,
   },
   {
     type: "link",
-    label: "Viestin",
+    label: "Viestit",
     icon: IconMail,
     link: "/communicator?tab=Inbox",
+    badgeKey: "communicatorUnread",
     canAccess: (user) => isLoggedIn(user) && isActiveUser(user),
   },
   {
     type: "link",
-    label: "Ohjaamo",
+    label: "Ohjaus",
     icon: IconList,
     link: "/guider",
     canAccess: (user) =>
       isLoggedIn(user) && hasUserPermission("GUIDER_VIEW", user),
     exactMatch: false,
   },
-
+  {
+    type: "link",
+    label: "Tiedotteet",
+    icon: IconBell,
+    link: "/announcer",
+    badgeKey: "announcerUnread",
+    canAccess: (user) =>
+      isLoggedIn(user) && hasUserPermission("ANNOUNCER_TOOL", user),
+    exactMatch: false,
+  },
   {
     type: "link",
     label: "Arviointi",
@@ -236,7 +250,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     link: "/evaluation",
     canAccess: (user) => hasUserPermission("EVALUATION_VIEW_INDEX", user),
   },
-  {
+  /*   {
     type: "link",
     label: "Omat tiedot",
     icon: IconUser,
@@ -263,7 +277,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconLogout,
     link: "/logout",
     canAccess: isLoggedIn,
-  },
+  }, */
 ];
 
 // Workspace navigation items

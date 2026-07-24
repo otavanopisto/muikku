@@ -55,7 +55,7 @@ export function MainNav(props: MainNavProps) {
           data-collapsed={collapsed}
         >
           <ul className={classes.linksInner}>
-            <NavItemList items={items} />
+            <NavItemList items={items} collapsed={collapsed} />
           </ul>
         </Box>
 

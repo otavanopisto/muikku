@@ -3,6 +3,8 @@ import type { NavigationItem } from "~/src/navigation/navigation";
 import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
 import { navigationItemVariants } from "./navigationVariants";
+import { useAtomValue } from "jotai";
+import { navigationBadgesAtom } from "~/src/atoms/layout";
 
 /**
  * Props for the NavItemList component.
@@ -20,6 +22,8 @@ interface NavItemListProps {
 export function NavItemList(props: NavItemListProps) {
   const { items, collapsed = false, animateItems = false } = props;
 
+  const navigationBadges = useAtomValue(navigationBadgesAtom);
+
   const list = items.map((item) => {
     switch (item.type) {
       case "link":
@@ -35,6 +39,9 @@ export function NavItemList(props: NavItemListProps) {
               {...item}
               exactMatch={item.exactMatch ?? false}
               collapsed={collapsed}
+              badgeCount={
+                item.badgeKey ? navigationBadges[item.badgeKey] : undefined
+              }
             />
           </motion.li>
         );
