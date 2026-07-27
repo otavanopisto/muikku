@@ -127,3 +127,17 @@
 .mobileDrawerBody .navWrapper {
   height: calc(100vh - 60px);
 }
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--mantine-color-black);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease; /* match AppShell */
+}
+.backdrop[data-open] {
+  opacity: 0.45;
+  pointer-events: auto;
+}

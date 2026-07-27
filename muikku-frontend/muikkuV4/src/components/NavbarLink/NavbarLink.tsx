@@ -32,6 +32,14 @@ export function NavbarLink(props: NavbarLinkProps) {
   const { to, isActive } = useNavLinkMatch(link, exactMatch);
   const isMain = variant === "main";
 
+  /**
+   * Prevent the default behavior of the event.
+   * @param event - The event to prevent.
+   */
+  const preventDefault = (event: React.MouseEvent) => {
+    event.preventDefault();
+  };
+
   if (isMain && !Icon) {
     return null;
   }
@@ -92,6 +100,7 @@ export function NavbarLink(props: NavbarLinkProps) {
       rightSection={rightSection}
       active={isActive}
       classNames={navLinkClassNames}
+      onDragStart={preventDefault}
     />
   );
 }
