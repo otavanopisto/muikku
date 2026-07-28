@@ -1,13 +1,30 @@
-import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
-import { useAtomValue } from "jotai";
+import {
+  Container,
+  Title,
+  Text,
+  Paper,
+  Button,
+  Group,
+  Stack,
+  SegmentedControl,
+  useComputedColorScheme,
+  useMantineColorScheme,
+  Box,
+} from "@mantine/core";
+import { useAtom, useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
+import { brandIdAtom } from "~/src/atoms/theme";
 
 /**
  * Dashboard - Dashboard page
  */
 export function Dashboard() {
   const user = useAtomValue(userAtom);
+
+  const [brandId, setBrandId] = useAtom(brandIdAtom);
+  const { setColorScheme } = useMantineColorScheme();
+  const computed = useComputedColorScheme("dark");
 
   return (
     <Container size="lg">
@@ -23,6 +40,34 @@ export function Dashboard() {
           authenticated users. Use the navigation bar above to explore different
           sections.
         </Text>
+
+        <Group>
+          <Button color="brand">Brand button</Button>
+          <Box w={40} h={40} style={{ background: "var(--muikku-accent)" }} />
+          <Text size="xs">
+            body: use a Box with bg="var(--mantine-color-body)"
+          </Text>
+        </Group>
+
+        <Stack gap="sm">
+          <Text fw={600}>Theme debug</Text>
+          <SegmentedControl
+            value={brandId}
+            onChange={(v) => setBrandId(v)}
+            data={[
+              { label: "Mantine default", value: "mantineDefault" },
+              { label: "Muikku default", value: "muikkuDefault" },
+            ]}
+          />
+          <SegmentedControl
+            value={computed}
+            onChange={(v) => setColorScheme(v)}
+            data={[
+              { label: "Light", value: "light" },
+              { label: "Dark", value: "dark" },
+            ]}
+          />
+        </Stack>
       </Paper>
 
       <Paper p="xl" withBorder>
