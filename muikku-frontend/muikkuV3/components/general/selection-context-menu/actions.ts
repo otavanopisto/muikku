@@ -7,7 +7,10 @@ import {
   resolveBoundaryElement,
 } from "./selection-eligibility";
 import { SelectionContextAction } from "./types";
-import { buildAnnotationFromSelection } from "~/util/html";
+import {
+  buildAnnotationFromSelection,
+  selectionIntersectsAnnotation,
+} from "~/util/html";
 
 type ReadSpeakerListenActionOptions = {
   /** Page/panel boundary, e.g. #p-123 */
@@ -16,6 +19,7 @@ type ReadSpeakerListenActionOptions = {
   rspkr: React.MutableRefObject<any>;
   /** loggedIn && !editMode && rspkrLoaded */
   enabled: boolean;
+  onReadSessionStart?: (readAreaIds: string[]) => void;
 };
 
 /**
@@ -55,6 +59,16 @@ export function createReadSpeakerListenAction(
         ctx.close();
         return;
       }
+
+      // Get read area id from boundary selector
+      // Boundary selector is usually a page or panel id, e.g. #p-123
+      // We need to get the read area id from the boundary selector
+      // and notify read speaker about it
+      const readAreaId = options.boundarySelector.startsWith("#")
+        ? options.boundarySelector.slice(1)
+        : options.boundarySelector;
+
+      options.onReadSessionStart?.([readAreaId]);
       options.rspkr.current?.API?.setSelectionPlayer?.(playButton);
       playButton.click();
       ctx.close();
@@ -91,6 +105,7 @@ export function createHighlightAction(
     triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
@@ -145,6 +160,7 @@ export function createNoteAction(
     disabled: !options.onAddNote,
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,

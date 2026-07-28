@@ -24,6 +24,7 @@ const SKIP_ANCESTOR_SELECTOR = "script, style, iframe, object, noscript";
 const ANNOTATION_ATTR = "data-muikku-highlight-id";
 const ANNOTATION_KIND_ATTR = "data-muikku-highlight-kind";
 const ANNOTATION_CLASS = "material-highlight";
+const ANNOTATION_SELECTOR = ".material-highlight, [data-muikku-highlight-id]";
 
 // =============================================================================
 // ANNOTATION TYPES
@@ -362,6 +363,30 @@ export function getAnnotationOrphanReason(
 }
 
 // =============================================================================
+// ANNOTATION INTERSECTS
+// =============================================================================
+
+/**
+ * Whether selection intersects an annotation.
+ * @param range range
+ */
+export function selectionIntersectsAnnotation(range: Range | null): boolean {
+  if (!range || range.collapsed) return false;
+  const ancestor =
+    range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+      ? range.commonAncestorContainer.parentElement
+      : (range.commonAncestorContainer as Element);
+  if (!ancestor) return false;
+  const scope =
+    ancestor.closest(".material-page__content.rich-text") ??
+    ancestor.closest('[id^="p-"], [id^="s-"]') ??
+    ancestor;
+  return Array.from(scope.querySelectorAll(ANNOTATION_SELECTOR)).some((node) =>
+    range.intersectsNode(node)
+  );
+}
+
+// =============================================================================
 // ANNOTATION INJECT (preprocessing)
 // =============================================================================
 
@@ -594,6 +619,7 @@ export function buildAnnotationFromSelection(
 }
 
 export type AnnotationOrphanReason =
+  | "html_missing"
   | "anchor_missing"
   | "index_out_of_range"
   | "unresolvable";

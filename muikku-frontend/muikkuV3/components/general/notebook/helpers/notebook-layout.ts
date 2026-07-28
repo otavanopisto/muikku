@@ -15,6 +15,7 @@ import {
 } from "./notebook-drafts";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces/index";
 import { classifyAnnotation, getSearchableFromMaterialHtml } from "~/util/html";
+import { sortWorkspaceNotesByOrder } from "./notebook-workspace-order";
 
 export type WorkspaceNotebookNote = Extract<
   NotebookNote,
@@ -295,17 +296,22 @@ function buildMaterialGroups(
  * @param materialPages materialPages
  * @param drafts drafts
  * @param owner owner
+ * @param workspaceNotesOrder workspaceNotesOrder
  * @returns NotebookViewModel
  */
 export function buildNotebookViewModel(
   notes: NotebookNote[] | null,
   materialPages: NotebookMaterialPageRef[] = [],
   drafts: NotebookV2DraftsState = EMPTY_NOTEBOOK_V2_DRAFTS,
-  owner = ""
+  owner = "",
+  workspaceNotesOrder: number[] = []
 ): NotebookViewModel {
   const savedNotes = notes ?? [];
   return {
-    workspaceNotes: savedNotes.filter(isNotebookWorkspaceNote),
+    workspaceNotes: sortWorkspaceNotesByOrder(
+      savedNotes.filter(isNotebookWorkspaceNote),
+      workspaceNotesOrder
+    ),
     workspaceDraftNote: drafts.workspaceNote
       ? workspaceDraftToNotebookNote(drafts.workspaceNote, owner)
       : null,

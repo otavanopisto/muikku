@@ -1,6 +1,5 @@
 import { MaterialHighlight } from "~/components/base/material-loader/types";
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
-import { MOCK_WORKSPACE_ENTITY_ID } from "~/mock/notebook-notes";
 
 /**
  * Checks if the note is a workspace note
@@ -121,43 +120,4 @@ export function getMaterialHighlightsByPageFromNotes(
     }
   }
   return map;
-}
-
-/**
- * Gets the mock notebook notes for a workspace
- * @param workspaceEntityId - Workspace entity id
- * @param notes notes
- * @returns Mock notebook notes for the workspace
- */
-export function getMockNotebookNotesForWorkspace(
-  workspaceEntityId: number = MOCK_WORKSPACE_ENTITY_ID,
-  notes: NotebookNote[] | null | undefined
-): NotebookNote[] {
-  if (!notes?.length) return [];
-  return notes.filter((n) => n.workspaceEntityId === workspaceEntityId);
-}
-
-/**
- * Gets the mock context notes for a workspace material
- * @param workspaceMaterialId - Workspace material id
- * @param notes notes
- * @returns Mock context notes for the workspace material
- */
-export function getMockContextNotesForMaterial(
-  workspaceMaterialId: number,
-  notes: NotebookNote[] | null | undefined
-): Extract<
-  NotebookNote,
-  { type: typeof NotebookNoteType.WorkspaceMaterialContextNote }
->[] {
-  if (!notes?.length) return [];
-  return notes.filter(
-    (
-      n
-    ): n is Extract<
-      NotebookNote,
-      { type: typeof NotebookNoteType.WorkspaceMaterialContextNote }
-    > =>
-      isNotebookContextNote(n) && n.workspaceMaterialId === workspaceMaterialId
-  );
 }

@@ -1,19 +1,7 @@
 import { NotebookNote } from "~/generated/client";
-import {
-  isNotebookContextHighlight,
-  isNotebookContextNote,
-} from "~/helper-functions/notebook";
 import { NotebookV2DraftsState } from "./notebook-drafts";
 
 const MATERIALS_PANEL_SELECTOR = ".content-panel--workspace-materials";
-
-/**
- * Context items that have a material-page anchor highlight.
- * @param note note
- */
-export function isNotebookMaterialLinkedItem(note: NotebookNote): boolean {
-  return isNotebookContextHighlight(note) || isNotebookContextNote(note);
-}
 
 /**
  * Resolve page id for scrolling when a note/draft is activated.
@@ -81,5 +69,16 @@ export function scrollToActiveMaterialItem(
     );
     highlight?.scrollIntoView({ behavior: "smooth", block: "center" });
     syncActiveMaterialHighlight(activeItemId);
+  });
+}
+
+/**
+ * Scroll notebook panel to a saved note row.
+ * @param noteId noteId
+ */
+export function scrollToNotebookItem(noteId: number): void {
+  window.requestAnimationFrame(() => {
+    const el = document.querySelector(`[data-notebook-item-id="${noteId}"]`);
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 }

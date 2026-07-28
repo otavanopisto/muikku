@@ -12,6 +12,9 @@ import { StateType } from "~/reducers";
 export function useNotebookViewModel() {
   const notes = useSelector((state: StateType) => state.notebookV2.notes);
   const drafts = useSelector((state: StateType) => state.notebookV2.drafts);
+  const workspaceNotesOrder = useSelector(
+    (state: StateType) => state.notebookV2.workspaceNotesOrder
+  );
   const userId = useSelector((state: StateType) => state.status.userId);
   const currentMaterials = useSelector(
     (state: StateType) => state.workspaces.currentMaterials
@@ -19,6 +22,12 @@ export function useNotebookViewModel() {
 
   return useMemo(() => {
     const materialPages = flattenWorkspaceMaterialPages(currentMaterials);
-    return buildNotebookViewModel(notes, materialPages, drafts, String(userId));
-  }, [notes, drafts, currentMaterials, userId]);
+    return buildNotebookViewModel(
+      notes,
+      materialPages,
+      drafts,
+      String(userId),
+      workspaceNotesOrder
+    );
+  }, [notes, drafts, currentMaterials, userId, workspaceNotesOrder]);
 }

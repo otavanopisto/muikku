@@ -8,25 +8,39 @@ import {
   removeDraftByClientId,
 } from "~/components/general/notebook/helpers/notebook-drafts";
 
+export type NotebookNoteUiMode =
+  | { kind: "editing" }
+  | { kind: "upgrading" }
+  | { kind: "deleting" };
+
+/** Only store non-idle entries; missing id = idle */
+export type NotebookNoteUiById = Record<number, NotebookNoteUiMode>;
+
 /**
  * NoteBookV2State
  */
 export interface NoteBookV2State {
   notes: NotebookNote[] | null;
+  workspaceNotesOrder: number[];
   state: ReducerStatusType;
   drafts: NotebookV2DraftsState;
   focusDraftClientId: number | null;
   openNotebookTabRequest: boolean;
+  focusNoteId: number | null; // ADD
   activeItemId: number | null;
+  noteUiById: NotebookNoteUiById;
 }
 
 const initialState: NoteBookV2State = {
   notes: null,
+  workspaceNotesOrder: [],
   state: "IDLE",
   drafts: EMPTY_NOTEBOOK_V2_DRAFTS,
   focusDraftClientId: null,
   openNotebookTabRequest: false,
+  focusNoteId: null,
   activeItemId: null,
+  noteUiById: {},
 };
 
 /**
@@ -46,6 +60,9 @@ export const notebookV2: Reducer<NoteBookV2State> = (
     case "NOTEBOOK_V2_LOAD_ENTRIES":
       return { ...state, notes: action.payload };
 
+    case "NOTEBOOK_V2_SET_WORKSPACE_NOTES_ORDER":
+      return { ...state, workspaceNotesOrder: action.payload };
+
     case "NOTEBOOK_V2_BEGIN_WORKSPACE_DRAFT":
       return {
         ...state,
@@ -62,9 +79,17 @@ export const notebookV2: Reducer<NoteBookV2State> = (
           ...state.drafts,
           materialNotes: {
             ...state.drafts.materialNotes,
-            [action.payload.workspaceMaterialId]: action.payload,
+            [action.payload.workspaceMaterialId]: {
+              clientId: action.payload.clientId,
+              workspaceEntityId: action.payload.workspaceEntityId,
+              workspaceMaterialId: action.payload.workspaceMaterialId,
+              title: action.payload.title,
+              text: action.payload.text,
+            },
           },
         },
+        focusDraftClientId: action.payload.clientId,
+        openNotebookTabRequest: action.payload.openNotebookTab ?? false,
       };
 
     case "NOTEBOOK_V2_BEGIN_CONTEXT_NOTE_DRAFT":
@@ -79,15 +104,24 @@ export const notebookV2: Reducer<NoteBookV2State> = (
       };
 
     case "NOTEBOOK_V2_CANCEL_DRAFT":
+      return clearNoteUiMode(
+        {
+          ...state,
+          drafts: removeDraftByClientId(state.drafts, action.payload),
+          focusDraftClientId:
+            state.focusDraftClientId === action.payload
+              ? null
+              : state.focusDraftClientId,
+          activeItemId:
+            state.activeItemId === action.payload ? null : state.activeItemId,
+        },
+        action.payload
+      );
+
+    case "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST":
       return {
         ...state,
-        drafts: removeDraftByClientId(state.drafts, action.payload),
-        focusDraftClientId:
-          state.focusDraftClientId === action.payload
-            ? null
-            : state.focusDraftClientId,
-        activeItemId:
-          state.activeItemId === action.payload ? null : state.activeItemId,
+        openNotebookTabRequest: true,
       };
 
     case "NOTEBOOK_V2_DRAFTS_CLEAR_ALL":
@@ -97,6 +131,8 @@ export const notebookV2: Reducer<NoteBookV2State> = (
         focusDraftClientId: null,
         openNotebookTabRequest: false,
         activeItemId: null,
+        noteUiById: {},
+        focusNoteId: null,
       };
 
     case "NOTEBOOK_V2_FOCUS_DRAFT_CLEAR":
@@ -123,7 +159,128 @@ export const notebookV2: Reducer<NoteBookV2State> = (
         activeItemId: null,
       };
 
+    case "NOTEBOOK_V2_SET_WORKSPACE_DRAFT_POSITION":
+      if (!state.drafts.workspaceNote) {
+        return state;
+      }
+      return {
+        ...state,
+        drafts: {
+          ...state.drafts,
+          workspaceNote: {
+            ...state.drafts.workspaceNote,
+            position: action.payload,
+          },
+        },
+      };
+
+    case "NOTEBOOK_V2_SET_NOTE_UI":
+      return setNoteUiMode(state, action.payload.noteId, action.payload.mode);
+    case "NOTEBOOK_V2_CLEAR_NOTE_UI":
+      return clearNoteUiMode(state, action.payload);
+    case "NOTEBOOK_V2_CLEAR_ALL_NOTE_UI":
+      return { ...state, noteUiById: {} };
+    case "NOTEBOOK_V2_FOCUS_NOTE":
+      return { ...state, focusNoteId: action.payload };
+    case "NOTEBOOK_V2_FOCUS_NOTE_CLEAR":
+      return { ...state, focusNoteId: null };
+
     default:
       return state;
   }
 };
+
+/**
+ * setNoteUiMode
+ * @param state state
+ * @param noteId noteId
+ * @param mode mode
+ * @returns NoteBookV2State
+ */
+export function setNoteUiMode(
+  state: NoteBookV2State,
+  noteId: number,
+  mode: NotebookNoteUiMode | null
+): NoteBookV2State {
+  const next = { ...state.noteUiById };
+  // global single-interaction: clear all others
+  for (const id of Object.keys(next)) {
+    delete next[Number(id)];
+  }
+  if (mode) {
+    next[noteId] = mode;
+  }
+  return { ...state, noteUiById: next };
+}
+
+/**
+ * clearNoteUiMode
+ * @param state state
+ * @param noteId noteId
+ * @returns NoteBookV2State
+ */
+export function clearNoteUiMode(
+  state: NoteBookV2State,
+  noteId: number
+): NoteBookV2State {
+  if (!state.noteUiById[noteId]) {
+    return state;
+  }
+  const next = { ...state.noteUiById };
+  delete next[noteId];
+  return { ...state, noteUiById: next };
+}
+
+/**
+ * getNotebookNoteUiMode
+ * @param noteUiById noteUiById
+ * @param noteId noteId
+ * @returns NotebookNoteUiMode["kind"] | "idle"
+ */
+export function getNotebookNoteUiMode(
+  noteUiById: NotebookNoteUiById,
+  noteId: number
+): NotebookNoteUiMode["kind"] | "idle" {
+  return noteUiById[noteId]?.kind ?? "idle";
+}
+
+/**
+ * isNotebookNoteEditing
+ * @param noteUiById noteUiById
+ * @param noteId noteId
+ * @param isDraft isDraft
+ * @returns boolean
+ */
+export function isNotebookNoteEditing(
+  noteUiById: NotebookNoteUiById,
+  noteId: number,
+  isDraft: boolean
+): boolean {
+  return isDraft || noteUiById[noteId]?.kind === "editing";
+}
+
+/**
+ * isNotebookNoteUpgrading
+ * @param noteUiById noteUiById
+ * @param noteId noteId
+ * @returns boolean
+ */
+export function isNotebookNoteUpgrading(
+  noteUiById: NotebookNoteUiById,
+  noteId: number
+): boolean {
+  return noteUiById[noteId]?.kind === "upgrading";
+}
+
+/**
+ * isNotebookNoteDeleting
+ * @param noteUiById noteUiById
+ * @param noteId noteId
+ * @returns boolean
+ */
+export function isNotebookNoteDeleting(
+  noteUiById: NotebookNoteUiById,
+  noteId: number
+): boolean {
+  return noteUiById[noteId]?.kind === "deleting";
+}

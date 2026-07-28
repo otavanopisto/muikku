@@ -190,6 +190,7 @@ export interface MaterialLoaderProps {
   answersVisible?: boolean;
   isViewRestricted?: boolean;
   readspeakerComponent?: JSX.Element;
+  notebookAddNoteComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
   fieldSnapshotPolicy?: FieldSnapshotPolicy;

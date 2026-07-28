@@ -39,7 +39,8 @@ export type MaterialSelectionPopoverProps = {
  * @param props props
  */
 function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
-  const { rspkr, rspkrLoaded } = useReadspeakerContext();
+  const { rspkr, rspkrLoaded, notifyReadSpeakerReadAreas } =
+    useReadspeakerContext();
   const { loggedIn } = useSelector((state: StateType) => state.status);
   const editMode = useSelector(
     (state: StateType) => state.workspaces.editMode.active
@@ -56,6 +57,7 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
         readspeakerButtonId,
         rspkr,
         enabled: listenEnabled,
+        onReadSessionStart: notifyReadSpeakerReadAreas,
       }),
     ];
 
@@ -112,6 +114,7 @@ function MaterialSelectionPopover(props: MaterialSelectionPopoverProps) {
     props.extraActions,
     props.materialHtml,
     props.workspaceMaterialId,
+    notifyReadSpeakerReadAreas,
   ]);
 
   return (

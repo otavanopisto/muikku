@@ -63,6 +63,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   workspace: WorkspaceDataType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
+  notebookAddNoteComponent?: JSX.Element;
   highlights: MaterialHighlight[];
   // Redux state properties
   status: StatusType;
@@ -194,6 +195,7 @@ class WorkspaceMaterial extends React.Component<
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
+            notebookAddNoteComponent={this.props.notebookAddNoteComponent}
             anchorElement={this.props.anchorItem}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             onDisplayNotification={this.props.displayNotification}

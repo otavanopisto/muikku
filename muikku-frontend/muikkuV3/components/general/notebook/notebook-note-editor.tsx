@@ -97,11 +97,7 @@ const NotebookNoteEditor = (props: NotebookNoteEditorProps) => {
       <div className="form__row">
         <div className="form-element">
           <label>{t("labels.content", { ns: "common" })}</label>
-          <CKEditor
-            onChange={setNoteContent}
-            ancestorHeight={250}
-            configuration={ckEditorConfig}
-          >
+          <CKEditor onChange={setNoteContent} configuration={ckEditorConfig}>
             {noteContent}
           </CKEditor>
         </div>

@@ -17,6 +17,7 @@ export type NotebookContextNoteDraft = {
 export type NotebookWorkspaceNoteDraft = {
   clientId: number;
   workspaceEntityId: number;
+  position: number | null;
   title?: string;
   text?: string;
 };
@@ -27,6 +28,7 @@ export type NotebookMaterialNoteDraft = {
   workspaceMaterialId: number;
   title?: string;
   text?: string;
+  openNotebookTab?: boolean;
 };
 
 export type NotebookV2DraftsState = {

@@ -7,14 +7,14 @@ import { AnyActionType } from "~/actions";
 import NoteBookPDF from "./notebook-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { WorkspaceNote } from "~/generated/client";
+import { NotebookNote } from "~/generated/client";
 
 /**
  * NoteBookPDFProps
  */
 interface NoteBookPDFDialogProps {
   children?: React.ReactElement<any>;
-  notes: WorkspaceNote[];
+  notes: NotebookNote[];
   workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;

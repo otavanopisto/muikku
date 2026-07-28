@@ -18,21 +18,23 @@ export type NotebookContextOrphanStatus = {
 
 /**
  * Resolve orphan status for context highlight / context note against page HTML.
- * Returns null for non-context notes or when page HTML is unavailable.
+ * If the page HTML is missing, the status is orphaned with reason "html_missing".
  * @param note note
  * @param materialHtml materialHtml
- * @returns NotebookContextOrphanStatus | null
  */
 export function resolveNotebookContextOrphanStatus(
   note: NotebookNote,
   materialHtml?: string
-): NotebookContextOrphanStatus | null {
+): NotebookContextOrphanStatus {
   if (!isNotebookContextHighlight(note) && !isNotebookContextNote(note)) {
     return null;
   }
 
   if (!materialHtml) {
-    return null;
+    return {
+      isOrphaned: true,
+      reason: "anchor_missing",
+    };
   }
 
   const searchable = getSearchableFromMaterialHtml(materialHtml);

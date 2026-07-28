@@ -2,14 +2,15 @@ import * as React from "react";
 import { Document, Page, Text, View } from "@react-pdf/renderer";
 import Html from "react-pdf-html";
 import { styles, htmlStyles } from "./notebook-pdf-styles";
-import { WorkspaceNote } from "~/generated/client";
+import { NotebookNote } from "~/generated/client";
+import { isNotebookWorkspaceNote } from "~/helper-functions/notebook";
 
 /**
  * NoteBookPDFProps
  */
 interface NoteBookPFDProps {
   workspaceName?: string;
-  notes?: WorkspaceNote[];
+  notes?: NotebookNote[];
 }
 
 /**
@@ -25,14 +26,15 @@ const NoteBookPDF = (props: NoteBookPFDProps) => {
    * @param note note
    * @returns JSX.Element
    */
-  const renderNote = (note: WorkspaceNote) => (
-    <View key={note.id} wrap={false} style={styles.noteContainer}>
-      <Text style={styles.noteFieldLabel}>{note.title}</Text>
-      <View style={styles.noteFieldValue}>
-        <Html stylesheet={htmlStyles}>{note.workspaceNote}</Html>
+  const renderNote = (note: NotebookNote) =>
+    isNotebookWorkspaceNote(note) ? (
+      <View key={note.id} wrap={false} style={styles.noteContainer}>
+        <Text style={styles.noteFieldLabel}>{note.title}</Text>
+        <View style={styles.noteFieldValue}>
+          <Html stylesheet={htmlStyles}>{note.text}</Html>
+        </View>
       </View>
-    </View>
-  );
+    ) : null;
 
   const pageHeader = (
     <View style={styles.header} fixed>

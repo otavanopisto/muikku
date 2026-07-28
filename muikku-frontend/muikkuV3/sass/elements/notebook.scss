@@ -255,6 +255,12 @@
   margin-bottom: 1.25rem;
 }
 
+.notebook__page-group-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
 .notebook__page-group-title {
   font-size: 0.875rem;
   font-weight: 600;
@@ -264,10 +270,6 @@
 .notebook__page-group-divider {
   border-top: 1px solid $color-default-separator-border;
   margin: 0.5rem 0 0.75rem;
-}
-
-.notebook__section-editor {
-  margin-bottom: 1rem;
 }
 
 .notebook__item-editor {
