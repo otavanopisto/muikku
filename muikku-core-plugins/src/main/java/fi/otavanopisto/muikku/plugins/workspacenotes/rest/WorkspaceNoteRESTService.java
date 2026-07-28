@@ -227,7 +227,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    workspaceNote = workspaceNoteController.updateWorkspaceNote(workspaceNote, restModel.getTitle(), restModel.getText());
+    workspaceNote = workspaceNoteController.updateWorkspaceNote(workspaceNote, restModel.getTitle(), restModel.getText(), restModel.getType());
     
     return Response.ok(toRestModel(workspaceNote)).build();
   }
