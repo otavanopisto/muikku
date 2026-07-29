@@ -3,8 +3,8 @@ import { useSearchParams } from "react-router";
 import { Text } from "@mantine/core";
 import {
   resolveCommunicatorActions,
-  type ActionName,
   type CommunicatorActionContext,
+  type CommunicatorActionHandlers,
 } from "./actions";
 import { CommunicatorActionBar } from "./components/CommunicatorActionBar";
 
@@ -28,51 +28,27 @@ export function CommunicatorThreadList() {
 
   const actions = resolveCommunicatorActions(ctx);
 
-  /**
-   * Handles the action for the communicator thread list
-   * @param actionName - The name of the action
-   */
-  function handleAction(actionName: ActionName) {
-    switch (actionName) {
-      case "newMessage": {
-        // open compose UI
-        // eslint-disable-next-line no-console
-        console.log("newMessage", { tab, selectedIds });
-        return;
-      }
-      case "addTag": {
-        // bulk add tags for selectedIds
-        // eslint-disable-next-line no-console
-        console.log("addTag", { tab, selectedIds });
-        return;
-      }
-      case "editTags": {
-        // resolver hides this on list, so usually unreachable
-        return;
-      }
-      case "delete": {
-        // if tab === "Trash" => permanent delete, else soft delete/move to Trash
-        const isTrash = tab === "Trash";
-        // eslint-disable-next-line no-console
-        console.log("delete", { isTrash, selectedIds });
-        return;
-      }
-      case "reply": {
-        // resolver hides this on list
-        return;
-      }
-      case "toggleRead": {
-        // On list: only Inbox/Unread is enabled by resolver
-        // If tab === "Unread" => mark as read, else mark as unread
-        const shouldMarkRead = tab === "Unread";
-        // eslint-disable-next-line no-console
-        console.log("toggleRead", { shouldMarkRead, selectedIds });
-        return;
-      }
-      default:
-        return;
-    }
-  }
+  // Handlers for the actions
+  const handlers: CommunicatorActionHandlers = {
+    newMessage: () => {
+      // eslint-disable-next-line no-console
+      console.log("newMessage", { tab, selectedIds });
+    },
+    addTag: () => {
+      // eslint-disable-next-line no-console
+      console.log("addTag", { tab, selectedIds });
+    },
+    delete: () => {
+      const isTrash = tab === "Trash";
+      // eslint-disable-next-line no-console
+      console.log("delete", { isTrash, selectedIds });
+    },
+    toggleRead: () => {
+      const shouldMarkRead = tab === "Unread";
+      // eslint-disable-next-line no-console
+      console.log("toggleRead", { shouldMarkRead, selectedIds });
+    },
+  };
 
   /**
    * Toggles the selection of a thread
@@ -88,7 +64,7 @@ export function CommunicatorThreadList() {
 
   return (
     <>
-      <CommunicatorActionBar actions={actions} onAction={handleAction} />
+      <CommunicatorActionBar actions={actions} handlers={handlers} />
       <Text size="sm" c="dimmed" mb="sm">
         Tab: {tab} — selected: {selectedIds.length}
       </Text>

@@ -3,8 +3,8 @@ import { useParams } from "react-router";
 import { useSearchParams } from "react-router";
 import {
   resolveCommunicatorActions,
-  type ActionName,
   type CommunicatorActionContext,
+  type CommunicatorActionHandlers,
 } from "./actions";
 import { CommunicatorActionBar } from "./components/CommunicatorActionBar";
 
@@ -26,54 +26,29 @@ export function CommunicatorThread() {
 
   const actions = resolveCommunicatorActions(ctx);
 
-  /**
-   * Handles the action for the communicator thread
-   * @param actionName - The name of the action
-   */
-  function handleAction(actionName: ActionName) {
-    switch (actionName) {
-      case "newMessage": {
-        // resolver hides this on thread (unless you later change it)
-        return;
-      }
-      case "addTag": {
-        // resolver hides this on thread
-        return;
-      }
-      case "editTags": {
-        // edit tags for this threadId
-        // eslint-disable-next-line no-console
-        console.log("editTags", { threadId });
-        return;
-      }
-      case "delete": {
-        // delete this thread
-        // eslint-disable-next-line no-console
-        console.log("delete thread", { threadId });
-        return;
-      }
-      case "reply": {
-        // open reply composer for this threadId
-        // eslint-disable-next-line no-console
-        console.log("reply", { threadId });
-        return;
-      }
-      case "toggleRead": {
-        // In your resolver: thread toggleRead label = "Merkitse lukemattomaksi"
-        // and it is enabled when isThreadRead === true
-        // so this handler should mark it as UNREAD.
-        // eslint-disable-next-line no-console
-        console.log("mark unread", { threadId });
-        return;
-      }
-      default:
-        return;
-    }
-  }
+  // Handlers for the actions
+  const handlers: CommunicatorActionHandlers = {
+    editTags: () => {
+      // eslint-disable-next-line no-console
+      console.log("editTags", { threadId });
+    },
+    delete: () => {
+      // eslint-disable-next-line no-console
+      console.log("delete thread", { threadId });
+    },
+    reply: () => {
+      // eslint-disable-next-line no-console
+      console.log("reply", { threadId });
+    },
+    toggleRead: () => {
+      // eslint-disable-next-line no-console
+      console.log("mark unread", { threadId });
+    },
+  };
 
   return (
     <>
-      <CommunicatorActionBar actions={actions} onAction={handleAction} />
+      <CommunicatorActionBar actions={actions} handlers={handlers} />
       <Text>Thread: {threadId}</Text>
     </>
   );

@@ -1,13 +1,13 @@
 import { Button } from "@mantine/core";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
-import type { ActionName, ResolvedAction } from "../actions";
+import type { CommunicatorActionHandlers, ResolvedAction } from "../actions";
 
 /**
  * CommunicatorActionBarProps - Props for the CommunicatorActionBar component
  */
 interface CommunicatorActionBarProps {
   actions: ResolvedAction[];
-  onAction: (actionName: ActionName) => void;
+  handlers: CommunicatorActionHandlers;
 }
 
 /**
@@ -15,7 +15,7 @@ interface CommunicatorActionBarProps {
  * No logic here — just maps ResolvedAction[] to buttons.
  */
 export function CommunicatorActionBar(props: CommunicatorActionBarProps) {
-  const { actions, onAction } = props;
+  const { actions, handlers } = props;
 
   return (
     <ActionBar>
@@ -25,7 +25,7 @@ export function CommunicatorActionBar(props: CommunicatorActionBarProps) {
           variant={action.variant === "danger" ? "filled" : "default"}
           color={action.variant === "danger" ? "red" : undefined}
           disabled={action.state === "disabled"}
-          onClick={() => onAction(action.id)}
+          onClick={handlers[action.id]}
         >
           {action.label}
         </Button>

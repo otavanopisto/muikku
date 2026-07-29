@@ -12,6 +12,10 @@ export type ActionName =
   | "reply"
   | "toggleRead";
 
+export type CommunicatorActionHandlers = Partial<
+  Record<ActionName, () => void>
+>;
+
 /**
  * Context that the resolver reads — all pure data, no hooks
  */
