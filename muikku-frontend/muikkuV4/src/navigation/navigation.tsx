@@ -6,6 +6,7 @@ import {
   IconList,
   IconEdit,
   IconBell,
+  IconCalendar,
 } from "@tabler/icons-react";
 import { type Params, type To } from "react-router";
 import type { WorkspacePermissions } from "src/services/permissions";
@@ -89,6 +90,13 @@ export const coursepickerSubItems: NavigationItem[] = [
   },
   {
     type: "queryLink",
+    label: "Ehdotetut kurssit",
+    link: "/coursepicker?search=Suggested",
+    queryName: "search",
+    queryValue: "Suggested",
+  },
+  {
+    type: "queryLink",
     label: "Omat kurssit",
     link: "/coursepicker?search=MyCourses",
     queryName: "search",
@@ -108,30 +116,36 @@ export const communicatorSubItems: NavigationItem[] = [
   {
     type: "queryLink",
     label: "Saapuneet",
-    link: "?tab=Inbox",
+    link: "/communicator?tab=Inbox",
     queryName: "tab",
     queryValue: "Inbox",
   },
   {
     type: "queryLink",
     label: "Lukemattomat",
-    link: "?tab=Unread",
+    link: "/communicator?tab=Unread",
     queryName: "tab",
     queryValue: "Unread",
   },
   {
     type: "queryLink",
     label: "Lähetetyt",
-    link: "?tab=Sent",
+    link: "/communicator?tab=Sent",
     queryName: "tab",
     queryValue: "Sent",
   },
   {
     type: "queryLink",
     label: "Roskakori",
-    link: "?tab=Trash",
+    link: "/communicator?tab=Trash",
     queryName: "tab",
     queryValue: "Trash",
+  },
+  {
+    type: "link",
+    label: "Tunnisteet",
+    link: "/communicator/taglist",
+    exactMatch: true,
   },
 ];
 
@@ -157,30 +171,36 @@ export const announcerSubItems: NavigationItem[] = [
   {
     type: "queryLink",
     label: "Aktiiviset",
-    link: "/announcements?search=Active",
+    link: "/announcer?search=Active",
     queryName: "search",
     queryValue: "Active",
   },
   {
     type: "queryLink",
     label: "Vanhentuneet",
-    link: "/announcements?search=Expired",
+    link: "/announcer?search=Expired",
     queryName: "search",
     queryValue: "Expired",
   },
   {
     type: "queryLink",
     label: "Omat",
-    link: "/announcements?search=My",
+    link: "/announcer?search=My",
     queryName: "search",
     queryValue: "My",
   },
   {
     type: "queryLink",
     label: "Arkistoidut",
-    link: "/announcements?search=Archived",
+    link: "/announcer?search=Archived",
     queryName: "search",
     queryValue: "Archived",
+  },
+  {
+    type: "link",
+    label: "Kategoriat",
+    link: "/announcer/categories",
+    exactMatch: true,
   },
 ];
 
@@ -208,6 +228,13 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconHome,
     link: "/dashboard",
     canAccess: isLoggedIn, // Only visible if user is authenticated
+  },
+  {
+    type: "link",
+    label: "Kalenteri",
+    icon: IconCalendar,
+    link: "/calendar",
+    canAccess: isLoggedIn,
   },
   {
     type: "link",
@@ -241,6 +268,15 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     badgeKey: "announcerUnread",
     canAccess: (user) =>
       isLoggedIn(user) && hasUserPermission("ANNOUNCER_TOOL", user),
+    exactMatch: false,
+  },
+  {
+    type: "link",
+    label: "Tiedotteet",
+    icon: IconBell,
+    link: "/announcements",
+    canAccess: (user) =>
+      isLoggedIn(user) && (user?.roles.includes("STUDENT") ?? false),
     exactMatch: false,
   },
   {

@@ -6,7 +6,7 @@ import { PageLayout } from "src/layouts/PageLayout/PageLayout";
  */
 export function Announcer() {
   return (
-    <PageLayout title="Announcer">
+    <PageLayout>
       <Paper p="xl" withBorder>
         <Text size="lg" c="dimmed" mb="lg">
           You are now in the announcer area of the application.

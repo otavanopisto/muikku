@@ -125,6 +125,11 @@ export const permissionMiddlewares = {
     requireAuth: true,
   }),
 
+  // Calendar view
+  calendarView: createPermissionMiddleware({
+    requireAuth: true,
+  }),
+
   // Communicator view
   communicatorView: createPermissionMiddleware({
     requireAuth: true,

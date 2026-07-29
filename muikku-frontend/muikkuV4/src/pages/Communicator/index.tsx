@@ -6,7 +6,7 @@ import { PageLayout } from "src/layouts/PageLayout/PageLayout";
  */
 export function Communicator() {
   return (
-    <PageLayout title="Viestin">
+    <PageLayout>
       <Paper p="xl" withBorder>
         <Text size="lg" c="dimmed" mb="lg">
           You are now in the communicator area of the application.

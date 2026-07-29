@@ -1,4 +1,5 @@
-import { Text, Paper } from "@mantine/core";
+import { Text, Group, Box } from "@mantine/core";
+import { Outlet } from "react-router";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 
 /**
@@ -6,13 +7,17 @@ import { PageLayout } from "src/layouts/PageLayout/PageLayout";
  */
 export function Announcements() {
   return (
-    <PageLayout title="Announcements">
-      <Paper p="xl" withBorder>
-        <Text size="lg" c="dimmed" mb="lg">
-          You are now in the announcements area of the application.
-        </Text>
-        <Text mb="xl">This is where you can access announcements features</Text>
-      </Paper>
+    <PageLayout title="Tiedotteet">
+      <Group align="stretch">
+        {" "}
+        {/* or your grid */}
+        <Box flex={1}>
+          <Outlet />
+        </Box>
+        <Box>
+          <Text>AnnouncementList</Text>
+        </Box>
+      </Group>
     </PageLayout>
   );
 }

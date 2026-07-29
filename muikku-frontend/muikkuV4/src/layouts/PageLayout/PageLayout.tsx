@@ -5,7 +5,7 @@ import { Box, Title, Text } from "@mantine/core";
  * PageLayoutProps - Page layout props
  */
 interface PageLayoutProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   children: React.ReactNode;
   loading?: boolean;
@@ -20,10 +20,12 @@ export function PageLayout(props: PageLayoutProps) {
   return (
     <Container size="lg" py="md">
       {/* View/Feature Name Section */}
-      <Box mb="md">
-        <Title order={1}>{title}</Title>
-        {subtitle && <Text c="dimmed">{subtitle}</Text>}
-      </Box>
+      {title && (
+        <Box mb="md">
+          <Title order={1}>{title}</Title>
+          {subtitle && <Text c="dimmed">{subtitle}</Text>}
+        </Box>
+      )}
 
       {/* Composable Action Areas */}
       {children}

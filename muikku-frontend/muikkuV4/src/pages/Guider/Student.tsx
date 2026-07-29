@@ -17,7 +17,7 @@ export function GuiderStudent() {
   const studentState = useAtomValue(currentStudentAtom);
 
   return (
-    <PageLayout title="Ohjaamo">
+    <PageLayout>
       <AsyncState
         state={parseAsyncStateFromQuery(studentState)}
         error={createAsyncError(studentState.error) ?? undefined}

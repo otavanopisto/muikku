@@ -13,7 +13,7 @@ export function Evaluation() {
 
   const { asideOpened, toggleAside } = useAppLayout();
   return (
-    <PageLayout title="Arviointi">
+    <PageLayout>
       <Box hiddenFrom="md">
         <Burger
           opened={asideOpened}

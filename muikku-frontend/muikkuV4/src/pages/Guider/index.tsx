@@ -8,7 +8,7 @@ import { Outlet } from "react-router";
  */
 export function Guider() {
   return (
-    <PageLayout title="Ohjaamo">
+    <PageLayout>
       <ActionBar variant="primary">
         <Button>Uusi yhteydenotto</Button>
         <Button>Uusi tehtävä</Button>

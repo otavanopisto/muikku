@@ -1,39 +1,58 @@
 import { NavLink } from "@mantine/core";
-import { useLocation, useNavigate } from "react-router";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useResolvedPath,
+} from "react-router";
 import type { NavigationQueryLink } from "~/src/navigation/navigation";
 import { navLinkClassNames } from "~/src/components/NavbarLink/navLinkClassnames";
 
 /**
- * Props for the NavbarQueryLink component.
+ * NavbarQueryLink - A link that navigates to a query-based route
  */
 interface NavbarQueryLinkProps extends Omit<NavigationQueryLink, "type"> {}
 
 /**
- * Query-param toggle link for secondary navigation.
+ * NavbarQueryLink - A link that navigates to a query-based route
+ * @param props - The props for the NavbarQueryLink component
  */
 export function NavbarQueryLink(props: NavbarQueryLinkProps) {
-  const { icon: Icon, label, queryName, queryValue: linkQueryValue } = props;
+  const {
+    icon: Icon,
+    label,
+    link,
+    queryName,
+    queryValue: linkQueryValue,
+  } = props;
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
+
+  const to = typeof link === "function" ? link(params) : link;
+  const resolved = useResolvedPath(to);
 
   const currentQueryValue = new URLSearchParams(location.search).get(queryName);
-  const isActive = currentQueryValue === linkQueryValue;
+  const isOnTargetPath =
+    location.pathname === resolved.pathname ||
+    location.pathname.startsWith(`${resolved.pathname}/`);
+  const isActive = isOnTargetPath && currentQueryValue === linkQueryValue;
 
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault();
 
-    const currentParams = new URLSearchParams(location.search);
+    const nextParams = isOnTargetPath
+      ? new URLSearchParams(location.search)
+      : new URLSearchParams(resolved.search);
 
     if (isActive) {
-      currentParams.delete(queryName);
+      nextParams.delete(queryName);
     } else {
-      currentParams.set(queryName, linkQueryValue);
+      nextParams.set(queryName, linkQueryValue);
     }
 
-    const newSearch = currentParams.toString();
-    const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ""}`;
-
-    void navigate(newUrl);
+    const newSearch = nextParams.toString();
+    void navigate(`${resolved.pathname}${newSearch ? `?${newSearch}` : ""}`);
   };
 
   return (

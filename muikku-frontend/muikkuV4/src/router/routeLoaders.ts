@@ -14,7 +14,9 @@ export const routeLoaders: Record<string, LoaderFunction> = {
 
     return null;
   },
+  calendarLoader: () => null,
   communicatorLoader: () => null,
+  communicatorTagsLoader: () => null,
   guiderLoader: ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get("q") ?? "";

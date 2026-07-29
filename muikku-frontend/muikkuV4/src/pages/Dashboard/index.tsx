@@ -1,5 +1,4 @@
 import {
-  Container,
   Title,
   Text,
   Paper,
@@ -14,8 +13,8 @@ import {
 import { useAtom, useAtomValue } from "jotai";
 import { userAtom } from "src/atoms/auth";
 import { Link } from "react-router";
-import { brandIdAtom } from "~/src/atoms/theme";
-
+import { brandIdAtom } from "src/atoms/theme";
+import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 /**
  * Dashboard - Dashboard page
  */
@@ -27,7 +26,7 @@ export function Dashboard() {
   const computed = useComputedColorScheme("dark");
 
   return (
-    <Container size="lg">
+    <PageLayout>
       <Paper p="xl" withBorder>
         <Title order={1} mb="md">
           Welcome back, {user?.displayName ?? "User"}!
@@ -88,6 +87,6 @@ export function Dashboard() {
           </Button>
         </Group>
       </Paper>
-    </Container>
+    </PageLayout>
   );
 }

@@ -6,7 +6,7 @@ import { PageLayout } from "src/layouts/PageLayout/PageLayout";
  */
 export function Coursepicker() {
   return (
-    <PageLayout title="Kurssipoimuri">
+    <PageLayout>
       <Paper p="xl" withBorder>
         <Text size="lg" c="dimmed" mb="lg">
           You are now in the coursepicker area of the application.

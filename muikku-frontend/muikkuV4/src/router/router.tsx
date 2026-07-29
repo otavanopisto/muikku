@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import { routeLoaders } from "src/router/routeLoaders";
 import {
   authMiddleware,
@@ -9,13 +9,19 @@ import {
   Home,
   Dashboard,
   Communicator,
+  CommunicatorTags,
+  CommunicatorThread,
   Coursepicker,
   Studies,
   Hops,
   Guider,
   Evaluation,
   Announcements,
+  AnnouncementsEmpty,
+  AnnouncementReadingPane,
   Announcer,
+  AnnouncerCategories,
+  AnnouncerDetails,
   Profile,
   WorkspaceHome,
   WorkspaceSettings,
@@ -37,6 +43,7 @@ import {
   evaluationSubItems,
   guiderSubItems,
 } from "../navigation/navigation";
+import { Calendar } from "../pages/Calendar";
 
 // Router
 export const router = createBrowserRouter([
@@ -66,8 +73,14 @@ export const router = createBrowserRouter([
                 middleware: [permissionMiddlewares.dashboardView],
               },
               {
+                path: "calendar",
+                element: <Calendar />,
+                loader: routeLoaders.calendarLoader,
+                middleware: [permissionMiddlewares.calendarView],
+              },
+              {
                 path: "communicator",
-                element: <Communicator />,
+                element: <Outlet />,
                 loader: routeLoaders.communicatorLoader,
                 middleware: [permissionMiddlewares.communicatorView],
                 handle: {
@@ -76,6 +89,23 @@ export const router = createBrowserRouter([
                     items: communicatorSubItems,
                   },
                 },
+                children: [
+                  {
+                    index: true,
+                    element: <Communicator />,
+                    loader: routeLoaders.communicatorLoader,
+                  },
+                  {
+                    path: "taglist",
+                    element: <CommunicatorTags />,
+                    loader: routeLoaders.communicatorTagsLoader,
+                  },
+                  {
+                    path: ":threadId",
+                    element: <CommunicatorThread />,
+                    loader: routeLoaders.communicatorTagsLoader,
+                  },
+                ],
               },
               {
                 path: "coursepicker",
@@ -180,24 +210,34 @@ export const router = createBrowserRouter([
                   },
                 },
               },
-
               {
                 path: "announcements",
                 element: <Announcements />,
                 //loader: announcementsLoader,
                 middleware: [permissionMiddlewares.announcementsView],
+                children: [
+                  { index: true, element: <AnnouncementsEmpty /> }, // "Valitse tiedote" / auto-open first
+                  {
+                    path: ":announcementId",
+                    element: <AnnouncementReadingPane />,
+                  },
+                ],
               },
               {
                 path: "announcer",
-                element: <Announcer />,
-                //loader: announcerLoader,
+                element: <Outlet />,
                 middleware: [permissionMiddlewares.announcerView],
                 handle: {
                   secondaryNav: {
-                    title: "Tiedotin",
+                    title: "Tiedotteet",
                     items: announcerSubItems,
                   },
                 },
+                children: [
+                  { index: true, element: <Announcer /> },
+                  { path: "categories", element: <AnnouncerCategories /> }, // static before :id
+                  { path: ":announcementId", element: <AnnouncerDetails /> },
+                ],
               },
               {
                 path: "profile",

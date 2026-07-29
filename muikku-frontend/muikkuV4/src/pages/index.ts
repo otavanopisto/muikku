@@ -1,15 +1,21 @@
 import { Home } from "src/pages/Home";
 import { Dashboard } from "src/pages/Dashboard";
 import { Communicator } from "src/pages/Communicator";
+import { CommunicatorTags } from "src/pages/Communicator/Tags";
+import { CommunicatorThread } from "src/pages/Communicator/Thread";
 import { Coursepicker } from "src/pages/Coursepicker";
 import { Studies } from "src/pages/Studies";
 import { Hops } from "src/pages/Hops";
 import { Guider } from "src/pages/Guider";
-import { GuiderStudent } from "src/pages/GuiderStudent";
+import { GuiderStudent } from "src/pages/Guider/Student";
 import { Evaluation } from "src/pages/Evaluation";
 import { Organization } from "src/pages/Organization";
 import { Announcements } from "src/pages/Announcements";
+import { AnnouncementsEmpty } from "src/pages/Announcements/Empty";
+import { AnnouncementReadingPane } from "src/pages/Announcements/ReadingPane";
 import { Announcer } from "src/pages/Announcer";
+import { AnnouncerDetails } from "src/pages/Announcer/Details";
+import { AnnouncerCategories } from "src/pages/Announcer/Categories";
 import { Profile } from "src/pages/Profile";
 import { AppSettings } from "src/pages/AppSettings";
 import { WorkspaceHome } from "src/pages/WorkspaceHome";
@@ -25,6 +31,8 @@ export {
   Home,
   Dashboard,
   Communicator,
+  CommunicatorTags,
+  CommunicatorThread,
   Coursepicker,
   Studies,
   Hops,
@@ -33,7 +41,11 @@ export {
   Evaluation,
   Organization,
   Announcements,
+  AnnouncementsEmpty,
+  AnnouncementReadingPane,
   Announcer,
+  AnnouncerCategories,
+  AnnouncerDetails,
   Profile,
   AppSettings,
   WorkspaceHome,
