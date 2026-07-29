@@ -15,7 +15,6 @@ export function ThemedApp({ children }: { children: React.ReactNode }) {
 
   return (
     <MantineProvider
-      key={brandId} // clean remount when brand changes
       theme={brand.theme}
       cssVariablesResolver={brand.cssVariablesResolver}
       defaultColorScheme="light"

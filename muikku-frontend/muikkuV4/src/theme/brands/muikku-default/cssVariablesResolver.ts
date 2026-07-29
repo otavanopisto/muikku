@@ -12,15 +12,7 @@ export const muikkuDefaultCssVariablesResolver: CSSVariablesResolver = (
   variables: {
     "--muikku-accent": muikkuTokens.accent,
   },
-  light: {
-    "--mantine-color-body": muikkuTokens.light.body,
-    "--mantine-color-text": muikkuTokens.light.text,
-    "--mantine-color-dimmed": muikkuTokens.light.dimmed,
-    "--mantine-color-default": muikkuTokens.light.default,
-    "--mantine-color-default-hover": muikkuTokens.light.defaultHover,
-    "--mantine-color-default-border": muikkuTokens.light.defaultBorder,
-    "--muikku-surface": muikkuTokens.light.surface,
-  },
+  light: {},
   dark: {
     "--mantine-color-body": muikkuTokens.dark.body,
     "--mantine-color-text": muikkuTokens.dark.text,

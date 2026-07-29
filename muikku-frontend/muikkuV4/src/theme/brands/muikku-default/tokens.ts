@@ -1,5 +1,5 @@
 export const muikkuTokens = {
-  light: {
+  /* light: {
     body: "#ffffff",
     text: "#111827",
     dimmed: "#6b7280",
@@ -7,7 +7,7 @@ export const muikkuTokens = {
     defaultHover: "#f3f4f6",
     defaultBorder: "#e5e7eb",
     surface: "#ffffff",
-  },
+  }, */
   dark: {
     body: "#0B1120", // from mockup
     text: "#F8FAFC",
