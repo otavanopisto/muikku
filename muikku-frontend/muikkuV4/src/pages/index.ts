@@ -3,6 +3,7 @@ import { Dashboard } from "src/pages/Dashboard";
 import { Communicator } from "src/pages/Communicator";
 import { CommunicatorTags } from "src/pages/Communicator/Tags";
 import { CommunicatorThread } from "src/pages/Communicator/Thread";
+import { CommunicatorThreadList } from "src/pages/Communicator/ThreadList";
 import { Coursepicker } from "src/pages/Coursepicker";
 import { Studies } from "src/pages/Studies";
 import { Hops } from "src/pages/Hops";
@@ -14,6 +15,7 @@ import { Announcements } from "src/pages/Announcements";
 import { AnnouncementsEmpty } from "src/pages/Announcements/Empty";
 import { AnnouncementReadingPane } from "src/pages/Announcements/ReadingPane";
 import { Announcer } from "src/pages/Announcer";
+import { AnnouncerList } from "src/pages/Announcer/list";
 import { AnnouncerDetails } from "src/pages/Announcer/Details";
 import { AnnouncerCategories } from "src/pages/Announcer/Categories";
 import { Profile } from "src/pages/Profile";
@@ -33,6 +35,7 @@ export {
   Communicator,
   CommunicatorTags,
   CommunicatorThread,
+  CommunicatorThreadList,
   Coursepicker,
   Studies,
   Hops,
@@ -44,6 +47,7 @@ export {
   AnnouncementsEmpty,
   AnnouncementReadingPane,
   Announcer,
+  AnnouncerList,
   AnnouncerCategories,
   AnnouncerDetails,
   Profile,

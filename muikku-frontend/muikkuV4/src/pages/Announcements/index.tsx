@@ -7,9 +7,8 @@ import { PageLayout } from "src/layouts/PageLayout/PageLayout";
  */
 export function Announcements() {
   return (
-    <PageLayout title="Tiedotteet">
+    <PageLayout>
       <Group align="stretch">
-        {" "}
         {/* or your grid */}
         <Box flex={1}>
           <Outlet />

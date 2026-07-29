@@ -1,4 +1,4 @@
-import { Text, Paper } from "@mantine/core";
+import { Outlet } from "react-router";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 
 /**
@@ -7,12 +7,7 @@ import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 export function Communicator() {
   return (
     <PageLayout>
-      <Paper p="xl" withBorder>
-        <Text size="lg" c="dimmed" mb="lg">
-          You are now in the communicator area of the application.
-        </Text>
-        <Text mb="xl">This is where you can access communicator features</Text>
-      </Paper>
+      <Outlet />
     </PageLayout>
   );
 }

@@ -1,16 +1,16 @@
 import { Paper, Text, Title } from "@mantine/core";
 
 /**
- * CommunicatorThread - Communicator thread page
+ * AnnouncerList - Announcer list page
  */
-export function CommunicatorThread() {
+export function AnnouncerList() {
   return (
     <Paper p="xl" withBorder>
       <Title order={1} mb="md">
-        CommunicatorThread
+        AnnouncerList
       </Title>
       <Text size="lg" c="dimmed" mb="lg">
-        This is the communicator thread page.
+        This is the announcer list page.
       </Text>
     </Paper>
   );

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { routeLoaders } from "src/router/routeLoaders";
 import {
   authMiddleware,
@@ -11,6 +11,7 @@ import {
   Communicator,
   CommunicatorTags,
   CommunicatorThread,
+  CommunicatorThreadList,
   Coursepicker,
   Studies,
   Hops,
@@ -20,6 +21,7 @@ import {
   AnnouncementsEmpty,
   AnnouncementReadingPane,
   Announcer,
+  AnnouncerList,
   AnnouncerCategories,
   AnnouncerDetails,
   Profile,
@@ -80,7 +82,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "communicator",
-                element: <Outlet />,
+                element: <Communicator />,
                 loader: routeLoaders.communicatorLoader,
                 middleware: [permissionMiddlewares.communicatorView],
                 handle: {
@@ -92,8 +94,8 @@ export const router = createBrowserRouter([
                 children: [
                   {
                     index: true,
-                    element: <Communicator />,
-                    loader: routeLoaders.communicatorLoader,
+                    element: <CommunicatorThreadList />,
+                    loader: false,
                   },
                   {
                     path: "taglist",
@@ -103,7 +105,7 @@ export const router = createBrowserRouter([
                   {
                     path: ":threadId",
                     element: <CommunicatorThread />,
-                    loader: routeLoaders.communicatorTagsLoader,
+                    loader: routeLoaders.communicatorThreadLoader,
                   },
                 ],
               },
@@ -225,7 +227,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: "announcer",
-                element: <Outlet />,
+                element: <Announcer />,
                 middleware: [permissionMiddlewares.announcerView],
                 handle: {
                   secondaryNav: {
@@ -234,7 +236,7 @@ export const router = createBrowserRouter([
                   },
                 },
                 children: [
-                  { index: true, element: <Announcer /> },
+                  { index: true, element: <AnnouncerList /> },
                   { path: "categories", element: <AnnouncerCategories /> }, // static before :id
                   { path: ":announcementId", element: <AnnouncerDetails /> },
                 ],
