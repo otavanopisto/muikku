@@ -95,7 +95,7 @@ export const router = createBrowserRouter([
                   {
                     index: true,
                     element: <CommunicatorThreadList />,
-                    loader: false,
+                    loader: () => null,
                   },
                   {
                     path: "taglist",
