@@ -29,7 +29,6 @@
 .mainNavFooter {
   flex-shrink: 0;
   border-top: 1px solid var(--mantine-color-default-border);
-  padding: var(--mantine-spacing-xs);
   overflow: hidden;
 }
 
@@ -65,4 +64,5 @@
   list-style: none;
   overflow: hidden;
   width: 100%;
+  margin-bottom: var(--mantine-spacing-xs);
 }

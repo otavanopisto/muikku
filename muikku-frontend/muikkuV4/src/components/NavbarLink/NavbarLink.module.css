@@ -1,6 +1,5 @@
 .root {
   border-radius: var(--mantine-radius-sm);
-  margin-bottom: var(--mantine-spacing-xs);
   overflow: hidden;
   flex-wrap: nowrap;
   width: 100%;

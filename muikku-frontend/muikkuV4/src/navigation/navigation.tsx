@@ -310,34 +310,6 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     canAccess: (user) => hasUserPermission("EVALUATION_VIEW_INDEX", user),
     exactMatch: false,
   },
-  /*   {
-    type: "link",
-    label: "Omat tiedot",
-    icon: IconUser,
-    link: "/profile",
-    canAccess: isLoggedIn,
-  },
-  {
-    type: "link",
-    label: "Asetukset",
-    icon: IconSettings,
-    link: "/appSettings",
-    canAccess: () => true,
-  },
-  {
-    type: "link",
-    label: "Kirjaudu sisään",
-    icon: IconLogin,
-    link: "/login",
-    canAccess: (user) => !isLoggedIn(user),
-  },
-  {
-    type: "link",
-    label: "Kirjaudu ulos",
-    icon: IconLogout,
-    link: "/logout",
-    canAccess: isLoggedIn,
-  }, */
 ];
 
 // Workspace navigation items

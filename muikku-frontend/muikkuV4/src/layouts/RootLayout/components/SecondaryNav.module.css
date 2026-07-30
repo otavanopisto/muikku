@@ -46,4 +46,5 @@
   list-style: none;
   overflow: hidden;
   width: 100%;
+  margin-bottom: var(--mantine-spacing-xs);
 }

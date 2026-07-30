@@ -112,6 +112,7 @@
 
 .linksInner > li {
   list-style: none;
+  margin-bottom: var(--mantine-spacing-xs);
 }
 
 .listItem {
