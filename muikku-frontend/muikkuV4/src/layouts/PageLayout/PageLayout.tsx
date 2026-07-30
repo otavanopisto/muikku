@@ -18,7 +18,7 @@ interface PageLayoutProps {
 export function PageLayout(props: PageLayoutProps) {
   const { title, subtitle, children } = props;
   return (
-    <Container size="lg" py="md">
+    <Container size="xl" py="xl">
       {/* View/Feature Name Section */}
       {title && (
         <Box mb="md">
