@@ -10,6 +10,7 @@ import { Hops } from "src/pages/Hops";
 import { Guider } from "src/pages/Guider";
 import { GuiderStudent } from "src/pages/Guider/Student";
 import { Evaluation } from "src/pages/Evaluation";
+import { EvaluationAssessment } from "src/pages/Evaluation/EvaluationAssessment";
 import { Organization } from "src/pages/Organization";
 import { Announcements } from "src/pages/Announcements";
 import { AnnouncementsEmpty } from "src/pages/Announcements/Empty";
@@ -42,6 +43,7 @@ export {
   Guider,
   GuiderStudent,
   Evaluation,
+  EvaluationAssessment,
   Organization,
   Announcements,
   AnnouncementsEmpty,

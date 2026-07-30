@@ -207,9 +207,32 @@ export const announcerSubItems: NavigationItem[] = [
 // Evaluation sub-items
 export const evaluationSubItems: NavigationItem[] = [
   {
-    type: "link",
+    type: "queryLink",
     label: "Yhteenveto",
-    link: "/evaluation",
+    link: "/evaluation?tab=Overview",
+    queryName: "tab",
+    queryValue: "Overview",
+  },
+  {
+    type: "queryLink",
+    label: "Arviointipyynnöt",
+    link: "/evaluation?tab=Requests",
+    queryName: "tab",
+    queryValue: "Requests",
+  },
+  {
+    type: "queryLink",
+    label: "Välipalautepyynnöt",
+    link: "/evaluation?tab=FeedbackRequests",
+    queryName: "tab",
+    queryValue: "FeedbackRequests",
+  },
+  {
+    type: "queryLink",
+    label: "Täydennyspyynnöt",
+    link: "/evaluation?tab=Supplements",
+    queryName: "tab",
+    queryValue: "Supplements",
   },
 ];
 
@@ -283,8 +306,9 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     type: "link",
     label: "Arviointi",
     icon: IconEdit,
-    link: "/evaluation",
+    link: "/evaluation?tab=Overview",
     canAccess: (user) => hasUserPermission("EVALUATION_VIEW_INDEX", user),
+    exactMatch: false,
   },
   /*   {
     type: "link",

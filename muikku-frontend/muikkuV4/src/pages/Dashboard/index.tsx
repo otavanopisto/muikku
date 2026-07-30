@@ -22,7 +22,7 @@ export function Dashboard() {
   const user = useAtomValue(userAtom);
 
   const [brandId, setBrandId] = useAtom(brandIdAtom);
-  const { setColorScheme } = useMantineColorScheme();
+  const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });
   const computed = useComputedColorScheme("dark");
 
   return (

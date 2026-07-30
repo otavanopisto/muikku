@@ -17,6 +17,7 @@ import {
   Hops,
   Guider,
   Evaluation,
+  EvaluationAssessment,
   Announcements,
   AnnouncementsEmpty,
   AnnouncementReadingPane,
@@ -211,6 +212,13 @@ export const router = createBrowserRouter([
                     items: evaluationSubItems,
                   },
                 },
+                children: [
+                  {
+                    path: ":assessmentRequestId",
+                    element: <EvaluationAssessment />,
+                    // loader: routeLoaders.evaluationAssessmentRequestLoader,
+                  },
+                ],
               },
               {
                 path: "announcements",

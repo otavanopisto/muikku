@@ -2,6 +2,7 @@ import { Text, Paper, Box, Burger } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { useAppLayout } from "src/hooks/useAppLayout";
 import { useRootAside } from "src/layouts/helpers/useRootAside";
+import { Outlet } from "react-router";
 
 /**
  * Evaluation - Evaluation page
@@ -28,6 +29,9 @@ export function Evaluation() {
         </Text>
         <Text mb="xl">This is where you can access evaluation features</Text>
       </Paper>
+
+      {/* Outlet for nested routes, assessment dialog is rendered here */}
+      <Outlet />
     </PageLayout>
   );
 }
