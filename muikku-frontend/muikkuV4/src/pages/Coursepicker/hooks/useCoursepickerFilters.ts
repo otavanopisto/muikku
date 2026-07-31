@@ -10,6 +10,8 @@ import {
 const SEARCH_PARAM = "search";
 const Q_PARAM = "q";
 const EDUCATION_TYPES_PARAM = "educationTypes";
+const CURRICULUMS_PARAM = "curriculums";
+const ORGANIZATIONS_PARAM = "organizations";
 const MANDATORITY_PARAM = "mandatority";
 
 /**
@@ -18,21 +20,25 @@ const MANDATORITY_PARAM = "mandatority";
 export interface CoursepickerFilters {
   view: CoursepickerSearchView;
   q: string;
-  /** Selected education type identifiers (URL). */
   educationTypes: string[];
-  /** Selected mandatority buckets (URL). */
+  curriculums: string[];
+  organizations: string[];
   mandatority: MandatorityFilter[];
   setQ: (value: string) => void;
   toggleEducationType: (identifier: string) => void;
   removeEducationType: (identifier: string) => void;
+  toggleCurriculum: (identifier: string) => void;
+  removeCurriculum: (identifier: string) => void;
+  toggleOrganization: (identifier: string) => void;
+  removeOrganization: (identifier: string) => void;
   toggleMandatority: (value: MandatorityFilter) => void;
   removeMandatority: (value: MandatorityFilter) => void;
 }
 
 /**
- * Parse a list parameter from a URL search param
+ * Parse a list of values from a URL parameter
  * @param value - The value to parse
- * @returns The parsed list
+ * @returns The parsed values
  */
 function parseListParam(value: string | null): string[] {
   if (!value) return [];
@@ -43,7 +49,10 @@ function parseListParam(value: string | null): string[] {
 }
 
 /**
- * Writes a list param, or deletes it when empty.
+ * Set a list of values in a URL parameter
+ * @param next - The URLSearchParams to set
+ * @param key - The key to set
+ * @param values - The values to set
  */
 function setListParam(
   next: URLSearchParams,
@@ -76,6 +85,16 @@ export function useCoursepickerFilters(): CoursepickerFilters {
     [searchParams]
   );
 
+  const curriculums = useMemo(
+    () => parseListParam(searchParams.get(CURRICULUMS_PARAM)),
+    [searchParams]
+  );
+
+  const organizations = useMemo(
+    () => parseListParam(searchParams.get(ORGANIZATIONS_PARAM)),
+    [searchParams]
+  );
+
   const mandatority = useMemo(
     () =>
       parseListParam(searchParams.get(MANDATORITY_PARAM)).filter(
@@ -90,6 +109,10 @@ export function useCoursepickerFilters(): CoursepickerFilters {
     setQLocal(qFromUrl);
   }, [qFromUrl]);
 
+  /**
+   * Patch the URL search params
+   * @param mutate - The function to mutate the URL search params
+   */
   const patchParams = useCallback(
     (mutate: (next: URLSearchParams) => void) => {
       const next = new URLSearchParams(searchParams);
@@ -99,6 +122,45 @@ export function useCoursepickerFilters(): CoursepickerFilters {
     [searchParams, setSearchParams]
   );
 
+  /**
+   * Toggle a list parameter
+   * @param key - The key to toggle
+   * @param identifier - The identifier to toggle
+   */
+  const toggleListParam = useCallback(
+    (key: string, identifier: string) => {
+      patchParams((next) => {
+        const current = parseListParam(next.get(key));
+        const remaining = current.includes(identifier)
+          ? current.filter((item) => item !== identifier)
+          : [...current, identifier];
+        setListParam(next, key, remaining);
+      });
+    },
+    [patchParams]
+  );
+
+  /**
+   * Remove a list parameter
+   * @param key - The key to remove
+   * @param identifier - The identifier to remove
+   */
+  const removeListParam = useCallback(
+    (key: string, identifier: string) => {
+      patchParams((next) => {
+        const remaining = parseListParam(next.get(key)).filter(
+          (item) => item !== identifier
+        );
+        setListParam(next, key, remaining);
+      });
+    },
+    [patchParams]
+  );
+
+  /**
+   * Set the query
+   * @param value - The value to set
+   */
   const setQ = useCallback(
     (value: string) => {
       setQLocal(value);
@@ -111,31 +173,64 @@ export function useCoursepickerFilters(): CoursepickerFilters {
     [patchParams]
   );
 
-  const removeEducationType = useCallback(
-    (value: string) => {
-      patchParams((next) => {
-        const remaining = parseListParam(
-          next.get(EDUCATION_TYPES_PARAM)
-        ).filter((item) => item !== value);
-        setListParam(next, EDUCATION_TYPES_PARAM, remaining);
-      });
-    },
-    [patchParams]
-  );
-
+  /**
+   * Toggle an education type
+   * @param identifier - The identifier to toggle
+   */
   const toggleEducationType = useCallback(
-    (identifier: string) => {
-      patchParams((next) => {
-        const current = parseListParam(next.get(EDUCATION_TYPES_PARAM));
-        const remaining = current.includes(identifier)
-          ? current.filter((item) => item !== identifier)
-          : [...current, identifier];
-        setListParam(next, EDUCATION_TYPES_PARAM, remaining);
-      });
-    },
-    [patchParams]
+    (identifier: string) => toggleListParam(EDUCATION_TYPES_PARAM, identifier),
+    [toggleListParam]
   );
 
+  /**
+   * Remove an education type
+   * @param identifier - The identifier to remove
+   */
+  const removeEducationType = useCallback(
+    (identifier: string) => removeListParam(EDUCATION_TYPES_PARAM, identifier),
+    [removeListParam]
+  );
+
+  /**
+   * Toggle a curriculum
+   * @param identifier - The identifier to toggle
+   */
+  const toggleCurriculum = useCallback(
+    (identifier: string) => toggleListParam(CURRICULUMS_PARAM, identifier),
+    [toggleListParam]
+  );
+
+  /**
+   * Remove a curriculum
+   * @param identifier - The identifier to remove
+   */
+  const removeCurriculum = useCallback(
+    (identifier: string) => removeListParam(CURRICULUMS_PARAM, identifier),
+    [removeListParam]
+  );
+
+  /**
+   * Toggle an organization
+   * @param identifier - The identifier to toggle
+   */
+  const toggleOrganization = useCallback(
+    (identifier: string) => toggleListParam(ORGANIZATIONS_PARAM, identifier),
+    [toggleListParam]
+  );
+
+  /**
+   * Remove an organization
+   * @param identifier - The identifier to remove
+   */
+  const removeOrganization = useCallback(
+    (identifier: string) => removeListParam(ORGANIZATIONS_PARAM, identifier),
+    [removeListParam]
+  );
+
+  /**
+   * Remove a mandatority
+   * @param value - The value to remove
+   */
   const removeMandatority = useCallback(
     (value: MandatorityFilter) => {
       patchParams((next) => {
@@ -148,6 +243,10 @@ export function useCoursepickerFilters(): CoursepickerFilters {
     [patchParams]
   );
 
+  /**
+   * Toggle a mandatority
+   * @param value - The value to toggle
+   */
   const toggleMandatority = useCallback(
     (value: MandatorityFilter) => {
       patchParams((next) => {
@@ -167,10 +266,16 @@ export function useCoursepickerFilters(): CoursepickerFilters {
     view,
     q,
     educationTypes,
+    curriculums,
+    organizations,
     mandatority,
     setQ,
     toggleEducationType,
     removeEducationType,
+    toggleCurriculum,
+    removeCurriculum,
+    toggleOrganization,
+    removeOrganization,
     toggleMandatority,
     removeMandatority,
   };

@@ -129,3 +129,52 @@ export function matchesMandatorityFilter(
 export function isMandatorityFilter(value: string): value is MandatorityFilter {
   return value === "mandatory" || value === "optional";
 }
+
+export type CoursepickerFilterKind =
+  | "educationType"
+  | "curriculum"
+  | "organization"
+  | "mandatority";
+
+export type CoursepickerFilterOption = {
+  kind: CoursepickerFilterKind;
+  value: string;
+  label: string;
+};
+
+/**
+ * Encode a filter option value
+ * @param kind - The kind of filter
+ * @param value - The value to encode
+ * @returns The encoded value
+ */
+export function encodeFilterOptionValue(
+  kind: CoursepickerFilterKind,
+  value: string
+): string {
+  return `${kind}:${value}`;
+}
+
+/**
+ * Decode a filter option value
+ * @param encoded - The encoded value
+ * @returns The decoded value
+ */
+export function decodeFilterOptionValue(
+  encoded: string
+): { kind: CoursepickerFilterKind; value: string } | null {
+  const separatorIndex = encoded.indexOf(":");
+  if (separatorIndex <= 0) return null;
+  const kind = encoded.slice(0, separatorIndex) as CoursepickerFilterKind;
+  const value = encoded.slice(separatorIndex + 1);
+  if (
+    kind !== "educationType" &&
+    kind !== "curriculum" &&
+    kind !== "organization" &&
+    kind !== "mandatority"
+  ) {
+    return null;
+  }
+  if (!value) return null;
+  return { kind, value };
+}

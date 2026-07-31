@@ -1,9 +1,22 @@
-import type { EducationType } from "~/generated/client";
+import type {
+  Curriculum,
+  EducationType,
+  WorkspaceOrganization,
+} from "~/generated/client";
 import type { CoursepickerSectionData } from "./types";
 
 export const MOCK_EDUCATION_TYPES: EducationType[] = [
   { identifier: "PYRAMUS-1", name: "Lukio" },
   { identifier: "PYRAMUS-2", name: "Perusopetus" },
+];
+
+export const MOCK_CURRICULUMS: Curriculum[] = [
+  { identifier: "PYRAMUS-1", name: "OPS 2016" },
+  { identifier: "PYRAMUS-2", name: "OPS 2021" },
+];
+export const MOCK_ORGANIZATIONS: WorkspaceOrganization[] = [
+  { identifier: "PYRAMUS-1", name: "Otavia" },
+  { identifier: "PYRAMUS-2", name: "Esimerkki-oppilaitos" },
 ];
 
 export const MOCK_FILTER_CHIPS = ["Lukio", "Pakollinen"];
