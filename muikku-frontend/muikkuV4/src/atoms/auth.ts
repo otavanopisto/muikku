@@ -4,7 +4,10 @@ import type { UserPermissions } from "src/services/permissions";
 
 // User state
 export const userAtom = atom<User | null>(null);
-export const isAuthenticatedAtom = atom((get) => !!get(userAtom));
+export const isAuthenticatedAtom = atom((get) => {
+  const user = get(userAtom);
+  return user?.loggedIn ?? false;
+});
 
 // Authentication flow states
 export const authLoadingAtom = atom<boolean>(false);

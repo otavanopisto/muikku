@@ -1,4 +1,10 @@
+import type { EducationType } from "~/generated/client";
 import type { CoursepickerSectionData } from "./types";
+
+export const MOCK_EDUCATION_TYPES: EducationType[] = [
+  { identifier: "PYRAMUS-1", name: "Lukio" },
+  { identifier: "PYRAMUS-2", name: "Perusopetus" },
+];
 
 export const MOCK_FILTER_CHIPS = ["Lukio", "Pakollinen"];
 
