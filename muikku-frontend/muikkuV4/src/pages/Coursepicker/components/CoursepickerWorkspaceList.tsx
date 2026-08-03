@@ -2,14 +2,16 @@ import { useCallback, useMemo } from "react";
 import { Center, Group, Loader, ScrollArea, Text } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
-  coursepickerWorkspacesAtom,
+  coursepickerWorkspacesAsyncStateAtom,
+  coursepickerWorkspacesDataAtom,
+  coursepickerWorkspacesErrorAtom,
+  coursepickerWorkspacesHasNextPageAtom,
+  coursepickerWorkspacesIsFetchingNextPageAtom,
   loadMoreCoursepickerWorkspacesAtom,
+  refetchCoursepickerWorkspacesAtom,
 } from "src/atoms/coursepicker";
 import { AsyncState } from "src/components/AsyncState/AsyncState";
-import {
-  createAsyncError,
-  parseAsyncStateFromQuery,
-} from "src/utils/AtomHelpers";
+import { createAsyncError } from "src/utils/AtomHelpers";
 import type { CoursepickerSearchView } from "../types";
 import { mapWorkspaceToCourseItem } from "../utils/mapWorkspaceToCourseItem";
 import { CourseListAccordion } from "./CourseListAccordion";
@@ -30,36 +32,37 @@ export function CoursepickerWorkspaceList(
   props: CoursepickerWorkspaceListProps
 ) {
   const { view, title, info } = props;
-  const workspacesQuery = useAtomValue(coursepickerWorkspacesAtom);
+  const workspaces = useAtomValue(coursepickerWorkspacesDataAtom);
+  const hasNextPage = useAtomValue(coursepickerWorkspacesHasNextPageAtom);
+  const isFetchingNextPage = useAtomValue(
+    coursepickerWorkspacesIsFetchingNextPageAtom
+  );
+  const asyncState = useAtomValue(coursepickerWorkspacesAsyncStateAtom);
+  const error = useAtomValue(coursepickerWorkspacesErrorAtom);
   const loadMore = useSetAtom(loadMoreCoursepickerWorkspacesAtom);
+  const refetch = useSetAtom(refetchCoursepickerWorkspacesAtom);
 
-  const items = useMemo(() => {
-    const workspaces =
-      workspacesQuery.data?.pages.flatMap((page) => page.data) ?? [];
-    return workspaces.map((workspace) =>
-      mapWorkspaceToCourseItem(workspace, view)
-    );
-  }, [workspacesQuery.data, view]);
+  const items = useMemo(
+    () =>
+      workspaces.map((workspace) => mapWorkspaceToCourseItem(workspace, view)),
+    [workspaces, view]
+  );
 
   /**
    * Handles the bottom reached event
    */
+
   const handleBottomReached = useCallback(() => {
-    if (workspacesQuery.hasNextPage && !workspacesQuery.isFetchingNextPage) {
+    if (hasNextPage && !isFetchingNextPage) {
       loadMore();
     }
-  }, [
-    workspacesQuery.hasNextPage,
-    workspacesQuery.isFetchingNextPage,
-    loadMore,
-  ]);
-
+  }, [hasNextPage, isFetchingNextPage, loadMore]);
   return (
     <CoursepickerSection title={title} info={info}>
       <AsyncState
-        state={parseAsyncStateFromQuery(workspacesQuery)}
-        error={createAsyncError(workspacesQuery.error) ?? undefined}
-        onRetry={() => void workspacesQuery.refetch()}
+        state={asyncState}
+        error={createAsyncError(error) ?? undefined}
+        onRetry={() => refetch()}
         showRetryButton
       >
         <ScrollArea
@@ -76,7 +79,7 @@ export function CoursepickerWorkspaceList(
             <CourseListAccordion
               items={items}
               footer={
-                workspacesQuery.isFetchingNextPage ? (
+                isFetchingNextPage ? (
                   <Center py="md">
                     <Group gap="xs">
                       <Loader size="sm" />

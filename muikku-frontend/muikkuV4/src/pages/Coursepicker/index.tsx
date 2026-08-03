@@ -1,14 +1,11 @@
 import { Skeleton, Stack } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
-  coursepickerCurriculumsQueryAtom,
-  coursepickerEducationTypesQueryAtom,
-  coursepickerFilterCatalogsErrorAtom,
+  coursepickerCurriculumsDataAtom,
+  coursepickerEducationTypesDataAtom,
   coursepickerFilterCatalogsLoadingAtom,
-  coursepickerFilterCatalogsReadyAtom,
-  coursepickerOrganizationsQueryAtom,
+  coursepickerOrganizationsDataAtom,
   coursepickerWorkspaceFiltersAtom,
-  coursepickerWorkspacesAtom,
 } from "src/atoms/coursepicker";
 import { isAuthenticatedAtom } from "src/atoms/auth";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
@@ -44,20 +41,15 @@ export function Coursepicker() {
     toggleMandatority,
   } = useCoursepickerFilters();
 
-  const educationTypesQuery = useAtomValue(coursepickerEducationTypesQueryAtom);
-  const curriculumsQuery = useAtomValue(coursepickerCurriculumsQueryAtom);
-  const organizationsQuery = useAtomValue(coursepickerOrganizationsQueryAtom);
+  const educationTypeOptions = useAtomValue(coursepickerEducationTypesDataAtom);
+  const curriculumOptions = useAtomValue(coursepickerCurriculumsDataAtom);
+  const organizationOptions = useAtomValue(coursepickerOrganizationsDataAtom);
   const catalogsLoading = useAtomValue(coursepickerFilterCatalogsLoadingAtom);
-  const catalogsReady = useAtomValue(coursepickerFilterCatalogsReadyAtom);
-  const catalogsError = useAtomValue(coursepickerFilterCatalogsErrorAtom);
+  // const catalogsReady = useAtomValue(coursepickerFilterCatalogsReadyAtom);
+  // const catalogsError = useAtomValue(coursepickerFilterCatalogsErrorAtom);
 
   // Workspace filters
   const setWorkspaceFilters = useSetAtom(coursepickerWorkspaceFiltersAtom);
-  const workspacesQuery = useAtomValue(coursepickerWorkspacesAtom);
-
-  const educationTypeOptions = educationTypesQuery.data ?? [];
-  const curriculumOptions = curriculumsQuery.data ?? [];
-  const organizationOptions = organizationsQuery.data ?? [];
 
   useEffect(() => {
     setWorkspaceFilters({
@@ -116,42 +108,40 @@ export function Coursepicker() {
 
   return (
     <PageLayout>
-      <Stack gap="xl">
-        <CoursepickerToolbar
-          q={q}
-          educationTypeOptions={educationTypeOptions}
-          curriculumOptions={curriculumOptions}
-          organizationOptions={organizationOptions}
-          educationTypes={educationTypes}
-          curriculums={curriculums}
-          organizations={organizations}
-          mandatority={mandatority}
-          onQChange={setQ}
-          onToggleEducationType={toggleEducationType}
-          onRemoveEducationType={removeEducationType}
-          onToggleCurriculum={toggleCurriculum}
-          onRemoveCurriculum={removeCurriculum}
-          onToggleOrganization={toggleOrganization}
-          onRemoveOrganization={removeOrganization}
-          onToggleMandatority={toggleMandatority}
-          onRemoveMandatority={removeMandatority}
-        />
+      <CoursepickerToolbar
+        q={q}
+        educationTypeOptions={educationTypeOptions}
+        curriculumOptions={curriculumOptions}
+        organizationOptions={organizationOptions}
+        educationTypes={educationTypes}
+        curriculums={curriculums}
+        organizations={organizations}
+        mandatority={mandatority}
+        onQChange={setQ}
+        onToggleEducationType={toggleEducationType}
+        onRemoveEducationType={removeEducationType}
+        onToggleCurriculum={toggleCurriculum}
+        onRemoveCurriculum={removeCurriculum}
+        onToggleOrganization={toggleOrganization}
+        onRemoveOrganization={removeOrganization}
+        onToggleMandatority={toggleMandatority}
+        onRemoveMandatority={removeMandatority}
+      />
 
-        {showApiList ? (
-          <CoursepickerWorkspaceList view={view} title={listTitle} />
-        ) : (
-          // All / Suggested: keep mock (or a short “ei vielä API”) until later
-          visibleSections.map((section) => (
-            <CoursepickerSection
-              key={section.id}
-              title={section.title}
-              info={section.info}
-            >
-              <CourseListAccordion items={section.items} />
-            </CoursepickerSection>
-          ))
-        )}
-      </Stack>
+      {showApiList ? (
+        <CoursepickerWorkspaceList view={view} title={listTitle} />
+      ) : (
+        // All / Suggested: keep mock (or a short “ei vielä API”) until later
+        visibleSections.map((section) => (
+          <CoursepickerSection
+            key={section.id}
+            title={section.title}
+            info={section.info}
+          >
+            <CourseListAccordion items={section.items} />
+          </CoursepickerSection>
+        ))
+      )}
     </PageLayout>
   );
 }

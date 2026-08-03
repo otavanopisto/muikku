@@ -14,6 +14,7 @@ import type {
   CoursepickerSearchView,
   MandatorityFilter,
 } from "src/pages/Coursepicker/types";
+import type { AsyncState } from "../types/AsyncState";
 
 const coursepickerApi = getCoursepickerApi();
 
@@ -31,6 +32,11 @@ export const coursepickerEducationTypesQueryAtom = atomWithQuery(() => ({
   staleTime: Infinity,
 }));
 
+/** Atom for coursepicker education types data */
+export const coursepickerEducationTypesDataAtom = atom(
+  (get) => get(coursepickerEducationTypesQueryAtom).data ?? []
+);
+
 /** Query atom for coursepicker curriculums */
 export const coursepickerCurriculumsQueryAtom = atomWithQuery(() => ({
   queryKey: ["coursepicker", "curriculums"],
@@ -45,6 +51,11 @@ export const coursepickerCurriculumsQueryAtom = atomWithQuery(() => ({
   staleTime: Infinity,
 }));
 
+/** Atom for coursepicker curriculums data */
+export const coursepickerCurriculumsDataAtom = atom(
+  (get) => get(coursepickerCurriculumsQueryAtom).data ?? []
+);
+
 /** Query atom for coursepicker organizations */
 export const coursepickerOrganizationsQueryAtom = atomWithQuery(() => ({
   queryKey: ["coursepicker", "organizations"],
@@ -58,6 +69,11 @@ export const coursepickerOrganizationsQueryAtom = atomWithQuery(() => ({
   },
   staleTime: Infinity,
 }));
+
+/** Atom for coursepicker organizations data */
+export const coursepickerOrganizationsDataAtom = atom(
+  (get) => get(coursepickerOrganizationsQueryAtom).data ?? []
+);
 
 /** True when all filter catalogs have settled successfully. */
 export const coursepickerFilterCatalogsReadyAtom = atom((get) => {
@@ -202,6 +218,39 @@ export const coursepickerWorkspacesInfiniteQueryAtom = atomWithInfiniteQuery(
   }
 );
 
+const EMPTY_WORKSPACES: Workspace[] = [];
+
+/** Flattened workspaces from the infinite query (stable when `data` is unchanged). */
+export const coursepickerWorkspacesDataAtom = atom((get) => {
+  const data = get(coursepickerWorkspacesInfiniteQueryAtom).data;
+  if (!data) return EMPTY_WORKSPACES;
+  return data.pages.flatMap((page) => page.data);
+});
+
+/** Atom for coursepicker workspaces has next page */
+export const coursepickerWorkspacesHasNextPageAtom = atom(
+  (get) => get(coursepickerWorkspacesInfiniteQueryAtom).hasNextPage ?? false
+);
+
+/** Atom for coursepicker workspaces is fetching next page */
+export const coursepickerWorkspacesIsFetchingNextPageAtom = atom(
+  (get) => get(coursepickerWorkspacesInfiniteQueryAtom).isFetchingNextPage
+);
+
+/** Atom for coursepicker workspaces error */
+export const coursepickerWorkspacesErrorAtom = atom(
+  (get) => get(coursepickerWorkspacesInfiniteQueryAtom).error ?? null
+);
+
+/** Atom for coursepicker workspaces async state */
+export const coursepickerWorkspacesAsyncStateAtom = atom<AsyncState>((get) => {
+  const query = get(coursepickerWorkspacesInfiniteQueryAtom);
+  if (query.isLoading) return "loading";
+  if (query.isError) return "error";
+  if (query.data) return "ready";
+  return "idle";
+});
+
 // Atom for coursepicker workspaces
 export const coursepickerWorkspacesAtom = atom((get) =>
   get(coursepickerWorkspacesInfiniteQueryAtom)
@@ -213,4 +262,9 @@ export const loadMoreCoursepickerWorkspacesAtom = atom(null, (get) => {
   if (query.hasNextPage && !query.isFetchingNextPage) {
     void query.fetchNextPage();
   }
+});
+
+/** Retry the current infinite query. */
+export const refetchCoursepickerWorkspacesAtom = atom(null, (get) => {
+  void get(coursepickerWorkspacesInfiniteQueryAtom).refetch();
 });

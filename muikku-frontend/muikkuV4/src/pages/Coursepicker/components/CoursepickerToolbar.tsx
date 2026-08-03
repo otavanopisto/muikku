@@ -263,7 +263,7 @@ export function CoursepickerToolbar(props: CoursepickerToolbarProps) {
     mandatorityDropdown.length > 0;
 
   return (
-    <Group gap="sm" wrap="wrap" align="center">
+    <Group gap="sm" wrap="wrap" align="center" mb="md">
       <TextInput
         placeholder="Hae kursseja"
         value={q}
