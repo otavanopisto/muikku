@@ -1,21 +1,10 @@
 import { RouterProvider } from "react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { router } from "src/router/router";
 import { DisconnectModal } from "src/components";
-import { websocketAtom } from "./atoms/websocket";
-import { useAtomValue } from "jotai";
 import { queryClientAtom } from "jotai-tanstack-query";
 import { useHydrateAtoms } from "jotai/utils";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      //staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 3,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { queryClient } from "./queryClient";
 
 /**
  * Hydrate the query client
@@ -31,9 +20,7 @@ function HydrateQueryClient() {
  * @returns React.ReactNode
  */
 function App() {
-  const websocket = useAtomValue(websocketAtom);
-  // The routing is now handled by createBrowserRouter
-  //return <RouterProvider router={router} />;
+  //const websocket = useAtomValue(websocketAtom);
 
   return (
     <QueryClientProvider client={queryClient}>

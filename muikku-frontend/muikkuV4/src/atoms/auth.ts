@@ -1,35 +1,38 @@
 import { atom } from "jotai";
-import { AuthService, type User } from "src/services/auth";
+import { atomWithQuery } from "jotai-tanstack-query";
+import { AuthService } from "src/services/auth";
 import type { UserPermissions } from "src/services/permissions";
+import { WHOAMI_QUERY_KEY } from "src/queryClient";
 
-// User state
-export const userAtom = atom<User | null>(null);
-export const isAuthenticatedAtom = atom((get) => {
-  const user = get(userAtom);
-  return user?.loggedIn ?? false;
+/** Server cache for whoami — do not useAtomValue this in components. */
+export const whoAmIQueryAtom = atomWithQuery(() => ({
+  queryKey: WHOAMI_QUERY_KEY,
+  queryFn: () => AuthService.checkAuthenticationStatus(),
+  staleTime: Infinity,
+  retry: false,
+}));
+
+/** App-facing user — derived from query data. */
+export const userAtom = atom((get) => get(whoAmIQueryAtom).data ?? null);
+
+export const isAuthenticatedAtom = atom(
+  (get) => get(userAtom)?.loggedIn ?? false
+);
+
+/** True once the first whoami attempt has settled. */
+export const authInitializedAtom = atom((get) => {
+  const q = get(whoAmIQueryAtom);
+  return q.isSuccess || q.isError;
 });
 
-// Authentication flow states
-export const authLoadingAtom = atom<boolean>(false);
-export const authErrorAtom = atom<string | null>(null);
-export const authInitializedAtom = atom<boolean>(false);
-
-// User metadata
+// User profile atoms
 export const userProfileAtom = atom((get) => get(userAtom)?.profile ?? null);
 export const userRolesAtom = atom((get) => get(userAtom)?.roles ?? []);
 export const userPermissionsAtom = atom(
   (get) => get(userAtom)?.permissions ?? ({} as UserPermissions)
 );
 
-/**
- * Initialize the authentication status atom action
- */
-export const initializeAuthStatusAtom = atom(null, async (get, set) => {
-  // If the auth status is already initialized, return
-  if (get(authInitializedAtom)) return;
-
-  // Initialize the auth status
-  const user = await AuthService.checkAuthenticationStatus();
-  set(userAtom, user);
-  set(authInitializedAtom, true);
+/** Force refresh whoami (optional). */
+export const refetchAuthAtom = atom(null, (get) => {
+  void get(whoAmIQueryAtom).refetch();
 });

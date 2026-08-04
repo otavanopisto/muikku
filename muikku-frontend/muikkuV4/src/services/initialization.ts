@@ -1,12 +1,56 @@
 import { initializeWebSocketAtom } from "../atoms/websocket";
-import { initializeAuthStatusAtom } from "../atoms/auth";
-import { loadLangAtom } from "../atoms/locale";
-import { initializeWorkspaceStatusAtom } from "../atoms/workspace";
-import { executeAtomAction } from "../jotaiStore";
+import { currentWorkspaceUrlNameAtom } from "../atoms/workspace";
+import { AuthService } from "./auth";
+import {
+  getMeApi,
+  getWorkspaceApi,
+  getCoursepickerApi,
+  isMApiError,
+} from "~/api";
+import { executeAtomAction, setAtomValue } from "../jotaiStore";
 import {
   globalInitializedAtom,
   workspaceInitializedAtom,
 } from "../atoms/shared";
+import {
+  LOCALE_QUERY_KEY,
+  WHOAMI_QUERY_KEY,
+  queryClient,
+  workspaceBasicInfoQueryKey,
+  workspaceCanSignupQueryKey,
+  workspacePermissionsQueryKey,
+} from "../queryClient";
+import { PermissionsService } from "./permissions";
+import type { WorkspaceBasicInfo } from "~/generated/client";
+
+const meApi = getMeApi();
+const workspaceApi = getWorkspaceApi();
+const coursepickerApi = getCoursepickerApi();
+
+//// GLOBAL INITIALIZATION ////
+
+/**
+ * Fill whoami cache (same key as whoAmIQueryAtom).
+ */
+async function ensureAuth() {
+  await queryClient.ensureQueryData({
+    queryKey: WHOAMI_QUERY_KEY,
+    queryFn: () => AuthService.checkAuthenticationStatus(),
+  });
+}
+
+/**
+ * Fill locale cache (same key as localeQueryAtom).
+ */
+async function ensureLocale() {
+  await queryClient.ensureQueryData({
+    queryKey: LOCALE_QUERY_KEY,
+    queryFn: async () => {
+      const locale = await meApi.getLocale();
+      return locale.lang;
+    },
+  });
+}
 
 /**
  * Core global initialization logic
@@ -14,20 +58,19 @@ import {
  * @returns Promise
  */
 async function performGlobalInitialization() {
-  // Use the custom jotaiStore and executeAtomAction helper
-  await Promise.all([
-    executeAtomAction(initializeAuthStatusAtom),
-    executeAtomAction(loadLangAtom),
-  ]);
+  // Ensure auth and locale are fetched and cached.
+  await Promise.all([ensureAuth(), ensureLocale()]);
 
-  // Initialize the rest of the atoms sequentially
+  // After, ensure other global initialization tasks are performed.
   await Promise.all([
     //initializeChatSettings(),
     //initializeDiscussionAreaPermissions(),
-    executeAtomAction(initializeWebSocketAtom),
     //updateUnreadMessages(),
+    // ... other global initialization tasks ...
+    executeAtomAction(initializeWebSocketAtom),
   ]);
 
+  // Finally, set global initialized atom to true.
   await executeAtomAction(globalInitializedAtom, true);
 }
 
@@ -40,37 +83,88 @@ export async function globalInit() {
   return performGlobalInitialization();
 }
 
+//// WORKSPACE INITIALIZATION ////
+
 /**
- * Workspace initialization function that can be used in loaders
+ * Fill workspace basic info cache (same key as workspaceBasicInfoQueryAtom).
+ * Throws Response(404) for route ErrorBoundary.
  * @param workspaceUrlName - The workspace URL name
- * @returns Promise
  */
-export async function workspaceInit(workspaceUrlName: string) {
-  await executeAtomAction(initializeWorkspaceStatusAtom, workspaceUrlName);
-  await executeAtomAction(workspaceInitializedAtom, workspaceUrlName);
+async function ensureWorkspaceBasicInfo(
+  workspaceUrlName: string
+): Promise<WorkspaceBasicInfo> {
+  try {
+    return await queryClient.ensureQueryData({
+      queryKey: workspaceBasicInfoQueryKey(workspaceUrlName),
+      queryFn: async () => {
+        const info = await workspaceApi.getWorkspaceBasicInfo({
+          urlName: workspaceUrlName,
+        });
+        if (!info) {
+          throw new Error("Workspace not found");
+        }
+        return info;
+      },
+      staleTime: Infinity,
+      retry: false,
+    });
+  } catch (err) {
+    if (!isMApiError(err) && !(err instanceof Error)) {
+      throw err;
+    }
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
+    throw new Response("Workspace not found", { status: 404 });
+  }
 }
 
 /**
- * Hook-based global initialization function
- * This can be used by components that need to trigger initialization
- * @param initializeAuthStatus - Auth initialization function from useSetAtom
- * @param loadLang - Language loading function from useSetAtom
- * @param initializeWebSocket - WebSocket initialization function from useSetAtom
- * @returns Promise
+ * Fill workspace permissions cache (same key as workspacePermissionsQueryAtom).
+ * @param workspaceId - The workspace ID
  */
-export async function globalInitWithHooks(
-  initializeAuthStatus: () => Promise<void>,
-  loadLang: () => Promise<void>,
-  initializeWebSocket: () => Promise<void>
-) {
-  // Initialize the auth status and language parallelly
-  await Promise.all([initializeAuthStatus(), loadLang()]);
+async function ensureWorkspacePermissions(workspaceId: number) {
+  await queryClient.ensureQueryData({
+    queryKey: workspacePermissionsQueryKey(workspaceId),
+    queryFn: async () => {
+      const permissions = await workspaceApi.getWorkspacePermissions({
+        workspaceEntityId: workspaceId,
+      });
+      return PermissionsService.transformWorkspacePermissions(permissions);
+    },
+  });
+}
 
-  // Initialize the rest of the atoms sequentially
+/**
+ * Fill workspace can-signup cache (same key as workspaceCanSignupQueryAtom).
+ * @param workspaceId - The workspace ID
+ */
+async function ensureWorkspaceCanSignup(workspaceId: number) {
+  await queryClient.ensureQueryData({
+    queryKey: workspaceCanSignupQueryKey(workspaceId),
+    queryFn: async () => {
+      const result = await coursepickerApi.workspaceCanSignUp({ workspaceId });
+      return result.canSignup;
+    },
+  });
+}
+
+/**
+ * Workspace initialization for loaders / middleware.
+ * @param workspaceUrlName - The workspace URL name
+ */
+export async function workspaceInit(workspaceUrlName: string) {
+  // Set the current workspace url name atom.
+  setAtomValue(currentWorkspaceUrlNameAtom, workspaceUrlName);
+
+  // Ensure workspace basic info is fetched and cached.
+  const basicInfo = await ensureWorkspaceBasicInfo(workspaceUrlName);
+
+  // After, ensure other workspace initialization tasks are performed.
   await Promise.all([
-    //initializeChatSettings(),
-    //initializeDiscussionAreaPermissions(),
-    initializeWebSocket(),
-    //updateUnreadMessages(),
+    ensureWorkspacePermissions(basicInfo.id),
+    ensureWorkspaceCanSignup(basicInfo.id),
+    // ... other workspace initialization tasks ...
   ]);
+
+  // Finally, set info about that the workspace has been initialized.
+  await executeAtomAction(workspaceInitializedAtom, workspaceUrlName);
 }
