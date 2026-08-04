@@ -1,96 +1,80 @@
 import { atom } from "jotai";
-import {
-  atomWithQuery,
-  atomWithInfiniteQuery,
-  type AtomWithQueryResult,
-  type AtomWithInfiniteQueryResult,
-} from "jotai-tanstack-query";
+import { atomWithQuery, atomWithInfiniteQuery } from "jotai-tanstack-query";
 import type { FlaggedStudent, GuiderStudent } from "~/generated/client";
-import type { InfiniteData } from "@tanstack/react-query";
 import { userAtom } from "./auth";
 import { getGuiderApi, isMApiError, isResponseError } from "~/api";
+import type { AsyncState } from "src/types/AsyncState";
+
 const guiderApi = getGuiderApi();
 
-export type FlaggedStudents = AtomWithInfiniteQueryResult<
-  InfiniteData<{
-    data: FlaggedStudent[];
-    hasMore: boolean;
-    nextPage: number | undefined;
-  }>
->;
+const EMPTY_STUDENTS: FlaggedStudent[] = [];
 
-export type CurrentStudent = AtomWithQueryResult<GuiderStudent>;
-
-// Student ID atom - this will trigger the query
+/** Drives current-student query — set from guiderStudentLoader. */
 export const currentStudentIdAtom = atom<string | null>(null);
 
-// TanStack Query integrated atom
+/** Server cache — do not useAtomValue in components. */
 export const currentStudentQueryAtom = atomWithQuery((get) => {
   const studentId = get(currentStudentIdAtom);
 
   return {
-    queryKey: ["student", studentId],
-    queryFn: async () => {
+    queryKey: ["guider", "student", studentId],
+    queryFn: async (): Promise<GuiderStudent> => {
       if (!studentId) {
         throw new Error("Student ID is required");
       }
 
       try {
-        const currentStudent = await guiderApi.getGuiderStudent({
-          studentId,
-        });
-
-        return currentStudent;
+        return await guiderApi.getGuiderStudent({ studentId });
       } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
+        if (!isMApiError(err)) throw err;
         if (isResponseError(err)) {
-          // Create a custom error with more details
-          const error = new Error(err.message);
-          // (error as any).status = err.response.status;
-          // (error as any).code = err.response.status;
-          throw error;
+          throw new Error(err.message);
         }
-
         throw new Error("Failed to get current student");
       }
     },
-    enabled: !!studentId, // Only run if studentId exists
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!studentId,
+    staleTime: 5 * 60 * 1000,
     retry: false,
   };
 });
 
-// Derived atoms for easy access
-export const currentStudentAtom = atom<CurrentStudent>((get) => {
+// logic atoms
+export const currentStudentDataAtom = atom(
+  (get) => get(currentStudentQueryAtom).data ?? null
+);
+export const currentStudentIsLoadingAtom = atom(
+  (get) => get(currentStudentQueryAtom).isLoading
+);
+export const currentStudentErrorAtom = atom(
+  (get) => get(currentStudentQueryAtom).error ?? null
+);
+
+/** Current student async state atom */
+export const currentStudentAsyncStateAtom = atom<AsyncState>((get) => {
   const query = get(currentStudentQueryAtom);
-
-  return query;
+  if (query.isLoading) return "loading";
+  if (query.isError) return "error";
+  if (query.data) return "ready";
+  return "idle";
 });
 
-// Keep the original getCurrentStudentAtom for backward compatibility
-export const getCurrentStudentAtom = atom(null, (_, set, studentId: string) => {
-  // Simply set the student ID, which will trigger the query
-  set(currentStudentIdAtom, studentId);
+/** Refetch current student */
+export const refetchCurrentStudentAtom = atom(null, (get) => {
+  void get(currentStudentQueryAtom).refetch();
 });
 
-// Query filter atom
+/** Search string — synced from URL in guiderLoader / StudentsList. */
 export const guiderStudentsQueryAtom = atom<string>("");
 
-// Students infinite query atom
+/** Server cache — do not useAtomValue in components. */
 export const guiderStudentsInfiniteQueryAtom = atomWithInfiniteQuery((get) => {
   const query = get(guiderStudentsQueryAtom);
   const flagOwnerIdentifier = get(userAtom)?.identifier ?? "";
 
-  if (!flagOwnerIdentifier) {
-    throw new Error("Flag owner identifier is required");
-  }
-
   return {
     initialPageParam: 0,
-    queryKey: ["guider-students", query, flagOwnerIdentifier],
+    queryKey: ["guider", "students", query, flagOwnerIdentifier],
     queryFn: async ({ pageParam = 0 }) => {
       const MAX_LOADED_AT_ONCE = 25;
       const firstResult = pageParam as number;
@@ -104,11 +88,8 @@ export const guiderStudentsInfiniteQueryAtom = atomWithInfiniteQuery((get) => {
           q: query || undefined,
         });
 
-        // Handle null response (server returns null instead of empty array)
         students = students || [];
         const hasMore = students.length === MAX_LOADED_AT_ONCE + 1;
-
-        // Remove extra item if we have more results
         const actualStudents = students.concat([]);
         if (hasMore) {
           actualStudents.pop();
@@ -120,34 +101,59 @@ export const guiderStudentsInfiniteQueryAtom = atomWithInfiniteQuery((get) => {
           nextPage: hasMore ? firstResult + MAX_LOADED_AT_ONCE : undefined,
         };
       } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
+        if (!isMApiError(err)) throw err;
         if (isResponseError(err)) {
-          const error = new Error(err.message);
-          throw error;
+          throw new Error(err.message);
         }
-
         throw new Error("Failed to load students");
       }
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     enabled: !!flagOwnerIdentifier,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     retry: false,
   };
 });
 
-export const guiderStudents = atom((get) => {
-  const query = get(guiderStudentsInfiniteQueryAtom);
-
-  return query;
+// Guider students data atoms
+export const guiderStudentsDataAtom = atom((get) => {
+  const data = get(guiderStudentsInfiniteQueryAtom).data;
+  if (!data) return EMPTY_STUDENTS;
+  return data.pages.flatMap((page) => page.data);
 });
 
+// Logic atoms
+export const guiderStudentsHasNextPageAtom = atom(
+  (get) => get(guiderStudentsInfiniteQueryAtom).hasNextPage ?? false
+);
+export const guiderStudentsIsFetchingNextPageAtom = atom(
+  (get) => get(guiderStudentsInfiniteQueryAtom).isFetchingNextPage
+);
+export const guiderStudentsIsLoadingAtom = atom(
+  (get) => get(guiderStudentsInfiniteQueryAtom).isLoading
+);
+export const guiderStudentsErrorAtom = atom(
+  (get) => get(guiderStudentsInfiniteQueryAtom).error ?? null
+);
+
+/** Guider students async state atom */
+export const guiderStudentsAsyncStateAtom = atom<AsyncState>((get) => {
+  const query = get(guiderStudentsInfiniteQueryAtom);
+  if (query.isLoading) return "loading";
+  if (query.isError) return "error";
+  if (query.data) return "ready";
+  return "idle";
+});
+
+/** Load more guider students */
 export const loadMoreGuiderStudentsAtom = atom(null, (get) => {
   const query = get(guiderStudentsInfiniteQueryAtom);
   if (query.hasNextPage && !query.isFetchingNextPage) {
     void query.fetchNextPage();
   }
+});
+
+/** Refetch guider students */
+export const refetchGuiderStudentsAtom = atom(null, (get) => {
+  void get(guiderStudentsInfiniteQueryAtom).refetch();
 });

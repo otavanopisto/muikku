@@ -1,24 +1,26 @@
 import { Group, Text, Loader, Title } from "@mantine/core";
-import { currentStudentAtom } from "src/atoms/guider";
+import {
+  currentStudentDataAtom,
+  currentStudentIsLoadingAtom,
+} from "src/atoms/guider";
 import { useAtomValue } from "jotai";
 import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 
 /**
- * StudentNavigationContentProps - Props for student navigation content
+ * Student navigation content
  */
 interface StudentNavigationContentProps {}
 
 /**
- * StudentNavigationContent - Dynamic content component for student-specific navigation
- * @param _props - StudentNavigationContentProps
- * @returns StudentNavigationContent component
+ * Student navigation content component
  */
 export function StudentNavigationContent(
   _props: StudentNavigationContentProps
 ) {
-  const currentStudent = useAtomValue(currentStudentAtom);
+  const isLoading = useAtomValue(currentStudentIsLoadingAtom);
+  const currentStudentData = useAtomValue(currentStudentDataAtom);
 
-  if (currentStudent.isLoading) {
+  if (isLoading) {
     return (
       <Group
         gap="sm"
@@ -32,9 +34,7 @@ export function StudentNavigationContent(
     );
   }
 
-  if (!currentStudent.data) return null;
-
-  const { data: currentStudentData } = currentStudent;
+  if (!currentStudentData) return null;
 
   return (
     <>
@@ -42,7 +42,6 @@ export function StudentNavigationContent(
         {currentStudentData.firstName} {currentStudentData.lastName}
       </Title>
 
-      {/* Student-specific sub-links */}
       <NavbarLink
         variant="secondary"
         label="Perustiedot | Tilanne"

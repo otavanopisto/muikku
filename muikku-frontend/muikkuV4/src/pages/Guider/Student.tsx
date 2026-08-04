@@ -1,33 +1,35 @@
 import { Button } from "@mantine/core";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { Outlet } from "react-router";
-import { currentStudentAtom } from "src/atoms/guider";
+import {
+  currentStudentAsyncStateAtom,
+  currentStudentErrorAtom,
+  refetchCurrentStudentAtom,
+} from "src/atoms/guider";
 import { ActionBar } from "src/components/ActionBar/ActionBar";
 import { AsyncState } from "src/components/AsyncState/AsyncState";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
-import {
-  createAsyncError,
-  parseAsyncStateFromQuery,
-} from "src/utils/AtomHelpers";
+import { createAsyncError } from "src/utils/AtomHelpers";
 
 /**
- * Guider - Guider page
+ * Guider student page
  */
 export function GuiderStudent() {
-  const studentState = useAtomValue(currentStudentAtom);
+  const asyncState = useAtomValue(currentStudentAsyncStateAtom);
+  const error = useAtomValue(currentStudentErrorAtom);
+  const refetch = useSetAtom(refetchCurrentStudentAtom);
 
   return (
     <PageLayout>
       <AsyncState
-        state={parseAsyncStateFromQuery(studentState)}
-        error={createAsyncError(studentState.error) ?? undefined}
-        onRetry={() => void studentState.refetch()}
+        state={asyncState}
+        error={createAsyncError(error) ?? undefined}
+        onRetry={() => refetch()}
         showRetryButton
       >
         <ActionBar variant="primary">
           <Button>Uusi yhteydenotto</Button>
           <Button>Uusi tehtävä</Button>
-          {/* List-specific actions */}
         </ActionBar>
 
         <Outlet />
