@@ -1,22 +1,26 @@
-import type { Transition, Variants } from "framer-motion";
-import { NAV_V2_LAYOUT } from "./navigationLayout";
+import type { Variants } from "framer-motion";
 
-export const NAV_V2_TRANSITION: Transition = NAV_V2_LAYOUT.transition;
+export const NAV_TRANSITION = {
+  transition: {
+    duration: 0.25,
+    ease: "easeInOut" as const,
+  },
+} as const;
 
 export const navigationItemVariants: Variants = {
   entering: {
     y: 20,
     opacity: 0,
-    transition: NAV_V2_TRANSITION,
+    transition: NAV_TRANSITION,
   },
   visible: {
     y: 0,
     opacity: 1,
-    transition: NAV_V2_TRANSITION,
+    transition: NAV_TRANSITION,
   },
   exiting: {
     y: -8,
     opacity: 0,
-    transition: NAV_V2_TRANSITION,
+    transition: NAV_TRANSITION,
   },
 };

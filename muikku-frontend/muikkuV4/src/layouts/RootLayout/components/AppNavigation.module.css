@@ -5,11 +5,17 @@
 }
 
 .secondaryNavLayer {
+  width: 100%;
+  padding-left: 64px;
   position: absolute;
   top: 0;
   bottom: 0;
   z-index: 1;
   background: var(--mantine-color-body);
+}
+
+.secondaryNavLayer[data-secondary-nav="false"] {
+  pointer-events: none;
 }
 
 .mainNavLayer {

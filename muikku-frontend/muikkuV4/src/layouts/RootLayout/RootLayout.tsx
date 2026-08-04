@@ -4,7 +4,6 @@ import { ErrorBoundary } from "~/src/pages";
 import { useRootLayoutNav } from "./hooks/useRootLayoutNav";
 import { useIsBreakpoint } from "~/src/hooks/use-is-breakpoint";
 import { AppNavigation } from "./components/AppNavigation";
-import { getNavWidth } from "./helpers/navigationLayout";
 import { useDisclosure, useDrag, useHeadroom } from "@mantine/hooks";
 import classes from "./RootLayout.module.css";
 import { useRef } from "react";
@@ -75,12 +74,6 @@ export function RootLayout(props: RootLayoutProps) {
     dragRef(node);
   };
 
-  // Get the width of the navigation
-  const navWidth = getNavWidth({
-    hasSecondaryNav: nav.hasSecondaryNav,
-    customWidth: nav.customWidth,
-  });
-
   // Does the aside exist?
   const asideExists = asideConfig !== null;
 
@@ -95,7 +88,12 @@ export function RootLayout(props: RootLayoutProps) {
         height: 60,
       }}
       navbar={{
-        width: navWidth,
+        width: {
+          // full width on mobile
+          xs: "100%",
+          // 335px on desktop
+          sm: 335,
+        },
         breakpoint: "sm",
         collapsed: { mobile: !opened },
       }}
@@ -114,21 +112,13 @@ export function RootLayout(props: RootLayoutProps) {
           Header
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar
-        ref={setNavbarRef}
-        styles={{
-          navbar: {
-            width: navWidth,
-          },
-        }}
-      >
+      <AppShell.Navbar ref={setNavbarRef}>
         <AppNavigation
           appTitle={title}
           mainItems={nav.mainItems}
           hasSecondaryNav={nav.hasSecondaryNav}
           secondaryTitle={nav.secondaryTitle}
           secondaryItems={nav.secondaryItems}
-          customWidth={nav.customWidth}
         />
       </AppShell.Navbar>
       <AppShell.Main>

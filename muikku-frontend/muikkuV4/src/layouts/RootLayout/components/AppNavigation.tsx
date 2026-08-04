@@ -2,12 +2,10 @@ import { motion } from "framer-motion";
 import type { NavigationItem } from "~/src/navigation/navigation";
 import { MainNav } from "./MainNav";
 import { SecondaryNav } from "./SecondaryNav";
-import {
-  getSecondaryNavWidth,
-  NAV_V2_LAYOUT,
-} from "../helpers/navigationLayout";
 import classes from "./AppNavigation.module.css";
-import { NAV_V2_TRANSITION } from "../helpers/navigationVariants";
+import { NAV_TRANSITION } from "../helpers/navigationVariants";
+
+const DEFAULT_COLLAPSED_WIDTH = 64;
 
 /**
  * Props for the AppNavigation component.
@@ -18,7 +16,7 @@ interface AppNavigationProps {
   hasSecondaryNav: boolean;
   secondaryTitle?: string;
   secondaryItems?: NavigationItem[];
-  customWidth?: number;
+  collapsedWidth?: number;
 }
 
 /**
@@ -31,32 +29,19 @@ export function AppNavigation(props: AppNavigationProps) {
     hasSecondaryNav,
     secondaryTitle,
     secondaryItems,
-    customWidth,
+    collapsedWidth = DEFAULT_COLLAPSED_WIDTH,
   } = props;
 
-  const secondaryWidth = getSecondaryNavWidth(customWidth);
-  const mainWidth = hasSecondaryNav
-    ? NAV_V2_LAYOUT.mainCollapsed
-    : NAV_V2_LAYOUT.panelWidth + NAV_V2_LAYOUT.mainCollapsed;
-  const shellWidth = NAV_V2_LAYOUT.mainCollapsed + secondaryWidth;
+  const mainWidth = hasSecondaryNav ? collapsedWidth : "100%";
 
   return (
-    <motion.div
-      className={classes.navWrapper}
-      data-nav-shell
-      animate={{ width: shellWidth }}
-      transition={NAV_V2_TRANSITION}
-    >
+    <motion.div className={classes.navWrapper}>
       <motion.div
         className={classes.secondaryNavLayer}
-        style={{
-          left: NAV_V2_LAYOUT.mainCollapsed,
-          width: secondaryWidth,
-          pointerEvents: hasSecondaryNav ? "auto" : "none",
-        }}
         animate={{ opacity: hasSecondaryNav ? 1 : 0.35 }}
-        transition={NAV_V2_TRANSITION}
+        transition={NAV_TRANSITION}
         aria-hidden={!hasSecondaryNav}
+        data-secondary-nav={hasSecondaryNav ? "true" : "false"}
       >
         <SecondaryNav
           title={secondaryTitle ?? ""}
@@ -67,7 +52,7 @@ export function AppNavigation(props: AppNavigationProps) {
       <motion.div
         className={classes.mainNavLayer}
         animate={{ width: mainWidth }}
-        transition={NAV_V2_TRANSITION}
+        transition={NAV_TRANSITION}
       >
         <MainNav
           title={appTitle}
