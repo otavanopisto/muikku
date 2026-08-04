@@ -3,17 +3,12 @@ import {
   currentStudentIdAtom,
   guiderStudentsQueryAtom,
 } from "src/atoms/guider";
-import { executeAtomAction, setAtomValue } from "src/jotaiStore";
-import { loadMaterialContentNodesAtom } from "../atoms/materials";
+import { setAtomValue } from "src/jotaiStore";
 
 export const routeLoaders: Record<string, LoaderFunction> = {
   environmentLoader: () => null,
   homeLoader: () => null,
-  dashboardLoader: () => {
-    void executeAtomAction(loadMaterialContentNodesAtom, 158);
-
-    return null;
-  },
+  dashboardLoader: () => null,
   calendarLoader: () => null,
   communicatorLoader: () => null,
   communicatorTagsLoader: () => null,
