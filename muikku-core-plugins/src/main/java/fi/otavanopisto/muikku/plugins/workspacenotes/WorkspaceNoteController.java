@@ -31,8 +31,8 @@ public class WorkspaceNoteController {
         type);
   }
   
-  public WorkspaceNote updateWorkspaceNote(WorkspaceNote workspaceNote, String title, String note) {
-    return workspaceNoteDAO.update(workspaceNote, title, note);
+  public WorkspaceNote updateWorkspaceNote(WorkspaceNote workspaceNote, String title, String note, WorkspaceNoteType type) {
+    return workspaceNoteDAO.update(workspaceNote, title, note, type);
   }
   
   public WorkspaceNote archive(WorkspaceNote workspaceNote) {

@@ -31,9 +31,10 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
     return persist(workspaceNote);
   }
   
-  public WorkspaceNote update(WorkspaceNote workspaceNote, String title, String note){
+  public WorkspaceNote update(WorkspaceNote workspaceNote, String title, String note, WorkspaceNoteType type){
     workspaceNote.setTitle(title);
     workspaceNote.setNote(note);
+    workspaceNote.setType(type);
     return persist(workspaceNote);
   }
   
