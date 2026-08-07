@@ -25,6 +25,17 @@ const ANNOTATION_ATTR = "data-muikku-highlight-id";
 const ANNOTATION_KIND_ATTR = "data-muikku-highlight-kind";
 const ANNOTATION_CLASS = "material-highlight";
 const ANNOTATION_SELECTOR = ".material-highlight, [data-muikku-highlight-id]";
+const NON_ANNOTATABLE_SELECTOR = [
+  ".rs_skip_always",
+  ".rs_skip",
+  "input",
+  "textarea",
+  "select",
+  "button",
+  "iframe",
+  "object",
+  "[contenteditable='true']",
+].join(", ");
 
 // =============================================================================
 // ANNOTATION TYPES
@@ -383,6 +394,28 @@ export function selectionIntersectsAnnotation(range: Range | null): boolean {
     ancestor;
   return Array.from(scope.querySelectorAll(ANNOTATION_SELECTOR)).some((node) =>
     range.intersectsNode(node)
+  );
+}
+
+/**
+ * Whether selection intersects non-annotatable elements.
+ * @param range range
+ */
+export function selectionIntersectsNonAnnotatable(
+  range: Range | null
+): boolean {
+  if (!range || range.collapsed) return false;
+  const ancestor =
+    range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+      ? range.commonAncestorContainer.parentElement
+      : (range.commonAncestorContainer as Element);
+  if (!ancestor) return false;
+  const scope =
+    ancestor.closest(".material-page__content.rich-text") ??
+    ancestor.closest('[id^="p-"], [id^="s-"]') ??
+    ancestor;
+  return Array.from(scope.querySelectorAll(NON_ANNOTATABLE_SELECTOR)).some(
+    (node) => range.intersectsNode(node)
   );
 }
 

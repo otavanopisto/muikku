@@ -10,6 +10,7 @@ import { SelectionContextAction } from "./types";
 import {
   buildAnnotationFromSelection,
   selectionIntersectsAnnotation,
+  selectionIntersectsNonAnnotatable,
 } from "~/util/html";
 
 type ReadSpeakerListenActionOptions = {
@@ -106,6 +107,7 @@ export function createHighlightAction(
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
+      !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
@@ -161,6 +163,7 @@ export function createNoteAction(
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
+      !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
