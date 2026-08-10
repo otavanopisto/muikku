@@ -8,7 +8,6 @@ import {
   getNotebookNoteListTitle,
 } from "../helpers/notebook-display";
 import { useNotebookEditableNoteItem } from "../hooks/useNotebookEditableNoteItem";
-import NotebookItemDeleteConfirm from "./notebook-item-delete-confirm";
 import NotebookItemShell from "./notebook-item-shell";
 import NotebookNoteEditor from "../notebook-note-editor";
 import {
@@ -83,13 +82,6 @@ export const NotebookWorkspaceNoteItem = (
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
       editPanel={
         <NotebookNoteEditor
           mode={item.isDraft ? "create" : "edit"}
@@ -164,13 +156,6 @@ export const NotebookMaterialNoteItem = (
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
       editPanel={
         <NotebookNoteEditor
           mode={item.isDraft ? "create" : "edit"}
@@ -261,13 +246,6 @@ export const NotebookContextNoteItem = (
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
       editPanel={
         <NotebookNoteEditor
           mode={item.isDraft ? "create" : "edit"}
@@ -358,13 +336,6 @@ export const NotebookContextHighlightItem = (
       extraActions={extraActions}
       orphaned={orphanStatus?.isOrphaned ?? false}
       titleAdornment={titleAdornment}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
       editPanel={
         <NotebookNoteEditor
           mode="edit"

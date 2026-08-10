@@ -18,6 +18,7 @@ import { useScroll } from "./hooks/useScroll";
 import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
 import { clearNotebookV2FocusNote } from "~/actions/notebook/notebookV2";
 import { scrollToNotebookItem } from "./helpers/notebook-active-item";
+import NotebookItemDeleteDialog from "./items/notebook-item-delete-confirm";
 
 /**
  * NotebookProps
@@ -121,6 +122,7 @@ const Notebook = (props: NotebookProps) => {
 
   return (
     <div className="notebook">
+      <NotebookItemDeleteDialog />
       <div className="notebook__body" ref={notebookBodyRef}>
         <NoteList>
           {isLoading ? (

@@ -46,7 +46,6 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
     deleting = false,
     orphaned = false,
     extraActions,
-    deleteConfirm,
     editPanel,
     bodyHtml = "",
     draftClientId,
@@ -57,9 +56,9 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
     "notebook__item",
     itemClassName,
     editing ? "state-EDITING" : "",
-    deleting ? "state-DELETING" : "",
     orphaned ? "state-ORPHANED" : "",
     active ? "state-ACTIVE" : "",
+    deleting ? "state-DELETING" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -103,8 +102,6 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
           {extraActions}
         </div>
       </div>
-
-      {deleteConfirm}
 
       {editing ? (
         <div className="notebook__item-editor">{editPanel}</div>

@@ -1317,11 +1317,6 @@ const beginNotebookV2NoteDeleteFromMaterial: BeginNotebookV2NoteDeleteFromMateri
         type: "NOTEBOOK_V2_SET_NOTE_UI",
         payload: { noteId, mode: { kind: "deleting" } },
       });
-      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE", payload: noteId });
-      dispatch({
-        type: "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
-        payload: undefined,
-      });
     };
   };
 
