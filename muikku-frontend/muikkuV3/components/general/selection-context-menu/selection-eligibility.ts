@@ -274,3 +274,11 @@ export function findReadspeakerPlayButtonInBoundary(
 
   return boundary.querySelector<HTMLElement>(".rsbtn_play");
 }
+
+/**
+ * Whether ReadSpeaker's hidden selection popup play control is in the DOM.
+ * Used to gate "listen to selection" — RS often omits this on touch/narrow viewports.
+ */
+export function isReadspeakerSelectionPlayAvailable(): boolean {
+  return !!document.querySelector("#rsbtn_popup .rspopup_play");
+}

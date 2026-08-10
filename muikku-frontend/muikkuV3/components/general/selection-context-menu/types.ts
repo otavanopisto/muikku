@@ -19,10 +19,7 @@ export type SelectionContextAction = {
   disabled?: boolean;
   isVisible?: (ctx: SelectionActionRuntimeContext) => boolean;
   triggerOn?: "mousedown" | "click";
-  onAction: (
-    ctx: SelectionActionRuntimeContext,
-    event: React.MouseEvent
-  ) => void;
+  onAction: (ctx: SelectionActionRuntimeContext) => void;
 };
 
 export type TextSelectionPopoverState = {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
+  isReadspeakerSelectionPlayAvailable,
   isSelectionInScope,
   isSelectionSkipped,
 } from "./selection-eligibility";
@@ -33,11 +34,11 @@ export function createReadSpeakerListenAction(
     id: "readspeaker-listen",
     label: "Kuuntele valittu teksti",
     icon: "paper-plane",
-    triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
       options.enabled &&
       !!ctx.readAreaId &&
+      isReadspeakerSelectionPlayAvailable() &&
       !isSelectionSkipped(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
@@ -106,7 +107,6 @@ export function createHighlightAction(
     id: "highlight",
     label: "Korosta",
     icon: "pencil",
-    triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
@@ -161,7 +161,6 @@ export function createNoteAction(
     id: "note",
     label: "Lisää muistiinpano",
     icon: "note-add",
-    triggerOn: "mousedown",
     disabled: !options.onAddNote,
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
