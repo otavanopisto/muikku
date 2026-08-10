@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   buildSelectionContext,
-  closeNativeReadspeakerPopup,
   resolveBoundaryElement,
   SelectionEligibilityOptions,
 } from "./selection-eligibility";
@@ -116,7 +115,6 @@ export function useTextSelectionPopover(
         close();
         return;
       }
-      closeNativeReadspeakerPopup();
       savedRangeRef.current = range.cloneRange();
       selectionElementRef.current =
         selection.anchorNode?.nodeType === Node.TEXT_NODE

@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
-  findReadspeakerPlayButtonInBoundary,
   isSelectionInScope,
   isSelectionSkipped,
-  resolveBoundaryElement,
 } from "./selection-eligibility";
 import { SelectionContextAction } from "./types";
 import {
@@ -49,15 +47,12 @@ export function createReadSpeakerListenAction(
     // eslint-disable-next-line jsdoc/require-jsdoc
     onAction: (ctx) => {
       ctx.restoreSelection();
-      const boundary = resolveBoundaryElement(options.boundarySelector);
-      const playButton = boundary
-        ? findReadspeakerPlayButtonInBoundary(
-            options.readspeakerButtonId,
-            boundary
-          )
-        : null;
-      if (!playButton) {
-        ctx.close();
+      const play = document.querySelector<HTMLElement>(
+        "#rsbtn_popup .rspopup_play"
+      );
+
+      // In case the play button is not found, do nothing
+      if (!play) {
         return;
       }
 
@@ -70,8 +65,16 @@ export function createReadSpeakerListenAction(
         : options.boundarySelector;
 
       options.onReadSessionStart?.([readAreaId]);
-      options.rspkr.current?.API?.setSelectionPlayer?.(playButton);
-      playButton.click();
+
+      // Dispatch a mouseup event to the play button
+      // Play button is bound to mouseup event
+      play.dispatchEvent(
+        new MouseEvent("mouseup", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        })
+      );
       ctx.close();
     },
   };
