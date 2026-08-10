@@ -80,14 +80,6 @@ public interface SessionController {
   public boolean hasEnvironmentPermission(String permission);
   
   /**
-   * Returns whether logged user has specified course permission.
-   * @param permission requested permission
-   * @return whether logged user has specified course permission.
-   */
-  @Deprecated
-  public boolean hasCoursePermission(String permission, WorkspaceEntity course);
-  
-  /**
    * Returns whether logged user has specified workspace permission.
    * @param permission requested permission
    * @return whether logged user has specified workspace permission.

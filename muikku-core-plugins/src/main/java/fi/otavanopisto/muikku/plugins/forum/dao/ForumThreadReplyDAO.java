@@ -125,28 +125,6 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     return query.getResultList();
   }
 
-  public ForumThreadReply findLatestReplyByThread(ForumThread thread) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<ForumThreadReply> criteria = criteriaBuilder.createQuery(ForumThreadReply.class);
-    Root<ForumThreadReply> root = criteria.from(ForumThreadReply.class);
-    criteria.select(root);
-    criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(ForumThreadReply_.thread), thread),
-            criteriaBuilder.equal(root.get(ForumThreadReply_.archived), Boolean.FALSE)
-        )
-    );
-    
-    criteria.orderBy(criteriaBuilder.desc(root.get(ForumThreadReply_.created)));
-    
-    TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);
-    query.setMaxResults(1);
-    
-    return getSingleResult(query);
-  }
-
   public Long countByThread(ForumThread thread) {
     EntityManager entityManager = getEntityManager(); 
     

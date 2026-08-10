@@ -145,8 +145,10 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
+        waitForVisible("#wokspaceName");
         waitForPresent("input#workspaceUnpublish");
         scrollTo("input#workspaceUnpublish", 150);
         waitAndClick("input#workspaceUnpublish");
@@ -194,7 +196,10 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
+        waitForVisible("#wokspaceName");
         scrollTo("input[name=\"workspace-name-extension\"]", 100);
         waitAndClick("input[name=\"workspace-name-extension\"]");
         clearElement("input[name=\"workspace-name-extension\"]");
@@ -265,7 +270,10 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
+        waitForVisible("#wokspaceName");
         waitForPresent("select[name=\"workspace-type\"]");
         scrollTo("select[name=\"workspace-type\"]", 100);
         selectOption("select[name=\"workspace-type\"]", "PYRAMUS-2");
@@ -339,7 +347,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/", workspace.getUrlName()), false);
         waitForVisible(".hero__workspace-name-extension span");
         assertTextIgnoreCase(".hero__workspace-name-extension span", "For test");
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForElementToAppear(".hero__workspace-title", 10, 1000);
+        waitAndClick("a[href='" + String.format("/workspace/%s/workspace-management", workspace.getUrlName()) + "']");
         waitForVisible("#wokspaceName");
         String title = getAttributeValue("#wokspaceName", "value");
         int i = 0;

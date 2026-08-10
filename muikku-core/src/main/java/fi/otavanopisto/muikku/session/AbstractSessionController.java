@@ -86,8 +86,8 @@ public abstract class AbstractSessionController implements SessionController {
   }
   
   @Override
-  public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
-    return hasCoursePermissionImpl(permission, course);
+  public boolean hasWorkspacePermission(String permission, WorkspaceEntity workspaceEntity) {
+    return hasWorkspacePermissionImpl(permission, workspaceEntity);
   }
   
   @Override
@@ -135,7 +135,7 @@ public abstract class AbstractSessionController implements SessionController {
   
   protected abstract boolean hasEnvironmentPermissionImpl(String permission);
 
-  protected abstract boolean hasCoursePermissionImpl(String permission, WorkspaceEntity course);
+  protected abstract boolean hasWorkspacePermissionImpl(String permission, WorkspaceEntity workspaceEntity);
   
   protected abstract boolean hasResourcePermissionImpl(String permission, ResourceEntity resource);
 

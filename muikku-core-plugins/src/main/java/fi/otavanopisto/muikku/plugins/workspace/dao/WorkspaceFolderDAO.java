@@ -107,11 +107,6 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     return persist(workspaceFolder); 
   }
 
-  public WorkspaceFolder updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
-    workspaceFolder.setDefaultMaterial(defaultMaterial);
-    return persist(workspaceFolder);
-  }
-  
   public WorkspaceFolder updateExam(WorkspaceFolder workspaceFolder, boolean exam) {
     workspaceFolder.setExam(exam);
     return persist(workspaceFolder);

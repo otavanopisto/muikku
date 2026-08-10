@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -43,16 +42,6 @@ public class TranscriptOfRecordsController {
   @Any
   private Instance<SearchProvider> searchProviders;
 
-  public void saveStringProperty(User user, String propertyName, String value) {
-    if (value != null && !"".equals(value)) {
-      userSchoolDataController.setUserProperty(user, "hops." + propertyName, value);
-    }
-  }
-
-  public void saveBoolProperty(User user, String propertyName, boolean value) {
-    userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "yes" : "no");
-  }
-
   public TranscriptofRecordsUserProperties loadUserProperties(User user) {
     List<UserProperty> userProperties = userSchoolDataController.listUserProperties(user);
 
@@ -76,16 +65,6 @@ public class TranscriptOfRecordsController {
     }
 
     return unserializeObject(getClass().getClassLoader().getResourceAsStream("fi/otavanopisto/muikku/plugins/transcriptofrecords/default-matriculation-subjects.json"), MatriculationSubjects.class);
-  }
-
-  /**
-   * Saves a list of student's matriculation subjects
-   *
-   * @param student student
-   * @param matriculationSubjects list of student's matriculation subjects
-   */
-  public void saveStudentMatriculationSubjects(User student, StudentMatriculationSubjects matriculationSubjects) {
-    userSchoolDataController.setUserProperty(student, USER_MATRICULATION_SUBJECTS_USER_PROPERTY, serializeObject(matriculationSubjects));
   }
 
   /**
@@ -144,27 +123,6 @@ public class TranscriptOfRecordsController {
       return objectMapper.readValue(inputStream, targetClass);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Failed to unserialize object", e);
-    }
-
-    return null;
-  }
-
-  /**
-   * Writes an object as JSON string
-   *
-   * @param entity to be serialized
-   * @return serialized string
-   */
-  private String serializeObject(Object entity) {
-    if (entity == null) {
-      return null;
-    }
-
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      return objectMapper.writeValueAsString(entity);
-    } catch (JsonProcessingException e) {
-      logger.log(Level.SEVERE, "Failed to serialize an entity", e);
     }
 
     return null;
