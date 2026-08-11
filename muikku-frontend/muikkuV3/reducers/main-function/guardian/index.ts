@@ -82,6 +82,8 @@ export type WorkspacesByDependantIdentifier = Record<
   }
 >;
 
+export type AbsencesByDependantId = Record<number, MuikkuEvents>;
+
 /**
  * Redux state interface.
  * Object that combines the results of the student and staff search
@@ -92,7 +94,7 @@ export interface GuardianState {
   currentDependantIdentifier: string | null;
   currentDependant: CurrentDependant;
   workspacesByDependantIdentifier: WorkspacesByDependantIdentifier;
-  absencesByDependantId: Record<number, MuikkuEvents>;
+  absencesByDependantId: AbsencesByDependantId;
 }
 
 /**
