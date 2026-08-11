@@ -36,6 +36,9 @@ export function useNotebookContextHighlightUpgrade(
     [note]
   );
 
+  /**
+   * Begin upgrade.
+   */
   const beginUpgrade = React.useCallback(() => {
     dispatch({
       type: "NOTEBOOK_V2_SET_NOTE_UI",
@@ -43,10 +46,18 @@ export function useNotebookContextHighlightUpgrade(
     });
   }, [dispatch, note.id]);
 
+  /**
+   * Cancel upgrade.
+   */
   const cancelUpgrade = React.useCallback(() => {
     dispatch(cancelNotebookV2ContextHighlightUpgrade(note.id));
   }, [dispatch, note.id]);
 
+  /**
+   * Save upgrade.
+   * @param title title
+   * @param text text
+   */
   const saveUpgrade = React.useCallback(
     (title: string, text: string) => {
       dispatch(

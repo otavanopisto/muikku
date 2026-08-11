@@ -217,16 +217,6 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
-   */
-  /* UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
-    if (this.props.materials !== nextProps.materials) {
-      this.getFlattenedMaterials(nextProps);
-    }
-  } */
-
-  /**
    * handleMakeHighlight
    * @param text text
    * @param start start
@@ -274,6 +264,16 @@ class WorkspaceMaterials extends React.Component<
       openNotebookTab: true,
     });
   };
+
+  /**
+   * Handles begin add note.
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleBeginAddNote =
+    (workspaceMaterialId: number) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.beginNotebookV2MaterialNoteDraft(workspaceMaterialId);
+    };
 
   /**
    * toggleSectionHiddenStatus
@@ -779,9 +779,7 @@ class WorkspaceMaterials extends React.Component<
             })}
             buttonModifiers={["notebook-action"]}
             disablePropagation={true}
-            onClick={() =>
-              this.props.beginNotebookV2MaterialNoteDraft(workspaceMaterialId)
-            }
+            onClick={this.handleBeginAddNote(workspaceMaterialId)}
           />
         </Dropdown>
       </span>

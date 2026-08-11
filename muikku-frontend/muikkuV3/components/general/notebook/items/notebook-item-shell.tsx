@@ -103,7 +103,7 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
         </div>
       </div>
 
-      {editing ? (
+      {editing && editPanel ? (
         <div className="notebook__item-editor">{editPanel}</div>
       ) : (
         showReadBody && (
