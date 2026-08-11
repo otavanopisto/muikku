@@ -46,7 +46,37 @@ const NotebookItemDeleteDialog = () => {
   }, [isOpen]);
 
   /**
-   * handleClose
+   * Handles deleting the note.
+   * @param closeDialog closeDialog
+   */
+  const handleDelete = React.useCallback(
+    (closeDialog: () => void) =>
+      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (deletingNoteId == null) {
+          return;
+        }
+
+        setLocked(true);
+        dispatch(
+          deleteNotebookV2Entry({
+            noteId: deletingNoteId,
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            success: () => {
+              setLocked(false);
+              closeDialog();
+            },
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            fail: () => {
+              setLocked(false);
+            },
+          })
+        );
+      },
+    [deletingNoteId, dispatch]
+  );
+
+  /**
+   * Handles closing the dialog.
    */
   const handleClose = React.useCallback(() => {
     if (deletingNoteId == null || locked) {
@@ -56,12 +86,12 @@ const NotebookItemDeleteDialog = () => {
   }, [deletingNoteId, dispatch, locked]);
 
   /**
-   * content
+   * Content of the dialog.
    */
   const content = () => <div>{t("content.remove", { ns: "notebook" })}</div>;
 
   /**
-   * footer
+   * Footer of the dialog.
    * @param closeDialog closeDialog
    */
   const footer = (closeDialog: () => void) => (
@@ -69,26 +99,7 @@ const NotebookItemDeleteDialog = () => {
       <Button
         buttonModifiers={["fatal", "standard-ok"]}
         disabled={locked || deletingNoteId == null}
-        onClick={() => {
-          if (deletingNoteId == null) {
-            return;
-          }
-          setLocked(true);
-          dispatch(
-            deleteNotebookV2Entry({
-              noteId: deletingNoteId,
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              success: () => {
-                setLocked(false);
-                closeDialog();
-              },
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              fail: () => {
-                setLocked(false);
-              },
-            })
-          );
-        }}
+        onClick={handleDelete(closeDialog)}
       >
         {t("actions.remove", { ns: "common" })}
       </Button>

@@ -19,6 +19,7 @@ import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
 import { clearNotebookV2FocusNote } from "~/actions/notebook/notebookV2";
 import { scrollToNotebookItem } from "./helpers/notebook-active-item";
 import NotebookItemDeleteDialog from "./items/notebook-item-delete-confirm";
+import NotebookNoteEditorDialog from "./notebook-note-editor-dialog";
 
 /**
  * NotebookProps
@@ -123,6 +124,7 @@ const Notebook = (props: NotebookProps) => {
   return (
     <div className="notebook">
       <NotebookItemDeleteDialog />
+      <NotebookNoteEditorDialog />
       <div className="notebook__body" ref={notebookBodyRef}>
         <NoteList>
           {isLoading ? (

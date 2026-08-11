@@ -9,7 +9,6 @@ import {
 } from "../helpers/notebook-display";
 import { useNotebookEditableNoteItem } from "../hooks/useNotebookEditableNoteItem";
 import NotebookItemShell from "./notebook-item-shell";
-import NotebookNoteEditor from "../notebook-note-editor";
 import {
   MaterialNotebookNote,
   WorkspaceNotebookNote,
@@ -20,6 +19,7 @@ import NotebookItemOrphanBadge from "./notebook-item-orphan-badge";
 import { resolveNotebookContextOrphanStatus } from "../helpers/notebook-annotation-status";
 import { useNotebookNoteItemCore } from "../hooks/useNotebookNoteItemCore";
 import { useNotebookContextHighlightUpgrade } from "../hooks/useNotebookContextHighlightUpgrade";
+import NotebookNoteEditor from "../notebook-note-editor";
 
 export type NotebookWorkspaceNoteItemProps = Omit<
   NotebookNoteItemProps,
@@ -152,19 +152,9 @@ export const NotebookMaterialNoteItem = (
       open={item.open}
       onToggle={() => onToggle(note.id)}
       itemClassName={getNotebookItemClassName(note)}
-      editing={item.isEditing}
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      editPanel={
-        <NotebookNoteEditor
-          mode={item.isDraft ? "create" : "edit"}
-          initialTitle={item.title}
-          initialText={item.bodyHtml}
-          onSave={item.handleEditSave}
-          onCancel={item.handleEditCancel}
-        />
-      }
     />
   );
 };
@@ -242,19 +232,9 @@ export const NotebookContextNoteItem = (
       open={item.open}
       onToggle={() => onToggle(note.id)}
       itemClassName={getNotebookItemClassName(note)}
-      editing={item.isEditing}
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      editPanel={
-        <NotebookNoteEditor
-          mode={item.isDraft ? "create" : "edit"}
-          initialTitle={item.title}
-          initialText={item.bodyHtml}
-          onSave={item.handleEditSave}
-          onCancel={item.handleEditCancel}
-        />
-      }
     />
   );
 };
@@ -332,19 +312,9 @@ export const NotebookContextHighlightItem = (
       onToggle={() => onToggle(note.id)}
       itemClassName={getNotebookItemClassName(note)}
       editing={upgrade.isUpgrading}
-      deleting={item.deleteActive}
       extraActions={extraActions}
       orphaned={orphanStatus?.isOrphaned ?? false}
       titleAdornment={titleAdornment}
-      editPanel={
-        <NotebookNoteEditor
-          mode="edit"
-          initialTitle={upgrade.editorDefaults.title}
-          initialText={upgrade.editorDefaults.text}
-          onSave={upgrade.saveUpgrade}
-          onCancel={upgrade.cancelUpgrade}
-        />
-      }
     />
   );
 };

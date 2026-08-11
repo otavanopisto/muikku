@@ -369,6 +369,20 @@ export interface BeginNotebookV2NoteDeleteFromMaterial {
   (noteId: number): AnyActionType;
 }
 
+/**
+ * BeginNotebookV2NoteEdit
+ */
+export interface BeginNotebookV2NoteEdit {
+  (noteId: number): AnyActionType;
+}
+
+/**
+ * CancelNotebookV2NoteEdit
+ */
+export interface CancelNotebookV2NoteEdit {
+  (noteId: number): AnyActionType;
+}
+
 // SMALL Helper functions
 
 type NotebookV2Dispatch = (
@@ -1148,6 +1162,35 @@ const setNotebookV2WorkspaceDraftPosition: SetNotebookV2WorkspaceDraftPosition =
   };
 
 /**
+ * Begin edit UI for a saved note.
+ * @param noteId noteId
+ */
+const beginNotebookV2NoteEdit: BeginNotebookV2NoteEdit =
+  function beginNotebookV2NoteEdit(noteId) {
+    return (dispatch, getState) => {
+      const notes = getState().notebookV2.notes ?? [];
+      const note = notes.find((n) => n.id === noteId);
+      if (!note || !isNotebookNoteEditable(note)) {
+        return;
+      }
+      dispatch({
+        type: "NOTEBOOK_V2_SET_NOTE_UI",
+        payload: { noteId, mode: { kind: "editing" } },
+      });
+    };
+  };
+/**
+ * Cancel edit UI for a note.
+ * @param noteId noteId
+ */
+const cancelNotebookV2NoteEdit: CancelNotebookV2NoteEdit =
+  function cancelNotebookV2NoteEdit(noteId) {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_CLEAR_NOTE_UI", payload: noteId });
+    };
+  };
+
+/**
  * Begin context highlight upgrade in notebook UI.
  * @param highlightId highlightId
  */
@@ -1169,12 +1212,6 @@ const beginNotebookV2ContextHighlightUpgrade: BeginNotebookV2ContextHighlightUpg
       dispatch({
         type: "NOTEBOOK_V2_SET_NOTE_UI",
         payload: { noteId: highlightId, mode: { kind: "upgrading" } },
-      });
-      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE", payload: highlightId });
-      // Open notebook tab (same flag drafts use)
-      dispatch({
-        type: "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
-        payload: undefined,
       });
     };
   };
@@ -1355,6 +1392,10 @@ export {
   beginNotebookV2ContextHighlightUpgrade,
   cancelNotebookV2ContextHighlightUpgrade,
   upgradeNotebookV2ContextHighlight,
+
+  // Saved note UI: edit
+  beginNotebookV2NoteEdit,
+  cancelNotebookV2NoteEdit,
 
   // Saved note UI: delete confirm
   beginNotebookV2NoteDelete,

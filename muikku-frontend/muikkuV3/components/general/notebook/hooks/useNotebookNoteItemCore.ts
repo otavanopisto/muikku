@@ -61,13 +61,17 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
   /**
    * Toggle delete confirmation UI.
    */
-  const toggleDelete = React.useCallback(() => {
-    if (deleteActive) {
-      dispatch(cancelNotebookV2NoteDelete(note.id));
-      return;
-    }
-    dispatch(beginNotebookV2NoteDelete(note.id));
-  }, [deleteActive, dispatch, note.id]);
+  const toggleDelete = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.stopPropagation();
+      if (deleteActive) {
+        dispatch(cancelNotebookV2NoteDelete(note.id));
+        return;
+      }
+      dispatch(beginNotebookV2NoteDelete(note.id));
+    },
+    [deleteActive, dispatch, note.id]
+  );
 
   /**
    * Handles the delete confirm action.

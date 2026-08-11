@@ -7,7 +7,6 @@ import { IconButton } from "../../button";
 import { useDispatch } from "react-redux";
 import { beginNotebookV2MaterialNoteDraft } from "~/actions/notebook/notebookV2";
 import { useTranslation } from "react-i18next";
-import { NotebookAnimatedDrawer } from "../notebook-animate-drawer";
 
 /**
  * NotebookMaterialPageGroupProps
@@ -78,20 +77,6 @@ const NotebookMaterialPageGroupView = (
             </Dropdown>
           </div>
         )}
-      </div>
-
-      <div className="notebook__page-group-editor">
-        <NotebookAnimatedDrawer isOpen={!!materialNoteDraft}>
-          {materialNoteDraft && (
-            <NotebookNoteItem
-              note={materialNoteDraft}
-              isDraft
-              open
-              materialHtml={page.html}
-              onToggle={() => {}}
-            />
-          )}
-        </NotebookAnimatedDrawer>
       </div>
 
       {hasMaterialNotes &&
