@@ -1988,8 +1988,11 @@
       "edit": "Muokkaa muistiinpanoa",
       "hideContent": "Piilota sisältö",
       "organize": "Järjestele muistiinpanoja",
-      "remove": "Poista muistiinpano",
-      "showContent": "Näytä sisältö"
+      "remove": "Poista",
+      "remove_highlight": "Poista korostus",
+      "remove_note": "Poista muistiinpano",
+      "showContent": "Näytä sisältö",
+      "upgrade": "Muuta muistiinpanoksi"
     },
     "content": {
       "empty": "Ei muistiinpanoja",

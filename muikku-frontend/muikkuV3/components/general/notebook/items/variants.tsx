@@ -57,7 +57,10 @@ export const NotebookWorkspaceNoteItem = (
         </Dropdown>
       )}
       {item.canDelete && !item.isEditing && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "note" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -131,7 +134,10 @@ export const NotebookMaterialNoteItem = (
         </Dropdown>
       )}
       {item.canDelete && !item.isEditing && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "note" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -209,7 +215,10 @@ export const NotebookContextNoteItem = (
         </Dropdown>
       )}
       {item.canDelete && !item.isEditing && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "note" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -278,10 +287,10 @@ export const NotebookContextHighlightItem = (
   const extraActions = (
     <>
       {!upgrade.isUpgrading && !item.deleteActive && (
-        <Dropdown openByHover content={<p>Upgrade to note</p>}>
+        <Dropdown openByHover content={<p>{t("actions.upgrade")}</p>}>
           <IconButton
             icon="plus"
-            aria-label="Upgrade to note"
+            aria-label={t("actions.upgrade")}
             onClick={() => {
               item.cancelDelete();
               upgrade.beginUpgrade();
@@ -291,7 +300,10 @@ export const NotebookContextHighlightItem = (
         </Dropdown>
       )}
       {item.canDelete && !upgrade.isUpgrading && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "highlight" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}

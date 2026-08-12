@@ -47,11 +47,11 @@ const MaterialContextNote = (props: MaterialContextNoteProps) => {
             key="delete"
             icon="trash"
             iconPosition="left"
-            aria-label={t("actions.remove", { defaultValue: "Remove" })}
-            title={t("actions.remove", { defaultValue: "Remove" })}
+            aria-label={t("actions.remove", { context: "note" })}
+            title={t("actions.remove", { context: "note" })}
             onClick={() => handleDelete(closeDropdown)}
           >
-            {t("actions.remove", { defaultValue: "Remove" })}
+            {t("actions.remove", { context: "note" })}
           </Button>
         ),
       ]
@@ -67,7 +67,7 @@ const MaterialContextNote = (props: MaterialContextNoteProps) => {
 
   return (
     <Dropdown
-      modifier="material-highlight"
+      modifier="material-annotation"
       items={menuItems}
       openByHover={false}
       closeOnClick={true}

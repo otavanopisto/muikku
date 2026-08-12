@@ -316,10 +316,7 @@ const NotebookNoteEditorDialog = () => {
     session?.kind === "draft"
       ? t("actions.add", { ns: "notebook" })
       : session?.kind === "upgrade"
-        ? t("actions.addComment", {
-            ns: "notebook",
-            defaultValue: "Upgrade to note",
-          })
+        ? t("actions.upgrade", { ns: "notebook" })
         : t("actions.edit", { ns: "notebook" });
 
   /**

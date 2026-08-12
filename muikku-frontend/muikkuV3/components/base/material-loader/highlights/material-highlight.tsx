@@ -21,7 +21,7 @@ const MaterialHighlight = (props: MaterialHighlightProps) => {
   const { highlightId, kind, children } = props;
 
   if (!Number.isFinite(highlightId)) {
-    return <span className="material-highlight">{children}</span>;
+    return <span className="material-annotation">{children}</span>;
   }
 
   switch (kind) {

@@ -75,9 +75,9 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
     const isActive = activeItemId === highlightId;
 
     const classes = [
-      "material-highlight",
-      `material-highlight--${kind}`,
-      isActive ? "material-highlight--active" : "",
+      "material-annotation",
+      `material-annotation--${kind}`,
+      isActive ? "material-annotation--active" : "",
       className,
     ]
       .filter(Boolean)
@@ -87,8 +87,8 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
       <span
         ref={ref}
         className={classes}
-        data-muikku-highlight-id={highlightId.toString()}
-        data-muikku-highlight-kind={kind}
+        data-muikku-annotation-id={highlightId.toString()}
+        data-muikku-annotation-kind={kind}
         role="button"
         tabIndex={0}
         onClick={handleClick}

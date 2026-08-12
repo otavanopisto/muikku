@@ -1163,8 +1163,8 @@ mark[data-muikku-word-definition] {
 
 // HIGHLIGTH TEXT
 .material-text-highlight {
-  background: $color-material-highlight-text-background;
-  border-left: 3px solid $color-material-highlight-text-border;
+  background: $color-material-annotation-text-background;
+  border-left: 3px solid $color-material-annotation-text-border;
   border-radius: 0;
   color: $color-default-contrast;
   display: inline-block;
@@ -1433,49 +1433,49 @@ audio {
   }
 }
 
-.material-highlight {
+.material-annotation {
   background: rgba(255, 230, 128, 0.65);
   border-radius: 2px;
   cursor: pointer;
 }
 
-.material-highlight--note {
+.material-annotation--note {
   background: rgba(255, 220, 120, 0.75);
   text-decoration: underline;
 }
 
-.material-highlight--note-draft {
+.material-annotation--note-draft {
   background: rgba(255, 220, 120, 0.45);
   outline: 2px dashed rgba(255, 165, 0, 0.75);
   text-decoration: underline;
   border-radius: 2px;
 }
 
-.material-highlight--highlight {
+.material-annotation--highlight {
   background: rgba(160, 220, 255, 0.55);
 }
 
 // Active ring follows the same palette as each highlight kind
-.material-highlight--active {
+.material-annotation--active {
   outline-offset: 2px;
 }
-.material-highlight--active[data-muikku-highlight-kind="highlight"] {
+.material-annotation--active[data-muikku-annotation-kind="highlight"] {
   outline: 2px solid rgba(90, 175, 215, 0.95);
   box-shadow: 0 0 0 2px rgba(160, 220, 255, 0.55);
   background: rgba(160, 220, 255, 0.75);
 }
-.material-highlight--active[data-muikku-highlight-kind="note"] {
+.material-annotation--active[data-muikku-annotation-kind="note"] {
   outline: 2px solid rgba(210, 150, 40, 0.95);
   box-shadow: 0 0 0 2px rgba(255, 220, 120, 0.5);
   background: rgba(255, 220, 120, 0.9);
 }
-.material-highlight--active[data-muikku-highlight-kind="note-draft"] {
+.material-annotation--active[data-muikku-annotation-kind="note-draft"] {
   outline: 2px dashed rgba(255, 165, 0, 0.95);
   box-shadow: 0 0 0 2px rgba(255, 200, 80, 0.35);
   background: rgba(255, 220, 120, 0.65);
 }
-// Fallback: spans without kind (base .material-highlight only)
-.material-highlight--active:not([data-muikku-highlight-kind]) {
+// Fallback: spans without kind (base .material-annotation only)
+.material-annotation--active:not([data-muikku-annotation-kind]) {
   outline: 2px solid rgba(255, 200, 80, 0.95);
   box-shadow: 0 0 0 2px rgba(255, 230, 128, 0.45);
 }

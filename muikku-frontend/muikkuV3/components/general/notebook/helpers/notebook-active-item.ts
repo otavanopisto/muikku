@@ -36,8 +36,8 @@ export function syncActiveMaterialHighlight(activeItemId: number | null): void {
   const root = document.querySelector(MATERIALS_PANEL_SELECTOR) ?? document;
 
   root
-    .querySelectorAll(".material-highlight--active")
-    .forEach((el) => el.classList.remove("material-highlight--active"));
+    .querySelectorAll(".material-annotation--active")
+    .forEach((el) => el.classList.remove("material-annotation--active"));
 
   if (activeItemId == null) {
     return;
@@ -45,9 +45,9 @@ export function syncActiveMaterialHighlight(activeItemId: number | null): void {
 
   root
     .querySelectorAll(
-      `.material-highlight[data-muikku-highlight-id="${activeItemId}"]`
+      `.material-annotation[data-muikku-annotation-id="${activeItemId}"]`
     )
-    .forEach((el) => el.classList.add("material-highlight--active"));
+    .forEach((el) => el.classList.add("material-annotation--active"));
 }
 
 /**
@@ -65,7 +65,7 @@ export function scrollToActiveMaterialItem(
   window.requestAnimationFrame(() => {
     const root = document.querySelector(MATERIALS_PANEL_SELECTOR) ?? document;
     const highlight = root.querySelector(
-      `#p-${workspaceMaterialId} .material-highlight[data-muikku-highlight-id="${activeItemId}"]`
+      `#p-${workspaceMaterialId} .material-annotation[data-muikku-annotation-id="${activeItemId}"]`
     );
     highlight?.scrollIntoView({ behavior: "smooth", block: "center" });
     syncActiveMaterialHighlight(activeItemId);

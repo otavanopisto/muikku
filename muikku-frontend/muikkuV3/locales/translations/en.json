@@ -1988,8 +1988,11 @@
       "edit": "Edit the note",
       "hideContent": "Hide content",
       "organize": "Organize notes",
-      "remove": "Delete the note",
-      "showContent": "Show content"
+      "remove": "Remove",
+      "remove_highlight": "Remove highlight",
+      "remove_note": "Remove note",
+      "showContent": "Show content",
+      "upgrade": "Create note"
     },
     "content": {
       "empty": "No notes",

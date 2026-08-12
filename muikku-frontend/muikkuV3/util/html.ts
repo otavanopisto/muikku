@@ -21,10 +21,10 @@ export const isValidHTML = (str: string): boolean => {
 /** v1 scope: only static rich text; skip widgets/fields/etc. */
 const SKIP_ANCESTOR_SELECTOR = "script, style, iframe, object, noscript";
 
-const ANNOTATION_ATTR = "data-muikku-highlight-id";
-const ANNOTATION_KIND_ATTR = "data-muikku-highlight-kind";
-const ANNOTATION_CLASS = "material-highlight";
-const ANNOTATION_SELECTOR = ".material-highlight, [data-muikku-highlight-id]";
+const ANNOTATION_ATTR = "data-muikku-annotation-id";
+const ANNOTATION_KIND_ATTR = "data-muikku-annotation-kind";
+const ANNOTATION_CLASS = "material-annotation";
+const ANNOTATION_SELECTOR = ".material-annotation, [data-muikku-annotation-id]";
 const NON_ANNOTATABLE_SELECTOR = [
   ".rs_skip_always",
   ".rs_skip",
