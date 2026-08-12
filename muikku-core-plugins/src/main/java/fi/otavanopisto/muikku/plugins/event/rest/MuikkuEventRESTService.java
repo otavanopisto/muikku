@@ -444,6 +444,7 @@ public class MuikkuEventRESTService {
     restEvent.setId(event.getId());
     restEvent.setEventId(event.getEventId());
     restEvent.setEventContainerId(event.getEventContainer().getId());
+    restEvent.setContainerName(event.getEventContainer().getName());
     restEvent.setStart(toOffsetDateTime(event.getStart()));
     restEvent.setEnd(toOffsetDateTime(event.getEnd()));
     restEvent.setAllDay(event.getAllDay());
@@ -451,8 +452,10 @@ public class MuikkuEventRESTService {
     restEvent.setDescription(event.getDescription());
     restEvent.setType(event.getType());
     restEvent.setUserEntityId(event.getUserEntityId());
-    restEvent.setCreator(event.getCreatorEntityId());
     List<MuikkuEventParticipant> participants = eventController.listParticipants(event);
+    restEvent.setCreator(event.getCreatorEntityId());
+    UserEntity creatorEntity = userEntityController.findUserEntityById(event.getCreatorEntityId());
+    restEvent.setCreatorName(userEntityController.getName(creatorEntity, true).getDisplayNameWithLine());
     
     // Privacy checks
 

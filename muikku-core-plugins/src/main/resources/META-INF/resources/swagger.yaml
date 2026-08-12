@@ -18796,6 +18796,9 @@ components:
           description: Event container id
           type: integer
           format: int64
+        containerName:
+          description: Container name
+          type: string
         start:
           description: Start date of the event
           type: string
@@ -18829,6 +18832,9 @@ components:
           description: Creator entity id
           type: integer
           format: int64
+        creatorName:
+          description: Creator name
+          type: string
         editable:
           description: Can the targeted user edit the event
           type: boolean
