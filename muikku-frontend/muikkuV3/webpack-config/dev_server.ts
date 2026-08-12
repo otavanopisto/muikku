@@ -5,7 +5,9 @@ const devServer: Configuration = {
   port: 8000,
   host: "dev.muikkuverkko.fi",
   hot: "only",
-  historyApiFallback: true,
+  historyApiFallback: {
+    disableDotRule: true,
+  },
   client: {
     overlay: true,
     logging: "none",
