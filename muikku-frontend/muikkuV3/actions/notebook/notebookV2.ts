@@ -624,6 +624,10 @@ const updateEditedNotebookV2Entry: UpdateEditedNotebookV2Entry =
         });
         // Replace the note in the store
         replaceNotebookV2Note(dispatch, getState, updatedNote);
+        dispatch({
+          type: "NOTEBOOK_V2_CLEAR_NOTE_UI",
+          payload: data.editedEntry.id,
+        });
         data.success?.();
       } catch (err) {
         if (!isMApiError(err)) {
@@ -1287,17 +1291,6 @@ const upgradeNotebookV2ContextHighlight: UpgradeNotebookV2ContextHighlight =
         data.title,
         data.text
       );
-
-      /* if (!NOTEBOOK_V2_CONTEXT_HIGHLIGHT_UPGRADE_API_ENABLED) {
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.upgradeUnavailable", { ns: "notebook" }),
-            "info"
-          )
-        );
-        data.fail?.();
-        return;
-      } */
 
       try {
         // Update the note

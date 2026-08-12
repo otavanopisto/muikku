@@ -206,13 +206,13 @@ const NotebookNoteEditorDialog = () => {
     }
     if (session.kind === "draft") {
       dispatch(cancelNotebookV2Draft(session.note.id));
-      return;
     }
     if (session.kind === "edit") {
       dispatch(cancelNotebookV2NoteEdit(session.note.id));
-      return;
     }
-    dispatch(cancelNotebookV2ContextHighlightUpgrade(session.note.id));
+    if (session.kind === "upgrade") {
+      dispatch(cancelNotebookV2ContextHighlightUpgrade(session.note.id));
+    }
   }, [dispatch, locked, session]);
 
   /**

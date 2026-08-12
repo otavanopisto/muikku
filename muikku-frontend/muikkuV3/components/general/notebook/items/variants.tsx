@@ -324,6 +324,7 @@ export const NotebookContextHighlightItem = (
       onToggle={() => onToggle(note.id)}
       itemClassName={getNotebookItemClassName(note)}
       editing={upgrade.isUpgrading}
+      deleting={item.deleteActive}
       extraActions={extraActions}
       orphaned={orphanStatus?.isOrphaned ?? false}
       titleAdornment={titleAdornment}
