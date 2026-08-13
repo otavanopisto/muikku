@@ -496,8 +496,8 @@ $color-rangeslider-handle-background: #f2f2f2;
 // Materials specific and extended
 $color-material-citation-background: #f8f8f8;
 $color-material-citation-quote: #bbbbbb;
-$color-material-annotation-text-background: #f8f8f8;
-$color-material-annotation-text-border: #00e3cb;
+$color-material-highlight-text-background: #f8f8f8;
+$color-material-highlight-text-border: #00e3cb;
 $color-material-file-box: #07d2ff;
 $color-material-audio-box: #07d2ff;
 $color-material-link-box: #07d2ff;
@@ -532,6 +532,12 @@ $color-material-visually-guided-styles-record-border: #e80154;
 $color-material-visually-guided-styles-record-background: #f1fcff;
 $color-material-visually-guided-styles-search-border: #2bcbff;
 $color-material-visually-guided-styles-search-background: #f1fcff;
+
+// Annotation
+$color-annotation-highlight: rgba(160 220 255 / 40%);
+$color-annotation-highlight-active: rgba(0 161 255 / 40%);
+$color-annotation-note: rgba(255 220 120 / 35%);
+$color-annotation-note-active: rgba(255 207 118 / 95%);
 
 // Math
 $color-math-editor-background: #ffffff;

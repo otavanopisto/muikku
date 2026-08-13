@@ -47,8 +47,6 @@ const MaterialContextNote = (props: MaterialContextNoteProps) => {
             key="delete"
             icon="trash"
             iconPosition="left"
-            aria-label={t("actions.remove", { context: "note" })}
-            title={t("actions.remove", { context: "note" })}
             onClick={() => handleDelete(closeDropdown)}
           >
             {t("actions.remove", { context: "note" })}

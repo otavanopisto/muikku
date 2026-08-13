@@ -1998,7 +1998,8 @@
       "empty": "Ei muistiinpanoja",
       "defaultPosition": "Uusi muistiinpano luodaan listan ensimmäiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
       "defaultPosition_bottom": "Uusi muistiinpano luodaan listan viimeiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
-      "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
+      "remove": "Oletko varma, että haluat poistaa muistiinpanon?",
+      "remove_highlight": "Oletko varma, että haluat poistaa korostuksen?"
     },
     "labels": {
       "defaultPosition": "Oletussijainti",

@@ -64,8 +64,6 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
             key="upgrade"
             icon="plus"
             iconPosition="left"
-            aria-label={t("actions.upgrade")}
-            title={t("actions.upgrade")}
             onClick={() => handleUpgrade(closeDropdown)}
           >
             {t("actions.upgrade")}
@@ -76,8 +74,6 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
             key="delete"
             icon="trash"
             iconPosition="left"
-            aria-label={t("actions.remove", { context: "highlight" })}
-            title={t("actions.remove", { context: "highlight" })}
             onClick={() => handleDelete(closeDropdown)}
           >
             {t("actions.remove", { context: "highlight" })}

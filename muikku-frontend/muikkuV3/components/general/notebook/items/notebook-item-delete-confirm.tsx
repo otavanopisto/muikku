@@ -121,22 +121,25 @@ const NotebookItemDeleteDialog = () => {
     switch (deletingNote.type) {
       case "WORKSPACE":
         return {
-          title: t("actions.remove", { ns: "notebook" }),
+          title: t("actions.remove", { ns: "notebook", context: "note" }),
           content: t("content.remove", { ns: "notebook" }),
         };
       case "WORKSPACE_MATERIAL":
         return {
-          title: t("actions.remove", { ns: "notebook" }),
+          title: t("actions.remove", { ns: "notebook", context: "note" }),
           content: t("content.remove", { ns: "notebook" }),
         };
       case "WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT":
         return {
-          title: t("actions.remove", { ns: "notebook" }),
-          content: t("content.remove", { ns: "notebook" }),
+          title: t("actions.remove", { ns: "notebook", context: "highlight" }),
+          content: t("content.remove", {
+            ns: "notebook",
+            context: "highlight",
+          }),
         };
       case "WORKSPACE_MATERIAL_CONTEXT_NOTE":
         return {
-          title: t("actions.remove", { ns: "notebook" }),
+          title: t("actions.remove", { ns: "notebook", context: "note" }),
           content: t("content.remove", { ns: "notebook" }),
         };
       default:

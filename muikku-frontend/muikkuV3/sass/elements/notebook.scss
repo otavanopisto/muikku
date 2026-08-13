@@ -87,14 +87,42 @@
   padding: 10px;
   width: 100%;
 
-  &.state-ACTIVE {
-    border: 2px solid blue;
-    padding: 9px;
-    box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.2);
-  }
-
   &.state-DELETING {
     border: 2px solid $color-fatal;
+    padding: 9px;
+  }
+}
+
+.notebook__item--highlight {
+  border-left-color: darken($color-annotation-highlight, 20%);
+  border-left-width: 5px;
+  border-radius: 5px;
+
+  .rich-text blockquote {
+    background-color: lighten($color-annotation-highlight, 10%);
+    border: none;
+  }
+
+  &.state-ACTIVE {
+    border: 2px solid $color-annotation-highlight-active;
+    border-left: 5px solid $color-annotation-highlight-active;
+    padding: 9px;
+  }
+}
+
+.notebook__item--note {
+  border-left-color: darken($color-annotation-note, 20%);
+  border-left-width: 5px;
+  border-radius: 5px;
+
+  .rich-text blockquote {
+    background-color: lighten($color-annotation-note, 10%);
+    border: none;
+  }
+
+  &.state-ACTIVE {
+    border: 2px solid $color-annotation-note-active;
+    border-left: 5px solid $color-annotation-note-active;
     padding: 9px;
   }
 }

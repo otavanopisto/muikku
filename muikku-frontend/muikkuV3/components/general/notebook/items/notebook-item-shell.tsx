@@ -107,7 +107,7 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
         <div className="notebook__item-editor">{editPanel}</div>
       ) : (
         showReadBody && (
-          <AnimateHeight height={open ? "auto" : 40}>
+          <AnimateHeight height={open ? "auto" : 60}>
             <article className="notebook__item-body rich-text">
               <CkeditorContentLoader html={bodyHtml} />
             </article>

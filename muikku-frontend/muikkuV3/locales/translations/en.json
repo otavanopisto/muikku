@@ -1998,7 +1998,8 @@
       "empty": "No notes",
       "defaultPosition": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
       "defaultPosition_bottom": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
-      "remove": "Are you sure you wish to deöete the note?"
+      "remove": "Are you sure you wish to delete the note?",
+      "remove_highlight": "Are you sure you wish to delete the highlight?"
     },
     "labels": {
       "defaultPosition": "Default position",
