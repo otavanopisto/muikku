@@ -49,10 +49,9 @@ export function useNotebookEditableNoteItem(
   const handleEditClick = React.useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       event.stopPropagation();
-      core.cancelDelete();
       dispatch(beginNotebookV2NoteEdit(note.id));
     },
-    [core, dispatch, note.id]
+    [dispatch, note.id]
   );
 
   /**

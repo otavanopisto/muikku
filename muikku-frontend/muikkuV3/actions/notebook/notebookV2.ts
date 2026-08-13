@@ -113,10 +113,6 @@ export type NOTEBOOK_V2_FOCUS_NOTE_CLEAR = SpecificActionType<
   "NOTEBOOK_V2_FOCUS_NOTE_CLEAR",
   void
 >;
-export type NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST = SpecificActionType<
-  "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
-  void
->;
 
 // ACTION CREATOR INTERFACES
 
@@ -283,13 +279,6 @@ export interface ClearNotebookV2DraftsAll {
  * ClearNotebookV2FocusDraft
  */
 export interface ClearNotebookV2FocusDraft {
-  (): AnyActionType;
-}
-
-/**
- * ClearNotebookV2NotebookTabRequest
- */
-export interface ClearNotebookV2NotebookTabRequest {
   (): AnyActionType;
 }
 
@@ -962,19 +951,6 @@ const clearNotebookV2FocusDraft: ClearNotebookV2FocusDraft =
   };
 
 /**
- * Clears the notebook tab request.
- */
-const clearNotebookV2NotebookTabRequest: ClearNotebookV2NotebookTabRequest =
-  function clearNotebookV2NotebookTabRequest() {
-    return (dispatch) => {
-      dispatch({
-        type: "NOTEBOOK_V2_UI_CLEAR_NOTEBOOK_TAB_REQUEST",
-        payload: undefined,
-      });
-    };
-  };
-
-/**
  * Saves the workspace draft.
  * @param data data
  */
@@ -1379,7 +1355,6 @@ export {
   // Shell navigation (scroll / tab — consumed after dispatch)
   clearNotebookV2FocusDraft,
   clearNotebookV2FocusNote,
-  clearNotebookV2NotebookTabRequest,
 
   // Saved note UI: context highlight upgrade
   beginNotebookV2ContextHighlightUpgrade,
