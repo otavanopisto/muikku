@@ -2645,7 +2645,8 @@
       "remove": "Remove event"
     },
     "labels": {
-      "absence": "Absence",
+      "absence": "Absene",
+      "absenceCreator": "Absence creator: {{creator}}",
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
       "absenceEventDescriptionPlaceholder": "Enter the assignments or instructions for the student to make up the absence here.",
@@ -2675,11 +2676,11 @@
       "removing": "Are you sure you want to remove the event?"
     },
     "types": {
-      "LESSON": "Lesson",
-      "LESSON_PRE_ARRANGED": "Lesson (pre-arranged)",
-      "EXAM": "Exam",
-      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session"
+      "LESSON": "Lesson {{container}}",
+      "LESSON_PRE_ARRANGED": "Lesson (pre-arranged) {{container}}",
+      "EXAM": "Exam {{container}}",
+      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting {{container}}",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session {{container}}"
     },
     "reasons": {
       "MEDICAL_REASON": "Medical reason",

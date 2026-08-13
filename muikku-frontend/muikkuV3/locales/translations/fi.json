@@ -2646,6 +2646,7 @@
     },
     "labels": {
       "absence": "Poissaolo",
+      "absenceCreator": "Poissaolon luonut: {{creator}}",
       "absenceDetails": "Poissaolon tiedot",
       "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
       "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
@@ -2675,11 +2676,11 @@
       "removing": "Oletko varma, että haluat poistaa tapahtuman?"
     },
     "types": {
-      "LESSON": "Oppitunti",
-      "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
-      "EXAM": "Koe",
-      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
+      "LESSON": "Oppitunti {{container}}",
+      "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu) {{container}}",
+      "EXAM": "Koe {{container}}",
+      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen {{container}}",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen {{container}}"
     },
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
