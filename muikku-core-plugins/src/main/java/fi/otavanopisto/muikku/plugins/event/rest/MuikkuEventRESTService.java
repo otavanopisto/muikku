@@ -425,7 +425,7 @@ public class MuikkuEventRESTService {
     // If the container is not found, create one
     if (container == null) {
       WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
-      container = eventController.createEventContainer(workspaceEntityId, null, workspaceEntityName != null ? workspaceEntityName.getName() : null);
+      container = eventController.createEventContainer(workspaceEntityId, null, workspaceEntityName != null ? workspaceEntityName.getDisplayName() : null);
     }
     
     return Response.ok(container != null ? container.getId() : null).build();
