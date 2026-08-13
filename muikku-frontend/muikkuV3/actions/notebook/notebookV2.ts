@@ -922,7 +922,7 @@ const beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft =
             start: data.start,
             end: data.end,
             index: data.index,
-            text: `<blockquote><p>${data.selectedText}</p></blockquote>`,
+            text: `<blockquote><p>${data.selectedText}</p></blockquote><p></p>`,
           },
           openNotebookTab: data.openNotebookTab ?? true,
         },
