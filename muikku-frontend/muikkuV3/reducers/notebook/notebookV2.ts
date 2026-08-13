@@ -25,7 +25,6 @@ export interface NoteBookV2State {
   state: ReducerStatusType;
   drafts: NotebookV2DraftsState;
   focusDraftClientId: number | null;
-  openNotebookTabRequest: boolean;
   focusNoteId: number | null; // ADD
   activeItemId: number | null;
   noteUiById: NotebookNoteUiById;
@@ -37,7 +36,6 @@ const initialState: NoteBookV2State = {
   state: "IDLE",
   drafts: EMPTY_NOTEBOOK_V2_DRAFTS,
   focusDraftClientId: null,
-  openNotebookTabRequest: false,
   focusNoteId: null,
   activeItemId: null,
   noteUiById: {},
@@ -89,7 +87,6 @@ export const notebookV2: Reducer<NoteBookV2State> = (
           },
         },
         focusDraftClientId: action.payload.clientId,
-        openNotebookTabRequest: action.payload.openNotebookTab ?? false,
       };
 
     case "NOTEBOOK_V2_BEGIN_CONTEXT_NOTE_DRAFT":
@@ -100,7 +97,6 @@ export const notebookV2: Reducer<NoteBookV2State> = (
           contextNotes: [...state.drafts.contextNotes, action.payload.draft],
         },
         focusDraftClientId: action.payload.draft.clientId,
-        openNotebookTabRequest: action.payload.openNotebookTab ?? false,
       };
 
     case "NOTEBOOK_V2_CANCEL_DRAFT":
@@ -118,18 +114,11 @@ export const notebookV2: Reducer<NoteBookV2State> = (
         action.payload
       );
 
-    case "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST":
-      return {
-        ...state,
-        openNotebookTabRequest: true,
-      };
-
     case "NOTEBOOK_V2_DRAFTS_CLEAR_ALL":
       return {
         ...state,
         drafts: EMPTY_NOTEBOOK_V2_DRAFTS,
         focusDraftClientId: null,
-        openNotebookTabRequest: false,
         activeItemId: null,
         noteUiById: {},
         focusNoteId: null,
@@ -139,12 +128,6 @@ export const notebookV2: Reducer<NoteBookV2State> = (
       return {
         ...state,
         focusDraftClientId: null,
-      };
-
-    case "NOTEBOOK_V2_UI_CLEAR_NOTEBOOK_TAB_REQUEST":
-      return {
-        ...state,
-        openNotebookTabRequest: false,
       };
 
     case "NOTEBOOK_V2_SET_ACTIVE_ITEM":
