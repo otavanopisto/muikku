@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import {
   getNotebookItemClassName,
   getNotebookNoteBodyHtml,
-  getNotebookNoteListTitle,
 } from "../helpers/notebook-display";
 import { useNotebookEditableNoteItem } from "../hooks/useNotebookEditableNoteItem";
 import NotebookItemShell from "./notebook-item-shell";
@@ -235,7 +234,6 @@ export const NotebookContextNoteItem = (
       active={item.activeItemId === note.id}
       orphaned={orphanStatus?.isOrphaned ?? false}
       onActivate={item.handleActivate}
-      title={item.title}
       titleAdornment={titleAdornment}
       bodyHtml={item.bodyHtml}
       open={item.open}
@@ -318,7 +316,6 @@ export const NotebookContextHighlightItem = (
       noteId={note.id}
       active={item.activeItemId === note.id}
       onActivate={item.handleActivate}
-      title={getNotebookNoteListTitle(note)}
       bodyHtml={getNotebookNoteBodyHtml(note)}
       open={open}
       onToggle={() => onToggle(note.id)}

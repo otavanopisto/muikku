@@ -120,3 +120,17 @@ export function buildEditedNotebookNote(
 
   return null;
 }
+
+/**
+ * Resolves whether to show the title input.
+ * @param note note
+ */
+export function resolveShowTitle(note: NotebookNote): boolean {
+  switch (note.type) {
+    case NotebookNoteType.Workspace:
+    case NotebookNoteType.WorkspaceMaterial:
+      return true;
+    default:
+      return false;
+  }
+}
