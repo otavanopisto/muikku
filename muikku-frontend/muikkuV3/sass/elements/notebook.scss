@@ -108,6 +108,12 @@
     border-left: 5px solid $color-annotation-highlight-active;
     padding: 9px;
   }
+
+  &.state-DELETING {
+    border: 2px solid $color-fatal;
+    border-left: 5px solid $color-fatal;
+    padding: 9px;
+  }
 }
 
 .notebook__item--note {
@@ -123,6 +129,12 @@
   &.state-ACTIVE {
     border: 2px solid $color-annotation-note-active;
     border-left: 5px solid $color-annotation-note-active;
+    padding: 9px;
+  }
+
+  &.state-DELETING {
+    border: 2px solid $color-fatal;
+    border-left: 5px solid $color-fatal;
     padding: 9px;
   }
 }
