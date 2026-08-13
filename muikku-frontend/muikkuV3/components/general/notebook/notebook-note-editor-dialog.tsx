@@ -20,6 +20,7 @@ import {
   buildEditedNotebookNote,
   getNotebookNoteBodyHtml,
   getNotebookNoteListTitle,
+  resolveShowTitle,
 } from "./helpers/notebook-display";
 import {
   contextNoteDraftToNotebookNote,
@@ -37,11 +38,12 @@ import { unstable_batchedUpdates } from "react-dom";
 import "~/sass/elements/form.scss";
 
 type EditorSession =
-  | { kind: "draft"; note: NotebookNote }
-  | { kind: "edit"; note: NotebookNote }
+  | { kind: "draft"; note: NotebookNote; useTitle: boolean }
+  | { kind: "edit"; note: NotebookNote; useTitle: boolean }
   | {
       kind: "upgrade";
       note: NotebookNote;
+      useTitle: boolean;
       initialTitle: string;
       initialText: string;
     };
@@ -127,6 +129,7 @@ function resolveEditorSession(
         note,
         initialTitle: defaults.title,
         initialText: defaults.text,
+        useTitle: resolveShowTitle(note),
       };
     }
   }
@@ -136,7 +139,7 @@ function resolveEditorSession(
   if (editingId != null) {
     const note = state.notes?.find((n) => n.id === editingId);
     if (note && !isNotebookWorkspaceNote(note)) {
-      return { kind: "edit", note };
+      return { kind: "edit", note, useTitle: resolveShowTitle(note) };
     }
   }
 
@@ -150,7 +153,7 @@ function resolveEditorSession(
     }
     const note = draftNoteByClientId(state.drafts, draftClientId, owner);
     if (note) {
-      return { kind: "draft", note };
+      return { kind: "draft", note, useTitle: resolveShowTitle(note) };
     }
   }
   return null;
@@ -188,11 +191,15 @@ const NotebookNoteEditorDialog = () => {
         return;
       }
       if (session.kind === "upgrade") {
-        setTitle(session.initialTitle);
+        if (session.useTitle) {
+          setTitle(session.initialTitle);
+        }
         setText(session.initialText);
         return;
       }
-      setTitle(getNotebookNoteListTitle(session.note));
+      if (session.useTitle) {
+        setTitle(getNotebookNoteListTitle(session.note));
+      }
       setText(getNotebookNoteBodyHtml(session.note));
     });
   }, [session]);
@@ -323,23 +330,25 @@ const NotebookNoteEditorDialog = () => {
    * Dialog content.
    */
   const content = () => [
-    <div className="env-dialog__row" key="notebook-note-editor-title">
-      <div className="env-dialog__form-element-container">
-        <label
-          htmlFor="notebook-note-editor-title"
-          className="env-dialog__label"
-        >
-          {t("labels.title", { ns: "common" })}
-        </label>
-        <input
-          id="notebook-note-editor-title"
-          className="env-dialog__input"
-          value={title}
-          onChange={handleTitleChange}
-          autoFocus
-        />
+    (session?.useTitle ?? false) && (
+      <div className="env-dialog__row" key="notebook-note-editor-title">
+        <div className="env-dialog__form-element-container">
+          <label
+            htmlFor="notebook-note-editor-title"
+            className="env-dialog__label"
+          >
+            {t("labels.title", { ns: "common" })}
+          </label>
+          <input
+            id="notebook-note-editor-title"
+            className="env-dialog__input"
+            value={title}
+            onChange={handleTitleChange}
+            autoFocus
+          />
+        </div>
       </div>
-    </div>,
+    ),
     <div
       className="env-dialog__row env-dialog__row--ckeditor"
       key="notebook-note-editor-content"

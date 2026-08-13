@@ -12,7 +12,7 @@ export interface NotebookItemShellProps {
   noteId?: number;
   active?: boolean;
   onActivate?: () => void;
-  title: string;
+  title?: string;
   open: boolean;
   onToggle: () => void;
   itemClassName?: string;
@@ -77,7 +77,8 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
       <div className="notebook__item-header">
         <div className="notebook__item-title">
           {titleAdornment}
-          <span className="notebook__item-title-text">{title}</span>
+
+          {title && <span className="notebook__item-title-text">{title}</span>}
         </div>
         <div className="notebook__item-actions">
           {!editing && (

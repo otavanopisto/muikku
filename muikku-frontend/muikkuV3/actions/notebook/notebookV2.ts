@@ -791,18 +791,18 @@ const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
         data.fail?.();
         return;
       }
-      // Trim the selected text
-      const trimmed = data.selectedText.trim();
+      // Trim the selected text (not used temporarily)
+      // const trimmed = data.selectedText.trim();
 
       // Generate the title from the selected text
       // If the selected text is longer than 60 characters, truncate it and add "..."
-      const title =
-        trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}...`;
+      // const title =
+      //   trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}...`;
       try {
         // Create the note
         const note = await workspaceNotesApi.createWorkspaceNote({
           createWorkspaceNoteRequest: {
-            title,
+            title: "",
             text: "<p></p>",
             workspaceEntityId: workspaceId,
             workspaceMaterialId: data.workspaceMaterialId,
@@ -1262,11 +1262,7 @@ const upgradeNotebookV2ContextHighlight: UpgradeNotebookV2ContextHighlight =
         return;
       }
 
-      const upgradedNote = buildUpgradedContextNote(
-        highlight,
-        data.title,
-        data.text
-      );
+      const upgradedNote = buildUpgradedContextNote(highlight, data.text);
 
       try {
         // Update the note

@@ -35,12 +35,10 @@ export function getContextHighlightUpgradeEditorDefaults(
 /**
  * Build upgraded context note.
  * @param highlight highlight
- * @param title title
  * @param text text
  */
 export function buildUpgradedContextNote(
   highlight: ContextHighlightNote,
-  title: string,
   text: string
 ): Extract<
   NotebookNote,
@@ -49,7 +47,7 @@ export function buildUpgradedContextNote(
   return {
     ...highlight,
     type: NotebookNoteType.WorkspaceMaterialContextNote,
-    title,
+    title: "",
     text,
   };
 }
