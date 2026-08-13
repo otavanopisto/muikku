@@ -444,7 +444,6 @@ public class MuikkuEventRESTService {
     restEvent.setId(event.getId());
     restEvent.setEventId(event.getEventId());
     restEvent.setEventContainerId(event.getEventContainer().getId());
-    restEvent.setContainerName(event.getEventContainer().getName());
     restEvent.setStart(toOffsetDateTime(event.getStart()));
     restEvent.setEnd(toOffsetDateTime(event.getEnd()));
     restEvent.setAllDay(event.getAllDay());
@@ -456,6 +455,18 @@ public class MuikkuEventRESTService {
     restEvent.setCreator(event.getCreatorEntityId());
     UserEntity creatorEntity = userEntityController.findUserEntityById(event.getCreatorEntityId());
     restEvent.setCreatorName(userEntityController.getName(creatorEntity, true).getDisplayNameWithLine());
+    
+    // Container name
+    String containerName = event.getEventContainer().getName();
+    // This check is needed here because the old containers only have the workspace name stored, not the display name.
+    if (!containerName.endsWith(")") && event.getEventContainer().getWorkspaceEntityId() != null) {
+
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(event.getEventContainer().getWorkspaceEntityId());
+
+      containerName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+    }
+
+    restEvent.setContainerName(containerName);
     
     // Privacy checks
 
