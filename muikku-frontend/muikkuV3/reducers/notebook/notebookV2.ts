@@ -20,7 +20,7 @@ export type NotebookNoteUiById = Record<number, NotebookNoteUiMode>;
  * NoteBookV2State
  */
 export interface NoteBookV2State {
-  notes: NotebookNote[] | null;
+  notes: NotebookNote[];
   workspaceNotesOrder: number[];
   state: ReducerStatusType;
   drafts: NotebookV2DraftsState;
@@ -32,7 +32,7 @@ export interface NoteBookV2State {
 }
 
 const initialState: NoteBookV2State = {
-  notes: null,
+  notes: [],
   workspaceNotesOrder: [],
   state: "IDLE",
   drafts: EMPTY_NOTEBOOK_V2_DRAFTS,

@@ -51,7 +51,7 @@ const Notebook = (props: NotebookProps) => {
 
   const viewModel = useNotebookViewModel();
 
-  const { notes, state, drafts } = notebookV2;
+  const { state, drafts } = notebookV2;
 
   const workspaceDraftNotePosition = drafts.workspaceNote?.position;
 
@@ -119,7 +119,7 @@ const Notebook = (props: NotebookProps) => {
 
   useDismissNotebookActiveItem(activeItemId, handleDismissActiveItem);
 
-  const isLoading = state === "LOADING" || notes === null;
+  const isLoading = state === "LOADING";
 
   return (
     <div className="notebook">

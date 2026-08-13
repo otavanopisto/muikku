@@ -8,6 +8,7 @@ import {
   deleteNotebookV2Entry,
 } from "~/actions/notebook/notebookV2";
 import { StateType } from "~/reducers";
+import { NotebookNote } from "~/generated/client";
 
 /**
  * Finds note id currently in deleting UI mode, if any.
@@ -26,6 +27,23 @@ function getDeletingNoteId(
 }
 
 /**
+ * Finds note by id.
+ * @param noteId noteId
+ * @param notes notes
+ */
+function getDeletingNote(
+  noteId: number | null,
+  notes: NotebookNote[]
+): NotebookNote | null {
+  for (const note of notes) {
+    if (note.id === noteId) {
+      return note;
+    }
+  }
+  return null;
+}
+
+/**
  * Controlled delete confirmation dialog for notebook notes.
  * Opened from notebook items and material highlight menus via Redux.
  */
@@ -35,7 +53,9 @@ const NotebookItemDeleteDialog = () => {
   const noteUiById = useSelector(
     (state: StateType) => state.notebookV2.noteUiById
   );
+  const notes = useSelector((state: StateType) => state.notebookV2.notes);
   const deletingNoteId = getDeletingNoteId(noteUiById);
+  const deletingNote = getDeletingNote(deletingNoteId, notes);
   const isOpen = deletingNoteId != null;
   const [locked, setLocked] = React.useState(false);
 
@@ -86,9 +106,48 @@ const NotebookItemDeleteDialog = () => {
   }, [deletingNoteId, dispatch, locked]);
 
   /**
+   * Returns title of the dialog based on the note type.
+   */
+  const titleAndContentByType = () => {
+    const defaultResult = {
+      title: t("actions.remove", { ns: "notebook" }),
+      content: t("content.remove", { ns: "notebook" }),
+    };
+
+    if (!deletingNote) {
+      return defaultResult;
+    }
+
+    switch (deletingNote.type) {
+      case "WORKSPACE":
+        return {
+          title: t("actions.remove", { ns: "notebook" }),
+          content: t("content.remove", { ns: "notebook" }),
+        };
+      case "WORKSPACE_MATERIAL":
+        return {
+          title: t("actions.remove", { ns: "notebook" }),
+          content: t("content.remove", { ns: "notebook" }),
+        };
+      case "WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT":
+        return {
+          title: t("actions.remove", { ns: "notebook" }),
+          content: t("content.remove", { ns: "notebook" }),
+        };
+      case "WORKSPACE_MATERIAL_CONTEXT_NOTE":
+        return {
+          title: t("actions.remove", { ns: "notebook" }),
+          content: t("content.remove", { ns: "notebook" }),
+        };
+      default:
+        return defaultResult;
+    }
+  };
+
+  /**
    * Content of the dialog.
    */
-  const content = () => <div>{t("content.remove", { ns: "notebook" })}</div>;
+  const content = () => <div>{titleAndContentByType().content}</div>;
 
   /**
    * Footer of the dialog.
@@ -116,7 +175,7 @@ const NotebookItemDeleteDialog = () => {
   return (
     <Dialog
       modifier="delete-notebook-note"
-      title={t("actions.remove", { ns: "notebook" })}
+      title={titleAndContentByType().title}
       content={content}
       footer={footer}
       isOpen={isOpen}
