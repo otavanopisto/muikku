@@ -764,18 +764,16 @@ class WorkspaceMaterials extends React.Component<
           openByHover
           content={
             <p>
-              {this.props.t("actions.addNote", {
+              {this.props.t("actions.add", {
                 ns: "notebook",
-                defaultValue: "Add note",
               })}
             </p>
           }
         >
           <IconButton
             icon="plus"
-            aria-label={this.props.t("actions.addNote", {
+            aria-label={this.props.t("actions.add", {
               ns: "notebook",
-              defaultValue: "Add note",
             })}
             buttonModifiers={["notebook-action"]}
             disablePropagation={true}

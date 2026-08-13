@@ -113,7 +113,10 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
     <section className="notebook__section">
       <div className="notebook__section-header">
         <h3 className="notebook__section-title">
-          Työtilan yleiset muistiinpanot
+          {t("labels.noteSectionTitle", {
+            ns: "notebook",
+            context: "workspace",
+          })}
         </h3>
         <div className="notebook__section-actions">
           <Dropdown openByHover content={<p>{t("actions.add")}</p>}>

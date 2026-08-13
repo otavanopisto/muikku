@@ -48,7 +48,12 @@ const NotebookMaterialSection = (props: NotebookMaterialSectionProps) => {
   return (
     <section className="notebook__section notebook__section--material">
       <div className="notebook__section-header notebook__section-header--material">
-        <h3 className="notebook__section-title">Sivukohtaiset muistiinpanot</h3>
+        <h3 className="notebook__section-title">
+          {t("labels.noteSectionTitle", {
+            ns: "notebook",
+            context: "page",
+          })}
+        </h3>
         <div className="notebook__section-actions">
           <Dropdown
             openByHover

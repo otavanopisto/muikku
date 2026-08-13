@@ -2003,6 +2003,9 @@
     },
     "labels": {
       "defaultPosition": "Oletussijainti",
+      "noteSectionTitle": "Muistiinpanot",
+      "noteSectionTitle_workspace": "Kurssin muistiinpanot",
+      "noteSectionTitle_page": "Sivujen muistiinpanot",
       "orphanedNote": "Vanhentunut"
     },
     "notifications": {

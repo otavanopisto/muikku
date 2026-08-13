@@ -60,9 +60,9 @@ const NotebookMaterialPageGroupView = (
   return (
     <div className="notebook__page-group">
       <div className="notebook__page-group-header">
-        <h4 className="notebook__page-group-title">
+        <div className="notebook__page-group-title">
           {page.title} {!pageExists ? "(Page does not exist)" : ""}
-        </h4>
+        </div>
 
         {pageExists && (
           <div className="notebook__page-group-actions">

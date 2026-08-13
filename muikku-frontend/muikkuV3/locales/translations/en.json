@@ -2003,6 +2003,9 @@
     },
     "labels": {
       "defaultPosition": "Default position",
+      "noteSectionTitle": "Notes",
+      "noteSectionTitle_workspace": "Course Notes",
+      "noteSectionTitle_page": "Page Notes",
       "orphanedNote": "Obsolete"
     },
     "notifications": {
