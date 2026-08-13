@@ -55,27 +55,22 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
       case AbsenceEventEnum.Lesson:
         return t("types.LESSON", {
           ns: "events",
-          container: "-" + (event.containerName ?? ""),
         });
       case AbsenceEventEnum.LessonPreArranged:
         return t("types.LESSON_PRE_ARRANGED", {
           ns: "events",
-          container: "-" + (event.containerName ?? ""),
         });
       case AbsenceEventEnum.Exam:
         return t("types.EXAM", {
           ns: "events",
-          container: "-" + (event.containerName ?? ""),
         });
       case AbsenceEventEnum.SkillsDemonstrationMeeting:
         return t("types.SKILLS_DEMONSTRATION_MEETING", {
           ns: "events",
-          container: "-" + (event.containerName ?? ""),
         });
       case AbsenceEventEnum.GuidanceOrSupportSession:
         return t("types.GUIDANCE_OR_SUPPORT_SESSION", {
           ns: "events",
-          container: "-" + (event.containerName ?? ""),
         });
     }
   };
@@ -101,7 +96,10 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
       customDate={eventDate}
       modifier={modifier}
       state={absenceState}
-      title={absentFromLabel()}
+      title={
+        absentFromLabel() +
+        (event.containerName ? " - " + event.containerName : "")
+      }
     >
       <div className="wall-event">
         {event.description && (
@@ -109,14 +107,7 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             {event.description}
           </div>
         )}
-        {event.creatorName && (
-          <div className="wall-event__creator-name">
-            {t("labels.absenceCreator", {
-              ns: "events",
-              creator: event.creatorName,
-            })}
-          </div>
-        )}
+
         {event.properties && (
           <div className="wall-event__body">
             {event.properties.map((prop) =>
@@ -150,7 +141,14 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             )}
           </div>
         )}
-
+        {event.creatorName && (
+          <div className="wall-event__creator-name">
+            {t("labels.absenceCreator", {
+              ns: "events",
+              creator: event.creatorName,
+            })}
+          </div>
+        )}
         {actions && <div className="wall-event__footer">{actions}</div>}
       </div>
     </WallItem>
