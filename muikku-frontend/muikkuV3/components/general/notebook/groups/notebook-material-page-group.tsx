@@ -79,33 +79,36 @@ const NotebookMaterialPageGroupView = (
         )}
       </div>
 
-      {hasMaterialNotes &&
-        materialNoteNonDrafts.map((note) => (
-          <NotebookNoteItem
-            key={note.id}
-            note={note}
-            open={isOpen(note.id)}
-            onToggle={onToggle}
-            materialHtml={page.html}
-            isDraft={isNotebookDraftId(note.id)}
-          />
-        ))}
+      {hasMaterialNotes && (
+        <div className="notebook__page-group-body">
+          {materialNoteNonDrafts.map((note) => (
+            <NotebookNoteItem
+              key={note.id}
+              note={note}
+              open={isOpen(note.id)}
+              onToggle={onToggle}
+              materialHtml={page.html}
+              isDraft={isNotebookDraftId(note.id)}
+            />
+          ))}
 
-      {hasMaterialNotes && hasContextItems && (
-        <div className="notebook__page-group-divider" />
+          {hasMaterialNotes && hasContextItems && (
+            <div className="notebook__page-group-divider" />
+          )}
+
+          {hasContextItems &&
+            contextItems.map((note) => (
+              <NotebookNoteItem
+                key={note.id}
+                note={note}
+                open={isOpen(note.id)}
+                onToggle={onToggle}
+                materialHtml={page.html}
+                isDraft={isNotebookDraftId(note.id)}
+              />
+            ))}
+        </div>
       )}
-
-      {hasContextItems &&
-        contextItems.map((note) => (
-          <NotebookNoteItem
-            key={note.id}
-            note={note}
-            open={isOpen(note.id)}
-            onToggle={onToggle}
-            materialHtml={page.html}
-            isDraft={isNotebookDraftId(note.id)}
-          />
-        ))}
     </div>
   );
 };

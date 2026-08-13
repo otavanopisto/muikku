@@ -284,6 +284,12 @@
   margin: 20px;
 }
 
+.notebook__page-group-body {
+  border-left: 1px solid $color-default-separator-border;
+  margin: 0 0 0 5px;
+  padding: 0 0 0 10px;
+}
+
 .notebook__item-editor {
   margin-top: 0.5rem;
 }
