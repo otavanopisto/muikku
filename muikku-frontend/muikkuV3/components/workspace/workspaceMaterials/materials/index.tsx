@@ -771,7 +771,7 @@ class WorkspaceMaterials extends React.Component<
           }
         >
           <IconButton
-            icon="plus"
+            icon="note-add"
             aria-label={this.props.t("actions.add", {
               ns: "notebook",
             })}

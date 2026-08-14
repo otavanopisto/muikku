@@ -2825,6 +2825,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Listen to selected text"
+    },
     "messages": {
       "assignment": "Assignment",
       "assignment_audio": "Audio assignment",

@@ -287,7 +287,7 @@ export const NotebookContextHighlightItem = (
       {!upgrade.isUpgrading && !item.deleteActive && (
         <Dropdown openByHover content={<p>{t("actions.upgrade")}</p>}>
           <IconButton
-            icon="plus"
+            icon="note-add"
             aria-label={t("actions.upgrade")}
             onClick={() => {
               item.cancelDelete();

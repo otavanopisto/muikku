@@ -33,7 +33,7 @@ export function createReadSpeakerListenAction(
   return {
     id: "readspeaker-listen",
     label: "Kuuntele valittu teksti",
-    icon: "paper-plane",
+    icon: "sounds_on",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
       options.enabled &&

@@ -2825,6 +2825,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Kuuntele valittu teksti"
+    },
     "messages": {
       "assignment": "Tehtävä",
       "assignment_audio": "Äänitystehtävä",

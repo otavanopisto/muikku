@@ -121,7 +121,7 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
         <div className="notebook__section-actions">
           <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
             <IconButton
-              icon="plus"
+              icon="note-add"
               aria-label={t("actions.add")}
               buttonModifiers={["notebook-action"]}
               onClick={handleAddClick}

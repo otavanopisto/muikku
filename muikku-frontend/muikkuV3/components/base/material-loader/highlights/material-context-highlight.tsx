@@ -62,7 +62,7 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
         (closeDropdown: () => void) => (
           <Button
             key="upgrade"
-            icon="plus"
+            icon="note-add"
             iconPosition="left"
             onClick={() => handleUpgrade(closeDropdown)}
           >
