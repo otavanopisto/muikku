@@ -79,9 +79,24 @@ const NotebookMaterialPageGroupView = (
         )}
       </div>
 
-      {hasMaterialNotes && (
-        <div className="notebook__page-group-body">
-          {materialNoteNonDrafts.map((note) => (
+      <div className="notebook__page-group-body">
+        {materialNoteNonDrafts.map((note) => (
+          <NotebookNoteItem
+            key={note.id}
+            note={note}
+            open={isOpen(note.id)}
+            onToggle={onToggle}
+            materialHtml={page.html}
+            isDraft={isNotebookDraftId(note.id)}
+          />
+        ))}
+
+        {hasMaterialNotes && hasContextItems && (
+          <div className="notebook__page-group-divider" />
+        )}
+
+        {hasContextItems &&
+          contextItems.map((note) => (
             <NotebookNoteItem
               key={note.id}
               note={note}
@@ -91,24 +106,7 @@ const NotebookMaterialPageGroupView = (
               isDraft={isNotebookDraftId(note.id)}
             />
           ))}
-
-          {hasMaterialNotes && hasContextItems && (
-            <div className="notebook__page-group-divider" />
-          )}
-
-          {hasContextItems &&
-            contextItems.map((note) => (
-              <NotebookNoteItem
-                key={note.id}
-                note={note}
-                open={isOpen(note.id)}
-                onToggle={onToggle}
-                materialHtml={page.html}
-                isDraft={isNotebookDraftId(note.id)}
-              />
-            ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

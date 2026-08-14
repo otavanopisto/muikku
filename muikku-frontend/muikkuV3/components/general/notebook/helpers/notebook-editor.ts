@@ -34,6 +34,6 @@ export const ckEditorConfig = {
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins: "image2,widget,lineutils,muikku-mathjax,divarea",
   resize_enabled: true,
 };
