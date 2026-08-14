@@ -83,7 +83,7 @@
   border: 1px solid $color-default-separator-border;
   border-radius: 3px;
   box-shadow: 0 0 15px rgba(0 0 0 / 2%);
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   padding: 10px;
   width: 100%;
 
@@ -271,22 +271,38 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
+  padding: 5px 0;
 }
 
 .notebook__page-group-title {
+  align-items: center;
+  display: flex;
   font-size: 1rem;
   font-weight: 400;
-  margin: 0 0 0.5rem;
+  gap: 5px;
+
+  &::before {
+    content: "\e92c";
+    height: 20px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-family: "muikku";
+    color: $color-workspace;
+    font-size: 1rem;
+  }
 }
 
 .notebook__page-group-divider {
-  border-top: 1px solid $color-default-separator-border;
+  border-top: 1px solid $color-default-item-separator-border;
   margin: 20px;
 }
 
 .notebook__page-group-body {
   border-left: 1px solid $color-default-separator-border;
-  margin: 0 0 0 5px;
+  margin: 0 0 0 10px;
   padding: 0 0 0 10px;
 }
 
