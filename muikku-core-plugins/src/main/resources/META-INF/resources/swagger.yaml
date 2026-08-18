@@ -2841,6 +2841,48 @@ paths:
           description: Unallowed access
         "404":
           description: Some required element not found
+    put:
+      operationId: updateWorkspaceMaterialTextFieldAnswer
+      summary: Updates the text answer of a given user in a given page and field
+      tags:
+        - Evaluation
+      parameters: 
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: workspaceMaterialId
+          in: path
+          description: Workspace material id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: fieldName
+          in: path
+          description: Field name
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: text
+          required: true,
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Updated field value
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Some required element not found
+        "403":
+          description: Unallowed access
 
   /rest/evaluation/snapshot/{id}:
     delete:
