@@ -2801,7 +2801,7 @@ paths:
           description: Attempted to make a call with unauthorized client
 
   #EVALUATION
-  
+
   /rest/evaluation/user/{userEntityId}/workspaceMaterial/{workspaceMaterialId}/field/{fieldName}:
     post:
       operationId: createFieldAnswerSnapshot
@@ -2846,7 +2846,7 @@ paths:
       summary: Updates the text answer of a given user in a given page and field
       tags:
         - Evaluation
-      parameters: 
+      parameters:
         - name: userEntityId
           in: path
           description: User entity id
@@ -2867,11 +2867,18 @@ paths:
           required: true
           schema:
             type: string
-        - in: body
-          name: text
-          required: true,
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: update workspace material text field answer object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
       responses:
         "200":
           description: Updated field value
@@ -2903,7 +2910,7 @@ paths:
           description: Snapshot deleted successfully
         "403":
           description: Unallowed access
-  
+
   /rest/evaluation/compositeAssessmentRequests:
     get:
       operationId: getCompositeAssessmentRequests
@@ -16556,7 +16563,7 @@ components:
         value:
           description: Field value
           type: string
-    
+
     MaterialAnswer:
       type: object
       description: MaterialAnswer object
