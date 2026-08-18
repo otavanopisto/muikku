@@ -107,7 +107,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   event={event}
                   actions={
                     <AbsenceFeedbackDialog
-                      studentId={status.userId}
                       absenceEvent={event}
                       onUpdate={updateAbsenceEventProperty}
                       onCreate={createAbsenceEventProperty}

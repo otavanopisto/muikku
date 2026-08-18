@@ -134,9 +134,12 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
                 key={event.id}
                 actions={
                   <AbsenceFeedbackDialog
-                    onUpdate={updateAbsenceEventProperty}
-                    onCreate={createAbsenceEventProperty}
-                    studentId={dependant.userEntityId}
+                    onUpdate={(data) =>
+                      updateAbsenceEventProperty(data, dependant.userEntityId)
+                    }
+                    onCreate={(data) =>
+                      createAbsenceEventProperty(data, dependant.userEntityId)
+                    }
                     absenceEvent={event}
                   >
                     <Button className="button button--primary-function-content">

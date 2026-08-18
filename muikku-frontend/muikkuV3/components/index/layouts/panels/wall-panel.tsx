@@ -83,7 +83,6 @@ const WallPanel: React.FC<WallProps> = (props) => {
                   event={event}
                   actions={
                     <AbsenceFeedbackDialog
-                      studentId={status.userId}
                       absenceEvent={event}
                       onUpdate={updateAbsenceEventProperty}
                       onCreate={createAbsenceEventProperty}

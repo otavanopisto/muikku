@@ -22,9 +22,8 @@ import { localize } from "~/locales/i18n";
 interface AbsenceFeedbackDialogProps {
   children?: React.ReactElement;
   absenceEvent: MuikkuEvent;
-  studentId: number;
-  onUpdate: (data: UpdateEventPropertyRequest, studentId?: number) => void;
-  onCreate: (data: CreateEventPropertyRequest, studentId?: number) => void;
+  onUpdate: (data: UpdateEventPropertyRequest) => void;
+  onCreate: (data: CreateEventPropertyRequest) => void;
   onClose?: () => void;
 }
 
@@ -36,7 +35,7 @@ interface AbsenceFeedbackDialogProps {
 export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
   props
 ) => {
-  const { children, studentId, absenceEvent, onUpdate, onCreate } = props;
+  const { children, absenceEvent, onUpdate, onCreate } = props;
   const dispatch = useDispatch();
   const currentAbsenceProperty = absenceEvent.properties?.find(
     (property) => property.name === "ABSENCE_REASON"
@@ -156,25 +155,19 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
     if (absenceReason.trim() !== "" && absenceEvent.id) {
       if (hasCurrentAbsenceReason) {
         dispatch(
-          onUpdate(
-            {
-              eventId: absenceEvent.id,
-              propertyId: currentAbsenceProperty.id,
-              value: absenceReason,
-            },
-            studentId && studentId
-          )
+          onUpdate({
+            eventId: absenceEvent.id,
+            propertyId: currentAbsenceProperty.id,
+            value: absenceReason,
+          })
         );
       } else {
         dispatch(
-          onCreate(
-            {
-              eventId: absenceEvent.id,
-              name: "ABSENCE_REASON",
-              value: absenceReason,
-            },
-            studentId && studentId
-          )
+          onCreate({
+            eventId: absenceEvent.id,
+            name: "ABSENCE_REASON",
+            value: absenceReason,
+          })
         );
       }
       onClose();
