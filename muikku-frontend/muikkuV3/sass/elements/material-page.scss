@@ -1439,7 +1439,6 @@ audio {
 }
 
 .material-annotation {
-  border-radius: 3px;
   cursor: pointer;
 }
 
@@ -1450,7 +1449,7 @@ audio {
 
 .material-annotation--note-draft {
   background: lighten($color-annotation-note, 10%);
-  outline: 2px dashed darken($color-annotation-note-active, 10%);
+  border-bottom: 2px dashed darken($color-annotation-note-active, 10%);
 }
 
 .material-annotation--highlight {
@@ -1463,15 +1462,12 @@ audio {
 }
 
 .material-annotation--active[data-muikku-annotation-kind="highlight"] {
-  outline: 2px solid $color-annotation-highlight-active;
-  box-shadow: 0 0 0 2px $color-annotation-highlight;
+  border-bottom: 2px solid $color-annotation-highlight-active;
   background: $color-annotation-highlight;
 }
 
 .material-annotation--active[data-muikku-annotation-kind="note"],
 .material-annotation--active:not([data-muikku-annotation-kind]) {
-  outline: 2px solid $color-annotation-note-active;
-  box-shadow: 0 0 0 2px $color-annotation-note;
+  border-bottom: 2px solid $color-annotation-note-active;
   background: $color-annotation-note;
-  border: none;
 }
