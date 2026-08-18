@@ -42,7 +42,8 @@ CKEDITOR.plugins.add('muikku-comment', {
       exec: function(editor) {
         new CKEDITOR.style({
           element: 'mark',
-          alwaysRemoveElement: true
+          alwaysRemoveElement: true,
+          ignoreReadonly: true
         }).remove(editor);
       }
     });
@@ -59,7 +60,8 @@ CKEDITOR.plugins.add('muikku-comment', {
         }
         var removeStyle = new CKEDITOR.style({
           element: 'mark',
-          alwaysRemoveElement: true
+          alwaysRemoveElement: true,
+          ignoreReadonly: true
         });
         removeStyle.remove(editor);
         var applyStyle = new CKEDITOR.style({
