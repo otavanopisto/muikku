@@ -24,6 +24,31 @@ import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
+import CkeditorLoaderContent from "../../ckeditor-loader/content";
+import MakeCommentsDialog from "./make-comments-dialog";
+
+/**
+ * Collect evaluation comments from richedit memo HTML.
+ * Comments are identified only by data-text.
+ * @param html html
+ * @returns comment texts in document order
+ */
+function getMemoComments(html: string): string[] {
+  if (!html) {
+    return [];
+  }
+  const comments: string[] = [];
+  $("<div/>")
+    .html(html)
+    .find('mark[data-type="comment"]')
+    .each(function () {
+      const text = $(this).attr("data-text");
+      if (text) {
+        comments.push(text);
+      }
+    });
+  return comments;
+}
 
 /**
  * MemoFieldProps
@@ -74,7 +99,14 @@ const ckEditorConfig = {
     { name: "links", items: ["Link"] },
     {
       name: "insert",
-      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"],
+      items: [
+        "Image",
+        "Table",
+        "Muikku-mathjax",
+        "Smiley",
+        "SpecialChar",
+        "Muikku-comment",
+      ],
     },
     { name: "colors", items: ["TextColor", "BGColor"] },
     { name: "styles", items: ["Format"] },
@@ -94,10 +126,10 @@ const ckEditorConfig = {
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins:
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment",
   resize_enabled: true,
 };
-/* eslint-enable camelcase */
 
 /**
  * characterCount - Counts the amount of characters
@@ -463,6 +495,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       ? this.state.value
       : "<p>" + this.replaceNewlinesWithBreaks(this.state.value) + "</p>";
 
+    const comments =
+      this.props.usedAs === "default" && this.props.content.richedit
+        ? getMemoComments(ckeditorValue)
+        : [];
+
     // we have a right answer example for when
     // we are asked for displaying right answer
     // so we need to set it up
@@ -505,10 +542,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             rows={parseInt(this.props.content.rows)}
           />
         ) : (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
-          />
+          <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly">
+            <CkeditorLoaderContent html={ckeditorValue} />
+          </span>
         ));
       } else {
         unloadedField = (
@@ -556,10 +592,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             onPaste={this.onInputPaste}
           />
         ) : (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
-          />
+          <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation">
+            <CkeditorLoaderContent html={ckeditorValue} />
+          </div>
         );
       } else {
         // here we make it be a simple textarea or a rich text editor
@@ -671,7 +706,19 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
-          {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
+          {this.props.usedAs === "default" && comments.length > 0 && (
+            <ul className="memofield__comment-list">
+              {comments.map((comment, index) => (
+                <li
+                  key={`${comment}-${index}`}
+                  className="memofield__comment-list-item"
+                >
+                  {comment}
+                </li>
+              ))}
+            </ul>
+          )}
+          {/* {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
             this.props.onTakeFieldSnapshot && (
               <Dropdown
                 content={t("labels.takeSnapshot", { ns: "materials" })}
@@ -686,6 +733,17 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                   }
                 />
               </Dropdown>
+            )} */}
+
+          {this.props.usedAs === "evaluationTool" &&
+            this.props.content.richedit && (
+              <MakeCommentsDialog html={ckeditorValue}>
+                <IconButton
+                  buttonModifiers="snapshot"
+                  icon="bubbles"
+                  disabled={!this.state.value}
+                />
+              </MakeCommentsDialog>
             )}
 
           {this.props.fieldSnapshotCapabilities?.snapshotCanView && (

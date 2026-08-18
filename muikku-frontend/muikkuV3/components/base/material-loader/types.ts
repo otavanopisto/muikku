@@ -100,6 +100,14 @@ export interface LinkDataset {
 }
 
 /**
+ * EvaluationHighlightDataset
+ */
+export interface EvaluationCommentDataset {
+  text: string;
+  type: "comment";
+}
+
+/**
  * ImageDataset
  */
 export interface ImageDataset {
@@ -123,7 +131,8 @@ export type StaticDataset =
   | WordDefinitionDataset
   | LinkDataset
   | ImageDataset
-  | IframeDataset;
+  | IframeDataset
+  | EvaluationCommentDataset;
 
 /**
  * Fields sync status interface
