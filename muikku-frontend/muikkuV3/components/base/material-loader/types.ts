@@ -102,9 +102,9 @@ export interface LinkDataset {
 /**
  * EvaluationHighlightDataset
  */
-export interface EvaluationHighlightDataset {
-  muikkuEvaluationHighlight?: string;
-  muikkuEvaluationHighlightColor?: string;
+export interface EvaluationCommentDataset {
+  text: string;
+  type: "comment";
 }
 
 /**
@@ -132,7 +132,7 @@ export type StaticDataset =
   | LinkDataset
   | ImageDataset
   | IframeDataset
-  | EvaluationHighlightDataset;
+  | EvaluationCommentDataset;
 
 /**
  * Fields sync status interface

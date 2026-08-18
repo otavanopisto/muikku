@@ -7,7 +7,7 @@ import Image from "../static/image";
 import Link from "../static/link";
 import MathJAX from "../static/mathjax";
 import {
-  EvaluationHighlightDataset,
+  EvaluationCommentDataset,
   ImageDataset,
   LinkDataset,
 } from "../../material-loader/types";
@@ -233,7 +233,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       },
       {
         id: "evaluation-highlight-rule",
-        preventChildProcessing: true,
 
         /**
          * shouldProcessHTMLElement
@@ -242,8 +241,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns boolean
          */
         shouldProcessHTMLElement: (tagname, element) =>
-          tagname === "mark" &&
-          element.hasAttribute("data-muikku-evaluation-highlight"),
+          !!(tagname === "mark" && element.dataset.type === "comment"),
 
         /**
          * processingFunction
@@ -254,7 +252,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet<EvaluationHighlightDataset>(element);
+          const dataset = extractDataSet<EvaluationCommentDataset>(element);
           return (
             <EvaluationHighlight key={props.key} dataset={dataset}>
               {children}

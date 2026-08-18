@@ -1,14 +1,12 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
+import { EvaluationCommentDataset } from "../../material-loader/types";
 
 /**
  * Evaluation highlight props
  */
 interface EvaluationHighlightProps {
-  dataset: {
-    muikkuEvaluationHighlight?: string;
-    muikkuEvaluationHighlightColor?: string;
-  };
+  dataset: EvaluationCommentDataset;
   children?: React.ReactNode;
 }
 
@@ -18,15 +16,14 @@ interface EvaluationHighlightProps {
  * @returns Evaluation highlight
  */
 export default function EvaluationHighlight(props: EvaluationHighlightProps) {
-  const note = props.dataset.muikkuEvaluationHighlight;
-  const color = props.dataset.muikkuEvaluationHighlightColor;
+  const note = props.dataset.text;
 
   const mark = (
     <mark
       role={note ? "button" : undefined}
       tabIndex={note ? 0 : undefined}
-      data-muikku-evaluation-highlight={note}
-      data-muikku-evaluation-highlight-color={color}
+      data-type="comment"
+      data-comment={note}
     >
       {props.children}
     </mark>
