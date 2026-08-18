@@ -1,6 +1,5 @@
 import * as React from "react";
 import { StatusType } from "~/reducers/base/status";
-
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -15,6 +14,12 @@ import WallNote from "./wall/wall-note";
 import WallAbsenceEvent from "./wall/walll-event";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MuikkuEvents } from "~/reducers/base/muikku-events";
+import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+import Button from "~/components/general/button"; // Button component
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/base/muikku-events";
 
 /**
  * Wall properties
@@ -66,13 +71,33 @@ const WallPanel: React.FC<WallProps> = (props) => {
             {t("labels.absences", { ns: "events" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
-            {absenceEvents.events.map((event) => (
-              <WallAbsenceEvent
-                key={event.id}
-                isUnder18={status.isUnder18}
-                event={event}
-              />
-            ))}
+            {absenceEvents.events.map((event) => {
+              const hasFeedback = event.properties?.find(
+                (property) =>
+                  property.name == "ABSENCE_REASON" && property.value !== ""
+              );
+              return (
+                <WallAbsenceEvent
+                  key={event.id}
+                  isUnder18={status.isUnder18}
+                  event={event}
+                  actions={
+                    <AbsenceFeedbackDialog
+                      studentId={status.userId}
+                      absenceEvent={event}
+                      onUpdate={updateAbsenceEventProperty}
+                      onCreate={createAbsenceEventProperty}
+                    >
+                      <Button className="button button--primary-function-content">
+                        {hasFeedback
+                          ? t("actions.editFeedback", { ns: "events" })
+                          : t("actions.giveFeedback", { ns: "events" })}
+                      </Button>
+                    </AbsenceFeedbackDialog>
+                  }
+                />
+              );
+            })}
           </Panel.BodyContent>
         </>
       )}

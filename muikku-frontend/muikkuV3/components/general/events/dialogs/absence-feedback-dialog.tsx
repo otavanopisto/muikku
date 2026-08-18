@@ -2,11 +2,11 @@ import * as React from "react";
 import { useState } from "react";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
-import { MuikkuEvent } from "~/generated/client";
 import {
-  createAbsenceEventProperty,
-  updateAbsenceEventProperty,
-} from "~/actions/main-function/guardian";
+  MuikkuEvent,
+  UpdateEventPropertyRequest,
+  CreateEventPropertyRequest,
+} from "~/generated/client";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import {
@@ -23,6 +23,8 @@ interface AbsenceFeedbackDialogProps {
   children?: React.ReactElement;
   absenceEvent: MuikkuEvent;
   studentId: number;
+  onUpdate: (data: UpdateEventPropertyRequest, studentId?: number) => void;
+  onCreate: (data: CreateEventPropertyRequest, studentId?: number) => void;
   onClose?: () => void;
 }
 
@@ -34,9 +36,9 @@ interface AbsenceFeedbackDialogProps {
 export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
   props
 ) => {
-  const { children, studentId, absenceEvent } = props;
+  const { children, studentId, absenceEvent, onUpdate, onCreate } = props;
   const dispatch = useDispatch();
-  const currentAbsenceProperty = absenceEvent.properties.find(
+  const currentAbsenceProperty = absenceEvent.properties?.find(
     (property) => property.name === "ABSENCE_REASON"
   );
   const { t } = useTranslation();
@@ -96,7 +98,6 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
           </dl>
         </div>
       </div>
-
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-reason">
           {t("labels.selectAbsenceReason", { ns: "events" })}
@@ -152,22 +153,28 @@ export const AbsenceFeedbackDialog: React.FC<AbsenceFeedbackDialogProps> = (
    * @param onClose dialog closing function
    */
   const handleConfirm = (onClose: () => void) => {
-    if (absenceReason.trim() !== "") {
+    if (absenceReason.trim() !== "" && absenceEvent.id) {
       if (hasCurrentAbsenceReason) {
         dispatch(
-          updateAbsenceEventProperty(studentId, {
-            eventId: absenceEvent.id,
-            propertyId: currentAbsenceProperty.id,
-            value: absenceReason,
-          })
+          onUpdate(
+            {
+              eventId: absenceEvent.id,
+              propertyId: currentAbsenceProperty.id,
+              value: absenceReason,
+            },
+            studentId && studentId
+          )
         );
       } else {
         dispatch(
-          createAbsenceEventProperty(studentId, {
-            eventId: absenceEvent.id,
-            name: "ABSENCE_REASON",
-            value: absenceReason,
-          })
+          onCreate(
+            {
+              eventId: absenceEvent.id,
+              name: "ABSENCE_REASON",
+              value: absenceReason,
+            },
+            studentId && studentId
+          )
         );
       }
       onClose();

@@ -17,7 +17,10 @@ import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-
+import {
+  updateAbsenceEventProperty,
+  createAbsenceEventProperty,
+} from "~/actions/main-function/guardian";
 /**
  * DependantProps
  */
@@ -34,13 +37,14 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   const { dependant } = props;
   const workspaces = useSelector(
     (state: StateType) =>
-      state.guardian.workspacesByDependantIdentifier[dependant.identifier]
+      state.guardian?.workspacesByDependantIdentifier[dependant.identifier]
         ?.workspaces || []
   );
 
   const absenceEvents = useSelector(
     (state: StateType) =>
-      state.guardian.absencesByDependantId[dependant.userEntityId]?.events || []
+      state.guardian?.absencesByDependantId[dependant.userEntityId]?.events ||
+      []
   );
 
   const dispatch = useDispatch();
@@ -121,7 +125,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
             {t("labels.absences", { ns: "events" })}
           </h3>
           {absenceEvents.map((event) => {
-            const hasFeedback = event.properties.find(
+            const hasFeedback = event.properties?.find(
               (property) =>
                 property.name == "ABSENCE_REASON" && property.value !== ""
             );
@@ -130,6 +134,8 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
                 key={event.id}
                 actions={
                   <AbsenceFeedbackDialog
+                    onUpdate={updateAbsenceEventProperty}
+                    onCreate={createAbsenceEventProperty}
                     studentId={dependant.userEntityId}
                     absenceEvent={event}
                   >

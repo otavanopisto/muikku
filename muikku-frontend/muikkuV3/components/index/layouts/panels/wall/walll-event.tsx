@@ -26,17 +26,15 @@ interface WallAbsenceEventsProps {
  * @returns JSX.Element
  */
 const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
-  const { modifier, event, actions, isUnder18 = true } = props;
+  const { modifier, event, actions } = props;
   const { t } = useTranslation("tasks");
-  const absenceEventProperty = event.properties.find(
+  const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
   const absenceState =
     absenceEventProperty && absenceEventProperty.value !== ""
       ? "REVIEWED"
-      : isUnder18
-        ? "REVIEW-PENDING"
-        : "REVIEWED";
+      : "REVIEW_PENDING";
   const eventDate = (
     <>
       {" "}
