@@ -58,6 +58,13 @@ const config: Configuration = {
     jquery: "jQuery",
   },
   devServer,
+  ignoreWarnings: [
+    {
+      module: /html-validate/,
+      message:
+        /Critical dependency: the request of a dependency is an expression/,
+    },
+  ],
   devtool: "eval-source-map",
   context,
   optimization: {
