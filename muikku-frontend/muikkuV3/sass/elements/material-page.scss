@@ -581,6 +581,16 @@ mark[data-muikku-word-definition] {
   position: relative;
 }
 
+// Evaluation Highlight
+mark[data-muikku-evaluation-highlight] {
+  background: transparent;
+  border-bottom: 1px dashed $color-material-word-definition-color;
+  color: $color-material-word-definition-color;
+  cursor: help;
+  font-weight: 400;
+  position: relative;
+}
+
 // Assignment assessment
 .material-page__assignment-assessment {
   border-left-style: solid;

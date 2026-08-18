@@ -24,6 +24,7 @@ import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
+import CkeditorLoaderContent from "../../ckeditor-loader/content";
 
 /**
  * MemoFieldProps
@@ -505,10 +506,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             rows={parseInt(this.props.content.rows)}
           />
         ) : (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
-          />
+          <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly">
+            <CkeditorLoaderContent html={ckeditorValue} />
+          </span>
         ));
       } else {
         unloadedField = (
@@ -556,10 +556,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             onPaste={this.onInputPaste}
           />
         ) : (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
-          />
+          <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly">
+            <CkeditorLoaderContent html={ckeditorValue} />
+          </span>
         );
       } else {
         // here we make it be a simple textarea or a rich text editor
