@@ -34,7 +34,7 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
   const absenceState =
     absenceEventProperty && absenceEventProperty.value !== ""
       ? "REVIEWED"
-      : "REVIEW_PENDING";
+      : "REVIEW-PENDING";
   const eventDate = (
     <>
       {" "}

@@ -25,7 +25,7 @@
   }
   
   &.state-OVERDUE, 
-  &.state-REVIEW_PENDING {
+  &.state-REVIEW-PENDING {
     animation: border 1s ease-in alternate infinite;
     border-left: 3px solid $color-priority-high;
   }
