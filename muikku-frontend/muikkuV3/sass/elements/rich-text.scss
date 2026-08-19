@@ -22,6 +22,42 @@
     clear: unset;
   }
 
+  // Evaluation Comment
+  mark[data-type="comment"] {
+    background: transparent;
+    border-bottom: 2px dashed red;
+    color: red;
+    cursor: help;
+    font-weight: 400;
+    position: relative;
+
+    &:hover::after {
+      background: $color-default;
+      border: 2px solid darken($color-default-separator-border, 30%);
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(0 0 0 / 20%);
+      color: $color-default-contrast;
+      content: attr(data-text);
+      font-size: 0.875rem;
+      left: 0;
+      padding: 5px 10px;
+      position: absolute;
+      top: 100%;
+      width: max-content;
+      z-index: 1000;
+    }
+  }
+
+  // Evaluation Comment
+  mark[data-type="highlight"] {
+    background: transparent;
+    border-bottom: 2px dashed blue;
+    color: blue;
+    cursor: help;
+    font-weight: 400;
+    position: relative;
+  }
+
   // Math Formulas overflow rule
   .math-tex {
     align-items: center;

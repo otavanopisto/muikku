@@ -25,7 +25,7 @@ const ckEditorCommentConfig = {
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
-  extraPlugins: "widget,lineutils,autogrow,muikku-comment",
+  extraPlugins: "divarea,widget,lineutils,autogrow,muikku-comment",
   resize_enabled: true,
 };
 /* eslint-enable camelcase */
