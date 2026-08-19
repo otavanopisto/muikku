@@ -22,6 +22,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { resolveEvaluationFieldSnapshotCapabilities } from "~/components/base/material-loader/helpers";
 import { FieldSnapshotCapabilities } from "~/components/base/material-loader/types";
+import MApi from "~/api/api";
 
 /**
  * EvaluationMaterialProps
@@ -129,6 +130,36 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
     );
   };
 
+  /**
+   * handleUpdateFieldWithComments
+   * @param fieldName fieldName
+   * @param content content
+   * @param onSuccess onSuccess
+   * @param onError onError
+   */
+  const handleUpdateFieldWithComments = async (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => {
+    const evaluationApi = MApi.getEvaluationApi();
+
+    try {
+      await evaluationApi.updateWorkspaceMaterialTextFieldAnswer({
+        userEntityId: userEntityId,
+        workspaceMaterialId: compositeReply.workspaceMaterialId,
+        fieldName,
+        updateWorkspaceMaterialTextFieldAnswerRequest: {
+          text: content,
+        },
+      });
+      onSuccess();
+    } catch (error) {
+      onError(error as Error);
+    }
+  };
+
   return (
     <MaterialLoader
       material={material}
@@ -144,6 +175,7 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
       fieldSnapshotPolicy={resolveEvaluationFieldSnapshotCapabilities}
       onTakeFieldSnapshot={handleTakeFieldSnapshot}
       onDeleteFieldSnapshot={handleDeleteFieldSnapshot}
+      onUpdateFieldWithComments={handleUpdateFieldWithComments}
       websocket={websocket}
     >
       {(props, state, stateConfiguration) => (
