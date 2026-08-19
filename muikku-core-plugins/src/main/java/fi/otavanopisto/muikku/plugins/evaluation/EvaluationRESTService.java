@@ -790,6 +790,7 @@ public class EvaluationRESTService extends PluginRESTService {
   @PUT
   @Path("/user/{USERENTITYID}/workspaceMaterial/{WORKSPACEMATERIALID}/field/{FIELDNAME}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Produces("text/plain")
   public Response updateWorkspaceMaterialFieldAnswer(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("FIELDNAME") String fieldName, String payload) {
     if (StringUtils.isEmpty(payload) || !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
