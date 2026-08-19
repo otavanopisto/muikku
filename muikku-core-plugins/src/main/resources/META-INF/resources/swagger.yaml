@@ -2870,15 +2870,9 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          text/plain:
             schema:
-              type: object
-              description: update workspace material text field answer object
-              required:
-                - text
-              properties:
-                text:
-                  type: string
+              type: string
       responses:
         "200":
           description: Updated field value
