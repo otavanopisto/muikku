@@ -321,10 +321,9 @@ public class MuikkuEventRESTService {
     }
     
     // Access checks
-    
+    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     if (userEntityId != null) {
       if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
-        UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
         if (userEntityController.isStudent(loggedUserEntity)) {
           UserEntity target = userEntityController.findUserEntityById(userEntityId);
           if (userEntityController.isStudent(target)) {
@@ -332,6 +331,10 @@ public class MuikkuEventRESTService {
             return Response.status(Status.FORBIDDEN).build();
           }
         }
+      }
+    } else { // Students can only view their own absences
+      if (!userEntityController.isStaffMember(loggedUserEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
       }
     }
     
