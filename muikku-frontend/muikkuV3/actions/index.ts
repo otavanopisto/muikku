@@ -460,7 +460,6 @@ import {
 } from "./main-function/guardian";
 import {
   EVENTS_UPDATE_ABSENCE_PROPERTY,
-  EVENTS_CREATE_ABSENCE_PROPERTY,
   EVENTS_SET_ABSENCE_EVENTS,
   EVENTS_SET_ABSENCE_EVENTS_STATE,
 } from "./base/muikku-events";
@@ -846,7 +845,6 @@ export type ActionType =
   | GUARDIAN_UPDATE_CURRENT_DEPENDANT_PEDAGOGY_FORM_ACCESS
   | EVENTS_SET_ABSENCE_EVENTS
   | EVENTS_SET_ABSENCE_EVENTS_STATE
-  | EVENTS_CREATE_ABSENCE_PROPERTY
   | EVENTS_UPDATE_ABSENCE_PROPERTY;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

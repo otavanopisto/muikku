@@ -89,7 +89,7 @@ export const muikkuEvents: Reducer<MuikkuEventsState> = (
 
       const absenceEvents = [...state.absenceEvents.events];
 
-      // we find the absence event that we want to update
+      // we find the absence event we want to update
       const currentAbsenceEventIndex = absenceEvents.findIndex(
         (event) => event.id === payload.eventId
       );
@@ -112,15 +112,6 @@ export const muikkuEvents: Reducer<MuikkuEventsState> = (
       return {
         ...state,
         absenceEvents: { events: absenceEvents, state: "READY" },
-      };
-    }
-    case "EVENTS_CREATE_ABSENCE_PROPERTY": {
-      return {
-        ...state,
-        absenceEvents: {
-          ...state.absenceEvents,
-          events: [...state.absenceEvents.events, action.payload],
-        },
       };
     }
     case "EVENTS_SET_ABSENCE_EVENTS_STATE": {

@@ -26,11 +26,6 @@ export type EVENTS_UPDATE_ABSENCE_PROPERTY = SpecificActionType<
   MuikkuEventProperty
 >;
 
-export type EVENTS_CREATE_ABSENCE_PROPERTY = SpecificActionType<
-  "EVENTS_CREATE_ABSENCE_PROPERTY",
-  MuikkuEventProperty
->;
-
 /**
  * SetAbsenceEventsTriggerType
  */
