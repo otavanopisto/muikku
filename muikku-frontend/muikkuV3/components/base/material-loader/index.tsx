@@ -462,10 +462,6 @@ class MaterialLoader extends React.Component<
           });
         }
       } else if (!shouldCheck && this.state.answersChecked) {
-        console.log(
-          "componentDidUpdate",
-          "!shouldCheck && this.state.answersChecked"
-        );
         this.setState({
           answersVisible: false,
           answersChecked: false,
