@@ -1052,8 +1052,8 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
 
 /**
  * createAbsenceEventProperty thunk function
- * @param studentId student user id
  * @param data data for creation
+ * @param studentId student user id
  */
 const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
   function createAbsenceEventProperty(data, studentId) {
