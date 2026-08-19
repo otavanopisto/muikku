@@ -349,8 +349,7 @@ class MaterialLoader extends React.Component<
 
       //If checks answers, make it with answersChecked and answersVisible starting as true
       if (stateConfiguration && stateConfiguration?.checksAnswers) {
-        state.answersChecked =
-          (props.material.correctAnswers || "NEVER") !== "NEVER";
+        state.answersChecked = true;
         state.answersVisible =
           (props.material.correctAnswers || "ALWAYS") === "ALWAYS";
       }
@@ -463,6 +462,10 @@ class MaterialLoader extends React.Component<
           });
         }
       } else if (!shouldCheck && this.state.answersChecked) {
+        console.log(
+          "componentDidUpdate",
+          "!shouldCheck && this.state.answersChecked"
+        );
         this.setState({
           answersVisible: false,
           answersChecked: false,
