@@ -56,55 +56,62 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
   public void delete(MuikkuEvent event) {
     super.delete(event);
   }
-
-  public List<MuikkuEvent> listByUserAndWorkspaceAndTimeframeAndType(Long userEntityId, Long workspaceEntityId, Date start, Date end, EventType type) {
+  
+  public List<MuikkuEvent> listEvents(Long userEntityId, Long workspaceEntityId, Date start, Date end, EventType type) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<MuikkuEvent> criteria = criteriaBuilder.createQuery(MuikkuEvent.class);
+    CriteriaQuery<MuikkuEvent> criteria =
+        criteriaBuilder.createQuery(MuikkuEvent.class);
+
     Root<MuikkuEvent> root = criteria.from(MuikkuEvent.class);
-    
+
     List<Predicate> predicates = new ArrayList<>();
-    
+
     // Timeframe
-    
-    Predicate predicate = criteriaBuilder.and(
-        criteriaBuilder.greaterThanOrEqualTo(root.get(MuikkuEvent_.end), start),
-        criteriaBuilder.lessThanOrEqualTo(root.get(MuikkuEvent_.start), end)
+    predicates.add(
+        criteriaBuilder.and(
+            criteriaBuilder.greaterThanOrEqualTo(
+                root.get(MuikkuEvent_.end),
+                start
+            ),
+            criteriaBuilder.lessThanOrEqualTo(
+                root.get(MuikkuEvent_.start),
+                end
+            )
+        )
     );
-    predicates.add(predicate);
-    
-    // Type (optional)
-    
+
+    // Type
     if (type != null) {
-      predicate = criteriaBuilder.equal(root.get(MuikkuEvent_.type), type);
-      predicates.add(predicate);
+        predicates.add(
+            criteriaBuilder.equal(
+                root.get(MuikkuEvent_.type), type));
     }
-    
-    // Users
+    // User
     if (userEntityId != null) {
-      predicates.add(
-          criteriaBuilder.equal(root.get(MuikkuEvent_.userEntityId), userEntityId)
-      );
+        predicates.add(
+            criteriaBuilder.equal(
+                root.get(MuikkuEvent_.userEntityId), userEntityId));
     }
-
-    // Workspaces
-    
+    // Workspace
     if (workspaceEntityId != null) {
+        Join<MuikkuEvent, MuikkuEventContainer> containerJoin =
+            root.join(MuikkuEvent_.eventContainer);
 
-      Join<MuikkuEvent, MuikkuEventContainer> containerJoin =
-          root.join(MuikkuEvent_.eventContainer);
-
-      predicates.add(
-          criteriaBuilder.equal(
-              containerJoin.get(MuikkuEventContainer_.workspaceEntityId),
-              workspaceEntityId
-          )
-      );
+        predicates.add(
+            criteriaBuilder.equal(
+                containerJoin.get(MuikkuEventContainer_.workspaceEntityId), workspaceEntityId));
     }
-    
+
     criteria.select(root);
-    criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+
+    criteria.where(
+        criteriaBuilder.and(
+            predicates.toArray(new Predicate[0])
+        )
+    );
+
     return entityManager.createQuery(criteria).getResultList();
   }
   
