@@ -2873,7 +2873,7 @@ paths:
           application/json:
             schema:
               type: object
-              description: update workspace material text field answer object
+              description: Text field answer
               required:
                 - text
               properties:

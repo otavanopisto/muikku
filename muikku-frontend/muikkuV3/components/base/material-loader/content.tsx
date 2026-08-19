@@ -145,6 +145,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             onTakeFieldSnapshot={props.onTakeFieldSnapshot}
             onDeleteFieldSnapshot={props.onDeleteFieldSnapshot}
             onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
+            onUpdateFieldWithComments={props.onUpdateFieldWithComments}
           />
         )}
       </div>

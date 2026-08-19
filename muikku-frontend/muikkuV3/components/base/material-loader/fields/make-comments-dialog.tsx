@@ -1,9 +1,11 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
+import { displayNotification } from "~/actions/base/notifications";
 
 /* eslint-disable camelcase */
 const ckEditorCommentConfig = {
@@ -33,6 +35,14 @@ const ckEditorCommentConfig = {
  */
 interface MakeCommentsDialogProps {
   html: string;
+  fieldName: string;
+
+  onUpdateFieldWithComments?: (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
 }
@@ -42,9 +52,11 @@ interface MakeCommentsDialogProps {
  * @param props props
  */
 export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
-  const { html, children } = props;
+  const { html, onUpdateFieldWithComments, fieldName, children } = props;
   const { t } = useTranslation(["evaluation", "common"]);
+  const dispatch = useDispatch();
   const [commentedHtml, setCommentedHtml] = React.useState(html);
+  const [saving, setSaving] = React.useState(false);
 
   /**
    * Reset editor content from the latest memo value when the dialog opens
@@ -54,7 +66,7 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
   };
 
   /**
-   * Keep local copy of commented HTML for the later save call
+   * Keep local copy of commented HTML for the save call
    * @param value value
    */
   const handleEditorChange = (value: string) => {
@@ -62,12 +74,38 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
   };
 
   /**
-   * Placeholder until the update endpoint is wired
+   * Save commented HTML via evaluation endpoint
    * @param closeDialog closeDialog
    */
   const handleSave = (closeDialog: () => void) => () => {
-    // TODO: endpoint call with commentedHtml
-    closeDialog();
+    if (saving) {
+      return;
+    }
+
+    setSaving(true);
+
+    if (onUpdateFieldWithComments) {
+      onUpdateFieldWithComments(
+        fieldName,
+        commentedHtml,
+        () => {
+          setSaving(false);
+          closeDialog();
+        },
+        (error) => {
+          setSaving(false);
+          dispatch(
+            displayNotification(
+              t("notifications.saveError", {
+                ns: "evaluation",
+                defaultValue: "Saving comments failed",
+              }),
+              "error"
+            )
+          );
+        }
+      );
+    }
   };
 
   /**
@@ -100,12 +138,14 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
       <Button
         buttonModifiers={["standard-ok", "execute"]}
         onClick={handleSave(closeDialog)}
+        disabled={saving}
       >
         {t("actions.save", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["cancel", "standard-cancel"]}
         onClick={closeDialog}
+        disabled={saving}
       >
         {t("actions.cancel", { ns: "common" })}
       </Button>
@@ -122,6 +162,7 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
       content={content}
       footer={footer}
       onOpen={handleOpen}
+      executing={saving}
     >
       {children}
     </Dialog>

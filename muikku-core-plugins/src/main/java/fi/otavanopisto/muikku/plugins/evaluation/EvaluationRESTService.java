@@ -58,6 +58,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestInterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestTextFieldAnswer;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
@@ -790,8 +791,8 @@ public class EvaluationRESTService extends PluginRESTService {
   @PUT
   @Path("/user/{USERENTITYID}/workspaceMaterial/{WORKSPACEMATERIALID}/field/{FIELDNAME}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceMaterialFieldAnswer(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("FIELDNAME") String fieldName, String payload) {
-    if (StringUtils.isEmpty(payload) || !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+  public Response updateWorkspaceMaterialFieldAnswer(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("FIELDNAME") String fieldName, RestTextFieldAnswer payload) {
+    if (payload == null || StringUtils.isEmpty(payload.getText()) || !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
@@ -822,7 +823,7 @@ public class EvaluationRESTService extends PluginRESTService {
     if (answer == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialTextFieldAnswer").build();
     }
-    workspaceMaterialTextFieldAnswerDAO.updateValue(answer, payload);
+    workspaceMaterialTextFieldAnswerDAO.updateValue(answer, payload.getText());
     return Response.ok(payload).build(); 
   }
   

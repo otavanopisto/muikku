@@ -102,8 +102,15 @@ export interface MaterialLoaderRenderProps
     | "onTakeFieldSnapshot"
     | "onDeleteFieldSnapshot"
     | "fieldSnapshotPolicy"
+    | "onUpdateFieldWithComments"
     | "children"
   > {
+  onUpdateFieldWithComments?: (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => void;
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
   fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
@@ -202,6 +209,13 @@ export interface MaterialLoaderProps {
     cap: FieldSnapshotCapabilities
   ) => any;
   onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
+
+  onUpdateFieldWithComments?: (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => void;
 
   children?: (
     props: MaterialLoaderRenderProps,
@@ -308,6 +322,7 @@ class MaterialLoader extends React.Component<
     this.resolveFieldSnapshotCapabilities =
       this.resolveFieldSnapshotCapabilities.bind(this);
     this.onFieldsSyncStatusChange = this.onFieldsSyncStatusChange.bind(this);
+    this.onUpdateFieldWithComments = this.onUpdateFieldWithComments.bind(this);
 
     let stateConfiguration: StateConfig | null = null;
 
@@ -334,8 +349,7 @@ class MaterialLoader extends React.Component<
 
       //If checks answers, make it with answersChecked and answersVisible starting as true
       if (stateConfiguration && stateConfiguration?.checksAnswers) {
-        state.answersChecked =
-          (props.material.correctAnswers || "NEVER") !== "NEVER";
+        state.answersChecked = true;
         state.answersVisible =
           (props.material.correctAnswers || "ALWAYS") === "ALWAYS";
       }
@@ -448,6 +462,10 @@ class MaterialLoader extends React.Component<
           });
         }
       } else if (!shouldCheck && this.state.answersChecked) {
+        console.log(
+          "componentDidUpdate",
+          "!shouldCheck && this.state.answersChecked"
+        );
         this.setState({
           answersVisible: false,
           answersChecked: false,
@@ -682,6 +700,28 @@ class MaterialLoader extends React.Component<
   }
 
   /**
+   * onUpdateFieldWithComments
+   * @param fieldName fieldName
+   * @param content content
+   * @param onSuccess onSuccess
+   * @param onError onError
+   */
+  onUpdateFieldWithComments(
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) {
+    this.props.onUpdateFieldWithComments &&
+      this.props.onUpdateFieldWithComments(
+        fieldName,
+        content,
+        onSuccess,
+        onError
+      );
+  }
+
+  /**
    * returnMaterialPageType
    * @returns material page type
    */
@@ -805,6 +845,7 @@ class MaterialLoader extends React.Component<
           onDeleteFieldSnapshot: this.onDeleteFieldSnapshot,
           fieldSnapshotCapabilities,
           onFieldsSyncStatusChange: this.onFieldsSyncStatusChange,
+          onUpdateFieldWithComments: this.onUpdateFieldWithComments,
         },
         this.state,
         this.state.stateConfiguration

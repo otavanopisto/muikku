@@ -737,7 +737,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
           {this.props.usedAs === "evaluationTool" &&
             this.props.content.richedit && (
-              <MakeCommentsDialog html={ckeditorValue}>
+              <MakeCommentsDialog
+                html={ckeditorValue}
+                fieldName={this.props.content.name}
+                onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
+              >
                 <IconButton
                   buttonModifiers="snapshot"
                   icon="bubbles"

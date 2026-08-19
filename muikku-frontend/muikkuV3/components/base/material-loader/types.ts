@@ -30,6 +30,7 @@ export interface StateConfig {
  */
 export interface CommonFieldProps {
   userId: number;
+  workspaceMaterialId: number;
   key?: number;
   type: string;
   readOnly?: boolean;
@@ -47,6 +48,14 @@ export interface CommonFieldProps {
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
+
+  // Field comments save
+  onUpdateFieldWithComments?: (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => void;
 
   // Field snapshot capabilities
   fieldSnapshotCapabilities?: FieldSnapshotCapabilities;

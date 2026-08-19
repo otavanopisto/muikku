@@ -125,6 +125,14 @@ interface BaseProps extends WithTranslation {
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
   onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
+
+  // Field comments save
+  onUpdateFieldWithComments?: (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onError: (error: Error) => void
+  ) => void;
 }
 
 /**
@@ -1043,11 +1051,15 @@ export function extractCommonFieldProps(
     onAnswerChange: props.onAnswerChange,
     invisible: props.invisible,
     userId: props.status.userId,
+    workspaceMaterialId: props.compositeReplies?.workspaceMaterialId,
 
     // Field snapshot capabilities
     fieldSnapshotCapabilities: props.fieldSnapshotCapabilities,
     onTakeFieldSnapshot: props.onTakeFieldSnapshot,
     onDeleteFieldSnapshot: props.onDeleteFieldSnapshot,
+
+    // Field comments save
+    onUpdateFieldWithComments: props.onUpdateFieldWithComments,
 
     // React key
     key: key,
