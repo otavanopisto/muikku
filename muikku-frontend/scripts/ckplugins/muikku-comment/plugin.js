@@ -40,11 +40,11 @@ CKEDITOR.plugins.add('muikku-comment', {
     editor.addCommand('muikku-remove', {
       readOnly: true,
       exec: function(editor) {
-        new CKEDITOR.style({
+        editor.removeStyle(new CKEDITOR.style({
           element: 'mark',
           alwaysRemoveElement: true,
           ignoreReadonly: true
-        }).remove(editor);
+        }));
       }
     });
     editor.addCommand('muikku-highlight', {
@@ -58,19 +58,17 @@ CKEDITOR.plugins.add('muikku-comment', {
             selection.selectElement(mark);
           }
         }
-        var removeStyle = new CKEDITOR.style({
+        editor.removeStyle(new CKEDITOR.style({
           element: 'mark',
           alwaysRemoveElement: true,
           ignoreReadonly: true
-        });
-        removeStyle.remove(editor);
-        var applyStyle = new CKEDITOR.style({
+        }));
+        editor.applyStyle(new CKEDITOR.style({
           element: 'mark',
           attributes: {
             'data-type': 'highlight'
           }
-        });
-        applyStyle.apply(editor);
+        }));
       }
     });
     CKEDITOR.dialog.add('muikkuCommentDialog', function(editor) {
@@ -100,20 +98,18 @@ CKEDITOR.plugins.add('muikku-comment', {
               }
             },
             commit: function(editor) {
-              var removeStyle = new CKEDITOR.style({
+              editor.removeStyle(new CKEDITOR.style({
                 element: 'mark',
                 alwaysRemoveElement: true
-              });
-              removeStyle.remove(editor);
+              }));
               var value = this.getValue();
-              var applyStyle = new CKEDITOR.style({
+              editor.applyStyle(new CKEDITOR.style({
                 element: 'mark',
                 attributes: {
                   'data-type': 'comment',
                   'data-text': value
                 }
-              });
-              applyStyle.apply(editor);
+              }));
             }
           }]
         }],
@@ -148,10 +144,11 @@ CKEDITOR.plugins.add('muikku-comment', {
       editor.contextMenu.addListener(function(element) {
         var mark = _this.findMarkInSelection(editor);
         var text = editor.getSelection().getSelectedText();
+        var widget = editor.widgets.getByElement(element);
         if (mark) {
           return { muikkuCommentItem: CKEDITOR.TRISTATE_OFF, muikkuHighlightItem: CKEDITOR.TRISTATE_OFF, muikkuRemoveItem: CKEDITOR.TRISTATE_OFF};
         }
-        else if (text) {
+        else if (text || (widget && widget.name === 'image')) {
           return { muikkuCommentItem: CKEDITOR.TRISTATE_OFF, muikkuHighlightItem: CKEDITOR.TRISTATE_OFF};
         }
         else {
