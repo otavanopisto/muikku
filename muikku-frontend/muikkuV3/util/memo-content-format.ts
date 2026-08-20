@@ -94,7 +94,10 @@ export function getMemoFieldContentFormatSync(
     return "plain";
   }
   // No raw newlines but starts like CKEditor output => saved after lazy migration.
-  if (looksLikeRichContentFragment(trimmed)) {
+  if (
+    looksLikeRichContentFragment(trimmed) &&
+    (value.includes("&lt;") || value.includes("<br />"))
+  ) {
     return "html";
   }
   return "plain";
