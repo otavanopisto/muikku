@@ -88,11 +88,7 @@ export function getMemoFieldContentFormatSync(
   if (richedit) {
     return "html";
   }
-  // richedit: false — historically textarea, now plain CKEditor.
-  // Raw newlines => still legacy textarea text; escape all markup-looking content.
-  if (hasRawTextareaNewlines(value)) {
-    return "plain";
-  }
+
   // No raw newlines but starts like CKEditor output => saved after lazy migration.
   if (
     looksLikeRichContentFragment(trimmed) &&
