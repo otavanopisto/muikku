@@ -1,5 +1,4 @@
 import * as React from "react";
-import TextareaAutosize from "react-textarea-autosize";
 import {
   getMemoFieldContentFormat,
   MemoFieldContentFormat,
@@ -66,25 +65,18 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
   const characters = getCharacters(rawText).length;
 
   // Render the snapshot field
-  const snapshotField =
-    resolvedFormat === "html" ? (
-      <div
-        className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-        dangerouslySetInnerHTML={{
-          __html: toMemoDisplayHtml(
-            value,
-            resolvedFormat,
-            replaceNewlinesWithBreaks
-          ),
-        }}
-      />
-    ) : (
-      <TextareaAutosize
-        readOnly
-        className="memofield memofield--evaluation"
-        value={value}
-      />
-    );
+  const snapshotField = (
+    <div
+      className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
+      dangerouslySetInnerHTML={{
+        __html: toMemoDisplayHtml(
+          value,
+          resolvedFormat,
+          replaceNewlinesWithBreaks
+        ),
+      }}
+    />
+  );
 
   return (
     <span className="memofield-wrapper rs_skip_always">

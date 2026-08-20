@@ -2,13 +2,6 @@ import { HtmlValidate, StaticConfigLoader } from "html-validate";
 
 export type MemoFieldContentFormat = "plain" | "html";
 
-/** Rules that mean "this isn't a coherent HTML fragment" (tune after logging real reports). */
-const PLAIN_TEXT_INDICATOR_RULES = new Set([
-  "no-trailing-whitespace",
-  "element-permitted-content",
-  "text-content",
-]);
-
 let validator: HtmlValidate | null = null;
 
 /**
@@ -44,9 +37,72 @@ function wrapAsHtmlDocument(value: string): string {
 </html>`;
 }
 
+/** Root tags CKEditor writes for memo answers (post-migration detection only). */
+const CKE_ROOT_TAGS = new Set([
+  "p",
+  "h3",
+  "h4",
+  "div",
+  "ul",
+  "ol",
+  "blockquote",
+  "table",
+  "figure",
+  "pre",
+  "br",
+]);
+
 /**
- * Classify snapshot / memo value using HTML-validate.
- * Default plain when empty, no markup, or validation suggests prose.
+ * True when the stored value looks like a CKEditor HTML fragment,
+ * not student prose that happens to contain < or >.
+ * @param value value
+ */
+export function looksLikeRichContentFragment(value: string): boolean {
+  const trimmed = (value ?? "").trim();
+  if (!trimmed.startsWith("<")) return false;
+  const match = trimmed.match(/^<([a-z][a-z0-9]*)/i);
+  return match ? CKE_ROOT_TAGS.has(match[1].toLowerCase()) : false;
+}
+
+/**
+ * True when stored value still looks like raw textarea (newlines in the string).
+ * @param value value
+ */
+function hasRawTextareaNewlines(value: string): boolean {
+  return /[\r\n]/.test(value);
+}
+/**
+ * Classify stored memo answer for conversion to CKEditor.
+ * @param value stored answer
+ * @param richedit field definition flag (historically: textarea vs CKE; future: plain vs rich CKE)
+ */
+export function getMemoFieldContentFormatSync(
+  value: string,
+  richedit: boolean
+): MemoFieldContentFormat {
+  const trimmed = (value ?? "").trim();
+  if (!trimmed) {
+    return "plain";
+  }
+  // Legacy + future rich CKEditor fields: stored HTML is authoritative.
+  if (richedit) {
+    return "html";
+  }
+  // richedit: false — historically textarea, now plain CKEditor.
+  // Raw newlines => still legacy textarea text; escape all markup-looking content.
+  if (hasRawTextareaNewlines(value)) {
+    return "plain";
+  }
+  // No raw newlines but starts like CKEditor output => saved after lazy migration.
+  if (looksLikeRichContentFragment(trimmed)) {
+    return "html";
+  }
+  return "plain";
+}
+
+/**
+ * Classify snapshot / memo value.
+ * Default plain unless the value looks like CKEditor HTML.
  * @param value value
  */
 export async function getMemoFieldContentFormat(
@@ -57,8 +113,8 @@ export async function getMemoFieldContentFormat(
     return "plain";
   }
 
-  // Fast path: no angle brackets at all
-  if (!trimmed.includes("<")) {
+  // Prose with tags in the middle (script, <a>, 2 < 3, <esimerkki>) stays plain.
+  if (!looksLikeRichContentFragment(trimmed)) {
     return "plain";
   }
 
@@ -68,7 +124,6 @@ export async function getMemoFieldContentFormat(
     "snapshot.html"
   );
 
-  // Log report in development
   if (process.env.NODE_ENV !== "production") {
     // eslint-disable-next-line no-console
     console.debug("[memoContentFormat]", {
@@ -81,20 +136,26 @@ export async function getMemoFieldContentFormat(
     });
   }
 
+  // Looks like a fragment. If validator is unhappy, still treat as html so
+  // real CKEditor answers are not escaped into visible tags.
   if (report.valid) {
     return "html";
   }
 
-  const hasPlainIndicator = report.results.some((result) =>
-    result.messages.some(
-      (m) => m.severity === 2 && PLAIN_TEXT_INDICATOR_RULES.has(m.ruleId)
-    )
-  );
+  return "html";
+}
 
-  // If invalid but no known "prose" rules, still treat as html
-  if (!hasPlainIndicator && report.errorCount <= 2) {
-    return "html";
+/**
+ * Synchronous guess. Returns "plain" when this cannot be CKEditor HTML.
+ * Returns null when async validation should run.
+ * @param value value
+ */
+export function guessMemoFieldContentFormatSync(
+  value: string
+): MemoFieldContentFormat | null {
+  const trimmed = (value ?? "").trim();
+  if (!trimmed || !looksLikeRichContentFragment(trimmed)) {
+    return "plain";
   }
-
-  return "plain";
+  return null;
 }
