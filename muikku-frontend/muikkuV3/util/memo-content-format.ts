@@ -65,13 +65,6 @@ export function looksLikeRichContentFragment(value: string): boolean {
 }
 
 /**
- * True when stored value still looks like raw textarea (newlines in the string).
- * @param value value
- */
-function hasRawTextareaNewlines(value: string): boolean {
-  return /[\r\n]/.test(value);
-}
-/**
  * Classify stored memo answer for conversion to CKEditor.
  * @param value stored answer
  * @param richedit field definition flag (historically: textarea vs CKE; future: plain vs rich CKE)
@@ -83,10 +76,6 @@ export function getMemoFieldContentFormatSync(
   const trimmed = (value ?? "").trim();
   if (!trimmed) {
     return "plain";
-  }
-  // Legacy + future rich CKEditor fields: stored HTML is authoritative.
-  if (richedit) {
-    return "html";
   }
 
   // No raw newlines but starts like CKEditor output => saved after lazy migration.
@@ -113,7 +102,12 @@ export async function getMemoFieldContentFormat(
   }
 
   // Prose with tags in the middle (script, <a>, 2 < 3, <esimerkki>) stays plain.
-  if (!looksLikeRichContentFragment(trimmed)) {
+  if (
+    !(
+      looksLikeRichContentFragment(trimmed) &&
+      (value.includes("&lt;") || value.includes("<br />"))
+    )
+  ) {
     return "plain";
   }
 
