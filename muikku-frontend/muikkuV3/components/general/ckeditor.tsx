@@ -83,6 +83,7 @@ interface CKEditorProps {
   maxChars?: number;
   maxWords?: number;
   editorTitle?: string;
+  rows?: number;
 }
 
 /**
@@ -358,51 +359,55 @@ export default class CKEditor extends React.Component<
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 
-      // Height can be given from the ancestor or from instance container.
-      // Instance container is "unstable" and changes according to the content it seems, so for example
-      // material editor is given the ancestorHeight - the dialog height, which is stable.
+      let contentHeight: number;
 
-      // We need to get .cke_top and .cke_bottom elements height, which are the editor's toolbar and footer, so we can retract those from overall height
-      // Under div.cke_inner childNodes[0] is span.cke_top and childNodes[2] is span.cke_bottom
-      // This should be fairly stable way to get the height of these element as the DOM seems to be steady already
-      // We rely on this when we use editor parent container's height as a starting point for cke height calculations
-      const ckeTopHeight =
-        instance.container.$.querySelector(
-          ".cke_inner"
-        ).childNodes[0].getBoundingClientRect().height;
-      const ckeBottomHeight =
-        instance.container.$.querySelector(
-          ".cke_inner"
-        ).childNodes[2].getBoundingClientRect().height;
+      // Height calculation order if rows are used:
+      if (typeof this.props.rows === "number" && this.props.rows > 0) {
+        // Prefer CKEditor API; fallback to id lookup
+        const contents = instance.ui.space("contents");
+        if (contents) {
+          contents.setAttribute("data-rows", String(this.props.rows));
+        }
+      } else {
+        // Height calculation order if rows are not used:
+        const ckeTopHeight =
+          instance.container.$.querySelector(
+            ".cke_inner"
+          ).childNodes[0].getBoundingClientRect().height;
 
-      // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also
-      const ckeBorder = 4;
+        const ckeBottomHeight =
+          instance.container.$.querySelector(
+            ".cke_inner"
+          ).childNodes[2].getBoundingClientRect().height;
 
-      // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
-      // cke_contents element and it will cause the editor to overflow the screen in mobile views.
-      const height = this.props.ancestorHeight
-        ? this.props.ancestorHeight
-        : instance.container.$.getBoundingClientRect().height -
-          ckeTopHeight -
-          ckeBottomHeight -
-          ckeBorder;
+        // Generic 2px border on all sides; (2 * 2) is retracted from container-based height calc
+        const ckeBorder = 4;
 
-      // CKE content-element id
+        // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
+        // cke_contents element and it will cause the editor to overflow the screen in mobile views.
+        const height = this.props.ancestorHeight
+          ? this.props.ancestorHeight
+          : instance.container.$.getBoundingClientRect().height -
+            ckeTopHeight -
+            ckeBottomHeight -
+            ckeBorder;
 
-      const contentElementId: string = instance.id + "_contents";
+        // CKE content-element id (needed for ancestorHeight offset)
+        const contentElementId: string = instance.id + "_contents";
 
-      // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
+        // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
 
-      const contentElementOffset: number = this.props.ancestorHeight
-        ? document.getElementById(contentElementId).offsetTop
-        : 0;
+        const contentElementOffset: number = this.props.ancestorHeight
+          ? document.getElementById(contentElementId).offsetTop
+          : 0;
 
-      // Calculate the height
+        contentHeight = height - contentElementOffset;
 
-      const contentHeight: number = height - contentElementOffset;
+        instance.resize("100%", contentHeight, true);
+      }
 
-      // Resize
-      instance.resize("100%", contentHeight, true);
+      console.log("real contentHeight in the end", contentHeight);
+      // Resize editable contents area (isContentHeight = true)
 
       // This prevents empty children from overriding current data.
       // It is a problem in the workspace management where the props

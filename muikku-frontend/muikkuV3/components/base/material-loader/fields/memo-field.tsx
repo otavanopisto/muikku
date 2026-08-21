@@ -166,7 +166,6 @@ interface MemoFieldState {
   fieldSavedState: FieldStateStatus;
   /** False until stored value has been classified and converted for CKEditor. */
   editorReady: boolean;
-  syncFormat: MemoFieldContentFormat;
 }
 
 /**
@@ -207,7 +206,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       syncError: null,
       fieldSavedState: null,
       editorReady,
-      syncFormat,
     };
 
     // this.onInputChange = this.onInputChange.bind(this);
@@ -239,7 +237,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         words: getWords(rawText).length,
         characters: getCharacters(rawText).length,
         editorReady: true,
-        syncFormat: format,
       });
     });
   }
@@ -512,6 +509,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             configuration={memofieldCkeditorConfig(this.props.content.richedit)}
             onChange={this.onCKEditorChange}
             onPaste={this.onCkeditorPaste}
+            rows={
+              this.props.content.rows &&
+              this.props.content.rows !== "" &&
+              !isNaN(Number(this.props.content.rows))
+                ? Number(this.props.content.rows)
+                : 3
+            }
             maxChars={
               this.props.content.maxChars &&
               parseInt(this.props.content.maxChars)
@@ -520,6 +524,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
               this.props.content.maxWords &&
               parseInt(this.props.content.maxWords)
             }
+            ancestorHeight={200}
           >
             {editorHtml}
           </CKEditor>
