@@ -366,7 +366,7 @@ export default class CKEditor extends React.Component<
         // Prefer CKEditor API; fallback to id lookup
         const contents = instance.ui.space("contents");
         if (contents) {
-          contents.setAttribute("data-rows", String(this.props.rows));
+          contents.$.style.setProperty("--cke-rows", String(this.props.rows));
         }
       } else {
         // Height calculation order if rows are not used:
@@ -403,11 +403,10 @@ export default class CKEditor extends React.Component<
 
         contentHeight = height - contentElementOffset;
 
+        console.log("real contentHeight in the end", contentHeight);
+        // Resize editable contents area (isContentHeight = true)
         instance.resize("100%", contentHeight, true);
       }
-
-      console.log("real contentHeight in the end", contentHeight);
-      // Resize editable contents area (isContentHeight = true)
 
       // This prevents empty children from overriding current data.
       // It is a problem in the workspace management where the props
