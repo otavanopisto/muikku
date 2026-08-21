@@ -1,6 +1,6 @@
+/* eslint-disable camelcase */
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
-import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
@@ -27,80 +27,7 @@ import {
   getMemoFieldContentFormat,
   getMemoFieldContentFormatSync,
 } from "~/util/memo-content-format";
-
-/**
- * MemoFieldProps
- */
-interface MemoFieldProps extends CommonFieldProps, WithTranslation {
-  content: {
-    example: string;
-    columns: string;
-    rows: string;
-    name: string;
-    richedit: boolean;
-    maxChars: string;
-    maxWords: string;
-  };
-  displayNotification: DisplayNotificationTriggerType;
-}
-
-/**
- * MemoFieldState
- */
-interface MemoFieldState {
-  value: string;
-  words: number;
-  characters: number;
-  // This state comes from the context handler in the base
-  // We can use it but it's the parent managing function that modifies them
-  // We only set them up in the initial state
-  modified: boolean;
-  isPasting: boolean;
-  synced: boolean;
-  syncError: string;
-  fieldSavedState: FieldStateStatus;
-  /** False until stored value has been classified and converted for CKEditor. */
-  editorReady: boolean;
-}
-
-/* eslint-disable camelcase */
-const ckEditorConfig = {
-  autoGrow_onStartup: true,
-  mathJaxLib: MATHJAXSRC,
-  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
-  toolbar: [
-    {
-      name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
-    },
-    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
-    { name: "links", items: ["Link"] },
-    {
-      name: "insert",
-      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"],
-    },
-    { name: "colors", items: ["TextColor", "BGColor"] },
-    { name: "styles", items: ["Format"] },
-    {
-      name: "paragraph",
-      items: [
-        "NumberedList",
-        "BulletedList",
-        "Outdent",
-        "Indent",
-        "Blockquote",
-        "JustifyLeft",
-        "JustifyCenter",
-        "JustifyRight",
-      ],
-    },
-    { name: "tools", items: ["Maximize"] },
-  ],
-  removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
-  resize_enabled: true,
-};
-/* eslint-enable camelcase */
+import { MATHJAXSRC } from "~/lib/mathjax";
 
 /**
  * characterCount - Counts the amount of characters
@@ -145,6 +72,101 @@ function replaceNewlinesWithBreaks(str: string): string {
   return str.replace(/\n/g, "<br />");
 }
 
+// Rich edit CKEditor config
+const MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG = {
+  autoGrow_onStartup: true,
+  mathJaxLib: MATHJAXSRC,
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [
+    {
+      name: "basicstyles",
+      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
+    },
+    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
+    { name: "links", items: ["Link"] },
+    {
+      name: "insert",
+      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"],
+    },
+    { name: "colors", items: ["TextColor", "BGColor"] },
+    { name: "styles", items: ["Format"] },
+    {
+      name: "paragraph",
+      items: [
+        "NumberedList",
+        "BulletedList",
+        "Outdent",
+        "Indent",
+        "Blockquote",
+        "JustifyLeft",
+        "JustifyCenter",
+        "JustifyRight",
+      ],
+    },
+    { name: "tools", items: ["Maximize"] },
+  ],
+  removePlugins: "image,exportpdf",
+  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  resize_enabled: true,
+};
+
+// Plain text CKEditor config
+const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
+  autoGrow_onStartup: true,
+  mathJaxLib: MATHJAXSRC,
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [{}, {}, { name: "tools", items: ["Maximize"] }],
+  removePlugins: "image,exportpdf",
+  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  resize_enabled: true,
+};
+
+/**
+ * Get the CKEditor config for the memo field based on the richedit flag
+ * @param richedit - Whether the memo field is rich edit
+ * @returns The CKEditor config
+ */
+export function memofieldCkeditorConfig(richedit: boolean) {
+  return richedit
+    ? MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG
+    : MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG;
+}
+
+/**
+ * MemoFieldProps
+ */
+interface MemoFieldProps extends CommonFieldProps, WithTranslation {
+  content: {
+    example: string;
+    columns: string;
+    rows: string;
+    name: string;
+    richedit: boolean;
+    maxChars: string;
+    maxWords: string;
+  };
+  displayNotification: DisplayNotificationTriggerType;
+}
+
+/**
+ * MemoFieldState
+ */
+interface MemoFieldState {
+  value: string;
+  words: number;
+  characters: number;
+  // This state comes from the context handler in the base
+  // We can use it but it's the parent managing function that modifies them
+  // We only set them up in the initial state
+  modified: boolean;
+  isPasting: boolean;
+  synced: boolean;
+  syncError: string;
+  fieldSavedState: FieldStateStatus;
+  /** False until stored value has been classified and converted for CKEditor. */
+  editorReady: boolean;
+}
+
 /**
  * MemoField
  */
@@ -163,10 +185,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.baseRef = React.createRef<HTMLDivElement>();
 
     const storedValue = props.initialValue || "";
-    const syncFormat = getMemoFieldContentFormatSync(
-      storedValue,
-      props.content.richedit
-    );
+    const syncFormat = getMemoFieldContentFormatSync(storedValue);
     const editorReady = true; // always sync now — no componentDidMount async needed
     const value = toMemoDisplayHtml(
       storedValue,
@@ -329,63 +348,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   };
 
   /**
-   * onInputPaste - paste handling for memofield   *
-   */
-  // onInputPaste() {
-  //   this.setState({ isPasting: true });
-  // }
-
-  /**
-   * onInputChange - very simple this one is for only when raw input from the textarea changes
-   * @param e e
-   */
-  // onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-  //   let newValue = e.target.value;
-  //   const maxCharacters = parseInt(this.props.content.maxChars);
-  //   const maxWords = parseInt(this.props.content.maxWords);
-
-  //   const exceedsCharacterLimit =
-  //     getCharacters(e.target.value).length > maxCharacters;
-
-  //   const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
-
-  //   if (exceedsCharacterLimit || exceedsWordLimit) {
-  //     if (this.state.isPasting) {
-  //       e.preventDefault(); // Prevent the default action
-  //       newValue = this.trimPastedContent(newValue);
-  //     } else {
-  //       const isBeingDeleted =
-  //         getCharacters(e.target.value).length <
-  //         getCharacters(this.state.value).length;
-  //       // If the content is not being deleted or we are not inside the last word
-  //       // we reset the value to the state value
-  //       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
-  //         // Limit is exceeded, we set the locale context for notification
-  //         const localeContext = exceedsCharacterLimit ? "characters" : "words";
-
-  //         this.props.displayNotification(
-  //           this.props.t("notifications.contentLimitReached", {
-  //             ns: "materials",
-  //             context: localeContext,
-  //           }),
-  //           "info"
-  //         );
-  //         newValue = this.state.value;
-  //       }
-  //     }
-  //   }
-
-  //   this.setState({
-  //     value: newValue,
-  //     words: getWords(newValue).length,
-  //     characters: getCharacters(newValue).length,
-  //   });
-
-  //   this.props.onChange &&
-  //     this.props.onChange(this, this.props.content.name, newValue);
-  // }
-
-  /**
    * onCkeditorPaste
    */
   onCkeditorPaste() {
@@ -393,6 +355,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       isPasting: true,
     });
   }
+
   /**
    * onCKEditorChange - this one is for a ckeditor change
    * @param value value
@@ -542,7 +505,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       } else {
         field = (
           <CKEditor
-            configuration={ckEditorConfig}
+            configuration={memofieldCkeditorConfig(this.props.content.richedit)}
             onChange={this.onCKEditorChange}
             onPaste={this.onCkeditorPaste}
             maxChars={

@@ -67,11 +67,9 @@ export function looksLikeRichContentFragment(value: string): boolean {
 /**
  * Classify stored memo answer for conversion to CKEditor.
  * @param value stored answer
- * @param richedit field definition flag (historically: textarea vs CKE; future: plain vs rich CKE)
  */
 export function getMemoFieldContentFormatSync(
-  value: string,
-  richedit: boolean
+  value: string
 ): MemoFieldContentFormat {
   const trimmed = (value ?? "").trim();
   if (!trimmed) {
