@@ -363,11 +363,16 @@ export default class CKEditor extends React.Component<
 
       // Height calculation order if rows are used:
       if (typeof this.props.rows === "number" && this.props.rows > 0) {
-        // Prefer CKEditor API; fallback to id lookup
-        const contents = instance.ui.space("contents");
-        if (contents) {
-          contents.$.style.setProperty("--cke-rows", String(this.props.rows));
-        }
+        // Match memofield.scss line-heights: 1.25rem default, 1.75rem from $breakpoint-pad (48em)
+        const rootFontSize =
+          parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        const isPadUp = window.matchMedia("(min-width: 48em)").matches;
+        const lineHeightPx = (isPadUp ? 1.75 : 1.25) * rootFontSize;
+        // Approximate vertical padding of .cke_editable / memofield content area
+        const verticalPaddingPx = 16;
+        contentHeight = Math.round(
+          this.props.rows * lineHeightPx + verticalPaddingPx
+        );
       } else {
         // Height calculation order if rows are not used:
         const ckeTopHeight =
@@ -402,11 +407,10 @@ export default class CKEditor extends React.Component<
           : 0;
 
         contentHeight = height - contentElementOffset;
-
-        console.log("real contentHeight in the end", contentHeight);
-        // Resize editable contents area (isContentHeight = true)
-        instance.resize("100%", contentHeight, true);
       }
+
+      // Resize editable contents area (isContentHeight = true)
+      instance.resize("100%", contentHeight, true);
 
       // This prevents empty children from overriding current data.
       // It is a problem in the workspace management where the props

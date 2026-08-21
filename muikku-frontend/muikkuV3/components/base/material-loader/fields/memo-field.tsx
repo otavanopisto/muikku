@@ -26,7 +26,6 @@ import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
 import {
   getMemoFieldContentFormat,
   getMemoFieldContentFormatSync,
-  MemoFieldContentFormat,
 } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
 
@@ -125,12 +124,26 @@ const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
 /**
  * Get the CKEditor config for the memo field based on the richedit flag
  * @param richedit - Whether the memo field is rich edit
+ * @param rows - The number of rows to use for the memo field
  * @returns The CKEditor config
  */
-export function memofieldCkeditorConfig(richedit: boolean) {
-  return richedit
+function memofieldCkeditorConfig(richedit: boolean, rows?: number) {
+  const base = richedit
     ? MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG
     : MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG;
+  if (typeof rows === "number" && rows > 0) {
+    return {
+      ...base,
+      // height comes from CSS --cke-rows on .cke_contents
+      autoGrow_onStartup: false,
+      extraPlugins: base.extraPlugins
+        .split(",")
+        .filter((p) => p !== "autogrow")
+        .join(","),
+      removePlugins: `${base.removePlugins},autogrow`,
+    };
+  }
+  return base;
 }
 
 /**
@@ -506,7 +519,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       } else {
         field = (
           <CKEditor
-            configuration={memofieldCkeditorConfig(this.props.content.richedit)}
+            configuration={memofieldCkeditorConfig(
+              this.props.content.richedit,
+              this.props.content.rows !== "" &&
+                !isNaN(Number(this.props.content.rows))
+                ? Number(this.props.content.rows)
+                : 3
+            )}
             onChange={this.onCKEditorChange}
             onPaste={this.onCkeditorPaste}
             rows={
