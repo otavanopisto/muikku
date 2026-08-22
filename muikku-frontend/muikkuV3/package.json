@@ -30,6 +30,7 @@
     "@react-pdf/renderer": "3.1.6",
     "@redux-devtools/extension": "3.2.3",
     "audio-recorder-polyfill": "0.4.1",
+    "de-aria": "github:otavanopisto/de-aria",
     "deep-equal": "2.0.5",
     "esbuild": "0.19.12",
     "esbuild-plugin-polyfill-node": "0.3.0",

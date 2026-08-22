@@ -4,6 +4,7 @@ import App from "~/containers/index.frontpage";
 import reducer from "~/reducers/index.frontpage";
 import runApp from "../run";
 import tabOrMouse from "~/util/tab-or-mouse";
+import "de-aria";
 
 runApp(reducer, App, async (store) => {
   tabOrMouse();

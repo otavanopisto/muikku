@@ -66,12 +66,12 @@
                 </configuration>
               </execution>
               <execution>
-                <id>npm ci</id>
+                <id>npm install</id>
                 <goals>
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>ci</arguments>
+                  <arguments>install --no-audit --no-fund</arguments>
                 </configuration>
               </execution>
               <execution>
@@ -128,12 +128,12 @@
                 </configuration>
               </execution>
               <execution>
-                <id>npm ci</id>
+                <id>npm install</id>
                 <goals>
                   <goal>npm</goal>
                 </goals>
                 <configuration>
-                  <arguments>ci</arguments>
+                  <arguments>install --no-audit --no-fund</arguments>
                 </configuration>
               </execution>
               <execution>
