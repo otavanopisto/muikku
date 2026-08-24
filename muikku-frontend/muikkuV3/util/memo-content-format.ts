@@ -57,11 +57,25 @@ const CKE_ROOT_TAGS = new Set([
  * not student prose that happens to contain < or >.
  * @param value value
  */
-export function looksLikeRichContentFragment(value: string): boolean {
+function looksLikeRichContentFragment(value: string): boolean {
   const trimmed = (value ?? "").trim();
   if (!trimmed.startsWith("<")) return false;
   const match = trimmed.match(/^<([a-z][a-z0-9]*)/i);
-  return match ? CKE_ROOT_TAGS.has(match[1].toLowerCase()) : false;
+  if (!match || !CKE_ROOT_TAGS.has(match[1].toLowerCase())) {
+    return false;
+  }
+  const doc = new DOMParser().parseFromString(trimmed, "text/html");
+  const children = Array.from(doc.body.childNodes);
+  // CKEditor roots are elements. Bare text after </ul>/<p>/… ⇒ legacy typed HTML.
+  const hasNonWhitespaceTextNode = children.some(
+    (node) =>
+      node.nodeType === Node.TEXT_NODE && (node.textContent ?? "").trim() !== ""
+  );
+  if (hasNonWhitespaceTextNode) {
+    return false; // treat as plain
+  }
+  // Require at least one element child.
+  return children.some((node) => node.nodeType === Node.ELEMENT_NODE);
 }
 
 /**
