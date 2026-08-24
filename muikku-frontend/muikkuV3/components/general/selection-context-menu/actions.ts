@@ -10,6 +10,7 @@ import {
   buildAnnotationFromSelection,
   selectionIntersectsAnnotation,
   selectionIntersectsNonAnnotatable,
+  selectionSpansMultipleParagraphs,
 } from "~/util/html";
 
 type ReadSpeakerListenActionOptions = {
@@ -111,6 +112,7 @@ export function createHighlightAction(
     isVisible: (ctx) =>
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
+      !selectionSpansMultipleParagraphs(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
@@ -166,6 +168,7 @@ export function createNoteAction(
     isVisible: (ctx) =>
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
+      !selectionSpansMultipleParagraphs(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,

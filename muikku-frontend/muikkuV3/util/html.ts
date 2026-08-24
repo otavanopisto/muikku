@@ -36,7 +36,23 @@ const NON_ANNOTATABLE_SELECTOR = [
   "object",
   "[contenteditable='true']",
 ].join(", ");
-
+const PARAGRAPH_LIKE_SELECTOR = [
+  "p",
+  "li",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "blockquote",
+  "pre",
+  "td",
+  "th",
+  "dt",
+  "dd",
+  "figcaption",
+].join(", ");
 // =============================================================================
 // ANNOTATION TYPES
 // =============================================================================
@@ -416,6 +432,54 @@ export function selectionIntersectsNonAnnotatable(
     ancestor;
   return Array.from(scope.querySelectorAll(NON_ANNOTATABLE_SELECTOR)).some(
     (node) => range.intersectsNode(node)
+  );
+}
+
+/**
+ * Convert a node to an element
+ * @param node node
+ * @returns element or null
+ */
+function nodeToElement(node: Node): Element | null {
+  return node.nodeType === Node.TEXT_NODE
+    ? node.parentElement
+    : (node as Element);
+}
+
+/**
+ * Get the paragraph at the boundary
+ * @param container container
+ * @param offset offset
+ * @param isEnd is end
+ * @returns element or null
+ */
+function paragraphAtBoundary(
+  container: Node,
+  offset: number,
+  isEnd: boolean
+): Element | null {
+  if (container.nodeType === Node.ELEMENT_NODE) {
+    const children = container.childNodes;
+    const child = children[isEnd ? offset - 1 : offset];
+    if (child) {
+      const fromChild = nodeToElement(child)?.closest(PARAGRAPH_LIKE_SELECTOR);
+      if (fromChild) return fromChild;
+    }
+  }
+  return nodeToElement(container)?.closest(PARAGRAPH_LIKE_SELECTOR) ?? null;
+}
+
+/**
+ * Whether the selection crosses more than one paragraph-like block.
+ * Highlights/notes are limited to a single block.
+ * @param range range
+ * @returns boolean
+ */
+export function selectionSpansMultipleParagraphs(range: Range | null): boolean {
+  if (!range || range.collapsed) return false;
+  return (
+    paragraphAtBoundary(range.startContainer, range.startOffset, false) !==
+    paragraphAtBoundary(range.endContainer, range.endOffset, true)
   );
 }
 
