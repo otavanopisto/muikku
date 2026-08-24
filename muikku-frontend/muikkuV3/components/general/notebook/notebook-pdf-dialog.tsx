@@ -7,14 +7,17 @@ import { AnyActionType } from "~/actions";
 import NoteBookPDF from "./notebook-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { NotebookNote } from "~/generated/client";
+import {
+  NotebookMaterialPageGroup,
+  WorkspaceNotebookNote,
+} from "./helpers/notebook-layout";
 
 /**
  * NoteBookPDFProps
  */
 interface NoteBookPDFDialogProps {
-  children?: React.ReactElement<any>;
-  notes: NotebookNote[];
+  workspaceNotes: WorkspaceNotebookNote[];
+  materialGroups: NotebookMaterialPageGroup[];
   workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;
@@ -26,7 +29,7 @@ interface NoteBookPDFDialogProps {
  * @returns JSX.Element
  */
 const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
-  const { children, notes, workspace, isOpen, onClose } = props;
+  const { workspaceNotes, materialGroups, workspace, isOpen, onClose } = props;
 
   let workspaceName: string = undefined;
 
@@ -44,7 +47,11 @@ const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
    */
   const content = (closeDialog: () => void) => (
     <PDFViewer className="notebook-pdf">
-      <NoteBookPDF notes={notes} workspaceName={workspaceName} />
+      <NoteBookPDF
+        workspaceNotes={workspaceNotes}
+        materialGroups={materialGroups}
+        workspaceName={workspaceName}
+      />
     </PDFViewer>
   );
 
@@ -56,9 +63,7 @@ const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
       title="Muistiinpanot"
       content={content}
       disableScroll
-    >
-      {children}
-    </Dialog>
+    />
   );
 };
 

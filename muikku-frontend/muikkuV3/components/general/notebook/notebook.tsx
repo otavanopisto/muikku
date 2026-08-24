@@ -20,6 +20,7 @@ import { clearNotebookV2FocusNote } from "~/actions/notebook/notebookV2";
 import { scrollToNotebookItem } from "./helpers/notebook-active-item";
 import NotebookItemDeleteDialog from "./items/notebook-item-delete-confirm";
 import NotebookNoteEditorDialog from "./notebook-note-editor-dialog";
+import NotebookPdfDialog from "./notebook-pdf-dialog";
 
 /**
  * NotebookProps
@@ -48,6 +49,8 @@ const Notebook = (props: NotebookProps) => {
   const focusNoteId = useSelector(
     (state: StateType) => state.notebookV2.focusNoteId
   );
+
+  const [isPdfDialogOpen, setIsPdfDialogOpen] = React.useState(false);
 
   const viewModel = useNotebookViewModel();
 
@@ -117,6 +120,20 @@ const Notebook = (props: NotebookProps) => {
     dispatch(clearNotebookV2ActiveItem());
   }, [dispatch]);
 
+  /**
+   * Handle open PDF dialog
+   */
+  const handleOpenPdfDialog = React.useCallback(() => {
+    setIsPdfDialogOpen(true);
+  }, []);
+
+  /**
+   * Handle close PDF dialog
+   */
+  const handleClosePdfDialog = React.useCallback(() => {
+    setIsPdfDialogOpen(false);
+  }, []);
+
   useDismissNotebookActiveItem(activeItemId, handleDismissActiveItem);
 
   const isLoading = state === "LOADING";
@@ -125,6 +142,13 @@ const Notebook = (props: NotebookProps) => {
     <div className="notebook">
       <NotebookItemDeleteDialog />
       <NotebookNoteEditorDialog />
+      <NotebookPdfDialog
+        workspaceNotes={viewModel.workspaceNotes}
+        materialGroups={viewModel.materialGroups}
+        workspace={currentWorkspace}
+        isOpen={isPdfDialogOpen}
+        onClose={handleClosePdfDialog}
+      />
       <div className="notebook__body" ref={notebookBodyRef}>
         <NoteList>
           {isLoading ? (
@@ -136,6 +160,7 @@ const Notebook = (props: NotebookProps) => {
                 storageKey={workspaceOpenStorageKey}
                 workspaceDraftNote={viewModel.workspaceDraftNote}
                 workspaceDraftNotePosition={workspaceDraftNotePosition}
+                onOpenPdfDialog={handleOpenPdfDialog}
               />
               <NotebookMaterialSection
                 groups={viewModel.materialGroups}

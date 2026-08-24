@@ -25,6 +25,7 @@ interface NotebookWorkspaceSectionProps {
   workspaceDraftNote: WorkspaceNotebookNote | null;
   workspaceDraftNotePosition: number | null;
   storageKey: string;
+  onOpenPdfDialog: () => void;
 }
 
 /**
@@ -33,8 +34,13 @@ interface NotebookWorkspaceSectionProps {
  * @returns React.ReactNode
  */
 const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
-  const { notes, workspaceDraftNote, workspaceDraftNotePosition, storageKey } =
-    props;
+  const {
+    notes,
+    workspaceDraftNote,
+    workspaceDraftNotePosition,
+    storageKey,
+    onOpenPdfDialog,
+  } = props;
   const { t } = useTranslation("notebook");
   const dispatch = useDispatch();
   const { isOpen, toggle, openAll, closeAll } = useNotebookOpenItems(
@@ -128,6 +134,18 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
               buttonModifiers={["notebook-action"]}
               onClick={handleAddClick}
               disablePropagation={true}
+            />
+          </Dropdown>
+
+          <Dropdown
+            openByHover
+            content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+          >
+            <IconButton
+              icon="pdf"
+              buttonModifiers={["notebook-action"]}
+              disablePropagation={true}
+              onClick={onOpenPdfDialog}
             />
           </Dropdown>
 
