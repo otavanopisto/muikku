@@ -3,10 +3,17 @@ import { useLocalStorage } from "usehooks-ts";
 /**
  * Persisted open/closed state for notebook list items.
  * @param storageKey storageKey
+ * @param initialOpenedIds initialOpenedIds
  * @returns number[]
  */
-export function useNotebookOpenItems(storageKey: string) {
-  const [openedIds, setOpenedIds] = useLocalStorage<number[]>(storageKey, []);
+export function useNotebookOpenItems(
+  storageKey: string,
+  initialOpenedIds: number[] = []
+) {
+  const [openedIds, setOpenedIds] = useLocalStorage<number[]>(
+    storageKey,
+    initialOpenedIds
+  );
 
   /**
    * isOpen

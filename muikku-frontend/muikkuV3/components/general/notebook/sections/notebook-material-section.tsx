@@ -24,8 +24,10 @@ interface NotebookMaterialSectionProps {
 const NotebookMaterialSection = (props: NotebookMaterialSectionProps) => {
   const { groups, storageKey } = props;
   const { t } = useTranslation("notebook");
-  const { isOpen, toggle, openAll, closeAll } =
-    useNotebookOpenItems(storageKey);
+  const { isOpen, toggle, openAll, closeAll } = useNotebookOpenItems(
+    storageKey,
+    collectMaterialNoteIds(groups)
+  );
 
   if (!groups.length) {
     return null;

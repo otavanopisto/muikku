@@ -37,8 +37,10 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
     props;
   const { t } = useTranslation("notebook");
   const dispatch = useDispatch();
-  const { isOpen, toggle, openAll, closeAll } =
-    useNotebookOpenItems(storageKey);
+  const { isOpen, toggle, openAll, closeAll } = useNotebookOpenItems(
+    storageKey,
+    notes.map((note) => note.id)
+  );
 
   const [editOrder, setEditOrder] = React.useState(false);
 
