@@ -752,13 +752,6 @@ const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
         });
         // Append the note
         appendNotebookV2Note(dispatch, getState, note);
-        // Display the notification
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-            "success"
-          )
-        );
         data.success?.();
       } catch (err) {
         if (!isMApiError(err)) {
