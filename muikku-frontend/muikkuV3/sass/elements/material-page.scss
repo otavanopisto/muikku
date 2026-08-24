@@ -1468,6 +1468,6 @@ audio {
 
 .material-annotation--active[data-muikku-annotation-kind="note"],
 .material-annotation--active:not([data-muikku-annotation-kind]) {
-  border-bottom: 2px solid darken($color-annotation-note-active, 25%);
+  border-bottom: 2px solid $color-annotation-note-active;
   background: darken($color-annotation-note, 20%);
 }
