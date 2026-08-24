@@ -39,6 +39,7 @@ import {
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceCompositeMaterialReplies } from "./material";
+import { MuikkuEvent } from "~/generated/client";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -146,8 +147,16 @@ export type UPDATE_MATERIALS_ARE_DISABLED = SpecificActionType<
   boolean
 >;
 
-const workspaceApi = MApi.getWorkspaceApi();
+export type UPDATE_WORKSPACE_ABSENCE_EVENTS = SpecificActionType<
+  "UPDATE_WORKSPACE_ABSENCE_EVENTS",
+  MuikkuEvent[]
+>;
 
+export interface LoadWorkspaceAbsenceEventsTriggerType {
+  (workspaceId: number): AnyActionType;
+}
+const workspaceApi = MApi.getWorkspaceApi();
+const eventsApi = MApi.getEventsApi();
 /**
  * SelectItem
  */
@@ -1221,6 +1230,44 @@ export interface LoadUsersOfWorkspaceTriggerType {
 }
 
 /**
+ * LoadUsersOfWorkspaceTriggerType
+ */
+export interface LoadUsersOfWorkspaceTriggerType {
+  (data: {
+    workspace: WorkspaceDataType;
+    payload?: {
+      q: string;
+      active?: boolean;
+      firstResult?: number;
+      maxResults?: number;
+    };
+    success?: (
+      users: WorkspaceStudentSearchResult | UserStaffSearchResult
+    ) => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LoadUsersOfWorkspaceTriggerType
+ */
+export interface LoadAbsenceEventsOfWorkspaceTriggerType {
+  (data: {
+    workspace: WorkspaceDataType;
+    /*     payload?: {
+      q: string;
+      active?: boolean;
+      firstResult?: number;
+      maxResults?: number;
+    }; */
+    success?: (
+      users: WorkspaceStudentSearchResult | UserStaffSearchResult
+    ) => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * ToggleActiveStateOfStudentOfWorkspaceTriggerType
  */
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
@@ -1711,6 +1758,52 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           };
         }
 
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update,
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "students",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+const loadStudentAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
+  function loadStudentAbsenceEventsOfWorkspace(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        const end = new Date();
+        const start = new Date(end);
+        start.setMonth(start.getMonth() - 6);
+
+        const events = await eventsApi.listEvents({
+          workspace: data.workspace.id,
+          start,
+          end,
+          adjustTimes: true,
+          type: "ABSENCE",
+        });
+        const update: WorkspaceUpdateType = {
+          absenceEvents: events,
+        };
         dispatch({
           type: "UPDATE_WORKSPACE",
           payload: {
@@ -2448,6 +2541,52 @@ const shouldMaterialsBeDisabled = (activity?: WorkspaceActivity) => {
   return isDisabled;
 };
 
+/**
+ * loadUserAbsenceEvents
+ * @param workspaceId workspaceId
+ */
+const loadWorkspaceAbsenceEvents: LoadWorkspaceAbsenceEventsTriggerType =
+  function loadWorspaceAbsenceEvents(workspaceId: number) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      try {
+        const end = new Date();
+        const start = new Date(end);
+        start.setMonth(start.getMonth() - 6);
+
+        const events = await eventsApi.listEvents({
+          workspace: workspaceId,
+          start,
+          end,
+          adjustTimes: true,
+          type: "ABSENCE",
+        });
+        dispatch({
+          type: "UPDATE_WORKSPACE_ABSENCE_EVENTS",
+          payload: events,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          dispatch(
+            notificationActions.displayNotification(err.message, "error")
+          );
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "events",
+              context: "absence",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   loadUserWorkspaceCurriculumFiltersFromServer,
   loadUserWorkspaceEducationFiltersFromServer,
@@ -2466,6 +2605,7 @@ export {
   updateAssignmentState,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
+  loadStudentAbsenceEventsOfWorkspace,
   toggleActiveStateOfStudentOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,

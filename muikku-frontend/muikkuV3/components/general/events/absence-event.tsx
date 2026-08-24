@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/note.scss";
-import WallItem from "./components/wall-item";
+import BaseEvent from "./base/base-event";
 import { MuikkuEvent } from "~/generated/client";
-import { localize } from "~/locales/i18n";
-import "~/sass/elements/wall-event.scss";
+import "~/sass/elements/muikku-absence-event.scss";
 import {
   AbsenceEventEnum,
   AbsenceReasonEnum,
@@ -13,7 +12,7 @@ import {
 /**
  * WallAbsenceEventsProps
  */
-interface WallAbsenceEventsProps {
+interface AbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
   isUnder18?: boolean;
@@ -25,7 +24,7 @@ interface WallAbsenceEventsProps {
  * @param props WallAbsenceEventPRops
  * @returns JSX.Element
  */
-const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
+const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
   const { modifier, event, actions, isUnder18 = true } = props;
   const { t } = useTranslation("tasks");
   const absenceEventProperty = event.properties?.find(
@@ -37,14 +36,6 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
       : isUnder18
         ? "REVIEW-PENDING"
         : "REVIEWED";
-  const eventDate = (
-    <>
-      {" "}
-      {localize.date(event.start, "l - LT")}
-      <span className="icon icon-long-arrow-right wall-event__date-decoration" />
-      {localize.date(event.end, "l - LT")}
-    </>
-  );
 
   /**
    * Returns the absent from label
@@ -82,44 +73,45 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
   };
 
   return (
-    <WallItem
-      customDate={eventDate}
+    <BaseEvent
+      beginDate={event.start}
+      endDate={event.end}
       modifier={modifier}
       state={absenceState}
       title={absentFromLabel()}
     >
-      <div className="wall-event">
+      <div className="muikku-absence-event">
         {event.description && (
-          <div className="wall-event__description rich-text">
+          <div className="muikku-absence-event__prescription rich-text">
             {event.description}
           </div>
         )}
         {event.properties && (
-          <div className="wall-event__body">
+          <div className="muikku-absence-event__body">
             {event.properties.map((prop) =>
               prop.name === "ABSENCE_REASON" ? (
-                <div key={prop.id} className="wall-event__property">
-                  <span className="wall-event__property-name">
+                <div key={prop.id} className="muikku-absence-event__property">
+                  <span className="muikku-absence-event__property-name">
                     {t("labels.property", {
                       ns: "events",
                       context: prop.name,
                     })}
                     :
                   </span>
-                  <span className="wall-event__property-value">
+                  <span className="muikku-absence-event__property-value">
                     {absenceReasonLabel(prop.value)}
                   </span>
                 </div>
               ) : (
-                <div key={prop.id} className="wall-event__property">
-                  <span className="wall-event__property-name">
+                <div key={prop.id} className="muikku-absence-event__property">
+                  <span className="muikku-absence-event__property-name">
                     {t("labels.property", {
                       ns: "events",
                       context: prop.name,
                     })}
                     :
                   </span>
-                  <span className="wall-event__property-value">
+                  <span className="muikku-absence-event__property-value">
                     {prop.value}
                   </span>
                 </div>
@@ -128,10 +120,10 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
           </div>
         )}
 
-        {actions && <div className="wall-event__footer">{actions}</div>}
+        {actions && <div className="absence-event__footer">{actions}</div>}
       </div>
-    </WallItem>
+    </BaseEvent>
   );
 };
 
-export default WallAbsenceEvent;
+export default AbsenceEvent;

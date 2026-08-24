@@ -19,17 +19,17 @@ export type EVENTS_SET_ABSENCE_EVENTS = SpecificActionType<
 /**
  * SetAbsenceEventsTriggerType
  */
-export interface LoadAbsenceEventsTriggerType {
+export interface LoadUserAbsenceEventsTriggerType {
   (userId: number): AnyActionType;
 }
 
 const eventsApi = MApi.getEventsApi();
 /**
- * loadAbsenceEvents
+ * loadUserAbsenceEvents
  * @param userId userId
  */
-const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
-  function loadAbsenceEvents(userId: number) {
+const loadUserAbsenceEvents: LoadUserAbsenceEventsTriggerType =
+  function loadUserAbsenceEvents(userId: number) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
@@ -70,4 +70,4 @@ const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
     };
   };
 
-export { loadAbsenceEvents };
+export { loadUserAbsenceEvents };

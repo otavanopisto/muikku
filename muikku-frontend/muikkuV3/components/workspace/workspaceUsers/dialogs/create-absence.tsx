@@ -23,8 +23,8 @@ import { AbsenceEventEnum } from "~/reducers/base/muikku-events";
  */
 interface CreateAbsenceDialogProps {
   children?: React.ReactElement;
-  workspaceId: number;
-  workspaceEventContainerId: number;
+  workspaceId?: number;
+  workspaceEventContainerId?: number;
   onClose?: () => void;
   onConfirm?: (form: AbsenceEventFormState) => void;
 }

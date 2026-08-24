@@ -31,6 +31,7 @@ import {
   ExamSettings,
   ExamAttendee,
   ExamAttendance,
+  MuikkuEvent,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -125,7 +126,7 @@ export interface WorkspaceDataType {
   educationTypeName?: string;
   courseLength?: number | null;
   courseLengthSymbol?: string | null;
-
+  absenceEvents?: MuikkuEvent[];
   /**
    * aka "modules", always contains at least one or more if it is combination workspace
    */
@@ -371,6 +372,7 @@ const initialWorkspacesState: WorkspacesState = {
   hasMore: false,
   toolbarLock: false,
   settings: null,
+  absenceEvents: [],
   editMode: {
     active: false,
     available: false,

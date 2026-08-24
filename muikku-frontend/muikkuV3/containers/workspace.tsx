@@ -19,6 +19,7 @@ import {
   loadStaffMembersOfWorkspace,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
+  loadStudentAbsenceEventsOfWorkspace,
   loadWorkspaceTypes,
   loadWorkspaceSettings,
   setAvailableCurriculums,
@@ -777,6 +778,14 @@ export default class Workspace extends React.Component<
               loadStaffMembersOfWorkspace({ workspace }) as Action
             );
           }
+          // Load students absence events if not loaded yet
+          // It is debatable if the load should be done here or not
+          // But the setCurrentWorkspace kind of forces us to do it here
+          if (!workspace.absenceEvents && state.status.loggedIn) {
+            this.props.store.dispatch(
+              loadStudentAbsenceEventsOfWorkspace({ workspace }) as Action
+            );
+          }
           if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
             this.props.store.dispatch(
               loadStudentsOfWorkspace({
@@ -799,6 +808,31 @@ export default class Workspace extends React.Component<
                   active: false,
                 },
               }) as Action
+            );
+          }
+        },
+      }) as Action
+    );
+  }
+
+  /**
+   * loadWorkspaceUsersData
+   */
+  loadWorkspaceAbsenceEventsData(): void {
+    const state = this.props.store.getState();
+
+    this.props.store.dispatch(
+      setCurrentWorkspace({
+        workspaceId: state.status.currentWorkspaceId,
+        /**
+         * success
+         * @param workspace workspace
+         */
+        success: (workspace) => {
+          // Load students absence events if not loaded yet
+          if (!workspace.absenceEvents && state.status.loggedIn) {
+            this.props.store.dispatch(
+              loadStudentAbsenceEventsOfWorkspace({ workspace }) as Action
             );
           }
         },
@@ -996,7 +1030,7 @@ export default class Workspace extends React.Component<
           (window as any).CKEDITOR.disableAutoInline = true;
         }
       );
-
+      this.loadWorkspaceAbsenceEventsData();
       this.loadWorkspaceUsersData();
     }
 

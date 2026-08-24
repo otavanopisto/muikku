@@ -21,7 +21,7 @@ import ApplicationList, {
   ApplicationListItemContentWrapper,
 } from "~/components/general/application-list";
 import Avatar from "~/components/general/avatar";
-import DeactivateReactivateUserDialog from "./dialogs/deactivate-reactivate-user";
+import DeactivateReactivateUserDialog from "../../dialogs/deactivate-reactivate-user";
 import { SearchFormElement } from "~/components/general/form-element";
 import WorkspaceUser from "~/components/general/workspace-user";
 import PagerV2 from "~/components/general/pagerV2";
@@ -34,8 +34,9 @@ import { MobileOnlyTabs } from "~/components/general/tabs";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+
 import Button from "~/components/general/button";
-import { CreateAbsenceDialog } from "./dialogs/create-absence";
+import { CreateAbsenceDialog } from "../../dialogs/create-absence";
 
 /**
  * WorkspaceUsersProps
@@ -395,11 +396,7 @@ class WorkspaceUsers extends React.Component<
       0;
 
     return (
-      <ApplicationPanel
-        modifier="workspace-users"
-        primaryOption={primaryOption}
-        title={t("labels.users", { ns: "users" })}
-      >
+      <>
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
             {t("labels.teacher", { ns: "users", count: teacherCount })}
@@ -566,7 +563,7 @@ class WorkspaceUsers extends React.Component<
             user={this.state.studentCurrentBeingToggledStatus}
           />
         ) : null}
-      </ApplicationPanel>
+      </>
     );
   }
 }
