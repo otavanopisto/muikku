@@ -2004,8 +2004,8 @@
     "labels": {
       "defaultPosition": "Oletussijainti",
       "noteSectionTitle": "Muistiinpanot",
-      "noteSectionTitle_workspace": "Kurssin muistiinpanot",
-      "noteSectionTitle_page": "Sivujen muistiinpanot",
+      "noteSectionTitle_workspace": "Yleiset muistiinpanot",
+      "noteSectionTitle_page": "Kohdennetut muistiinpanot",
       "orphanedNote": "Vanhentunut"
     },
     "notifications": {

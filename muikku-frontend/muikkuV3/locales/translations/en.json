@@ -2004,8 +2004,8 @@
     "labels": {
       "defaultPosition": "Default position",
       "noteSectionTitle": "Notes",
-      "noteSectionTitle_workspace": "Course Notes",
-      "noteSectionTitle_page": "Page Notes",
+      "noteSectionTitle_workspace": "General Notes",
+      "noteSectionTitle_page": "Targeted Notes",
       "orphanedNote": "Obsolete"
     },
     "notifications": {
