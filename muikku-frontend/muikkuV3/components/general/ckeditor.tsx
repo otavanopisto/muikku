@@ -411,7 +411,11 @@ export default class CKEditor extends React.Component<
       // I did not find any case where this would break anything
 
       if (props.children.trim() !== "") {
-        instance.setData(props.children || "");
+        instance.setData(props.children || "", {
+          callback: function() {
+            instance.resetUndo();
+          }
+        });
       }
 
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
