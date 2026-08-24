@@ -1471,3 +1471,10 @@ audio {
   border-bottom: 2px solid $color-annotation-note-active;
   background: darken($color-annotation-note, 20%);
 }
+
+// Deleting mode
+.material-annotation--deleting,
+.material-annotation--deleting[data-muikku-annotation-kind="highlight"],
+.material-annotation--deleting[data-muikku-annotation-kind="note"] {
+  border-bottom: 2px solid $color-fatal;
+}

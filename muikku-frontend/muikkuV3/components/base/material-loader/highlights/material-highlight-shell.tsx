@@ -38,6 +38,12 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
       (state: StateType) => state.notebookV2.activeItemId
     );
 
+    const itemUiMode = useSelector(
+      (state: StateType) => state.notebookV2.noteUiById[highlightId]
+    );
+
+    const deletingModeActive = itemUiMode?.kind === "deleting" ?? false;
+
     /**
      * Handles the click event for the material highlight shell.
      * @param e - The mouse event
@@ -78,6 +84,7 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
       "material-annotation",
       `material-annotation--${kind}`,
       isActive ? "material-annotation--active" : "",
+      deletingModeActive ? "material-annotation--deleting" : "",
       className,
     ]
       .filter(Boolean)

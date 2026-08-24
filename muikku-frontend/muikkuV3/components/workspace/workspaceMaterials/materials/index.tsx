@@ -66,7 +66,6 @@ import {
   getContextNoteDraftHighlightsForPage,
   NotebookContextNoteDraft,
 } from "~/components/general/notebook/helpers/notebook-drafts";
-import { syncActiveMaterialHighlight } from "~/components/general/notebook/helpers/notebook-active-item";
 
 /**
  * WorkspaceMaterialsProps
@@ -166,16 +165,6 @@ class WorkspaceMaterials extends React.Component<
   componentDidUpdate(prevProps: WorkspaceMaterialsProps) {
     if (this.props.materials !== prevProps.materials) {
       this.getFlattenedMaterials(this.props);
-    }
-    if (
-      this.props.activeNotebookItemId !== prevProps.activeNotebookItemId ||
-      this.props.noteBookNotes !== prevProps.noteBookNotes ||
-      this.props.notebookContextNoteDrafts !==
-        prevProps.notebookContextNoteDrafts
-    ) {
-      window.requestAnimationFrame(() => {
-        syncActiveMaterialHighlight(this.props.activeNotebookItemId);
-      });
     }
   }
 
