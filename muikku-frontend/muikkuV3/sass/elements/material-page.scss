@@ -1448,8 +1448,8 @@ audio {
 }
 
 .material-annotation--note-draft {
-  background: lighten($color-annotation-note, 10%);
-  border-bottom: 2px dashed darken($color-annotation-note-active, 10%);
+  background: $color-annotation-note-draft;
+  border-bottom: 2px dashed $color-annotation-note-active;
 }
 
 .material-annotation--highlight {
@@ -1463,11 +1463,11 @@ audio {
 
 .material-annotation--active[data-muikku-annotation-kind="highlight"] {
   border-bottom: 2px solid $color-annotation-highlight-active;
-  background: $color-annotation-highlight;
+  background: darken($color-annotation-highlight, 15%);
 }
 
 .material-annotation--active[data-muikku-annotation-kind="note"],
 .material-annotation--active:not([data-muikku-annotation-kind]) {
-  border-bottom: 2px solid $color-annotation-note-active;
-  background: $color-annotation-note;
+  border-bottom: 2px solid darken($color-annotation-note-active, 25%);
+  background: darken($color-annotation-note, 20%);
 }
