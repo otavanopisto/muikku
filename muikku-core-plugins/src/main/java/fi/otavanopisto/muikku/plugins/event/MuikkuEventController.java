@@ -245,11 +245,11 @@ public class MuikkuEventController {
     }
   }
 
-  public List<MuikkuEvent> listByUserAndWorkspaceAndTimeframeAndType(Long userEntityId, Long workspaceEntityId,
+  public List<MuikkuEvent> listEvents(Long userEntityId, Long workspaceEntityId,
       OffsetDateTime start, OffsetDateTime end, EventType type) {
     Date startDate = new Date(start.toInstant().toEpochMilli());
     Date endDate = new Date(end.toInstant().toEpochMilli());
-    return eventDAO.listByUserAndWorkspaceAndTimeframeAndType(userEntityId, workspaceEntityId, startDate, endDate,
+    return eventDAO.listEvents(userEntityId, workspaceEntityId, startDate, endDate,
         type);
   }
 
@@ -663,5 +663,9 @@ public class MuikkuEventController {
         .stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
 
     return !Collections.disjoint(loggedUserWorkspaceIds, studentWorkspaceIds);
+  }
+  
+  List<MuikkuEvent> listOldAbsences(){
+    return eventDAO.listOldAbsences();
   }
 }
