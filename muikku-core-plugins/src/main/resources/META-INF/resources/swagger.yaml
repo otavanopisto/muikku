@@ -18825,6 +18825,9 @@ components:
           description: The target user entity id of the event
           type: integer
           format: int64
+        targetUserName:
+          description: The name of the user the event applies to
+          type: string
         creatorEntityId:
           description: Creator entity id
           type: integer

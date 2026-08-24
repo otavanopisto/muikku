@@ -469,6 +469,11 @@ public class MuikkuEventRESTService {
     restEvent.setDescription(event.getDescription());
     restEvent.setType(event.getType());
     restEvent.setUserEntityId(event.getUserEntityId());
+    
+    if (event.getUserEntityId() != null) {
+      UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
+      restEvent.setTargetUserName(userEntityController.getName(userEntity, true).getDisplayName());
+    }
     restEvent.setCreator(event.getCreatorEntityId());
     restEvent.setSolved(solved);
     List<MuikkuEventParticipant> participants = eventController.listParticipants(event);
