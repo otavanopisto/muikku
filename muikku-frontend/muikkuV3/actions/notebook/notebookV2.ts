@@ -105,14 +105,6 @@ export type NOTEBOOK_V2_CLEAR_ALL_NOTE_UI = SpecificActionType<
   "NOTEBOOK_V2_CLEAR_ALL_NOTE_UI",
   void
 >;
-export type NOTEBOOK_V2_FOCUS_NOTE = SpecificActionType<
-  "NOTEBOOK_V2_FOCUS_NOTE",
-  number
->;
-export type NOTEBOOK_V2_FOCUS_NOTE_CLEAR = SpecificActionType<
-  "NOTEBOOK_V2_FOCUS_NOTE_CLEAR",
-  void
->;
 
 // ACTION CREATOR INTERFACES
 
@@ -1238,16 +1230,6 @@ const cancelNotebookV2NoteDelete: CancelNotebookV2NoteDelete =
   };
 
 /**
- * Clears saved-note focus scroll target.
- */
-const clearNotebookV2FocusNote: ClearNotebookV2FocusNote =
-  function clearNotebookV2FocusNote() {
-    return (dispatch) => {
-      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE_CLEAR", payload: undefined });
-    };
-  };
-
-/**
  * Upgrade notebook V2 context highlight.
  * @param data data
  */
@@ -1350,7 +1332,6 @@ export {
 
   // Shell navigation (scroll / tab — consumed after dispatch)
   clearNotebookV2FocusDraft,
-  clearNotebookV2FocusNote,
 
   // Saved note UI: context highlight upgrade
   beginNotebookV2ContextHighlightUpgrade,

@@ -16,7 +16,6 @@ import NotebookMaterialSection from "./sections/notebook-material-section";
 import { useDragDropManager } from "react-dnd";
 import { useScroll } from "./hooks/useScroll";
 import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
-import { clearNotebookV2FocusNote } from "~/actions/notebook/notebookV2";
 import { scrollToNotebookItem } from "./helpers/notebook-active-item";
 import NotebookItemDeleteDialog from "./items/notebook-item-delete-confirm";
 import NotebookNoteEditorDialog from "./notebook-note-editor-dialog";
@@ -44,10 +43,6 @@ const Notebook = (props: NotebookProps) => {
   );
   const activeItemId = useSelector(
     (state: StateType) => state.notebookV2.activeItemId
-  );
-
-  const focusNoteId = useSelector(
-    (state: StateType) => state.notebookV2.focusNoteId
   );
 
   const [isPdfDialogOpen, setIsPdfDialogOpen] = React.useState(false);
@@ -99,19 +94,18 @@ const Notebook = (props: NotebookProps) => {
     return () => window.cancelAnimationFrame(frame);
   }, [dispatch, focusDraftClientId]);
 
-  // Focus note scroll target handling
+  // Active item scroll target handling
   React.useEffect(() => {
-    if (focusNoteId == null) {
+    if (activeItemId == null) {
       return;
     }
 
-    // Scroll to focus note and clear focus note after scroll
+    // Scroll to active item
     const frame = window.requestAnimationFrame(() => {
-      scrollToNotebookItem(focusNoteId);
-      dispatch(clearNotebookV2FocusNote());
+      scrollToNotebookItem(activeItemId);
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [dispatch, focusNoteId]);
+  }, [dispatch, activeItemId]);
 
   /**
    * Handle dismiss active item
