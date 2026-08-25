@@ -235,6 +235,7 @@ export default class CKEditor extends React.Component<
    * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: CKEditorProps) {
     if (this.timeoutProps) {
       this.timeoutProps = nextProps;
@@ -245,13 +246,22 @@ export default class CKEditor extends React.Component<
       ...(nextProps.configuration || {}),
     };
 
+    const instance = getCKEDITOR().instances[this.name];
+
     if (!equals(configObj, this.previouslyAppliedConfig)) {
-      getCKEDITOR().instances[this.name].destroy();
+      instance.destroy();
       this.setupCKEditor(nextProps);
     } else if ((nextProps.children || "") !== this.currentData) {
       this.currentData = nextProps.children || "";
       this.enableCancelChangeTrigger();
-      getCKEDITOR().instances[this.name].setData(nextProps.children || "");
+
+      // Reset undo history to prevent undo history from being corrupted when setting data
+      instance.setData(nextProps.children || "", {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        callback: function () {
+          instance.resetUndo();
+        },
+      });
     }
   }
 
@@ -418,11 +428,13 @@ export default class CKEditor extends React.Component<
       // current data gets overridden by the empty children
       // I did not find any case where this would break anything
 
-      if (props.children.trim() !== "") {
+      if ((props.children || "").trim() !== "") {
+        // Reset undo history to prevent undo history from being corrupted when setting data
         instance.setData(props.children || "", {
-          callback: function() {
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          callback: function () {
             instance.resetUndo();
-          }
+          },
         });
       }
 
