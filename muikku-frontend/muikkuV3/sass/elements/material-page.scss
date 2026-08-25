@@ -1462,19 +1462,20 @@ audio {
 }
 
 .material-annotation--active[data-muikku-annotation-kind="highlight"] {
-  border-bottom: 2px solid $color-annotation-highlight-active;
   background: darken($color-annotation-highlight, 15%);
+  border-bottom: 2px solid $color-annotation-highlight-active;
 }
 
 .material-annotation--active[data-muikku-annotation-kind="note"],
 .material-annotation--active:not([data-muikku-annotation-kind]) {
-  border-bottom: 2px solid $color-annotation-note-active;
   background: darken($color-annotation-note, 20%);
+  border-bottom: 2px solid $color-annotation-note-active;
 }
 
 // Deleting mode
 .material-annotation--deleting,
 .material-annotation--deleting[data-muikku-annotation-kind="highlight"],
 .material-annotation--deleting[data-muikku-annotation-kind="note"] {
+  background: lighten($color-fatal, 40%);
   border-bottom: 2px solid $color-fatal;
 }

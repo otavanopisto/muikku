@@ -146,9 +146,12 @@
 }
 
 .notebook__item-title {
+  align-items: center;
   cursor: pointer;
+  display: flex;
   font-size: 0.8125rem;
   font-weight: 600;
+  gap: 0.5rem;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 0.9375rem;
@@ -282,16 +285,16 @@
   gap: 5px;
 
   &::before {
-    content: "\e92c";
-    height: 20px;
-    width: 20px;
-    display: flex;
     align-items: center;
-    justify-content: center;
     border-radius: 5px;
-    font-family: "muikku";
     color: $color-workspace;
+    content: "\e92c";
+    display: flex;
+    font-family: "muikku";
     font-size: 1rem;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
   }
 }
 
@@ -316,12 +319,6 @@
   }
 }
 
-.notebook__item-title {
-  align-items: center;
-  display: flex;
-  gap: 0.5rem;
-}
-
 .notebook__item-title-text {
   min-width: 0;
 }
@@ -341,6 +338,6 @@
 
 .notebook__item.state-ORPHANED {
   .notebook__item-title-text {
-    opacity: 0.85;
+    opacity: 85%;
   }
 }
