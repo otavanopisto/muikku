@@ -131,14 +131,13 @@ export function createHighlightAction(
         options.materialHtml,
         options.pageBoundarySelector,
         options.annotatableSelector,
-        range,
-        ctx.text
+        range
       );
       if (!built) {
         ctx.close();
         return;
       }
-      options.onMakeHighlight(ctx.text, built.start, built.end, built.index);
+      options.onMakeHighlight(built.text, built.start, built.end, built.index);
       ctx.close();
     },
   };
@@ -187,14 +186,13 @@ export function createNoteAction(
         options.materialHtml,
         options.pageBoundarySelector,
         options.annotatableSelector,
-        range,
-        ctx.text
+        range
       );
       if (!built) {
         ctx.close();
         return;
       }
-      options.onAddNote(ctx.text, built.start, built.end, built.index);
+      options.onAddNote(built.text, built.start, built.end, built.index);
       ctx.close();
     },
   };

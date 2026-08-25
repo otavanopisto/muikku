@@ -70,6 +70,7 @@ type Searchable = {
 };
 
 export type BuiltAnnotationSelection = {
+  text: string;
   start: string;
   end: string;
   index: number;
@@ -80,13 +81,24 @@ export type BuiltAnnotationSelection = {
 // =============================================================================
 
 /**
- * Note: RAW concatenated text content (no whitespace normalization).
- * Create-time logic must use the same rules as inject-time logic.
+ * Searchable text is the concatenation of Text.nodeValue in document order.
+ * There is no whitespace normalization (nbsp, shy, source newlines stay as-is).
+ *
+ * Create, inject, and resolve must all use this same stream. Do not use
+ * Selection.toString() or Range.toString() as the annotation needle: Firefox
+ * serializes those as copy-to-clipboard text (nbsp → space, strips shy, may
+ * insert \n at <br>/blocks), which will not match this stream.
  */
 
 /**
- * Get searchable text from DOM roots
- * @param roots roots
+ * Walk DOM roots into a searchable string plus per-node offset segments.
+ * Skips text inside script/style/iframe/object/noscript.
+ *
+ * `segments[i].start` / `.end` are offsets into `text`. Mapping a live Range
+ * onto those offsets is how selection is converted to a character range.
+ *
+ * @param roots top-level elements to walk (live content or parsed HTML)
+ * @returns concatenated text, text-node segments, and per-root spans
  */
 export function getSearchableFromRoots(roots: HTMLElement[]): Searchable {
   const segments: TextSegment[] = [];
@@ -133,8 +145,10 @@ export function getSearchableFromRoots(roots: HTMLElement[]): Searchable {
 }
 
 /**
- * Build searchable text from material HTML.
- * Mirrors MaterialLoader: $(html).toArray() top-level roots.
+ * Build searchable text from stored material HTML.
+ * Mirrors MaterialLoader: parse the fragment and walk $(html).toArray()
+ * top-level roots, so inject-time offsets match create-time html offsets.
+ *
  * @param html material html fragment
  */
 export function getSearchableFromMaterialHtml(html: string): Searchable {
@@ -575,39 +589,66 @@ export const injectHighlights = injectHtmlAnnotations;
 // =============================================================================
 
 /**
- * Measure range start/end as character offsets within a root element.
- * More robust than walking individual text segments.
- * @param range range
- * @param root root
+ * Map a live DOM Range to [start, end) character offsets in searchable.text.
+ *
+ * Walks the same text segments as getSearchableFromRoots. For each intersecting
+ * text node: if it is the range start/end container, use the range's local
+ * offset; otherwise include the whole node.
+ *
+ * This is used instead of Range.toString().length because Firefox's Range
+ * serialization can count extra characters (e.g. \n for <br> or blocks) that
+ * are not in nodeValue, which would slice the wrong window.
+ *
+ * @param range live selection range (must sit inside root)
+ * @param searchable live searchable built from root
+ * @param root annotatable content element
+ * @returns offsets into searchable.text, or null if the range is empty/outside
  */
 function rangeOffsetsWithinRoot(
   range: Range,
+  searchable: Searchable,
   root: Element
 ): { start: number; end: number } | null {
   if (!root.contains(range.commonAncestorContainer)) {
     return null;
   }
-
-  let start = 0;
-  let end = 0;
-  const pre = document.createRange();
-  try {
-    pre.selectNodeContents(root);
-    pre.setEnd(range.startContainer, range.startOffset);
-    start = pre.toString().length;
-    pre.setEnd(range.endContainer, range.endOffset);
-    end = pre.toString().length;
-  } catch {
-    return null;
+  let start: number | null = null;
+  let end: number | null = null;
+  for (const seg of searchable.segments) {
+    const node = seg.node;
+    if (!range.intersectsNode(node)) continue;
+    const localStart = range.startContainer === node ? range.startOffset : 0;
+    const localEnd =
+      range.endContainer === node ? range.endOffset : node.length;
+    const absStart = seg.start + clamp(localStart, 0, node.length);
+    const absEnd = seg.start + clamp(localEnd, 0, node.length);
+    if (start === null) start = absStart;
+    end = absEnd;
   }
-  return start < end ? { start, end } : null;
+  if (start === null || end === null || start >= end) return null;
+  return { start, end };
 }
 
 /**
- * Adjust raw range offsets to trimmed needle boundaries.
- * @param text text
- * @param start start
- * @param end end
+ * Clamp a value between a minimum and maximum
+ * @param value value
+ * @param min minimum
+ * @param max maximum
+ * @returns clamped value
+ */
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+/**
+ * Shrink a raw [start, end) window so the needle has no leading/trailing
+ * whitespace. Offsets stay in searchable.text space (trim does not rewrite
+ * nbsp/shy inside the selection).
+ *
+ * @param text searchable text
+ * @param start raw start offset
+ * @param end raw end offset
+ * @returns trimmed window and the exact needle, or null if empty after trim
  */
 function toTrimmedOffsets(
   text: string,
@@ -625,12 +666,22 @@ function toTrimmedOffsets(
     trimmed,
   };
 }
+
 /**
- * Map live content occurrence to html searchable offsets.
- * @param htmlText html text
- * @param liveText live text
- * @param liveTrimmedStart live trimmed start
- * @param needle needle
+ * Translate a live-DOM occurrence of `needle` into offsets in the original
+ * material HTML searchable text.
+ *
+ * Live DOM can differ from stored HTML (highlight spans, ReadSpeaker wrappers).
+ * If the strings are identical, live offsets are used as-is. Otherwise the
+ * Nth occurrence of `needle` in live text is mapped to the Nth occurrence in
+ * html text. Anchors must be computed from html offsets so they still resolve
+ * after reload.
+ *
+ * @param htmlText searchable text from stored material HTML
+ * @param liveText searchable text from the live content root
+ * @param liveTrimmedStart start of this occurrence in liveText
+ * @param needle exact live substring (raw nodeValue, not Selection.toString)
+ * @returns html [start, end) or null if the occurrence cannot be mapped
  */
 function mapContentOffsetToHtml(
   htmlText: string,
@@ -659,42 +710,52 @@ function mapContentOffsetToHtml(
 export const MATERIAL_CONTENT_SELECTOR = ".material-page__content.rich-text";
 
 /**
- * Build annotation from selection
- * @param materialHtml material html
- * @param boundarySelector boundary selector
- * @param annotatableSelector annotatable selector
- * @param range range
- * @param selectedText selected text
- * @returns BuiltAnnotationSelection | null
+ * Turn a live text selection into a persistable annotation.
+ *
+ * Pipeline:
+ * 1. Live searchable text from the annotatable root (same walk as inject).
+ * 2. Range → character offsets via text-node segments (not Range.toString).
+ * 3. Trim only leading/trailing whitespace; keep the raw inner substring.
+ * 4. Map that occurrence onto stored material HTML searchable text.
+ * 5. Build start/end anchors and a 0-based index in the HTML stream.
+ *
+ * `text` / `start` / `end` are slices of searchable text, not
+ * Selection.toString(). Using clipboard-style selection text breaks Firefox
+ * (nbsp, soft hyphens, inline spans) and orphans highlights on inject.
+ *
+ * @param materialHtml original material HTML (same source as inject)
+ * @param boundarySelector page/panel root, e.g. #p-123
+ * @param annotatableSelector content root inside the page
+ * @param range live selection range inside the annotatable root
+ * @returns text + anchors + index, or null if the selection cannot be mapped
  */
 export function buildAnnotationFromSelection(
   materialHtml: string,
   boundarySelector: string,
   annotatableSelector: string,
-  range: Range,
-  selectedText: string
+  range: Range
 ): BuiltAnnotationSelection | null {
-  const trimmed = selectedText.trim();
-  if (!trimmed) return null;
-
   const boundary = document.querySelector(boundarySelector);
   const contentRoot = boundary?.querySelector(annotatableSelector);
+
   if (!contentRoot) return null;
 
   const htmlSearchable = getSearchableFromMaterialHtml(materialHtml);
   const liveSearchable = getSearchableFromRoots([contentRoot as HTMLElement]);
+  const rawOffsets = rangeOffsetsWithinRoot(
+    range,
+    liveSearchable,
+    contentRoot as HTMLElement
+  );
 
-  const rawOffsets = rangeOffsetsWithinRoot(range, contentRoot);
   if (!rawOffsets) return null;
-
   const liveOffsets = toTrimmedOffsets(
     liveSearchable.text,
     rawOffsets.start,
     rawOffsets.end
   );
 
-  if (!liveOffsets || liveOffsets.trimmed !== trimmed) return null;
-
+  if (!liveOffsets) return null;
   const htmlOffsets = mapContentOffsetToHtml(
     htmlSearchable.text,
     liveSearchable.text,
@@ -703,8 +764,7 @@ export function buildAnnotationFromSelection(
   );
 
   if (!htmlOffsets) return null;
-
-  const { start, end } = buildAnnotationAnchors(trimmed);
+  const { start, end } = buildAnnotationAnchors(liveOffsets.trimmed);
   const index = computeAnnotationIndex(
     htmlSearchable.text,
     start,
@@ -712,7 +772,8 @@ export function buildAnnotationFromSelection(
     htmlOffsets.start,
     htmlOffsets.end
   );
-  return { start, end, index };
+
+  return { text: liveOffsets.trimmed, start, end, index };
 }
 
 export type AnnotationOrphanReason =
