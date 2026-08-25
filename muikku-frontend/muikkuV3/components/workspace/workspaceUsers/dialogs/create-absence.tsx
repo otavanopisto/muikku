@@ -145,6 +145,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     const request: GetWorkspaceStudentsRequest = {
       q: searchTerm,
       workspaceEntityId: workspaceId,
+      active: true,
     };
 
     const search = await workspaceApi.getWorkspaceStudents(request);
