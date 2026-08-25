@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable camelcase */
 import * as React from "react";
-import CKEditor from "~/components/general/ckeditor";
-import $ from "~/lib/jquery";
+import CKEditor, {
+  CKEditorKeyEventInfo,
+  CKEditorPasteEventInfo,
+} from "~/components/general/ckeditor";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { connect } from "react-redux";
@@ -28,6 +31,24 @@ import {
   getMemoFieldContentFormatSync,
 } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
+
+/**
+ * parseLimit - Parses the limit
+ * @param value value
+ */
+function parseLimit(value?: string): number | undefined {
+  const n = parseInt(value, 10);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+/**
+ * normalizedKeyCode - Normalizes the key code
+ * @param keyCode key code
+ * @param CKEDITOR CKEDITOR
+ */
+function normalizedKeyCode(keyCode: number, CKEDITOR: any): number {
+  return keyCode & ~(CKEDITOR.SHIFT | CKEDITOR.CTRL | CKEDITOR.ALT);
+}
 
 /**
  * characterCount - Counts the amount of characters
@@ -173,7 +194,6 @@ interface MemoFieldState {
   // We can use it but it's the parent managing function that modifies them
   // We only set them up in the initial state
   modified: boolean;
-  isPasting: boolean;
   synced: boolean;
   syncError: string;
   fieldSavedState: FieldStateStatus;
@@ -187,6 +207,7 @@ interface MemoFieldState {
 class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   // Add ref declaration
   private baseRef: React.RefObject<HTMLDivElement>;
+  private lastLimitNoticeAt = 0;
 
   /**
    * constructor
@@ -213,7 +234,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       value,
       words: getWords(rawText).length,
       characters: getCharacters(rawText).length,
-      isPasting: false,
       modified: false,
       synced: true,
       syncError: null,
@@ -225,7 +245,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // this.onInputPaste = this.onInputPaste.bind(this);
     this.isInsideLastWord = this.isInsideLastWord.bind(this);
     this.trimPastedContent = this.trimPastedContent.bind(this);
-    this.onCkeditorPaste = this.onCkeditorPaste.bind(this);
+    this.onCKEditorKey = this.onCKEditorKey.bind(this);
+    this.onCKEditorPaste = this.onCKEditorPaste.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
@@ -362,99 +383,117 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   };
 
   /**
-   * onCkeditorPaste
+   * notifyLimit - Notifies the user that the limit has been reached
+   * @param context context
    */
-  onCkeditorPaste() {
-    this.setState({
-      isPasting: true,
-    });
+  notifyLimit(context: "words" | "characters") {
+    const now = Date.now();
+    if (now - this.lastLimitNoticeAt < 1500) {
+      return;
+    }
+    this.lastLimitNoticeAt = now;
+    this.props.displayNotification(
+      this.props.t("notifications.contentLimitReached", {
+        ns: "materials",
+        context,
+      }),
+      "info"
+    );
   }
 
   /**
-   * onCKEditorChange - this one is for a ckeditor change
-   * @param value value
-   * @param instance editor instance
+   * Block keys that would exceed limits. Content is not in the editor yet.
+   * @param evt evt
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onCKEditorChange(value: string, instance: any) {
-    // we need the raw text and raw existing value
-    const rawText = $(value).text();
-    const rawValue = $(this.state.value).text();
-
-    const maxCharacters = parseInt(this.props.content.maxChars);
-    const maxWords = parseInt(this.props.content.maxWords);
-
-    const exceedsCharacterLimit = getCharacters(rawText).length > maxCharacters;
-    const exceedsWordLimit = getWords(rawText).length > maxWords;
-
-    // If there's a restriction to the amount of characters or words,
-    // we need to check if the user has exceeded the limit
-
-    if (exceedsCharacterLimit || exceedsWordLimit) {
-      const localeContext = exceedsWordLimit ? "words" : "characters";
-      // If the user is pasting content, we need to check if the content
-      //exceeds the character or word limit
-
-      if (this.state.isPasting) {
-        value = this.state.value;
-        instance.setData(value, {
-          /**
-           * callback function
-           */
-          callback: () => {
-            // Move the cursor to the end of the content
-            const range = instance.createRange();
-            range.moveToElementEditEnd(range.root);
-            instance.getSelection().selectRanges([range]);
-          },
-        });
-        this.props.displayNotification(
-          this.props.t("notifications.pastedContentLimitReached", {
-            ns: "materials",
-            context: localeContext,
-          }),
-          "info"
-        );
-      } else {
-        // If the user has exceeded the limit and is not pasting, we need to revert the changes
-
-        const isBeingDeleted =
-          getCharacters(rawText).length < getCharacters(rawValue).length;
-
-        // if the content is not being deleted, or we are not inside the last word
-        // we reset the value to the state value
-        if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
-          // over the limit, not being deleted and outside the last word, reset to state value
-          value = this.state.value;
-
-          // no point in setting state or saving anything, we return the original value
-          instance.setData(value, {
-            /**
-             * callback function
-             */
-            callback: () => {
-              // Move the cursor to the end of the content
-              const range = instance.createRange();
-              range.moveToElementEditEnd(range.root);
-              instance.getSelection().selectRanges([range]);
-            },
-          });
-          this.props.displayNotification(
-            this.props.t("notifications.contentLimitReached", {
-              ns: "materials",
-              context: localeContext,
-            }),
-            "info"
-          );
-        }
-      }
+  onCKEditorKey(evt: CKEditorKeyEventInfo) {
+    const CKEDITOR = (window as any).CKEDITOR;
+    const maxChars = parseLimit(this.props.content.maxChars);
+    const maxWords = parseLimit(this.props.content.maxWords);
+    if (!maxChars && !maxWords) {
       return;
     }
+    const keyCode = normalizedKeyCode(evt.data.keyCode, CKEDITOR);
+    const isDelete = keyCode === 8 || keyCode === 46;
+    const isSpace = keyCode === 32;
+    const isEnter = keyCode === 13;
+    const isNavigation =
+      keyCode === 9 || keyCode === 27 || (keyCode >= 33 && keyCode <= 40);
+    if (
+      isDelete ||
+      isNavigation ||
+      evt.data.keyCode & CKEDITOR.CTRL ||
+      evt.data.keyCode & CKEDITOR.ALT
+    ) {
+      return;
+    }
+    const rawText = evt.editor.editable().getText();
+    const selectedText = evt.editor.getSelection()?.getSelectedText() || "";
+    const characters = getCharacters(rawText).length;
+    const selectedChars = getCharacters(selectedText).length;
+    const words = getWords(rawText).length;
+    const insertedChars = isSpace || isEnter ? 0 : 1;
+    const nextChars = characters - selectedChars + insertedChars;
+    if (maxChars && nextChars > maxChars) {
+      evt.cancel();
+      this.notifyLimit("characters");
+      return;
+    }
+    // At cap with no counted characters selected (collapsed caret, or only spaces):
+    // do not insert more spaces / letters.
+    if (maxChars && characters >= maxChars && selectedChars === 0) {
+      evt.cancel();
+      this.notifyLimit("characters");
+      return;
+    }
+    // Space/Enter at word cap: allow when replacing a selection (Ctrl+A then space).
+    if (
+      maxWords &&
+      words >= maxWords &&
+      (isSpace || isEnter) &&
+      selectedText.length === 0
+    ) {
+      evt.cancel();
+      this.notifyLimit("words");
+    }
+  }
+
+  /**
+   * Block paste that would exceed limits. Content is not in the editor yet.
+   * @param evt evt
+   */
+  onCKEditorPaste(evt: CKEditorPasteEventInfo) {
+    const maxChars = parseLimit(this.props.content.maxChars);
+    const maxWords = parseLimit(this.props.content.maxWords);
+    if (!maxChars && !maxWords) {
+      return;
+    }
+    const currentText = evt.editor.editable().getText();
+    const selectedText = evt.editor.getSelection()?.getSelectedText() || "";
+    const pastedText = htmlToPlainText(evt.data.dataValue || "");
+    const nextText = currentText.replace(selectedText, pastedText);
+    const nextChars = getCharacters(nextText).length;
+    const nextWords = getWords(nextText).length;
+    if (maxChars && nextChars >= maxChars) {
+      evt.cancel();
+      this.notifyLimit("characters");
+      return;
+    }
+    if (maxWords && nextWords >= maxWords) {
+      evt.cancel();
+      this.notifyLimit("words");
+    }
+  }
+
+  /**
+   * onCKEditorChange - Handles the change event from the CKEditor
+   * @param value value
+   */
+  onCKEditorChange(value: string) {
+    const rawText = htmlToPlainText(value);
     this.setState({
       value,
       words: getWords(rawText).length,
       characters: getCharacters(rawText).length,
-      isPasting: false,
     });
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
@@ -527,21 +566,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 : 3
             )}
             onChange={this.onCKEditorChange}
-            onPaste={this.onCkeditorPaste}
+            onKey={this.onCKEditorKey}
+            onPaste={this.onCKEditorPaste}
             rows={
               this.props.content.rows &&
               this.props.content.rows !== "" &&
               !isNaN(Number(this.props.content.rows))
                 ? Number(this.props.content.rows)
                 : 3
-            }
-            maxChars={
-              this.props.content.maxChars &&
-              parseInt(this.props.content.maxChars)
-            }
-            maxWords={
-              this.props.content.maxWords &&
-              parseInt(this.props.content.maxWords)
             }
             ancestorHeight={200}
           >
