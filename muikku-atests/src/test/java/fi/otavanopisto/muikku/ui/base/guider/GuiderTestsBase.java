@@ -974,11 +974,13 @@ public class GuiderTestsBase extends AbstractUITest {
       addTextToCKEditor(" Do additional stuff!");
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      sleep(1500);
+      sleep(2500);
       assertText(".notes__item-body", "Do some stuff! Do additional stuff!");
       
       waitAndClick(".dialog__button-set .button--cancel");
-      
+      hoverOverElement(".notes__item-recipients .notes__item-avatar");
+      waitForElementToAppear("div[name='react-portal'] div.dropdown__container", 3, 500);
+      assertText("div[name='react-portal'] div.dropdown__container", "Arduous Arvin");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteWorkspace(workspace.getId());
