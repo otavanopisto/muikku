@@ -757,6 +757,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     clickXPath(xpath);
   }
   
+  protected void assertPresentXPath(String xpath) {
+    waitForPresentXPath(xpath);
+    assertTrue(String.format("Could not find element %s", xpath), getWebDriver().findElements(By.xpath(xpath)).size() > 0);
+  }
+  
   /** 
    * Clicks on an selector and checks
    * if given element appears after defined (ms) interval as a result, 
