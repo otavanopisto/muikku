@@ -18,13 +18,13 @@ class FrontpageOrganization extends React.Component<WithTranslation> {
           ns: "frontPage",
         })}
       >
-        <h2 className="screen-container__header">
+        <h2 className="screen-container__header" data-de-aria-text="true" tabIndex={0} role="section">
           {this.props.t("labels.organization", {
             ns: "frontPage",
           })}
         </h2>
         <div className="card card--frontpage-organization">
-          <div className="ordered-container ordered-container--frontpage-organization-info">
+          <div className="ordered-container ordered-container--frontpage-organization-info" role="group" data-de-aria-text="true" tabIndex={0}>
             <div className="ordered-container__item ordered-container__item--organization-logo">
               <div className="ordered-container__item-subcontainer">
                 <img
@@ -49,6 +49,9 @@ class FrontpageOrganization extends React.Component<WithTranslation> {
                   href="http://www.otavia.fi"
                   openInNewTab="_blank"
                   buttonModifiers={["branded", "frontpage-website"]}
+                  data-de-aria-key="o"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   www.otavia.fi
                 </Button>
@@ -56,6 +59,9 @@ class FrontpageOrganization extends React.Component<WithTranslation> {
                   openInNewTab="_blank"
                   className="icon-linkedin"
                   href="https://www.linkedin.com/company/106028"
+                  data-de-aria-key="o"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   <span className="visually-hidden">Linkedin Otavia</span>
                 </ButtonSocial>

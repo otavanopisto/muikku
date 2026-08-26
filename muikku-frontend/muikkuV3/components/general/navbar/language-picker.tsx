@@ -85,6 +85,9 @@ class LanguagePicker extends React.Component<
           tabIndex={0}
           aria-haspopup="true"
           aria-label={this.props.t("wcag.localeMenu")}
+          data-de-aria-key="n"
+          data-de-aria-horizontal-alignment="center"
+          data-de-aria-vertical-alignment="bottom-outside"
         >
           <span
             className={`button-pill__current-locale button-pill__current-locale--${this.props.locales.current}`}

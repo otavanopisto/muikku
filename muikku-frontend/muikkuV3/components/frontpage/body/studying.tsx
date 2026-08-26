@@ -30,12 +30,12 @@ class FrontpageStudying extends React.Component<
         className="screen-container__section"
         aria-label={this.props.t("wcag.studying", { ns: "frontPage" })}
       >
-        <h2 className="screen-container__header">
+        <h2 className="screen-container__header" data-de-aria-text="true" tabIndex={0} role="section">
           {this.props.t("labels.becomeStudent", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-studying">
           <div className="ordered-container__item ordered-container__item--upper-secondary-school">
-            <div className="card">
+            <div className="card" data-de-aria-text="true" role="group" tabIndex={0}>
               <img
                 className="card__image"
                 src="/gfx/kuva_nettilukio.png"
@@ -58,6 +58,9 @@ class FrontpageStudying extends React.Component<
                     "branded",
                     "frontpage-upper-secondary-school-readmore",
                   ]}
+                  data-de-aria-key="t"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   {this.props.t("actions.tourNettilukio", { ns: "frontPage" })}
                 </Button>
@@ -65,7 +68,7 @@ class FrontpageStudying extends React.Component<
             </div>
           </div>
           <div className="ordered-container__item ordered-container__item--secondary-school">
-            <div className="card">
+            <div className="card" data-de-aria-text="true" role="group" tabIndex={0}>
               <img
                 className="card__image"
                 src="/gfx/kuva_nettiperuskoulu.png"
@@ -88,6 +91,10 @@ class FrontpageStudying extends React.Component<
                     "branded",
                     "frontpage-secondary-school-readmore",
                   ]}
+
+                  data-de-aria-key="t"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   {this.props.t("actions.tourNettiperuskoulu", {
                     ns: "frontPage",
@@ -97,7 +104,7 @@ class FrontpageStudying extends React.Component<
             </div>
           </div>
           <div className="ordered-container__item ordered-container__item--open-materials">
-            <div className="card">
+            <div className="card" data-de-aria-text="true" role="group" tabIndex={0}>
               <img
                 className="card__image"
                 src="/gfx/kuva_aineopiskelu.png"
@@ -120,6 +127,10 @@ class FrontpageStudying extends React.Component<
                     "branded",
                     "frontpage-open-materials-readmore",
                   ]}
+
+                  data-de-aria-key="t"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   {this.props.t("actions.tourNettilukio", {
                     ns: "frontPage",
@@ -133,6 +144,10 @@ class FrontpageStudying extends React.Component<
                     "branded",
                     "frontpage-open-materials-readmore",
                   ]}
+
+                  data-de-aria-key="t"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   {this.props.t("actions.tourNettiperuskoulu", {
                     ns: "frontPage",

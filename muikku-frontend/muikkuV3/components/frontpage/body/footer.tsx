@@ -13,20 +13,20 @@ class FrontpageFooter extends React.Component<WithTranslation> {
       <footer className="footer" id="contact">
         <div className="footer__container">
           <div className="footer__item footer__item--contact">
-            <h2 className="footer__header">
+            <h2 className="footer__header" data-de-aria-text="true" role="section" tabIndex={0}>
               {this.props.t("labels.contactInfo")}
             </h2>
-            <p className="footer__subitem">
+            <p className="footer__subitem" data-de-aria-text="true" role="text" tabIndex={0}>
               <span className="glyph icon-location"></span>
               <b>{this.props.t("labels.address")}</b>
               <span>Otavantie 2 B, 50670 Otava</span>
             </p>
-            <p className="footer__subitem">
+            <p className="footer__subitem" data-de-aria-text="true" role="text" tabIndex={0}>
               <span className="glyph icon-phone"></span>
               <b>{this.props.t("labels.phone")}</b>
               <span>044 794 3552</span>
             </p>
-            <p className="footer__subitem">
+            <p className="footer__subitem" data-de-aria-text="true" role="text" tabIndex={0}>
               <span className="glyph icon-envelope-alt"></span>
               <b>{this.props.t("labels.email")}</b>
               <span>info@otavia.fi</span>
@@ -37,6 +37,9 @@ class FrontpageFooter extends React.Component<WithTranslation> {
                 target="_blank"
                 className="link link--privacy-policy"
                 rel="noreferrer"
+                data-de-aria-key="f"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {this.props.t("labels.privacyPolicy", {
                   ns: "frontPage",
@@ -57,6 +60,9 @@ class FrontpageFooter extends React.Component<WithTranslation> {
                 target="_blank"
                 className="link link--accessibility-statement"
                 rel="noreferrer"
+                data-de-aria-key="f"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {this.props.t("labels.accessibilityStatement", {
                   ns: "frontPage",
@@ -77,12 +83,16 @@ class FrontpageFooter extends React.Component<WithTranslation> {
               alt="Otavia logo"
               title="Otavia logo"
               className="logo--organization-footer"
+              data-de-aria-text="true"
+              tabIndex={0}
             />
             <img
               src="/gfx/footer_logo.png"
               alt="Muikkuverkko logo"
               title="Muikkuverkko logo"
               className="logo logo--muikku-footer"
+              data-de-aria-text="true"
+              tabIndex={0}
             />
           </div>
         </div>
@@ -93,6 +103,9 @@ class FrontpageFooter extends React.Component<WithTranslation> {
               className="link link--plagscan-logo"
               target="_blank"
               rel="noreferrer"
+              data-de-aria-key="f"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="top-outside"
             >
               <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
               <span className="visually-hidden">
@@ -103,7 +116,7 @@ class FrontpageFooter extends React.Component<WithTranslation> {
                 className="external-link-indicator icon-external-link"
               />
             </a>
-            <span className="footer__item--plagscan-text">
+            <span className="footer__item--plagscan-text" data-de-aria-text="true" role="text" tabIndex={0}>
               {this.props.t("content.plagScan", { ns: "frontPage" })}
             </span>
             <a
@@ -111,6 +124,9 @@ class FrontpageFooter extends React.Component<WithTranslation> {
               target="_blank"
               className="link link--plagscan-privacy-policy"
               rel="noreferrer"
+              data-de-aria-key="f"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               (
               {this.props.t("labels.privacyPolicy", {

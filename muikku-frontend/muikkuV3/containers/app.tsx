@@ -14,6 +14,7 @@ import { Store } from "redux";
 import { HelmetProvider } from "react-helmet-async";
 import TitleProvider from "./titleProvider";
 import "de-aria";
+import "~/sass/aria/index.scss"
 
 /**
  * AppProps

@@ -99,7 +99,13 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                 key="frontpage"
                 content={this.props.i18n.t("labels.home")}
               >
-                <a href="/" className="navbar__logo-link">
+                <a
+                  href="/" className="navbar__logo-link"
+                  data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
+                  aria-label={this.props.i18n.t("content.home")}
+                >
                   <img
                     src={`${
                       this.props.modifier == "frontpage"
@@ -132,6 +138,9 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                   aria-label={this.props.i18n.t("wcag.openMainNavigation")}
                   aria-haspopup="menu"
                   aria-expanded={this.state.isMenuOpen}
+                  data-de-aria-key="m"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   <span className="link__icon icon-navicon"></span>
                 </Link>
@@ -145,7 +154,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                     <li
                       key={index}
                       className={`navbar__item navbar__item--${item.modifier}`}
-                      role="none"
+                      role="navigation"
                     >
                       {item.item}
                     </li>

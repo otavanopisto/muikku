@@ -47,6 +47,10 @@ class FrontpageNavbar extends React.Component<
               <Link
                 href="#studying"
                 className="link link--frontpage link--full"
+                data-de-aria-key="n"
+                
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
               >
                 <span>
                   {this.props.t("labels.studying", { ns: "frontPage" })}
@@ -57,7 +61,10 @@ class FrontpageNavbar extends React.Component<
           {
             modifier: "news",
             item: (
-              <Link href="#news" className="link link--frontpage link--full">
+              <Link href="#news" className="link link--frontpage link--full" 
+                data-de-aria-key="n"
+                data-de-aria-horizontal-alignment="center"
+                data-de-aria-vertical-alignment="bottom-outside">
                 <span>{this.props.t("labels.news", { ns: "frontPage" })}</span>
               </Link>
             ),
@@ -68,6 +75,9 @@ class FrontpageNavbar extends React.Component<
               <Link
                 href="#organization"
                 className="link link--frontpage link--full"
+                data-de-aria-key="n"
+                data-de-aria-horizontal-alignment="center"
+                data-de-aria-vertical-alignment="bottom-outside"
               >
                 <span>
                   {this.props.t("labels.organization", { ns: "frontPage" })}
@@ -78,7 +88,10 @@ class FrontpageNavbar extends React.Component<
           {
             modifier: "contact",
             item: (
-              <Link href="#contact" className="link link--frontpage link--full">
+              <Link href="#contact" className="link link--frontpage link--full" 
+                data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside">
                 <span>
                   {this.props.t("labels.contact", { ns: "frontPage" })}
                 </span>
@@ -91,6 +104,9 @@ class FrontpageNavbar extends React.Component<
               <Link
                 href="/coursepicker"
                 className="link link--frontpage link--highlight link--full"
+                data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
               >
                 <span>
                   {this.props.t("labels.courses", { ns: "frontPage" })}
@@ -102,7 +118,11 @@ class FrontpageNavbar extends React.Component<
         defaultOptions={[
           <LoginButton key="0" />,
           <ForgotPasswordDialog key="1">
-            <Link tabIndex={0} className="link link--forgot-password">
+            <Link tabIndex={0} className="link link--forgot-password"
+            
+                data-de-aria-key="f"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside">
               <span>{this.props.t("labels.forgotPasswordLink")}</span>
             </Link>
           </ForgotPasswordDialog>,
@@ -120,6 +140,9 @@ class FrontpageNavbar extends React.Component<
             key="organization"
             href="#organization"
             className="link link--full"
+                data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
           >
             <span>
               {this.props.t("labels.organization", { ns: "frontPage" })}
@@ -132,6 +155,9 @@ class FrontpageNavbar extends React.Component<
             key="coursepicker"
             href="/coursepicker"
             className="link link--highlight link--full"
+                data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
           >
             <span>{this.props.t("labels.courses", { ns: "frontPage" })}</span>
           </Link>,

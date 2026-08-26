@@ -30,7 +30,7 @@ class FrontpageNews extends React.Component<
         className="screen-container__section"
         aria-label={this.props.t("wcag.otaviaNews", { ns: "frontPage" })}
       >
-        <h2 className="screen-container__header">
+        <h2 className="screen-container__header" data-de-aria-text="true" tabIndex={0} role="section">
           {this.props.t("labels.news", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-news">

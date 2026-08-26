@@ -222,6 +222,8 @@ class MainFunctionNavbar extends React.Component<
                         : item.text
                     }
                     role="menuitem"
+                    data-de-aria-key="m"
+                    data-de-aria-horizontal-alignment="end-outside"
                   >
                     <span className={`link__icon icon-${item.icon}`} />
                     {item.badge ? (
@@ -247,6 +249,8 @@ class MainFunctionNavbar extends React.Component<
                         : item.text
                     }
                     role="menuitem"
+                    data-de-aria-key="n"
+                    data-de-aria-horizontal-alignment="end-outside"
                   >
                     <span className={`link__icon icon-${item.icon}`} />
                     {item.badge ? (
@@ -270,6 +274,8 @@ class MainFunctionNavbar extends React.Component<
                     className="link link--forgot-password link--forgot-password-main-function"
                     aria-label={t("labels.forgotPasswordLink")}
                     role="menuitem"
+                    data-de-aria-key="f"
+                    data-de-aria-horizontal-alignment="end-outside"
                   >
                     <span>{t("labels.forgotPasswordLink")}</span>
                   </Link>
@@ -292,6 +298,8 @@ class MainFunctionNavbar extends React.Component<
               onTouchEnd={(e) => {
                 e.stopPropagation();
               }}
+              data-de-aria-key="n"
+              data-de-aria-horizontal-alignment="end-outside"
             >
               <span className={`menu__item-link-icon icon-${item.icon}`} />
               {item.badge ? (
@@ -312,6 +320,8 @@ class MainFunctionNavbar extends React.Component<
               }`}
               aria-label={item.text}
               role="menuitem"
+              data-de-aria-key="n"
+              data-de-aria-horizontal-alignment="end-outside"
             >
               <span className={`menu__item-link-icon icon-${item.icon}`} />
               {item.badge ? (

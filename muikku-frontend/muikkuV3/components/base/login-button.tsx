@@ -47,6 +47,9 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
           this.props.modifier ? "button--" + this.props.modifier : ""
         }`}
         href={`/login?redirectUrl=${window.location.pathname}`}
+        data-de-aria-key="l"
+        data-de-aria-horizontal-alignment="center"
+        data-de-aria-vertical-alignment="bottom-outside"
       >
         <span>{t("actions.signIn")}</span>
       </Link>

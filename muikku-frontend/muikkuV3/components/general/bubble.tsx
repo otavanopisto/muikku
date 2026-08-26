@@ -26,6 +26,9 @@ export default class Bubble extends React.Component<BubbleProps, BubbleState> {
   render() {
     return (
       <div
+        data-de-aria-text="true"
+        role="text"
+        tabIndex={0}
         className={`bubble ${
           this.props.modifier ? `bubble--${this.props.modifier}` : ""
         }`}

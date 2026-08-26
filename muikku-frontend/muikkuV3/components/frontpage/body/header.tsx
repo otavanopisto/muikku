@@ -41,6 +41,9 @@ class FrontpageHero extends React.Component<
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
                 href="/application"
                 openInNewTab="_blank"
+                data-de-aria-key="s"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {this.props.t("actions.apply", {
                   ns: "frontPage",
@@ -48,7 +51,7 @@ class FrontpageHero extends React.Component<
               </Button>
             </Bubble>
           </div>
-          <div className="hero__item hero__item--frontpage">
+          <div className="hero__item hero__item--frontpage" tabIndex={0} data-de-aria-text="true" role="text">
             <div className="hero__item-logo-container">
               <img
                 className="logo logo--muikku"
@@ -80,6 +83,9 @@ class FrontpageHero extends React.Component<
               <Button
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
                 href="/coursepicker"
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {this.props.t("actions.exploreCourses", {
                   ns: "frontPage",

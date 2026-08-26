@@ -27,6 +27,10 @@ body {
   overflow-y: auto;
 
   // Custom focus borders for every interactive element when using keyboard
+  /**
+
+  This messes up accessibility and is not needed since we have de-aria focus indicators
+
   *:focus-visible {
     outline: 2px solid $color-outline;
     outline-offset: -2px;
@@ -36,6 +40,7 @@ body {
   &.using-mouse *:focus-visible:not(:focus) {
     outline: none;
   }
+  */
 
   &.using-mouse {
     .button-icon--back-to-toc {

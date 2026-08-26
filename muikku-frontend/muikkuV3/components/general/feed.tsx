@@ -30,7 +30,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
     return (
       <ul className="feed">
         {this.props.entries.map((entry) => (
-          <li className="feed__item" key={entry.link}>
+          <li className="feed__item" key={entry.link} role="article" data-de-aria-text="true" tabIndex={0}>
             <div className="feed__item-aside">
               {entry.image ? (
                 <img
@@ -69,6 +69,9 @@ class Feed extends React.Component<FeedProps, FeedState> {
                   target="_blank"
                   rel="noreferrer"
                   className={`link link--feed-${entry.feed}`}
+                  data-de-aria-key="r"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {this.props.t("actions.readMore", { ns: "frontPage" })} (
                   {entry.feed === "nettilukio"

@@ -1,0 +1,61 @@
+/* Key shortcut badges shown next to each interactive element */
+.de-aria-key-indicator {
+    background: rgba(0, 0, 0, 0.65);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.6vh;
+    line-height: 1;
+    padding: 0.6vh 0.9vh;
+    border-radius: 0.6vh;
+    border: 0.15vh solid rgba(255, 255, 255, 0.55);
+    margin-left: 0.4vh;
+    margin-top: -0.4vh;
+    box-shadow: 0 0.3vh 1vh rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    text-shadow: 0 0.1vh 0.2vh rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    z-index: 99999;
+    text-transform: uppercase;
+    letter-spacing: 0.05vw;
+}
+
+.de-aria-key-indicator[data-de-aria-direction="rtl"] {
+    margin-left: 0;
+    margin-right: 0.4vh;
+}
+
+/* Highlight ring around interactive elements while hints are visible */
+.de-aria-marked {
+    outline: 0.25vh dashed rgba(0, 0, 0, 0.85);
+    outline-offset: 0.3vh;
+    transition: outline-color 120ms ease;
+}
+
+/* ===== Scroller overlay ===== */
+
+.de-aria-scroller {
+    background: rgba(0, 0, 0, 0.4);
+    border: 0.2vh solid rgba(255, 255, 255, 0.55);
+    border-radius: 1.2vh;
+    box-shadow: 0 0.5vh 2vh rgba(0, 0, 0, 0.6);
+    padding: 0vh;
+    z-index: 99999;
+}
+
+.de-aria-scroller-arrow {
+    color: #ffffff;
+    font-size: 2.4vh;
+    line-height: 1;
+    text-shadow: 0 0.2vh 0.4vh rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+    user-select: none;
+    padding: 1vh;
+}
+
+/* Outline around the scrollable element itself while overlay is active */
+.de-aria-scroll-marked {
+    outline: 0.25vh solid rgba(255, 255, 255, 0.7);
+    outline-offset: -0.25vh;
+}

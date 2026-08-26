@@ -5,6 +5,7 @@ import reducer from "~/reducers/index.frontpage";
 import runApp from "../run";
 import tabOrMouse from "~/util/tab-or-mouse";
 import "de-aria";
+import "~/sass/aria/index.scss"
 
 runApp(reducer, App, async (store) => {
   tabOrMouse();
