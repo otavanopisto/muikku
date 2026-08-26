@@ -8,6 +8,9 @@ import {
   AbsenceEventEnum,
   AbsenceReasonEnum,
 } from "~/reducers/base/muikku-events";
+import Button from "~/components/general/button";
+import PromptDialog from "~/components/general/prompt-dialog";
+import EditAbsenceDialog from "~/components/workspace/workspaceUsers/dialogs/edit-absence";
 
 /**
  * WallAbsenceEventsProps
@@ -17,6 +20,8 @@ interface AbsenceEventsProps {
   event: MuikkuEvent;
   isUnder18?: boolean;
   actions?: React.ReactElement;
+  onDelete?: (eventId: number) => void;
+  onUpdate?: (eventId: number, muikkuEvent: MuikkuEvent) => void;
 }
 
 /**
@@ -25,7 +30,7 @@ interface AbsenceEventsProps {
  * @returns JSX.Element
  */
 const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
-  const { modifier, event, actions, isUnder18 = true } = props;
+  const { modifier, event, onDelete, onUpdate, isUnder18 = true } = props;
   const { t } = useTranslation("tasks");
   const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
@@ -71,6 +76,29 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
         return t("reasons.UNAUTHORIZED_ABSENCE_EXPLAINED", { ns: "events" });
     }
   };
+
+  const actions =
+    onUpdate && onDelete ? (
+      <div className="absence-event__footer">
+        <EditAbsenceDialog absenceEvent={event}>
+          <Button>{t("actions.edit", { ns: "common" })}</Button>
+        </EditAbsenceDialog>
+        <PromptDialog
+          title="Poista poissaolo"
+          content={t("content.removing", {
+            ns: "events",
+            context: "absence",
+            label: absentFromLabel(),
+            userName: event.targetUserName,
+          })}
+          onExecute={() => onDelete(event.id!)}
+        >
+          <Button buttonModifiers={["danger", "standard-ok"]}>
+            {t("actions.remove", { ns: "common" })}
+          </Button>
+        </PromptDialog>
+      </div>
+    ) : null;
 
   return (
     <BaseEvent

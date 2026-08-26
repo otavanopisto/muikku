@@ -11,13 +11,20 @@
 
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import AbsenceEvent from "~/components/general/events/absence-event";
 
+import {
+  deleteWorkspaceAbsenceEvent,
+  updateWorkspaceAbsenceEvent,
+} from "~/actions/workspaces";
+import { MuikkuEvent } from "~/generated/client";
+
 const Absences = () => {
   const { t } = useTranslation(["events"]);
+  const dispatch = useDispatch();
   const absenceEvents = useSelector(
     (state: StateType) => state.workspaces?.currentWorkspace?.absenceEvents
   );
@@ -26,6 +33,14 @@ const Absences = () => {
     return <div className="loaded-empty">No absence events found</div>;
   }
 
+  const handleDelete = (eventId: number) => {
+    dispatch(deleteWorkspaceAbsenceEvent(eventId));
+  };
+
+  const handleUpdate = (eventId: number, muikkuEvent: MuikkuEvent) => {
+    dispatch(updateWorkspaceAbsenceEvent(eventId, muikkuEvent));
+  };
+
   return (
     <ApplicationSubPanel modifier="workspace-absences">
       <ApplicationSubPanel.Header modifier="workspace-absences">
@@ -33,7 +48,12 @@ const Absences = () => {
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body modifier="workspace-absences">
         {absenceEvents.map((absence) => (
-          <AbsenceEvent key={absence.id} event={absence} />
+          <AbsenceEvent
+            onDelete={handleDelete}
+            onUpdate={handleUpdate}
+            key={absence.id}
+            event={absence}
+          />
         ))}
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>

@@ -2,27 +2,21 @@ import * as React from "react";
 import { useReducer } from "react";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
-import InputContactsAutofill from "~/components/base/input-contacts-autofill";
-import { ContactRecipientType } from "~/reducers/user-index";
 import DatePicker from "react-datepicker";
-import {
-  WorkspaceStudent,
-  User,
-  GetWorkspaceStudentsRequest,
-} from "~/generated/client";
-import MApi, { isMApiError } from "~/api/api";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { displayNotification } from "~/actions/base/notifications";
 import { useDispatch } from "react-redux";
 import { AbsenceEventEnum } from "~/reducers/base/muikku-events";
-import { createWorkspaceAbsenceEvent } from "~/actions/workspaces/";
+import { updateWorkspaceAbsenceEvent } from "~/actions/workspaces/";
+import { MuikkuEvent } from "~/generated/client";
+
 /**
  * CreateAbsenceDialogProps
  */
 interface CreateAbsenceDialogProps {
   children?: React.ReactElement;
+  absenceEvent: MuikkuEvent;
   workspaceId?: number;
   workspaceEventContainerId?: number;
   onConfirm?: (form: AbsenceEventFormState) => void;
@@ -32,7 +26,7 @@ interface CreateAbsenceDialogProps {
  * AbsenceEventFormState
  */
 export interface AbsenceEventFormState {
-  selectedUsers: ContactRecipientType[];
+  targetUser: number | null;
   type: AbsenceEventEnum;
   description: string;
   startDate: Date | null;
@@ -40,10 +34,6 @@ export interface AbsenceEventFormState {
 }
 
 type AbsenceEventFormAction =
-  | {
-      type: "SET_SELECTED_USERS";
-      payload: ContactRecipientType[];
-    }
   | {
       type: "SET_TYPE";
       payload: AbsenceEventEnum;
@@ -64,20 +54,17 @@ type AbsenceEventFormAction =
       type: "RESET";
     };
 
-const workspaceApi = MApi.getWorkspaceApi();
-const muikkuEventApi = MApi.getEventsApi();
-
 /**
  * createInitialAbsenceEventFormState
  * @returns Initial absence event form state
  */
-const createInitialAbsenceEventFormState = (): AbsenceEventFormState => ({
-  selectedUsers: [],
+/* const createInitialAbsenceEventFormState = (): AbsenceEventFormState => ({
+  targetUser: null,
   type: AbsenceEventEnum.Lesson,
   description: "",
   startDate: new Date(),
   endDate: new Date(),
-});
+}); */
 
 /**
  * absenceEventFormReducer
@@ -90,9 +77,6 @@ const absenceEventFormReducer = (
   action: AbsenceEventFormAction
 ): AbsenceEventFormState => {
   switch (action.type) {
-    case "SET_SELECTED_USERS":
-      return { ...state, selectedUsers: action.payload };
-
     case "SET_TYPE":
       return { ...state, type: action.payload };
 
@@ -105,9 +89,6 @@ const absenceEventFormReducer = (
     case "SET_END_DATE":
       return { ...state, endDate: action.payload };
 
-    case "RESET":
-      return createInitialAbsenceEventFormState();
-
     default:
       return state;
   }
@@ -118,20 +99,28 @@ const absenceEventFormReducer = (
  * @param props Component props
  * @returns JSX.Element
  */
-export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
+export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   props
 ) => {
-  const {
-    children,
-    workspaceId,
-    workspaceEventContainerId,
-    onClose,
-    onConfirm,
-  } = props;
+  const { children, workspaceEventContainerId, onConfirm, absenceEvent } =
+    props;
+
+  /**
+   * initialAbsenceEventFormState
+   * @returns Initial absence event form state
+   */
+
+  const initialAbsenceEventFormState: AbsenceEventFormState = {
+    targetUser: absenceEvent.userEntityId ?? null,
+    type: (absenceEvent.title as AbsenceEventEnum) || AbsenceEventEnum.Lesson,
+    description: absenceEvent.description ?? "",
+    startDate: new Date(absenceEvent.start),
+    endDate: new Date(absenceEvent.end),
+  };
+
   const [formState, dispatchForm] = useReducer(
     absenceEventFormReducer,
-    undefined,
-    createInitialAbsenceEventFormState
+    initialAbsenceEventFormState
   );
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -140,71 +129,25 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    * @param searchTerm Search term for student lookup
    * @returns Async loader function
    */
-  const studentsLoader = (searchTerm: string) => async (): Promise<User[]> => {
-    const request: GetWorkspaceStudentsRequest = {
-      q: searchTerm,
-      workspaceEntityId: workspaceId,
-    };
-
-    const search = await workspaceApi.getWorkspaceStudents(request);
-
-    return search.results.map(
-      (student: WorkspaceStudent): User => ({
-        id: student.userEntityId,
-        identifier: student.userIdentifier,
-        firstName: student.firstName,
-        lastName: student.lastName,
-      })
-    );
-  };
 
   /**
    * Handles the confirmation of the dialog
    * @param absenceEvent event from form
    * @param onClose closes the dialog
    */
-  const handleConfirm = async (
-    absenceEvent: AbsenceEventFormState,
-    onClose: () => void
-  ) => {
-    const { type, description, startDate, endDate } = absenceEvent;
-    try {
-      await muikkuEventApi.createEvent({
-        muikkuEvent: {
-          title: type,
-          description,
-          start: startDate?.toISOString(),
-          end: endDate?.toISOString(),
-          type: "ABSENCE",
-          eventContainerId: workspaceEventContainerId,
-        },
-        users: formState.selectedUsers.map((u) => u.value.id),
-      });
-      dispatch(
-        displayNotification(
-          t("notifications.createSuccess", {
-            ns: "events",
-            context: "absence",
-          }),
-          "success"
-        )
-      );
-      dispatchForm({ type: "RESET" });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          t("notifications.createError", {
-            ns: "events",
-            context: "absence",
-          }),
-          "error"
-        )
-      );
-    }
-
+  const handleConfirm = (onClose: () => void) => {
+    const { type, description, id, start, end, eventContainerId } =
+      absenceEvent;
+    dispatch(
+      updateWorkspaceAbsenceEvent(id!, {
+        title: formState.type,
+        type: "ABSENCE",
+        description: formState.description,
+        start: formState.startDate?.toISOString() ?? "",
+        end: formState.endDate?.toISOString() ?? "",
+        eventContainerId: workspaceEventContainerId!,
+      })
+    );
     onConfirm?.(formState);
     onClose();
   };
@@ -213,7 +156,6 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    * Handles the closing of the dialog
    */
   const handleClose = (closeDialog?: () => void) => {
-    dispatchForm({ type: "RESET" });
     closeDialog?.();
   };
 
@@ -222,25 +164,10 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    * @param onClose Dialog close handler
    * @returns JSX.Element
    */
-  const content = (onClose: () => void) => (
+  const content = (closeDialog: () => void) => (
     <form>
       <div className="form__row">
-        <label htmlFor="absent-students">
-          {t("labels.pickAbsenceStudents", { ns: "events" })}
-        </label>
-        <InputContactsAutofill
-          modifier="absence-dialog"
-          loaders={{ studentsLoader }}
-          hasGroupPermission={false}
-          hasStaffPermission={false}
-          hasWorkspacePermission={false}
-          identifier="absent-students"
-          selectedItems={formState.selectedUsers}
-          onChange={(selectedUsers) =>
-            dispatchForm({ type: "SET_SELECTED_USERS", payload: selectedUsers })
-          }
-          showFullNames
-        />
+        <label htmlFor="absent-students">{absenceEvent.targetUserName}</label>
       </div>
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-type">
@@ -321,22 +248,21 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
   /**
    * Renders the footer of the dialog
-   * @param onClose Dialog close handler
+   * @param closeDialogs Dialog close handler
    * @returns JSX.Element
    */
-  const footer = (onClose: () => void) => (
+  const footer = (closeDialog: () => void) => (
     <div className="dialog__footer">
       <div className="dialog__button-set">
         <Button
           className="button button--execute button--standard-ok"
-          onClick={() => handleConfirm(formState, onClose)}
-          disabled={formState.selectedUsers.length === 0}
+          onClick={() => handleConfirm(closeDialog)}
         >
           {t("actions.create")}
         </Button>
         <Button
           className="button button--cancel button--standard-cancel"
-          onClick={onClose}
+          onClick={closeDialog}
         >
           {t("actions.cancel")}
         </Button>
@@ -358,4 +284,4 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   );
 };
 
-export default CreateAbsenceDialog;
+export default EditAbsenceDialog;

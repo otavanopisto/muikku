@@ -14,7 +14,6 @@ import "~/sass/elements/avatar.scss";
 import { getName } from "~/util/modifiers";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {
   ApplicationListItem,

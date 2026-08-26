@@ -1783,6 +1783,11 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
     };
   };
 
+/**
+ * loadStudentAbsenceEventsOfWorkspace
+ * @param data data
+ * @returns thunk
+ */
 const loadStudentAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
   function loadStudentAbsenceEventsOfWorkspace(data) {
     return async (
@@ -1821,6 +1826,199 @@ const loadStudentAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerTy
             i18n.t("notifications.loadError", {
               ns: "workspace",
               context: "students",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+export type CreateWorkspaceAbsenceEventData = {
+  title: string;
+  description: string;
+  start: string;
+  end: string;
+  eventContainerId: number;
+};
+
+/** CreateWorkspaceAbsenceEventTriggerType */
+export interface CreateWorkspaceAbsenceEventTriggerType {
+  (data: CreateWorkspaceAbsenceEventData, users: number[]): AnyActionType;
+}
+
+/**
+ * createWorkspaceAbsenceEvent
+ * @param data data
+ * @param users users
+ * @returns thunk
+ */
+const createWorkspaceAbsenceEvent: CreateWorkspaceAbsenceEventTriggerType =
+  function createWorkspaceAbsenceEvent(data, users) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        const workspace = getState().workspaces?.currentWorkspace;
+        if (!workspace) {
+          return;
+        }
+
+        const newEvents = await eventsApi.createEvent({
+          muikkuEvent: {
+            ...data,
+            type: "ABSENCE",
+          },
+          users,
+        });
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: workspace,
+            update: { absenceEvents: newEvents },
+          },
+        });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.createSuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.createError", {
+              ns: "events",
+              context: "absence",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * DeleteWorkspaceAbsenceEventTriggerType
+ */
+export interface DeleteWorkspaceAbsenceEventTriggerType {
+  (eventId: number): AnyActionType;
+}
+
+/**
+ * deleteWorkspaceAbsenceEvent
+ * @param eventId eventId
+ * @returns thunk
+ */
+const deleteWorkspaceAbsenceEvent: DeleteWorkspaceAbsenceEventTriggerType =
+  function deleteWorkspaceAbsenceEvent(eventId: number) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        const workspace = getState().workspaces?.currentWorkspace;
+        await eventsApi.deleteEvent({ eventId });
+
+        if (!workspace) {
+          return;
+        }
+        const newEvents = workspace.absenceEvents?.filter(
+          (event: MuikkuEvent) => event.id !== eventId
+        );
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: workspace,
+            update: {
+              absenceEvents: newEvents,
+            },
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.deleteError", {
+              ns: "workspace",
+              context: "absence",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * UpdateWorkspaceAbsenceEventTriggerType
+ */
+export interface UpdateWorkspaceAbsenceEventTriggerType {
+  (eventId: number, muikkuEvent: MuikkuEvent): AnyActionType;
+}
+
+/**
+ * updateWorkspaceAbsenceEvent
+ * @param eventId eventId
+ * @param muikkuEvent muikkuEvent
+ * @returns thunk
+ */
+const updateWorkspaceAbsenceEvent: UpdateWorkspaceAbsenceEventTriggerType =
+  function updateWorkspaceAbsenceEvent(
+    eventId: number,
+    muikkuEvent: MuikkuEvent
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        const workspace = getState().workspaces?.currentWorkspace;
+        const newEvent = await eventsApi.updateEvent({
+          eventId,
+          muikkuEvent,
+        });
+
+        if (!workspace) {
+          return;
+        }
+
+        const newEvents = workspace.absenceEvents?.map((event: MuikkuEvent) =>
+          event.id === eventId ? newEvent : event
+        );
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: workspace,
+            update: {
+              absenceEvents: newEvents,
+            },
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "absence",
             }),
             "error"
           )
@@ -2541,52 +2739,6 @@ const shouldMaterialsBeDisabled = (activity?: WorkspaceActivity) => {
   return isDisabled;
 };
 
-/**
- * loadUserAbsenceEvents
- * @param workspaceId workspaceId
- */
-const loadWorkspaceAbsenceEvents: LoadWorkspaceAbsenceEventsTriggerType =
-  function loadWorspaceAbsenceEvents(workspaceId: number) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      try {
-        const end = new Date();
-        const start = new Date(end);
-        start.setMonth(start.getMonth() - 6);
-
-        const events = await eventsApi.listEvents({
-          workspace: workspaceId,
-          start,
-          end,
-          adjustTimes: true,
-          type: "ABSENCE",
-        });
-        dispatch({
-          type: "UPDATE_WORKSPACE_ABSENCE_EVENTS",
-          payload: events,
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          dispatch(
-            notificationActions.displayNotification(err.message, "error")
-          );
-        }
-
-        dispatch(
-          notificationActions.displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "events",
-              context: "absence",
-              error: err.message,
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
-
 export {
   loadUserWorkspaceCurriculumFiltersFromServer,
   loadUserWorkspaceEducationFiltersFromServer,
@@ -2606,6 +2758,8 @@ export {
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
   loadStudentAbsenceEventsOfWorkspace,
+  deleteWorkspaceAbsenceEvent,
+  updateWorkspaceAbsenceEvent,
   toggleActiveStateOfStudentOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,

@@ -12,6 +12,7 @@ interface BaseEventComponentProps {
   title: string;
   beginDate?: string;
   endDate?: string;
+  actions?: React.ReactElement;
   description?: string;
   children?: React.ReactElement;
   modifier?: string;
@@ -23,7 +24,8 @@ interface BaseEventComponentProps {
  * @returns JSX.Element
  */
 const BaseEvent: React.FC<BaseEventComponentProps> = (props) => {
-  const { modifier, state, title, beginDate, endDate, children } = props;
+  const { modifier, state, title, beginDate, endDate, children, actions } =
+    props;
   const [showDetails, setShowDetails] = React.useState(false);
   /**
    * toggles description visibility

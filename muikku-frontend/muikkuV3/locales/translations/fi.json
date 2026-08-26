@@ -2642,7 +2642,11 @@
       "editFeedback": "Muokkaa selvitystä",
       "create": "Luo tapahtuma",
       "edit": "Muokkaa tapahtumaa",
-      "remove": "Poista tapahtuma"
+      "edit_absence": "Muokkaa poissaoloa",
+      "remove": "Poista tapahtuma",
+      "remove_absence": "Poista poissaolo",
+      "update": "Päivitä tapahtuma",
+      "update_absence": "Päivitä poissaolo"
     },
     "labels": {
       "absence": "Poissaolo",
@@ -2666,13 +2670,16 @@
       "pickAbsenceStudents": "Valitse poissaolijat",
       "property": "Tuntematon ominaisuus",
       "property_ABSENCE_REASON": "Poissaolon syy",
+      "remove": "Poista tapahtuma",
+      "remove_absence": "Poista poissaolo",
       "reason": "Syy",
       "start": "Alkaa",
       "selectAbsenceReason": "Poissaolon syy"
     },
     "content": {
       "empty": "Ei tapahtumia",
-      "removing": "Oletko varma, että haluat poistaa tapahtuman?"
+      "removing": "Oletko varma, että haluat poistaa tapahtuman?",
+      "removing_absence": "Oletko varma, että haluat poistaa poissaolon: {{label}}, käyttäjältä {{userName}}?"
     },
     "types": {
       "LESSON": "Oppitunti",

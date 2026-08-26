@@ -61,7 +61,7 @@ const loadUserAbsenceEvents: LoadUserAbsenceEventsTriggerType =
             i18n.t("notifications.loadError", {
               ns: "events",
               context: "absence",
-              error: err.message,
+              error: err instanceof Error ? err.message : "Unknown error",
             }),
             "error"
           )
@@ -70,4 +70,58 @@ const loadUserAbsenceEvents: LoadUserAbsenceEventsTriggerType =
     };
   };
 
-export { loadUserAbsenceEvents };
+const removeEvent: RemoveEventTriggerType = function removeEvent(
+  eventId: number
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
+    try {
+      await eventsApi.deleteEvent({ eventId });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+      }
+
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.deleteError", {
+            ns: "events",
+            context: "absence",
+            error: err.message,
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+const updateEvent: UpdateEventTriggerType = function updateEvent(
+  eventId: number,
+  event: MuikkuEvent
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
+    try {
+      await eventsApi.updateEvent({ eventId, muikkuEvent: event });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        dispatch(notificationActions.displayNotification(err.message, "error"));
+      }
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateError", {
+            ns: "events",
+            context: "absence",
+            error: err.message,
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+export { loadUserAbsenceEvents, removeEvent, updateUserAbsenceEvent };
