@@ -17,7 +17,8 @@ import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-
+import { MuikkuEvent } from "~/generated/client";
+import { UserGuardiansDependantWorkspace } from "~/generated/client";
 /**
  * DependantProps
  */
@@ -34,14 +35,15 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   const { dependant } = props;
   const workspaces = useSelector(
     (state: StateType) =>
-      state.guardian.workspacesByDependantIdentifier[dependant.identifier]
+      state.guardian?.workspacesByDependantIdentifier[dependant.identifier]
         ?.workspaces || []
-  );
+  ) as UserGuardiansDependantWorkspace[];
 
   const absenceEvents = useSelector(
     (state: StateType) =>
-      state.guardian.absencesByDependantId[dependant.userEntityId]?.events || []
-  );
+      state.guardian?.absencesByDependantId[dependant.userEntityId]?.events ||
+      []
+  ) as MuikkuEvent[];
 
   const dispatch = useDispatch();
   const { t } = useTranslation(["frontPage", "workspace"]);
@@ -121,7 +123,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
             {t("labels.absences", { ns: "events" })}
           </h3>
           {absenceEvents.map((event) => {
-            const hasFeedback = event.properties.find(
+            const hasFeedback = event.properties?.find(
               (property) =>
                 property.name == "ABSENCE_REASON" && property.value !== ""
             );

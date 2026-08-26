@@ -28,7 +28,7 @@ interface WallAbsenceEventsProps {
 const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
   const { modifier, event, actions, isUnder18 = true } = props;
   const { t } = useTranslation("tasks");
-  const absenceEventProperty = event.properties.find(
+  const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
   const absenceState =
@@ -39,7 +39,6 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
         : "REVIEWED";
   const eventDate = (
     <>
-      {" "}
       {localize.date(event.start, "l - LT")}
       <span className="icon icon-long-arrow-right wall-event__date-decoration" />
       {localize.date(event.end, "l - LT")}
@@ -103,9 +102,14 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
     >
       <div className="wall-event">
         {event.description && (
-          <div className="wall-event__description rich-text">
-            {event.description}
-          </div>
+          <dl className="wall-event__description rich-text">
+            <dt className="wall-event__description-label">
+              {t("labels.makeUpInstructions", { ns: "events" })}
+            </dt>
+            <dd className="wall-event__description-content">
+              {event.description}
+            </dd>
+          </dl>
         )}
 
         {event.properties && (
