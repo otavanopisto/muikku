@@ -19,7 +19,8 @@ export const isValidHTML = (str: string): boolean => {
 // =============================================================================
 
 /** v1 scope: only static rich text; skip widgets/fields/etc. */
-const SKIP_ANCESTOR_SELECTOR = "script, style, iframe, object, noscript";
+const SKIP_ANCESTOR_SELECTOR =
+  "script, style, iframe, object, noscript, .visually-hidden";
 
 const ANNOTATION_ATTR = "data-muikku-annotation-id";
 const ANNOTATION_KIND_ATTR = "data-muikku-annotation-kind";
