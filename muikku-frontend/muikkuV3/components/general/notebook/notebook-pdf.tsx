@@ -3,7 +3,6 @@ import { Document, Page, Text, View } from "@react-pdf/renderer";
 import Html from "react-pdf-html";
 import { styles, htmlStyles } from "./notebook-pdf-styles";
 import { NotebookNote } from "~/generated/client";
-import { isNotebookContextNote } from "~/helper-functions/notebook";
 import {
   NotebookMaterialPageGroup,
   WorkspaceNotebookNote,
@@ -66,7 +65,7 @@ const NoteBookPDF = (props: NoteBookPFDProps) => {
       (note) => !isNotebookDraftId(note.id)
     );
     const contextNotes = group.contextItems.filter(
-      (note) => isNotebookContextNote(note) && !isNotebookDraftId(note.id)
+      (note) => !isNotebookDraftId(note.id)
     );
 
     if (materialNotes.length === 0 && contextNotes.length === 0) {
