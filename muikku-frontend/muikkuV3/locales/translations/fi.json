@@ -2657,7 +2657,9 @@
       "absencePeriod": "Ajankohta:",
       "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
-      "absence_explanation": "Selitys poissaololle",
+      "absencesSummary": "Poissaolojen yhteenveto",
+      "absencesWithFeedback": "Selvitettyjä poissaoloja",
+      "absencesWithoutFeedback": "Poissaoloja ilman selvitystä",
       "editAbsence": "Muokkaa poissaoloa",
       "end": "Päättyy",
       "event": "Tapahtuma",
@@ -2675,7 +2677,8 @@
       "remove_absence": "Poista poissaolo",
       "reason": "Syy",
       "start": "Alkaa",
-      "selectAbsenceReason": "Poissaolon syy"
+      "selectAbsenceReason": "Poissaolon syy",
+      "totalAbsences": "Yhteensä poissaoloja"
     },
     "content": {
       "empty": "Ei tapahtumia",

@@ -2657,7 +2657,9 @@
       "absencePeriod": "Absence period:",
       "absenceType": "Absence type",
       "absences": "Absences",
-      "absence_explanation": "Absence_explanation",
+      "absencesSummary": "Absences summary",
+      "absencesWithFeedback": "Absences with feedback",
+      "absencesWithoutFeedback": "Absences without feedback",
       "editAbsence": "Edit absence",
       "end": "Ends",
       "event": "Event",
@@ -2675,7 +2677,8 @@
       "remove_absence": "Remove absence event",
       "reason": "Reason",
       "start": "Starts",
-      "selectAbsenceReason": "Select absence reason"
+      "selectAbsenceReason": "Select absence reason",
+      "totalAbsences": "Total absences"
     },
     "content": {
       "empty": "No events",
