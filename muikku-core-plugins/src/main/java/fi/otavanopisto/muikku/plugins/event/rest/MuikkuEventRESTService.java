@@ -443,7 +443,7 @@ public class MuikkuEventRESTService {
     // If the container is not found, create one
     if (container == null) {
       WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
-      container = eventController.createEventContainer(workspaceEntityId, null, workspaceEntityName != null ? workspaceEntityName.getName() : null);
+      container = eventController.createEventContainer(workspaceEntityId, null, workspaceEntityName != null ? workspaceEntityName.getDisplayName() : null);
     }
     
     return Response.ok(container != null ? container.getId() : null).build();
@@ -477,6 +477,21 @@ public class MuikkuEventRESTService {
     restEvent.setCreator(event.getCreatorEntityId());
     restEvent.setSolved(solved);
     List<MuikkuEventParticipant> participants = eventController.listParticipants(event);
+    restEvent.setCreator(event.getCreatorEntityId());
+    UserEntity creatorEntity = userEntityController.findUserEntityById(event.getCreatorEntityId());
+    restEvent.setCreatorName(userEntityController.getName(creatorEntity, true).getDisplayNameWithLine());
+    
+    // Container name
+    String containerName = event.getEventContainer().getName();
+    // This check is needed here because the old containers only have the workspace name stored, not the display name.
+    if (!containerName.endsWith(")") && event.getEventContainer().getWorkspaceEntityId() != null) {
+
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(event.getEventContainer().getWorkspaceEntityId());
+
+      containerName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+    }
+
+    restEvent.setContainerName(containerName);
     
     // Privacy checks
 

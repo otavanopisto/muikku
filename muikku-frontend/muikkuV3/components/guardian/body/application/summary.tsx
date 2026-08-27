@@ -14,6 +14,10 @@ import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
 import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/main-function/guardian";
 
 /**
  * SummaryProps
@@ -72,8 +76,19 @@ const Summary = (props: SummaryProps) => {
                 event={e}
                 actions={
                   <AbsenceFeedbackDialog
-                    studentId={currentDependant.dependantInfo.userEntityId}
                     absenceEvent={e}
+                    onUpdate={(data) =>
+                      updateAbsenceEventProperty(
+                        data,
+                        currentDependant.dependantInfo.userEntityId
+                      )
+                    }
+                    onCreate={(data) =>
+                      createAbsenceEventProperty(
+                        data,
+                        currentDependant.dependantInfo.userEntityId
+                      )
+                    }
                   >
                     <Button className="button button--primary-function-content">
                       {hasFeedback

@@ -2649,7 +2649,8 @@
       "update_absence": "Update absence"
     },
     "labels": {
-      "absence": "Absence",
+      "absence": "Absene",
+      "absenceCreator": "Absence marked by: {{creator}}",
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
       "absenceEventDescriptionPlaceholder": "Enter the assignments or instructions for the student to make up the absence here.",
@@ -2663,8 +2664,8 @@
       "editAbsence": "Edit absence",
       "end": "Ends",
       "event": "Event",
-      "eventBeginning": "Tapahtuman alku",
-      "eventEnding": "Tapahtuman loppu",
+      "eventBeginning": "Event beginning",
+      "eventEnding": "Event ending",
       "events": "Events",
       "explainAbsence": "Explain absence",
       "newAbsence": "New absence",

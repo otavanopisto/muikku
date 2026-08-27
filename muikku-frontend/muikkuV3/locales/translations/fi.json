@@ -2650,6 +2650,7 @@
     },
     "labels": {
       "absence": "Poissaolo",
+      "absenceCreator": "Poissaolon merkinnyt: {{creator}}",
       "absenceDetails": "Poissaolon tiedot",
       "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
       "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
@@ -2692,6 +2693,7 @@
       "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
       "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
     },
+
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
       "OTHER_AUTHORIZED_REASON": "Muu luvallinen syy",
