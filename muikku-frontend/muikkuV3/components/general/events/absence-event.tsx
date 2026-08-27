@@ -108,7 +108,7 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
       endDate={event.end}
       modifier={modifier}
       state={absenceState}
-      title={absentFromLabel()}
+      title={event.targetUserName + " - " + absentFromLabel()}
     >
       <div className="muikku-absence-event">
         {event.description && (

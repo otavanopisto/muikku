@@ -16,8 +16,8 @@ interface AbsencesSummaryProps {
 const AbsencesSummary = (props: AbsencesSummaryProps) => {
   const { absences } = props;
   const { t } = useTranslation();
-  const absencesWithFeedbackCount = absences.filter((absence) =>
-    absence.properties?.find((property) => property.name === "ABSENCE_REASON")
+  const absencesWithFeedbackCount = absences.filter(
+    (absence) => absence.solved === true
   ).length;
 
   const absencesWithoutFeedbackCount =

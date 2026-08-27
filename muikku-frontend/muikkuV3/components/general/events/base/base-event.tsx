@@ -1,9 +1,7 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import "~/sass/elements/muikku-event.scss";
-
 /**
  * WallItemProps
  */
