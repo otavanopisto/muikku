@@ -206,7 +206,7 @@ interface MemoFieldState {
  */
 class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   // Add ref declaration
-  private baseRef: React.RefObject<HTMLDivElement>;
+  private baseRef: React.RefObject<HTMLSpanElement>;
   private lastLimitNoticeAt = 0;
 
   /**
@@ -217,7 +217,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     super(props);
 
     // Initialize ref
-    this.baseRef = React.createRef<HTMLDivElement>();
+    this.baseRef = React.createRef<HTMLSpanElement>();
 
     const storedValue = props.initialValue || "";
     const syncFormat = getMemoFieldContentFormatSync(storedValue);
@@ -228,6 +228,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       replaceNewlinesWithBreaks
     );
     const rawText = editorReady ? htmlToPlainText(value) : storedValue;
+
+    //console.log("rawText constructor", rawText);
 
     // set the state with the counts
     this.state = {
@@ -241,14 +243,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       editorReady,
     };
 
-    // this.onInputChange = this.onInputChange.bind(this);
-    // this.onInputPaste = this.onInputPaste.bind(this);
-    this.isInsideLastWord = this.isInsideLastWord.bind(this);
-    this.trimPastedContent = this.trimPastedContent.bind(this);
     this.onCKEditorKey = this.onCKEditorKey.bind(this);
     this.onCKEditorPaste = this.onCKEditorPaste.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+    this.notifyLimit = this.notifyLimit.bind(this);
+    this.renderField = this.renderField.bind(this);
+    this.renderAnswerExample = this.renderAnswerExample.bind(this);
   }
 
   /**
@@ -258,6 +259,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     if (this.state.editorReady) {
       return;
     }
+    // console.log("componentDidMount");
     const storedValue = this.props.initialValue || "";
     getMemoFieldContentFormat(storedValue).then((format) => {
       const html = toMemoDisplayHtml(
@@ -308,79 +310,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       )
     );
   }
-
-  /**
-   * trimPastedContent - Trims the pasted content if it exceeds the character or word limit
-   * @param content content
-   * @returns trimmed content
-   */
-  trimPastedContent(content: string): string {
-    // This will only work on plain text content
-
-    const characters = getCharacters(content);
-    let words = getWords(content);
-    const maxCharacterLimit = parseInt(this.props.content.maxChars);
-    const maxWordLimit = parseInt(this.props.content.maxWords);
-    let localeContext = "";
-
-    // If the pasted data exceeds the limit, trim it
-    if (characters.length > maxCharacterLimit) {
-      let count = 0;
-      let newData = "";
-      for (const char of content) {
-        if (count < maxCharacterLimit) {
-          newData += char;
-          // we count only non-space characters
-          if (/\S/.test(char)) {
-            count++;
-          }
-        } else {
-          break;
-        }
-      }
-      // reset content
-      content = newData;
-      // reset words so that we can check if the word limit
-      // is exceeded even after this trim
-      words = getWords(newData);
-      localeContext = "characters";
-    }
-
-    // If the number of words exceeds the limit, trim it
-    if (words.length > maxWordLimit) {
-      content = words.slice(0, maxWordLimit).join(" ");
-      localeContext = "words";
-    }
-    this.props.displayNotification(
-      this.props.t("notifications.contentLimitReached", {
-        ns: "materials",
-        context: localeContext,
-      }),
-      "info"
-    );
-    return content;
-  }
-
-  /**
-   * A function tha checks if it is the last word we are writing
-   * @param value value
-   * @returns boolean
-   */
-  isInsideLastWord = (value: string) => {
-    const words = getWords(value);
-    const maxWords = parseInt(this.props.content.maxWords);
-
-    const atCharacterLimit =
-      getCharacters(value).length > parseInt(this.props.content.maxChars);
-
-    return (
-      // If the character limit is reached, then just stop this madness
-      !atCharacterLimit &&
-      // If the last word is not empty, then we are inside the last word
-      words.length === maxWords &&
-      words[words.length - 1].length >= 1
-    );
-  };
 
   /**
    * notifyLimit - Notifies the user that the limit has been reached
@@ -495,25 +424,79 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       words: getWords(rawText).length,
       characters: getCharacters(rawText).length,
     });
+
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
   }
 
   /**
-   * render
+   * Renders the field
    * @returns JSX.Element
    */
-  render() {
-    const { t } = this.props;
-    const editorHtml = this.state.value;
+  renderField(): JSX.Element {
+    if (!this.state.editorReady) {
+      return (
+        <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly" />
+      );
+    } else if (this.props.usedAs === "default") {
+      if (this.props.readOnly) {
+        return (
+          <span
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
+            dangerouslySetInnerHTML={{ __html: this.state.value }}
+          />
+        );
+      } else {
+        return (
+          <>
+            <span className="memofield-header" aria-hidden="true" />
+            <CKEditor
+              configuration={memofieldCkeditorConfig(
+                this.props.content.richedit,
+                this.props.content.rows !== "" &&
+                  !isNaN(Number(this.props.content.rows))
+                  ? Number(this.props.content.rows)
+                  : 3
+              )}
+              onChange={this.onCKEditorChange}
+              onKey={this.onCKEditorKey}
+              onPaste={this.onCKEditorPaste}
+              rows={
+                this.props.content.rows &&
+                this.props.content.rows !== "" &&
+                !isNaN(Number(this.props.content.rows))
+                  ? Number(this.props.content.rows)
+                  : 3
+              }
+              ancestorHeight={200}
+            >
+              {this.state.value}
+            </CKEditor>
+          </>
+        );
+      }
+    } else if (this.props.usedAs === "evaluationTool") {
+      if (this.props.readOnly) {
+        return (
+          <div
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
+            dangerouslySetInnerHTML={{ __html: this.state.value }}
+          />
+        );
+      }
+    }
 
-    // we have a right answer example for when
-    // we are asked for displaying right answer
-    // so we need to set it up
-    let answerExampleComponent = null;
-    // it's simply set when we get it
+    return null;
+  }
+
+  /**
+   * Renders the answer example
+   * @returns JSX.Element
+   */
+  renderAnswerExample() {
+    const { t } = this.props;
     if (this.props.displayCorrectAnswers && this.props.content.example) {
-      answerExampleComponent = (
+      return (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
             {t("labels.answer", {
@@ -531,6 +514,21 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       );
     }
 
+    return null;
+  }
+
+  /**
+   * render
+   * @returns JSX.Element
+   */
+  render() {
+    const { t } = this.props;
+
+    // we have a right answer example for when
+    // we are asked for displaying right answer
+    // so we need to set it up
+    const answerExampleComponent = this.renderAnswerExample();
+
     if (this.props.invisible && this.props.readOnly) {
       return (
         <span ref={this.baseRef} className="memofield-wrapper">
@@ -539,57 +537,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           {answerExampleComponent}
         </span>
       );
-    }
-
-    // now we need the field
-    let field;
-    if (!this.state.editorReady) {
-      field = (
-        <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly" />
-      );
-    } else if (this.props.usedAs === "default") {
-      if (this.props.readOnly) {
-        field = (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: editorHtml }}
-          />
-        );
-      } else {
-        field = (
-          <CKEditor
-            configuration={memofieldCkeditorConfig(
-              this.props.content.richedit,
-              this.props.content.rows !== "" &&
-                !isNaN(Number(this.props.content.rows))
-                ? Number(this.props.content.rows)
-                : 3
-            )}
-            onChange={this.onCKEditorChange}
-            onKey={this.onCKEditorKey}
-            onPaste={this.onCKEditorPaste}
-            rows={
-              this.props.content.rows &&
-              this.props.content.rows !== "" &&
-              !isNaN(Number(this.props.content.rows))
-                ? Number(this.props.content.rows)
-                : 3
-            }
-            ancestorHeight={200}
-          >
-            {editorHtml}
-          </CKEditor>
-        );
-      }
-    } else if (this.props.usedAs === "evaluationTool") {
-      if (this.props.readOnly) {
-        field = (
-          <div
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-            dangerouslySetInnerHTML={{ __html: editorHtml }}
-          />
-        );
-      }
     }
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -614,7 +561,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          {field}
+          {this.renderField()}
           <span className="memofield__counter-wrapper">
             <span
               className={`memofield__word-count-container ${
