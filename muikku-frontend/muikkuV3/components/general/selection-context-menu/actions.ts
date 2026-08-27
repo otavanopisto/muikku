@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
+  isReadspeakerPlayerActive,
   isReadspeakerSelectionPlayAvailable,
   isSelectionInScope,
   isSelectionSkipped,
@@ -110,6 +111,7 @@ export function createHighlightAction(
     icon: "pencil",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !isReadspeakerPlayerActive() &&
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
       !selectionSpansMultipleParagraphs(ctx.getSavedRange()) &&
@@ -165,6 +167,7 @@ export function createNoteAction(
     disabled: !options.onAddNote,
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !isReadspeakerPlayerActive() &&
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
       !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
       !selectionSpansMultipleParagraphs(ctx.getSavedRange()) &&

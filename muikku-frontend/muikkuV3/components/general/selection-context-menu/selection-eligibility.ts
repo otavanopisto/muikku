@@ -282,3 +282,10 @@ export function findReadspeakerPlayButtonInBoundary(
 export function isReadspeakerSelectionPlayAvailable(): boolean {
   return !!document.querySelector("#rsbtn_popup .rspopup_play");
 }
+
+/**
+ * Whether the ReadSpeaker player chrome is on screen (playing or paused).
+ */
+export function isReadspeakerPlayerActive(): boolean {
+  return !!document.querySelector(".rsbtn.rsexpanded, .rsbtn.rspaused");
+}
