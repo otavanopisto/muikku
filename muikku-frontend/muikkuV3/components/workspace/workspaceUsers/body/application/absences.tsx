@@ -15,6 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import AbsenceEvent from "~/components/general/events/absence-event";
+import AbsencesSummary from "./absences/absences-summary";
 
 import {
   deleteWorkspaceAbsenceEvent,
@@ -46,7 +47,11 @@ const Absences = () => {
       <ApplicationSubPanel.Header modifier="workspace-absences">
         {t("labels.absences", { ns: "events" })}
       </ApplicationSubPanel.Header>
-      <ApplicationSubPanel.Body modifier="workspace-absences">
+      <ApplicationSubPanel.Body modifier="workspace-absences-summary">
+        <AbsencesSummary absences={absenceEvents} />
+      </ApplicationSubPanel.Body>
+
+      <ApplicationSubPanel.Body modifier="workspace-absences-list">
         {absenceEvents.map((absence) => (
           <AbsenceEvent
             onDelete={handleDelete}

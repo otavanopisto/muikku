@@ -46,7 +46,13 @@
 }
 
 .muikku-absence-event__footer {
+  display: flex;
   padding: 5px;
+
+  > * {
+    margin-right: 5px;
+  }
+  
 }
 
 @keyframes border {

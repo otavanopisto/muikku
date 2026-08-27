@@ -65,7 +65,6 @@ type AbsenceEventFormAction =
     };
 
 const workspaceApi = MApi.getWorkspaceApi();
-const muikkuEventApi = MApi.getEventsApi();
 
 /**
  * createInitialAbsenceEventFormState
@@ -121,13 +120,7 @@ const absenceEventFormReducer = (
 export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   props
 ) => {
-  const {
-    children,
-    workspaceId,
-    workspaceEventContainerId,
-    onClose,
-    onConfirm,
-  } = props;
+  const { children, workspaceId, workspaceEventContainerId, onConfirm } = props;
   const [formState, dispatchForm] = useReducer(
     absenceEventFormReducer,
     undefined,
@@ -161,56 +154,54 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   /**
    * Handles the confirmation of the dialog
    * @param absenceEvent event from form
-   * @param onClose closes the dialog
+   * @param closeDialog closes the dialog
    */
-  const handleConfirm = async (
+  const handleConfirm = (
     absenceEvent: AbsenceEventFormState,
-    onClose: () => void
+    closeDialog: () => void
   ) => {
     const { type, description, startDate, endDate } = absenceEvent;
-    try {
-      await muikkuEventApi.createEvent({
-        muikkuEvent: {
+
+    if (!startDate || !endDate) {
+      if (!startDate) {
+        dispatch(
+          displayNotification(
+            t("notifications.startDateRequired", { ns: "events" }),
+            "error"
+          )
+        );
+      }
+      if (!endDate) {
+        dispatch(
+          displayNotification(
+            t("notifications.endDateRequired", { ns: "events" }),
+            "error"
+          )
+        );
+      }
+
+      return;
+    }
+
+    dispatch(
+      createWorkspaceAbsenceEvent(
+        {
           title: type,
           description,
           start: startDate?.toISOString(),
           end: endDate?.toISOString(),
-          type: "ABSENCE",
-          eventContainerId: workspaceEventContainerId,
+          eventContainerId: workspaceEventContainerId!,
         },
-        users: formState.selectedUsers.map((u) => u.value.id),
-      });
-      dispatch(
-        displayNotification(
-          t("notifications.createSuccess", {
-            ns: "events",
-            context: "absence",
-          }),
-          "success"
-        )
-      );
-      dispatchForm({ type: "RESET" });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-      dispatch(
-        displayNotification(
-          t("notifications.createError", {
-            ns: "events",
-            context: "absence",
-          }),
-          "error"
-        )
-      );
-    }
-
+        formState.selectedUsers.map((user) => user.value.id)
+      )
+    );
     onConfirm?.(formState);
-    onClose();
+    closeDialog();
   };
 
   /**
    * Handles the closing of the dialog
+   * @param closeDialog Dialog close handler
    */
   const handleClose = (closeDialog?: () => void) => {
     dispatchForm({ type: "RESET" });
@@ -219,10 +210,10 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
   /**
    * Renders the content of the dialog
-   * @param onClose Dialog close handler
+   * @param closeDialog Dialog close handler
    * @returns JSX.Element
    */
-  const content = (onClose: () => void) => (
+  const content = (closeDialog: () => void) => (
     <form>
       <div className="form__row">
         <label htmlFor="absent-students">
@@ -321,22 +312,22 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
   /**
    * Renders the footer of the dialog
-   * @param onClose Dialog close handler
+   * @param closeDialog Dialog close handler
    * @returns JSX.Element
    */
-  const footer = (onClose: () => void) => (
+  const footer = (closeDialog: () => void) => (
     <div className="dialog__footer">
       <div className="dialog__button-set">
         <Button
           className="button button--execute button--standard-ok"
-          onClick={() => handleConfirm(formState, onClose)}
+          onClick={() => handleConfirm(formState, closeDialog)}
           disabled={formState.selectedUsers.length === 0}
         >
           {t("actions.create")}
         </Button>
         <Button
           className="button button--cancel button--standard-cancel"
-          onClick={onClose}
+          onClick={closeDialog}
         >
           {t("actions.cancel")}
         </Button>

@@ -1865,13 +1865,15 @@ const createWorkspaceAbsenceEvent: CreateWorkspaceAbsenceEventTriggerType =
           return;
         }
 
-        const newEvents = await eventsApi.createEvent({
+        const createdEvent = await eventsApi.createEvent({
           muikkuEvent: {
             ...data,
             type: "ABSENCE",
           },
           users,
         });
+
+        const newEvents = [...(workspace.absenceEvents ?? []), ...createdEvent];
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2009,6 +2011,13 @@ const updateWorkspaceAbsenceEvent: UpdateWorkspaceAbsenceEventTriggerType =
             },
           },
         });
+        displayNotification(
+          i18n.t("notifications.updateSuccess", {
+            ns: "events",
+            context: "absence",
+          }),
+          "success"
+        );
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -2017,7 +2026,7 @@ const updateWorkspaceAbsenceEvent: UpdateWorkspaceAbsenceEventTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.updateError", {
-              ns: "workspace",
+              ns: "events",
               context: "absence",
             }),
             "error"
@@ -2758,6 +2767,7 @@ export {
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
   loadStudentAbsenceEventsOfWorkspace,
+  createWorkspaceAbsenceEvent,
   deleteWorkspaceAbsenceEvent,
   updateWorkspaceAbsenceEvent,
   toggleActiveStateOfStudentOfWorkspace,

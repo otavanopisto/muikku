@@ -79,9 +79,11 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
 
   const actions =
     onUpdate && onDelete ? (
-      <div className="absence-event__footer">
+      <div className="muikku-absence-event__footer">
         <EditAbsenceDialog absenceEvent={event}>
-          <Button>{t("actions.edit", { ns: "common" })}</Button>
+          <Button buttonModifiers={["info"]}>
+            {t("actions.edit", { ns: "common" })}
+          </Button>
         </EditAbsenceDialog>
         <PromptDialog
           title="Poista poissaolo"
@@ -93,7 +95,7 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
           })}
           onExecute={() => onDelete(event.id!)}
         >
-          <Button buttonModifiers={["danger", "standard-ok"]}>
+          <Button buttonModifiers={["fatal", "standard-ok"]}>
             {t("actions.remove", { ns: "common" })}
           </Button>
         </PromptDialog>
