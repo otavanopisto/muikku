@@ -870,13 +870,14 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       
-      assertText(".notes .notes__item .notes__item-header", "Task from guider.");      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");     
+      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       
       logout();
       mockBuilder.mockLogin(student);
       login();
-      assertText(".note__header .note__title", "Task from guider.");
-      waitAndClick(".note__header .note__title");
+      assertText(".wall-item__title", "Task from guider.");
+      waitAndClick(".wall-item__title");
       waitForVisible(".note__description");
       assertText(".note__description p", "Do some stuff!");
       navigate("/records", false);
@@ -902,6 +903,84 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".tabs--notes #tabControl-archived");
       assertText("#tabPanel-archived .notes .notes__item .notes__item-header", "Task from guider.");
       assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
+    } finally {
+      archiveUserByEmail(student.getEmail());
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void notesViewTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, DEFAULT_ORGANIZATION_ID, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(18l, 18l, "Arduous", "Arvin", "arvin@example.com", 1l, OffsetDateTime.of(1993, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "020293-2983", Sex.FEMALE, TestUtilities.toDate(2020, 1, 1), TestUtilities.getNextYear());
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 10).description("test course for testing").buildCourse();
+    Builder mockBuilder = mocker();
+    mockBuilder
+    .addStudentGroup(2l, 1l, "Admins guidance", "Admins guidance group for users", 1l, false, true)
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .mockStudentCourseStats(student.getId(), 25)
+    .mockMatriculationEligibility(student.getId(), false)
+    .mockEmptyStudyActivity()
+    .mockIAmCounselor()
+    .mockUserContact(student)
+    .mockCourseMatrix()
+    .build();
+    login();
+    
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(17l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+    
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+
+    mockBuilder
+      .addCourseStaffMember(workspace.getId(), courseStaffMember)
+      .addCourseStudent(workspace.getId(), mcs)
+      .build();
+    mockBuilder.addStudentToStudentGroup(2l, student).addStaffMemberToStudentGroup(2l, admin).mockPersons().mockStudents().mockStudyProgrammes().mockStudentGroups();
+    try {
+      navigate("/guider", false);
+      waitAndClick(".application-list__header-primary>span");
+      
+      waitAndClick(".button-pill--add-note span");
+
+      sendKeys(".env-dialog__input", "Task from guider.");
+      addTextToCKEditor("Do some stuff!");
+      waitAndClick(".button--dialog-execute");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");     
+      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      waitAndClick(".dialog--visible .dialog__header--guider-student .button-icon--dialog-close");
+      waitForNotVisible(".dialog--visible");
+      
+      waitAndClick(".application-panel__actions-aside .form-element--main-action");
+      waitAndClick("#react-select-2-option-1");
+      waitForPresent(".notes__item-body");
+      assertText(".notes__item-body", "Do some stuff!");
+      assertVisible(".button-pill--add-note");
+      assertPresentXPath("//a/span[contains(text(),'Aktiiviset tehtävät')]");
+      assertPresentXPath("//a/span[contains(text(),'Arkistoidut tehtävät')]");
+      assertPresentXPath("//a/span[contains(text(),'Korkea')]");
+      assertPresentXPath("//a/span[contains(text(),'Normaali')]");
+      assertPresentXPath("//a/span[contains(text(),'Matala')]");
+      waitAndClick(".notes__item-header--open-details");
+      waitForVisible("#dialogTitle--note-information");
+      assertTextIgnoreCase("#dialogTitle--note-information", "Tehtävän tiedot");
+      waitAndClick(".dialog .notes__item-actions .button-icon--notes-edit");
+      addTextToCKEditor(" Do additional stuff!");
+      waitAndClick(".button--dialog-execute");
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      sleep(2500);
+      assertText(".notes__item-body", "Do some stuff! Do additional stuff!");
+      
+      waitAndClick(".dialog__button-set .button--cancel");
+      hoverOverElement(".notes__item-recipients .notes__item-avatar");
+      waitForElementToAppear("div[name='react-portal'] div.dropdown__container", 3, 500);
+      assertText("div[name='react-portal'] div.dropdown__container", "Arduous Arvin");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteWorkspace(workspace.getId());

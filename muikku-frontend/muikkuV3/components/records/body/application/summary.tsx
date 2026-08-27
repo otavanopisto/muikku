@@ -29,10 +29,18 @@ import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgramme } from "~/components/general/carousel/hooks/use-course-carousel";
 import StudyProgress from "../study-progress";
+import { MuikkuEvents } from "~/reducers/base/muikku-events";
+import WallAbsenceEvent from "~/components/index/layouts/panels/wall/walll-event";
 import { UserStudyData } from "~/reducers/study-activity";
 import ContactCard from "~/components/general/contact-card";
 import OtherContact from "./summary/other-contact";
 import GuardianContact from "./summary/guardian-contact";
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/base/muikku-events";
+import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+import Button from "~/components/general/button";
 
 /**
  * SummaryProps
@@ -42,6 +50,7 @@ interface SummaryProps extends WithTranslation {
   contacts: ContactsState;
   summary: SummaryType;
   status: StatusType;
+  absenceEvents: MuikkuEvents;
   defaultUserStudyData: UserStudyData;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -67,14 +76,54 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
    * render
    */
   render() {
-    const { t } = this.props;
-
-    if (
-      this.props.records.location !== "summary" ||
-      this.props.summary.status !== "READY"
-    ) {
+    const {
+      t,
+      absenceEvents,
+      status,
+      summary,
+      records,
+      contacts,
+      defaultUserStudyData,
+      displayNotification,
+    } = this.props;
+    if (records.location !== "summary" || summary.status !== "READY") {
       return null;
     } else {
+      const absences = (
+        <div className="application-sub-panel">
+          <div className="application-sub-panel__header">
+            {t("labels.absences", { ns: "events" })}
+          </div>
+          <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+            {absenceEvents.events.map((event) => {
+              const hasFeedback = event.properties?.find(
+                (property) =>
+                  property.name == "ABSENCE_REASON" && property.value !== ""
+              );
+              return (
+                <WallAbsenceEvent
+                  isUnder18={status.isUnder18}
+                  key={event.id}
+                  event={event}
+                  actions={
+                    <AbsenceFeedbackDialog
+                      absenceEvent={event}
+                      onUpdate={updateAbsenceEventProperty}
+                      onCreate={createAbsenceEventProperty}
+                    >
+                      <Button className="button button--primary-function-content">
+                        {hasFeedback
+                          ? t("actions.editFeedback", { ns: "events" })
+                          : t("actions.giveFeedback", { ns: "events" })}
+                      </Button>
+                    </AbsenceFeedbackDialog>
+                  }
+                />
+              );
+            })}
+          </div>
+        </div>
+      );
       const studentBasicInfo = (
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
@@ -87,10 +136,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
                 <span className="application-sub-panel__single-entry">
-                  {this.props.summary.data.studentsDetails.studyStartDate
-                    ? localize.date(
-                        this.props.summary.data.studentsDetails.studyStartDate
-                      )
+                  {summary.data.studentsDetails.studyStartDate
+                    ? localize.date(summary.data.studentsDetails.studyStartDate)
                     : t("content.empty", {
                         ns: "studies",
                         context: "studyTime",
@@ -100,17 +147,17 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             </div>
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">
-                {this.props.summary.data.studentsDetails.studyEndDate
+                {summary.data.studentsDetails.studyEndDate
                   ? t("labels.studyEndDate", { ns: "users" })
                   : t("labels.studyTimeEnd", { ns: "users" })}
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
                 <span className="application-sub-panel__single-entry">
-                  {this.props.summary.data.studentsDetails.studyEndDate ||
-                  this.props.summary.data.studentsDetails.studyTimeEnd
+                  {summary.data.studentsDetails.studyEndDate ||
+                  summary.data.studentsDetails.studyTimeEnd
                     ? localize.date(
-                        this.props.summary.data.studentsDetails.studyEndDate ||
-                          this.props.summary.data.studentsDetails.studyTimeEnd
+                        summary.data.studentsDetails.studyEndDate ||
+                          summary.data.studentsDetails.studyTimeEnd
                       )
                     : t("content.empty", {
                         ns: "studies",
@@ -132,15 +179,13 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-counselors">
-              {this.props.contacts.others?.list.length > 0 ? (
-                this.props.contacts.others.list.map((contact) => (
+              {contacts.others?.list.length > 0 ? (
+                contacts.others.list.map((contact) => (
                   <OtherContact
                     key={contact.id}
                     contact={contact}
-                    studentIdentifier={
-                      this.props.status.userSchoolDataIdentifier
-                    }
-                    isUnder18={this.props.status.isUnder18}
+                    studentIdentifier={status.userSchoolDataIdentifier}
+                    isUnder18={status.isUnder18}
                   />
                 ))
               ) : (
@@ -184,8 +229,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-counselors">
-              {this.props.contacts.counselors?.list.length > 0 ? (
-                this.props.contacts.counselors.list.map((counselor) => {
+              {contacts.counselors?.list.length > 0 ? (
+                contacts.counselors.list.map((counselor) => {
                   const {
                     userEntityId,
                     email,
@@ -281,15 +326,13 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel__body">
             <div className="item-list item-list--student-guardians">
-              {this.props.contacts.guardians.list.length > 0 &&
-                this.props.contacts.guardians.list.map((guardian, index) => (
+              {contacts.guardians.list.length > 0 &&
+                contacts.guardians.list.map((guardian, index) => (
                   <GuardianContact
                     key={guardian.identifier}
                     guardian={guardian}
-                    studentIdentifier={
-                      this.props.status.userSchoolDataIdentifier
-                    }
-                    isUnder18={this.props.status.isUnder18}
+                    studentIdentifier={status.userSchoolDataIdentifier}
+                    isUnder18={status.isUnder18}
                   />
                 ))}
             </div>
@@ -299,11 +342,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
+          {absenceEvents && absenceEvents.events.length > 0 && absences}
           {studentBasicInfo}
           {studentCounselors}
-          {this.props.contacts.others.list.length > 0 && studentContacts}
-          {this.props.contacts.guardians.list.length > 0 && studentGuardians}
-          {this.props.status.isActiveUser ? (
+          {contacts.others.list.length > 0 && studentContacts}
+          {contacts.guardians.list.length > 0 && studentGuardians}
+          {status.isActiveUser ? (
             <div className="react-container">
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
@@ -327,8 +371,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <Notes
                   usePlace="records"
                   showHistoryPanel
-                  userId={this.props.status.userId}
-                  studentId={this.props.status.userId}
+                  userId={status.userId}
+                  studentId={status.userId}
                 />
               </div>
 
@@ -340,32 +384,28 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </div>
 
                 <StudyProgress
-                  curriculumName={this.props.status.profile.curriculumName}
-                  studyProgrammeName={
-                    this.props.status.profile.studyProgrammeName
-                  }
-                  studentIdentifier={this.props.status.userSchoolDataIdentifier}
-                  studentUserEntityId={this.props.status.userId}
+                  curriculumName={status.profile.curriculumName}
+                  studyProgrammeName={status.profile.studyProgrammeName}
+                  studentIdentifier={status.userSchoolDataIdentifier}
+                  studentUserEntityId={status.userId}
                 />
               </div>
 
               {carouselMatrixByStudyProgramme(
-                this.props.status.profile.studyProgrammeName,
-                this.props.defaultUserStudyData.courseMatrix
+                status.profile.studyProgrammeName,
+                defaultUserStudyData.courseMatrix
               ) !== null && (
                 <div className="application-sub-panel">
                   <div className="application-sub-panel__header">
                     {t("labels.coursesForYou", { ns: "studies" })}
                   </div>
                   <CourseCarousel
-                    studentId={this.props.status.userSchoolDataIdentifier}
-                    studentUserEntityId={this.props.status.userId}
-                    studyProgrammeName={
-                      this.props.status.profile.studyProgrammeName
-                    }
-                    curriculumName={this.props.status.profile.curriculumName}
-                    matrix={this.props.defaultUserStudyData.courseMatrix}
-                    displayNotification={this.props.displayNotification}
+                    studentId={status.userSchoolDataIdentifier}
+                    studentUserEntityId={status.userId}
+                    studyProgrammeName={status.profile.studyProgrammeName}
+                    curriculumName={status.profile.curriculumName}
+                    matrix={defaultUserStudyData.courseMatrix}
+                    displayNotification={displayNotification}
                   />
                 </div>
               )}
@@ -400,6 +440,7 @@ function mapStateToProps(state: StateType) {
   return {
     records: state.records,
     contacts: state.contacts,
+    absenceEvents: state.muikkuEvents.absenceEvents,
     summary: state.summary,
     status: state.status,
     defaultUserStudyData:

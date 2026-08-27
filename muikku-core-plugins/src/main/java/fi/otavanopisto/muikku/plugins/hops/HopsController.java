@@ -177,8 +177,7 @@ public class HopsController {
   }
   
   public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details, String changes) {
-    hopsHistoryDAO.update(history, details, changes);
-    return history;
+    return hopsHistoryDAO.update(history, details, changes);
   }
   
   public Hops findHops(HopsStudent hopsStudent) {
@@ -190,9 +189,7 @@ public class HopsController {
   }
   
   public HopsGoals createHopsGoals(HopsStudent hopsStudent, String data) {
-    HopsGoals hopsGoals = hopsGoalsDAO.create(hopsStudent.getUserEntityId(), hopsStudent.getEducationTypeCode(), data);
-
-    return hopsGoals;
+    return hopsGoalsDAO.create(hopsStudent.getUserEntityId(), hopsStudent.getEducationTypeCode(), data);
   }
 
   public HopsGoals updateHopsGoals(HopsGoals hopsGoals, String goals) {

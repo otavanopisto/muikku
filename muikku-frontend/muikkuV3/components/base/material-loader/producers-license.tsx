@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 import Link from "~/components/general/link";
 
-type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
+type MaterialLoaderProducersLicenseProps = MaterialLoaderRenderProps;
 
 /**
  * MaterialLoaderProducersLicense

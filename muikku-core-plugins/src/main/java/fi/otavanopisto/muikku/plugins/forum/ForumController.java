@@ -42,9 +42,7 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
@@ -82,9 +80,6 @@ public class ForumController {
 
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserController userController;
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -323,26 +318,6 @@ public class ForumController {
     return threads;
   }
 
-  public UserEntity findUserEntity(Long userEntityId) {
-    return userEntityController.findUserEntityById(userEntityId);
-  }
-  
-  public User findUser(UserEntity userEntity) {
-    return userController.findUserByUserEntityDefaults(userEntity);
-  }
-  
-  public boolean getUserHasPicture(UserEntity userEntity) {
-    return false; // TODO
-  }
-  
-  public ForumThreadReply getLatestReply(ForumThread thread) {
-    return forumThreadReplyDAO.findLatestReplyByThread(thread);
-  }
-  
-  public ForumMessage getLatestMessage(ForumArea area) {
-    return forumMessageDAO.findLatestMessageByArea(area);
-  }
-  
   public Long getThreadReplyCount(ForumThread thread) {
     return forumThreadReplyDAO.countByThread(thread);
   }
@@ -351,25 +326,6 @@ public class ForumController {
     return forumThreadDAO.countByArea(area);
   }
 
-  public Long getMessageCount(ForumArea area) {
-    return forumMessageDAO.countByArea(area);
-  }
-  
-  public void archiveMessage(ForumMessage message) {
-    forumMessageDAO.archive(message, sessionController.getLoggedUserEntity());
-    
-    if (message instanceof ForumThreadReply) {
-      ForumThreadReply reply = (ForumThreadReply) message;
-      
-      ForumThreadReply latestReply = getLatestReply(reply.getThread());
-      
-      if (latestReply != null)
-        forumThreadDAO.updateThreadUpdated(reply.getThread(), latestReply.getCreated());
-      else
-        forumThreadDAO.updateThreadUpdated(reply.getThread(), reply.getThread().getCreated());
-    }
-  }
-  
   public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, LockForumThread lock) {
     UserEntity user = sessionController.getLoggedUserEntity();
     Date lockDate = new Date();
@@ -383,8 +339,7 @@ public class ForumController {
   }
 
   public void updateForumThreadReply(ForumThreadReply reply, String message) {
-    UserEntity user = sessionController.getLoggedUserEntity();
-    forumThreadReplyDAO.update(reply, clean(message), new Date(), user);
+    forumThreadReplyDAO.update(reply, clean(message), new Date(), sessionController.getLoggedUserEntity());
   }
 
   public List<ForumAreaGroup> listForumAreaGroups() {
@@ -401,14 +356,6 @@ public class ForumController {
   
   public void deleteAreaGroup(ForumAreaGroup forumAreaGroup) {
     forumAreaGroupDAO.delete(forumAreaGroup);
-  }
-  
-  public List<ForumMessage> listMessagesByWorkspace(WorkspaceEntity workspace) {
-    return forumMessageDAO.listByWorkspace(workspace);
-  }
-
-  public List<ForumMessage> listByContributingUser(UserEntity userEntity) {
-    return forumMessageDAO.listByContributingUser(userEntity);
   }
   
   public Long countUserEntityWorkspaceMessages(WorkspaceEntity workspaceEntity, UserEntity creator) {
@@ -443,8 +390,5 @@ public class ForumController {
     
     return null;
   }
-  
-  public ForumThread toggleLock(ForumThread thread, LockForumThread lock, Long userEntityId) {
-    return forumThreadDAO.toggleLock(thread, lock, userEntityId);
-  }
+
 }

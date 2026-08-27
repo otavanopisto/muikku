@@ -281,6 +281,7 @@ export default class c extends React.Component<
       (item: Student | User): ContactRecipientType => {
         const value = {
           id: 0,
+          identifier: "",
           name: getName(item, this.props.showFullNames),
           email: item.email,
           studyProgrammeName: item.studyProgrammeName,
@@ -288,6 +289,7 @@ export default class c extends React.Component<
 
         if (isUser(item)) {
           value.id = item.id;
+          value.identifier = item.identifier;
         } else {
           value.id = item.userEntityId;
         }

@@ -7,11 +7,17 @@ import { StateType } from "~/reducers";
 import moment from "moment";
 import UserAvatar from "~/components/general/avatar";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
-import { ButtonPill } from "~/components/general/button";
+import Button, { ButtonPill } from "~/components/general/button";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import StudyProgress from "./study-progress";
 import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
+import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
+import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/main-function/guardian";
 
 /**
  * SummaryProps
@@ -31,10 +37,13 @@ const Summary = (props: SummaryProps) => {
     "materials",
     "common",
   ]);
-  const status = useSelector((state: StateType) => state.status);
-  const currentDependant = useSelector(
-    (state: StateType) => state.guardian.currentDependant
+  const { status } = useSelector((state: StateType) => state);
+
+  const { currentDependant, absencesByDependantId } = useSelector(
+    (state: StateType) => state.guardian
   );
+  const dependantAbsences =
+    absencesByDependantId[currentDependant.dependantInfo?.userEntityId];
 
   const currentDependantStudyData =
     currentDependant.dependantStudyDataByEducationTypeCode[
@@ -50,6 +59,51 @@ const Summary = (props: SummaryProps) => {
   ) {
     return null;
   } else {
+    const absences = (
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__header">
+          {t("labels.absences", { ns: "events" })}
+        </div>
+        <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
+          {dependantAbsences.events.map((e) => {
+            const hasFeedback = e.properties.find(
+              (property) =>
+                property.name == "ABSENCE_REASON" && property.value !== ""
+            );
+            return (
+              <WallEvent
+                key={e.id}
+                event={e}
+                actions={
+                  <AbsenceFeedbackDialog
+                    absenceEvent={e}
+                    onUpdate={(data) =>
+                      updateAbsenceEventProperty(
+                        data,
+                        currentDependant.dependantInfo.userEntityId
+                      )
+                    }
+                    onCreate={(data) =>
+                      createAbsenceEventProperty(
+                        data,
+                        currentDependant.dependantInfo.userEntityId
+                      )
+                    }
+                  >
+                    <Button className="button button--primary-function-content">
+                      {hasFeedback
+                        ? t("actions.editFeedback", { ns: "events" })
+                        : t("actions.giveFeedback", { ns: "events" })}
+                    </Button>
+                  </AbsenceFeedbackDialog>
+                }
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
+
     const studentBasicInfo = (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
@@ -281,9 +335,11 @@ const Summary = (props: SummaryProps) => {
 
     return (
       <section>
+        {dependantAbsences.events &&
+          dependantAbsences.events.length > 0 &&
+          absences}
         {studentCounselors}
         {studentBasicInfo}
-
         <div className="application-sub-panel">
           <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
             {t("labels.studyProgress", {

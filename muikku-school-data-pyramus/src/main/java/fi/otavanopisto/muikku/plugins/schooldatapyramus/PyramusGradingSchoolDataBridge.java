@@ -614,21 +614,6 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier) {
-    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    if (courseId == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
-    }
-    else if (studentId == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
-    }
-    else {
-      pyramusClient.delete(String.format("/students/students/%d/courses/%d/assessmentRequests/%s", studentId, courseId, identifier));
-    }
-  }
-
-  @Override
   public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier) {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     if (studentId == null) {

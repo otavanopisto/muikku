@@ -1,12 +1,14 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 
 /**
  * MaterialLoaderCorrectAnswerCounterProps
  */
-interface MaterialLoaderCorrectAnswerCounterProps extends MaterialLoaderProps {
+interface MaterialLoaderCorrectAnswerCounterProps
+  extends MaterialLoaderRenderProps {
   answersChecked: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   answerRegistry: { [name: string]: any };
 }
 
