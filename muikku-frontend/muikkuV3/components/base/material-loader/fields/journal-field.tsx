@@ -300,6 +300,7 @@ class JournalField extends React.Component<
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+            alwaysPresent
           />
           {field}
         </span>

@@ -560,6 +560,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+            alwaysPresent
           />
           {this.renderField()}
           <span className="memofield__counter-wrapper">
