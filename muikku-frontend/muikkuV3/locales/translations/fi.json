@@ -2658,6 +2658,7 @@
       "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
       "absence_explanation": "Selitys poissaololle",
+      "editAbsence": "Muokkaa poissaoloa",
       "end": "Päättyy",
       "event": "Tapahtuma",
       "eventBeginning": "Alkaa",
@@ -2710,12 +2711,12 @@
       "startDateRequired": "Alkuaika on pakollinen tieto",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
       "updateError_absence": "Poissaolon päivittäminen epäonnistui: {{error}}",
-      "updateSuccess": "Tapahtuman päivittäminen onnistui",
-      "updateSuccess_absence": "Poissaolon päivittäminen onnistui",
       "updatePropertyError": "Tapahtuman ominaisuuden päivitys epäonnistui: {{error}}. Yritä uudelleen.",
       "updatePropertyError_absence": "Poissaoloselvityksen päivitys epäonnistui: {{error}}. Yritä uudelleen.",
       "updatePropertySuccess": "Tapahtuman ominaisuuden päivitys onnistui",
-      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui"
+      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui",
+      "updateSuccess": "Tapahtuman päivittäminen onnistui",
+      "updateSuccess_absence": "Poissaolon päivittäminen onnistui"
     }
   },
   "orders": {

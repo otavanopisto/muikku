@@ -24,14 +24,13 @@ interface BaseEventComponentProps {
  * @returns JSX.Element
  */
 const BaseEvent: React.FC<BaseEventComponentProps> = (props) => {
-  const { modifier, state, title, beginDate, endDate, children, actions } =
-    props;
-  const [showDetails, setShowDetails] = React.useState(false);
+  const { modifier, state, title, beginDate, endDate, children } = props;
+  const [detailsVisible, setDetailsVisible] = React.useState(false);
   /**
    * toggles description visibility
    */
   const toggleShowDetails = () => {
-    setShowDetails(!showDetails);
+    setDetailsVisible(!detailsVisible);
   };
   return (
     <div
@@ -47,7 +46,7 @@ const BaseEvent: React.FC<BaseEventComponentProps> = (props) => {
           </span>
         )}
       </div>
-      <AnimateHeight height={showDetails ? "auto" : 0}>
+      <AnimateHeight height={detailsVisible ? "auto" : 0}>
         {children}
       </AnimateHeight>
     </div>

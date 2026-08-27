@@ -1,14 +1,3 @@
-// workspace users absences application component
-// has a list of absences
-// absence has an icon to delete an absence
-// absence shows absence type, start date, end date and if absence has properties or not
-// animateheight component is used to show absence details
-// absences are paginated
-// absences are sorted by start date
-// absences are sorted by end date
-// absences are sorted by absence type
-// absences are sorted by absence properties (if any)
-
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";

@@ -49,9 +49,6 @@ type AbsenceEventFormAction =
   | {
       type: "SET_END_DATE";
       payload: Date | null;
-    }
-  | {
-      type: "RESET";
     };
 
 /**
@@ -132,12 +129,10 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
   /**
    * Handles the confirmation of the dialog
-   * @param absenceEvent event from form
-   * @param onClose closes the dialog
+   * @param closeDialog Dialog close handler
    */
-  const handleConfirm = (onClose: () => void) => {
-    const { type, description, id, start, end, eventContainerId } =
-      absenceEvent;
+  const handleConfirm = (closeDialog: () => void) => {
+    const { id } = absenceEvent;
     dispatch(
       updateWorkspaceAbsenceEvent(id!, {
         title: formState.type,
@@ -149,11 +144,12 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       })
     );
     onConfirm?.(formState);
-    onClose();
+    closeDialog();
   };
 
   /**
    * Handles the closing of the dialog
+   * @param closeDialog Dialog close handler
    */
   const handleClose = (closeDialog?: () => void) => {
     closeDialog?.();
@@ -161,7 +157,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
   /**
    * Renders the content of the dialog
-   * @param onClose Dialog close handler
+   * @param closeDialog Dialog close handler
    * @returns JSX.Element
    */
   const content = (closeDialog: () => void) => (
@@ -248,7 +244,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 
   /**
    * Renders the footer of the dialog
-   * @param closeDialogs Dialog close handler
+   * @param closeDialog Dialog close handler
    * @returns JSX.Element
    */
   const footer = (closeDialog: () => void) => (
@@ -275,7 +271,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       onClose={handleClose}
       closeOnOverlayClick={false}
       modifier="create-absence"
-      title={t("labels.markAbsence", { ns: "events" })}
+      title={t("labels.editAbsence", { ns: "events" })}
       content={content}
       footer={footer}
     >
