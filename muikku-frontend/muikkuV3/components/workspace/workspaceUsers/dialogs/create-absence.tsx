@@ -145,6 +145,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     const request: GetWorkspaceStudentsRequest = {
       q: searchTerm,
       workspaceEntityId: workspaceId,
+      active: true,
     };
 
     const search = await workspaceApi.getWorkspaceStudents(request);
@@ -294,6 +295,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           onChange={(date: Date | null) =>
             dispatchForm({ type: "SET_START_DATE", payload: date })
           }
+          maxDate={formState.endDate ?? undefined}
           showTimeSelect
           timeFormat="HH:mm"
           dateFormat="Pp"
