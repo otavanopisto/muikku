@@ -14,22 +14,22 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.scribe.builder.api.Api;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.oauth.OAuth20Service;
 
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
 import fi.otavanopisto.muikku.auth.AuthenticationResult;
-import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
 import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
+import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
 import fi.otavanopisto.muikku.model.security.AuthSource;
 import fi.otavanopisto.muikku.plugins.oauth.scribe.GoogleApi20;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -72,54 +72,57 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
   }
   
   @Override
-  protected Api getApi() {
+  protected DefaultApi20 getApi() {
     return new GoogleApi20();
   }
   
   @Override
-  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
+  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuth20Service service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    String verifier = getFirstRequestParameter(requestParameters, "code");
-
-    Verifier v = new Verifier(verifier);
-    Token accessToken = service.getAccessToken(null, v);
-
-    GoogleAccessToken googleAccessToken;
-    try {
-      googleAccessToken = objectMapper.readValue(accessToken.getRawResponse(), GoogleAccessToken.class);
-      Calendar calendar = new GregorianCalendar();
-      calendar.setTime(new Date());
-      calendar.add(Calendar.SECOND, googleAccessToken.getExpiresIn());
-      Date expires = calendar.getTime();
-      sessionController.addOAuthAccessToken("google", expires, accessToken.getToken(), null);
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
+    String authorizationCode = getFirstRequestParameter(requestParameters, "code");
+    if (StringUtils.isBlank(authorizationCode)) {
+      logger.log(Level.FINE, "Logging in failed because authorization code was blank.");
       return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
     
-    List<String> scopesList = Arrays.asList(requestedScopes);
+    try {
+      OAuth2AccessToken accessToken = service.getAccessToken(authorizationCode);
 
-    boolean hasProfileScope = scopesList.contains("https://www.googleapis.com/auth/userinfo.profile");
-    
-    GoogleUserInfo userInfo = null;
-    
-    if (hasProfileScope) {
-      OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
-      service.signRequest(accessToken, request);
-      Response response = request.send();
-      try {
-        userInfo = objectMapper.readValue(response.getBody(), GoogleUserInfo.class);
-      } catch (IOException e) {
-        logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
-        return new AuthenticationResult(AuthenticationResult.Status.ERROR);
+      int expiresIn = accessToken.getExpiresIn() != null ? accessToken.getExpiresIn() : 3600;
+      
+      Calendar calendar = new GregorianCalendar();
+      calendar.setTime(new Date());
+      calendar.add(Calendar.SECOND, expiresIn);
+      Date expires = calendar.getTime();
+      sessionController.addOAuthAccessToken("google", expires, accessToken.getAccessToken(), null);
+      
+      List<String> scopesList = Arrays.asList(requestedScopes);
+
+      boolean hasProfileScope = scopesList.contains("https://www.googleapis.com/auth/userinfo.profile");
+      
+      GoogleUserInfo userInfo = null;
+      
+      if (hasProfileScope) {
+        OAuthRequest request = new OAuthRequest(Verb.GET, "https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
+        service.signRequest(accessToken, request);
+        Response response = service.execute(request);
+        try {
+          userInfo = objectMapper.readValue(response.getBody(), GoogleUserInfo.class);
+        } catch (IOException e) {
+          logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
+          return new AuthenticationResult(AuthenticationResult.Status.ERROR);
+        }
       }
-    }
 
-    if (userInfo != null)
-      return processLogin(servletRequest, authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
-    else {
-      return new AuthenticationResult(AuthenticationResult.Status.GRANT);
+      if (userInfo != null)
+        return processLogin(servletRequest, authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
+      else {
+        return new AuthenticationResult(AuthenticationResult.Status.GRANT);
+      }
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
   }
   
@@ -127,22 +130,6 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
   public AuthenticationResult processLogout(AuthSource authSource) {
     // Note: this doesn't log out of Google - sometimes the desired outcome, sometimes not
     return new AuthenticationResult(Status.LOGOUT);
-  }
-
-  @SuppressWarnings ("unused")
-  @JsonIgnoreProperties (ignoreUnknown = true)
-  private static class GoogleAccessToken {
-    
-    public Integer getExpiresIn() {
-      return expiresIn;
-    }
-    
-    public void setExpiresIn(Integer expiresIn) {
-      this.expiresIn = expiresIn;
-    }
-    
-    @JsonProperty ("expires_in")
-    private Integer expiresIn;
   }
 
   @SuppressWarnings ("unused")
