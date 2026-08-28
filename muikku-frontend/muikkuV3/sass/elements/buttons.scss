@@ -2186,8 +2186,7 @@
   margin-right: 15px;
   position: relative;
   width: calc(
-    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
-      2
+    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2
   );
 
   &::after {
@@ -2211,8 +2210,7 @@
       #{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size}
     );
     width: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2
     );
 
     &::after {
@@ -2234,8 +2232,7 @@
 
   @include breakpoint($breakpoint-pad) {
     width: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2
     );
 
     &::after {
@@ -2254,8 +2251,7 @@
   box-shadow: 0 0 0 1px $color-default-helper;
   display: flex;
   height: calc(
-    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
-      2
+    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2
   );
   justify-content: center;
   margin: 0;
@@ -2320,8 +2316,7 @@
 
   @include breakpoint($breakpoint-pad) {
     height: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2
     );
 
     &::after {
