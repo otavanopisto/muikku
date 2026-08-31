@@ -32,6 +32,7 @@ const PLUGINS = {
 
   // CONTEXTPATHREMOVED
   "muikku-comment": "/scripts/ckplugins/muikku-comment/",
+  "muikku-comment-remove": "/scripts/ckplugins/muikku-comment-remove/",
   "muikku-mathjax": "/scripts/ckplugins/muikku-mathjax/",
   "muikku-fields": "/scripts/ckplugins/muikku-fields/",
   "muikku-selection": "/scripts/ckplugins/muikku-selection/",

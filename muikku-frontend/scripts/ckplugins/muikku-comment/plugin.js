@@ -37,16 +37,6 @@ CKEDITOR.plugins.add('muikku-comment', {
     editor.addCommand('muikku-comment', new CKEDITOR.dialogCommand('muikkuCommentDialog', {
       readOnly: true
     }));
-    editor.addCommand('muikku-remove', {
-      readOnly: true,
-      exec: function(editor) {
-        editor.removeStyle(new CKEDITOR.style({
-          element: 'mark',
-          alwaysRemoveElement: true,
-          ignoreReadonly: true
-        }));
-      }
-    });
     editor.addCommand('muikku-highlight', {
       readOnly: true,
       exec: function(editor) {
@@ -66,6 +56,7 @@ CKEDITOR.plugins.add('muikku-comment', {
         editor.applyStyle(new CKEDITOR.style({
           element: 'mark',
           attributes: {
+            'data-id': Date.now(),
             'data-type': 'highlight'
           }
         }));
@@ -106,6 +97,7 @@ CKEDITOR.plugins.add('muikku-comment', {
               editor.applyStyle(new CKEDITOR.style({
                 element: 'mark',
                 attributes: {
+                  'data-id': Date.now(),
                   'data-type': 'comment',
                   'data-text': value
                 }
@@ -135,21 +127,12 @@ CKEDITOR.plugins.add('muikku-comment', {
         command: 'muikku-highlight',
         group: 'muikkuCommentGroup'
       });
-      editor.addMenuItem('muikkuRemoveItem', {
-        label: lang.remove,
-        icon: this.path + 'icons/muikku-delete.png',
-        command: 'muikku-remove',
-        group: 'muikkuCommentGroup'
-      });
       editor.contextMenu.addListener(function(element) {
         var mark = _this.findMarkInSelection(editor);
         var text = editor.getSelection().getSelectedText();
         var widget = editor.widgets.getByElement(element);
-        if (mark) {
-          return { muikkuCommentItem: CKEDITOR.TRISTATE_OFF, muikkuHighlightItem: CKEDITOR.TRISTATE_OFF, muikkuRemoveItem: CKEDITOR.TRISTATE_OFF};
-        }
-        else if (text || (widget && widget.name === 'image')) {
-          return { muikkuCommentItem: CKEDITOR.TRISTATE_OFF, muikkuHighlightItem: CKEDITOR.TRISTATE_OFF};
+        if (mark || text || (widget && widget.name === 'image')) {
+          return { muikkuCommentItem: CKEDITOR.TRISTATE_OFF, muikkuHighlightItem: CKEDITOR.TRISTATE_OFF };
         }
         else {
           return null;
