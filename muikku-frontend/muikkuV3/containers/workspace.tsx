@@ -19,7 +19,7 @@ import {
   loadStaffMembersOfWorkspace,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
-  loadStudentAbsenceEventsOfWorkspace,
+  loadAbsenceEventsOfWorkspace,
   loadWorkspaceTypes,
   loadWorkspaceSettings,
   setAvailableCurriculums,
@@ -783,7 +783,7 @@ export default class Workspace extends React.Component<
           // But the setCurrentWorkspace kind of forces us to do it here
           if (!workspace.absenceEvents && state.status.loggedIn) {
             this.props.store.dispatch(
-              loadStudentAbsenceEventsOfWorkspace({ workspace }) as Action
+              loadAbsenceEventsOfWorkspace({ workspace }) as Action
             );
           }
           if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
@@ -832,7 +832,7 @@ export default class Workspace extends React.Component<
           // Load students absence events if not loaded yet
           if (!workspace.absenceEvents && state.status.loggedIn) {
             this.props.store.dispatch(
-              loadStudentAbsenceEventsOfWorkspace({ workspace }) as Action
+              loadAbsenceEventsOfWorkspace({ workspace }) as Action
             );
           }
         },

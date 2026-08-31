@@ -18,7 +18,6 @@ import EditAbsenceDialog from "~/components/workspace/workspaceUsers/dialogs/edi
 interface AbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
-  isUnder18?: boolean;
   actions?: React.ReactElement;
   onDelete?: (eventId: number) => void;
   onUpdate?: (eventId: number, muikkuEvent: MuikkuEvent) => void;
@@ -30,17 +29,15 @@ interface AbsenceEventsProps {
  * @returns JSX.Element
  */
 const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
-  const { modifier, event, onDelete, onUpdate, isUnder18 = true } = props;
+  const { modifier, event, onDelete, onUpdate } = props;
   const { t } = useTranslation("tasks");
   const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
   const absenceState =
     absenceEventProperty && absenceEventProperty.value !== ""
-      ? "REVIEWED"
-      : isUnder18
-        ? "REVIEW-PENDING"
-        : "REVIEWED";
+      ? "REVIEW-PENDING"
+      : "REVIEWED";
 
   /**
    * Returns the absent from label
@@ -77,14 +74,16 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
     }
   };
 
-  const actions =
-    onUpdate && onDelete ? (
-      <div className="muikku-absence-event__footer">
+  const actions = (
+    <div className="muikku-absence-event__footer">
+      {onUpdate && (
         <EditAbsenceDialog absenceEvent={event}>
           <Button buttonModifiers={["info"]}>
             {t("actions.edit", { ns: "common" })}
           </Button>
         </EditAbsenceDialog>
+      )}
+      {onDelete && (
         <PromptDialog
           title="Poista poissaolo"
           content={t("content.removing", {
@@ -99,8 +98,9 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
             {t("actions.remove", { ns: "common" })}
           </Button>
         </PromptDialog>
-      </div>
-    ) : null;
+      )}
+    </div>
+  );
 
   return (
     <BaseEvent

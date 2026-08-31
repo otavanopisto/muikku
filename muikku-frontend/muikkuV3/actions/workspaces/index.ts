@@ -1254,15 +1254,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
 export interface LoadAbsenceEventsOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceDataType;
-    /*     payload?: {
-      q: string;
-      active?: boolean;
-      firstResult?: number;
-      maxResults?: number;
-    }; */
-    success?: (
-      users: WorkspaceStudentSearchResult | UserStaffSearchResult
-    ) => void;
+    success?: (absenceEvents: MuikkuEvent[]) => void;
     fail?: () => void;
   }): AnyActionType;
 }
@@ -1784,12 +1776,12 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
   };
 
 /**
- * loadStudentAbsenceEventsOfWorkspace
+ * loadAbsenceEventsOfWorkspace
  * @param data data
  * @returns thunk
  */
-const loadStudentAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
-  function loadStudentAbsenceEventsOfWorkspace(data) {
+const loadAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
+  function loadAbsenceEventsOfWorkspace(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
@@ -1816,6 +1808,7 @@ const loadStudentAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerTy
             update,
           },
         });
+        data.success && data.success(events);
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -1830,6 +1823,7 @@ const loadStudentAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerTy
             "error"
           )
         );
+        data.fail && data.fail();
       }
     };
   };
@@ -2766,7 +2760,7 @@ export {
   updateAssignmentState,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
-  loadStudentAbsenceEventsOfWorkspace,
+  loadAbsenceEventsOfWorkspace,
   createWorkspaceAbsenceEvent,
   deleteWorkspaceAbsenceEvent,
   updateWorkspaceAbsenceEvent,

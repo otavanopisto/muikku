@@ -10,6 +10,12 @@ import { CreateAbsenceDialog } from "../dialogs/create-absence";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
 
+// TODO: the mobile view is not tested with this component, this pull request should be merged
+
+/**
+ * WorkspaceUsersApplication
+ * @returns JSX.Element
+ */
 const WorkspaceUsersApplication = () => {
   const [navigationActive, setNavigationActive] = React.useState<
     "users" | "absences"
@@ -29,6 +35,11 @@ const WorkspaceUsersApplication = () => {
     setNavigationActive(id);
   };
 
+  /**
+   * Returns the content of the workspace users application
+   * @returns JSX.Element
+   */
+
   const content = () => {
     switch (navigationActive) {
       case "users":
@@ -36,7 +47,7 @@ const WorkspaceUsersApplication = () => {
       case "absences":
         return <AbsenceEvents />;
       default:
-        return [Users, AbsenceEvents];
+        return [<Users key="users" />, <AbsenceEvents key="absences" />];
     }
   };
 
