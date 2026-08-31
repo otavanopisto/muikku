@@ -31,7 +31,7 @@ import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialCompositeReply } from "~/generated/client";
 import {
   CommonFieldProps,
-  FieldSnapshotCapabilities,
+  FieldFeaturesCapabilities,
   FieldsSyncStatus,
   FieldSyncStatePatch,
   IframeDataset,
@@ -120,8 +120,8 @@ interface BaseProps extends WithTranslation {
   invisible: boolean;
   answerRegistry?: { [name: string]: any };
 
-  // Field snapshot capabilities
-  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  // Field features capabilities
+  fieldFeaturesCapabilities?: FieldFeaturesCapabilities;
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
   onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
@@ -1053,8 +1053,8 @@ export function extractCommonFieldProps(
     userId: props.status.userId,
     workspaceMaterialId: props.compositeReplies?.workspaceMaterialId,
 
-    // Field snapshot capabilities
-    fieldSnapshotCapabilities: props.fieldSnapshotCapabilities,
+    // Field features capabilities
+    fieldFeaturesCapabilities: props.fieldFeaturesCapabilities,
     onTakeFieldSnapshot: props.onTakeFieldSnapshot,
     onDeleteFieldSnapshot: props.onDeleteFieldSnapshot,
 

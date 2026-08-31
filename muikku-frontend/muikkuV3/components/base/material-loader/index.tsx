@@ -22,10 +22,11 @@ import {
 import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
-import { DEFAULT_FIELD_SNAPSHOT_CAPABILITIES, STATES } from "./helpers";
+import { DISABLED_FIELD_FEATURES_CAPABILITIES, STATES } from "./helpers";
 import {
-  FieldSnapshotCapabilities,
-  FieldSnapshotPolicy,
+  FieldActionCapabilities,
+  FieldFeaturesCapabilities,
+  FieldFeaturesPolicy,
   FieldsSyncStatus,
   StateConfig,
 } from "./types";
@@ -101,7 +102,7 @@ export interface MaterialLoaderRenderProps
     MaterialLoaderProps,
     | "onTakeFieldSnapshot"
     | "onDeleteFieldSnapshot"
-    | "fieldSnapshotPolicy"
+    | "fieldFeaturesPolicy"
     | "onUpdateFieldWithComments"
     | "children"
   > {
@@ -113,7 +114,7 @@ export interface MaterialLoaderRenderProps
   ) => void;
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
-  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  fieldSnapshotCapabilities?: FieldFeaturesCapabilities;
 }
 
 /**
@@ -197,16 +198,16 @@ export interface MaterialLoaderProps {
   readspeakerComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
-  fieldSnapshotPolicy?: FieldSnapshotPolicy;
-  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  fieldFeaturesPolicy?: FieldFeaturesPolicy;
+  fieldFeaturesCapabilities?: FieldFeaturesCapabilities;
   onTakeFieldSnapshot?: (
     fieldName: string,
-    cap: FieldSnapshotCapabilities
+    cap: FieldActionCapabilities
   ) => any;
   onDeleteFieldSnapshot?: (
     fieldName: string,
     snapshotId: number,
-    cap: FieldSnapshotCapabilities
+    cap: FieldActionCapabilities
   ) => any;
   onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
 
@@ -319,8 +320,7 @@ class MaterialLoader extends React.Component<
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
     this.onTakeFieldSnapshot = this.onTakeFieldSnapshot.bind(this);
     this.onDeleteFieldSnapshot = this.onDeleteFieldSnapshot.bind(this);
-    this.resolveFieldSnapshotCapabilities =
-      this.resolveFieldSnapshotCapabilities.bind(this);
+    this.resolveFieldFeatures = this.resolveFieldFeatures.bind(this);
     this.onFieldsSyncStatusChange = this.onFieldsSyncStatusChange.bind(this);
     this.onUpdateFieldWithComments = this.onUpdateFieldWithComments.bind(this);
 
@@ -525,22 +525,22 @@ class MaterialLoader extends React.Component<
   }
 
   /**
-   * Resolves field snapshot capabilities from props, policy prop or default if not provided
-   * @returns FieldSnapshotCapabilities
+   * Resolves field features from static props, a policy function, or disabled defaults
+   * @returns FieldFeaturesCapabilities
    */
-  resolveFieldSnapshotCapabilities(): FieldSnapshotCapabilities {
+  resolveFieldFeatures(): FieldFeaturesCapabilities {
     const compositeReplies =
       this.props.compositeReplies || this.state.compositeRepliesInState;
     return (
-      this.props.fieldSnapshotCapabilities ??
-      (typeof this.props.fieldSnapshotPolicy === "function"
-        ? this.props.fieldSnapshotPolicy({
+      this.props.fieldFeaturesCapabilities ??
+      (typeof this.props.fieldFeaturesPolicy === "function"
+        ? this.props.fieldFeaturesPolicy({
             compositeReply: compositeReplies,
             usedAs: this.props.usedAs ?? "default",
             lock: compositeReplies?.lock,
           })
-        : this.props.fieldSnapshotPolicy) ??
-      DEFAULT_FIELD_SNAPSHOT_CAPABILITIES
+        : this.props.fieldFeaturesPolicy) ??
+      DISABLED_FIELD_FEATURES_CAPABILITIES
     );
   }
 
@@ -649,8 +649,8 @@ class MaterialLoader extends React.Component<
    * @param fieldName fieldName
    */
   onTakeFieldSnapshot(fieldName: string) {
-    const cap = this.resolveFieldSnapshotCapabilities();
-    if (!cap.snapshotCanTake) {
+    const cap = this.resolveFieldFeatures().snapshot;
+    if (!cap.canCreate) {
       return;
     }
 
@@ -686,8 +686,8 @@ class MaterialLoader extends React.Component<
    * @param snapshotId snapshotId
    */
   onDeleteFieldSnapshot(fieldName: string, snapshotId: number) {
-    const cap = this.resolveFieldSnapshotCapabilities();
-    if (!cap.snapshotCanDelete) {
+    const cap = this.resolveFieldFeatures().snapshot;
+    if (!cap.canDelete) {
       return;
     }
 
@@ -819,7 +819,7 @@ class MaterialLoader extends React.Component<
       className += " state-" + compositeReplies.state;
     }
 
-    const fieldSnapshotCapabilities = this.resolveFieldSnapshotCapabilities();
+    const fieldFeaturesCapabilities = this.resolveFieldFeatures();
 
     let content = null;
     if (
@@ -839,7 +839,7 @@ class MaterialLoader extends React.Component<
           onToggleAnswersVisible: this.toggleAnswersVisible,
           onTakeFieldSnapshot: this.onTakeFieldSnapshot,
           onDeleteFieldSnapshot: this.onDeleteFieldSnapshot,
-          fieldSnapshotCapabilities,
+          fieldFeaturesCapabilities,
           onFieldsSyncStatusChange: this.onFieldsSyncStatusChange,
           onUpdateFieldWithComments: this.onUpdateFieldWithComments,
         },

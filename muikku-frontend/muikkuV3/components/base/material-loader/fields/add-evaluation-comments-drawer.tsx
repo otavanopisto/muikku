@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
+import SlideDrawer from "~/components/general/slide-drawer";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import { displayNotification } from "~/actions/base/notifications";
 
@@ -25,15 +25,15 @@ const ckEditorCommentConfig = {
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
-  extraPlugins: "divarea,widget,lineutils,autogrow,muikku-comment,muikku-comment-remove",
+  extraPlugins:
+    "divarea,widget,lineutils,autogrow,muikku-comment,muikku-comment-remove",
   resize_enabled: true,
 };
-/* eslint-enable camelcase */
 
 /**
- * Make comments dialog props
+ * Add evaluation comments drawer props
  */
-interface MakeCommentsDialogProps {
+interface AddEvaluationCommentsDrawerProps {
   html: string;
   fieldName: string;
 
@@ -48,10 +48,12 @@ interface MakeCommentsDialogProps {
 }
 
 /**
- * Dialog for adding evaluation comments to memo rich content
+ * Drawer for adding evaluation comments to a field
  * @param props props
  */
-export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
+export const AddEvaluationCommentsDrawer = (
+  props: AddEvaluationCommentsDrawerProps
+) => {
   const { html, onUpdateFieldWithComments, fieldName, children } = props;
   const { t } = useTranslation(["evaluation", "common"]);
   const dispatch = useDispatch();
@@ -59,7 +61,7 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
   const [saving, setSaving] = React.useState(false);
 
   /**
-   * Reset editor content from the latest memo value when the dialog opens
+   * Reset editor content from the latest memo value when the drawer opens
    */
   const handleOpen = () => {
     setCommentedHtml(html);
@@ -75,44 +77,43 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
 
   /**
    * Save commented HTML via evaluation endpoint
-   * @param closeDialog closeDialog
+   * @param closeDrawer closeDrawer
    */
-  const handleSave = (closeDialog: () => void) => () => {
-    if (saving) {
+  const handleSave = (closeDrawer: () => void) => () => {
+    if (saving || !onUpdateFieldWithComments) {
       return;
     }
 
     setSaving(true);
 
-    if (onUpdateFieldWithComments) {
-      onUpdateFieldWithComments(
-        fieldName,
-        commentedHtml,
-        () => {
-          setSaving(false);
-          closeDialog();
-        },
-        (error) => {
-          setSaving(false);
-          dispatch(
-            displayNotification(
-              t("notifications.saveError", {
-                ns: "evaluation",
-                defaultValue: "Saving comments failed",
-              }),
-              "error"
-            )
-          );
-        }
-      );
-    }
+    onUpdateFieldWithComments(
+      fieldName,
+      commentedHtml,
+      () => {
+        setSaving(false);
+        closeDrawer();
+      },
+      () => {
+        setSaving(false);
+        dispatch(
+          displayNotification(
+            t("notifications.saveError", {
+              ns: "evaluation",
+              defaultValue: "Saving comments failed",
+            }),
+            "error"
+          )
+        );
+      }
+    );
   };
 
   /**
    * Content
+   * @param closeDrawer closeDrawer
    * @returns JSX.Element
    */
-  const content = () => (
+  const content = (closeDrawer: () => void) => (
     <div className="form">
       <div className="form__row">
         <div className="form-element">
@@ -125,48 +126,41 @@ export const MakeCommentsDialog = (props: MakeCommentsDialogProps) => {
           </CKEditor>
         </div>
       </div>
-    </div>
-  );
 
-  /**
-   * Footer
-   * @param closeDialog closeDialog
-   * @returns JSX.Element
-   */
-  const footer = (closeDialog: () => void) => (
-    <div className="dialog__button-set">
-      <Button
-        buttonModifiers={["standard-ok", "execute"]}
-        onClick={handleSave(closeDialog)}
-        disabled={saving}
-      >
-        {t("actions.save", { ns: "common" })}
-      </Button>
-      <Button
-        buttonModifiers={["cancel", "standard-cancel"]}
-        onClick={closeDialog}
-        disabled={saving}
-      >
-        {t("actions.cancel", { ns: "common" })}
-      </Button>
+      <div className="form__buttons form__buttons--evaluation">
+        <Button
+          buttonModifiers="dialog-execute"
+          onClick={handleSave(closeDrawer)}
+          disabled={saving}
+        >
+          {t("actions.save")}
+        </Button>
+        <Button
+          onClick={closeDrawer}
+          disabled={saving}
+          buttonModifiers="dialog-cancel"
+        >
+          {t("actions.cancel")}
+        </Button>
+      </div>
     </div>
   );
 
   return (
-    <Dialog
-      modifier="make-comments"
+    <SlideDrawer
       title={t("labels.addComments", {
         ns: "evaluation",
         defaultValue: "Add comments",
       })}
-      content={content}
-      footer={footer}
+      closeIconModifiers={["evaluation"]}
+      modifiers={["make-comments"]}
+      disableClose={saving}
       onOpen={handleOpen}
-      executing={saving}
+      content={content}
     >
       {children}
-    </Dialog>
+    </SlideDrawer>
   );
 };
 
-export default MakeCommentsDialog;
+export default AddEvaluationCommentsDrawer;

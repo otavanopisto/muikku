@@ -25,14 +25,22 @@ import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
-import CkeditorLoaderContent from "../../ckeditor-loader/content";
-import MakeCommentsDialog from "./make-comments-dialog";
+import AddEvaluationCommentsDrawer from "./add-evaluation-comments-drawer";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
 import {
   getMemoFieldContentFormat,
   getMemoFieldContentFormatSync,
 } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
+import $ from "~/lib/jquery";
+
+/**
+ * MemoComment
+ */
+interface MemoComment {
+  text: string;
+  id: string;
+}
 
 /**
  * Collect evaluation comments from richedit memo HTML.
@@ -40,18 +48,19 @@ import { MATHJAXSRC } from "~/lib/mathjax";
  * @param html html
  * @returns comment texts in document order
  */
-function getMemoComments(html: string): string[] {
+function getMemoComments(html: string): MemoComment[] {
   if (!html) {
     return [];
   }
-  const comments: string[] = [];
+  const comments: MemoComment[] = [];
   $("<div/>")
     .html(html)
     .find('mark[data-type="comment"]')
     .each(function () {
       const text = $(this).attr("data-text");
+      const id = $(this).attr("data-id");
       if (text) {
-        comments.push(text);
+        comments.push({ text, id });
       }
     });
   return comments;
@@ -152,7 +161,8 @@ const MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG = {
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins:
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
   resize_enabled: true,
 };
 
@@ -330,8 +340,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       nextProps.invisible !== this.props.invisible ||
       !equals(nextProps.snapshots, this.props.snapshots) ||
       !equals(
-        nextProps.fieldSnapshotCapabilities,
-        this.props.fieldSnapshotCapabilities
+        nextProps.fieldFeaturesCapabilities,
+        this.props.fieldFeaturesCapabilities
       )
     );
   }
@@ -549,6 +559,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   render() {
     const { t } = this.props;
 
+    const comments = getMemoComments(this.state.value);
+
     // we have a right answer example for when
     // we are asked for displaying right answer
     // so we need to set it up
@@ -624,19 +636,18 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
-          {/* {this.props.usedAs === "default" && comments.length > 0 && (
-            <ul className="memofield__comment-list">
-              {comments.map((comment, index) => (
-                <li
-                  key={`${comment}-${index}`}
-                  className="memofield__comment-list-item"
-                >
-                  {comment}
-                </li>
-              ))}
-            </ul>
-          )} */}
-          {/* {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
+          {this.props.fieldFeaturesCapabilities?.comments.canView &&
+            comments.length > 0 && (
+              <ul className="memofield__comment-list">
+                {comments.map((comment) => (
+                  <li key={comment.id} className="memofield__comment-list-item">
+                    {comment.text}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+          {this.props.fieldFeaturesCapabilities?.snapshot.canCreate &&
             this.props.onTakeFieldSnapshot && (
               <Dropdown
                 content={t("labels.takeSnapshot", { ns: "materials" })}
@@ -651,29 +662,31 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                   }
                 />
               </Dropdown>
-            )} */}
-
-          {this.props.usedAs === "evaluationTool" &&
-            this.props.content.richedit && (
-              <MakeCommentsDialog
-                html={this.state.value}
-                fieldName={this.props.content.name}
-                onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
-              >
-                <IconButton
-                  buttonModifiers="snapshot"
-                  icon="bubbles"
-                  disabled={!this.state.value}
-                />
-              </MakeCommentsDialog>
             )}
 
-          {this.props.fieldSnapshotCapabilities?.snapshotCanView && (
+          {this.props.fieldFeaturesCapabilities?.comments.enabled && (
+            <AddEvaluationCommentsDrawer
+              html={this.state.value}
+              fieldName={this.props.content.name}
+              onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
+            >
+              <IconButton
+                buttonModifiers="snapshot"
+                icon="bubbles"
+                disabled={
+                  !this.state.value ||
+                  !this.props.fieldFeaturesCapabilities?.comments.canCreate
+                }
+              />
+            </AddEvaluationCommentsDrawer>
+          )}
+
+          {this.props.fieldFeaturesCapabilities?.snapshot.canView && (
             <FieldSnapshotList
               snapshots={this.props.snapshots}
               fieldName={this.props.content.name}
               onDeleteFieldSnapshot={
-                this.props.fieldSnapshotCapabilities?.snapshotCanDelete
+                this.props.fieldFeaturesCapabilities?.snapshot.canDelete
                   ? this.props.onDeleteFieldSnapshot
                   : undefined
               }

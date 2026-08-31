@@ -58,40 +58,48 @@ export interface CommonFieldProps {
   ) => void;
 
   // Field snapshot capabilities
-  fieldSnapshotCapabilities?: FieldSnapshotCapabilities;
+  fieldFeaturesCapabilities?: FieldFeaturesCapabilities;
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
 }
 
 /**
- * Field snapshot capabilities
+ * Field action capabilities
  */
-export interface FieldSnapshotCapabilities {
-  /** Master switch: no snapshot UI at all */
-  snapshotEnabled: boolean;
-  /** Show list / accordions (read-only history) */
-  snapshotCanView: boolean;
-  /** Show “take snapshot” control */
-  snapshotCanTake: boolean;
-  /** Show delete on each snapshot */
-  snapshotCanDelete: boolean;
+export interface FieldActionCapabilities {
+  /** Master switch: no UI for this feature */
+  enabled: boolean;
+  /** Show existing data */
+  canView: boolean;
+  /** Create / add (take snapshot, add comments) */
+  canCreate: boolean;
+  /** Remove */
+  canDelete: boolean;
 }
 
 /**
- * Field snapshot policy context
+ * All field features resolved for the current material page
  */
-export interface FieldSnapshotPolicyContext {
+export interface FieldFeaturesCapabilities {
+  snapshot: FieldActionCapabilities;
+  comments: FieldActionCapabilities;
+}
+
+/**
+ * Context passed to a field features policy
+ */
+export interface FieldActionPolicyContext {
   compositeReply?: MaterialCompositeReply;
   usedAs: UsedAs;
   lock?: MaterialCompositeReply["lock"];
 }
 
 /**
- * Field snapshot policy
+ * Static capabilities or a function of assignment context
  */
-export type FieldSnapshotPolicy =
-  | FieldSnapshotCapabilities
-  | ((ctx: FieldSnapshotPolicyContext) => FieldSnapshotCapabilities);
+export type FieldFeaturesPolicy =
+  | FieldFeaturesCapabilities
+  | ((ctx: FieldActionPolicyContext) => FieldFeaturesCapabilities);
 
 // DATASETS
 /**

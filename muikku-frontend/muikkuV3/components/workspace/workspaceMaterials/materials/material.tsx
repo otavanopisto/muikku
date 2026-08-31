@@ -49,6 +49,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import { DISABLED_FIELD_FEATURES_CAPABILITIES } from "~/components/base/material-loader/helpers";
 
 /**
  * WorkspaceMaterialProps
@@ -193,6 +194,13 @@ class WorkspaceMaterial extends React.Component<
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
             anchorElement={this.props.anchorItem}
+            fieldFeaturesCapabilities={{
+              ...DISABLED_FIELD_FEATURES_CAPABILITIES,
+              comments: {
+                ...DISABLED_FIELD_FEATURES_CAPABILITIES.comments,
+                canDelete: true,
+              },
+            }}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             onDisplayNotification={this.props.displayNotification}
             onUpdateWorkspaceMaterialContentNode={
