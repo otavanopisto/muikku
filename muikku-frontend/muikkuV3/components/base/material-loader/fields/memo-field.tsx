@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable camelcase */
 import * as React from "react";
-import CKEditor from "~/components/general/ckeditor";
-import { MATHJAXSRC } from "~/lib/mathjax";
-import $ from "~/lib/jquery";
+import CKEditor, {
+  CKEditorKeyEventInfo,
+  CKEditorPasteEventInfo,
+} from "~/components/general/ckeditor";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import TextareaAutosize from "react-textarea-autosize";
 import { connect } from "react-redux";
 import { StrMathJAX } from "../static/strmathjax";
 import { FieldStateStatus } from "~/@types/shared";
@@ -18,7 +20,6 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import "~/sass/elements/memofield.scss";
-import { isValidHTML } from "~/util/html";
 import { CommonFieldProps } from "../types";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
@@ -26,6 +27,12 @@ import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
 import CkeditorLoaderContent from "../../ckeditor-loader/content";
 import MakeCommentsDialog from "./make-comments-dialog";
+import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
+import {
+  getMemoFieldContentFormat,
+  getMemoFieldContentFormatSync,
+} from "~/util/memo-content-format";
+import { MATHJAXSRC } from "~/lib/mathjax";
 
 /**
  * Collect evaluation comments from richedit memo HTML.
@@ -51,85 +58,22 @@ function getMemoComments(html: string): string[] {
 }
 
 /**
- * MemoFieldProps
+ * parseLimit - Parses the limit
+ * @param value value
  */
-interface MemoFieldProps extends CommonFieldProps, WithTranslation {
-  content: {
-    example: string;
-    columns: string;
-    rows: string;
-    name: string;
-    richedit: boolean;
-    maxChars: string;
-    maxWords: string;
-  };
-  displayNotification: DisplayNotificationTriggerType;
+function parseLimit(value?: string): number | undefined {
+  const n = parseInt(value, 10);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
 }
 
 /**
- * MemoFieldState
+ * normalizedKeyCode - Normalizes the key code
+ * @param keyCode key code
+ * @param CKEDITOR CKEDITOR
  */
-interface MemoFieldState {
-  value: string;
-  words: number;
-  characters: number;
-
-  // This state comes from the context handler in the base
-  // We can use it but it's the parent managing function that modifies them
-  // We only set them up in the initial state
-  modified: boolean;
-  isPasting: boolean;
-  synced: boolean;
-  syncError: string;
-
-  fieldSavedState: FieldStateStatus;
+function normalizedKeyCode(keyCode: number, CKEDITOR: any): number {
+  return keyCode & ~(CKEDITOR.SHIFT | CKEDITOR.CTRL | CKEDITOR.ALT);
 }
-
-/* eslint-disable camelcase */
-const ckEditorConfig = {
-  autoGrow_onStartup: true,
-  mathJaxLib: MATHJAXSRC,
-  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
-  toolbar: [
-    {
-      name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
-    },
-    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
-    { name: "links", items: ["Link"] },
-    {
-      name: "insert",
-      items: [
-        "Image",
-        "Table",
-        "Muikku-mathjax",
-        "Smiley",
-        "SpecialChar",
-        "Muikku-comment",
-      ],
-    },
-    { name: "colors", items: ["TextColor", "BGColor"] },
-    { name: "styles", items: ["Format"] },
-    {
-      name: "paragraph",
-      items: [
-        "NumberedList",
-        "BulletedList",
-        "Outdent",
-        "Indent",
-        "Blockquote",
-        "JustifyLeft",
-        "JustifyCenter",
-        "JustifyRight",
-      ],
-    },
-    { name: "tools", items: ["Maximize"] },
-  ],
-  removePlugins: "image,exportpdf",
-  extraPlugins:
-    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment",
-  resize_enabled: true,
-};
 
 /**
  * characterCount - Counts the amount of characters
@@ -166,11 +110,129 @@ function getWords(rawText: string) {
 }
 
 /**
+ * replaceNewlinesWithBreaks
+ * @param str str
+ * @returns string with newlines replaced with <br />
+ */
+function replaceNewlinesWithBreaks(str: string): string {
+  return str.replace(/\n/g, "<br />");
+}
+
+// Rich edit CKEditor config
+const MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG = {
+  autoGrow_onStartup: true,
+  mathJaxLib: MATHJAXSRC,
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [
+    {
+      name: "basicstyles",
+      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
+    },
+    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
+    { name: "links", items: ["Link"] },
+    {
+      name: "insert",
+      items: ["Image", "Table", "Muikku-mathjax", "Smiley", "SpecialChar"],
+    },
+    { name: "colors", items: ["TextColor", "BGColor"] },
+    { name: "styles", items: ["Format"] },
+    {
+      name: "paragraph",
+      items: [
+        "NumberedList",
+        "BulletedList",
+        "Outdent",
+        "Indent",
+        "Blockquote",
+        "JustifyLeft",
+        "JustifyCenter",
+        "JustifyRight",
+      ],
+    },
+    { name: "tools", items: ["Maximize"] },
+  ],
+  removePlugins: "image,exportpdf",
+  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  resize_enabled: true,
+};
+
+// Plain text CKEditor config
+const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
+  autoGrow_onStartup: true,
+  mathJaxLib: MATHJAXSRC,
+  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+  toolbar: [{}, {}, { name: "tools", items: ["Maximize"] }],
+  removePlugins: "image,exportpdf",
+  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  resize_enabled: true,
+};
+
+/**
+ * Get the CKEditor config for the memo field based on the richedit flag
+ * @param richedit - Whether the memo field is rich edit
+ * @param rows - The number of rows to use for the memo field
+ * @returns The CKEditor config
+ */
+function memofieldCkeditorConfig(richedit: boolean, rows?: number) {
+  const base = richedit
+    ? MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG
+    : MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG;
+  if (typeof rows === "number" && rows > 0) {
+    return {
+      ...base,
+      // height comes from CSS --cke-rows on .cke_contents
+      autoGrow_onStartup: false,
+      extraPlugins: base.extraPlugins
+        .split(",")
+        .filter((p) => p !== "autogrow")
+        .join(","),
+      removePlugins: `${base.removePlugins},autogrow`,
+    };
+  }
+  return base;
+}
+
+/**
+ * MemoFieldProps
+ */
+interface MemoFieldProps extends CommonFieldProps, WithTranslation {
+  content: {
+    example: string;
+    columns: string;
+    rows: string;
+    name: string;
+    richedit: boolean;
+    maxChars: string;
+    maxWords: string;
+  };
+  displayNotification: DisplayNotificationTriggerType;
+}
+
+/**
+ * MemoFieldState
+ */
+interface MemoFieldState {
+  value: string;
+  words: number;
+  characters: number;
+  // This state comes from the context handler in the base
+  // We can use it but it's the parent managing function that modifies them
+  // We only set them up in the initial state
+  modified: boolean;
+  synced: boolean;
+  syncError: string;
+  fieldSavedState: FieldStateStatus;
+  /** False until stored value has been classified and converted for CKEditor. */
+  editorReady: boolean;
+}
+
+/**
  * MemoField
  */
 class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   // Add ref declaration
-  private baseRef: React.RefObject<HTMLDivElement>;
+  private baseRef: React.RefObject<HTMLSpanElement>;
+  private lastLimitNoticeAt = 0;
 
   /**
    * constructor
@@ -180,46 +242,65 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     super(props);
 
     // Initialize ref
-    this.baseRef = React.createRef<HTMLDivElement>();
+    this.baseRef = React.createRef<HTMLSpanElement>();
 
-    //get the initial value
-    const value = props.initialValue || "";
-    // and get the raw text if it's richedit
+    const storedValue = props.initialValue || "";
+    const syncFormat = getMemoFieldContentFormatSync(storedValue);
+    const editorReady = true; // always sync now — no componentDidMount async needed
+    const value = toMemoDisplayHtml(
+      storedValue,
+      syncFormat,
+      replaceNewlinesWithBreaks
+    );
+    const rawText = editorReady ? htmlToPlainText(value) : storedValue;
 
-    const isRichEditHtml =
-      this.props.content && this.props.content.richedit && isValidHTML(value);
-
-    const rawText = isRichEditHtml ? $(value).text() : value;
+    //console.log("rawText constructor", rawText);
 
     // set the state with the counts
     this.state = {
       value,
       words: getWords(rawText).length,
       characters: getCharacters(rawText).length,
-      isPasting: false,
-      // modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
       fieldSavedState: null,
+      editorReady,
     };
 
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onInputPaste = this.onInputPaste.bind(this);
-    this.isInsideLastWord = this.isInsideLastWord.bind(this);
-    this.trimPastedContent = this.trimPastedContent.bind(this);
-    this.onCkeditorPaste = this.onCkeditorPaste.bind(this);
+    this.onCKEditorKey = this.onCKEditorKey.bind(this);
+    this.onCKEditorPaste = this.onCKEditorPaste.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+    this.notifyLimit = this.notifyLimit.bind(this);
+    this.renderField = this.renderField.bind(this);
+    this.renderAnswerExample = this.renderAnswerExample.bind(this);
   }
 
   /**
-   * replaceNewlinesWithBreaks
-   * @param str str
-   * @returns string with \ replaced with <br />
+   * componentDidMount
    */
-  replaceNewlinesWithBreaks = (str: string): string =>
-    str.replace(/\n/g, "<br />");
+  componentDidMount() {
+    if (this.state.editorReady) {
+      return;
+    }
+    // console.log("componentDidMount");
+    const storedValue = this.props.initialValue || "";
+    getMemoFieldContentFormat(storedValue).then((format) => {
+      const html = toMemoDisplayHtml(
+        storedValue,
+        format,
+        replaceNewlinesWithBreaks
+      );
+      const rawText = htmlToPlainText(html);
+      this.setState({
+        value: html,
+        words: getWords(rawText).length,
+        characters: getCharacters(rawText).length,
+        editorReady: true,
+      });
+    });
+  }
 
   /**
    * onFieldSavedStateChange
@@ -256,257 +337,191 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   }
 
   /**
-   * trimPastedContent - Trims the pasted content if it exceeds the character or word limit
-   * @param content content
-   * @returns trimmed content
+   * notifyLimit - Notifies the user that the limit has been reached
+   * @param context context
    */
-  trimPastedContent(content: string): string {
-    // This will only work on plain text content
-
-    const characters = getCharacters(content);
-    let words = getWords(content);
-    const maxCharacterLimit = parseInt(this.props.content.maxChars);
-    const maxWordLimit = parseInt(this.props.content.maxWords);
-    let localeContext = "";
-
-    // If the pasted data exceeds the limit, trim it
-    if (characters.length > maxCharacterLimit) {
-      let count = 0;
-      let newData = "";
-      for (const char of content) {
-        if (count < maxCharacterLimit) {
-          newData += char;
-          // we count only non-space characters
-          if (/\S/.test(char)) {
-            count++;
-          }
-        } else {
-          break;
-        }
-      }
-      // reset content
-      content = newData;
-      // reset words so that we can check if the word limit
-      // is exceeded even after this trim
-      words = getWords(newData);
-      localeContext = "characters";
+  notifyLimit(context: "words" | "characters") {
+    const now = Date.now();
+    if (now - this.lastLimitNoticeAt < 1500) {
+      return;
     }
-
-    // If the number of words exceeds the limit, trim it
-    if (words.length > maxWordLimit) {
-      content = words.slice(0, maxWordLimit).join(" ");
-      localeContext = "words";
-    }
+    this.lastLimitNoticeAt = now;
     this.props.displayNotification(
       this.props.t("notifications.contentLimitReached", {
         ns: "materials",
-        context: localeContext,
+        context,
       }),
       "info"
     );
-    return content;
   }
 
   /**
-   * A function tha checks if it is the last word we are writing
-   * @param value value
-   * @returns boolean
+   * Block keys that would exceed limits. Content is not in the editor yet.
+   * @param evt evt
    */
-  isInsideLastWord = (value: string) => {
-    const words = getWords(value);
-    const maxWords = parseInt(this.props.content.maxWords);
-
-    const atCharacterLimit =
-      getCharacters(value).length > parseInt(this.props.content.maxChars);
-
-    return (
-      // If the character limit is reached, then just stop this madness
-      !atCharacterLimit &&
-      // If the last word is not empty, then we are inside the last word
-      words.length === maxWords &&
-      words[words.length - 1].length >= 1
-    );
-  };
-
-  /**
-   * onInputPaste - paste handling for memofield   *
-   */
-  onInputPaste() {
-    this.setState({ isPasting: true });
-  }
-
-  /**
-   * onInputChange - very simple this one is for only when raw input from the textarea changes
-   * @param e e
-   */
-  onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    let newValue = e.target.value;
-    const maxCharacters = parseInt(this.props.content.maxChars);
-    const maxWords = parseInt(this.props.content.maxWords);
-
-    const exceedsCharacterLimit =
-      getCharacters(e.target.value).length > maxCharacters;
-
-    const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
-
-    if (exceedsCharacterLimit || exceedsWordLimit) {
-      if (this.state.isPasting) {
-        e.preventDefault(); // Prevent the default action
-        newValue = this.trimPastedContent(newValue);
-      } else {
-        const isBeingDeleted =
-          getCharacters(e.target.value).length <
-          getCharacters(this.state.value).length;
-        // If the content is not being deleted or we are not inside the last word
-        // we reset the value to the state value
-        if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
-          // Limit is exceeded, we set the locale context for notification
-          const localeContext = exceedsCharacterLimit ? "characters" : "words";
-
-          this.props.displayNotification(
-            this.props.t("notifications.contentLimitReached", {
-              ns: "materials",
-              context: localeContext,
-            }),
-            "info"
-          );
-          newValue = this.state.value;
-        }
-      }
-    }
-
-    this.setState({
-      value: newValue,
-      words: getWords(newValue).length,
-      characters: getCharacters(newValue).length,
-    });
-
-    this.props.onChange &&
-      this.props.onChange(this, this.props.content.name, newValue);
-  }
-
-  /**
-   * onCkeditorPaste
-   */
-  onCkeditorPaste() {
-    this.setState({
-      isPasting: true,
-    });
-  }
-  /**
-   * onCKEditorChange - this one is for a ckeditor change
-   * @param value value
-   * @param instance editor instance
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onCKEditorChange(value: string, instance: any) {
-    // we need the raw text and raw existing value
-    const rawText = $(value).text();
-    const rawValue = $(this.state.value).text();
-
-    const maxCharacters = parseInt(this.props.content.maxChars);
-    const maxWords = parseInt(this.props.content.maxWords);
-
-    const exceedsCharacterLimit = getCharacters(rawText).length > maxCharacters;
-    const exceedsWordLimit = getWords(rawText).length > maxWords;
-
-    // If there's a restriction to the amount of characters or words,
-    // we need to check if the user has exceeded the limit
-
-    if (exceedsCharacterLimit || exceedsWordLimit) {
-      const localeContext = exceedsWordLimit ? "words" : "characters";
-      // If the user is pasting content, we need to check if the content
-      //exceeds the character or word limit
-
-      if (this.state.isPasting) {
-        value = this.state.value;
-        instance.setData(value, {
-          /**
-           * callback function
-           */
-          callback: () => {
-            // Move the cursor to the end of the content
-            const range = instance.createRange();
-            range.moveToElementEditEnd(range.root);
-            instance.getSelection().selectRanges([range]);
-          },
-        });
-        this.props.displayNotification(
-          this.props.t("notifications.pastedContentLimitReached", {
-            ns: "materials",
-            context: localeContext,
-          }),
-          "info"
-        );
-      } else {
-        // If the user has exceeded the limit and is not pasting, we need to revert the changes
-
-        const isBeingDeleted =
-          getCharacters(rawText).length < getCharacters(rawValue).length;
-
-        // if the content is not being deleted, or we are not inside the last word
-        // we reset the value to the state value
-        if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
-          // over the limit, not being deleted and outside the last word, reset to state value
-          value = this.state.value;
-
-          // no point in setting state or saving anything, we return the original value
-          instance.setData(value, {
-            /**
-             * callback function
-             */
-            callback: () => {
-              // Move the cursor to the end of the content
-              const range = instance.createRange();
-              range.moveToElementEditEnd(range.root);
-              instance.getSelection().selectRanges([range]);
-            },
-          });
-          this.props.displayNotification(
-            this.props.t("notifications.contentLimitReached", {
-              ns: "materials",
-              context: localeContext,
-            }),
-            "info"
-          );
-        }
-      }
+  onCKEditorKey(evt: CKEditorKeyEventInfo) {
+    const CKEDITOR = (window as any).CKEDITOR;
+    const maxChars = parseLimit(this.props.content.maxChars);
+    const maxWords = parseLimit(this.props.content.maxWords);
+    if (!maxChars && !maxWords) {
       return;
     }
+    const keyCode = normalizedKeyCode(evt.data.keyCode, CKEDITOR);
+    const isDelete = keyCode === 8 || keyCode === 46;
+    const isSpace = keyCode === 32;
+    const isEnter = keyCode === 13;
+    const isNavigation =
+      keyCode === 9 || keyCode === 27 || (keyCode >= 33 && keyCode <= 40);
+    if (
+      isDelete ||
+      isNavigation ||
+      evt.data.keyCode & CKEDITOR.CTRL ||
+      evt.data.keyCode & CKEDITOR.ALT
+    ) {
+      return;
+    }
+    const rawText = evt.editor.editable().getText();
+    const selectedText = evt.editor.getSelection()?.getSelectedText() || "";
+    const characters = getCharacters(rawText).length;
+    const selectedChars = getCharacters(selectedText).length;
+    const words = getWords(rawText).length;
+    const insertedChars = isSpace || isEnter ? 0 : 1;
+    const nextChars = characters - selectedChars + insertedChars;
+    if (maxChars && nextChars > maxChars) {
+      evt.cancel();
+      this.notifyLimit("characters");
+      return;
+    }
+    // At cap with no counted characters selected (collapsed caret, or only spaces):
+    // do not insert more spaces / letters.
+    if (maxChars && characters >= maxChars && selectedChars === 0) {
+      evt.cancel();
+      this.notifyLimit("characters");
+      return;
+    }
+    // Space/Enter at word cap: allow when replacing a selection (Ctrl+A then space).
+    if (
+      maxWords &&
+      words >= maxWords &&
+      (isSpace || isEnter) &&
+      selectedText.length === 0
+    ) {
+      evt.cancel();
+      this.notifyLimit("words");
+    }
+  }
+
+  /**
+   * Block paste that would exceed limits. Content is not in the editor yet.
+   * @param evt evt
+   */
+  onCKEditorPaste(evt: CKEditorPasteEventInfo) {
+    const maxChars = parseLimit(this.props.content.maxChars);
+    const maxWords = parseLimit(this.props.content.maxWords);
+    if (!maxChars && !maxWords) {
+      return;
+    }
+    const currentText = evt.editor.editable().getText();
+    const selectedText = evt.editor.getSelection()?.getSelectedText() || "";
+    const pastedText = htmlToPlainText(evt.data.dataValue || "");
+    const nextText = currentText.replace(selectedText, pastedText);
+    const nextChars = getCharacters(nextText).length;
+    const nextWords = getWords(nextText).length;
+    if (maxChars && nextChars >= maxChars) {
+      evt.cancel();
+      this.notifyLimit("characters");
+      return;
+    }
+    if (maxWords && nextWords >= maxWords) {
+      evt.cancel();
+      this.notifyLimit("words");
+    }
+  }
+
+  /**
+   * onCKEditorChange - Handles the change event from the CKEditor
+   * @param value value
+   */
+  onCKEditorChange(value: string) {
+    const rawText = htmlToPlainText(value);
     this.setState({
       value,
       words: getWords(rawText).length,
       characters: getCharacters(rawText).length,
-      isPasting: false,
     });
+
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
   }
 
   /**
-   * render
+   * Renders the field
    * @returns JSX.Element
    */
-  render() {
+  renderField(): JSX.Element {
+    if (!this.state.editorReady) {
+      return (
+        <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly" />
+      );
+    } else if (this.props.usedAs === "default") {
+      if (this.props.readOnly) {
+        return (
+          <span
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
+            dangerouslySetInnerHTML={{ __html: this.state.value }}
+          />
+        );
+      } else {
+        return (
+          <>
+            <span className="memofield-header" aria-hidden="true" />
+            <CKEditor
+              configuration={memofieldCkeditorConfig(
+                this.props.content.richedit,
+                this.props.content.rows !== "" &&
+                  !isNaN(Number(this.props.content.rows))
+                  ? Number(this.props.content.rows)
+                  : 3
+              )}
+              onChange={this.onCKEditorChange}
+              onKey={this.onCKEditorKey}
+              onPaste={this.onCKEditorPaste}
+              rows={
+                this.props.content.rows &&
+                this.props.content.rows !== "" &&
+                !isNaN(Number(this.props.content.rows))
+                  ? Number(this.props.content.rows)
+                  : 3
+              }
+              ancestorHeight={200}
+            >
+              {this.state.value}
+            </CKEditor>
+          </>
+        );
+      }
+    } else if (this.props.usedAs === "evaluationTool") {
+      if (this.props.readOnly) {
+        return (
+          <div
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
+            dangerouslySetInnerHTML={{ __html: this.state.value }}
+          />
+        );
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Renders the answer example
+   * @returns JSX.Element
+   */
+  renderAnswerExample() {
     const { t } = this.props;
-    // This is for if someone changes the memofield to ckeditor when it's answered
-    // It turns text to html for the ckeditor
-    const ckeditorValue = isValidHTML(this.state.value)
-      ? this.state.value
-      : "<p>" + this.replaceNewlinesWithBreaks(this.state.value) + "</p>";
-
-    const comments =
-      this.props.usedAs === "default" && this.props.content.richedit
-        ? getMemoComments(ckeditorValue)
-        : [];
-
-    // we have a right answer example for when
-    // we are asked for displaying right answer
-    // so we need to set it up
-    let answerExampleComponent = null;
-    // it's simply set when we get it
     if (this.props.displayCorrectAnswers && this.props.content.example) {
-      answerExampleComponent = (
+      return (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
           <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
             {t("labels.answer", {
@@ -524,127 +539,29 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       );
     }
 
-    if (
-      this.props.invisible &&
-      !(!this.props.readOnly && this.props.content.richedit)
-    ) {
-      let unloadedField;
-      if (this.props.readOnly) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const value = (unloadedField = !this.props.content.richedit ? (
-          <textarea
-            readOnly
-            maxLength={
-              this.props.content.maxChars &&
-              parseInt(this.props.content.maxChars)
-            }
-            className="memofield"
-            rows={parseInt(this.props.content.rows)}
-          />
-        ) : (
-          <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly">
-            <CkeditorLoaderContent html={ckeditorValue} />
-          </span>
-        ));
-      } else {
-        unloadedField = (
-          <textarea
-            maxLength={
-              this.props.content.maxChars &&
-              parseInt(this.props.content.maxChars)
-            }
-            className="memofield"
-            rows={parseInt(this.props.content.rows)}
-          />
-        );
-      }
+    return null;
+  }
 
+  /**
+   * render
+   * @returns JSX.Element
+   */
+  render() {
+    const { t } = this.props;
+
+    // we have a right answer example for when
+    // we are asked for displaying right answer
+    // so we need to set it up
+    const answerExampleComponent = this.renderAnswerExample();
+
+    if (this.props.invisible && this.props.readOnly) {
       return (
         <span ref={this.baseRef} className="memofield-wrapper">
-          {unloadedField}
+          <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly" />
           <span className="memofield__counter-wrapper" />
           {answerExampleComponent}
         </span>
       );
-    }
-
-    // now we need the field
-    let field;
-    const minRows =
-      this.props.content.rows &&
-      this.props.content.rows !== "" &&
-      !isNaN(Number(this.props.content.rows))
-        ? Number(this.props.content.rows)
-        : 3;
-
-    if (this.props.usedAs === "default") {
-      // if readonly
-      if (this.props.readOnly) {
-        // depending to whether rich edit or not we make it be with the value as inner html or just raw text
-        field = !this.props.content.richedit ? (
-          <TextareaAutosize
-            readOnly
-            className="memofield"
-            cols={parseInt(this.props.content.columns)}
-            minRows={minRows}
-            value={this.state.value}
-            onChange={this.onInputChange}
-            onPaste={this.onInputPaste}
-          />
-        ) : (
-          <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation">
-            <CkeditorLoaderContent html={ckeditorValue} />
-          </div>
-        );
-      } else {
-        // here we make it be a simple textarea or a rich text editor
-        // note how somehow numbers come as string...
-        field = !this.props.content.richedit ? (
-          <TextareaAutosize
-            className="memofield"
-            cols={parseInt(this.props.content.columns)}
-            minRows={minRows}
-            value={this.state.value}
-            onChange={this.onInputChange}
-            onPaste={this.onInputPaste}
-          />
-        ) : (
-          <CKEditor
-            configuration={ckEditorConfig}
-            onChange={this.onCKEditorChange}
-            onPaste={this.onCkeditorPaste}
-            maxChars={
-              this.props.content.maxChars &&
-              parseInt(this.props.content.maxChars)
-            }
-            maxWords={
-              this.props.content.maxWords &&
-              parseInt(this.props.content.maxWords)
-            }
-          >
-            {ckeditorValue}
-          </CKEditor>
-        );
-      }
-    } else if (this.props.usedAs === "evaluationTool") {
-      // if readonly.
-      if (this.props.readOnly) {
-        // here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
-        field = !this.props.content.richedit ? (
-          <TextareaAutosize
-            readOnly
-            className="memofield memofield--evaluation"
-            value={this.state.value}
-            onChange={this.onInputChange}
-            onPaste={this.onInputPaste}
-          />
-        ) : (
-          <div
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
-          />
-        );
-      }
     }
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -668,8 +585,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+            alwaysPresent
           />
-          {field}
+          {this.renderField()}
           <span className="memofield__counter-wrapper">
             <span
               className={`memofield__word-count-container ${
@@ -706,7 +624,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
-          {this.props.usedAs === "default" && comments.length > 0 && (
+          {/* {this.props.usedAs === "default" && comments.length > 0 && (
             <ul className="memofield__comment-list">
               {comments.map((comment, index) => (
                 <li
@@ -717,7 +635,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 </li>
               ))}
             </ul>
-          )}
+          )} */}
           {/* {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
             this.props.onTakeFieldSnapshot && (
               <Dropdown
@@ -738,7 +656,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           {this.props.usedAs === "evaluationTool" &&
             this.props.content.richedit && (
               <MakeCommentsDialog
-                html={ckeditorValue}
+                html={this.state.value}
                 fieldName={this.props.content.name}
                 onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
               >
@@ -764,7 +682,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                   value={snapshot.value}
                   maxWords={this.props.content.maxWords}
                   maxChars={this.props.content.maxChars}
-                  replaceNewlinesWithBreaks={this.replaceNewlinesWithBreaks}
+                  replaceNewlinesWithBreaks={replaceNewlinesWithBreaks}
                   getWords={getWords}
                   getCharacters={getCharacters}
                   wordCountLabel={t("labels.wordCount", { ns: "materials" })}

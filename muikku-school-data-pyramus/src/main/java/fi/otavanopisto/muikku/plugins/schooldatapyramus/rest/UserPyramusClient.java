@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -25,6 +27,9 @@ class UserPyramusClient implements PyramusClient, Serializable {
 
   private static final int EXPIRE_SLACK = 60; // refresh one minute before token would expire
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private ClientPool clientPool;
 
@@ -170,13 +175,22 @@ class UserPyramusClient implements PyramusClient, Serializable {
         }
         expires = accessToken.getExpires();
         if (expires.before(new Date())) {
-          AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
-          Calendar calendar = new GregorianCalendar();
-          calendar.setTime(new Date());
-          calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
-          sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(),
-              refreshedAccessToken.getRefreshToken());
-          return refreshedAccessToken.getAccessToken();
+          logger.log(Level.FINE, String.format("Refreshing token %s... with refresh token %s...", accessToken.getToken().substring(0, 4), accessToken.getRefreshToken().substring(0, 4)));
+          
+          try {
+            AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
+            sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(),
+                refreshedAccessToken.getRefreshToken());
+            return refreshedAccessToken.getAccessToken();
+          }
+          catch (Exception e) {
+            logger.log(Level.FINE, String.format("Failed to refresh access token %s... with refresh token %s...", 
+                accessToken.getToken().substring(0, 4), accessToken.getRefreshToken().substring(0, 4)));
+            return null;
+          }
         }
         else {
           return accessToken.getToken();

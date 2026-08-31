@@ -29,7 +29,8 @@ export const htmlToPlainText = (html: string): string => {
 };
 
 /**
- * Converts an HTML string to a memo display HTML string.
+ * Converts stored memo content to HTML the editor / readonly view can use.
+ * Plain text is escaped so characters like <, > and & stay visible as text.
  * @param value value
  * @param format format
  * @param replaceNewlinesWithBreaks replace newlines with breaks
@@ -43,5 +44,9 @@ export const toMemoDisplayHtml = (
   if (format === "html") {
     return value;
   }
-  return "<p>" + replaceNewlinesWithBreaks(escapeHtml(value)) + "</p>";
+  if (!value) {
+    return "";
+  }
+  const normalized = value.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  return "<p>" + replaceNewlinesWithBreaks(escapeHtml(normalized)) + "</p>";
 };

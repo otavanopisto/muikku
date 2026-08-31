@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-string-refs */
 
 /**
@@ -53,22 +54,49 @@ const PLUGINS = {
 const pluginsLoaded: any = {};
 
 /**
- * CKEditorEventInfo class definition
+ * CKEditorKeyEventInfo interface definition
  */
-export interface CKEditorEventInfo {
+export interface CKEditorKeyEventInfo {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  editor: any;
+  data: {
+    keyCode: number;
+  };
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  cancel(): void;
+}
+
+/**
+ * CKEditorPasteEventInfo interface definition
+ */
+export interface CKEditorPasteEventInfo {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editor: any;
   data: {
     dataValue: string;
   };
-  /**
-   * cancel method
-   */
+  // eslint-disable-next-line jsdoc/require-jsdoc
   cancel(): void;
-  /**
-   * stop method
-   */
-  stop(): void;
 }
+
+/**
+ * CKEditorEventInfo class definition
+ */
+// export interface CKEditorEventInfo {
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   editor: any;
+//   data: {
+//     dataValue: string;
+//   };
+//   /**
+//    * cancel method
+//    */
+//   cancel(): void;
+//   /**
+//    * stop method
+//    */
+//   stop(): void;
+// }
 
 /**
  * CKEditorProps
@@ -76,14 +104,14 @@ export interface CKEditorEventInfo {
 interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
-  onChange: (arg: string, instance: any) => any;
-  onPaste?: () => void;
+  onChange: (arg: string) => any;
+  onKey?: (event: CKEditorKeyEventInfo) => void;
+  onPaste?: (event: CKEditorPasteEventInfo) => void;
   onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
-  maxChars?: number;
-  maxWords?: number;
   editorTitle?: string;
+  rows?: number;
 }
 
 /**
@@ -107,7 +135,7 @@ const extraConfig = (props: CKEditorProps) => ({
    * We allow style attribute for every element that can be pasted/added to the CKEditor.
    * There is no need to use allowContent: true setting as it will disable ACF alltogether.
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
-   * */
+   */
   extraAllowedContent:
     "*{*}; *[data*]; audio source[*](*){*}; mark; details(*); summary(*);",
 
@@ -235,6 +263,7 @@ export default class CKEditor extends React.Component<
    * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: CKEditorProps) {
     if (this.timeoutProps) {
       this.timeoutProps = nextProps;
@@ -245,13 +274,22 @@ export default class CKEditor extends React.Component<
       ...(nextProps.configuration || {}),
     };
 
+    const instance = getCKEDITOR().instances[this.name];
+
     if (!equals(configObj, this.previouslyAppliedConfig)) {
-      getCKEDITOR().instances[this.name].destroy();
+      instance.destroy();
       this.setupCKEditor(nextProps);
     } else if ((nextProps.children || "") !== this.currentData) {
       this.currentData = nextProps.children || "";
       this.enableCancelChangeTrigger();
-      getCKEDITOR().instances[this.name].setData(nextProps.children || "");
+
+      // Reset undo history to prevent undo history from being corrupted when setting data
+      instance.setData(nextProps.children || "", {
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        callback: function () {
+          instance.resetUndo();
+        },
+      });
     }
   }
 
@@ -280,7 +318,7 @@ export default class CKEditor extends React.Component<
     const data = instance.getData();
     if (data !== this.currentData) {
       this.currentData = data;
-      props.onChange(data, instance);
+      props.onChange(data);
     }
   }
 
@@ -325,32 +363,38 @@ export default class CKEditor extends React.Component<
     }
 
     getCKEDITOR().replace(this.name, configObj);
+
+    // On change, we need to check if the user has exceeded the limit of characters or words
     getCKEDITOR().instances[this.name].on("change", () => {
       this.onDataChange();
     });
-    getCKEDITOR().instances[this.name].on("key", () => {
-      this.cancelChangeTrigger = false;
-    });
+
+    // On key, we need to check if the user has exceeded the limit of characters or words
+    getCKEDITOR().instances[this.name].on(
+      "key",
+      (evt: CKEditorKeyEventInfo) => {
+        this.cancelChangeTrigger = false;
+        this.props.onKey && this.props.onKey(evt);
+      }
+    );
+
+    // On paste, we need to check if the user has exceeded the limit of characters or words
+    getCKEDITOR().instances[this.name].on(
+      "paste",
+      (evt: CKEditorPasteEventInfo) => {
+        this.props.onPaste && this.props.onPaste(evt);
+      }
+    );
 
     getCKEDITOR().instances[this.name].on("instanceReady", (ev: any) => {
       ev.editor.document.on("drop", () => {
         this.props.onDrop && this.props.onDrop();
-
-        // CKEditor bug, the event of dropping doesn't generate any change
-        // to the get data, so I need to wait, I can't tell
-        // how much time so, 1, 2, 3 seconds are a guess
-        // it might misbehave
         setTimeout(this.onDataChange, 1000);
         setTimeout(this.onDataChange, 2000);
         setTimeout(this.onDataChange, 3000);
       });
-
-      ev.editor.document.on("paste", (event: CKEditorEventInfo) => {
-        if (this.props.onPaste && (props.maxChars || props.maxWords)) {
-          props.onPaste();
-        }
-        // Same as above. When pasting an image, onDataChange doesn't fire at all because text hasn't changed.
-        // Also, the image has to be uploaded to the server first, hence these timeout shenanigans
+      ev.editor.document.on("paste", () => {
+        // Image paste still needs delayed getData; limit policy lives on editor "paste" above
         setTimeout(this.onDataChange, 1000);
         setTimeout(this.onDataChange, 2000);
         setTimeout(this.onDataChange, 3000);
@@ -359,50 +403,57 @@ export default class CKEditor extends React.Component<
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 
-      // Height can be given from the ancestor or from instance container.
-      // Instance container is "unstable" and changes according to the content it seems, so for example
-      // material editor is given the ancestorHeight - the dialog height, which is stable.
+      let contentHeight: number;
 
-      // We need to get .cke_top and .cke_bottom elements height, which are the editor's toolbar and footer, so we can retract those from overall height
-      // Under div.cke_inner childNodes[0] is span.cke_top and childNodes[2] is span.cke_bottom
-      // This should be fairly stable way to get the height of these element as the DOM seems to be steady already
-      // We rely on this when we use editor parent container's height as a starting point for cke height calculations
-      const ckeTopHeight =
-        instance.container.$.querySelector(
-          ".cke_inner"
-        ).childNodes[0].getBoundingClientRect().height;
-      const ckeBottomHeight =
-        instance.container.$.querySelector(
-          ".cke_inner"
-        ).childNodes[2].getBoundingClientRect().height;
+      // Height calculation order if rows are used:
+      if (typeof this.props.rows === "number" && this.props.rows > 0) {
+        // Match memofield.scss line-heights: 1.25rem default, 1.75rem from $breakpoint-pad (48em)
+        const rootFontSize =
+          parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        const isPadUp = window.matchMedia("(min-width: 48em)").matches;
+        const lineHeightPx = (isPadUp ? 1.75 : 1.25) * rootFontSize;
+        // Approximate vertical padding of .cke_editable / memofield content area
+        const verticalPaddingPx = 16;
+        contentHeight = Math.round(
+          this.props.rows * lineHeightPx + verticalPaddingPx
+        );
+      } else {
+        // Height calculation order if rows are not used:
+        const ckeTopHeight =
+          instance.container.$.querySelector(
+            ".cke_inner"
+          ).childNodes[0].getBoundingClientRect().height;
 
-      // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also
-      const ckeBorder = 4;
+        const ckeBottomHeight =
+          instance.container.$.querySelector(
+            ".cke_inner"
+          ).childNodes[2].getBoundingClientRect().height;
 
-      // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
-      // cke_contents element and it will cause the editor to overflow the screen in mobile views.
-      const height = this.props.ancestorHeight
-        ? this.props.ancestorHeight
-        : instance.container.$.getBoundingClientRect().height -
-          ckeTopHeight -
-          ckeBottomHeight -
-          ckeBorder;
+        // Generic 2px border on all sides; (2 * 2) is retracted from container-based height calc
+        const ckeBorder = 4;
 
-      // CKE content-element id
+        // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
+        // cke_contents element and it will cause the editor to overflow the screen in mobile views.
+        const height = this.props.ancestorHeight
+          ? this.props.ancestorHeight
+          : instance.container.$.getBoundingClientRect().height -
+            ckeTopHeight -
+            ckeBottomHeight -
+            ckeBorder;
 
-      const contentElementId: string = instance.id + "_contents";
+        // CKE content-element id (needed for ancestorHeight offset)
+        const contentElementId: string = instance.id + "_contents";
 
-      // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
+        // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
 
-      const contentElementOffset: number = this.props.ancestorHeight
-        ? document.getElementById(contentElementId).offsetTop
-        : 0;
+        const contentElementOffset: number = this.props.ancestorHeight
+          ? document.getElementById(contentElementId).offsetTop
+          : 0;
 
-      // Calculate the height
+        contentHeight = height - contentElementOffset;
+      }
 
-      const contentHeight: number = height - contentElementOffset;
-
-      // Resize
+      // Resize editable contents area (isContentHeight = true)
       instance.resize("100%", contentHeight, true);
 
       // This prevents empty children from overriding current data.
@@ -411,8 +462,14 @@ export default class CKEditor extends React.Component<
       // current data gets overridden by the empty children
       // I did not find any case where this would break anything
 
-      if (props.children.trim() !== "") {
-        instance.setData(props.children || "");
+      if ((props.children || "").trim() !== "") {
+        // Reset undo history to prevent undo history from being corrupted when setting data
+        instance.setData(props.children || "", {
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          callback: function () {
+            instance.resetUndo();
+          },
+        });
       }
 
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
