@@ -54,7 +54,7 @@ export interface CommonFieldProps {
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) => void;
 
   // Field snapshot capabilities

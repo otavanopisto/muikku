@@ -41,7 +41,7 @@ interface AddEvaluationCommentsDrawerProps {
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;

@@ -110,7 +110,7 @@ export interface MaterialLoaderRenderProps
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) => void;
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
@@ -215,7 +215,7 @@ export interface MaterialLoaderProps {
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) => void;
 
   children?: (
@@ -700,20 +700,20 @@ class MaterialLoader extends React.Component<
    * @param fieldName fieldName
    * @param content content
    * @param onSuccess onSuccess
-   * @param onError onError
+   * @param onFail onFail
    */
   onUpdateFieldWithComments(
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) {
     this.props.onUpdateFieldWithComments &&
       this.props.onUpdateFieldWithComments(
         fieldName,
         content,
         onSuccess,
-        onError
+        onFail
       );
   }
 

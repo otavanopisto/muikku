@@ -285,6 +285,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.notifyLimit = this.notifyLimit.bind(this);
     this.renderField = this.renderField.bind(this);
     this.renderAnswerExample = this.renderAnswerExample.bind(this);
+    this.renderFieldFeatures = this.renderFieldFeatures.bind(this);
   }
 
   /**
@@ -553,6 +554,55 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   }
 
   /**
+   * Renders the field features
+   * @returns JSX.Element
+   */
+  renderFieldFeatures() {
+    const { t, fieldFeaturesCapabilities } = this.props;
+    const { comments, snapshot } = fieldFeaturesCapabilities;
+    if (!comments.canCreate && !snapshot.canCreate) {
+      return null;
+    }
+
+    return (
+      <span className="memofield__field-features">
+        {snapshot.canCreate && this.props.onTakeFieldSnapshot && (
+          <Dropdown
+            content={t("labels.takeSnapshot", { ns: "materials" })}
+            openByHover
+          >
+            <IconButton
+              buttonModifiers="snapshot"
+              icon="plus"
+              disabled={!this.state.value}
+              onClick={() =>
+                this.props.onTakeFieldSnapshot(this.props.content.name)
+              }
+            />
+          </Dropdown>
+        )}
+
+        {comments.canCreate && this.props.onUpdateFieldWithComments && (
+          <AddEvaluationCommentsDrawer
+            html={this.state.value}
+            fieldName={this.props.content.name}
+            onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
+          >
+            <IconButton
+              buttonModifiers="snapshot"
+              icon="bubbles"
+              disabled={
+                !this.state.value ||
+                !this.props.fieldFeaturesCapabilities?.comments.canCreate
+              }
+            />
+          </AddEvaluationCommentsDrawer>
+        )}
+      </span>
+    );
+  }
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -593,6 +643,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           ref={this.baseRef}
           className={`memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
+          {this.renderFieldFeatures()}
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
@@ -646,40 +697,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 ))}
               </ul>
             )}
-
-          {this.props.fieldFeaturesCapabilities?.snapshot.canCreate &&
-            this.props.onTakeFieldSnapshot && (
-              <Dropdown
-                content={t("labels.takeSnapshot", { ns: "materials" })}
-                openByHover
-              >
-                <IconButton
-                  buttonModifiers="snapshot"
-                  icon="plus"
-                  disabled={!this.state.value}
-                  onClick={() =>
-                    this.props.onTakeFieldSnapshot(this.props.content.name)
-                  }
-                />
-              </Dropdown>
-            )}
-
-          {this.props.fieldFeaturesCapabilities?.comments.enabled && (
-            <AddEvaluationCommentsDrawer
-              html={this.state.value}
-              fieldName={this.props.content.name}
-              onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
-            >
-              <IconButton
-                buttonModifiers="snapshot"
-                icon="bubbles"
-                disabled={
-                  !this.state.value ||
-                  !this.props.fieldFeaturesCapabilities?.comments.canCreate
-                }
-              />
-            </AddEvaluationCommentsDrawer>
-          )}
 
           {this.props.fieldFeaturesCapabilities?.snapshot.canView && (
             <FieldSnapshotList

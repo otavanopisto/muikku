@@ -19,10 +19,10 @@ import {
 import {
   createFieldSnapshot,
   deleteFieldSnapshot,
+  updateAnswerWithComments,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { resolveEvaluationFieldFeatures } from "~/components/base/material-loader/helpers";
 import { FieldActionCapabilities } from "~/components/base/material-loader/types";
-import MApi from "~/api/api";
 
 /**
  * EvaluationMaterialProps
@@ -131,33 +131,28 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
   };
 
   /**
-   * handleUpdateFieldWithComments
+   * Handles updating a field with comments
    * @param fieldName fieldName
    * @param content content
    * @param onSuccess onSuccess
-   * @param onError onError
+   * @param onFail onFail
    */
-  const handleUpdateFieldWithComments = async (
+  const handleUpdateFieldWithComments = (
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) => {
-    const evaluationApi = MApi.getEvaluationApi();
-
-    try {
-      await evaluationApi.updateWorkspaceMaterialTextFieldAnswer({
+    dispatch(
+      updateAnswerWithComments({
         userEntityId: userEntityId,
         workspaceMaterialId: compositeReply.workspaceMaterialId,
         fieldName,
-        updateWorkspaceMaterialTextFieldAnswerRequest: {
-          text: content,
-        },
-      });
-      onSuccess();
-    } catch (error) {
-      onError(error as Error);
-    }
+        content,
+        onSuccess,
+        onFail,
+      })
+    );
   };
 
   return (
