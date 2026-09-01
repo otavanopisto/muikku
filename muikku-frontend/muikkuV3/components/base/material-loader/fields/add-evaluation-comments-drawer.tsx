@@ -4,31 +4,21 @@ import { useDispatch } from "react-redux";
 import Button from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
 import SlideDrawer from "~/components/general/slide-drawer";
-import { MATHJAXSRC } from "~/lib/mathjax";
 import { displayNotification } from "~/actions/base/notifications";
 
-/* eslint-disable camelcase */
-const ckEditorCommentConfig = {
+/**
+ * Add evaluation comments drawer CKEditor config
+ * @param defaultCkeditorConfig defaultCkeditorConfig
+ * @returns CKEditor config
+ */
+const addCommentsDrawerCkEditorConfig = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defaultCkeditorConfig: any
+) => ({
+  ...defaultCkeditorConfig,
   readOnly: true,
-  autoGrow_onStartup: true,
-  mathJaxLib: MATHJAXSRC,
-  mathJaxClass: "math-tex",
-  toolbar: [
-    {
-      name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "Strike", "RemoveFormat"],
-    },
-    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
-    { name: "links", items: ["Link"] },
-    { name: "colors", items: ["TextColor", "BGColor"] },
-    { name: "styles", items: ["Format"] },
-    { name: "tools", items: ["Maximize"] },
-  ],
-  removePlugins: "image,exportpdf",
-  extraPlugins:
-    "divarea,widget,lineutils,autogrow,muikku-comment,muikku-comment-remove",
-  resize_enabled: true,
-};
+  extraPlugins: `${defaultCkeditorConfig.extraPlugins},muikku-comment`,
+});
 
 /**
  * Add evaluation comments drawer props
@@ -36,7 +26,14 @@ const ckEditorCommentConfig = {
 interface AddEvaluationCommentsDrawerProps {
   html: string;
   fieldName: string;
-
+  /**
+   * Default CKEditor config. Is based on the original memo field config that
+   * is used with the data it was created with. This is used to ensure that the
+   * active content filtering is the same as the original and nothing is removed
+   * accidentally.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defaultCkeditorConfig: any;
   onUpdateFieldWithComments?: (
     fieldName: string,
     content: string,
@@ -54,7 +51,13 @@ interface AddEvaluationCommentsDrawerProps {
 export const AddEvaluationCommentsDrawer = (
   props: AddEvaluationCommentsDrawerProps
 ) => {
-  const { html, onUpdateFieldWithComments, fieldName, children } = props;
+  const {
+    html,
+    onUpdateFieldWithComments,
+    fieldName,
+    children,
+    defaultCkeditorConfig,
+  } = props;
   const { t } = useTranslation(["evaluation", "common"]);
   const dispatch = useDispatch();
   const [commentedHtml, setCommentedHtml] = React.useState(html);
@@ -118,7 +121,9 @@ export const AddEvaluationCommentsDrawer = (
       <div className="form__row">
         <div className="form-element">
           <CKEditor
-            configuration={ckEditorCommentConfig}
+            configuration={addCommentsDrawerCkEditorConfig(
+              defaultCkeditorConfig
+            )}
             onChange={handleEditorChange}
             ancestorHeight={400}
           >

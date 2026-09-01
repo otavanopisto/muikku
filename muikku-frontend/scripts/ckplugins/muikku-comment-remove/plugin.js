@@ -42,6 +42,10 @@ CKEDITOR.plugins.add('muikku-comment-remove', {
           alwaysRemoveElement: true,
           ignoreReadonly: true
         }));
+        if (editor.readOnly) {
+          editor.fire('saveSnapshot');
+          editor.fire('change');
+        }
       }
     });
     if (editor.contextMenu) {

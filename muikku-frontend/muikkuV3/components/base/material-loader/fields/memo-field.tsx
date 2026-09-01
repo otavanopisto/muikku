@@ -173,7 +173,8 @@ const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [{}, {}, { name: "tools", items: ["Maximize"] }],
   removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins:
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
   resize_enabled: true,
 };
 
@@ -314,6 +315,36 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: MemoFieldProps) {
+    if (
+      this.props.initialValue === prevProps.initialValue ||
+      this.state.modified
+    ) {
+      return;
+    }
+
+    // Only update the value if the field is read only or used as an evaluation tool
+    // In evaluation tool, the answer value is updated by the parent component
+    if (this.props.readOnly || this.props.usedAs === "evaluationTool") {
+      const storedValue = this.props.initialValue || "";
+      const html = toMemoDisplayHtml(
+        storedValue,
+        getMemoFieldContentFormatSync(storedValue),
+        replaceNewlinesWithBreaks
+      );
+      const rawText = htmlToPlainText(html);
+      this.setState({
+        value: html,
+        words: getWords(rawText).length,
+        characters: getCharacters(rawText).length,
+      });
+    }
+  }
+
+  /**
    * onFieldSavedStateChange
    * @param savedState savedState
    */
@@ -343,7 +374,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       !equals(
         nextProps.fieldFeaturesCapabilities,
         this.props.fieldFeaturesCapabilities
-      )
+      ) ||
+      nextProps.initialValue !== this.props.initialValue
     );
   }
 
@@ -587,6 +619,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             html={this.state.value}
             fieldName={this.props.content.name}
             onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
+            defaultCkeditorConfig={memofieldCkeditorConfig(
+              this.props.content.richedit,
+              this.props.content.rows !== "" &&
+                !isNaN(Number(this.props.content.rows))
+                ? Number(this.props.content.rows)
+                : 3
+            )}
           >
             <IconButton
               buttonModifiers="snapshot"
