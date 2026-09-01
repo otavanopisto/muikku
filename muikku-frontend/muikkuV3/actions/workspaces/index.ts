@@ -152,6 +152,11 @@ export type UPDATE_WORKSPACE_ABSENCE_EVENTS = SpecificActionType<
   MuikkuEvent[]
 >;
 
+/**
+ * LoadWorkspaceAbsenceEventsTriggerType
+ * @param workspaceId workspaceId
+ * @returns AnyActionType
+ */
 export interface LoadWorkspaceAbsenceEventsTriggerType {
   (workspaceId: number): AnyActionType;
 }

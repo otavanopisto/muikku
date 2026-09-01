@@ -5,13 +5,16 @@ import { StateType } from "~/reducers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import AbsenceEvent from "~/components/general/events/absence-event";
 import AbsencesSummary from "./absences/absences-summary";
-
 import {
   deleteWorkspaceAbsenceEvent,
   updateWorkspaceAbsenceEvent,
 } from "~/actions/workspaces";
 import { MuikkuEvent } from "~/generated/client";
 
+/**
+ * Absences component
+ * @returns JSX.Element
+ */
 const Absences = () => {
   const { t } = useTranslation(["events"]);
   const dispatch = useDispatch();
@@ -23,10 +26,19 @@ const Absences = () => {
     return <div className="loaded-empty">No absence events found</div>;
   }
 
+  /**
+   * Handle delete absence event
+   * @param eventId eventId
+   */
   const handleDelete = (eventId: number) => {
     dispatch(deleteWorkspaceAbsenceEvent(eventId));
   };
 
+  /**
+   * Handle update absence event
+   * @param eventId eventId
+   * @param muikkuEvent muikkuEvent
+   */
   const handleUpdate = (eventId: number, muikkuEvent: MuikkuEvent) => {
     dispatch(updateWorkspaceAbsenceEvent(eventId, muikkuEvent));
   };

@@ -39,7 +39,6 @@ const WorkspaceUsersApplication = () => {
    * Returns the content of the workspace users application
    * @returns JSX.Element
    */
-
   const content = () => {
     switch (navigationActive) {
       case "users":
