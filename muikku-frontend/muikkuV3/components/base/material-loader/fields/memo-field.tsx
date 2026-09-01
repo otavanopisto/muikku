@@ -229,8 +229,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     );
     const rawText = editorReady ? htmlToPlainText(value) : storedValue;
 
-    //console.log("rawText constructor", rawText);
-
     // set the state with the counts
     this.state = {
       value,
@@ -259,7 +257,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     if (this.state.editorReady) {
       return;
     }
-    // console.log("componentDidMount");
     const storedValue = this.props.initialValue || "";
     getMemoFieldContentFormat(storedValue).then((format) => {
       const html = toMemoDisplayHtml(
