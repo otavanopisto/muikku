@@ -1795,6 +1795,7 @@ const loadAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
         const end = new Date();
         const start = new Date(end);
         start.setMonth(start.getMonth() - 6);
+        end.setMonth(end.getMonth() + 6);
 
         const events = await eventsApi.listEvents({
           workspace: data.workspace.id,
