@@ -278,13 +278,14 @@ interface AddHereProps {
 const AddHere = (props: AddHereProps) => {
   const { isActive, onClick } = props;
 
-  const handleIconClick = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      e.stopPropagation();
-      onClick(e);
-    },
-    [onClick]
-  );
+  /**
+   * Handle icon click
+   * @param e e
+   */
+  const handleIconClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    onClick(e);
+  };
 
   return (
     <div

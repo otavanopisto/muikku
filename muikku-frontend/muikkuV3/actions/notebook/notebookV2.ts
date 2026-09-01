@@ -1,5 +1,4 @@
-import { Action, Dispatch } from "redux";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AnyActionType, AppDispatch, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
 import { ReducerStatusType } from "~/reducers/types";
@@ -366,10 +365,6 @@ export interface CancelNotebookV2NoteEdit {
 
 // SMALL Helper functions
 
-type NotebookV2Dispatch = (
-  arg: AnyActionType
-) => Dispatch<Action<AnyActionType>>;
-
 /**
  * Shows a notebook V2 error notification and sets reducer state to ERROR.
  * @param dispatch dispatch
@@ -377,7 +372,7 @@ type NotebookV2Dispatch = (
  * @param context context
  */
 function notifyNotebookV2Error(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   messageKey:
     | "notifications.loadError"
     | "notifications.saveError"
@@ -399,10 +394,7 @@ function notifyNotebookV2Error(
  * @param dispatch dispatch
  * @param notes notes
  */
-function setNotebookV2Notes(
-  dispatch: NotebookV2Dispatch,
-  notes: NotebookNote[]
-) {
+function setNotebookV2Notes(dispatch: AppDispatch, notes: NotebookNote[]) {
   dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: notes });
 }
 
@@ -413,7 +405,7 @@ function setNotebookV2Notes(
  * @param note note
  */
 function appendNotebookV2Note(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   note: NotebookNote
 ) {
@@ -428,7 +420,7 @@ function appendNotebookV2Note(
  * @param note note
  */
 function replaceNotebookV2Note(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   note: NotebookNote
 ) {
@@ -453,7 +445,7 @@ function replaceNotebookV2Note(
  * @param noteId noteId
  */
 function removeNotebookV2Note(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   noteId: number
 ) {
@@ -470,7 +462,7 @@ function removeNotebookV2Note(
  * @param orderIds orderIds
  */
 function setNotebookV2WorkspaceNotesOrder(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   orderIds: number[]
 ) {
   dispatch({
@@ -501,7 +493,7 @@ async function persistWorkspaceNotesOrder(
  * @param noteId noteId
  */
 async function removeWorkspaceNoteOrderAndPersist(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   noteId: number
 ) {
@@ -527,7 +519,7 @@ async function removeWorkspaceNoteOrderAndPersist(
  * @param getState getState
  */
 async function reloadNotebookV2EntriesForCurrentWorkspace(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType
 ) {
   const state = getState();
