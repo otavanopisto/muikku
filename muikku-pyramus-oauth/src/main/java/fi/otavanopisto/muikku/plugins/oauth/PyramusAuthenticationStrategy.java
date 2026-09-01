@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.oauth;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -12,17 +11,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.scribe.builder.api.Api;
-import org.scribe.model.OAuthRequest;
-import org.scribe.model.Response;
-import org.scribe.model.Token;
-import org.scribe.model.Verb;
-import org.scribe.model.Verifier;
-import org.scribe.oauth.OAuthService;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.github.scribejava.core.model.OAuthRequest;
+import com.github.scribejava.core.model.Response;
+import com.github.scribejava.core.model.Verb;
+import com.github.scribejava.core.oauth.OAuth20Service;
 
 import fi.otavanopisto.muikku.auth.AuthenticationProvider;
 import fi.otavanopisto.muikku.auth.AuthenticationResult;
@@ -88,45 +84,41 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   }
   
   @Override
-  protected Api getApi() {
+  protected DefaultApi20 getApi() {
     return new PyramusApi20(getPyramusHost());
   }
 
   @Override
-  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
+  protected AuthenticationResult processResponse(HttpServletRequest servletRequest, AuthSource authSource, Map<String, String[]> requestParameters, OAuth20Service service, String[] requestedScopes) {
     ObjectMapper objectMapper = new ObjectMapper();
 
-    String verifier = getFirstRequestParameter(requestParameters, "code");
-
-    Verifier v = new Verifier(verifier);
-    Token accessToken = service.getAccessToken(null, v);
+    String authorizationCode = getFirstRequestParameter(requestParameters, "code");
+    if (StringUtils.isBlank(authorizationCode)) {
+      logger.log(Level.FINE, "Logging in failed because authorization code was blank.");
+      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
+    }
     
-    PyramusAccessToken pyramusAccessToken;
     try {
-      pyramusAccessToken = objectMapper.readValue(accessToken.getRawResponse(), PyramusAccessToken.class);
+      OAuth2AccessToken accessToken = service.getAccessToken(authorizationCode);
+      
+      int expiresIn = accessToken.getExpiresIn() != null ? accessToken.getExpiresIn() : 3600;
       Calendar calendar = new GregorianCalendar();
       calendar.setTime(new Date());
-      calendar.add(Calendar.SECOND, pyramusAccessToken.getExpiresIn());
+      calendar.add(Calendar.SECOND, expiresIn);
       Date expires = calendar.getTime();
-      sessionController.addOAuthAccessToken("pyramus", expires, accessToken.getToken(), pyramusAccessToken.getRefreshToken());
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
-      return new AuthenticationResult(AuthenticationResult.Status.ERROR);
-    }
+      sessionController.addOAuthAccessToken("pyramus", expires, accessToken.getAccessToken(), accessToken.getRefreshToken());
     
-    WhoAmI whoAmI = null;
-
-    OAuthRequest request = new OAuthRequest(Verb.GET, getWhoAmIUrl());
-    service.signRequest(accessToken, request);
-    Response response = request.send();
-    try {
+      WhoAmI whoAmI = null;
+  
+      OAuthRequest request = new OAuthRequest(Verb.GET, getWhoAmIUrl());
+      service.signRequest(accessToken, request);
+      Response response = service.execute(request);
       whoAmI = objectMapper.readValue(response.getBody(), WhoAmI.class);
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
+      return processLogin(servletRequest, authSource, requestParameters, whoAmI.getId().toString(), whoAmI.getEmails(), whoAmI.getFirstName(), whoAmI.getLastName());
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Logging in failed because fetching token or whoami failed.", e);
       return new AuthenticationResult(AuthenticationResult.Status.ERROR);
     }
-    
-    return processLogin(servletRequest, authSource, requestParameters, whoAmI.getId().toString(), whoAmI.getEmails(), whoAmI.getFirstName(), whoAmI.getLastName());
   }
 
   @Override
@@ -140,31 +132,4 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     }
   }
   
-  @SuppressWarnings("unused")
-  @JsonIgnoreProperties(ignoreUnknown = true)
-  private static class PyramusAccessToken {
-
-    public Integer getExpiresIn() {
-      return expiresIn;
-    }
-
-    public void setExpiresIn(Integer expiresIn) {
-      this.expiresIn = expiresIn;
-    }
-
-    public String getRefreshToken() {
-      return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-      this.refreshToken = refreshToken;
-    }
-
-    @JsonProperty("expires_in")
-    private Integer expiresIn;
-    
-    @JsonProperty("refresh_token")
-    private String refreshToken;
-  }
-
 }

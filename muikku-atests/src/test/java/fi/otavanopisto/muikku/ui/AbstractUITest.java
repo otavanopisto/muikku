@@ -75,6 +75,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
@@ -110,7 +112,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected static final String aXeScript = AbstractWCAGTest.class.getResource("/axe.min.js").getFile();
   
   @ClassRule
-  public static WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
+  public static WireMockRule wireMockRule = new WireMockRule(
+      WireMockConfiguration.wireMockConfig()
+        .port(Integer.parseInt(System.getProperty("it.wiremock.port")))
+        .extensions(new ResponseTemplateTransformer(true))
+      );
     
   @Rule
   public TestWatcher testWatcher = new TestWatcher() {
@@ -749,6 +755,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitAndClickXPath(String xpath) {
     waitForClickableXPath(xpath);
     clickXPath(xpath);
+  }
+  
+  protected void assertPresentXPath(String xpath) {
+    waitForPresentXPath(xpath);
+    assertTrue(String.format("Could not find element %s", xpath), getWebDriver().findElements(By.xpath(xpath)).size() > 0);
   }
   
   /** 
