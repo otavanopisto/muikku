@@ -325,7 +325,7 @@ export interface WorkspacesState {
   hasMore: boolean;
   toolbarLock: boolean;
   settings: WorkspaceSettings;
-
+  absenceEvents: MuikkuEvent[];
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
   // Whether workspace materials are disabled (e.g. being evaluated or all modules are in pass state)
