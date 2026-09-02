@@ -1943,8 +1943,8 @@ const deleteWorkspaceAbsenceEvent: DeleteWorkspaceAbsenceEventTriggerType =
 
         dispatch(
           displayNotification(
-            i18n.t("notifications.deleteError", {
-              ns: "workspace",
+            i18n.t("notifications.removeError", {
+              ns: "events",
               context: "absence",
             }),
             "error"
