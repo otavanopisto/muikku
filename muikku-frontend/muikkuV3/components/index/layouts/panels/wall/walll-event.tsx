@@ -66,6 +66,18 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
         return t("types.SKILLS_DEMONSTRATION_MEETING", {
           ns: "events",
         });
+      case AbsenceEventEnum.GroupMeeting:
+        return t("types.GROUP_MEETING", {
+          ns: "events",
+        });
+      case AbsenceEventEnum.GroupMeetingPreArranged:
+        return t("types.GROUP_MEETING_PRE_ARRANGED", {
+          ns: "events",
+        });
+      case AbsenceEventEnum.AssignmentsUndone:
+        return t("types.ASSIGNMENTS_UNDONE", {
+          ns: "events",
+        });
       case AbsenceEventEnum.GuidanceOrSupportSession:
         return t("types.GUIDANCE_OR_SUPPORT_SESSION", {
           ns: "events",
