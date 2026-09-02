@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.event;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -245,11 +246,11 @@ public class MuikkuEventController {
     }
   }
 
-  public List<MuikkuEvent> listByUserAndWorkspaceAndTimeframeAndType(Long userEntityId, Long workspaceEntityId,
+  public List<MuikkuEvent> listEvents(Long userEntityId, Long workspaceEntityId,
       OffsetDateTime start, OffsetDateTime end, EventType type) {
     Date startDate = new Date(start.toInstant().toEpochMilli());
     Date endDate = new Date(end.toInstant().toEpochMilli());
-    return eventDAO.listByUserAndWorkspaceAndTimeframeAndType(userEntityId, workspaceEntityId, startDate, endDate,
+    return eventDAO.listEvents(userEntityId, workspaceEntityId, startDate, endDate,
         type);
   }
 
@@ -663,5 +664,12 @@ public class MuikkuEventController {
         .stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
 
     return !Collections.disjoint(loggedUserWorkspaceIds, studentWorkspaceIds);
+  }
+  
+  public List<MuikkuEvent> listDeprecatedAbsences(){
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.MONTH, -12);
+    Date twelveMonthsAgo = calendar.getTime();
+    return eventDAO.listByTypeAndEnd(EventType.ABSENCE, twelveMonthsAgo);
   }
 }
