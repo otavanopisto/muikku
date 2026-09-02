@@ -133,23 +133,21 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    * @param closeDialog Dialog close handler
    */
   const handleConfirm = (closeDialog: () => void) => {
-    const { id } = absenceEvent;
+    const { id, start, end, eventContainerId } = absenceEvent;
 
-    if (!workspaceEventContainerId || !id) {
-      if (!workspaceEventContainerId) {
+    if (!start || !end) {
+      if (!start) {
         dispatch(
           displayNotification(
-            t("notifications.noWorkspaceEventContainerIdError", {
-              ns: "events",
-            }),
+            t("notifications.startDateRequired", { ns: "events" }),
             "error"
           )
         );
       }
-      if (!id) {
+      if (!end) {
         dispatch(
           displayNotification(
-            t("notifications.absenceEventIdRequiredError", { ns: "events" }),
+            t("notifications.endDateRequired", { ns: "events" }),
             "error"
           )
         );
@@ -165,7 +163,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         description: formState.description,
         start: formState.startDate?.toISOString() ?? "",
         end: formState.endDate?.toISOString() ?? "",
-        eventContainerId: workspaceEventContainerId,
+        eventContainerId,
       })
     );
     onConfirm?.(formState);
