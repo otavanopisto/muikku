@@ -1882,6 +1882,7 @@ const createWorkspaceAbsenceEvent: CreateWorkspaceAbsenceEventTriggerType =
             i18n.t("notifications.createError", {
               ns: "events",
               context: "absence",
+              error: err.message || "Unknown error",
             }),
             "error"
           )
@@ -1890,9 +1891,7 @@ const createWorkspaceAbsenceEvent: CreateWorkspaceAbsenceEventTriggerType =
     };
   };
 
-/**
- * DeleteWorkspaceAbsenceEventTriggerType
- */
+/** DeleteWorkspaceAbsenceEventTriggerType */
 export interface DeleteWorkspaceAbsenceEventTriggerType {
   (eventId: number): AnyActionType;
 }
