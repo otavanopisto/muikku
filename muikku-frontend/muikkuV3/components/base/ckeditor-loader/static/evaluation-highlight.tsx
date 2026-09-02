@@ -35,7 +35,7 @@ export default function EvaluationHighlight(props: EvaluationHighlightProps) {
 
   return (
     <Dropdown
-      openByHover
+      // openByHover
       openByHoverIsClickToo
       modifier="evaluation-highlight"
       content={note}

@@ -103,13 +103,12 @@
 .dropdown--evaluation-highlight {
   .dropdown__container {
     background: $color-material-evaluation-comment-color;
-    border: 1px solid
-      darken($color-material-evaluation-comment-background-color, 20%);
+    border: 1px solid darken($color-material-evaluation-comment-color, 20%);
     white-space: pre-line;
   }
 
   .dropdown__arrow {
-    border-bottom-color: $color-material-word-definition-color;
+    border-bottom-color: darken($color-material-evaluation-comment-color, 20%);
   }
 }
 
