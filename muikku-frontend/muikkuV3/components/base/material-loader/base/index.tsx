@@ -131,7 +131,7 @@ interface BaseProps extends WithTranslation {
     fieldName: string,
     content: string,
     onSuccess: () => void,
-    onError: (error: Error) => void
+    onFail: () => void
   ) => void;
 }
 
