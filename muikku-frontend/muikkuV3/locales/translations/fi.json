@@ -2676,13 +2676,15 @@
       "removing": "Oletko varma, että haluat poistaa tapahtuman?"
     },
     "types": {
+      "ASSIGNMENTS_UNDONE": "Tehtävät tekemättä",
+      "EXAM": "Koe",
+      "GROUP_MEETING": "Ryhmätapaaminen",
+      "GROUP_MEETING_PRE_ARRANGED": "Ryhmätapaaminen (etukäteen sovittu)",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen",
       "LESSON": "Oppitunti",
       "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
-      "EXAM": "Koe",
-      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
+      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen"
     },
-
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
       "OTHER_AUTHORIZED_REASON": "Muu luvallinen syy",

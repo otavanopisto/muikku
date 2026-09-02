@@ -2676,11 +2676,14 @@
       "removing": "Are you sure you want to remove the event?"
     },
     "types": {
+      "ASSIGNMENTS_UNDONE": "Assignments undone",
+      "EXAM": "Exam",
+      "GROUP_MEETING": "Ryhmätapaaminen",
+      "GROUP_MEETING_PRE_ARRANGED": "Group meeting (pre-arranged)",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session",
       "LESSON": "Lesson",
       "LESSON_PRE_ARRANGED": "Lesson (pre-arranged)",
-      "EXAM": "Exam",
-      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session"
+      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting"
     },
     "reasons": {
       "MEDICAL_REASON": "Medical reason",
