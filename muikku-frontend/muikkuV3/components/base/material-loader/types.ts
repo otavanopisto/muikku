@@ -116,13 +116,28 @@ export interface LinkDataset {
   url?: string;
 }
 
+export type EmbeddedAnnotationType = "comment" | "highlight";
+
 /**
  * EvaluationHighlightDataset
  */
-export interface EvaluationCommentDataset {
-  text: string;
+export interface EmbeddedCommentDataset {
   type: "comment";
+  id: string;
+  text: string;
 }
+
+/**
+ * EmbeddedHighlightDataset
+ */
+export interface EmbeddedHighlightDataset {
+  type: "highlight";
+  id: string;
+}
+
+export type EmbeddedAnnotationDataset =
+  | EmbeddedCommentDataset
+  | EmbeddedHighlightDataset;
 
 /**
  * ImageDataset
@@ -149,7 +164,7 @@ export type StaticDataset =
   | LinkDataset
   | ImageDataset
   | IframeDataset
-  | EvaluationCommentDataset;
+  | EmbeddedAnnotationDataset;
 
 /**
  * Fields sync status interface

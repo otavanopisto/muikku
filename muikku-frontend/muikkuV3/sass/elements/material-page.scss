@@ -581,36 +581,6 @@ mark[data-muikku-word-definition] {
   position: relative;
 }
 
-// Evaluation Comment
-mark[data-type="comment"] {
-  background: transparent;
-  border-bottom: 2px dashed red;
-  color: red;
-  cursor: help;
-  font-weight: 400;
-  position: relative;
-}
-
-// Evaluation Comment
-mark[data-type="highlight"] {
-  background: transparent;
-  border-bottom: 2px dashed blue;
-  color: blue;
-  cursor: help;
-  font-weight: 400;
-  position: relative;
-}
-
-// Evaluation Comment
-mark[data-type="comment"] {
-  background: transparent;
-  border-bottom: 1px dashed red;
-  color: red;
-  cursor: help;
-  font-weight: 400;
-  position: relative;
-}
-
 // Assignment assessment
 .material-page__assignment-assessment {
   border-left-style: solid;
