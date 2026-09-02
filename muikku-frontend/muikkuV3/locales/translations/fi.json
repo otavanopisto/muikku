@@ -2713,6 +2713,8 @@
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
+      "removeSuccess": "Tapahtuman poisto onnistui",
+      "removeSuccess_absence": "Poissaolon poisto onnistui",
       "startDateRequired": "Alkuaika on pakollinen tieto",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
       "updateError_absence": "Poissaolon päivittäminen epäonnistui: {{error}}",

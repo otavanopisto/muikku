@@ -2712,6 +2712,9 @@
       "loadError": "Loading the events failed. Please try again",
       "loadError_absence": "Loading absences failed: {{error}}",
       "removeError": "Removing the event failed. Please try again.",
+      "removeSuccess": "Removing the event succeeded",
+      "removeSuccess_absence": "Removing the absence event succeeded",
+
       "startDateRequired": "Start date is mandatory",
       "updateError": "Updating the event failed. Please try again.",
       "updateError_absence": "Updating the absence failed: {{error}}",

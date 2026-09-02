@@ -1823,8 +1823,8 @@ const loadAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "students",
+              ns: "events",
+              context: "absenceEvents",
             }),
             "error"
           )
@@ -1947,6 +1947,15 @@ const deleteWorkspaceAbsenceEvent: DeleteWorkspaceAbsenceEventTriggerType =
             },
           },
         });
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.removeSuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
+        );
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;

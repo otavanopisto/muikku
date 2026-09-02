@@ -4,7 +4,8 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import Users from "./application/users";
 import AbsenceEvents from "./application/absences";
 import { useTranslation } from "react-i18next";
-
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import { breakpoints } from "~/util/breakpoints";
 import Button from "~/components/general/button";
 import { CreateAbsenceDialog } from "../dialogs/create-absence";
 import { StateType } from "~/reducers";
@@ -26,7 +27,7 @@ const WorkspaceUsersApplication = () => {
   );
 
   const { t } = useTranslation(["users", "events"]);
-
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   /**
    * Handles the selection of an navigation tab
    * @param id navigation tab id
@@ -40,13 +41,22 @@ const WorkspaceUsersApplication = () => {
    * @returns JSX.Element
    */
   const content = () => {
-    switch (navigationActive) {
-      case "users":
-        return <Users />;
-      case "absences":
-        return <AbsenceEvents />;
-      default:
-        return [<Users key="users" />, <AbsenceEvents key="absences" />];
+    if (isMobileWidth) {
+      return (
+        <>
+          <Users />
+          <AbsenceEvents />
+        </>
+      );
+    } else {
+      switch (navigationActive) {
+        case "users":
+          return <Users />;
+        case "absences":
+          return <AbsenceEvents />;
+        default:
+          return [<Users key="users" />, <AbsenceEvents key="absences" />];
+      }
     }
   };
 
