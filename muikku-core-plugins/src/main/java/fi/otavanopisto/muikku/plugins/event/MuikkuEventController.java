@@ -666,7 +666,7 @@ public class MuikkuEventController {
     return !Collections.disjoint(loggedUserWorkspaceIds, studentWorkspaceIds);
   }
   
-  List<MuikkuEvent> listByTypeAndEnd(){
+  public List<MuikkuEvent> listDeprecatedAbsences(){
     Calendar calendar = Calendar.getInstance();
     calendar.add(Calendar.MONTH, -12);
     Date twelveMonthsAgo = calendar.getTime();

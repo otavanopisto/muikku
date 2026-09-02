@@ -22,7 +22,7 @@ public class AbsenceTrashScheduler {
   
   @Schedule (minute = "0", hour = "0", dayOfWeek="1", persistent = false) 
   public void cleanup() {
-    List<MuikkuEvent> events = muikkuEventController.listByTypeAndEnd();
+    List<MuikkuEvent> events = muikkuEventController.listDeprecatedAbsences();
     
     int count = 0;
     for (MuikkuEvent event : events) {
