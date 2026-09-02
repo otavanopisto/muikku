@@ -24,19 +24,15 @@
 
   // Evaluation Comment
   mark[data-type="comment"] {
-    background: transparent;
-    border-bottom: 2px dashed red;
-    color: red;
+    background: $color-annotation-note;
+    border-bottom: 2px solid darken($color-annotation-note, 30%);
     cursor: help;
     font-weight: 400;
   }
 
   // Evaluation Comment
   mark[data-type="highlight"] {
-    background: transparent;
-    border-bottom: 2px dashed blue;
-    color: blue;
-    cursor: help;
+    background: $color-annotation-highlight;
     font-weight: 400;
     position: relative;
   }

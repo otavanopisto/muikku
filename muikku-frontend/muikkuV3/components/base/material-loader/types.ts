@@ -119,7 +119,7 @@ export interface LinkDataset {
 export type EmbeddedAnnotationType = "comment" | "highlight";
 
 /**
- * EvaluationHighlightDataset
+ * EmbeddedCommentDataset
  */
 export interface EmbeddedCommentDataset {
   type: "comment";

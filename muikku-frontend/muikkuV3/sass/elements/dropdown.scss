@@ -70,10 +70,25 @@
 }
 
 .dropdown--material-page-field-explanation,
-.dropdown--material-page-field-hint,
-.dropdown--word-definition,
-.dropdown--evaluation-highlight {
+.dropdown--material-page-field-hint {
   max-width: 300px;
+
+  .dropdown__container {
+    border-radius: 2px;
+    color: $color-default-contrast;
+    min-width: 0;
+    padding: 3px 6px;
+    text-align: left;
+
+    @include breakpoint($breakpoint-pad) {
+      padding: 5px 10px;
+    }
+  }
+}
+
+.dropdown--word-definition,
+.dropdown--embedded-comment {
+  max-width: 400px;
 
   .dropdown__container {
     border-radius: 2px;
@@ -90,7 +105,7 @@
 
 .dropdown--word-definition {
   .dropdown__container {
-    background: $color-material-word-definition-background-color;
+    background: lighten($color-material-word-definition-background-color, 5%);
     border: 1px solid $color-material-word-definition-border-color;
     white-space: pre-line;
   }
@@ -100,15 +115,15 @@
   }
 }
 
-.dropdown--evaluation-highlight {
+.dropdown--embedded-comment {
   .dropdown__container {
-    background: $color-material-evaluation-comment-color;
-    border: 1px solid darken($color-material-evaluation-comment-color, 20%);
+    background: lighten($color-annotation-note, 5%);
+    border: 1px solid darken($color-annotation-note, 30%);
     white-space: pre-line;
   }
 
   .dropdown__arrow {
-    border-bottom-color: darken($color-material-evaluation-comment-color, 20%);
+    border-bottom-color: darken($color-annotation-note, 30%);
   }
 }
 

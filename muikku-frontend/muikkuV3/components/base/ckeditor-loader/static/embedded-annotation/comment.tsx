@@ -37,7 +37,7 @@ export default function EmbedAnnotationComment(
 
   return (
     <Dropdown
-      // openByHover
+      openByHover
       openByHoverIsClickToo
       modifier="embedded-comment"
       content={note}
