@@ -37,13 +37,13 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
     (state: StateType) =>
       state.guardian?.workspacesByDependantIdentifier[dependant.identifier]
         ?.workspaces || []
-  ) as UserGuardiansDependantWorkspace[];
+  );
 
   const absenceEvents = useSelector(
     (state: StateType) =>
       state.guardian?.absencesByDependantId[dependant.userEntityId]?.events ||
       []
-  ) as MuikkuEvent[];
+  );
 
   const dispatch = useDispatch();
   const { t } = useTranslation(["frontPage", "workspace"]);
