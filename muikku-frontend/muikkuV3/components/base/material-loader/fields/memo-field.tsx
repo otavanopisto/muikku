@@ -33,6 +33,7 @@ import {
 } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
+import CkeditorLoaderContent from "../../ckeditor-loader/content";
 
 /**
  * MemoComment
@@ -509,10 +510,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     } else if (this.props.usedAs === "default") {
       if (this.props.readOnly) {
         return (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
-          />
+          <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly">
+            <CkeditorLoaderContent html={this.state.value} />
+          </div>
         );
       } else {
         return (
@@ -546,10 +546,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     } else if (this.props.usedAs === "evaluationTool") {
       if (this.props.readOnly) {
         return (
-          <div
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
-          />
+          <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation">
+            <CkeditorLoaderContent html={this.state.value} />
+          </div>
         );
       }
     }
