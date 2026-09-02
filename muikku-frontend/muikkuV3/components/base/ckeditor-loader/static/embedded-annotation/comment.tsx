@@ -1,12 +1,12 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-import { EvaluationCommentDataset } from "../../material-loader/types";
+import { EmbeddedCommentDataset } from "~/components/base/material-loader/types";
 
 /**
  * Evaluation highlight props
  */
-interface EvaluationHighlightProps {
-  dataset: EvaluationCommentDataset;
+interface EmbedAnnotationCommentProps {
+  dataset: EmbeddedCommentDataset;
   children?: React.ReactNode;
 }
 
@@ -15,7 +15,9 @@ interface EvaluationHighlightProps {
  * @param props - Evaluation highlight props
  * @returns Evaluation highlight
  */
-export default function EvaluationHighlight(props: EvaluationHighlightProps) {
+export default function EmbedAnnotationComment(
+  props: EmbedAnnotationCommentProps
+) {
   const note = props.dataset.text;
 
   const mark = (
@@ -37,7 +39,7 @@ export default function EvaluationHighlight(props: EvaluationHighlightProps) {
     <Dropdown
       openByHover
       openByHoverIsClickToo
-      modifier="evaluation-highlight"
+      modifier="embedded-comment"
       content={note}
     >
       {mark}

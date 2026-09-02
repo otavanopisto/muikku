@@ -7,11 +7,12 @@ import Image from "../static/image";
 import Link from "../static/link";
 import MathJAX from "../static/mathjax";
 import {
-  EvaluationCommentDataset,
+  EmbeddedAnnotationDataset,
   ImageDataset,
   LinkDataset,
 } from "../../material-loader/types";
-import EvaluationHighlight from "../static/evaluation-highlight";
+import EmbedAnnotationHighlight from "../static/embedded-annotation/highlight";
+import EmbedAnnotationComment from "../static/embedded-annotation/comment";
 
 /**
  * BaseProps
@@ -232,7 +233,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         },
       },
       {
-        id: "evaluation-highlight-rule",
+        id: "embed-annotation-rule",
 
         /**
          * shouldProcessHTMLElement
@@ -241,7 +242,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns boolean
          */
         shouldProcessHTMLElement: (tagname, element) =>
-          !!(tagname === "mark" && element.dataset.type === "comment"),
+          !!(
+            tagname === "mark" &&
+            (element.dataset.type === "comment" ||
+              element.dataset.type === "highlight")
+          ),
 
         /**
          * processingFunction
@@ -252,11 +257,18 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet<EvaluationCommentDataset>(element);
+          const dataset = extractDataSet<EmbeddedAnnotationDataset>(element);
+          if (dataset.type === "comment") {
+            return (
+              <EmbedAnnotationComment key={props.key} dataset={dataset}>
+                {children}
+              </EmbedAnnotationComment>
+            );
+          }
           return (
-            <EvaluationHighlight key={props.key} dataset={dataset}>
+            <EmbedAnnotationHighlight key={props.key} dataset={dataset}>
               {children}
-            </EvaluationHighlight>
+            </EmbedAnnotationHighlight>
           );
         },
       },
