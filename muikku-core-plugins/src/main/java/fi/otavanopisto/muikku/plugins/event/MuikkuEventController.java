@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.event;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -665,7 +666,10 @@ public class MuikkuEventController {
     return !Collections.disjoint(loggedUserWorkspaceIds, studentWorkspaceIds);
   }
   
-  List<MuikkuEvent> listOldAbsences(){
-    return eventDAO.listOldAbsences();
+  List<MuikkuEvent> listByTypeAndEnd(){
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.MONTH, -12);
+    Date twelveMonthsAgo = calendar.getTime();
+    return eventDAO.listByTypeAndEnd(EventType.ABSENCE, twelveMonthsAgo);
   }
 }

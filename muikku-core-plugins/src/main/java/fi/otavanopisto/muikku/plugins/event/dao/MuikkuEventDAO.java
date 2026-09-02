@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.event.dao;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -130,22 +129,18 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<MuikkuEvent> listOldAbsences() {
+  public List<MuikkuEvent> listByTypeAndEnd(EventType type, Date end) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<MuikkuEvent> criteria = criteriaBuilder.createQuery(MuikkuEvent.class);
     Root<MuikkuEvent> root = criteria.from(MuikkuEvent.class);
 
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.MONTH, -12);
-    Date twelveMonthsAgo = calendar.getTime();
-
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(MuikkuEvent_.type), EventType.ABSENCE),
-            criteriaBuilder.lessThan(root.get(MuikkuEvent_.end), twelveMonthsAgo)
+            criteriaBuilder.lessThan(root.get(MuikkuEvent_.end), end)
         )
     );
 

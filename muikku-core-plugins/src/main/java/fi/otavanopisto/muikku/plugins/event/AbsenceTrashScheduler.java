@@ -22,18 +22,15 @@ public class AbsenceTrashScheduler {
   
   @Schedule (minute = "0", hour = "0", dayOfWeek="1", persistent = false) 
   public void cleanup() {
-    List<MuikkuEvent> events = muikkuEventController.listOldAbsences();
+    List<MuikkuEvent> events = muikkuEventController.listByTypeAndEnd();
     
     int count = 0;
     for (MuikkuEvent event : events) {
       try {
-          muikkuEventController.deleteEvent(event);
-          count++;
+        muikkuEventController.deleteEvent(event);
+        count++;
       } catch (Exception e) {
-          logger.warning(String.format(
-              "Failed to delete absence event %d",
-              event.getId()
-          ));
+        logger.warning(String.format("Failed to delete absence event %d", event.getId()));
       }
     }
     
