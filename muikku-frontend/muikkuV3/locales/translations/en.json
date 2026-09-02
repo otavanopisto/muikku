@@ -2683,6 +2683,7 @@
     },
     "content": {
       "empty": "No events",
+      "empty_absence": "No absences",
       "removing": "Are you sure you want to remove the event?",
       "removing_absence": "Are you sure you want to remove the absence: {{label}}, from user {{userName}}?"
     },
@@ -2699,6 +2700,7 @@
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Unauthorized absence (explained)"
     },
     "notifications": {
+      "absenceEventIdRequiredError": "Absence event id is required",
       "attendanceError": "Updating the attendees failed. Please try again.",
       "createError": "Creating the event failed",
       "createError_absence": "Marking the absence failed: {{error}}",
@@ -2711,6 +2713,7 @@
       "endDateRequired": "End date is mandatory",
       "loadError": "Loading the events failed. Please try again",
       "loadError_absence": "Loading absences failed: {{error}}",
+      "noWorkspaceEventContainerIdError": "Course event container id is required",
       "removeError": "Removing the event failed. Please try again.",
       "removeSuccess": "Removing the event succeeded",
       "removeSuccess_absence": "Removing the absence event succeeded",

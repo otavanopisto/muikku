@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { AbsenceEventEnum } from "~/reducers/base/muikku-events";
 import { updateWorkspaceAbsenceEvent } from "~/actions/workspaces/";
 import { MuikkuEvent } from "~/generated/client";
+import { displayNotification } from "~/actions/base/notifications";
 
 /**
  * CreateAbsenceDialogProps
@@ -135,6 +136,25 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
     const { id } = absenceEvent;
 
     if (!workspaceEventContainerId || !id) {
+      if (!workspaceEventContainerId) {
+        dispatch(
+          displayNotification(
+            t("notifications.noWorkspaceEventContainerIdError", {
+              ns: "events",
+            }),
+            "error"
+          )
+        );
+      }
+      if (!id) {
+        dispatch(
+          displayNotification(
+            t("notifications.absenceEventIdRequiredError", { ns: "events" }),
+            "error"
+          )
+        );
+      }
+
       return;
     }
 

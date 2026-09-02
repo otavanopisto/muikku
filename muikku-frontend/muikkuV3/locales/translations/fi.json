@@ -2694,13 +2694,13 @@
       "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
       "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
     },
-
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
       "OTHER_AUTHORIZED_REASON": "Muu luvallinen syy",
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Poissaololle ei ollut lupaa (selvitetty)"
     },
     "notifications": {
+      "absenceEventIdRequiredError": "Poissaolotapahtuman tunniste puuttuu",
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui",
       "createError": "Tapahtuman luonti epäonnistui: {{error}}",
       "createError_absence": "Poissaolon merkitseminen epäonnistui: {{error}}",
@@ -2713,7 +2713,7 @@
       "endDateRequired": "Loppuaika on pakollinen tieto",
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
-      "noWorkspaceEventContainerIdError": "Kalenteritunniste puuttuu",
+      "noWorkspaceEventContainerIdError": "Kurssin kalenteritunniste puuttuu",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
       "removeSuccess": "Tapahtuman poisto onnistui",
       "removeSuccess_absence": "Poissaolon poisto onnistui",
