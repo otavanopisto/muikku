@@ -31,10 +31,6 @@ interface AbsenceEventsProps {
 const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
   const { modifier, event, onDelete, onUpdate } = props;
   const { t } = useTranslation("tasks");
-  const absenceEventProperty = event.properties?.find(
-    (prop) => prop.name === "ABSENCE_REASON"
-  );
-
   const absenceState = event.solved ? "REVIEWED" : "REVIEW-PENDING";
 
   /**
