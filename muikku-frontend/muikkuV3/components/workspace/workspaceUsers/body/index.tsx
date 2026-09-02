@@ -11,8 +11,6 @@ import { CreateAbsenceDialog } from "../dialogs/create-absence";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
 
-// TODO: the mobile view is not tested with this component, this pull request should be merged
-
 /**
  * WorkspaceUsersApplication
  * @returns JSX.Element
@@ -81,6 +79,7 @@ const WorkspaceUsersApplication = () => {
       </NavigationElement>
     </Navigation>
   );
+
   const primaryOption = (
     <CreateAbsenceDialog
       workspaceId={workspace?.id}
