@@ -34,10 +34,8 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
   const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
-  const absenceState =
-    absenceEventProperty && absenceEventProperty.value !== ""
-      ? "REVIEW-PENDING"
-      : "REVIEWED";
+
+  const absenceState = event.solved ? "REVIEWED" : "REVIEW-PENDING";
 
   /**
    * Returns the absent from label
@@ -64,7 +62,7 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
    * @returns string
    */
   const absenceReasonLabel = (value: string) => {
-    switch (absenceEventProperty?.value as AbsenceReasonEnum) {
+    switch (value as AbsenceReasonEnum) {
       case AbsenceReasonEnum.Medical:
         return t("reasons.MEDICAL_REASON", { ns: "events" });
       case AbsenceReasonEnum.OtherAuthorized:
@@ -85,7 +83,10 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
       )}
       {onDelete && (
         <PromptDialog
-          title="Poista poissaolo"
+          title={t("labels.remove", {
+            ns: "events",
+            context: "absence",
+          })}
           content={t("content.removing", {
             ns: "events",
             context: "absence",

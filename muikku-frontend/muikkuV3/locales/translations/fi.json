@@ -2683,6 +2683,7 @@
     },
     "content": {
       "empty": "Ei tapahtumia",
+      "empty_absence": "Ei poissaoloja",
       "removing": "Oletko varma, että haluat poistaa tapahtuman?",
       "removing_absence": "Oletko varma, että haluat poistaa poissaolon: {{label}}, käyttäjältä {{userName}}?"
     },
@@ -2712,6 +2713,7 @@
       "endDateRequired": "Loppuaika on pakollinen tieto",
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
+      "noWorkspaceEventContainerIdError": "Kalenteritunniste puuttuu",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
       "removeSuccess": "Tapahtuman poisto onnistui",
       "removeSuccess_absence": "Poissaolon poisto onnistui",

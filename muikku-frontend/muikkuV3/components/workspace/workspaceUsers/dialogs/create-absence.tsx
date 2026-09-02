@@ -163,6 +163,17 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   ) => {
     const { type, description, startDate, endDate } = absenceEvent;
 
+    if (!workspaceEventContainerId) {
+      dispatch(
+        displayNotification(
+          t("notifications.noWorkspaceEventContainerIdError", { ns: "events" }),
+          "error"
+        )
+      );
+
+      return;
+    }
+
     if (!startDate || !endDate) {
       if (!startDate) {
         dispatch(
@@ -191,7 +202,7 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           description,
           start: startDate?.toISOString(),
           end: endDate?.toISOString(),
-          eventContainerId: workspaceEventContainerId!,
+          eventContainerId: workspaceEventContainerId,
         },
         formState.selectedUsers.map((user) => user.value.id)
       )

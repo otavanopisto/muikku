@@ -1237,25 +1237,6 @@ export interface LoadUsersOfWorkspaceTriggerType {
 /**
  * LoadUsersOfWorkspaceTriggerType
  */
-export interface LoadUsersOfWorkspaceTriggerType {
-  (data: {
-    workspace: WorkspaceDataType;
-    payload?: {
-      q: string;
-      active?: boolean;
-      firstResult?: number;
-      maxResults?: number;
-    };
-    success?: (
-      users: WorkspaceStudentSearchResult | UserStaffSearchResult
-    ) => void;
-    fail?: () => void;
-  }): AnyActionType;
-}
-
-/**
- * LoadUsersOfWorkspaceTriggerType
- */
 export interface LoadAbsenceEventsOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceDataType;
@@ -1824,7 +1805,7 @@ const loadAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
           displayNotification(
             i18n.t("notifications.loadError", {
               ns: "events",
-              context: "absenceEvents",
+              context: "absence",
             }),
             "error"
           )
@@ -2020,12 +2001,14 @@ const updateWorkspaceAbsenceEvent: UpdateWorkspaceAbsenceEventTriggerType =
             },
           },
         });
-        displayNotification(
-          i18n.t("notifications.updateSuccess", {
-            ns: "events",
-            context: "absence",
-          }),
-          "success"
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateSuccess", {
+              ns: "events",
+              context: "absence",
+            }),
+            "success"
+          )
         );
       } catch (err) {
         if (!isMApiError(err)) {

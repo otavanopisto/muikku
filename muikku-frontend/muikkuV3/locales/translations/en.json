@@ -2649,7 +2649,7 @@
       "update_absence": "Update absence"
     },
     "labels": {
-      "absence": "Absene",
+      "absence": "Absence",
       "absenceCreator": "Absence marked by: {{creator}}",
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
@@ -2671,7 +2671,7 @@
       "newAbsence": "New absence",
       "makeUpInstructions": "Instructions for making up the absence:",
       "markAbsence": "Mark absence",
-      "pickAbsenceStudents": "(Select absent students",
+      "pickAbsenceStudents": "Select absent students",
       "property": "Unkown property",
       "property_ABSENCE_REASON": "Absence reason",
       "remove": "Remove event",

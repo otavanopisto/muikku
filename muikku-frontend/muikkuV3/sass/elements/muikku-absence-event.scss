@@ -54,13 +54,3 @@
   }
   
 }
-
-@keyframes border {
-  from {
-    border-left: 3px solid $color-priority-high;
-  }
-
-  to {
-    border-left: 3px solid $color-default;
-  }
-}

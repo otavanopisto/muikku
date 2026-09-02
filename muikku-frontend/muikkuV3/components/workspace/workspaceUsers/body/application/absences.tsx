@@ -23,7 +23,11 @@ const Absences = () => {
   );
 
   if (!absenceEvents || absenceEvents.length === 0) {
-    return <div className="loaded-empty">No absence events found</div>;
+    return (
+      <div className="loaded-empty">
+        {t("content.empty", { ns: "events", context: "absence" })}
+      </div>
+    );
   }
 
   /**

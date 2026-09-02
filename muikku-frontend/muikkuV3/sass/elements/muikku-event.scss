@@ -16,7 +16,7 @@
   
   &.state-OVERDUE, 
   &.state-REVIEW-PENDING {
-    animation: border 1s ease-in alternate infinite;
+    animation: muikku-event-border 1s ease-in alternate infinite;
     border-left: 3px solid $color-priority-high;
   }
 }
@@ -56,7 +56,7 @@
   padding: 5px;
 }
 
-@keyframes border {
+@keyframes muikku-event-border {
   from {
     border-left: 3px solid $color-priority-high;
   }

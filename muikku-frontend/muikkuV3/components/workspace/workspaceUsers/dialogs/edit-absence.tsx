@@ -133,14 +133,19 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    */
   const handleConfirm = (closeDialog: () => void) => {
     const { id } = absenceEvent;
+
+    if (!workspaceEventContainerId || !id) {
+      return;
+    }
+
     dispatch(
-      updateWorkspaceAbsenceEvent(id!, {
+      updateWorkspaceAbsenceEvent(id, {
         title: formState.type,
         type: "ABSENCE",
         description: formState.description,
         start: formState.startDate?.toISOString() ?? "",
         end: formState.endDate?.toISOString() ?? "",
-        eventContainerId: workspaceEventContainerId!,
+        eventContainerId: workspaceEventContainerId,
       })
     );
     onConfirm?.(formState);
@@ -254,13 +259,13 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           className="button button--execute button--standard-ok"
           onClick={() => handleConfirm(closeDialog)}
         >
-          {t("actions.create")}
+          {t("actions.create", { ns: "common" })}
         </Button>
         <Button
           className="button button--cancel button--standard-cancel"
           onClick={closeDialog}
         >
-          {t("actions.cancel")}
+          {t("actions.cancel", { ns: "common" })}
         </Button>
       </div>
     </div>

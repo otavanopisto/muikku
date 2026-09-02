@@ -34,7 +34,18 @@ const BaseEvent: React.FC<BaseEventComponentProps> = (props) => {
     <div
       className={`muikku-event ${modifier ? "muikku-event--" + modifier : ""} state-${state}`}
     >
-      <div onClick={toggleShowDetails} className={`muikku-event__header`}>
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={toggleShowDetails}
+        className={`muikku-event__header`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleShowDetails();
+          }
+        }}
+      >
         <span className="muikku-event__title">{title}</span>
         {beginDate && endDate && (
           <span>

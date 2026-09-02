@@ -778,14 +778,6 @@ export default class Workspace extends React.Component<
               loadStaffMembersOfWorkspace({ workspace }) as Action
             );
           }
-          // Load students absence events if not loaded yet
-          // It is debatable if the load should be done here or not
-          // But the setCurrentWorkspace kind of forces us to do it here
-          if (!workspace.absenceEvents && state.status.loggedIn) {
-            this.props.store.dispatch(
-              loadAbsenceEventsOfWorkspace({ workspace }) as Action
-            );
-          }
           if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
             this.props.store.dispatch(
               loadStudentsOfWorkspace({
