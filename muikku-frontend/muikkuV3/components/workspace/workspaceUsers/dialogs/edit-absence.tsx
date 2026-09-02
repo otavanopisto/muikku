@@ -161,8 +161,8 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         title: formState.type,
         type: "ABSENCE",
         description: formState.description,
-        start: formState.startDate?.toISOString() ?? "",
-        end: formState.endDate?.toISOString() ?? "",
+        start: formState.startDate?.toISOString(),
+        end: formState.endDate?.toISOString(),
         eventContainerId,
       })
     );
