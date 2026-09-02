@@ -2,23 +2,26 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
    <sql>
-      alter table WorkspaceNote drop column orderNumber;
+     drop index IDXq6s1w0wfa58ntfl2aj6ianojr on WorkspaceNote;
    </sql>
    <sql>
-      alter table WorkspaceNote change workspace workspaceEntityId bigint(20) not null;
+     alter table WorkspaceNote drop column orderNumber;
    </sql>
    <sql>
-      create index IDXbjq2x7gj9p1kfomij6t0yqvhj on WorkspaceNote (owner, workspaceEntityId);
+     alter table WorkspaceNote change workspace workspaceEntityId bigint(20) not null;
    </sql>
    <sql>
-      alter table WorkspaceNote
-         add column `start` varchar(16),
-         add column `end` varchar(16),
-         add column `noteIndex` bigint,
-         add column `type` varchar(255) not null,
-         add column workspaceMaterialId bigint;
+     create index IDXbjq2x7gj9p1kfomij6t0yqvhj on WorkspaceNote (owner, workspaceEntityId);
    </sql>
    <sql>
-      update WorkspaceNote set `type` = 'WORKSPACE';
+     alter table WorkspaceNote
+        add column `start` varchar(16),
+        add column `end` varchar(16),
+        add column `noteIndex` bigint,
+        add column `type` varchar(255) not null,
+        add column workspaceMaterialId bigint;
+   </sql>
+   <sql>
+     update WorkspaceNote set `type` = 'WORKSPACE';
    </sql>
 </update>

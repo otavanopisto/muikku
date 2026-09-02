@@ -88,8 +88,8 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    *   text: "Text here",
    *   workspaceEntityId: 123,
    *   workspaceMaterialId: 456,
-   *   start: 10,
-   *   end: 25,
+   *   start: "Example start",
+   *   end: "example end.",
    *   index: 0,
    *   type: "WORKSPACE_MATERIAL_CONTEXT_NOTE"
    * }
@@ -105,8 +105,8 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    *   text: "Text here",
    *   workspaceEntityId: 123,
    *   workspaceMaterialId: null,
-   *   start: null,
-   *   end: null,
+   *   start: "Example start",
+   *   end: "example end.",
    *   index: null,
    *   type: "WORKSPACE"
    * }
@@ -128,9 +128,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // WorkspaceMaterialId is required when type is WORKSPACE_MATERIAL
-    if (workspaceNote.getType() == WorkspaceNoteType.WORKSPACE_MATERIAL && workspaceNote.getWorkspaceMaterialId() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("WorkspaceMaterialId is required when type is WORKSPACE_MATERIAL").build();
+    // WorkspaceMaterialId is required when type is not WORKSPACE
+    if (workspaceNote.getType() != WorkspaceNoteType.WORKSPACE && workspaceNote.getWorkspaceMaterialId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("WorkspaceMaterialId is required when type is %s", workspaceNote.getType())).build();
     }
     
     // start, end and index are required when type is WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT or WORKSPACE_MATERIAL_CONTEXT_NOTE
