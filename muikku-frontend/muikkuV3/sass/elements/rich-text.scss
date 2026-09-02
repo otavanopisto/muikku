@@ -29,23 +29,6 @@
     color: red;
     cursor: help;
     font-weight: 400;
-    position: relative;
-
-    &:hover::after {
-      background: $color-default;
-      border: 2px solid darken($color-default-separator-border, 30%);
-      border-radius: 5px;
-      box-shadow: 0 0 15px rgba(0 0 0 / 20%);
-      color: $color-default-contrast;
-      content: attr(data-text);
-      font-size: 0.875rem;
-      left: 0;
-      padding: 5px 10px;
-      position: absolute;
-      top: 100%;
-      width: max-content;
-      z-index: 1000;
-    }
   }
 
   // Evaluation Comment
@@ -321,6 +304,25 @@
     font-weight: 300;
     line-height: 1.625rem;
   }
+}
+
+.cke-muikku-comment-preview {
+  background: $color-default;
+  border: 2px solid darken($color-default-separator-border, 30%);
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0 0 0 / 20%);
+  box-sizing: border-box;
+  color: $color-default-contrast;
+  display: none;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  max-height: 350px;
+  max-width: 300px;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  padding: 5px 10px;
+  white-space: pre-wrap;
+  z-index: 10000;
 }
 
 .rich-text--contact-event {
