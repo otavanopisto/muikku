@@ -100,8 +100,7 @@ const absenceEventFormReducer = (
 export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   props
 ) => {
-  const { children, workspaceEventContainerId, onConfirm, absenceEvent } =
-    props;
+  const { children, onConfirm, absenceEvent } = props;
 
   /**
    * initialAbsenceEventFormState
