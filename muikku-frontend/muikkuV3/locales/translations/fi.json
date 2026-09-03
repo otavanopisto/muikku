@@ -1988,17 +1988,25 @@
       "edit": "Muokkaa muistiinpanoa",
       "hideContent": "Piilota sisältö",
       "organize": "Järjestele muistiinpanoja",
-      "remove": "Poista muistiinpano",
-      "showContent": "Näytä sisältö"
+      "remove": "Poista",
+      "remove_highlight": "Poista korostus",
+      "remove_note": "Poista muistiinpano",
+      "showContent": "Näytä sisältö",
+      "upgrade": "Muuta muistiinpanoksi"
     },
     "content": {
       "empty": "Ei muistiinpanoja",
       "defaultPosition": "Uusi muistiinpano luodaan listan ensimmäiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
       "defaultPosition_bottom": "Uusi muistiinpano luodaan listan viimeiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
-      "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
+      "remove": "Oletko varma, että haluat poistaa muistiinpanon?",
+      "remove_highlight": "Oletko varma, että haluat poistaa korostuksen?"
     },
     "labels": {
-      "defaultPosition": "Oletussijainti"
+      "defaultPosition": "Oletussijainti",
+      "noteSectionTitle": "Muistiinpanot",
+      "noteSectionTitle_workspace": "Yleiset muistiinpanot",
+      "noteSectionTitle_page": "Kohdennetut muistiinpanot",
+      "orphanedNote": "Vanhentunut"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
@@ -2819,6 +2827,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Kuuntele valittu teksti"
+    },
     "messages": {
       "assignment": "Tehtävä",
       "assignment_audio": "Äänitystehtävä",

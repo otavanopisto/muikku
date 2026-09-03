@@ -2801,7 +2801,7 @@ paths:
           description: Attempted to make a call with unauthorized client
 
   #EVALUATION
-  
+
   /rest/evaluation/user/{userEntityId}/workspaceMaterial/{workspaceMaterialId}/field/{fieldName}:
     post:
       operationId: createFieldAnswerSnapshot
@@ -2861,7 +2861,7 @@ paths:
           description: Snapshot deleted successfully
         "403":
           description: Unallowed access
-  
+
   /rest/evaluation/compositeAssessmentRequests:
     get:
       operationId: getCompositeAssessmentRequests
@@ -11951,34 +11951,6 @@ paths:
           description: Internal server error
 
   #WORKSPACENOTES
-  /rest/workspacenotes/owner/{owner}:
-    get:
-      operationId: getAllWorkspaceNotes
-      summary: Returns all notes from every workspace
-      tags:
-        - WorkspaceNotes
-      parameters:
-        - name: owner
-          in: path
-          description: Owner identifier
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Workspace notes results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/WorkspaceNote"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspacenotes/workspace/{workspaceId}/owner/{owner}:
     get:
       operationId: getWorkspaceNotes
@@ -12008,7 +11980,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceNote"
+                  $ref: "#/components/schemas/NotebookNote"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12028,7 +12000,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceNote"
+                $ref: "#/components/schemas/NotebookNote"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12056,7 +12028,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceNote"
+                $ref: "#/components/schemas/NotebookNote"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -13896,21 +13868,30 @@ components:
             description: WorkspaceNoteCreateRequestBody object
             required:
               - title
-              - workspaceNote
+              - text
               - workspaceEntityId
+              - type
             properties:
               title:
                 type: string
-              workspaceNote:
+              text:
                 type: string
               workspaceEntityId:
                 type: integer
                 format: int64
-              nextSiblingId:
-                description: Optional given to determine place in the list. if not given, the note is added to the end of the list
+              workspaceMaterialId:
                 type: integer
                 format: int64
-                nullable: true
+              type:
+                type: string
+              index:
+                type: integer
+                format: int64
+                description: The index where the highlighted text begins
+              start:
+                type: string
+              end:
+                type: string
 
     WorkspaceNoteUpdateRequestBody:
       required: true
@@ -13918,7 +13899,7 @@ components:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/WorkspaceNote"
+              - $ref: "#/components/schemas/NotebookNote"
 
     WorkspaceJournalCreateRequestBody:
       content:
@@ -16514,7 +16495,7 @@ components:
         value:
           description: Field value
           type: string
-    
+
     MaterialAnswer:
       type: object
       description: MaterialAnswer object
@@ -20064,7 +20045,29 @@ components:
         archivable:
           type: boolean
 
-    WorkspaceNote:
+    NotebookNote:
+      discriminator:
+        propertyName: type
+        mapping:
+          WORKSPACE: "#/components/schemas/NotebookWorkspaceNote"
+          WORKSPACE_MATERIAL: "#/components/schemas/NotebookWorkspaceMaterialNote"
+          WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT: "#/components/schemas/NotebookWorkspaceMaterialContextHighlight"
+          WORKSPACE_MATERIAL_CONTEXT_NOTE: "#/components/schemas/NotebookWorkspaceMaterialContextNote"
+      oneOf:
+        - $ref: "#/components/schemas/NotebookWorkspaceNote"
+        - $ref: "#/components/schemas/NotebookWorkspaceMaterialNote"
+        - $ref: "#/components/schemas/NotebookWorkspaceMaterialContextNote"
+        - $ref: "#/components/schemas/NotebookWorkspaceMaterialContextHighlight"
+
+    NotebookNoteType:
+      type: string
+      enum:
+        - WORKSPACE
+        - WORKSPACE_MATERIAL
+        - WORKSPACE_MATERIAL_CONTEXT_HIGHLIGHT
+        - WORKSPACE_MATERIAL_CONTEXT_NOTE
+
+    NotebookWorkspaceNote:
       type: object
       description: WorkspaceNote object
       required:
@@ -20072,7 +20075,8 @@ components:
         - owner
         - workspaceEntityId
         - title
-        - workspaceNote
+        - text
+        - type
       properties:
         id:
           type: integer
@@ -20085,14 +20089,140 @@ components:
           type: integer
           format: int64
         title:
+          description: The title of the note
           type: string
-        workspaceNote:
+        text:
+          description: Rich text content of the note
           type: string
-        nextSiblingId:
-          description: Backend uses this to determine the order of the notes. This is not used in the frontend
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+
+    NotebookWorkspaceMaterialNote:
+      type: object
+      description: WorkspaceMaterialNote object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - workspaceMaterialId
+        - title
+        - text
+        - type
+      properties:
+        id:
           type: integer
           format: int64
-          nullable: true
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        workspaceMaterialId:
+          description: The id of the material in the workspace
+          type: integer
+          format: int64
+        title:
+          description: The title of the note
+          type: string
+        text:
+          description: Rich text content of the note
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+
+    NotebookWorkspaceMaterialContextHighlight:
+      type: object
+      description: WorkspaceMaterialContextHighlight object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - workspaceMaterialId
+        - text
+        - type
+        - start
+        - end
+        - index
+      properties:
+        id:
+          type: integer
+          format: int64
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        workspaceMaterialId:
+          description: The id of the material in the workspace
+          type: integer
+          format: int64
+        text:
+          description: Rich text content of the quoted highlighted text
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+        start:
+          description: First 16 characters of the highlighted text or full selection if shorter than 16 characters.
+          type: string
+        end:
+          description: Last 16 characters of the highlighted text or full selection if shorter than 16 characters.
+          type: string
+        index:
+          description: Index of the occurence of the selected text. Default is 0 if no occurence is found.
+          type: integer
+          format: int64
+
+    NotebookWorkspaceMaterialContextNote:
+      type: object
+      description: WorkspaceMaterialContextNote object
+      required:
+        - id
+        - owner
+        - workspaceEntityId
+        - workspaceMaterialId
+        - title
+        - text
+        - type
+        - start
+        - end
+        - index
+      properties:
+        id:
+          type: integer
+          format: int64
+        owner:
+          description: The id of the user
+          type: string
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        workspaceMaterialId:
+          description: The id of the material in the workspace
+          type: integer
+          format: int64
+        title:
+          description: The title of the note
+          type: string
+        text:
+          description: Rich text content of the note
+          type: string
+        type:
+          $ref: "#/components/schemas/NotebookNoteType"
+        start:
+          description: First 16 characters of the selected text or full selection if shorter than 16 characters.
+          type: string
+        end:
+          description: Last 16 characters of the selected text or full selection if shorter than 16 characters.
+          type: string
+        index:
+          description: Index of the occurence of the selected text. Default is 0 if no occurence is found.
+          type: integer
+          format: int64
 
     WorkspaceEntityFile:
       type: object
