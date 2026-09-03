@@ -302,20 +302,7 @@ class WorkspaceUsers extends React.Component<
         name: getName(this.state.studentCurrentlyBeingSentMessage, true),
       },
     };
-    const primaryOption = (
-      <CreateAbsenceDialog
-        workspaceId={this.props.workspace?.id}
-        workspaceEventContainerId={
-          this.props.workspace?.workspaceEventContainerId
-        }
-      >
-        <Button buttonModifiers={["primary-function", "no-toolbar"]}>
-          {this.props.t("actions.createAbsence", {
-            ns: "events",
-          })}
-        </Button>
-      </CreateAbsenceDialog>
-    );
+
     const staffPager =
       this.allStaffPages > 1 ? (
         <PagerV2
