@@ -2,6 +2,7 @@ import * as React from "react";
 import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
+import { useReadspeakerContextOptional } from "~/components/context/readspeaker-context";
 import i18n from "~/locales/i18n";
 import { StateConfig } from "./types";
 
@@ -93,6 +94,14 @@ function onModification(props: MaterialLoaderContentProps) {
  * @param props props
  */
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
+  const readspeaker = useReadspeakerContextOptional();
+  // Get material content revision from readspeaker context
+  // If context is not accessible, default to 0
+  const materialContentRevision =
+    readspeaker?.getMaterialContentRevision(
+      props.material.workspaceMaterialId
+    ) ?? 0;
+
   /**
    * handleConfirmedAndSynced
    */
@@ -125,6 +134,9 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
         {props.loadCompositeReplies &&
         typeof props.compositeReplies === "undefined" ? null : (
           <Base
+            // Use material content revision as key to force re-render when material content is modified
+            // This is needed because Readspeaker mutates DOM and we need to force re-render to get React up to date.
+            key={`material-content-${props.material.workspaceMaterialId}-${materialContentRevision}`}
             material={props.material}
             status={props.status}
             usedAs={props.usedAs}
@@ -146,6 +158,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             onDeleteFieldSnapshot={props.onDeleteFieldSnapshot}
             onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
             onUpdateFieldWithComments={props.onUpdateFieldWithComments}
+            highlights={props.highlights}
           />
         )}
       </div>

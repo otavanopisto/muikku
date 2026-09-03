@@ -25,7 +25,6 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
-import { NoteBookState } from "./notebook/notebook";
 import { HopsState } from "./hops";
 import { ExamsState } from "./workspaces/exams";
 import { LanguageProfileState } from "./main-function/language-profile";
@@ -33,6 +32,7 @@ import { PedagogySupportState } from "./pedagogy-support";
 import { StudyActivityState } from "./study-activity";
 import { GuardianState } from "./main-function/guardian";
 import { MuikkuEventsState } from "./base/muikku-events";
+import { NoteBookV2State } from "./notebook/notebookV2";
 
 /**
  * StateType
@@ -65,7 +65,7 @@ export interface StateType {
   ceepos?: CeeposState;
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
-  notebook?: NoteBookState;
+  notebookV2?: NoteBookV2State;
   hopsNew?: HopsState;
   exams?: ExamsState;
   muikkuEvents: MuikkuEventsState;
