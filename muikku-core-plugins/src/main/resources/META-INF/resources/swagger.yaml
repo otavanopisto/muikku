@@ -18849,8 +18849,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MuikkuEventProperty"
-        solved:
-          type: boolean
 
     MuikkuEventContainer:
       type: object
