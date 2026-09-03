@@ -2642,10 +2642,14 @@
       "editFeedback": "Edit feedback",
       "create": "Create event",
       "edit": "Edit event",
-      "remove": "Remove event"
+      "edit_absence": "Edit absence",
+      "remove": "Remove event",
+      "remove_absence": "Remove absence event",
+      "update": "Update event",
+      "update_absence": "Update absence"
     },
     "labels": {
-      "absence": "Absene",
+      "absence": "Absence",
       "absenceCreator": "Absence marked by: {{creator}}",
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
@@ -2654,7 +2658,10 @@
       "absencePeriod": "Absence period:",
       "absenceType": "Absence type",
       "absences": "Absences",
-      "absence_explanation": "Absence_explanation",
+      "absencesSummary": "Absences summary",
+      "absencesWithFeedback": "Absences with feedback",
+      "absencesWithoutFeedback": "Absences without feedback",
+      "editAbsence": "Edit absence",
       "end": "Ends",
       "event": "Event",
       "eventBeginning": "Event beginning",
@@ -2664,16 +2671,21 @@
       "newAbsence": "New absence",
       "makeUpInstructions": "Instructions for making up the absence:",
       "markAbsence": "Mark absence",
-      "pickAbsenceStudents": "(Select absent students",
+      "pickAbsenceStudents": "Select absent students",
       "property": "Unkown property",
       "property_ABSENCE_REASON": "Absence reason",
+      "remove": "Remove event",
+      "remove_absence": "Remove absence event",
       "reason": "Reason",
       "start": "Starts",
-      "selectAbsenceReason": "Select absence reason"
+      "selectAbsenceReason": "Select absence reason",
+      "totalAbsences": "Total absences"
     },
     "content": {
       "empty": "No events",
-      "removing": "Are you sure you want to remove the event?"
+      "empty_absence": "No absences",
+      "removing": "Are you sure you want to remove the event?",
+      "removing_absence": "Are you sure you want to remove the absence: {{label}}, from user {{userName}}?"
     },
     "types": {
       "LESSON": "Lesson",
@@ -2688,6 +2700,7 @@
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Unauthorized absence (explained)"
     },
     "notifications": {
+      "absenceEventIdRequiredError": "Absence event id is required",
       "attendanceError": "Updating the attendees failed. Please try again.",
       "createError": "Creating the event failed",
       "createError_absence": "Marking the absence failed: {{error}}",
@@ -2697,14 +2710,23 @@
       "createPropertySuccess_absence": "The absence explanation was marked successfully",
       "createSuccess": "The event was created successfully",
       "createSuccess_absence": "The absence was marked successfully",
+      "endDateRequired": "End date is mandatory",
       "loadError": "Loading the events failed. Please try again",
       "loadError_absence": "Loading absences failed: {{error}}",
+      "noWorkspaceEventContainerIdError": "Course event container id is required",
       "removeError": "Removing the event failed. Please try again.",
+      "removeError_absence": "Removing the absence event failed: {{error}}",
+      "removeSuccess": "Removing the event succeeded",
+      "removeSuccess_absence": "Removing the absence event succeeded",
+      "startDateRequired": "Start date is mandatory",
       "updateError": "Updating the event failed. Please try again.",
+      "updateError_absence": "Updating the absence failed: {{error}}",
       "updatePropertyError": "Updating the event property failed: {{error}}. Please try again.",
       "updatePropertyError_absence": "Updating the absence explanation failed: {{error}}. Please try again.",
       "updatePropertySuccess": "The event property was updated successfully",
-      "updatePropertySuccess_absence": "The absence explanation was updated successfully"
+      "updatePropertySuccess_absence": "The absence explanation was updated successfully",
+      "updateSuccess": "The event was updated successfully",
+      "updateSuccess_absence": "The absence was updated successfully"
     }
   },
   "orders": {

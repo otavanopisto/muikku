@@ -375,6 +375,14 @@
 }
 
 // Subpanel body
+.application-sub-panel__body--workspace-absences-summary {
+  padding: 10px 0 0 5px;
+}
+
+.application-sub-panel__body--workspace-absences-list {
+  padding: 10px 0 0 5px;
+}
+
 .application-sub-panel__body--yo-status-incomplete {
   border-left: 4px solid $color-sub-panel-status-incomplete-border;
 }

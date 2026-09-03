@@ -11,7 +11,7 @@ import { loadAnnouncementsAsAClient } from "~/actions/announcements";
 import { loadLastMessageThreadsFromServer } from "~/actions/main-function/messages";
 import CousePickerBody from "../components/coursepicker/body";
 import { loadLoggedUser } from "~/actions/user-index";
-import { loadAbsenceEvents } from "~/actions/base/muikku-events";
+import { loadUserAbsenceEvents } from "~/actions/base/muikku-events";
 import {
   loadWorkspacesFromServer,
   loadUserWorkspaceCurriculumFiltersFromServer,
@@ -721,7 +721,7 @@ export default class MainFunction extends React.Component<
 
       if (state.status.isStudent) {
         this.props.store.dispatch(
-          loadAbsenceEvents(state.status.userId) as Action
+          loadUserAbsenceEvents(state.status.userId) as Action
         );
       }
       if (state.status.roles.includes("STUDENT_PARENT")) {
