@@ -37,9 +37,13 @@ import {
   IframeDataset,
   ImageDataset,
   LinkDataset,
+  MaterialHighlight,
+  MaterialHighlightKind,
   WordDefinitionDataset,
 } from "../types";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { injectHtmlAnnotations } from "~/util/html";
+import MaterialHighlightComponent from "../highlights/material-highlight";
 
 //These are all our supported objects as for now
 const fieldComponents: { [key: string]: any } = {
@@ -125,6 +129,7 @@ interface BaseProps extends WithTranslation {
   onTakeFieldSnapshot?: (fieldName: string) => any;
   onDeleteFieldSnapshot?: (fieldName: string, snapshotId: number) => any;
   onFieldsSyncStatusChange?: (status: FieldsSyncStatus) => void;
+  highlights?: MaterialHighlight[];
 }
 
 /**
@@ -141,6 +146,21 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT = 666;
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY = 2000;
 // The client will wait this amount of milliseconds to trigger an update
 const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE = 666;
+
+/**
+ * Build elements from html
+ * @param html html
+ * @param highlights highlights
+ * @returns HTMLElement[]
+ */
+function buildElementsFromHtml(html: string, highlights: MaterialHighlight[]) {
+  const $dom = $(html);
+  // Inject highlights into the DOM copy BEFORE preprocessor.
+  // IMPORTANT: use ALL top-level nodes, not just $dom[0].
+  const roots = $dom.toArray() as HTMLElement[];
+  injectHtmlAnnotations(roots, highlights || []);
+  return preprocessor($dom).toArray() as HTMLElement[];
+}
 
 /**
  * Fixes the html inconsitencies because there are some of them which shouldn't but hey that's the case
@@ -268,9 +288,7 @@ class Base extends React.Component<BaseProps, BaseState> {
 
     // We preprocess the html
     this.state = {
-      elements: preprocessor(
-        $(props.material.html)
-      ).toArray() as Array<HTMLElement>,
+      elements: buildElementsFromHtml(props.material.html, props.highlights),
     };
 
     // prepare the registries
@@ -322,10 +340,14 @@ class Base extends React.Component<BaseProps, BaseState> {
    * @param prevProps previous props
    */
   componentDidUpdate(prevProps: BaseProps) {
-    if (this.props.material.html !== prevProps.material.html) {
-      const elements = preprocessor(
-        $(this.props.material.html)
-      ).toArray() as Array<HTMLElement>;
+    if (
+      this.props.material.html !== prevProps.material.html ||
+      this.props.highlights !== prevProps.highlights
+    ) {
+      const elements = buildElementsFromHtml(
+        this.props.material.html,
+        this.props.highlights
+      );
       this.setState({
         elements,
       });
@@ -973,6 +995,42 @@ class Base extends React.Component<BaseProps, BaseState> {
               this.props.material.path;
             props.src = path + "/" + src;
           }
+        },
+      },
+      {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
+        shouldProcessHTMLElement: (tagname, element) =>
+          tagname === "span" &&
+          element.hasAttribute("data-muikku-annotation-id"),
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
+        processingFunction: (tag, props, children, element) => {
+          const highlightIdRaw = element.getAttribute(
+            "data-muikku-annotation-id"
+          );
+          const highlightId = Number(highlightIdRaw);
+          const kind = (element.getAttribute("data-muikku-annotation-kind") ||
+            "highlight") as MaterialHighlightKind;
+          return (
+            <MaterialHighlightComponent
+              key={props.key}
+              highlightId={highlightId}
+              kind={kind}
+            >
+              {children}
+            </MaterialHighlightComponent>
+          );
         },
       },
     ];

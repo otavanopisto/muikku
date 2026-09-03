@@ -24,6 +24,8 @@ const devServer: Configuration = {
         "/login",
         "/logout",
         "/sounds",
+        "/tempFileUploadServlet",
+        "/communicatorAttachmentUploadServlet",
       ],
       target: "https://dev.muikkuverkko.fi:8443",
       secure: false,
