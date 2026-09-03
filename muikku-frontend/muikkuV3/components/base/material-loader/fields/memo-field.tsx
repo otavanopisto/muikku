@@ -58,8 +58,6 @@ function getCharacters(rawText: string) {
   // force a string just in case
   rawText = String(rawText);
 
-  // Remove any tags
-  rawText = rawText.replace(/<[^>]*>/g, "");
   return rawText
     .trim()
     .replace(/(\s|\r\n|\r|\n)+/g, "")
@@ -76,8 +74,6 @@ function getWords(rawText: string) {
   // force a string just in case
   rawText = String(rawText);
 
-  // Remove any tags
-  rawText = rawText.replace(/<[^>]*>/g, "");
   return rawText.trim().split(/\s+/);
 }
 
@@ -194,8 +190,6 @@ interface MemoFieldState {
   synced: boolean;
   syncError: string;
   fieldSavedState: FieldStateStatus;
-  /** False until stored value has been classified and converted for CKEditor. */
-  editorReady: boolean;
 }
 
 /**
@@ -218,13 +212,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     const storedValue = props.initialValue || "";
     const syncFormat = getMemoFieldContentFormatSync(storedValue);
-    const editorReady = true; // always sync now — no componentDidMount async needed
     const value = toMemoDisplayHtml(
       storedValue,
       syncFormat,
       replaceNewlinesWithBreaks
     );
-    const rawText = editorReady ? htmlToPlainText(value) : storedValue;
+    const rawText = htmlToPlainText(value);
 
     // set the state with the counts
     this.state = {
@@ -235,7 +228,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       synced: true,
       syncError: null,
       fieldSavedState: null,
-      editorReady,
     };
 
     this.onCKEditorKey = this.onCKEditorKey.bind(this);
@@ -245,29 +237,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.notifyLimit = this.notifyLimit.bind(this);
     this.renderField = this.renderField.bind(this);
     this.renderAnswerExample = this.renderAnswerExample.bind(this);
-  }
-
-  /**
-   * componentDidMount
-   */
-  componentDidMount() {
-    if (this.state.editorReady) {
-      return;
-    }
-    const storedValue = this.props.initialValue || "";
-    const format = getMemoFieldContentFormatSync(storedValue);
-    const html = toMemoDisplayHtml(
-      storedValue,
-      format,
-      replaceNewlinesWithBreaks
-    );
-    const rawText = htmlToPlainText(html);
-    this.setState({
-      value: html,
-      words: getWords(rawText).length,
-      characters: getCharacters(rawText).length,
-      editorReady: true,
-    });
   }
 
   /**
@@ -427,11 +396,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @returns JSX.Element
    */
   renderField(): JSX.Element {
-    if (!this.state.editorReady) {
-      return (
-        <span className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly" />
-      );
-    } else if (this.props.usedAs === "default") {
+    if (this.props.usedAs === "default") {
       if (this.props.readOnly) {
         return (
           <span
