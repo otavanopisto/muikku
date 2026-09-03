@@ -501,6 +501,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       this.state.fieldSavedState
     );
 
+    console.log(this.state.value);
+
     // and here the element itself
     return (
       <>
