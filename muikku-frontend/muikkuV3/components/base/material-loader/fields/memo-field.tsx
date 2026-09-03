@@ -26,10 +26,7 @@ import Dropdown from "~/components/general/dropdown";
 import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
-import {
-  getMemoFieldContentFormat,
-  getMemoFieldContentFormatSync,
-} from "~/util/memo-content-format";
+import { getMemoFieldContentFormatSync } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
 
 /**
@@ -258,19 +255,18 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       return;
     }
     const storedValue = this.props.initialValue || "";
-    getMemoFieldContentFormat(storedValue).then((format) => {
-      const html = toMemoDisplayHtml(
-        storedValue,
-        format,
-        replaceNewlinesWithBreaks
-      );
-      const rawText = htmlToPlainText(html);
-      this.setState({
-        value: html,
-        words: getWords(rawText).length,
-        characters: getCharacters(rawText).length,
-        editorReady: true,
-      });
+    const format = getMemoFieldContentFormatSync(storedValue);
+    const html = toMemoDisplayHtml(
+      storedValue,
+      format,
+      replaceNewlinesWithBreaks
+    );
+    const rawText = htmlToPlainText(html);
+    this.setState({
+      value: html,
+      words: getWords(rawText).length,
+      characters: getCharacters(rawText).length,
+      editorReady: true,
     });
   }
 

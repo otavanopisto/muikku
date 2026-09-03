@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  getMemoFieldContentFormat,
+  getMemoFieldContentFormatSync,
   MemoFieldContentFormat,
 } from "~/util/memo-content-format";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
@@ -43,11 +43,10 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
   React.useEffect(() => {
     let cancelled = false;
 
-    getMemoFieldContentFormat(value).then((result) => {
-      if (!cancelled) {
-        setFormat(result);
-      }
-    });
+    const format = getMemoFieldContentFormatSync(value);
+    if (!cancelled) {
+      setFormat(format);
+    }
 
     return () => {
       cancelled = true;
