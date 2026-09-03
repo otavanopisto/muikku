@@ -172,14 +172,6 @@ public class MuikkuEventRestModel {
     this.isPrivate = isPrivate;
   }
 
-  public boolean isSolved() {
-    return solved;
-  }
-
-  public void setSolved(boolean solved) {
-    this.solved = solved;
-  }
-
   private Long id;
   private Long eventId;
   private Long eventContainerId;
@@ -200,6 +192,5 @@ public class MuikkuEventRestModel {
   private List<MuikkuEventPropertyRestModel> properties = new ArrayList<>();
   private boolean editable;
   private boolean removable;
-  private boolean solved;
 
 }
