@@ -1,9 +1,5 @@
 import * as React from "react";
-import TextareaAutosize from "react-textarea-autosize";
-import {
-  getMemoFieldContentFormat,
-  MemoFieldContentFormat,
-} from "~/util/memo-content-format";
+import { getMemoFieldContentFormatSync } from "~/util/memo-content-format";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
 
 /**
@@ -36,55 +32,28 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
     characterCountLabel,
   } = props;
 
-  const [format, setFormat] = React.useState<MemoFieldContentFormat | null>(
-    null
+  const html = toMemoDisplayHtml(
+    value,
+    getMemoFieldContentFormatSync(value),
+    replaceNewlinesWithBreaks
   );
 
-  // Determine the format of the value
-  React.useEffect(() => {
-    let cancelled = false;
-
-    getMemoFieldContentFormat(value).then((result) => {
-      if (!cancelled) {
-        setFormat(result);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [value]);
-
-  // While validating: show plain (safe default)
-  const resolvedFormat: MemoFieldContentFormat = format ?? "plain";
-
-  // Convert the value to plain text if it's not HTML
-  const rawText = resolvedFormat === "html" ? htmlToPlainText(value) : value;
+  // Convert the HTML content to plain text
+  const rawText = htmlToPlainText(html);
 
   // Get the word and character counts
   const words = getWords(rawText).length;
   const characters = getCharacters(rawText).length;
 
   // Render the snapshot field
-  const snapshotField =
-    resolvedFormat === "html" ? (
-      <div
-        className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-        dangerouslySetInnerHTML={{
-          __html: toMemoDisplayHtml(
-            value,
-            resolvedFormat,
-            replaceNewlinesWithBreaks
-          ),
-        }}
-      />
-    ) : (
-      <TextareaAutosize
-        readOnly
-        className="memofield memofield--evaluation"
-        value={value}
-      />
-    );
+  const snapshotField = (
+    <div
+      className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
+      dangerouslySetInnerHTML={{
+        __html: html,
+      }}
+    />
+  );
 
   return (
     <span className="memofield-wrapper rs_skip_always">
