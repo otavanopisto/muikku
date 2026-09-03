@@ -34,9 +34,6 @@ import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
-import Button from "~/components/general/button";
-import { CreateAbsenceDialog } from "../../dialogs/create-absence";
-
 /**
  * WorkspaceUsersProps
  */

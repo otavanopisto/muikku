@@ -53,18 +53,6 @@ type AbsenceEventFormAction =
     };
 
 /**
- * createInitialAbsenceEventFormState
- * @returns Initial absence event form state
- */
-/* const createInitialAbsenceEventFormState = (): AbsenceEventFormState => ({
-  targetUser: null,
-  type: AbsenceEventEnum.Lesson,
-  description: "",
-  startDate: new Date(),
-  endDate: new Date(),
-}); */
-
-/**
  * absenceEventFormReducer
  * @param state Current form state
  * @param action Reducer action
@@ -121,11 +109,6 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   );
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  /**
-   * studentsLoader
-   * @param searchTerm Search term for student lookup
-   * @returns Async loader function
-   */
 
   /**
    * Handles the confirmation of the dialog

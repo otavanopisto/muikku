@@ -1912,6 +1912,15 @@ const deleteWorkspaceAbsenceEvent: DeleteWorkspaceAbsenceEventTriggerType =
         await eventsApi.deleteEvent({ eventId });
 
         if (!workspace) {
+          dispatch(
+            displayNotification(
+              i18n.t("notifications.removeSuccess", {
+                ns: "events",
+                context: "absence",
+              }),
+              "success"
+            )
+          );
           return;
         }
         const newEvents = workspace.absenceEvents?.filter(
@@ -1984,6 +1993,15 @@ const updateWorkspaceAbsenceEvent: UpdateWorkspaceAbsenceEventTriggerType =
         });
 
         if (!workspace) {
+          dispatch(
+            displayNotification(
+              i18n.t("notifications.updateSuccess", {
+                ns: "events",
+                context: "absence",
+              }),
+              "success"
+            )
+          );
           return;
         }
 
