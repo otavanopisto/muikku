@@ -1,9 +1,10 @@
 import * as React from "react";
 import {
-  getMemoFieldContentFormat,
+  getMemoFieldContentFormatSync,
   MemoFieldContentFormat,
 } from "~/util/memo-content-format";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
  * Memo field snapshot content props
@@ -43,11 +44,10 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
   React.useEffect(() => {
     let cancelled = false;
 
-    getMemoFieldContentFormat(value).then((result) => {
-      if (!cancelled) {
-        setFormat(result);
-      }
-    });
+    const format = getMemoFieldContentFormatSync(value);
+    if (!cancelled) {
+      setFormat(format);
+    }
 
     return () => {
       cancelled = true;
@@ -66,16 +66,15 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
 
   // Render the snapshot field
   const snapshotField = (
-    <div
-      className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-      dangerouslySetInnerHTML={{
-        __html: toMemoDisplayHtml(
+    <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation">
+      <CkeditorLoaderContent
+        html={toMemoDisplayHtml(
           value,
           resolvedFormat,
           replaceNewlinesWithBreaks
-        ),
-      }}
-    />
+        )}
+      />
+    </div>
   );
 
   return (

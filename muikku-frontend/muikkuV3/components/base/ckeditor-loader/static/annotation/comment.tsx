@@ -3,21 +3,19 @@ import Dropdown from "~/components/general/dropdown";
 import { EmbeddedCommentDataset } from "~/components/base/material-loader/types";
 
 /**
- * Evaluation highlight props
+ * Comment annotation props
  */
-interface EmbedAnnotationCommentProps {
+interface CommentAnnotationProps {
   dataset: EmbeddedCommentDataset;
   children?: React.ReactNode;
 }
 
 /**
- * Evaluation highlight
+ * Comment annotation
  * @param props - Evaluation highlight props
  * @returns Evaluation highlight
  */
-export default function EmbedAnnotationComment(
-  props: EmbedAnnotationCommentProps
-) {
+export default function CommentAnnotation(props: CommentAnnotationProps) {
   const note = props.dataset.text;
 
   const mark = (
@@ -39,7 +37,7 @@ export default function EmbedAnnotationComment(
     <Dropdown
       openByHover
       openByHoverIsClickToo
-      modifier="embedded-comment"
+      modifier="comment"
       content={note}
     >
       {mark}

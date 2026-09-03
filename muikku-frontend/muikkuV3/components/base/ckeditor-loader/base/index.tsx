@@ -11,8 +11,8 @@ import {
   ImageDataset,
   LinkDataset,
 } from "../../material-loader/types";
-import EmbedAnnotationHighlight from "../static/embedded-annotation/highlight";
-import EmbedAnnotationComment from "../static/embedded-annotation/comment";
+import EmbedAnnotationHighlight from "../static/annotation/highlight";
+import CommentAnnotation from "../static/annotation/comment";
 
 /**
  * BaseProps
@@ -233,7 +233,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         },
       },
       {
-        id: "embed-annotation-rule",
+        id: "annotation-rule",
 
         /**
          * shouldProcessHTMLElement
@@ -260,9 +260,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           const dataset = extractDataSet<EmbeddedAnnotationDataset>(element);
           if (dataset.type === "comment") {
             return (
-              <EmbedAnnotationComment key={props.key} dataset={dataset}>
+              <CommentAnnotation key={props.key} dataset={dataset}>
                 {children}
-              </EmbedAnnotationComment>
+              </CommentAnnotation>
             );
           }
           return (

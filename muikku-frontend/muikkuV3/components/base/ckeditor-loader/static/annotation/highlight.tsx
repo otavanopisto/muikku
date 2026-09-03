@@ -4,7 +4,7 @@ import { EmbeddedHighlightDataset } from "~/components/base/material-loader/type
 /**
  * Evaluation highlight props
  */
-interface EmbedAnnotationHighlightProps {
+interface HighlightAnnotationProps {
   dataset: EmbeddedHighlightDataset;
   children?: React.ReactNode;
 }
@@ -14,8 +14,6 @@ interface EmbedAnnotationHighlightProps {
  * @param props - Evaluation highlight props
  * @returns Evaluation highlight
  */
-export default function EmbedAnnotationHighlight(
-  props: EmbedAnnotationHighlightProps
-) {
+export default function HighlightAnnotation(props: HighlightAnnotationProps) {
   return <mark data-type="highlight">{props.children}</mark>;
 }

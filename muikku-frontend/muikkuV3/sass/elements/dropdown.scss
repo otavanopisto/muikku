@@ -87,7 +87,7 @@
 }
 
 .dropdown--word-definition,
-.dropdown--embedded-comment {
+.dropdown--comment {
   max-width: 400px;
 
   .dropdown__container {
@@ -115,7 +115,7 @@
   }
 }
 
-.dropdown--embedded-comment {
+.dropdown--comment {
   .dropdown__container {
     background: lighten($color-annotation-note, 5%);
     border: 1px solid darken($color-annotation-note, 30%);

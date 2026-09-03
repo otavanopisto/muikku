@@ -27,10 +27,7 @@ import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
 import AddEvaluationCommentsDrawer from "./add-evaluation-comments-drawer";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
-import {
-  getMemoFieldContentFormat,
-  getMemoFieldContentFormatSync,
-} from "~/util/memo-content-format";
+import { getMemoFieldContentFormatSync } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import CkeditorLoaderContent from "../../ckeditor-loader/content";
@@ -299,19 +296,18 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     }
     // console.log("componentDidMount");
     const storedValue = this.props.initialValue || "";
-    getMemoFieldContentFormat(storedValue).then((format) => {
-      const html = toMemoDisplayHtml(
-        storedValue,
-        format,
-        replaceNewlinesWithBreaks
-      );
-      const rawText = htmlToPlainText(html);
-      this.setState({
-        value: html,
-        words: getWords(rawText).length,
-        characters: getCharacters(rawText).length,
-        editorReady: true,
-      });
+    const format = getMemoFieldContentFormatSync(storedValue);
+    const html = toMemoDisplayHtml(
+      storedValue,
+      format,
+      replaceNewlinesWithBreaks
+    );
+    const rawText = htmlToPlainText(html);
+    this.setState({
+      value: html,
+      words: getWords(rawText).length,
+      characters: getCharacters(rawText).length,
+      editorReady: true,
     });
   }
 
