@@ -31,6 +31,7 @@ import {
   ExamSettings,
   ExamAttendee,
   ExamAttendance,
+  MuikkuEvent,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -125,7 +126,7 @@ export interface WorkspaceDataType {
   educationTypeName?: string;
   courseLength?: number | null;
   courseLengthSymbol?: string | null;
-
+  absenceEvents?: MuikkuEvent[];
   /**
    * aka "modules", always contains at least one or more if it is combination workspace
    */
@@ -324,7 +325,7 @@ export interface WorkspacesState {
   hasMore: boolean;
   toolbarLock: boolean;
   settings: WorkspaceSettings;
-
+  absenceEvents: MuikkuEvent[];
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
   // Whether workspace materials are disabled (e.g. being evaluated or all modules are in pass state)
@@ -371,6 +372,7 @@ const initialWorkspacesState: WorkspacesState = {
   hasMore: false,
   toolbarLock: false,
   settings: null,
+  absenceEvents: [],
   editMode: {
     active: false,
     available: false,

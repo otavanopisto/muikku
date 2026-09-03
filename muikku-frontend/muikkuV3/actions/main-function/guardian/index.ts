@@ -16,9 +16,7 @@ import {
 } from "~/generated/client/models";
 import { ReducerStatusType } from "~/reducers/types";
 import notificationActions from "~/actions/base/notifications";
-import { Action, Dispatch } from "redux";
 import MApi, { isMApiError } from "~/api/api";
-import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
 import {
   CurriculumConfig,
@@ -318,14 +316,14 @@ export interface UpdateCurrentDependantSelectedEducationTypeCodeTriggerType {
  * UpdateDependantAbsenceEventPropertyTriggerType
  */
 export interface UpdateDependantAbsenceEventPropertyTriggerType {
-  (userId: number, data: UpdateEventPropertyRequest): AnyActionType;
+  (data: UpdateEventPropertyRequest, studentId: number): AnyActionType;
 }
 
 /**
  * UpdateDependantAbsenceEventPropertyTriggerType
  */
 export interface CreateDependantAbsenceEventPropertyTriggerType {
-  (userId: number, data: CreateEventPropertyRequest): AnyActionType;
+  (data: CreateEventPropertyRequest, studentId: number): AnyActionType;
 }
 /**
  * Thunk function to load dependants
@@ -1054,18 +1052,18 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
 
 /**
  * createAbsenceEventProperty thunk function
- * @param userId user id
  * @param data data for creation
+ * @param studentId student user id
  */
 const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType =
-  function createAbsenceEventProperty(userId, data) {
+  function createAbsenceEventProperty(data, studentId) {
     return async (dispatch) => {
       try {
         const property = await eventsApi.createEventProperty(data);
 
         dispatch({
           type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-          payload: { userId, property },
+          payload: { userId: studentId, property },
         });
 
         dispatch(
@@ -1100,18 +1098,18 @@ const createAbsenceEventProperty: CreateDependantAbsenceEventPropertyTriggerType
 
 /**
  * updateAbsenceEventProperty thunk function
- * @param userId student user id
  * @param data data for creatio0n
+ * @param studentId student user id
  */
 const updateAbsenceEventProperty: UpdateDependantAbsenceEventPropertyTriggerType =
-  function updateAbsenceEventProperty(userId, data) {
+  function updateAbsenceEventProperty(data, studentId) {
     return async (dispatch) => {
       try {
         const property = await eventsApi.updateEventProperty(data);
 
         dispatch({
           type: "GUARDIAN_UPDATE_DEPENDANT_ABSENCE_PROPERTY",
-          payload: { userId, property },
+          payload: { userId: studentId, property },
         });
 
         dispatch(

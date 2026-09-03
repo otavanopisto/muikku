@@ -2642,10 +2642,15 @@
       "editFeedback": "Muokkaa selvitystä",
       "create": "Luo tapahtuma",
       "edit": "Muokkaa tapahtumaa",
-      "remove": "Poista tapahtuma"
+      "edit_absence": "Muokkaa poissaoloa",
+      "remove": "Poista tapahtuma",
+      "remove_absence": "Poista poissaolo",
+      "update": "Päivitä tapahtuma",
+      "update_absence": "Päivitä poissaolo"
     },
     "labels": {
       "absence": "Poissaolo",
+      "absenceCreator": "Poissaolon merkinnyt: {{creator}}",
       "absenceDetails": "Poissaolon tiedot",
       "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
       "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
@@ -2653,7 +2658,10 @@
       "absencePeriod": "Ajankohta:",
       "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
-      "absence_explanation": "Selitys poissaololle",
+      "absencesSummary": "Poissaolojen yhteenveto",
+      "absencesWithFeedback": "Selvitettyjä poissaoloja",
+      "absencesWithoutFeedback": "Poissaoloja ilman selvitystä",
+      "editAbsence": "Muokkaa poissaoloa",
       "end": "Päättyy",
       "event": "Tapahtuma",
       "eventBeginning": "Alkaa",
@@ -2666,13 +2674,18 @@
       "pickAbsenceStudents": "Valitse poissaolijat",
       "property": "Tuntematon ominaisuus",
       "property_ABSENCE_REASON": "Poissaolon syy",
+      "remove": "Poista tapahtuma",
+      "remove_absence": "Poista poissaolo",
       "reason": "Syy",
       "start": "Alkaa",
-      "selectAbsenceReason": "Poissaolon syy"
+      "selectAbsenceReason": "Poissaolon syy",
+      "totalAbsences": "Yhteensä poissaoloja"
     },
     "content": {
       "empty": "Ei tapahtumia",
-      "removing": "Oletko varma, että haluat poistaa tapahtuman?"
+      "empty_absence": "Ei poissaoloja",
+      "removing": "Oletko varma, että haluat poistaa tapahtuman?",
+      "removing_absence": "Oletko varma, että haluat poistaa poissaolon: {{label}}, käyttäjältä {{userName}}?"
     },
     "types": {
       "LESSON": "Oppitunti",
@@ -2687,23 +2700,33 @@
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Poissaololle ei ollut lupaa (selvitetty)"
     },
     "notifications": {
+      "absenceEventIdRequiredError": "Poissaolotapahtuman tunniste puuttuu",
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui",
       "createError": "Tapahtuman luonti epäonnistui: {{error}}",
       "createError_absence": "Poissaolon merkitseminen epäonnistui: {{error}}",
       "createPropertyError": "Tapahtuman ominaisuuden luonti epäonnistui: {{error}}",
       "createPropertyError_absence": "Poissaoloselvityksen luonti epäonnistui: {{error}}",
       "createPropertySuccess": "Tapahtuman ominaisuuden luonti onnistui",
-      "createPropertySuccess_absence": "Poisssaoloselvityksen luonti onnistui",
+      "createPropertySuccess_absence": "Poissaoloselvityksen luonti onnistui",
       "createSuccess": "Tapahtuman luonti onnistui",
       "createSuccess_absence": "Poissaolon merkitseminen onnistui",
+      "endDateRequired": "Loppuaika on pakollinen tieto",
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
+      "noWorkspaceEventContainerIdError": "Kurssin kalenteritunniste puuttuu",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
+      "removeError_absence": "Poissaolotapahtuman poisto epäonnistui: {{error}}",
+      "removeSuccess": "Tapahtuman poisto onnistui",
+      "removeSuccess_absence": "Poissaolon poisto onnistui",
+      "startDateRequired": "Alkuaika on pakollinen tieto",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
+      "updateError_absence": "Poissaolon päivittäminen epäonnistui: {{error}}",
       "updatePropertyError": "Tapahtuman ominaisuuden päivitys epäonnistui: {{error}}. Yritä uudelleen.",
       "updatePropertyError_absence": "Poissaoloselvityksen päivitys epäonnistui: {{error}}. Yritä uudelleen.",
       "updatePropertySuccess": "Tapahtuman ominaisuuden päivitys onnistui",
-      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui"
+      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui",
+      "updateSuccess": "Tapahtuman päivittäminen onnistui",
+      "updateSuccess_absence": "Poissaolon päivittäminen onnistui"
     }
   },
   "orders": {
