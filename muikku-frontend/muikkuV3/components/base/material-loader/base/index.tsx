@@ -37,13 +37,13 @@ import {
   IframeDataset,
   ImageDataset,
   LinkDataset,
-  MaterialHighlight,
-  MaterialHighlightKind,
+  NotebookAnnotation,
+  NotebookAnnotationKind,
   WordDefinitionDataset,
 } from "../types";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { injectHtmlAnnotations } from "~/util/html";
-import MaterialHighlightComponent from "../highlights/material-highlight";
+import NotebookAnnotationComponent from "../external-annotations/notebook-annotation";
 
 //These are all our supported objects as for now
 const fieldComponents: { [key: string]: any } = {
@@ -137,7 +137,7 @@ interface BaseProps extends WithTranslation {
     onSuccess: () => void,
     onFail: () => void
   ) => void;
-  highlights?: MaterialHighlight[];
+  highlights?: NotebookAnnotation[];
 }
 
 /**
@@ -161,7 +161,7 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
  * @param highlights highlights
  * @returns HTMLElement[]
  */
-function buildElementsFromHtml(html: string, highlights: MaterialHighlight[]) {
+function buildElementsFromHtml(html: string, highlights: NotebookAnnotation[]) {
   const $dom = $(html);
   // Inject highlights into the DOM copy BEFORE preprocessor.
   // IMPORTANT: use ALL top-level nodes, not just $dom[0].
@@ -1014,7 +1014,7 @@ class Base extends React.Component<BaseProps, BaseState> {
          */
         shouldProcessHTMLElement: (tagname, element) =>
           tagname === "span" &&
-          element.hasAttribute("data-muikku-annotation-id"),
+          element.hasAttribute("data-external-annotation-id"),
         /**
          * processingFunction
          * @param tag tag
@@ -1024,20 +1024,20 @@ class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const highlightIdRaw = element.getAttribute(
-            "data-muikku-annotation-id"
+          const annotationIdRaw = element.getAttribute(
+            "data-external-annotation-id"
           );
-          const highlightId = Number(highlightIdRaw);
-          const kind = (element.getAttribute("data-muikku-annotation-kind") ||
-            "highlight") as MaterialHighlightKind;
+          const annotationId = Number(annotationIdRaw);
+          const kind = (element.getAttribute("data-external-annotation-kind") ||
+            "highlight") as NotebookAnnotationKind;
           return (
-            <MaterialHighlightComponent
+            <NotebookAnnotationComponent
               key={props.key}
-              highlightId={highlightId}
+              notebookAnnotationId={annotationId}
               kind={kind}
             >
               {children}
-            </MaterialHighlightComponent>
+            </NotebookAnnotationComponent>
           );
         },
       },

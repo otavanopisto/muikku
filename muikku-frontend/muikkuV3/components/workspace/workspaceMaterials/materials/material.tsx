@@ -50,7 +50,7 @@ import {
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DISABLED_FIELD_FEATURES_CAPABILITIES } from "~/components/base/material-loader/helpers";
-import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { NotebookAnnotation } from "~/components/base/material-loader/types";
 
 /**
  * WorkspaceMaterialProps
@@ -65,7 +65,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
   notebookAddNoteComponent?: JSX.Element;
-  highlights: MaterialHighlight[];
+  highlights: NotebookAnnotation[];
   // Redux state properties
   status: StatusType;
   websocket: WebsocketStateType;

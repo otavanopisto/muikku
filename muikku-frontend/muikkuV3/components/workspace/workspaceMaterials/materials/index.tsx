@@ -51,7 +51,7 @@ import {
 import { BackToToc } from "~/components/general/toc";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 import MaterialSelectionPopover from "./material-selection-popover";
-import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { NotebookAnnotation } from "~/components/base/material-loader/types";
 import { getMaterialHighlightsByPageFromNotes } from "~/helper-functions/notebook";
 import {
   beginNotebookV2ContextNoteDraft,
@@ -61,7 +61,7 @@ import {
   beginNotebookV2MaterialNoteDraft,
   BeginNotebookV2MaterialNoteDraft,
 } from "~/actions/notebook/notebookV2";
-import { filterActiveMaterialHighlights } from "~/util/html";
+import { filterActiveAnnotations } from "~/util/html";
 import {
   getContextNoteDraftHighlightsForPage,
   NotebookContextNoteDraft,
@@ -185,20 +185,17 @@ class WorkspaceMaterials extends React.Component<
   private getHighlightsForPage(
     workspaceMaterialId: number,
     materialHtml: string
-  ): MaterialHighlight[] {
+  ): NotebookAnnotation[] {
     const fromNotebook =
       getMaterialHighlightsByPageFromNotes(this.props.noteBookNotes ?? [])[
         workspaceMaterialId
       ] ?? [];
-    const savedHighlights = filterActiveMaterialHighlights(
-      materialHtml,
-      fromNotebook
-    );
+    const savedHighlights = filterActiveAnnotations(materialHtml, fromNotebook);
     const draftHighlights = getContextNoteDraftHighlightsForPage(
       this.props.notebookContextNoteDrafts ?? [],
       workspaceMaterialId
     );
-    const activeDraftHighlights = filterActiveMaterialHighlights(
+    const activeDraftHighlights = filterActiveAnnotations(
       materialHtml,
       draftHighlights
     );

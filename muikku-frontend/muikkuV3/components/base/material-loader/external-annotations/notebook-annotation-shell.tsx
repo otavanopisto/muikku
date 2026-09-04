@@ -1,30 +1,30 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotebookV2ActiveItem } from "~/actions/notebook/notebookV2";
-import { MaterialHighlightKind } from "~/components/base/material-loader/types";
+import { NotebookAnnotationKind } from "~/components/base/material-loader/types";
 import { StateType } from "~/reducers";
 
 /**
- * MaterialHighlightShellProps
+ * NotebookAnnotationShellProps
  */
-export interface MaterialHighlightShellProps {
-  highlightId: number;
-  kind: MaterialHighlightKind;
+export interface NotebookAnnotationShellProps {
+  notebookAnnotationId: number;
+  kind: NotebookAnnotationKind;
   children: React.ReactNode;
   className?: string;
   onActivateExtra?: () => void;
 }
 
-type Props = MaterialHighlightShellProps &
+type Props = NotebookAnnotationShellProps &
   React.HTMLAttributes<HTMLSpanElement>;
 
 /**
  * MaterialHighlightShell
  */
-const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
+const NotebookAnnotationShell = React.forwardRef<HTMLSpanElement, Props>(
   (props, ref) => {
     const {
-      highlightId,
+      notebookAnnotationId,
       kind,
       children,
       className,
@@ -39,7 +39,7 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
     );
 
     const itemUiMode = useSelector(
-      (state: StateType) => state.notebookV2.noteUiById[highlightId]
+      (state: StateType) => state.notebookV2.noteUiById[notebookAnnotationId]
     );
 
     const deletingModeActive = itemUiMode?.kind === "deleting";
@@ -61,7 +61,7 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
         return; // let selection-context-popover own this gesture
       }
 
-      dispatch(setNotebookV2ActiveItem(highlightId));
+      dispatch(setNotebookV2ActiveItem(notebookAnnotationId));
       onActivateExtra?.();
       onClick?.(e); // let Dropdown handlers run too
     };
@@ -73,12 +73,12 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
     const handleKeyDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        dispatch(setNotebookV2ActiveItem(highlightId));
+        dispatch(setNotebookV2ActiveItem(notebookAnnotationId));
         onActivateExtra?.();
       }
     };
 
-    const isActive = activeItemId === highlightId;
+    const isActive = activeItemId === notebookAnnotationId;
 
     const classes = [
       "material-annotation",
@@ -94,8 +94,8 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
       <span
         ref={ref}
         className={classes}
-        data-muikku-annotation-id={highlightId.toString()}
-        data-muikku-annotation-kind={kind}
+        data-external-annotation-id={notebookAnnotationId.toString()}
+        data-external-annotation-kind={kind}
         role="button"
         tabIndex={0}
         onClick={handleClick}
@@ -108,5 +108,5 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
   }
 );
 
-MaterialHighlightShell.displayName = "MaterialHighlightShell";
-export default MaterialHighlightShell;
+NotebookAnnotationShell.displayName = "NotebookAnnotationShell";
+export default NotebookAnnotationShell;
