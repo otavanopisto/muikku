@@ -81,25 +81,6 @@ export interface CKEditorPasteEventInfo {
 }
 
 /**
- * CKEditorEventInfo class definition
- */
-// export interface CKEditorEventInfo {
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   editor: any;
-//   data: {
-//     dataValue: string;
-//   };
-//   /**
-//    * cancel method
-//    */
-//   cancel(): void;
-//   /**
-//    * stop method
-//    */
-//   stop(): void;
-// }
-
-/**
  * CKEditorProps
  */
 interface CKEditorProps {

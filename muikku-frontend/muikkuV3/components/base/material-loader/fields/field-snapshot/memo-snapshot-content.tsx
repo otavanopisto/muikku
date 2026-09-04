@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  getMemoFieldContentFormatSync,
-  MemoFieldContentFormat,
-} from "~/util/memo-content-format";
+import { getMemoFieldContentFormatSync } from "~/util/memo-content-format";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
@@ -36,29 +33,14 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
     characterCountLabel,
   } = props;
 
-  const [format, setFormat] = React.useState<MemoFieldContentFormat | null>(
-    null
+  const html = toMemoDisplayHtml(
+    value,
+    getMemoFieldContentFormatSync(value),
+    replaceNewlinesWithBreaks
   );
 
-  // Determine the format of the value
-  React.useEffect(() => {
-    let cancelled = false;
-
-    const format = getMemoFieldContentFormatSync(value);
-    if (!cancelled) {
-      setFormat(format);
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [value]);
-
-  // While validating: show plain (safe default)
-  const resolvedFormat: MemoFieldContentFormat = format ?? "plain";
-
-  // Convert the value to plain text if it's not HTML
-  const rawText = resolvedFormat === "html" ? htmlToPlainText(value) : value;
+  // Convert the HTML content to plain text
+  const rawText = htmlToPlainText(html);
 
   // Get the word and character counts
   const words = getWords(rawText).length;
@@ -67,13 +49,7 @@ export const MemoSnapshotContent = (props: MemoSnapshotContentProps) => {
   // Render the snapshot field
   const snapshotField = (
     <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation">
-      <CkeditorLoaderContent
-        html={toMemoDisplayHtml(
-          value,
-          resolvedFormat,
-          replaceNewlinesWithBreaks
-        )}
-      />
+      <CkeditorLoaderContent html={html} />
     </div>
   );
 
