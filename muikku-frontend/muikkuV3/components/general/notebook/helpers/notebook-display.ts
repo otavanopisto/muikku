@@ -60,10 +60,10 @@ export function getNotebookItemClassName(note: NotebookNote): string {
     return "notebook__item--material";
   }
   if (isNotebookContextHighlight(note)) {
-    return "notebook__item--context notebook__item--highlight";
+    return "notebook__item--annotation notebook__item--highlight";
   }
   if (isNotebookContextNote(note)) {
-    return "notebook__item--context notebook__item--context-note";
+    return "notebook__item--annotation notebook__item--note";
   }
   return "";
 }
@@ -119,4 +119,18 @@ export function buildEditedNotebookNote(
   }
 
   return null;
+}
+
+/**
+ * Resolves whether to show the title input.
+ * @param note note
+ */
+export function resolveShowTitle(note: NotebookNote): boolean {
+  switch (note.type) {
+    case NotebookNoteType.Workspace:
+    case NotebookNoteType.WorkspaceMaterial:
+      return true;
+    default:
+      return false;
+  }
 }

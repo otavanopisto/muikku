@@ -24,8 +24,10 @@ interface NotebookMaterialSectionProps {
 const NotebookMaterialSection = (props: NotebookMaterialSectionProps) => {
   const { groups, storageKey } = props;
   const { t } = useTranslation("notebook");
-  const { isOpen, toggle, openAll, closeAll } =
-    useNotebookOpenItems(storageKey);
+  const { isOpen, toggle, openAll, closeAll } = useNotebookOpenItems(
+    storageKey,
+    collectMaterialNoteIds(groups)
+  );
 
   if (!groups.length) {
     return null;
@@ -48,7 +50,12 @@ const NotebookMaterialSection = (props: NotebookMaterialSectionProps) => {
   return (
     <section className="notebook__section notebook__section--material">
       <div className="notebook__section-header notebook__section-header--material">
-        <h3 className="notebook__section-title">Sivukohtaiset muistiinpanot</h3>
+        <h3 className="notebook__section-title">
+          {t("labels.noteSectionTitle", {
+            ns: "notebook",
+            context: "page",
+          })}
+        </h3>
         <div className="notebook__section-actions">
           <Dropdown
             openByHover

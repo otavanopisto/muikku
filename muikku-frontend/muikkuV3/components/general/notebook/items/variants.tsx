@@ -5,12 +5,9 @@ import { useTranslation } from "react-i18next";
 import {
   getNotebookItemClassName,
   getNotebookNoteBodyHtml,
-  getNotebookNoteListTitle,
 } from "../helpers/notebook-display";
 import { useNotebookEditableNoteItem } from "../hooks/useNotebookEditableNoteItem";
-import NotebookItemDeleteConfirm from "./notebook-item-delete-confirm";
 import NotebookItemShell from "./notebook-item-shell";
-import NotebookNoteEditor from "../notebook-note-editor";
 import {
   MaterialNotebookNote,
   WorkspaceNotebookNote,
@@ -21,6 +18,7 @@ import NotebookItemOrphanBadge from "./notebook-item-orphan-badge";
 import { resolveNotebookContextOrphanStatus } from "../helpers/notebook-annotation-status";
 import { useNotebookNoteItemCore } from "../hooks/useNotebookNoteItemCore";
 import { useNotebookContextHighlightUpgrade } from "../hooks/useNotebookContextHighlightUpgrade";
+import NotebookNoteEditor from "../notebook-note-editor";
 
 export type NotebookWorkspaceNoteItemProps = Omit<
   NotebookNoteItemProps,
@@ -58,7 +56,10 @@ export const NotebookWorkspaceNoteItem = (
         </Dropdown>
       )}
       {item.canDelete && !item.isEditing && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "note" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -83,13 +84,6 @@ export const NotebookWorkspaceNoteItem = (
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
       editPanel={
         <NotebookNoteEditor
           mode={item.isDraft ? "create" : "edit"}
@@ -139,7 +133,10 @@ export const NotebookMaterialNoteItem = (
         </Dropdown>
       )}
       {item.canDelete && !item.isEditing && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "note" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -160,26 +157,9 @@ export const NotebookMaterialNoteItem = (
       open={item.open}
       onToggle={() => onToggle(note.id)}
       itemClassName={getNotebookItemClassName(note)}
-      editing={item.isEditing}
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
-      editPanel={
-        <NotebookNoteEditor
-          mode={item.isDraft ? "create" : "edit"}
-          initialTitle={item.title}
-          initialText={item.bodyHtml}
-          onSave={item.handleEditSave}
-          onCancel={item.handleEditCancel}
-        />
-      }
     />
   );
 };
@@ -234,7 +214,10 @@ export const NotebookContextNoteItem = (
         </Dropdown>
       )}
       {item.canDelete && !item.isEditing && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "note" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -251,32 +234,14 @@ export const NotebookContextNoteItem = (
       active={item.activeItemId === note.id}
       orphaned={orphanStatus?.isOrphaned ?? false}
       onActivate={item.handleActivate}
-      title={item.title}
       titleAdornment={titleAdornment}
       bodyHtml={item.bodyHtml}
       open={item.open}
       onToggle={() => onToggle(note.id)}
       itemClassName={getNotebookItemClassName(note)}
-      editing={item.isEditing}
       deleting={item.deleteActive}
       extraActions={extraActions}
       draftClientId={item.isDraft ? note.id : undefined}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
-      editPanel={
-        <NotebookNoteEditor
-          mode={item.isDraft ? "create" : "edit"}
-          initialTitle={item.title}
-          initialText={item.bodyHtml}
-          onSave={item.handleEditSave}
-          onCancel={item.handleEditCancel}
-        />
-      }
     />
   );
 };
@@ -320,10 +285,10 @@ export const NotebookContextHighlightItem = (
   const extraActions = (
     <>
       {!upgrade.isUpgrading && !item.deleteActive && (
-        <Dropdown openByHover content={<p>Upgrade to note</p>}>
+        <Dropdown openByHover content={<p>{t("actions.upgrade")}</p>}>
           <IconButton
-            icon="plus"
-            aria-label="Upgrade to note"
+            icon="note-add"
+            aria-label={t("actions.upgrade")}
             onClick={() => {
               item.cancelDelete();
               upgrade.beginUpgrade();
@@ -333,7 +298,10 @@ export const NotebookContextHighlightItem = (
         </Dropdown>
       )}
       {item.canDelete && !upgrade.isUpgrading && (
-        <Dropdown openByHover content={<p>{t("actions.remove")}</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.remove", { context: "highlight" })}</p>}
+        >
           <IconButton
             icon="trash"
             onClick={item.toggleDelete}
@@ -348,7 +316,6 @@ export const NotebookContextHighlightItem = (
       noteId={note.id}
       active={item.activeItemId === note.id}
       onActivate={item.handleActivate}
-      title={getNotebookNoteListTitle(note)}
       bodyHtml={getNotebookNoteBodyHtml(note)}
       open={open}
       onToggle={() => onToggle(note.id)}
@@ -358,22 +325,6 @@ export const NotebookContextHighlightItem = (
       extraActions={extraActions}
       orphaned={orphanStatus?.isOrphaned ?? false}
       titleAdornment={titleAdornment}
-      deleteConfirm={
-        <NotebookItemDeleteConfirm
-          active={item.deleteActive}
-          onConfirm={item.handleDeleteConfirm}
-          onCancel={item.cancelDelete}
-        />
-      }
-      editPanel={
-        <NotebookNoteEditor
-          mode="edit"
-          initialTitle={upgrade.editorDefaults.title}
-          initialText={upgrade.editorDefaults.text}
-          onSave={upgrade.saveUpgrade}
-          onCancel={upgrade.cancelUpgrade}
-        />
-      }
     />
   );
 };

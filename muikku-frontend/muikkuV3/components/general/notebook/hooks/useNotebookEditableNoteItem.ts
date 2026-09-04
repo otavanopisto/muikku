@@ -1,8 +1,10 @@
 import * as React from "react";
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
+  beginNotebookV2NoteEdit,
   cancelNotebookV2Draft,
+  cancelNotebookV2NoteEdit,
   saveNotebookV2ContextNoteDraft,
   saveNotebookV2MaterialDraft,
   saveNotebookV2WorkspaceDraft,
@@ -15,6 +17,8 @@ import {
   isNotebookNoteEditable,
 } from "../helpers/notebook-display";
 import { useNotebookNoteItemCore } from "./useNotebookNoteItemCore";
+import { StateType } from "~/reducers";
+import { isNotebookNoteEditing } from "~/reducers/notebook/notebookV2";
 
 type UseNotebookEditableNoteItemArgs = {
   note: NotebookNote;
@@ -34,23 +38,32 @@ export function useNotebookEditableNoteItem(
 
   const core = useNotebookNoteItemCore({ note, isDraft: isDraftProp });
 
-  const [isEditing, setIsEditing] = React.useState(core.isDraft);
-
-  React.useEffect(() => {
-    if (core.isDraft) {
-      setIsEditing(true);
-    }
-  }, [core.isDraft]);
+  const noteUiById = useSelector((s: StateType) => s.notebookV2.noteUiById);
+  const isEditing = isNotebookNoteEditing(noteUiById, note.id, core.isDraft);
 
   const canEdit = isNotebookNoteEditable(note) && !core.isDraft;
 
   /**
    * Handles the edit click action.
    */
-  const handleEditClick = React.useCallback(() => {
-    core.cancelDelete();
-    setIsEditing(true);
-  }, [core]);
+  const handleEditClick = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.stopPropagation();
+      dispatch(beginNotebookV2NoteEdit(note.id));
+    },
+    [dispatch, note.id]
+  );
+
+  /**
+   * Handles the edit cancel action.
+   */
+  const handleEditCancel = React.useCallback(() => {
+    if (core.isDraft) {
+      dispatch(cancelNotebookV2Draft(note.id));
+      return;
+    }
+    dispatch(cancelNotebookV2NoteEdit(note.id));
+  }, [core.isDraft, dispatch, note.id]);
 
   /**
    * Handles the draft save action.
@@ -62,7 +75,6 @@ export function useNotebookEditableNoteItem(
         title,
         text,
         // eslint-disable-next-line jsdoc/require-jsdoc
-        success: () => setIsEditing(false),
       };
 
       if (note.type === NotebookNoteType.Workspace) {
@@ -99,23 +111,11 @@ export function useNotebookEditableNoteItem(
         updateEditedNotebookV2Entry({
           editedEntry,
           // eslint-disable-next-line jsdoc/require-jsdoc
-          success: () => setIsEditing(false),
         })
       );
     },
     [core.isDraft, dispatch, handleDraftSave, note]
   );
-
-  /**
-   * Handles the edit cancel action.
-   */
-  const handleEditCancel = React.useCallback(() => {
-    if (core.isDraft) {
-      dispatch(cancelNotebookV2Draft(note.id));
-      return;
-    }
-    setIsEditing(false);
-  }, [core.isDraft, dispatch, note.id]);
 
   return {
     ...core,

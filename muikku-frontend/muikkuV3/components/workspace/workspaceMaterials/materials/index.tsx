@@ -66,7 +66,6 @@ import {
   getContextNoteDraftHighlightsForPage,
   NotebookContextNoteDraft,
 } from "~/components/general/notebook/helpers/notebook-drafts";
-import { syncActiveMaterialHighlight } from "~/components/general/notebook/helpers/notebook-active-item";
 
 /**
  * WorkspaceMaterialsProps
@@ -167,16 +166,6 @@ class WorkspaceMaterials extends React.Component<
     if (this.props.materials !== prevProps.materials) {
       this.getFlattenedMaterials(this.props);
     }
-    if (
-      this.props.activeNotebookItemId !== prevProps.activeNotebookItemId ||
-      this.props.noteBookNotes !== prevProps.noteBookNotes ||
-      this.props.notebookContextNoteDrafts !==
-        prevProps.notebookContextNoteDrafts
-    ) {
-      window.requestAnimationFrame(() => {
-        syncActiveMaterialHighlight(this.props.activeNotebookItemId);
-      });
-    }
   }
 
   /**
@@ -215,16 +204,6 @@ class WorkspaceMaterials extends React.Component<
     );
     return [...savedHighlights, ...activeDraftHighlights];
   }
-
-  /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
-   */
-  /* UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
-    if (this.props.materials !== nextProps.materials) {
-      this.getFlattenedMaterials(nextProps);
-    }
-  } */
 
   /**
    * handleMakeHighlight
@@ -274,6 +253,16 @@ class WorkspaceMaterials extends React.Component<
       openNotebookTab: true,
     });
   };
+
+  /**
+   * Handles begin add note.
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleBeginAddNote =
+    (workspaceMaterialId: number) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.beginNotebookV2MaterialNoteDraft(workspaceMaterialId);
+    };
 
   /**
    * toggleSectionHiddenStatus
@@ -764,24 +753,20 @@ class WorkspaceMaterials extends React.Component<
           openByHover
           content={
             <p>
-              {this.props.t("actions.addNote", {
+              {this.props.t("actions.add", {
                 ns: "notebook",
-                defaultValue: "Add note",
               })}
             </p>
           }
         >
           <IconButton
-            icon="plus"
-            aria-label={this.props.t("actions.addNote", {
+            icon="note-add"
+            aria-label={this.props.t("actions.add", {
               ns: "notebook",
-              defaultValue: "Add note",
             })}
             buttonModifiers={["notebook-action"]}
             disablePropagation={true}
-            onClick={() =>
-              this.props.beginNotebookV2MaterialNoteDraft(workspaceMaterialId)
-            }
+            onClick={this.handleBeginAddNote(workspaceMaterialId)}
           />
         </Dropdown>
       </span>

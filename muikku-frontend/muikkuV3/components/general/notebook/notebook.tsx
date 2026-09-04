@@ -16,8 +16,10 @@ import NotebookMaterialSection from "./sections/notebook-material-section";
 import { useDragDropManager } from "react-dnd";
 import { useScroll } from "./hooks/useScroll";
 import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
-import { clearNotebookV2FocusNote } from "~/actions/notebook/notebookV2";
 import { scrollToNotebookItem } from "./helpers/notebook-active-item";
+import NotebookItemDeleteDialog from "./items/notebook-item-delete-confirm";
+import NotebookNoteEditorDialog from "./notebook-note-editor-dialog";
+import NotebookPdfDialog from "./notebook-pdf-dialog";
 
 /**
  * NotebookProps
@@ -43,13 +45,11 @@ const Notebook = (props: NotebookProps) => {
     (state: StateType) => state.notebookV2.activeItemId
   );
 
-  const focusNoteId = useSelector(
-    (state: StateType) => state.notebookV2.focusNoteId
-  );
+  const [isPdfDialogOpen, setIsPdfDialogOpen] = React.useState(false);
 
   const viewModel = useNotebookViewModel();
 
-  const { notes, state, drafts } = notebookV2;
+  const { state, drafts } = notebookV2;
 
   const workspaceDraftNotePosition = drafts.workspaceNote?.position;
 
@@ -94,19 +94,18 @@ const Notebook = (props: NotebookProps) => {
     return () => window.cancelAnimationFrame(frame);
   }, [dispatch, focusDraftClientId]);
 
-  // Focus note scroll target handling
+  // Active item scroll target handling
   React.useEffect(() => {
-    if (focusNoteId == null) {
+    if (activeItemId == null) {
       return;
     }
 
-    // Scroll to focus note and clear focus note after scroll
+    // Scroll to active item
     const frame = window.requestAnimationFrame(() => {
-      scrollToNotebookItem(focusNoteId);
-      dispatch(clearNotebookV2FocusNote());
+      scrollToNotebookItem(activeItemId);
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [dispatch, focusNoteId]);
+  }, [dispatch, activeItemId]);
 
   /**
    * Handle dismiss active item
@@ -115,12 +114,35 @@ const Notebook = (props: NotebookProps) => {
     dispatch(clearNotebookV2ActiveItem());
   }, [dispatch]);
 
+  /**
+   * Handle open PDF dialog
+   */
+  const handleOpenPdfDialog = React.useCallback(() => {
+    setIsPdfDialogOpen(true);
+  }, []);
+
+  /**
+   * Handle close PDF dialog
+   */
+  const handleClosePdfDialog = React.useCallback(() => {
+    setIsPdfDialogOpen(false);
+  }, []);
+
   useDismissNotebookActiveItem(activeItemId, handleDismissActiveItem);
 
-  const isLoading = state === "LOADING" || notes === null;
+  const isLoading = state === "LOADING";
 
   return (
     <div className="notebook">
+      <NotebookItemDeleteDialog />
+      <NotebookNoteEditorDialog />
+      <NotebookPdfDialog
+        workspaceNotes={viewModel.workspaceNotes}
+        materialGroups={viewModel.materialGroups}
+        workspace={currentWorkspace}
+        isOpen={isPdfDialogOpen}
+        onClose={handleClosePdfDialog}
+      />
       <div className="notebook__body" ref={notebookBodyRef}>
         <NoteList>
           {isLoading ? (
@@ -132,6 +154,7 @@ const Notebook = (props: NotebookProps) => {
                 storageKey={workspaceOpenStorageKey}
                 workspaceDraftNote={viewModel.workspaceDraftNote}
                 workspaceDraftNotePosition={workspaceDraftNotePosition}
+                onOpenPdfDialog={handleOpenPdfDialog}
               />
               <NotebookMaterialSection
                 groups={viewModel.materialGroups}

@@ -32,7 +32,7 @@ export function useDismissNotebookActiveItem(
       // Optional: keep selection when clicking the linked span
       if (
         target.closest(
-          `.material-highlight[data-muikku-highlight-id="${activeItemId}"]`
+          `.material-annotation[data-muikku-annotation-id="${activeItemId}"]`
         )
       ) {
         return;

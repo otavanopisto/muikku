@@ -12,7 +12,7 @@ export interface NotebookItemShellProps {
   noteId?: number;
   active?: boolean;
   onActivate?: () => void;
-  title: string;
+  title?: string;
   open: boolean;
   onToggle: () => void;
   itemClassName?: string;
@@ -46,7 +46,6 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
     deleting = false,
     orphaned = false,
     extraActions,
-    deleteConfirm,
     editPanel,
     bodyHtml = "",
     draftClientId,
@@ -57,9 +56,9 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
     "notebook__item",
     itemClassName,
     editing ? "state-EDITING" : "",
-    deleting ? "state-DELETING" : "",
     orphaned ? "state-ORPHANED" : "",
     active ? "state-ACTIVE" : "",
+    deleting ? "state-DELETING" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -78,7 +77,8 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
       <div className="notebook__item-header">
         <div className="notebook__item-title">
           {titleAdornment}
-          <span className="notebook__item-title-text">{title}</span>
+
+          {title && <span className="notebook__item-title-text">{title}</span>}
         </div>
         <div className="notebook__item-actions">
           {!editing && (
@@ -104,13 +104,11 @@ const NotebookItemShell = (props: NotebookItemShellProps) => {
         </div>
       </div>
 
-      {deleteConfirm}
-
-      {editing ? (
+      {editing && editPanel ? (
         <div className="notebook__item-editor">{editPanel}</div>
       ) : (
         showReadBody && (
-          <AnimateHeight height={open ? "auto" : 40}>
+          <AnimateHeight height={open ? "auto" : 60}>
             <article className="notebook__item-body rich-text">
               <CkeditorContentLoader html={bodyHtml} />
             </article>

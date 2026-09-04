@@ -59,7 +59,7 @@
 }
 
 .material-page__title {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   flex-flow: row;
   font-size: 1.25rem;
@@ -74,6 +74,11 @@
     margin: 20px 0;
     padding: 0 20px;
   }
+}
+
+.material-page__title-notebook-action {
+  align-items: center;
+  display: flex;
 }
 
 .material-page__title-icon {
@@ -1433,49 +1438,44 @@ audio {
   }
 }
 
-.material-highlight {
-  background: rgba(255, 230, 128, 0.65);
-  border-radius: 2px;
+.material-annotation {
   cursor: pointer;
 }
 
-.material-highlight--note {
-  background: rgba(255, 220, 120, 0.75);
-  text-decoration: underline;
+.material-annotation--note {
+  background: $color-annotation-note;
+  border-bottom: 2px solid darken($color-annotation-note, 30%);
 }
 
-.material-highlight--note-draft {
-  background: rgba(255, 220, 120, 0.45);
-  outline: 2px dashed rgba(255, 165, 0, 0.75);
-  text-decoration: underline;
-  border-radius: 2px;
+.material-annotation--note-draft {
+  background: $color-annotation-note-draft;
+  border-bottom: 2px dashed $color-annotation-note-active;
 }
 
-.material-highlight--highlight {
-  background: rgba(160, 220, 255, 0.55);
+.material-annotation--highlight {
+  background: $color-annotation-highlight;
 }
 
 // Active ring follows the same palette as each highlight kind
-.material-highlight--active {
+.material-annotation--active {
   outline-offset: 2px;
 }
-.material-highlight--active[data-muikku-highlight-kind="highlight"] {
-  outline: 2px solid rgba(90, 175, 215, 0.95);
-  box-shadow: 0 0 0 2px rgba(160, 220, 255, 0.55);
-  background: rgba(160, 220, 255, 0.75);
+
+.material-annotation--active[data-muikku-annotation-kind="highlight"] {
+  background: darken($color-annotation-highlight, 15%);
+  border-bottom: 2px solid $color-annotation-highlight-active;
 }
-.material-highlight--active[data-muikku-highlight-kind="note"] {
-  outline: 2px solid rgba(210, 150, 40, 0.95);
-  box-shadow: 0 0 0 2px rgba(255, 220, 120, 0.5);
-  background: rgba(255, 220, 120, 0.9);
+
+.material-annotation--active[data-muikku-annotation-kind="note"],
+.material-annotation--active:not([data-muikku-annotation-kind]) {
+  background: darken($color-annotation-note, 20%);
+  border-bottom: 2px solid $color-annotation-note-active;
 }
-.material-highlight--active[data-muikku-highlight-kind="note-draft"] {
-  outline: 2px dashed rgba(255, 165, 0, 0.95);
-  box-shadow: 0 0 0 2px rgba(255, 200, 80, 0.35);
-  background: rgba(255, 220, 120, 0.65);
-}
-// Fallback: spans without kind (base .material-highlight only)
-.material-highlight--active:not([data-muikku-highlight-kind]) {
-  outline: 2px solid rgba(255, 200, 80, 0.95);
-  box-shadow: 0 0 0 2px rgba(255, 230, 128, 0.45);
+
+// Deleting mode
+.material-annotation--deleting,
+.material-annotation--deleting[data-muikku-annotation-kind="highlight"],
+.material-annotation--deleting[data-muikku-annotation-kind="note"] {
+  background: lighten($color-fatal, 40%);
+  border-bottom: 2px solid $color-fatal;
 }

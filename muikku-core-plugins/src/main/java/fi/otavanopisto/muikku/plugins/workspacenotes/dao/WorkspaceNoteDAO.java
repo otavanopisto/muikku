@@ -16,13 +16,13 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
   
   private static final long serialVersionUID = -2443284063711215599L;
 
-  public WorkspaceNote create(Long owner, String title, String note, Long workspaceEntityId, Long worksoaceMaterialId, String start, String end, Long index, WorkspaceNoteType type){
+  public WorkspaceNote create(Long owner, String title, String note, Long workspaceEntityId, Long workspaceMaterialId, String start, String end, Long index, WorkspaceNoteType type){
     WorkspaceNote workspaceNote = new WorkspaceNote();
     workspaceNote.setOwner(owner);
     workspaceNote.setTitle(title);
     workspaceNote.setNote(note);
     workspaceNote.setWorkspaceEntityId(workspaceEntityId);
-    workspaceNote.setWorkspaceMaterialId(worksoaceMaterialId);
+    workspaceNote.setWorkspaceMaterialId(workspaceMaterialId);
     workspaceNote.setStart(start);
     workspaceNote.setEnd(end);
     workspaceNote.setIndex(index);
@@ -31,9 +31,10 @@ public class WorkspaceNoteDAO extends CorePluginsDAO<WorkspaceNote> {
     return persist(workspaceNote);
   }
   
-  public WorkspaceNote update(WorkspaceNote workspaceNote, String title, String note){
+  public WorkspaceNote update(WorkspaceNote workspaceNote, String title, String note, WorkspaceNoteType type){
     workspaceNote.setTitle(title);
     workspaceNote.setNote(note);
+    workspaceNote.setType(type);
     return persist(workspaceNote);
   }
   

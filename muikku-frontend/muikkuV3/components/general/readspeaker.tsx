@@ -47,10 +47,16 @@ interface ReadSpeakerReaderProps {
  * @returns JSX.Element
  */
 const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
-  const { readParameterType, editMode, entityId, status } = props;
+  const { readParameterType, readParameters, editMode, entityId, status } =
+    props;
 
+  const readParametersRef = React.useRef(readParameters);
+  readParametersRef.current = readParameters;
   const { rspkr, rspkrLoaded, notifyReadSpeakerReadAreas } =
     useReadspeakerContext();
+
+  const readParametersKey =
+    readParameters.length > 0 ? readParameters.join() : readParameters[0];
 
   React.useEffect(() => {
     const rspkrValue = rspkrLoaded ? rspkr.current : undefined;
@@ -84,8 +90,8 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
      * Register read areas before ReadSpeaker handles the click.
      */
     const handlePlayPointerDown = () => {
-      if (props.readParameters.length > 0) {
-        notifyReadSpeakerReadAreas(props.readParameters);
+      if (readParametersRef.current.length > 0) {
+        notifyReadSpeakerReadAreas(readParametersRef.current);
       }
     };
 
@@ -94,24 +100,17 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
     // Close player when component is unmounted
     return () => {
       playLink?.removeEventListener("pointerdown", handlePlayPointerDown, true);
-
-      if (rspkrValue && rspkrValue.ui && rspkrValue.ui.getActivePlayer()) {
-        rspkrValue.ui.getActivePlayer().close();
-      }
     };
-  }, [
-    rspkr,
-    rspkrLoaded,
-    editMode,
-    entityId,
-    props.readParameters,
-    notifyReadSpeakerReadAreas,
-  ]);
+  }, [rspkr, rspkrLoaded, editMode, entityId, notifyReadSpeakerReadAreas]);
 
-  const readParameters =
-    props.readParameters.length > 0
-      ? props.readParameters.join()
-      : props.readParameters[0];
+  // Cleanup player when component is unmounted
+  React.useEffect(
+    () => () => {
+      const player = rspkr.current?.ui?.getActivePlayer?.();
+      player?.close();
+    },
+    [rspkr]
+  );
 
   if (!status.loggedIn || !rspkr.current || editMode) return null;
 
@@ -124,7 +123,7 @@ const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
         rel="nofollow"
         className="rsbtn_play"
         accessKey="L"
-        href={`https://app-eu.readspeaker.com/cgi-bin/rsent?customerid=13624&lang=fi_fi&${readParameterType}=${readParameters}&url=${encodeURIComponent(
+        href={`https://app-eu.readspeaker.com/cgi-bin/rsent?customerid=13624&lang=fi_fi&${readParameterType}=${readParametersKey}&url=${encodeURIComponent(
           document.location.href
         )}`}
       >

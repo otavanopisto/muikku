@@ -1,50 +1,11 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CKEditor from "../ckeditor";
-import { MATHJAXSRC } from "~/lib/mathjax";
+import { ckEditorConfig } from "./helpers/notebook-editor";
 import Button from "../button";
 
-/* eslint-disable camelcase */
-const ckEditorConfig = {
-  autoGrow_onStartup: true,
-  mathJaxLib: MATHJAXSRC,
-  mathJaxClass: "math-tex",
-  toolbar: [
-    {
-      name: "basicstyles",
-      items: ["Bold", "Italic", "Underline", "RemoveFormat"],
-    },
-    { name: "clipboard", items: ["Cut", "Copy", "Paste", "Undo", "Redo"] },
-    { name: "links", items: ["Link"] },
-    {
-      name: "insert",
-      items: ["Smiley", "SpecialChar", "Muikku-mathjax"],
-    },
-    { name: "colors", items: ["TextColor", "BGColor"] },
-    { name: "styles", items: ["Format"] },
-    {
-      name: "paragraph",
-      items: [
-        "NumberedList",
-        "BulletedList",
-        "Outdent",
-        "Indent",
-        "Blockquote",
-        "JustifyLeft",
-        "JustifyCenter",
-        "JustifyRight",
-      ],
-    },
-    { name: "tools", items: ["Maximize"] },
-  ],
-  removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
-  resize_enabled: true,
-};
-/* eslint-enable camelcase */
-
 /**
- * NotebookNoteEditorProps
+ * Props for the NotebookNoteEditor component.
  */
 export interface NotebookNoteEditorProps {
   mode: "create" | "edit";
@@ -72,10 +33,37 @@ const NotebookNoteEditor = (props: NotebookNoteEditorProps) => {
   }, [initialTitle, initialText, mode]);
 
   /**
-   * handleSave
+   * Handles title input change.
+   * @param e event
    */
-  const handleSave = () => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNoteTitle(e.target.value);
+  };
+
+  /**
+   * Handles content input change.
+   * @param content content
+   */
+  const handleContentChange = (content: string) => {
+    setNoteContent(content);
+  };
+
+  /**
+   * Handles save button click.
+   * @param e event
+   */
+  const handleSave = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.stopPropagation();
     onSave(noteTitle, noteContent);
+  };
+
+  /**
+   * Handles cancel button click.
+   * @param e event
+   */
+  const handleCancel = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.stopPropagation();
+    onCancel();
   };
 
   return (
@@ -89,7 +77,7 @@ const NotebookNoteEditor = (props: NotebookNoteEditorProps) => {
             className="form-element__input form-element__input--note-title"
             id={`notebook-note-editor-title-${mode}`}
             value={noteTitle}
-            onChange={(e) => setNoteTitle(e.target.value)}
+            onChange={handleTitleChange}
           />
         </div>
       </div>
@@ -97,7 +85,10 @@ const NotebookNoteEditor = (props: NotebookNoteEditorProps) => {
       <div className="form__row">
         <div className="form-element">
           <label>{t("labels.content", { ns: "common" })}</label>
-          <CKEditor onChange={setNoteContent} configuration={ckEditorConfig}>
+          <CKEditor
+            onChange={handleContentChange}
+            configuration={ckEditorConfig}
+          >
             {noteContent}
           </CKEditor>
         </div>
@@ -107,7 +98,7 @@ const NotebookNoteEditor = (props: NotebookNoteEditorProps) => {
         <Button className="button button--dialog-execute" onClick={handleSave}>
           {t("actions.save", { ns: "common" })}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={onCancel}>
+        <Button buttonModifiers="dialog-cancel" onClick={handleCancel}>
           {t("actions.cancel", { ns: "common" })}
         </Button>
       </div>

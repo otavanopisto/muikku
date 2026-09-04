@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
-  findReadspeakerPlayButtonInBoundary,
+  isReadspeakerPlayerActive,
+  isReadspeakerSelectionPlayAvailable,
   isSelectionInScope,
   isSelectionSkipped,
-  resolveBoundaryElement,
 } from "./selection-eligibility";
 import { SelectionContextAction } from "./types";
 import {
   buildAnnotationFromSelection,
   selectionIntersectsAnnotation,
+  selectionIntersectsNonAnnotatable,
+  selectionSpansMultipleParagraphs,
 } from "~/util/html";
 
 type ReadSpeakerListenActionOptions = {
@@ -33,12 +35,12 @@ export function createReadSpeakerListenAction(
   return {
     id: "readspeaker-listen",
     label: "Kuuntele valittu teksti",
-    icon: "paper-plane",
-    triggerOn: "mousedown",
+    icon: "sounds_on",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
       options.enabled &&
       !!ctx.readAreaId &&
+      isReadspeakerSelectionPlayAvailable() &&
       !isSelectionSkipped(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
@@ -48,15 +50,12 @@ export function createReadSpeakerListenAction(
     // eslint-disable-next-line jsdoc/require-jsdoc
     onAction: (ctx) => {
       ctx.restoreSelection();
-      const boundary = resolveBoundaryElement(options.boundarySelector);
-      const playButton = boundary
-        ? findReadspeakerPlayButtonInBoundary(
-            options.readspeakerButtonId,
-            boundary
-          )
-        : null;
-      if (!playButton) {
-        ctx.close();
+      const play = document.querySelector<HTMLElement>(
+        "#rsbtn_popup .rspopup_play"
+      );
+
+      // In case the play button is not found, do nothing
+      if (!play) {
         return;
       }
 
@@ -69,8 +68,16 @@ export function createReadSpeakerListenAction(
         : options.boundarySelector;
 
       options.onReadSessionStart?.([readAreaId]);
-      options.rspkr.current?.API?.setSelectionPlayer?.(playButton);
-      playButton.click();
+
+      // Dispatch a mouseup event to the play button
+      // Play button is bound to mouseup event
+      play.dispatchEvent(
+        new MouseEvent("mouseup", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        })
+      );
       ctx.close();
     },
   };
@@ -102,10 +109,12 @@ export function createHighlightAction(
     id: "highlight",
     label: "Korosta",
     icon: "pencil",
-    triggerOn: "mousedown",
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !isReadspeakerPlayerActive() &&
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
+      !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
+      !selectionSpansMultipleParagraphs(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
@@ -124,14 +133,13 @@ export function createHighlightAction(
         options.materialHtml,
         options.pageBoundarySelector,
         options.annotatableSelector,
-        range,
-        ctx.text
+        range
       );
       if (!built) {
         ctx.close();
         return;
       }
-      options.onMakeHighlight(ctx.text, built.start, built.end, built.index);
+      options.onMakeHighlight(built.text, built.start, built.end, built.index);
       ctx.close();
     },
   };
@@ -156,11 +164,13 @@ export function createNoteAction(
     id: "note",
     label: "Lisää muistiinpano",
     icon: "note-add",
-    triggerOn: "mousedown",
     disabled: !options.onAddNote,
     // eslint-disable-next-line jsdoc/require-jsdoc
     isVisible: (ctx) =>
+      !isReadspeakerPlayerActive() &&
       !selectionIntersectsAnnotation(ctx.getSavedRange()) &&
+      !selectionIntersectsNonAnnotatable(ctx.getSavedRange()) &&
+      !selectionSpansMultipleParagraphs(ctx.getSavedRange()) &&
       isSelectionInScope(
         ctx.getSavedRange(),
         options.pageBoundarySelector,
@@ -179,14 +189,13 @@ export function createNoteAction(
         options.materialHtml,
         options.pageBoundarySelector,
         options.annotatableSelector,
-        range,
-        ctx.text
+        range
       );
       if (!built) {
         ctx.close();
         return;
       }
-      options.onAddNote(ctx.text, built.start, built.end, built.index);
+      options.onAddNote(built.text, built.start, built.end, built.index);
       ctx.close();
     },
   };

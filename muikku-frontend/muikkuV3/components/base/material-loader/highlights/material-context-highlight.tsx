@@ -62,15 +62,11 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
         (closeDropdown: () => void) => (
           <Button
             key="upgrade"
-            icon="plus"
+            icon="note-add"
             iconPosition="left"
-            aria-label={t("actions.addComment", {
-              defaultValue: "Upgrade to note",
-            })}
-            title={t("actions.addComment", { defaultValue: "Upgrade to note" })}
             onClick={() => handleUpgrade(closeDropdown)}
           >
-            {t("actions.addComment", { defaultValue: "Upgrade to note" })}
+            {t("actions.upgrade")}
           </Button>
         ),
         (closeDropdown: () => void) => (
@@ -78,11 +74,9 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
             key="delete"
             icon="trash"
             iconPosition="left"
-            aria-label={t("actions.remove", { defaultValue: "Remove" })}
-            title={t("actions.remove", { defaultValue: "Remove" })}
             onClick={() => handleDelete(closeDropdown)}
           >
-            {t("actions.remove")}
+            {t("actions.remove", { context: "highlight" })}
           </Button>
         ),
       ]

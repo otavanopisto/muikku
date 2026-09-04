@@ -9,8 +9,7 @@ import {
 } from "~/actions/notebook/notebookV2";
 import {
   resolveWorkspaceMaterialIdForActiveItem,
-  scrollToActiveMaterialItem,
-  syncActiveMaterialHighlight,
+  scrollToMaterialHighlightItem,
 } from "../helpers/notebook-active-item";
 import { isNotebookDraftId } from "../helpers/notebook-drafts";
 import { isNotebookNoteDeletable } from "../helpers/notebook-display";
@@ -59,15 +58,30 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
   }, [dispatch, note.id]);
 
   /**
-   * Toggle delete confirmation UI.
+   * Toggle delete confirmation UI. Scroll to material highlight if it exists.
    */
-  const toggleDelete = React.useCallback(() => {
-    if (deleteActive) {
-      dispatch(cancelNotebookV2NoteDelete(note.id));
-      return;
-    }
-    dispatch(beginNotebookV2NoteDelete(note.id));
-  }, [deleteActive, dispatch, note.id]);
+  const toggleDelete = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.stopPropagation();
+      if (deleteActive) {
+        dispatch(cancelNotebookV2NoteDelete(note.id));
+        return;
+      }
+      const workspaceMaterialId = resolveWorkspaceMaterialIdForActiveItem(
+        note.id,
+        notes,
+        drafts
+      );
+
+      dispatch(beginNotebookV2NoteDelete(note.id));
+
+      if (workspaceMaterialId != null) {
+        // Scroll to material highlight
+        scrollToMaterialHighlightItem(workspaceMaterialId, note.id);
+      }
+    },
+    [deleteActive, dispatch, note.id, notes, drafts]
+  );
 
   /**
    * Handles the delete confirm action.
@@ -81,16 +95,10 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
   }, [dispatch, note.id]);
 
   /**
-   * Handles the activate action.
+   * Handles the activate action. Scroll to material highlight if it exists.
    */
   const handleActivate = React.useCallback(() => {
-    const willDeactivate = activeItemId === note.id;
     dispatch(setNotebookV2ActiveItem(note.id));
-
-    if (willDeactivate) {
-      syncActiveMaterialHighlight(null);
-      return;
-    }
 
     const workspaceMaterialId = resolveWorkspaceMaterialIdForActiveItem(
       note.id,
@@ -99,9 +107,10 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
     );
 
     if (workspaceMaterialId != null) {
-      scrollToActiveMaterialItem(workspaceMaterialId, note.id);
+      // Scroll to material highlight
+      scrollToMaterialHighlightItem(workspaceMaterialId, note.id);
     }
-  }, [activeItemId, dispatch, drafts, note.id, notes]);
+  }, [dispatch, drafts, note.id, notes]);
 
   return {
     activeItemId,

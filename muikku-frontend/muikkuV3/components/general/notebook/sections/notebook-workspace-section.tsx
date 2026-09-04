@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -26,6 +25,7 @@ interface NotebookWorkspaceSectionProps {
   workspaceDraftNote: WorkspaceNotebookNote | null;
   workspaceDraftNotePosition: number | null;
   storageKey: string;
+  onOpenPdfDialog: () => void;
 }
 
 /**
@@ -34,12 +34,19 @@ interface NotebookWorkspaceSectionProps {
  * @returns React.ReactNode
  */
 const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
-  const { notes, workspaceDraftNote, workspaceDraftNotePosition, storageKey } =
-    props;
+  const {
+    notes,
+    workspaceDraftNote,
+    workspaceDraftNotePosition,
+    storageKey,
+    onOpenPdfDialog,
+  } = props;
   const { t } = useTranslation("notebook");
   const dispatch = useDispatch();
-  const { isOpen, toggle, openAll, closeAll } =
-    useNotebookOpenItems(storageKey);
+  const { isOpen, toggle, openAll, closeAll } = useNotebookOpenItems(
+    storageKey,
+    notes.map((note) => note.id)
+  );
 
   const [editOrder, setEditOrder] = React.useState(false);
 
@@ -114,16 +121,31 @@ const NotebookWorkspaceSection = (props: NotebookWorkspaceSectionProps) => {
     <section className="notebook__section">
       <div className="notebook__section-header">
         <h3 className="notebook__section-title">
-          Työtilan yleiset muistiinpanot
+          {t("labels.noteSectionTitle", {
+            ns: "notebook",
+            context: "workspace",
+          })}
         </h3>
         <div className="notebook__section-actions">
           <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
             <IconButton
-              icon="plus"
+              icon="note-add"
               aria-label={t("actions.add")}
               buttonModifiers={["notebook-action"]}
               onClick={handleAddClick}
               disablePropagation={true}
+            />
+          </Dropdown>
+
+          <Dropdown
+            openByHover
+            content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+          >
+            <IconButton
+              icon="pdf"
+              buttonModifiers={["notebook-action"]}
+              disablePropagation={true}
+              onClick={onOpenPdfDialog}
             />
           </Dropdown>
 
@@ -256,13 +278,14 @@ interface AddHereProps {
 const AddHere = (props: AddHereProps) => {
   const { isActive, onClick } = props;
 
-  const handleIconClick = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      e.stopPropagation();
-      onClick(e);
-    },
-    [onClick]
-  );
+  /**
+   * Handle icon click
+   * @param e e
+   */
+  const handleIconClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    onClick(e);
+  };
 
   return (
     <div

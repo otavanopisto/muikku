@@ -1988,17 +1988,24 @@
       "edit": "Edit the note",
       "hideContent": "Hide content",
       "organize": "Organize notes",
-      "remove": "Delete the note",
-      "showContent": "Show content"
+      "remove": "Remove",
+      "remove_highlight": "Remove highlight",
+      "remove_note": "Remove note",
+      "showContent": "Show content",
+      "upgrade": "Create note"
     },
     "content": {
       "empty": "No notes",
       "defaultPosition": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
       "defaultPosition_bottom": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
-      "remove": "Are you sure you wish to deöete the note?"
+      "remove": "Are you sure you wish to delete the note?",
+      "remove_highlight": "Are you sure you wish to delete the highlight?"
     },
     "labels": {
       "defaultPosition": "Default position",
+      "noteSectionTitle": "Notes",
+      "noteSectionTitle_workspace": "General Notes",
+      "noteSectionTitle_page": "Targeted Notes",
       "orphanedNote": "Obsolete"
     },
     "notifications": {
@@ -2819,6 +2826,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Listen to selected text"
+    },
     "messages": {
       "assignment": "Assignment",
       "assignment_audio": "Audio assignment",

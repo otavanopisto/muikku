@@ -7,7 +7,6 @@ import { IconButton } from "../../button";
 import { useDispatch } from "react-redux";
 import { beginNotebookV2MaterialNoteDraft } from "~/actions/notebook/notebookV2";
 import { useTranslation } from "react-i18next";
-import { NotebookAnimatedDrawer } from "../notebook-animate-drawer";
 
 /**
  * NotebookMaterialPageGroupProps
@@ -61,15 +60,15 @@ const NotebookMaterialPageGroupView = (
   return (
     <div className="notebook__page-group">
       <div className="notebook__page-group-header">
-        <h4 className="notebook__page-group-title">
+        <div className="notebook__page-group-title">
           {page.title} {!pageExists ? "(Page does not exist)" : ""}
-        </h4>
+        </div>
 
         {pageExists && (
           <div className="notebook__page-group-actions">
             <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
               <IconButton
-                icon="plus"
+                icon="note-add"
                 aria-label={t("actions.add")}
                 buttonModifiers={["notebook-action"]}
                 onClick={handleAddClick}
@@ -80,47 +79,34 @@ const NotebookMaterialPageGroupView = (
         )}
       </div>
 
-      <div className="notebook__page-group-editor">
-        <NotebookAnimatedDrawer isOpen={!!materialNoteDraft}>
-          {materialNoteDraft && (
+      <div className="notebook__page-group-body">
+        {materialNoteNonDrafts.map((note) => (
+          <NotebookNoteItem
+            key={note.id}
+            note={note}
+            open={isOpen(note.id)}
+            onToggle={onToggle}
+            materialHtml={page.html}
+            isDraft={isNotebookDraftId(note.id)}
+          />
+        ))}
+
+        {hasMaterialNotes && hasContextItems && (
+          <div className="notebook__page-group-divider" />
+        )}
+
+        {hasContextItems &&
+          contextItems.map((note) => (
             <NotebookNoteItem
-              note={materialNoteDraft}
-              isDraft
-              open
+              key={note.id}
+              note={note}
+              open={isOpen(note.id)}
+              onToggle={onToggle}
               materialHtml={page.html}
-              onToggle={() => {}}
+              isDraft={isNotebookDraftId(note.id)}
             />
-          )}
-        </NotebookAnimatedDrawer>
+          ))}
       </div>
-
-      {hasMaterialNotes &&
-        materialNoteNonDrafts.map((note) => (
-          <NotebookNoteItem
-            key={note.id}
-            note={note}
-            open={isOpen(note.id)}
-            onToggle={onToggle}
-            materialHtml={page.html}
-            isDraft={isNotebookDraftId(note.id)}
-          />
-        ))}
-
-      {hasMaterialNotes && hasContextItems && (
-        <div className="notebook__page-group-divider" />
-      )}
-
-      {hasContextItems &&
-        contextItems.map((note) => (
-          <NotebookNoteItem
-            key={note.id}
-            note={note}
-            open={isOpen(note.id)}
-            onToggle={onToggle}
-            materialHtml={page.html}
-            isDraft={isNotebookDraftId(note.id)}
-          />
-        ))}
     </div>
   );
 };

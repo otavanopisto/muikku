@@ -1006,7 +1006,7 @@ class Base extends React.Component<BaseProps, BaseState> {
          */
         shouldProcessHTMLElement: (tagname, element) =>
           tagname === "span" &&
-          element.hasAttribute("data-muikku-highlight-id"),
+          element.hasAttribute("data-muikku-annotation-id"),
         /**
          * processingFunction
          * @param tag tag
@@ -1017,10 +1017,10 @@ class Base extends React.Component<BaseProps, BaseState> {
          */
         processingFunction: (tag, props, children, element) => {
           const highlightIdRaw = element.getAttribute(
-            "data-muikku-highlight-id"
+            "data-muikku-annotation-id"
           );
           const highlightId = Number(highlightIdRaw);
-          const kind = (element.getAttribute("data-muikku-highlight-kind") ||
+          const kind = (element.getAttribute("data-muikku-annotation-kind") ||
             "highlight") as MaterialHighlightKind;
           return (
             <MaterialHighlightComponent

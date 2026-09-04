@@ -81,7 +81,7 @@ function SelectionContextPopover(props: SelectionContextPopoverProps) {
           event.preventDefault();
           event.stopPropagation();
           if (action.disabled) return;
-          action.onAction(runtimeContext, event);
+          action.onAction(runtimeContext);
         };
 
         return (
@@ -92,8 +92,7 @@ function SelectionContextPopover(props: SelectionContextPopoverProps) {
             aria-label={action.label}
             title={action.title ?? action.label}
             disabled={action.disabled}
-            onMouseDown={action.triggerOn === "mousedown" ? handler : undefined}
-            onClick={action.triggerOn === "mousedown" ? undefined : handler}
+            onClick={handler}
           >
             {action.label}
           </Button>

@@ -29,35 +29,13 @@ export function resolveWorkspaceMaterialIdForActiveItem(
 }
 
 /**
- * Toggle active class on material highlight spans (imperative v1).
- * @param activeItemId activeItemId
- */
-export function syncActiveMaterialHighlight(activeItemId: number | null): void {
-  const root = document.querySelector(MATERIALS_PANEL_SELECTOR) ?? document;
-
-  root
-    .querySelectorAll(".material-highlight--active")
-    .forEach((el) => el.classList.remove("material-highlight--active"));
-
-  if (activeItemId == null) {
-    return;
-  }
-
-  root
-    .querySelectorAll(
-      `.material-highlight[data-muikku-highlight-id="${activeItemId}"]`
-    )
-    .forEach((el) => el.classList.add("material-highlight--active"));
-}
-
-/**
  * Scroll materials panel to page + highlight span.
  * @param workspaceMaterialId workspaceMaterialId
- * @param activeItemId activeItemId
+ * @param highlightId highlightId
  */
-export function scrollToActiveMaterialItem(
+export function scrollToMaterialHighlightItem(
   workspaceMaterialId: number,
-  activeItemId: number
+  highlightId: number
 ): void {
   const page = document.getElementById(`p-${workspaceMaterialId}`);
   page?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -65,10 +43,9 @@ export function scrollToActiveMaterialItem(
   window.requestAnimationFrame(() => {
     const root = document.querySelector(MATERIALS_PANEL_SELECTOR) ?? document;
     const highlight = root.querySelector(
-      `#p-${workspaceMaterialId} .material-highlight[data-muikku-highlight-id="${activeItemId}"]`
+      `#p-${workspaceMaterialId} .material-annotation[data-muikku-annotation-id="${highlightId}"]`
     );
     highlight?.scrollIntoView({ behavior: "smooth", block: "center" });
-    syncActiveMaterialHighlight(activeItemId);
   });
 }
 

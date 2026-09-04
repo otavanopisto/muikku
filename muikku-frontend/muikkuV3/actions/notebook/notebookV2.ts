@@ -1,5 +1,4 @@
-import { Action, Dispatch } from "redux";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AnyActionType, AppDispatch, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
 import { ReducerStatusType } from "~/reducers/types";
@@ -103,18 +102,6 @@ export type NOTEBOOK_V2_CLEAR_NOTE_UI = SpecificActionType<
 >;
 export type NOTEBOOK_V2_CLEAR_ALL_NOTE_UI = SpecificActionType<
   "NOTEBOOK_V2_CLEAR_ALL_NOTE_UI",
-  void
->;
-export type NOTEBOOK_V2_FOCUS_NOTE = SpecificActionType<
-  "NOTEBOOK_V2_FOCUS_NOTE",
-  number
->;
-export type NOTEBOOK_V2_FOCUS_NOTE_CLEAR = SpecificActionType<
-  "NOTEBOOK_V2_FOCUS_NOTE_CLEAR",
-  void
->;
-export type NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST = SpecificActionType<
-  "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
   void
 >;
 
@@ -287,13 +274,6 @@ export interface ClearNotebookV2FocusDraft {
 }
 
 /**
- * ClearNotebookV2NotebookTabRequest
- */
-export interface ClearNotebookV2NotebookTabRequest {
-  (): AnyActionType;
-}
-
-/**
  * SetNotebookV2ActiveItem
  */
 export interface SetNotebookV2ActiveItem {
@@ -369,11 +349,21 @@ export interface BeginNotebookV2NoteDeleteFromMaterial {
   (noteId: number): AnyActionType;
 }
 
-// SMALL Helper functions
+/**
+ * BeginNotebookV2NoteEdit
+ */
+export interface BeginNotebookV2NoteEdit {
+  (noteId: number): AnyActionType;
+}
 
-type NotebookV2Dispatch = (
-  arg: AnyActionType
-) => Dispatch<Action<AnyActionType>>;
+/**
+ * CancelNotebookV2NoteEdit
+ */
+export interface CancelNotebookV2NoteEdit {
+  (noteId: number): AnyActionType;
+}
+
+// SMALL Helper functions
 
 /**
  * Shows a notebook V2 error notification and sets reducer state to ERROR.
@@ -382,7 +372,7 @@ type NotebookV2Dispatch = (
  * @param context context
  */
 function notifyNotebookV2Error(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   messageKey:
     | "notifications.loadError"
     | "notifications.saveError"
@@ -404,10 +394,7 @@ function notifyNotebookV2Error(
  * @param dispatch dispatch
  * @param notes notes
  */
-function setNotebookV2Notes(
-  dispatch: NotebookV2Dispatch,
-  notes: NotebookNote[]
-) {
+function setNotebookV2Notes(dispatch: AppDispatch, notes: NotebookNote[]) {
   dispatch({ type: "NOTEBOOK_V2_LOAD_ENTRIES", payload: notes });
 }
 
@@ -418,7 +405,7 @@ function setNotebookV2Notes(
  * @param note note
  */
 function appendNotebookV2Note(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   note: NotebookNote
 ) {
@@ -433,7 +420,7 @@ function appendNotebookV2Note(
  * @param note note
  */
 function replaceNotebookV2Note(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   note: NotebookNote
 ) {
@@ -458,7 +445,7 @@ function replaceNotebookV2Note(
  * @param noteId noteId
  */
 function removeNotebookV2Note(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   noteId: number
 ) {
@@ -475,7 +462,7 @@ function removeNotebookV2Note(
  * @param orderIds orderIds
  */
 function setNotebookV2WorkspaceNotesOrder(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   orderIds: number[]
 ) {
   dispatch({
@@ -506,7 +493,7 @@ async function persistWorkspaceNotesOrder(
  * @param noteId noteId
  */
 async function removeWorkspaceNoteOrderAndPersist(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType,
   noteId: number
 ) {
@@ -532,7 +519,7 @@ async function removeWorkspaceNoteOrderAndPersist(
  * @param getState getState
  */
 async function reloadNotebookV2EntriesForCurrentWorkspace(
-  dispatch: NotebookV2Dispatch,
+  dispatch: AppDispatch,
   getState: () => StateType
 ) {
   const state = getState();
@@ -610,6 +597,10 @@ const updateEditedNotebookV2Entry: UpdateEditedNotebookV2Entry =
         });
         // Replace the note in the store
         replaceNotebookV2Note(dispatch, getState, updatedNote);
+        dispatch({
+          type: "NOTEBOOK_V2_CLEAR_NOTE_UI",
+          payload: data.editedEntry.id,
+        });
         data.success?.();
       } catch (err) {
         if (!isMApiError(err)) {
@@ -753,13 +744,6 @@ const saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight =
         });
         // Append the note
         appendNotebookV2Note(dispatch, getState, note);
-        // Display the notification
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
-            "success"
-          )
-        );
         data.success?.();
       } catch (err) {
         if (!isMApiError(err)) {
@@ -784,18 +768,18 @@ const saveNewNotebookV2ContextNote: SaveNewNotebookV2ContextNote =
         data.fail?.();
         return;
       }
-      // Trim the selected text
-      const trimmed = data.selectedText.trim();
+      // Trim the selected text (not used temporarily)
+      // const trimmed = data.selectedText.trim();
 
       // Generate the title from the selected text
       // If the selected text is longer than 60 characters, truncate it and add "..."
-      const title =
-        trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}...`;
+      // const title =
+      //   trimmed.length <= 60 ? trimmed : `${trimmed.slice(0, 57)}...`;
       try {
         // Create the note
         const note = await workspaceNotesApi.createWorkspaceNote({
           createWorkspaceNoteRequest: {
-            title,
+            title: "",
             text: "<p></p>",
             workspaceEntityId: workspaceId,
             workspaceMaterialId: data.workspaceMaterialId,
@@ -904,7 +888,7 @@ const beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft =
             start: data.start,
             end: data.end,
             index: data.index,
-            text: `<blockquote><p>${data.selectedText}</p></blockquote>`,
+            text: `<blockquote><p>${data.selectedText}</p></blockquote><p></p>`,
           },
           openNotebookTab: data.openNotebookTab ?? true,
         },
@@ -940,19 +924,6 @@ const clearNotebookV2FocusDraft: ClearNotebookV2FocusDraft =
   function clearNotebookV2FocusDraft() {
     return (dispatch) => {
       dispatch({ type: "NOTEBOOK_V2_FOCUS_DRAFT_CLEAR", payload: undefined });
-    };
-  };
-
-/**
- * Clears the notebook tab request.
- */
-const clearNotebookV2NotebookTabRequest: ClearNotebookV2NotebookTabRequest =
-  function clearNotebookV2NotebookTabRequest() {
-    return (dispatch) => {
-      dispatch({
-        type: "NOTEBOOK_V2_UI_CLEAR_NOTEBOOK_TAB_REQUEST",
-        payload: undefined,
-      });
     };
   };
 
@@ -1148,6 +1119,35 @@ const setNotebookV2WorkspaceDraftPosition: SetNotebookV2WorkspaceDraftPosition =
   };
 
 /**
+ * Begin edit UI for a saved note.
+ * @param noteId noteId
+ */
+const beginNotebookV2NoteEdit: BeginNotebookV2NoteEdit =
+  function beginNotebookV2NoteEdit(noteId) {
+    return (dispatch, getState) => {
+      const notes = getState().notebookV2.notes ?? [];
+      const note = notes.find((n) => n.id === noteId);
+      if (!note || !isNotebookNoteEditable(note)) {
+        return;
+      }
+      dispatch({
+        type: "NOTEBOOK_V2_SET_NOTE_UI",
+        payload: { noteId, mode: { kind: "editing" } },
+      });
+    };
+  };
+/**
+ * Cancel edit UI for a note.
+ * @param noteId noteId
+ */
+const cancelNotebookV2NoteEdit: CancelNotebookV2NoteEdit =
+  function cancelNotebookV2NoteEdit(noteId) {
+    return (dispatch) => {
+      dispatch({ type: "NOTEBOOK_V2_CLEAR_NOTE_UI", payload: noteId });
+    };
+  };
+
+/**
  * Begin context highlight upgrade in notebook UI.
  * @param highlightId highlightId
  */
@@ -1169,12 +1169,6 @@ const beginNotebookV2ContextHighlightUpgrade: BeginNotebookV2ContextHighlightUpg
       dispatch({
         type: "NOTEBOOK_V2_SET_NOTE_UI",
         payload: { noteId: highlightId, mode: { kind: "upgrading" } },
-      });
-      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE", payload: highlightId });
-      // Open notebook tab (same flag drafts use)
-      dispatch({
-        type: "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
-        payload: undefined,
       });
     };
   };
@@ -1221,16 +1215,6 @@ const cancelNotebookV2NoteDelete: CancelNotebookV2NoteDelete =
   };
 
 /**
- * Clears saved-note focus scroll target.
- */
-const clearNotebookV2FocusNote: ClearNotebookV2FocusNote =
-  function clearNotebookV2FocusNote() {
-    return (dispatch) => {
-      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE_CLEAR", payload: undefined });
-    };
-  };
-
-/**
  * Upgrade notebook V2 context highlight.
  * @param data data
  */
@@ -1245,22 +1229,7 @@ const upgradeNotebookV2ContextHighlight: UpgradeNotebookV2ContextHighlight =
         return;
       }
 
-      const upgradedNote = buildUpgradedContextNote(
-        highlight,
-        data.title,
-        data.text
-      );
-
-      /* if (!NOTEBOOK_V2_CONTEXT_HIGHLIGHT_UPGRADE_API_ENABLED) {
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.upgradeUnavailable", { ns: "notebook" }),
-            "info"
-          )
-        );
-        data.fail?.();
-        return;
-      } */
+      const upgradedNote = buildUpgradedContextNote(highlight, data.text);
 
       try {
         // Update the note
@@ -1317,11 +1286,6 @@ const beginNotebookV2NoteDeleteFromMaterial: BeginNotebookV2NoteDeleteFromMateri
         type: "NOTEBOOK_V2_SET_NOTE_UI",
         payload: { noteId, mode: { kind: "deleting" } },
       });
-      dispatch({ type: "NOTEBOOK_V2_FOCUS_NOTE", payload: noteId });
-      dispatch({
-        type: "NOTEBOOK_V2_OPEN_NOTEBOOK_TAB_REQUEST",
-        payload: undefined,
-      });
     };
   };
 
@@ -1353,13 +1317,15 @@ export {
 
   // Shell navigation (scroll / tab — consumed after dispatch)
   clearNotebookV2FocusDraft,
-  clearNotebookV2FocusNote,
-  clearNotebookV2NotebookTabRequest,
 
   // Saved note UI: context highlight upgrade
   beginNotebookV2ContextHighlightUpgrade,
   cancelNotebookV2ContextHighlightUpgrade,
   upgradeNotebookV2ContextHighlight,
+
+  // Saved note UI: edit
+  beginNotebookV2NoteEdit,
+  cancelNotebookV2NoteEdit,
 
   // Saved note UI: delete confirm
   beginNotebookV2NoteDelete,
