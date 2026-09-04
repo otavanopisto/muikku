@@ -11,8 +11,8 @@ import {
   ImageDataset,
   LinkDataset,
 } from "../../material-loader/types";
-import EmbedAnnotationHighlight from "../static/annotation/highlight";
-import CommentAnnotation from "../static/annotation/comment";
+import EmbedAnnotationHighlight from "../static/highlight";
+import CommentAnnotation from "../static/comment";
 
 /**
  * BaseProps
