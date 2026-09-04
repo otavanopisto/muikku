@@ -1835,12 +1835,16 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   private GuardianRestModel createRestModel(Guardian studentsGuardian) {
+    UserEntity studentParentUserEntity = studentsGuardian.getStudentParentIdentifier() != null ? userEntityController.findUserEntityByUserIdentifier(studentsGuardian.getStudentParentIdentifier()) : null;
+    
     return new GuardianRestModel(
         studentsGuardian.getIdentifier().toId(),
+        studentParentUserEntity != null ? studentParentUserEntity.getId() : null,
         studentsGuardian.getFirstName(), 
         studentsGuardian.getLastName(),
         studentsGuardian.isContinuedViewPermission(),
-        studentsGuardian.getContinuedViewPermissionModified()
+        studentsGuardian.getContinuedViewPermissionModified(),
+        studentsGuardian.getState()
     );
   }
 
