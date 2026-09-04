@@ -252,8 +252,42 @@ class StateOfStudies extends React.Component<
                           ),
                         };
 
+                  const guardianActions = (
+                    <>
+                    {guardian.userEntityId && guardian.state === "ACTIVE" && (
+                      <CommunicatorNewMessage
+                        extraNamespace="guidance-counselor"
+                        initialSelectedItems={[
+                          {
+                            type: "staff",
+                            value: {
+                              id: guardian.userEntityId,
+                              name: getName(guardian, true),
+                            },
+                          },
+                        ]}
+                      >
+                        <ButtonPill
+                          icon="envelope"
+                          aria-label={this.props.i18n.t("labels.send", {
+                            ns: "messaging",
+                          })}
+                          title={this.props.i18n.t("labels.send", {
+                            ns: "messaging",
+                          })}
+                          buttonModifiers={[
+                            "new-message",
+                            "new-message-to-staff",
+                          ]}
+                        ></ButtonPill>
+                      </CommunicatorNewMessage>
+                    )}
+                    </>
+                  );
+                        
                   return (
                     <ContactCard
+                      actions={guardianActions}
                       key={"guardian" + index}
                       fullName={getName(guardian, true)}
                       state={

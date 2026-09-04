@@ -326,16 +326,26 @@ public class ElasticSearchProvider implements SearchProvider {
         query.filter(
             boolQuery()
             .should(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))))
+            .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0])))), ScoreMode.Avg))
             .should(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))))
+            .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0])))), ScoreMode.Avg))
           );
       }
       else {
         if (groups != null) {
-          query.filter(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+          query.filter(
+              boolQuery()
+              .should(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))))
+              .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0])))), ScoreMode.Avg))
+          );
         }
 
         if (workspaces != null) {
-          query.filter(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+          query.filter(
+              boolQuery()
+              .should(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))))
+              .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0])))), ScoreMode.Avg))
+          );
         }
       }
 
@@ -447,6 +457,14 @@ public class ElasticSearchProvider implements SearchProvider {
           archetypeToIndexString(EnvironmentRoleArchetype.STUDY_GUIDER),
           archetypeToIndexString(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER),
           archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT_PARENT)))
+          .must(nestedQuery("dependants",
+              boolQuery()
+                .should(boolQuery().mustNot(existsQuery("dependants.expires")))
+                .should(rangeQuery("dependants.expires").gte(now))
+              , ScoreMode.Avg))
         )
         .should(boolQuery()
           .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))

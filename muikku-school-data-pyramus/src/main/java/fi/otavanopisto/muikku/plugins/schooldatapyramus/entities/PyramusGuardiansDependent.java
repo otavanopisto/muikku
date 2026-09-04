@@ -9,7 +9,7 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
 
   public PyramusGuardiansDependent(SchoolDataIdentifier userIdentifier, String firstName, String lastName,
       String nickname, String studyProgrammeName, String email, String phoneNumber, String address,
-      LocalDate studyStartDate, LocalDate studyTimeEnd, LocalDate studyEndDate) {
+      LocalDate studyStartDate, LocalDate studyTimeEnd, LocalDate studyEndDate, LocalDate expiryDate) {
     this.userIdentifier = userIdentifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -21,6 +21,7 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
     this.studyStartDate = studyStartDate;
     this.studyTimeEnd = studyTimeEnd;
     this.studyEndDate = studyEndDate;
+    this.expiryDate = expiryDate;
   }
 
   @Override
@@ -78,6 +79,11 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
     return studyEndDate;
   }
 
+  @Override
+  public LocalDate getExpiryDate() {
+    return expiryDate;
+  }
+
   private final SchoolDataIdentifier userIdentifier;
   private final String firstName;
   private final String lastName;
@@ -89,5 +95,5 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
   private LocalDate studyStartDate;
   private LocalDate studyTimeEnd;
   private LocalDate studyEndDate;
-
+  private LocalDate expiryDate;
 }
