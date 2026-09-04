@@ -42,7 +42,7 @@ const MaterialHighlightShell = React.forwardRef<HTMLSpanElement, Props>(
       (state: StateType) => state.notebookV2.noteUiById[highlightId]
     );
 
-    const deletingModeActive = itemUiMode?.kind === "deleting" ?? false;
+    const deletingModeActive = itemUiMode?.kind === "deleting";
 
     /**
      * Handles the click event for the material highlight shell.
