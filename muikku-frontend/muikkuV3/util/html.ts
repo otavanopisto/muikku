@@ -1,4 +1,4 @@
-import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { NotebookAnnotation } from "~/components/base/material-loader/types";
 import { MemoFieldContentFormat } from "~/util/memo-content-format";
 
 // =============================================================================
@@ -22,10 +22,11 @@ export const isValidHTML = (str: string): boolean => {
 const SKIP_ANCESTOR_SELECTOR =
   "script, style, iframe, object, noscript, .visually-hidden";
 
-const ANNOTATION_ATTR = "data-muikku-annotation-id";
-const ANNOTATION_KIND_ATTR = "data-muikku-annotation-kind";
+const ANNOTATION_ATTR = "data-external-annotation-id";
+const ANNOTATION_KIND_ATTR = "data-external-annotation-kind";
 const ANNOTATION_CLASS = "material-annotation";
-const ANNOTATION_SELECTOR = ".material-annotation, [data-muikku-annotation-id]";
+const ANNOTATION_SELECTOR =
+  ".material-annotation, [data-external-annotation-id]";
 const NON_ANNOTATABLE_SELECTOR = [
   ".rs_skip_always",
   ".rs_skip",
@@ -235,7 +236,7 @@ function buildLongCandidates(
  * @param searchableText searchable text
  */
 export function classifyAnnotation(
-  annotation: Pick<MaterialHighlight, "start" | "end" | "index">,
+  annotation: Pick<NotebookAnnotation, "start" | "end" | "index">,
   searchableText: string
 ): AnnotationResolveStatus {
   const { start: startAnchor, end: endAnchor, index } = annotation;
@@ -332,7 +333,7 @@ export function computeAnnotationIndex(
  */
 export function classifyAnnotationsForMaterialHtml(
   materialHtml: string,
-  annotations: MaterialHighlight[]
+  annotations: NotebookAnnotation[]
 ): AnnotationClassification[] {
   if (!annotations?.length) return [];
   const searchable = getSearchableFromMaterialHtml(materialHtml);
@@ -369,10 +370,10 @@ export function isAnnotationOrphaned(
  * @param materialHtml material html
  * @param annotations annotations
  */
-export function filterActiveMaterialHighlights(
+export function filterActiveAnnotations(
   materialHtml: string,
-  annotations: MaterialHighlight[]
-): MaterialHighlight[] {
+  annotations: NotebookAnnotation[]
+): NotebookAnnotation[] {
   if (!materialHtml || !annotations?.length) return [];
 
   return classifyAnnotationsForMaterialHtml(materialHtml, annotations)
@@ -382,12 +383,12 @@ export function filterActiveMaterialHighlights(
 
 /**
  * Resolve anchor + index to character offsets in searchable text.
- * Caller must pre-filter orphans (filterActiveMaterialHighlights).
+ * Caller must pre-filter orphans (filterActiveAnnotations).
  * @param annotation annotation
  * @param searchableText searchable text
  */
 function resolveAnnotationRange(
-  annotation: Pick<MaterialHighlight, "start" | "end" | "index">,
+  annotation: Pick<NotebookAnnotation, "start" | "end" | "index">,
   searchableText: string
 ): { start: number; end: number } | null {
   const result = classifyAnnotation(annotation, searchableText);
@@ -560,7 +561,7 @@ function wrapOffsetsWithSpan(
  */
 export function injectHtmlAnnotations(
   roots: HTMLElement[],
-  annotations: MaterialHighlight[]
+  annotations: NotebookAnnotation[]
 ) {
   if (!annotations?.length) return;
   const searchable = getSearchableFromRoots(roots);
@@ -789,7 +790,7 @@ export type AnnotationResolveStatus =
 
 export type AnnotationClassification = {
   id: string;
-  annotation: MaterialHighlight;
+  annotation: NotebookAnnotation;
   result: AnnotationResolveStatus;
 };
 
@@ -816,7 +817,8 @@ export const htmlToPlainText = (html: string): string => {
 };
 
 /**
- * Converts an HTML string to a memo display HTML string.
+ * Converts stored memo content to HTML the editor / readonly view can use.
+ * Plain text is escaped so characters like <, > and & stay visible as text.
  * @param value value
  * @param format format
  * @param replaceNewlinesWithBreaks replace newlines with breaks
@@ -830,5 +832,9 @@ export const toMemoDisplayHtml = (
   if (format === "html") {
     return value;
   }
-  return "<p>" + replaceNewlinesWithBreaks(escapeHtml(value)) + "</p>";
+  if (!value) {
+    return "";
+  }
+  const normalized = value.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  return "<p>" + replaceNewlinesWithBreaks(escapeHtml(normalized)) + "</p>";
 };

@@ -39,6 +39,16 @@ const devServer: Configuration = {
       changeOrigin: true,
       logLevel: "debug",
     },
+    {
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      context: (pathname) =>
+        /^\/workspace\/.+\/materials\/.+\.(png|jpe?g|gif|webp|svg|bmp|pdf|mp3|mp4|wav|ogg|webm)$/i.test(
+          pathname
+        ) || pathname.startsWith("/materialAttachmentUploadServlet"),
+      target: "https://dev.muikkuverkko.fi:8443",
+      secure: false,
+      changeOrigin: true,
+    },
   ],
   webSocketServer: "ws",
 };

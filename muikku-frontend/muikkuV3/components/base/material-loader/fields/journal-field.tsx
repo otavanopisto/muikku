@@ -198,7 +198,6 @@ class JournalField extends React.Component<
    */
   render() {
     const { t } = this.props;
-
     if (this.props.invisible && !!this.props.readOnly) {
       let unloadedField;
       if (this.props.readOnly) {
@@ -301,6 +300,7 @@ class JournalField extends React.Component<
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
+            alwaysPresent
           />
           {field}
         </span>
