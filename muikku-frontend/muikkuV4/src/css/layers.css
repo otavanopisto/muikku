@@ -1,8 +1,14 @@
 /* layers.css */
-@layer devtools, mantine;
+@layer devtools, variables, keyframes, mantine;
 
 /* Import Mantine styles in a layer */
 @import "@mantine/core/styles.css" layer(mantine);
 
 /* Import jotai-devtools styles in the devtools layer */
 @import "jotai-devtools/styles.css" layer(devtools);
+
+/* Import variables in the variables layer */
+@import "../styles/_variables.scss" layer(variables);
+
+/* Import keyframes in the keyframes layer */
+@import "../styles/_keyframe-animations.scss" layer(keyframes);
