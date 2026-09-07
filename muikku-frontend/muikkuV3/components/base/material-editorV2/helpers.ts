@@ -218,6 +218,7 @@ export const materialSectionOrPageChanges = (
     "ai",
     "exam",
     "examSettings",
+    "extraInfo",
   ];
 
   let canPublish = false;

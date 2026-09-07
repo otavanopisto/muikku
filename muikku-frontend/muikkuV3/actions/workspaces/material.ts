@@ -679,6 +679,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             "titleLanguage",
             "maxPoints",
             "ai",
+            "extraInfo",
           ];
 
           if (data.material.type === "folder") {

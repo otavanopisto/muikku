@@ -1007,6 +1007,23 @@ export const MetadataTab = (props: MetadataTabProps) => {
   };
 
   /**
+   * Handles additional info change
+   * @param e e
+   */
+  const handleAdditionalInfoChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    dispatch(
+      updateWorkspaceMaterialContentNode({
+        workspace: editorState.currentNodeWorkspace,
+        material: editorState.currentDraftNodeValue,
+        update: { extraInfo: e.currentTarget.value },
+        isDraft: true,
+      })
+    );
+  };
+
+  /**
    * Handles material AI use change
    * @param e e
    */
@@ -1087,6 +1104,21 @@ export const MetadataTab = (props: MetadataTabProps) => {
           />
         </div>
       )}
+
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">
+          {t("labels.additionalInfo", { ns: "workspace" })}
+        </h3>
+        <div className="form__row">
+          <div className="form-element">
+            <input
+              className="form-element__input form-element__input--material-editor"
+              value={editorState.currentDraftNodeValue.extraInfo || ""}
+              onChange={handleAdditionalInfoChange}
+            />
+          </div>
+        </div>
+      </div>
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">{t("labels.language")}</h3>
