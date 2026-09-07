@@ -5,11 +5,18 @@ import { StateType } from "~/reducers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import AbsenceEvent from "~/components/general/events/absence-event";
 import AbsencesSummary from "./absences/absences-summary";
-import {
-  deleteWorkspaceAbsenceEvent,
-  updateWorkspaceAbsenceEvent,
-} from "~/actions/workspaces";
+
 import { MuikkuEvent } from "~/generated/client";
+
+/**
+ * AbsencesProps
+ */
+interface AbsencesProps {
+  userId: number;
+  modifier?: string;
+  onDelete?: (eventId: number) => void;
+  onUpdate?: (eventId: number, muikkuEvent: MuikkuEvent) => void;
+}
 
 /**
  * Absences component
@@ -17,7 +24,7 @@ import { MuikkuEvent } from "~/generated/client";
  */
 const Absences = () => {
   const { t } = useTranslation(["events"]);
-  const dispatch = useDispatch();
+  /*   const dispatch = useDispatch(); */
   const absenceEvents = useSelector(
     (state: StateType) => state.workspaces?.currentWorkspace?.absenceEvents
   );
@@ -58,12 +65,7 @@ const Absences = () => {
 
       <ApplicationSubPanel.Body modifier="workspace-absences-list">
         {absenceEvents.map((absence) => (
-          <AbsenceEvent
-            onDelete={handleDelete}
-            onUpdate={handleUpdate}
-            key={absence.id}
-            event={absence}
-          />
+          <AbsenceEvent key={absence.id} event={absence} />
         ))}
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>

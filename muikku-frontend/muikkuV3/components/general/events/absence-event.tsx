@@ -11,16 +11,18 @@ import {
 import Button from "~/components/general/button";
 import PromptDialog from "~/components/general/prompt-dialog";
 import EditAbsenceDialog from "~/components/workspace/workspaceUsers/dialogs/edit-absence";
-
+import {
+  deleteWorkspaceAbsenceEvent,
+  updateWorkspaceAbsenceEvent,
+} from "~/actions/workspaces";
 /**
  * WallAbsenceEventsProps
  */
 interface AbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
-  actions?: React.ReactElement;
-  onDelete?: (eventId: number) => void;
-  onUpdate?: (eventId: number, muikkuEvent: MuikkuEvent) => void;
+  /*   onDelete?: (eventId: number) => void;
+  onUpdate?: (eventId: number, muikkuEvent: MuikkuEvent) => void; */
 }
 
 /**
@@ -31,6 +33,7 @@ interface AbsenceEventsProps {
 const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
   const { modifier, event, onDelete, onUpdate } = props;
   const { t } = useTranslation("tasks");
+  const dispatch = useDispatch();
   const absenceState = event.properties?.some(
     (prop) => prop.name === "ABSENCE_REASON"
   )
