@@ -1794,7 +1794,7 @@
       "statusUploading": "Ladataan palvelimelle {{progress}} %",
       "startRecording": "Aloita äänitys klikkaamalla painiketta",
       "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
-      "viewRestricted": "Tämän materiaalin näyttäminen on rajattu vain kirjautuneille käyttäjille",
+      "viewRestricted": "Tämä materiaali näkyy vain kirjautuneille käyttäjille",
       "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain kurssin jäsenille",
       "undoMaterialPage": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palata sivun julkaistuun versioon?"
     },
