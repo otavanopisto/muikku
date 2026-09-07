@@ -16,7 +16,7 @@ public class ContentNode {
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  String path,
       String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, Boolean contentHiddenForUser,
-      WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam) {
+      WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam, String extraInfo) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -40,6 +40,7 @@ public class ContentNode {
     this.maxPoints = maxPoints;
     this.ai = ai;
     this.exam = exam;
+    this.extraInfo = extraInfo;
   }
 
   public void addChild(ContentNode child) {
@@ -194,6 +195,14 @@ public class ContentNode {
     this.exam = exam;
   }
 
+  public String getExtraInfo() {
+    return extraInfo;
+  }
+
+  public void setExtraInfo(String extraInfo) {
+    this.extraInfo = extraInfo;
+  }
+
   private String title;
   private String type;
   private String contentType;
@@ -216,5 +225,6 @@ public class ContentNode {
   private Double maxPoints;
   private WorkspaceMaterialAI ai;
   private boolean exam;
+  private String extraInfo;
 
 }

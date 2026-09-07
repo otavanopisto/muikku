@@ -16939,6 +16939,8 @@ components:
         exam:
           description: Is this node part of an exam
           type: boolean
+        extraInfo:
+          type: string
 
     Message:
       type: object
@@ -20307,6 +20309,8 @@ components:
         exam:
           description: If the material is part of an exam
           type: boolean
+        extraInfo:
+          type: string
 
     WorkspaceFolder:
       type: object

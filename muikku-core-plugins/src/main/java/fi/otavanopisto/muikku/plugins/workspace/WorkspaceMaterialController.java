@@ -524,7 +524,7 @@ public class WorkspaceMaterialController {
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode,
       WorkspaceNode nextSibling, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType,
       WorkspaceMaterialCorrectAnswersDisplay correctAnswers, String title, WorkspaceLanguage language,
-      Double maxPoints, WorkspaceMaterialAI ai) {
+      Double maxPoints, WorkspaceMaterialAI ai, String extraInfo) {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
@@ -537,6 +537,7 @@ public class WorkspaceMaterialController {
       workspaceNode = workspaceMaterialDAO.updateCorrectAnswers((WorkspaceMaterial) workspaceNode, correctAnswers);
       workspaceNode = workspaceMaterialDAO.updateMaxPoints((WorkspaceMaterial) workspaceNode, maxPoints);
       workspaceNode = workspaceMaterialDAO.updateAi((WorkspaceMaterial) workspaceNode, ai);
+      workspaceNode = workspaceMaterialDAO.updateExtraInfo((WorkspaceMaterial) workspaceNode, extraInfo);
     }
 
     // Title & title language
@@ -902,7 +903,7 @@ public class WorkspaceMaterialController {
           rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(),
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
           workspaceFolder.getPath(), null, Collections.emptyList(), folderViewRestrict, 
-          false, workspaceFolder.getLanguage(), null, null, workspaceFolder.getExam());
+          false, workspaceFolder.getLanguage(), null, null, workspaceFolder.getExam(), null);
       List<WorkspaceNode> children = null;
       if (workspaceFolder.getViewRestrict() != MaterialViewRestrict.NONE && !sessionController.isLoggedIn()) {
         children = Collections.emptyList();
@@ -935,7 +936,7 @@ public class WorkspaceMaterialController {
           contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null,
               child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(),
               child.hidden, null, child.node.getPath(), null, Collections.emptyList(),
-              MaterialViewRestrict.NONE, false, child.node.getLanguage(), null, null, child.exam);
+              MaterialViewRestrict.NONE, false, child.node.getLanguage(), null, null, child.exam, null);
         }
         else {
           contentNode = createContentNode(child.node, child.level, includeHidden, child.nextSibling);
@@ -1005,7 +1006,7 @@ public class WorkspaceMaterialController {
           workspaceMaterial.getHidden(), html, workspaceMaterial.getPath(),
           material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), 
           materialViewRestrict, materialContentHiddenForUser, workspaceMaterial.getLanguage(),
-          workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), folder == null ? false : folder.getExam());
+          workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), folder == null ? false : folder.getExam(), workspaceMaterial.getExtraInfo());
     default:
       return null;
     }
