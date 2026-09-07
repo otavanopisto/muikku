@@ -82,7 +82,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
           ))}
         </span>
         <span className="license__title">
-          {t("wcag.workspaceLicense", { ns: "workspace" })}:
+          {t("wcag.workspaceLicense", { ns: "workspace" })}:&nbsp;
         </span>
         {isLicenseLink ? (
           <Link
