@@ -230,5 +230,10 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setAi(ai);
     return persist(workspaceMaterial);
   }
+  
+  public WorkspaceMaterial updateExtraInfo(WorkspaceMaterial workspaceMaterial, String extraInfo) {
+    workspaceMaterial.setExtraInfo(extraInfo);
+    return persist(workspaceMaterial);
+  }
 
 }

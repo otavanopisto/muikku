@@ -2763,7 +2763,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment(), workspaceMaterial.getExtraInfo());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3108,7 +3108,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         restWorkspaceMaterial.getTitle(),
         restWorkspaceMaterial.getTitleLanguage(),
         restWorkspaceMaterial.getMaxPoints(),
-        restWorkspaceMaterial.getAi());
+        restWorkspaceMaterial.getAi(),
+        restWorkspaceMaterial.getExtraInfo());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
