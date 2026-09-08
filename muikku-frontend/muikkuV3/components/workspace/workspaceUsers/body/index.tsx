@@ -2,7 +2,7 @@ import * as React from "react";
 import Navigation, { NavigationElement } from "~/components/general/navigation";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Users from "./application/users";
-import AbsenceEvents from "./application/absences";
+import AbsenceEvents from "./application/absence-events";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import { CreateAbsenceDialog } from "../dialogs/create-absence";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
-
+import { deleteWorkspaceAbsenceEvent } from "~/actions/workspaces/index";
 /**
  * WorkspaceUsersApplication
  * @returns JSX.Element
@@ -51,7 +51,7 @@ const WorkspaceUsersApplication = () => {
         case "users":
           return <Users />;
         case "absences":
-          return <AbsenceEvents />;
+          return <AbsenceEvents onDelete={deleteWorkspaceAbsenceEvent} />;
         default:
           return [<Users key="users" />, <AbsenceEvents key="absences" />];
       }

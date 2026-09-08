@@ -27,6 +27,7 @@ import { resetHopsData } from "~/actions/main-function/hops/";
 import PedagogySupport from "~/components/pedagogy-support";
 import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
 import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
+import Absences from "./student/tabs/absences";
 
 export type tabs =
   | "STUDIES"
