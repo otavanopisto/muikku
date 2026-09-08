@@ -43,7 +43,7 @@ const WorkspaceUsersApplication = () => {
       return (
         <>
           <Users />
-          <AbsenceEvents />
+          <AbsenceEvents onDelete={deleteWorkspaceAbsenceEvent} />
         </>
       );
     } else {
@@ -53,7 +53,13 @@ const WorkspaceUsersApplication = () => {
         case "absences":
           return <AbsenceEvents onDelete={deleteWorkspaceAbsenceEvent} />;
         default:
-          return [<Users key="users" />, <AbsenceEvents key="absences" />];
+          return [
+            <Users key="users" />,
+            <AbsenceEvents
+              onDelete={deleteWorkspaceAbsenceEvent}
+              key="absences"
+            />,
+          ];
       }
     }
   };

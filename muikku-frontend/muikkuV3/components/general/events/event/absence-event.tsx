@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/note.scss";
-import BaseEvent from "./base/base-event";
+import BaseEvent from "../base/base-event";
 import { MuikkuEvent } from "~/generated/client";
 import "~/sass/elements/muikku-absence-event.scss";
 import {

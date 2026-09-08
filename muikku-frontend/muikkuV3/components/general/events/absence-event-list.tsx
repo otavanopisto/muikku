@@ -10,11 +10,13 @@ import PromptDialog from "~/components/general/prompt-dialog";
 import { MuikkuEvent } from "~/generated/client";
 import { EditAbsenceDialog } from "~/components/workspace/workspaceUsers/dialogs/edit-absence"; */
 import { useDispatch } from "react-redux";
+import { MuikkuEvent } from "~/generated/client";
 /**
  * AbsencesProps
  */
-interface AbsencesProps {
-  onDelete: (eventId: number) => void;
+interface AbsenceEventListProps {
+  eventActions?: (event: MuikkuEvent) => React.ReactNode;
+  events: MuikkuEvent[];
 }
 
 /**
@@ -22,15 +24,11 @@ interface AbsencesProps {
  * @returns JSX.Element
  * @param props AbsencesProps
  */
-const Absences = (props: AbsencesProps) => {
+const AbsenceEventList = (props: AbsenceEventListProps) => {
   const { t } = useTranslation(["events", "common"]);
-  const { onDelete } = props;
-  const dispatch = useDispatch();
-  const absenceEvents = useSelector(
-    (state: StateType) => state.guider?.currentStudent?.absenceEvents
-  );
+  const { events, eventActions } = props;
 
-  if (!absenceEvents || absenceEvents.length === 0) {
+  if (!events || events.length === 0) {
     return (
       <div className="loaded-empty">
         {t("content.empty", { ns: "events", context: "absence" })}
@@ -90,11 +88,11 @@ const Absences = (props: AbsencesProps) => {
       </ApplicationSubPanel.Body> */}
 
       <ApplicationSubPanel.Body modifier="workspace-absences-list">
-        {absenceEvents.map((absence) => (
+        {events.map((event) => (
           <AbsenceEvent
-            /*             actions={actions(absence)} */
-            key={absence.id}
-            event={absence}
+            actions={eventActions ? eventActions(event) : undefined}
+            key={event.id}
+            event={event}
           />
         ))}
       </ApplicationSubPanel.Body>
@@ -102,4 +100,4 @@ const Absences = (props: AbsencesProps) => {
   );
 };
 
-export default Absences;
+export default AbsenceEventList;

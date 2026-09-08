@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import AbsenceEvent from "~/components/general/events/absence-event";
+import AbsenceEvent from "~/components/general/events/event/absence-event";
 import AbsencesSummary from "./absences/absences-summary";
 import Button from "~/components/general/button";
 import PromptDialog from "~/components/general/prompt-dialog";
