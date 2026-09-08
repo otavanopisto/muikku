@@ -9,6 +9,8 @@ import {
   AbsenceEventEnum,
   AbsenceReasonEnum,
 } from "~/reducers/base/muikku-events";
+import { StateType } from "~/reducers";
+import { useSelector } from "react-redux";
 
 /**
  * WallAbsenceEventsProps
@@ -28,6 +30,9 @@ interface WallAbsenceEventsProps {
 const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
   const { modifier, event, actions } = props;
   const { t } = useTranslation("tasks");
+
+  const { isUnder18 } = useSelector((state: StateType) => state.status);
+
   const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
@@ -159,7 +164,9 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             })}
           </div>
         )}
-        {actions && <div className="wall-event__footer">{actions}</div>}
+        {actions && !isUnder18 && (
+          <div className="wall-event__footer">{actions}</div>
+        )}
       </div>
     </WallItem>
   );
