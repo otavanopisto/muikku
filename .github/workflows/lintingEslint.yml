@@ -2,6 +2,8 @@ name: ESlint Code Quality Review
 on:
   pull_request:
     branches: devel
+permissions:
+      contents: read
 jobs:
   eslint:
     name: eslint

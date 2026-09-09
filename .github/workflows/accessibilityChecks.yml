@@ -1,5 +1,7 @@
 name: Accessibility checks
 on: workflow_dispatch
+permissions:
+      contents: read
 jobs:
   WCAG_check:
     runs-on: ubuntu-latest

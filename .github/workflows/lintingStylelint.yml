@@ -2,6 +2,8 @@ name: Stylelint Code Quality Review
 on:
   pull_request:
     branches: devel
+permissions:
+      contents: read
 jobs:
   stylelint:
     name: stylelint

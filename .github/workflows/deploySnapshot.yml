@@ -2,6 +2,8 @@ name: Snapshot deploy
 on: 
   push:
     branches: [devel]
+permissions:
+      contents: read
 jobs:
   deploy-snapshot:
     env:
