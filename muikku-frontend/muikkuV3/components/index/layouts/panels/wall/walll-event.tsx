@@ -26,8 +26,9 @@ interface WallAbsenceEventsProps {
  * @returns JSX.Element
  */
 const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
-  const { modifier, event, actions } = props;
+  const { modifier, event, actions, isUnder18 } = props;
   const { t } = useTranslation("tasks");
+
   const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
@@ -159,7 +160,9 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             })}
           </div>
         )}
-        {actions && <div className="wall-event__footer">{actions}</div>}
+        {actions && !isUnder18 && (
+          <div className="wall-event__footer">{actions}</div>
+        )}
       </div>
     </WallItem>
   );

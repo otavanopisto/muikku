@@ -19010,6 +19010,8 @@ components:
           type: string
           format: date
           nullable: true
+        under18:
+          type: boolean
 
     UserGuardiansDependantWorkspace:
       type: object
