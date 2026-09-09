@@ -160,7 +160,7 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             })}
           </div>
         )}
-        {(actions && !isUnder18) || (
+        {actions && !isUnder18 && (
           <div className="wall-event__footer">{actions}</div>
         )}
       </div>
