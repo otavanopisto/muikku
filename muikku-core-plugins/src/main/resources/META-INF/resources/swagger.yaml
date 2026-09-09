@@ -19010,7 +19010,7 @@ components:
           type: string
           format: date
           nullable: true
-        isUnder18:
+        under18:
           type: boolean
 
     UserGuardiansDependantWorkspace:
