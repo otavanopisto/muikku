@@ -20,6 +20,11 @@
   padding: 5px;
 }
 
+.wall-event__creator-name {
+  color: darken($color-default-helper, 20%);
+  margin: 2px 0 0 5px;
+}
+
 .wall-event__description {
   flex-basis: 100%;
   flex-grow: 1;

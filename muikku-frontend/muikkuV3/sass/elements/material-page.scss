@@ -59,7 +59,7 @@
 }
 
 .material-page__title {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   flex-flow: row;
   font-size: 1.25rem;
@@ -74,6 +74,11 @@
     margin: 20px 0;
     padding: 0 20px;
   }
+}
+
+.material-page__title-notebook-action {
+  align-items: center;
+  display: flex;
 }
 
 .material-page__title-icon {
@@ -1431,4 +1436,46 @@ audio {
     background-image: url("/gfx/icons/64x64/search.png");
     border: 2px solid $color-material-visually-guided-styles-search-border;
   }
+}
+
+.material-annotation {
+  cursor: pointer;
+}
+
+.material-annotation--note {
+  background: $color-annotation-note;
+  border-bottom: 2px solid darken($color-annotation-note, 30%);
+}
+
+.material-annotation--note-draft {
+  background: $color-annotation-note-draft;
+  border-bottom: 2px dashed $color-annotation-note-active;
+}
+
+.material-annotation--highlight {
+  background: $color-annotation-highlight;
+}
+
+// Active ring follows the same palette as each highlight kind
+.material-annotation--active {
+  outline-offset: 2px;
+}
+
+.material-annotation--active[data-muikku-annotation-kind="highlight"] {
+  background: darken($color-annotation-highlight, 15%);
+  border-bottom: 2px solid $color-annotation-highlight-active;
+}
+
+.material-annotation--active[data-muikku-annotation-kind="note"],
+.material-annotation--active:not([data-muikku-annotation-kind]) {
+  background: darken($color-annotation-note, 20%);
+  border-bottom: 2px solid $color-annotation-note-active;
+}
+
+// Deleting mode
+.material-annotation--deleting,
+.material-annotation--deleting[data-muikku-annotation-kind="highlight"],
+.material-annotation--deleting[data-muikku-annotation-kind="note"] {
+  background: lighten($color-fatal, 40%);
+  border-bottom: 2px solid $color-fatal;
 }

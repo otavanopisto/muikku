@@ -76,6 +76,12 @@ const config: Configuration = {
   performance: {
     hints: false,
   },
+  ignoreWarnings: [
+    {
+      module: /html-validate/,
+      message: /Critical dependency/,
+    },
+  ],
 };
 
 export default config;

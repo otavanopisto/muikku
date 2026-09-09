@@ -26,7 +26,7 @@ import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
 import { hopsNew } from "./hops/index";
 import { languageProfile } from "./main-function/language-profile";
-import { notebook } from "./notebook/notebook";
+import { notebookV2 } from "./notebook/notebookV2";
 import { journals } from "./workspaces/journals";
 import { credentials } from "./base/credentials";
 import { exams } from "./workspaces/exams";
@@ -62,7 +62,7 @@ export default combineReducers({
   workspaces,
   hopsNew,
   languageProfile,
-  notebook,
+  notebookV2,
   journals,
   credentials,
   exams,

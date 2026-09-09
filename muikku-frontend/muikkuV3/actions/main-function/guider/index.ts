@@ -1162,7 +1162,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       const end = new Date();
       const start = new Date(end);
       start.setMonth(start.getMonth() - 6);
-
+      end.setMonth(end.getMonth() + 6);
       // Other promises
       const promises = [
         studentStudyEssentialsPromise(currentStudent.educationTypeCode),

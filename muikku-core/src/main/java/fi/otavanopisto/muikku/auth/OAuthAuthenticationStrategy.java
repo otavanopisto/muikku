@@ -1,21 +1,26 @@
 package fi.otavanopisto.muikku.auth;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
-import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.Api;
-import org.scribe.builder.api.DefaultApi10a;
-import org.scribe.model.Token;
-import org.scribe.oauth.OAuthService;
+import com.github.scribejava.core.builder.ScopeBuilder;
+import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.builder.api.DefaultApi20;
+import com.github.scribejava.core.oauth.OAuth20Service;
 
 import fi.otavanopisto.muikku.model.security.AuthSource;
 
 public abstract class OAuthAuthenticationStrategy extends AbstractAuthenticationStrategy {
+
+  @Inject
+  private Logger logger;
   
   @Inject
   private LoginSessionBean loginSessionBean;
@@ -34,7 +39,7 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
   @Override
   public abstract String getName();
 
-  protected abstract Api getApi();
+  protected abstract DefaultApi20 getApi();
 
   protected abstract String getApiKey(AuthSource authSource);
 
@@ -42,7 +47,7 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
   
   protected abstract String getOAuthCallbackURL(AuthSource authSource);
 
-  protected abstract AuthenticationResult processResponse(HttpServletRequest request, AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes);
+  protected abstract AuthenticationResult processResponse(HttpServletRequest request, AuthSource authSource, Map<String, String[]> requestParameters, OAuth20Service service, String[] requestedScopes);
   
   public boolean requiresCredentials() {
     return false;
@@ -75,50 +80,49 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
         scopes = defaultScopes;
       
       loginSessionBean.setRequestedScopes(scopes);
+      
       return performDiscovery(authSource, requestParameters, scopes);
     } else {
       String[] requestedScopes = loginSessionBean.getRequestedScopes();
-      loginSessionBean.setRequestedScopes(null);
-      OAuthService service = getOAuthService(authSource, requestParameters, requestedScopes);
-      return processResponse(request, authSource, requestParameters, service, requestedScopes);
+      String requestStateIdentifier = getFirstRequestParameter(requestParameters, "state");
+      
+      if (!loginSessionBean.isValidAuthorizationStateIdentifier(requestStateIdentifier)) {
+        logger.log(Level.FINE, "State parameter doesn't match the one in login session.");
+        return new AuthenticationResult(AuthenticationResult.Status.ERROR);
+      }
+      else {
+        loginSessionBean.resetLoginState();
+        OAuth20Service service = getOAuthService(authSource, requestParameters, requestedScopes);
+        return processResponse(request, authSource, requestParameters, service, requestedScopes);
+      }
     }
   }
   
-  protected OAuthService getOAuthService(AuthSource authSource, Map<String, String[]> requestParameters, String... scopes) {
+  protected OAuth20Service getOAuthService(AuthSource authSource, Map<String, String[]> requestParameters, String... scopes) {
     String apiKey = getApiKey(authSource);
     String apiSecret = getApiSecret(authSource);
     String callback = getOAuthCallbackURL(authSource);
-    Api api = getApi();
+    DefaultApi20 api = getApi();
 
-    ServiceBuilder serviceBuilder = new ServiceBuilder().provider(api).apiKey(apiKey).apiSecret(apiSecret).callback(callback);
+    ScopeBuilder scopeBuilder = scopes != null && scopes.length > 0 ? new ScopeBuilder(Set.of(scopes)) : null;
 
-    if (scopes != null && scopes.length > 0) {
-      StringBuilder scopeBuilder = new StringBuilder();
-      for (int i = 0, l = scopes.length; i < l; i++) {
-        scopeBuilder.append(scopes[i]);
-        if (i < (l - 1))
-          scopeBuilder.append(' ');
-      }
-      serviceBuilder = serviceBuilder.scope(scopeBuilder.toString());
-    }
-
-    return serviceBuilder.build();
+    return new ServiceBuilder(apiKey)
+        .apiSecret(apiSecret)
+        .defaultScope(scopeBuilder)
+        .callback(callback)
+        .build(api);
   }
 
   protected AuthenticationResult performDiscovery(AuthSource authSource, Map<String, String[]> requestParameters, String... scopes) {
-    OAuthService service = getOAuthService(authSource, requestParameters, scopes);
+    OAuth20Service service = getOAuthService(authSource, requestParameters, scopes);
 
-    Token requestToken = null;
-    boolean isV1 = getApi() instanceof DefaultApi10a;
-
-    // For OAuth version 1 the request token is fetched, for v2 it's not
-    if (isV1)
-      requestToken = service.getRequestToken();
-
-    String url = service.getAuthorizationUrl(requestToken);
-    loginSessionBean.setRequestToken(requestToken);
+    String authorizationStateIdentifier = loginSessionBean.newAuthorizationStateIdentifier();
     
-    return new AuthenticationResult(AuthenticationResult.Status.PROCESSING, url);
+    String authorizationUrl = service.createAuthorizationUrlBuilder()
+      .state(authorizationStateIdentifier)
+      .build();
+    
+    return new AuthenticationResult(AuthenticationResult.Status.PROCESSING, authorizationUrl);
   }
 
   private String[] defaultScopes;
