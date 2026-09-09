@@ -171,6 +171,33 @@ export const CreateAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
   ) => {
     const { type, description, startDate, endDate } = absenceEvent;
     try {
+      if (!startDate || !endDate) {
+        dispatch(
+          displayNotification(
+            t("notifications.noDateError", {
+              ns: "events",
+              context: "absence",
+            }),
+            "error"
+          )
+        );
+
+        return;
+      }
+
+      if (startDate > endDate) {
+        dispatch(
+          displayNotification(
+            t("notifications.startDateGreaterThanEndDateError", {
+              ns: "events",
+              context: "absence",
+            }),
+            "error"
+          )
+        );
+        return;
+      }
+
       await muikkuEventApi.createEvent({
         muikkuEvent: {
           title: type,
