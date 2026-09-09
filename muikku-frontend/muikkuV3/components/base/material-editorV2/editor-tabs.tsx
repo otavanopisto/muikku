@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Instructions } from "~/components/general/instructions";
@@ -23,6 +21,7 @@ import { languageOptions } from "~/reducers/workspaces";
 import {
   answersType,
   CKEditorConfig,
+  getInheritedLanguage,
   MaterialAnswersTypeConfig,
   MATERIAL_ANSWERS_TYPE_CONFIGS,
 } from "./helpers";
@@ -122,6 +121,8 @@ export const SectionContentTab = (props: SectionContentTabProps) => {
     return null;
   }
 
+  const inheritedLanguage = getInheritedLanguage(editorState, true);
+
   return (
     <div className="material-editor__content-wrapper">
       <EditorButtonSet
@@ -150,9 +151,16 @@ export const SectionContentTab = (props: SectionContentTabProps) => {
               value={editorState.currentDraftNodeValue.titleLanguage || ""}
             >
               <option value="">
-                {t("labels.inherited", {
-                  ns: "workspace",
-                })}
+                {inheritedLanguage
+                  ? `${t("labels.inherited", {
+                      ns: "workspace",
+                    })} - ${t("labels.language", {
+                      context: inheritedLanguage,
+                      ns: "workspace",
+                    })}`
+                  : t("labels.inherited", {
+                      ns: "workspace",
+                    })}
               </option>
               {languageOptions.map((language: string) => (
                 <option key={language} value={language}>
@@ -282,6 +290,8 @@ export const MaterialContentTab = (props: MaterialContentTabProps) => {
     return null;
   }
 
+  const inheritedLanguage = getInheritedLanguage(editorState, false);
+
   return (
     <div className="material-editor__content-wrapper">
       <EditorButtonSet
@@ -312,9 +322,16 @@ export const MaterialContentTab = (props: MaterialContentTabProps) => {
                 value={editorState.currentDraftNodeValue.titleLanguage || ""}
               >
                 <option value="">
-                  {t("labels.inherited", {
-                    ns: "workspace",
-                  })}
+                  {inheritedLanguage
+                    ? `${t("labels.inherited", {
+                        ns: "workspace",
+                      })} - ${t("labels.language", {
+                        context: inheritedLanguage,
+                        ns: "workspace",
+                      })}`
+                    : t("labels.inherited", {
+                        ns: "workspace",
+                      })}
                 </option>
                 {languageOptions.map((language: string) => (
                   <option key={language} value={language}>
@@ -435,6 +452,8 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
     return null;
   }
 
+  const inheritedLanguage = getInheritedLanguage(editorState, false);
+
   return (
     <div className="material-editor__content-wrapper">
       <EditorButtonSet
@@ -464,9 +483,16 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
               value={editorState.currentDraftNodeValue.titleLanguage || ""}
             >
               <option value="">
-                {t("labels.inherited", {
-                  ns: "workspace",
-                })}
+                {inheritedLanguage
+                  ? `${t("labels.inherited", {
+                      ns: "workspace",
+                    })} - ${t("labels.language", {
+                      context: inheritedLanguage,
+                      ns: "workspace",
+                    })}`
+                  : t("labels.inherited", {
+                      ns: "workspace",
+                    })}
               </option>
               {languageOptions.map((language: string) => (
                 <option key={language} value={language}>
@@ -1066,6 +1092,8 @@ export const MetadataTab = (props: MetadataTabProps) => {
     return null;
   }
 
+  const inheritedLanguage = getInheritedLanguage(editorState, false);
+
   return (
     <div className="material-editor__content-wrapper">
       <EditorButtonSet
@@ -1130,9 +1158,16 @@ export const MetadataTab = (props: MetadataTabProps) => {
               value={editorState.currentDraftNodeValue.titleLanguage || ""}
             >
               <option value="">
-                {t("labels.inherited", {
-                  ns: "workspace",
-                })}
+                {inheritedLanguage
+                  ? `${t("labels.inherited", {
+                      ns: "workspace",
+                    })} - ${t("labels.language", {
+                      context: inheritedLanguage,
+                      ns: "workspace",
+                    })}`
+                  : t("labels.inherited", {
+                      ns: "workspace",
+                    })}
               </option>
               {languageOptions.map((language: string) => (
                 <option key={language} value={language}>

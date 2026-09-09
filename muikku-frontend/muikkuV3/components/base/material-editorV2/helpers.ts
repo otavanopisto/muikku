@@ -8,6 +8,7 @@ import { MATHJAXSRC } from "~/lib/mathjax";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
+  WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 
 type PageTypeLocales =
@@ -377,3 +378,27 @@ export const CKEditorConfig = (
     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax,muikku-details"
     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield,muikku-details",
 });
+
+/**
+ * Get inherited language value
+ * @param editorState editorState
+ * @param isSection isSection
+ * @returns Inherited language
+ */
+export const getInheritedLanguage = (
+  editorState: WorkspaceMaterialEditorType,
+  isSection: boolean
+) => {
+  const currentWorkspaceLanguage = editorState.currentNodeWorkspace.language;
+
+  // If section, return current workspace language as inherited language
+  if (isSection) {
+    return currentWorkspaceLanguage;
+  }
+
+  // If page, return parent (section) language as inherited language
+  const parentLanguage = editorState.parentNodeValue.titleLanguage;
+
+  // Return parent (section) language if set, otherwise return current workspace language
+  return parentLanguage || currentWorkspaceLanguage;
+};
