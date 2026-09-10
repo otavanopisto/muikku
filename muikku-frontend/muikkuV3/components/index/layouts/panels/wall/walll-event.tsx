@@ -16,7 +16,8 @@ import {
 interface WallAbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
-  isUnder18?: boolean;
+  canEdit?: boolean;
+  isGuardian?: boolean;
   actions?: React.ReactElement;
 }
 
@@ -26,7 +27,7 @@ interface WallAbsenceEventsProps {
  * @returns JSX.Element
  */
 const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
-  const { modifier, event, actions, isUnder18 } = props;
+  const { modifier, event, actions, canEdit } = props;
   const { t } = useTranslation("tasks");
 
   const absenceEventProperty = event.properties?.find(
@@ -160,7 +161,7 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             })}
           </div>
         )}
-        {actions && !isUnder18 && (
+        {actions && canEdit && (
           <div className="wall-event__footer">{actions}</div>
         )}
       </div>
