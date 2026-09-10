@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer;
@@ -16,7 +17,7 @@ public class ContentNode {
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  String path,
       String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, Boolean contentHiddenForUser,
-      WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam, String extraInfo) {
+      WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam, String extraInfo, String editor, Date edited) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -41,6 +42,8 @@ public class ContentNode {
     this.ai = ai;
     this.exam = exam;
     this.extraInfo = extraInfo;
+    this.setEditor(editor);
+    this.setEdited(edited);
   }
 
   public void addChild(ContentNode child) {
@@ -203,6 +206,22 @@ public class ContentNode {
     this.extraInfo = extraInfo;
   }
 
+  public String getEditor() {
+    return editor;
+  }
+
+  public void setEditor(String editor) {
+    this.editor = editor;
+  }
+
+  public Date getEdited() {
+    return edited;
+  }
+
+  public void setEdited(Date edited) {
+    this.edited = edited;
+  }
+
   private String title;
   private String type;
   private String contentType;
@@ -226,5 +245,7 @@ public class ContentNode {
   private WorkspaceMaterialAI ai;
   private boolean exam;
   private String extraInfo;
+  private String editor;
+  private Date edited;
 
 }

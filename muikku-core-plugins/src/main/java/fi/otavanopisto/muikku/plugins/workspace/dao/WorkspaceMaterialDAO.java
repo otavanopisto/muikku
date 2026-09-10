@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace.dao;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -233,6 +234,12 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
   
   public WorkspaceMaterial updateExtraInfo(WorkspaceMaterial workspaceMaterial, String extraInfo) {
     workspaceMaterial.setExtraInfo(extraInfo);
+    return persist(workspaceMaterial);
+  }
+  
+  public WorkspaceMaterial updateEditorAndEdited(WorkspaceMaterial workspaceMaterial, Long editor, Date edited) {
+    workspaceMaterial.setEditor(editor);
+    workspaceMaterial.setEdited(edited);
     return persist(workspaceMaterial);
   }
 

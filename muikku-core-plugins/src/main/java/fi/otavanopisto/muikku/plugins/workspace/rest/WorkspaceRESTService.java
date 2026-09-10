@@ -2760,10 +2760,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getId());
     Long nextSiblingId = workspaceNodeNextSibling != null ? workspaceNodeNextSibling.getId() : null;
 
+    String editorName = null;
+    if (workspaceMaterial.getEditor() != null) {
+      UserEntity editorUserEntity = userEntityController.findUserEntityById(workspaceMaterial.getEditor());
+      editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
+    }
+    
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment(), workspaceMaterial.getExtraInfo());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment(), workspaceMaterial.getExtraInfo(), editorName, workspaceMaterial.getEdited());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3111,6 +3117,12 @@ public class WorkspaceRESTService extends PluginRESTService {
         restWorkspaceMaterial.getAi(),
         restWorkspaceMaterial.getExtraInfo());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
+    restWorkspaceMaterial.setEdited(workspaceMaterial.getEdited());
+    
+    if (workspaceMaterial.getEditor() != null) {
+      UserEntity editorUserEntity = userEntityController.findUserEntityById(workspaceMaterial.getEditor());
+      restWorkspaceMaterial.setEditor(userEntityController.getName(editorUserEntity, true).getDisplayName());
+    }
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
 

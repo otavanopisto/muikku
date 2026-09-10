@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -26,6 +27,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -45,6 +47,9 @@ public class MaterialRESTService extends PluginRESTService {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @GET
 //  @Path("/material/{ID:[0-9]*}/workspaceMaterials/")
@@ -211,10 +216,15 @@ public class MaterialRESTService extends PluginRESTService {
     Long nextSiblingId = workspaceNodeNextSibling != null ? workspaceNodeNextSibling.getId() : null;
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getId());
     
+    String editorName = null;
+    if (workspaceMaterial.getEditor() != null) {
+      UserEntity editorUserEntity = userEntityController.findUserEntityById(workspaceMaterial.getEditor());
+      editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
+    }
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(), 
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment(), workspaceMaterial.getExtraInfo());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment(), workspaceMaterial.getExtraInfo(), editorName, workspaceMaterial.getEdited());
   }
   
 }

@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import java.util.Date;
+
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAI;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -12,7 +14,7 @@ public class WorkspaceMaterial {
 
   public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      String path, String title, WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam, String extraInfo) {
+      String path, String title, WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam, String extraInfo, String editor, Date edited) {
     super();
     this.id = id;
     this.materialId = materialId;
@@ -28,6 +30,8 @@ public class WorkspaceMaterial {
     this.ai = ai;
     this.exam = exam;
     this.extraInfo = extraInfo;
+    this.editor = editor;
+    this.edited = edited;
   }
   
   public Long getId() {
@@ -146,6 +150,22 @@ public class WorkspaceMaterial {
     this.extraInfo = extraInfo;
   }
 
+  public String getEditor() {
+    return editor;
+  }
+
+  public void setEditor(String editor) {
+    this.editor = editor;
+  }
+
+  public Date getEdited() {
+    return edited;
+  }
+
+  public void setEdited(Date edited) {
+    this.edited = edited;
+  }
+
   private Long id;
   private Long materialId;
   private Long parentId;
@@ -160,5 +180,7 @@ public class WorkspaceMaterial {
   private WorkspaceMaterialAI ai;
   private boolean exam;
   private String extraInfo;
+  private String editor;
+  private Date edited; 
   
 }

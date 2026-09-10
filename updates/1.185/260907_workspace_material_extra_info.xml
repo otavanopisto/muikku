@@ -4,4 +4,7 @@
    <sql>
      alter table WorkspaceMaterial add column extraInfo varchar(255);
    </sql>
+   <sql>
+     alter table WorkspaceMaterial add column (editor bigint(20), edited datetime);
+   </sql>
 </update>
