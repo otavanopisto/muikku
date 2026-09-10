@@ -18034,6 +18034,7 @@ components:
             - curriculumName
             - matriculationEligibility
             - under18
+            - externalViewLink
           properties:
             curriculumName:
               type: string
@@ -18042,6 +18043,9 @@ components:
               type: boolean
             under18:
               type: boolean
+            externalViewLink:
+              type: string
+              nullable: true
             permissions:
               type: object
               required:

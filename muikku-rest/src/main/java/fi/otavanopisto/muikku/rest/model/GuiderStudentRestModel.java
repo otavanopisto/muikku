@@ -13,7 +13,7 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
       OrganizationRESTModel organization, boolean matriculationEligibility, Boolean hasPedagogyForm, boolean under18, boolean u18compulsory,
-      String curriculumName, HopsStudentPermissionsRestModel permissions, List<GuidanceCounselorRestModel> guidanceCounselors) {
+      String curriculumName, HopsStudentPermissionsRestModel permissions, List<GuidanceCounselorRestModel> guidanceCounselors, String externalViewLink) {
     super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, educationTypeCode, hasImage, nationality,
         language, municipality, school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
         curriculumIdentifier, curriculumName, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm, u18compulsory);
@@ -21,6 +21,7 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
     this.matriculationEligibility = matriculationEligibility;
     this.permissions = permissions;
     this.guidanceCounselors = guidanceCounselors;
+    this.setExternalViewLink(externalViewLink);
   }
 
   public boolean getMatriculationEligibility() {
@@ -55,8 +56,17 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
     this.under18 = under18;
   }
 
+  public String getExternalViewLink() {
+    return externalViewLink;
+  }
+
+  public void setExternalViewLink(String externalViewLink) {
+    this.externalViewLink = externalViewLink;
+  }
+
   private boolean matriculationEligibility;
   private HopsStudentPermissionsRestModel permissions;
   private List<GuidanceCounselorRestModel> guidanceCounselors;
   private boolean under18;
+  private String externalViewLink;
 }
