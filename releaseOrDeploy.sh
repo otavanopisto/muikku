@@ -17,6 +17,6 @@ git commit -m "Updated dependency versions"
 echo Replacing releases to SNAPSHOTS
 mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:*
 git add .
-git commit -m "Updated latest snapshot releases"
+git commit -m "Updated latest snapshott releases"
 git pull
 git push
