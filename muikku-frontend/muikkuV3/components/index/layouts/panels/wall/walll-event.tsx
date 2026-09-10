@@ -17,7 +17,6 @@ interface WallAbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
   canEdit?: boolean;
-  isGuardian?: boolean;
   actions?: React.ReactElement;
 }
 
