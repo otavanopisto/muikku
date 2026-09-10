@@ -38,12 +38,20 @@ const Summary = (props: SummaryProps) => {
     "common",
   ]);
   const { status } = useSelector((state: StateType) => state);
+  const guardian = useSelector((state: StateType) => state.guardian);
 
-  const { currentDependant, absencesByDependantId } = useSelector(
-    (state: StateType) => state.guardian
-  );
-  const dependantAbsences =
-    absencesByDependantId[currentDependant.dependantInfo?.userEntityId];
+  if (!guardian) {
+    return null;
+  }
+
+  const { currentDependant, absencesByDependantId, dependants } = guardian;
+  const dependantId = currentDependant.dependantInfo?.userEntityId;
+
+  if (!dependantId) {
+    return null;
+  }
+
+  const dependantAbsences = absencesByDependantId[dependantId];
 
   const currentDependantStudyData =
     currentDependant.dependantStudyDataByEducationTypeCode[
@@ -59,6 +67,9 @@ const Summary = (props: SummaryProps) => {
   ) {
     return null;
   } else {
+    const isUnder18 =
+      dependants.find((d) => d.userEntityId === dependantId)?.under18 ?? true;
+
     const absences = (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
@@ -72,22 +83,17 @@ const Summary = (props: SummaryProps) => {
             );
             return (
               <WallEvent
+                isUnder18={isUnder18}
                 key={e.id}
                 event={e}
                 actions={
                   <AbsenceFeedbackDialog
                     absenceEvent={e}
                     onUpdate={(data) =>
-                      updateAbsenceEventProperty(
-                        data,
-                        currentDependant.dependantInfo.userEntityId
-                      )
+                      updateAbsenceEventProperty(data, dependantId)
                     }
                     onCreate={(data) =>
-                      createAbsenceEventProperty(
-                        data,
-                        currentDependant.dependantInfo.userEntityId
-                      )
+                      createAbsenceEventProperty(data, dependantId)
                     }
                   >
                     <Button className="button button--primary-function-content">
@@ -353,7 +359,7 @@ const Summary = (props: SummaryProps) => {
               currentDependant.dependantInfo.studyProgrammeName
             }
             studentIdentifier={currentDependant.dependantInfo.id}
-            studentUserEntityId={currentDependant.dependantInfo.userEntityId}
+            studentUserEntityId={dependantId}
           />
         </div>
         {status.isActiveUser ? (
