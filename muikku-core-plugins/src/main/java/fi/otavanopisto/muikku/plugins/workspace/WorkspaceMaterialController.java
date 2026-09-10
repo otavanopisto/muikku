@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
@@ -1002,10 +1003,22 @@ public class WorkspaceMaterialController {
       
       nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
 
+      boolean isStaffRole = sessionController.hasAnyRole(
+          EnvironmentRoleArchetype.ADMINISTRATOR,
+          EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+          EnvironmentRoleArchetype.TEACHER,
+          EnvironmentRoleArchetype.STUDY_GUIDER
+      );
+      
       String editorName = null;
-      if (workspaceMaterial.getEditor() != null) {
-        UserEntity editorUserEntity = userEntityController.findUserEntityById(workspaceMaterial.getEditor());
-        editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
+      Date edited = null;
+      
+      if (isStaffRole) {
+        if (workspaceMaterial.getEditor() != null) {
+          UserEntity editorUserEntity = userEntityController.findUserEntityById(workspaceMaterial.getEditor());
+          editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
+        }
+        edited = workspaceMaterial.getEdited();
       }
       
       return new ContentNode(workspaceMaterial.getTitle(), material.getType(), contentType, rootMaterialNode.getId(),
@@ -1014,7 +1027,7 @@ public class WorkspaceMaterialController {
           workspaceMaterial.getHidden(), html, workspaceMaterial.getPath(),
           material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), 
           materialViewRestrict, materialContentHiddenForUser, workspaceMaterial.getLanguage(),
-          workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), folder == null ? false : folder.getExam(), workspaceMaterial.getExtraInfo(), editorName, workspaceMaterial.getEdited());
+          workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), folder == null ? false : folder.getExam(), workspaceMaterial.getExtraInfo(), editorName, edited);
     default:
       return null;
     }
