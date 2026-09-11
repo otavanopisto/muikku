@@ -207,12 +207,17 @@ public class MuikkuEventRESTService {
     
     // Access checks
     
-    boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
+    boolean hasAccessToEvent = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
     
-    if (!hasAccess) {
-      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to edit event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
+    if (!hasAccessToEvent) {
+      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to create event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
     }
     
+    boolean hasAccess = eventController.canCreateProperty(event);
+    
+    if (!hasAccess) {
+      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to create event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
+    }
     MuikkuEventProperty property = eventController.createEventProperty(event, name, value, sessionController.getLoggedUserEntity().getId(), new Date());
     
     return Response.ok(toRestModel(property)).build();

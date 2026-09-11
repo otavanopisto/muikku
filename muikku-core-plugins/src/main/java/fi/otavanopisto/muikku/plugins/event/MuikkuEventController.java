@@ -598,6 +598,47 @@ public class MuikkuEventController {
     return false;
   }
   
+  public boolean canCreateProperty(MuikkuEvent event) {
+    // At this stage, only ABSENCE events are considered
+    if (event.getType() == EventType.ABSENCE) {
+      // Staff can create properties
+      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR) || sessionController.hasRole(EnvironmentRoleArchetype.TEACHER) || sessionController.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
+        return true;
+      }
+      
+      // Event must have a target user
+      if (event.getUserEntityId() == null) {
+        return false;
+      }
+  
+      UserEntity targetUserEntity = userEntityController.findUserEntityById(
+          event.getUserEntityId());
+  
+      if (targetUserEntity == null) {
+        return false;
+      }
+  
+      SchoolDataIdentifier identifier = targetUserEntity.defaultSchoolDataIdentifier();
+      
+      boolean under18 = userEntityController.isUnder18Student(identifier);
+  
+      StudentGuidanceRelation relation = userController.getGuidanceRelation(identifier.getDataSource(), identifier.getIdentifier());
+  
+      boolean studentParent = relation != null && relation.isStudentParent();
+      boolean ownEvent = targetUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId());
+  
+      // Under 18: only the parent can create a property
+      if (under18) {
+        return studentParent;
+      }
+      
+      // 18 or older: only the student can create a property
+      return ownEvent;
+    }
+    
+    return true;
+  }
+  
   public boolean canEditEventProperty(MuikkuEventProperty property) {
     // Property creator always
     if (sessionController.getLoggedUserEntity().getId() == property.getUserEntityId()) {
