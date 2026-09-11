@@ -540,7 +540,6 @@ public class WorkspaceMaterialController {
       workspaceNode = workspaceMaterialDAO.updateMaxPoints((WorkspaceMaterial) workspaceNode, maxPoints);
       workspaceNode = workspaceMaterialDAO.updateAi((WorkspaceMaterial) workspaceNode, ai);
       workspaceNode = workspaceMaterialDAO.updateExtraInfo((WorkspaceMaterial) workspaceNode, extraInfo);
-      workspaceNode = workspaceMaterialDAO.updateEditorAndEdited((WorkspaceMaterial) workspaceNode, sessionController.getLoggedUserEntity().getId(), new Date());
     }
 
     // Title & title language
@@ -1014,11 +1013,13 @@ public class WorkspaceMaterialController {
       Date edited = null;
       
       if (isStaffRole) {
-        if (workspaceMaterial.getEditor() != null) {
-          UserEntity editorUserEntity = userEntityController.findUserEntityById(workspaceMaterial.getEditor());
+        Long editorEntityId = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getEditor() : null;
+
+        if (editorEntityId != null) {
+          UserEntity editorUserEntity = userEntityController.findUserEntityById(editorEntityId);
           editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
         }
-        edited = workspaceMaterial.getEdited();
+        edited = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getEdited() : null;
       }
       
       return new ContentNode(workspaceMaterial.getTitle(), material.getType(), contentType, rootMaterialNode.getId(),

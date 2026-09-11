@@ -16815,6 +16815,12 @@ components:
         contentType:
           description: The content type of the html
           type: string
+        editor:
+          description: Name of the user who last edited the material
+          type: string
+        edited:
+          description: Date of last edit
+          type: string
 
     MaterialBinary:
       type: object
@@ -20318,12 +20324,6 @@ components:
           description: If the material is part of an exam
           type: boolean
         extraInfo:
-          type: string
-        editor:
-          description: Name of the user who last edited the material
-          type: string
-        edited:
-          description: Date of last edit
           type: string
 
     WorkspaceFolder:

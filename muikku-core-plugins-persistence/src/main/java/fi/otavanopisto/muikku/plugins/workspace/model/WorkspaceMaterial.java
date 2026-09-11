@@ -1,14 +1,10 @@
 package fi.otavanopisto.muikku.plugins.workspace.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -79,22 +75,6 @@ public class WorkspaceMaterial extends WorkspaceNode {
     this.extraInfo = extraInfo;
   }
 
-  public Long getEditor() {
-    return editor;
-  }
-
-  public void setEditor(Long editor) {
-    this.editor = editor;
-  }
-
-  public Date getEdited() {
-    return edited;
-  }
-
-  public void setEdited(Date edited) {
-    this.edited = edited;
-  }
-
   @NotNull
   @Column(nullable = false)
   private Long materialId;
@@ -113,12 +93,4 @@ public class WorkspaceMaterial extends WorkspaceNode {
   
   @Column
   private String extraInfo;
-  
-  @Column
-  private Long editor;
-  
-  @Column
-  @Temporal (value=TemporalType.TIMESTAMP)
-  private Date edited;
-  
 }

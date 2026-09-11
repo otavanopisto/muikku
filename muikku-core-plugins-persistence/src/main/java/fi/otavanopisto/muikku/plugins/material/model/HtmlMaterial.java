@@ -1,9 +1,13 @@
 package fi.otavanopisto.muikku.plugins.material.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
@@ -33,11 +37,34 @@ public class HtmlMaterial extends Material {
     this.contentType = contentType;
   }
 
+  public Long getEditor() {
+    return editor;
+  }
+
+  public void setEditor(Long editor) {
+    this.editor = editor;
+  }
+
+  public Date getEdited() {
+    return edited;
+  }
+
+  public void setEdited(Date edited) {
+    this.edited = edited;
+  }
+
   @Lob
   private String html;
   
   @Column (nullable = false)
   @NotEmpty
   private String contentType;
+  
+  @Column
+  private Long editor;
+  
+  @Column
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date edited;
 
 }
