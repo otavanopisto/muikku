@@ -14,10 +14,10 @@ if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from ot
   git reset --hard
   git pull
   echo Checking latest Pyramus SNAPSHOTS
-  mvn org.codehaus.mojo:versions-maven-plugin:2.20.1:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
+  mvn org.codehaus.mojo:versions-maven-plugin:2.19.1:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
 #  mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   echo Replacing SNAPSHOT versions to releases
-  mvn versions:force-releases -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
+  mvn org.codehaus.mojo:versions-maven-plugin:2.19.1:force-releases -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   git add .
   git commit -m "Updated dependency versions"
   echo Releasing
@@ -26,7 +26,7 @@ if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from ot
   git checkout devel
   git pull
   git merge master
-  mvn org.codehaus.mojo:versions-maven-plugin:2.20.1:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
+  mvn org.codehaus.mojo:versions-maven-plugin:2.19.1:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
 #  mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   git add .
   git commit -m "Updated latest snapshot releases"
