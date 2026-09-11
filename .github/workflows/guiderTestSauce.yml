@@ -5,6 +5,8 @@ on:
       commit:
         description: 'Commit to test.'
         required: true
+permissions:
+  contents: read
 jobs:
   testing:
     env:
