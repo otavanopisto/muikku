@@ -278,7 +278,7 @@ class StateOfStudies extends React.Component<
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           {this.props.guider.currentStudent.absenceEvents.map((event) => (
             <WallAbsenceEvent
-              isUnder18={this.props.guider.currentStudent.basic.under18}
+              canEdit={this.props.guider.currentStudent.basic.under18}
               key={event.id}
               event={event}
             />
