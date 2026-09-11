@@ -16847,6 +16847,7 @@ components:
         edited:
           description: Date of last edit
           type: string
+          format: "date-time"
 
     MaterialBinary:
       type: object
