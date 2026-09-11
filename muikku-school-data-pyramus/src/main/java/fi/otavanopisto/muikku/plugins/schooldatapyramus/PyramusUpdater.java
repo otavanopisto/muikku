@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -72,6 +73,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudentParent;
+import fi.otavanopisto.pyramus.rest.model.StudentParentRelation;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -813,6 +815,8 @@ public class PyramusUpdater {
   @Lock (LockType.WRITE)
   @AccessTimeout(value=30000)
   public void updatePerson(Person person) {
+    logger.log(Level.FINE, String.format("Updating person %d", person.getId()));
+    
     Long userEntityId = null;
     
     final SchoolDataIdentifier studentRoleIdentifier = new SchoolDataIdentifier(identifierMapper.getEnvironmentRoleIdentifier(UserRole.STUDENT), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
@@ -1081,6 +1085,8 @@ public class PyramusUpdater {
   }
 
   public void updateStaffMember(Long staffMemberId) {
+    logger.log(Level.FINE, String.format("Updating staff member %d", staffMemberId));
+    
     StaffMember staffMember = pyramusClient.get().get(String.format("/staff/members/%d", staffMemberId), StaffMember.class);
     if (staffMember != null) {
       updatePerson(staffMember.getPersonId());
@@ -1090,6 +1096,8 @@ public class PyramusUpdater {
   }
 
   public void updateStudentParent(Long studentParentId) {
+    logger.log(Level.FINE, String.format("Updating student parent %d", studentParentId));
+    
     StudentParent studentParent = pyramusClient.get().get(String.format("/studentparents/studentparents/%d", studentParentId), StudentParent.class);
     if (studentParent != null) {
       updatePerson(studentParent.getPersonId());
@@ -1099,10 +1107,26 @@ public class PyramusUpdater {
   }
 
   public void updateStudent(Long studentId) {
+    logger.log(Level.FINE, String.format("Updating student %d", studentId));
+    
     Student student = pyramusClient.get().get(String.format("/students/students/%d", studentId), Student.class);
     if (student != null) {
       updatePerson(student.getPersonId());
       updateStudyProgrammeMember(student);
+      
+      // Student Parents contain some information in search index, trigger update for them also
+      BridgeResponse<StudentParentRelation[]> studentParentsResponse = pyramusClient.get().responseGet(String.format("/students/students/%d/studentParents", studentId), StudentParentRelation[].class);
+      if (studentParentsResponse.ok()) {
+        StudentParentRelation[] studentParentRelations = studentParentsResponse.getEntity();
+        if (studentParentRelations != null) {
+          for (StudentParentRelation studentParentRelation : studentParentRelations) {
+            updateStudentParent(studentParentRelation.getStudentParentId());
+          }
+        }
+      }
+      else {
+        logger.log(Level.SEVERE, String.format("Couldn't fetch student parents for student %d. Statuscode: %d", studentId, studentParentsResponse.getStatusCode()));
+      }
     } else {
       identifierRemoved(identifierMapper.getStudentIdentifier(studentId));
     }

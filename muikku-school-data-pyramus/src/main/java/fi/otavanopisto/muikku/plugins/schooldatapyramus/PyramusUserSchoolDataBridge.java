@@ -1856,7 +1856,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             address,
             student.getStudyStartDate(),
             student.getStudyTimeEnd(),
-            student.getStudyEndDate()
+            student.getStudyEndDate(),
+            student.getRelationExpiry()
         ));
       }
     }
@@ -1911,11 +1912,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       for (StudentParentInvitation studentParentInvitation : studentParentInvitations.getEntity()) {
         result.add(new Guardian(
           identifierMapper.getStudentParentInvitationIdentifier(studentParentInvitation.getId()),
+          null,
           studentParentInvitation.getFirstName(),
           studentParentInvitation.getLastName(),
           GuardianState.INVITED,
           studentParentInvitation.isContinuedViewPermission(),
-          studentParentInvitation.getContinuedViewPermissionModified()
+          studentParentInvitation.getContinuedViewPermissionModified(),
+          null
         ));
       }
     }
@@ -1926,13 +1929,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     if (studentParents.ok()) {
       for (StudentParentRelation studentParentRelation : studentParents.getEntity()) {
+        SchoolDataIdentifier studentParentIdentifier = studentParentRelation.getStudentParentId() != null ? identifierMapper.getStudentParentIdentifier(studentParentRelation.getStudentParentId()) : null;
         result.add(new Guardian(
           identifierMapper.getStudentParentChildIdentifier(studentParentRelation.getId()),
+          studentParentIdentifier,
           studentParentRelation.getFirstName(), 
           studentParentRelation.getLastName(),
           studentParentRelation.isActiveParent() ? GuardianState.ACTIVE : GuardianState.INACTIVE,
           studentParentRelation.isContinuedViewPermission(),
-          studentParentRelation.getContinuedViewPermissionModified()
+          studentParentRelation.getContinuedViewPermissionModified(),
+          studentParentRelation.getExipres()
         ));
       }
     }
@@ -1957,11 +1963,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         StudentParentInvitation studentParentInvitation = response.getEntity();
         Guardian guardian = new Guardian(
           identifierMapper.getStudentParentInvitationIdentifier(studentParentInvitation.getId()),
+          null,
           studentParentInvitation.getFirstName(),
           studentParentInvitation.getLastName(),
           GuardianState.INVITED,
           studentParentInvitation.isContinuedViewPermission(),
-          studentParentInvitation.getContinuedViewPermissionModified()
+          studentParentInvitation.getContinuedViewPermissionModified(),
+          null
         );
         return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
       }
@@ -1978,13 +1986,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       if (response.ok()) {
         StudentParentRelation studentParentRelation = response.getEntity();
+        SchoolDataIdentifier studentParentIdentifier = studentParentRelation.getStudentParentId() != null ? identifierMapper.getStudentParentIdentifier(studentParentRelation.getStudentParentId()) : null;
         Guardian guardian = new Guardian(
           identifierMapper.getStudentParentChildIdentifier(studentParentRelation.getId()),
+          studentParentIdentifier,
           studentParentRelation.getFirstName(), 
           studentParentRelation.getLastName(),
           studentParentRelation.isActiveParent() ? GuardianState.ACTIVE : GuardianState.INACTIVE,
           studentParentRelation.isContinuedViewPermission(),
-          studentParentRelation.getContinuedViewPermissionModified()
+          studentParentRelation.getContinuedViewPermissionModified(),
+          studentParentRelation.getExipres()
         );
         return new BridgeResponse<Guardian>(response.getStatusCode(), guardian, response.getMessage());
       }

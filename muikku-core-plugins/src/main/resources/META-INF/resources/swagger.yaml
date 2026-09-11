@@ -15645,9 +15645,14 @@ components:
         - firstName
         - lastName
         - continuedViewPermission
+        - state
       properties:
         identifier:
           type: string
+        userEntityId:
+          description: May be undefined especially when the guardian doesn't have an account
+          type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -15657,6 +15662,12 @@ components:
         continuedViewPermissionModified:
           type: string
           format: date-time
+        state:
+          type: string
+          enum:
+            - INVITED
+            - ACTIVE
+            - INACTIVE
 
     GuidanceCounselorContact:
       type: object

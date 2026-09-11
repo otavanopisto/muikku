@@ -138,11 +138,21 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       // Additional roles searchable by staff
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDENT);
+      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDENT_PARENT);
       
       if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
         // Study guider limitations - groups where user is a member
         List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
         userGroupFilters = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
+      }
+      
+      if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.TEACHER)) {
+        // Workspaces where user is a member
+        List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userSchoolDataIdentifier.getUserEntity());
+        workspaceFilters = new HashSet<>();
+        for (WorkspaceEntity ws : workspaces) {
+          workspaceFilters.add(ws.getId());
+        }
       }
     } else {
       return Response.ok(Collections.EMPTY_LIST).build();
