@@ -7267,6 +7267,32 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/MaterialContentUpdateRequestBody"
       responses:
+        "200":
+          description: Html material content updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  edited:
+                    type: string
+                    format: date-time
+                  editor:
+                    type: string
+                  contentType:
+                    type: string
+                  html:
+                    type: string
+                  license:
+                    type: string
+                  title:
+                    type: string
+                  viewRestrict:
+                    $ref: "#/components/schemas/MaterialViewRestriction"
+
         "204":
           description: Html material content updated successfully
         "400":
@@ -16953,6 +16979,7 @@ components:
         edited:
           description: Date of last edit
           type: string
+          format: date-time
 
     Message:
       type: object

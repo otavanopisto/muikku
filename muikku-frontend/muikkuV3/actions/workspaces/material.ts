@@ -657,11 +657,46 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.html !== "undefined" &&
             data.material.html !== data.update.html
           ) {
-            await materialsApi.updateHtmlMaterialContent({
-              materialid: data.material.materialId,
-              updateHtmlMaterialContentRequest: {
-                content: data.update.html,
-                removeAnswers: data.removeAnswers || false,
+            const updatedMaterial =
+              await materialsApi.updateHtmlMaterialContent({
+                materialid: data.material.materialId,
+                updateHtmlMaterialContentRequest: {
+                  content: data.update.html,
+                  removeAnswers: data.removeAnswers || false,
+                },
+              });
+
+            // Everytime when material content is updated, we need to update the edited and editor values
+            // in the state
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                material: data.material,
+                update: {
+                  edited: updatedMaterial.edited,
+                  editor: updatedMaterial.editor,
+                },
+              },
+            });
+
+            // For draft also
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                material: data.material,
+                update: {
+                  edited: updatedMaterial.edited,
+                  editor: updatedMaterial.editor,
+                },
+                isDraft: true,
               },
             });
           }

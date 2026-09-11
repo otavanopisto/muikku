@@ -291,6 +291,10 @@
   }
 }
 
+.material-page__latest-edit-container {
+  margin: 0;
+}
+
 // PRODUCERS
 .material-page__producers {
   align-items: center;
@@ -314,6 +318,7 @@
 }
 
 // LICENSE
+.material-page__latest-edit,
 .material-page__license {
   align-items: center;
   display: flex;
@@ -321,6 +326,7 @@
   padding: 5px 0;
 }
 
+.material-page__latest-edit-label,
 .material-page__license-label {
   color: $color-default-contrast;
   flex-basis: auto;
