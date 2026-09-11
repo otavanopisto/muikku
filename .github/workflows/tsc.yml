@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: devel
 permissions:
-      contents: read
+  contents: read
 jobs:
   tsc:
     name: tsc

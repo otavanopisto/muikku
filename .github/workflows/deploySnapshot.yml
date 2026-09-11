@@ -3,7 +3,7 @@ on:
   push:
     branches: [devel]
 permissions:
-      contents: read
+  contents: read
 jobs:
   deploy-snapshot:
     env:
