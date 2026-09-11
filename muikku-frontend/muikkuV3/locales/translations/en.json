@@ -1794,7 +1794,7 @@
       "statusUploading": "Uploading to server {{progress}} %",
       "startRecording": "Begin recording by clicking the button",
       "stopRecording": "Stop recording by clicking the button",
-      "viewRestricted": "Viewing this material has been restricted to logged in users",
+      "viewRestricted": "This material is visible only to logged in users",
       "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
       "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
     },
@@ -1867,6 +1867,7 @@
       "interimEvaluation": "Interim evaluation",
       "interimEvaluations": "Interim evaluations",
       "interimEvaluationAssignments": "Interim evaluation assignments",
+      "latestEdit": "Last edited",
       "license": "Material license",
       "licenseLink": "License URL address or license text",
       "materials": "Materials",

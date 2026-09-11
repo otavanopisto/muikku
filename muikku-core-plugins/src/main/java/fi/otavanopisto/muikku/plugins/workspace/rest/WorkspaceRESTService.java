@@ -2759,11 +2759,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode workspaceNodeNextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getId());
     Long nextSiblingId = workspaceNodeNextSibling != null ? workspaceNodeNextSibling.getId() : null;
-
+    
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment(), workspaceMaterial.getExtraInfo());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3108,7 +3108,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         restWorkspaceMaterial.getTitle(),
         restWorkspaceMaterial.getTitleLanguage(),
         restWorkspaceMaterial.getMaxPoints(),
-        restWorkspaceMaterial.getAi());
+        restWorkspaceMaterial.getAi(),
+        restWorkspaceMaterial.getExtraInfo());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
@@ -4060,12 +4061,32 @@ public class WorkspaceRESTService extends PluginRESTService {
         result.setWorkspaceMaterialReplyState(reply.getState());
         HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
         if (htmlMaterial != null) {
+          
+          boolean isStaffRole = sessionController.hasAnyRole(
+              EnvironmentRoleArchetype.ADMINISTRATOR,
+              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+              EnvironmentRoleArchetype.TEACHER,
+              EnvironmentRoleArchetype.STUDY_GUIDER
+          );
+          
+          String editorName = null;
+          Date edited = null;
+          
+          if (isStaffRole) {
+            if (htmlMaterial.getEditor() != null) {
+              UserEntity editorUserEntity = userEntityController.findUserEntityById(htmlMaterial.getEditor());
+              editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
+            }
+            edited = htmlMaterial.getEdited();
+          }
           result.setMaterial(new HtmlRestMaterial(htmlMaterial.getId(),
               htmlMaterial.getTitle(),
               htmlMaterial.getContentType(),
               htmlMaterial.getHtml(),
               htmlMaterial.getLicense(),
-              htmlMaterial.getViewRestrict()));        
+              htmlMaterial.getViewRestrict(),
+              editorName,
+              edited));        
         }
       }
     }
