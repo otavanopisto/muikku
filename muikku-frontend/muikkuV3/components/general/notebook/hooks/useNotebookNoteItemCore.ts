@@ -9,7 +9,7 @@ import {
 } from "~/actions/notebook/notebookV2";
 import {
   resolveWorkspaceMaterialIdForActiveItem,
-  scrollToMaterialHighlightItem,
+  scrollToNotebookAnnotationItem,
 } from "../helpers/notebook-active-item";
 import { isNotebookDraftId } from "../helpers/notebook-drafts";
 import { isNotebookNoteDeletable } from "../helpers/notebook-display";
@@ -77,7 +77,7 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
 
       if (workspaceMaterialId != null) {
         // Scroll to material highlight
-        scrollToMaterialHighlightItem(workspaceMaterialId, note.id);
+        scrollToNotebookAnnotationItem(workspaceMaterialId, note.id);
       }
     },
     [deleteActive, dispatch, note.id, notes, drafts]
@@ -108,7 +108,7 @@ export function useNotebookNoteItemCore(args: UseNotebookNoteItemCoreArgs) {
 
     if (workspaceMaterialId != null) {
       // Scroll to material highlight
-      scrollToMaterialHighlightItem(workspaceMaterialId, note.id);
+      scrollToNotebookAnnotationItem(workspaceMaterialId, note.id);
     }
   }, [dispatch, drafts, note.id, notes]);
 

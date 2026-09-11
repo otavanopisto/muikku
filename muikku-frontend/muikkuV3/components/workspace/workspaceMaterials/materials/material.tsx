@@ -49,7 +49,8 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { DISABLED_FIELD_FEATURES_CAPABILITIES } from "~/components/base/material-loader/helpers";
+import { NotebookAnnotation } from "~/components/base/material-loader/types";
 
 /**
  * WorkspaceMaterialProps
@@ -64,7 +65,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
   notebookAddNoteComponent?: JSX.Element;
-  highlights: MaterialHighlight[];
+  highlights: NotebookAnnotation[];
   // Redux state properties
   status: StatusType;
   websocket: WebsocketStateType;
@@ -197,6 +198,13 @@ class WorkspaceMaterial extends React.Component<
             readspeakerComponent={this.props.readspeakerComponent}
             notebookAddNoteComponent={this.props.notebookAddNoteComponent}
             anchorElement={this.props.anchorItem}
+            fieldFeaturesCapabilities={{
+              ...DISABLED_FIELD_FEATURES_CAPABILITIES,
+              comments: {
+                ...DISABLED_FIELD_FEATURES_CAPABILITIES.comments,
+                canDelete: true,
+              },
+            }}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             onDisplayNotification={this.props.displayNotification}
             onUpdateWorkspaceMaterialContentNode={

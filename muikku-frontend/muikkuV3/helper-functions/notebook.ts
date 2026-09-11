@@ -1,4 +1,4 @@
-import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { NotebookAnnotation } from "~/components/base/material-loader/types";
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
 
 /**
@@ -64,7 +64,7 @@ export function notebookContextHighlightToMaterialHighlight(
     NotebookNote,
     { type: typeof NotebookNoteType.WorkspaceMaterialContextHighlight }
   >
-): MaterialHighlight {
+): NotebookAnnotation {
   return {
     id: note.id,
     workspaceMaterialId: note.workspaceMaterialId,
@@ -86,7 +86,7 @@ export function notebookContextNoteToMaterialHighlight(
     NotebookNote,
     { type: typeof NotebookNoteType.WorkspaceMaterialContextNote }
   >
-): MaterialHighlight {
+): NotebookAnnotation {
   return {
     id: note.id,
     workspaceMaterialId: note.workspaceMaterialId,
@@ -105,8 +105,8 @@ export function notebookContextNoteToMaterialHighlight(
  */
 export function getMaterialHighlightsByPageFromNotes(
   notes: NotebookNote[] | null | undefined
-): Record<number, MaterialHighlight[]> {
-  const map: Record<number, MaterialHighlight[]> = {};
+): Record<number, NotebookAnnotation[]> {
+  const map: Record<number, NotebookAnnotation[]> = {};
   if (!notes?.length) return map;
   for (const note of notes) {
     if (isNotebookContextHighlight(note)) {

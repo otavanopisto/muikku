@@ -122,7 +122,7 @@
   border-radius: 5px;
 
   .rich-text blockquote {
-    background-color: lighten($color-annotation-note, 10%);
+    background-color: $color-annotation-note;
     border: none;
   }
 

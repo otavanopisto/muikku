@@ -273,11 +273,17 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
     // It also has a summary component of what the correct answers were meant to be
     let correctAnswersummaryComponent = null;
 
+    const answerIsBeingCheckedAndItisCorrect =
+      this.props.checkAnswers && this.state.answerState === "PASS";
+
     const tooltipId = "selectFieldTooltip-" + uuidv4();
 
     // So we only care about this logic if we didn't get the answer right and we are asking for show the right thing
     // Note that a state of UNKNOWN also goes through here, but not a state of PASS
-    if (this.props.displayCorrectAnswers) {
+    if (
+      this.props.displayCorrectAnswers &&
+      !answerIsBeingCheckedAndItisCorrect
+    ) {
       // find the correct answers from the list
       const correctAnswersFound = this.props.content.options.filter(
         (a) => a.correct

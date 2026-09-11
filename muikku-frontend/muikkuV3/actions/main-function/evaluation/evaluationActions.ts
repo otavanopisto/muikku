@@ -163,6 +163,16 @@ export type EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_DELETE = SpecificActionType<
   }
 >;
 
+export type EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS =
+  SpecificActionType<
+    "EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS",
+    {
+      fieldName: string;
+      content: string;
+      workspaceMaterialId: number;
+    }
+  >;
+
 export type EVALUATION_IMPORTANCE_UPDATE = SpecificActionType<
   "EVALUATION_IMPORTANCE_UPDATE",
   {
@@ -707,6 +717,20 @@ export interface DeleteFieldSnapshotTriggerType {
     snapshotId: number;
     workspaceMaterialId: number;
     fieldName: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateAnswerWithCommentsTriggerType
+ */
+export interface UpdateAnswerWithCommentsTriggerType {
+  (data: {
+    userEntityId: number;
+    fieldName: string;
+    content: string;
+    workspaceMaterialId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -3084,6 +3108,54 @@ const deleteFieldSnapshot: DeleteFieldSnapshotTriggerType =
     };
   };
 
+/**
+ * Updates an answer with comments
+ * @param data data
+ */
+const updateAnswerWithComments: UpdateAnswerWithCommentsTriggerType =
+  function updateAnswerWithComments(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const {
+        userEntityId,
+        fieldName,
+        content,
+        workspaceMaterialId,
+        onSuccess,
+        onFail,
+      } = data;
+
+      try {
+        await evaluationApi.updateWorkspaceMaterialTextFieldAnswer({
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+          fieldName: fieldName,
+          updateWorkspaceMaterialTextFieldAnswerRequest: {
+            text: content,
+          },
+        });
+
+        dispatch({
+          type: "EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS",
+          payload: {
+            fieldName: fieldName,
+            content: content,
+            workspaceMaterialId: workspaceMaterialId,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        onFail?.();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -3125,4 +3197,5 @@ export {
   updateEvaluationExamEvaluationInfo,
   createFieldSnapshot,
   deleteFieldSnapshot,
+  updateAnswerWithComments,
 };

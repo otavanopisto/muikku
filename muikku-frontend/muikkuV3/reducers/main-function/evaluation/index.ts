@@ -556,6 +556,35 @@ export const evaluations: Reducer<EvaluationState> = (
       };
     }
 
+    case "EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS": {
+      const { fieldName, content, workspaceMaterialId } = action.payload;
+      return {
+        ...state,
+        evaluationCompositeReplies: {
+          ...state.evaluationCompositeReplies,
+          data: state.evaluationCompositeReplies.data?.map((compositeReply) => {
+            if (compositeReply.workspaceMaterialId !== workspaceMaterialId) {
+              return compositeReply;
+            }
+            const nextAnswers = compositeReply.answers.map((answer) => {
+              if (answer.fieldName !== fieldName) {
+                return answer;
+              }
+
+              return {
+                ...answer,
+                value: content,
+              };
+            });
+            return {
+              ...compositeReply,
+              answers: nextAnswers,
+            };
+          }),
+        },
+      };
+    }
+
     default:
       return state;
   }
