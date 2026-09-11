@@ -5,16 +5,26 @@ import {
   IconMail,
   IconList,
   IconEdit,
-  IconUser,
-  IconSettings,
-  IconLogout,
-  IconLogin,
+  IconBell,
+  IconCalendar,
 } from "@tabler/icons-react";
 import { type Params, type To } from "react-router";
 import type { WorkspacePermissions } from "src/services/permissions";
-import { StudentNavigationContent } from "src/router/components/StudentNavigationContent/StudentNavigationContent";
+import { StudentNavigationContent } from "~/src/pages/Guider/StudentNavigationContent";
+import {
+  hasUserPermission,
+  hasWorkspacePermission,
+  isActiveUser,
+  isLoggedIn,
+} from "~/src/services/access";
+
+export const navigationBadges = [
+  "communicatorUnread",
+  "announcerUnread",
+] as const;
 
 export type NavigationContext = "environment" | "workspace";
+export type NavigationBadgeKey = (typeof navigationBadges)[number];
 
 /**
  * BaseNavigationItem - Base interface for all navigation items
@@ -40,6 +50,8 @@ export interface NavigationLink extends BaseNavigationItem {
   replaceState?: boolean;
   active?: boolean;
   loading?: boolean;
+  exactMatch?: boolean;
+  badgeKey?: NavigationBadgeKey;
 }
 
 /**
@@ -78,10 +90,17 @@ export const coursepickerSubItems: NavigationItem[] = [
   },
   {
     type: "queryLink",
+    label: "Ehdotetut kurssit",
+    link: "/coursepicker?search=Suggested",
+    queryName: "search",
+    queryValue: "Suggested",
+  },
+  {
+    type: "queryLink",
     label: "Omat kurssit",
     link: "/coursepicker?search=MyCourses",
     queryName: "search",
-    queryValue: "Coursepicker",
+    queryValue: "MyCourses",
   },
   {
     type: "queryLink",
@@ -97,37 +116,49 @@ export const communicatorSubItems: NavigationItem[] = [
   {
     type: "queryLink",
     label: "Saapuneet",
-    link: "?tab=Inbox",
+    link: "/communicator?tab=Inbox",
     queryName: "tab",
     queryValue: "Inbox",
   },
   {
     type: "queryLink",
     label: "Lukemattomat",
-    link: "?tab=Unread",
+    link: "/communicator?tab=Unread",
     queryName: "tab",
     queryValue: "Unread",
   },
   {
     type: "queryLink",
     label: "Lähetetyt",
-    link: "?tab=Sent",
+    link: "/communicator?tab=Sent",
     queryName: "tab",
     queryValue: "Sent",
   },
   {
     type: "queryLink",
     label: "Roskakori",
-    link: "?tab=Trash",
+    link: "/communicator?tab=Trash",
     queryName: "tab",
     queryValue: "Trash",
+  },
+  {
+    type: "link",
+    label: "Tunnisteet",
+    link: "/communicator/taglist",
+    exactMatch: true,
   },
 ];
 
 // Guider sub-items
 export const guiderSubItems: NavigationItem[] = [
-  { type: "link", label: "Opiskelijalistaus", link: "/guider" },
-  { type: "link", label: "Tehtävät", link: "/guider/tasks" },
+  { type: "link", label: "Yhteenveto", link: "/guider", exactMatch: true },
+  {
+    type: "link",
+    label: "Opiskelijalistaus",
+    link: "/guider/students",
+    exactMatch: true,
+  },
+  { type: "link", label: "Tehtävät", link: "/guider/tasks", exactMatch: true },
   {
     type: "component",
     id: "guider-student_item",
@@ -140,39 +171,68 @@ export const announcerSubItems: NavigationItem[] = [
   {
     type: "queryLink",
     label: "Aktiiviset",
-    link: "/announcements?search=Active",
+    link: "/announcer?search=Active",
     queryName: "search",
     queryValue: "Active",
   },
   {
     type: "queryLink",
     label: "Vanhentuneet",
-    link: "/announcements?search=Expired",
+    link: "/announcer?search=Expired",
     queryName: "search",
     queryValue: "Expired",
   },
   {
     type: "queryLink",
     label: "Omat",
-    link: "/announcements?search=My",
+    link: "/announcer?search=My",
     queryName: "search",
     queryValue: "My",
   },
   {
     type: "queryLink",
     label: "Arkistoidut",
-    link: "/announcements?search=Archived",
+    link: "/announcer?search=Archived",
     queryName: "search",
     queryValue: "Archived",
+  },
+  {
+    type: "link",
+    label: "Kategoriat",
+    link: "/announcer/categories",
+    exactMatch: true,
   },
 ];
 
 // Evaluation sub-items
 export const evaluationSubItems: NavigationItem[] = [
   {
-    type: "link",
+    type: "queryLink",
     label: "Yhteenveto",
-    link: "/evaluation",
+    link: "/evaluation?tab=Overview",
+    queryName: "tab",
+    queryValue: "Overview",
+  },
+  {
+    type: "queryLink",
+    label: "Arviointipyynnöt",
+    link: "/evaluation?tab=Requests",
+    queryName: "tab",
+    queryValue: "Requests",
+  },
+  {
+    type: "queryLink",
+    label: "Välipalautepyynnöt",
+    link: "/evaluation?tab=FeedbackRequests",
+    queryName: "tab",
+    queryValue: "FeedbackRequests",
+  },
+  {
+    type: "queryLink",
+    label: "Täydennyspyynnöt",
+    link: "/evaluation?tab=Supplements",
+    queryName: "tab",
+    queryValue: "Supplements",
   },
 ];
 
@@ -183,72 +243,72 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Etusivu",
     icon: IconHome,
     link: "/",
-    canAccess: (user) => !(user?.loggedIn ?? false), // Only visible if user is unauthenticated
+    canAccess: (user) => !isLoggedIn(user), // Only visible if user is unauthenticated
   },
   {
     type: "link",
     label: "Etusivu",
     icon: IconHome,
     link: "/dashboard",
-    canAccess: (user) => user?.loggedIn ?? false, // Only visible if user is authenticated
+    canAccess: isLoggedIn, // Only visible if user is authenticated
   },
   {
     type: "link",
-    label: "Kurssipoimuri",
+    label: "Kalenteri",
+    icon: IconCalendar,
+    link: "/calendar",
+    canAccess: isLoggedIn,
+  },
+  {
+    type: "link",
+    label: "Kurssit",
     icon: IconBuilding,
     link: "/coursepicker",
     canAccess: () => true,
   },
   {
     type: "link",
-    label: "Viestin",
+    label: "Viestit",
     icon: IconMail,
     link: "/communicator?tab=Inbox",
-    canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
+    badgeKey: "communicatorUnread",
+    canAccess: (user) => isLoggedIn(user) && isActiveUser(user),
   },
   {
     type: "link",
-    label: "Ohjaamo",
+    label: "Ohjaus",
     icon: IconList,
     link: "/guider",
     canAccess: (user) =>
-      (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
+      isLoggedIn(user) && hasUserPermission("GUIDER_VIEW", user),
+    exactMatch: false,
   },
-
+  {
+    type: "link",
+    label: "Tiedotteet",
+    icon: IconBell,
+    link: "/announcer",
+    badgeKey: "announcerUnread",
+    canAccess: (user) =>
+      isLoggedIn(user) && hasUserPermission("ANNOUNCER_TOOL", user),
+    exactMatch: false,
+  },
+  {
+    type: "link",
+    label: "Tiedotteet",
+    icon: IconBell,
+    link: "/announcements",
+    canAccess: (user) =>
+      isLoggedIn(user) && (user?.roles.includes("STUDENT") ?? false),
+    exactMatch: false,
+  },
   {
     type: "link",
     label: "Arviointi",
     icon: IconEdit,
-    link: "/evaluation",
-    canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
-  },
-  {
-    type: "link",
-    label: "Omat tiedot",
-    icon: IconUser,
-    link: "/profile",
-    canAccess: (user) => user?.loggedIn ?? false,
-  },
-  {
-    type: "link",
-    label: "Asetukset",
-    icon: IconSettings,
-    link: "/appSettings",
-    canAccess: () => true,
-  },
-  {
-    type: "link",
-    label: "Kirjaudu sisään",
-    icon: IconLogin,
-    link: "/login",
-    canAccess: (user) => !(user?.loggedIn ?? false),
-  },
-  {
-    type: "link",
-    label: "Kirjaudu ulos",
-    icon: IconLogout,
-    link: "/logout",
-    canAccess: (user) => user?.loggedIn ?? false,
+    link: "/evaluation?tab=Overview",
+    canAccess: (user) => hasUserPermission("EVALUATION_VIEW_INDEX", user),
+    exactMatch: false,
   },
 ];
 
@@ -259,7 +319,8 @@ const navigationItemsWorkspace: NavigationItem[] = [
     label: "Etusivu",
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
-      workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
+      hasWorkspacePermission("WORKSPACE_HOME_VISIBLE", workspacePermissions), // Always visible
+    exactMatch: true,
   },
   {
     type: "link",
@@ -267,16 +328,19 @@ const navigationItemsWorkspace: NavigationItem[] = [
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceManagement`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_MANAGE_WORKSPACE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission(
+        "WORKSPACE_MANAGE_WORKSPACE",
+        workspacePermissions
+      ),
   },
   {
     type: "link",
     label: "Ohjeet",
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceHelp`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_GUIDES_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission("WORKSPACE_GUIDES_VISIBLE", workspacePermissions),
   },
   {
     type: "link",
@@ -284,24 +348,27 @@ const navigationItemsWorkspace: NavigationItem[] = [
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceMaterials`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_MATERIALS_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission(
+        "WORKSPACE_MATERIALS_VISIBLE",
+        workspacePermissions
+      ),
   },
   {
     type: "link",
     label: "Oppimispäiväkirja",
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceJournal`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_JOURNAL_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission("WORKSPACE_JOURNAL_VISIBLE", workspacePermissions),
   },
   {
     type: "link",
     label: "Käyttäjät",
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceUsers`,
     canAccess: (user, workspacePermissions) =>
-      (user?.loggedIn && workspacePermissions?.WORKSPACE_USERS_VISIBLE) ??
-      false, // Always visible
+      isLoggedIn(user) &&
+      hasWorkspacePermission("WORKSPACE_USERS_VISIBLE", workspacePermissions),
   },
 ];
 
