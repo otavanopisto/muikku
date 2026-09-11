@@ -658,6 +658,8 @@ public class HopsRestService {
               item.setDate(request.getRequestDate());
               item.setState(StudyActivityItemState.SUPPLEMENTATIONREQUEST);
               item.setText(request.getRequestText());
+              UserEntity userEntity = userEntityController.findUserEntityById(request.getUserEntityId());
+              item.setEvaluatorName(userEntityController.getName(userEntity, true).getDisplayName());
             }
           }
 
@@ -683,6 +685,8 @@ public class HopsRestService {
                 item.setText(evaluation.getVerbalAssessment());
                 item.setDate(evaluation.getEvaluated());
                 item.setState(StudyActivityItemState.INTERIM_EVALUATION);
+                UserEntity userEntity = userEntityController.findUserEntityById(evaluation.getAssessorEntityId());
+                item.setEvaluatorName(userEntityController.getName(userEntity, true).getDisplayName());
               }
             }
           }

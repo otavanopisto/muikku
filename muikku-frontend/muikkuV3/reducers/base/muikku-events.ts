@@ -6,9 +6,12 @@ import { LoadingState } from "~/@types/shared";
 export const AbsenceEventEnum = {
   Lesson: "LESSON",
   LessonPreArranged: "LESSON_PRE_ARRANGED",
+  GroupMeeting: "GROUP_MEETING",
+  GroupMeetingPreArranged: "GROUP_MEETING_PRE_ARRANGED",
   Exam: "EXAM",
-  SkillsDemonstrationMeeting: "SKILLS_DEMONSTRATION_MEETING",
   GuidanceOrSupportSession: "GUIDANCE_OR_SUPPORT_SESSION",
+  AssignmentsUndone: "ASSIGNMENTS_UNDONE",
+  SkillsDemonstrationMeeting: "SKILLS_DEMONSTRATION_MEETING",
 } as const;
 
 export type AbsenceEventEnum =

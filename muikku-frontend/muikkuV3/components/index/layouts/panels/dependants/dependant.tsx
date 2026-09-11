@@ -132,6 +132,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
             return (
               <WallEvent
                 key={event.id}
+                isUnder18={dependant.under18}
                 actions={
                   <AbsenceFeedbackDialog
                     onUpdate={(data) =>
