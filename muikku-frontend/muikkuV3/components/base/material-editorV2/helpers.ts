@@ -397,7 +397,7 @@ export const getInheritedLanguage = (
   }
 
   // If page, return parent (section) language as inherited language
-  const parentLanguage = editorState.parentNodeValue.titleLanguage;
+  const parentLanguage = editorState.parentNodeValue?.titleLanguage;
 
   // Return parent (section) language if set, otherwise return current workspace language
   return parentLanguage || currentWorkspaceLanguage;
