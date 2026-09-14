@@ -52,6 +52,36 @@
   flex-flow: row wrap;
 }
 
+.form__row--absence-event-reason {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  input[type="checkbox"] {
+    align-items: center;
+    appearance: none;
+    background-color: $color-default;
+    border: solid 2px $color-env-dialog-form-element-border;
+    border-radius: 3px;
+    display: flex;
+    height: 1rem;
+    justify-content: center;
+    padding: 8px;
+    width: 1rem;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-application-dialog-border-color;
+    border: solid 2px $color-application-dialog-border-color;
+  }
+
+  input[type="checkbox"]:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 0.875rem;
+  }
+}
+
 .form__row--absence-event {
   display: flex;
   flex-flow: column wrap;
