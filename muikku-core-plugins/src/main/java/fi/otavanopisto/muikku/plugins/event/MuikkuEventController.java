@@ -355,11 +355,10 @@ public class MuikkuEventController {
       return true;
     }
 
-    // Admin
-    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+    // Admin & study programme leader
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR) || sessionController.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
       return true;
     }
-
 
     // A null check is needed at this point to avoid a NullPointerException when checking relations etc
     if (event.getUserEntityId() == null) {
@@ -382,7 +381,6 @@ public class MuikkuEventController {
     boolean guidanceCounselor = false;
     boolean courseTeacher = false;
     boolean studentParent = false;
-    boolean studyProgrammeLeader = sessionController.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
     
     if (relation != null) {
       guidanceCounselor = relation.isGuidanceCounselor();
@@ -406,13 +404,13 @@ public class MuikkuEventController {
     // Absence
     if (event.getType() == EventType.ABSENCE) {
 
-      if (!(guidanceCounselor || courseTeacher || studentParent || studyProgrammeLeader)) {
+      if (!(guidanceCounselor || courseTeacher || studentParent)) {
         return false;
       }
     }
 
     // other relations
-    if (guidanceCounselor || courseTeacher || studentParent || studyProgrammeLeader) {
+    if (guidanceCounselor || courseTeacher || studentParent) {
       return true;
     }
 
