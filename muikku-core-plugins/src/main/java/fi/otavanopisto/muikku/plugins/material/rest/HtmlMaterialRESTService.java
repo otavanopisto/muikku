@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -43,6 +45,7 @@ import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -90,6 +93,9 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @POST
   @Path("/")
@@ -308,7 +314,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       }
       if (everythingsFine) {
         if (changesMade) {
-          htmlMaterialDAO.updateData(htmlMaterial, html);
+          htmlMaterialDAO.updateData(htmlMaterial, html, sessionController.getLoggedUserEntity().getId(), new Date());
         }
         faultyMaterialDAO.delete(faultyMaterial);
         response.append("<p><b><font color=\"green\">Fixed</font></b></p>");
@@ -326,12 +332,19 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   }
 
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
+    String editorName = null;
+    if (htmlMaterial.getEditor() != null) {
+      UserEntity editorUserEntity = userEntityController.findUserEntityById(htmlMaterial.getEditor());
+      editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
+    }
     return new HtmlRestMaterial(htmlMaterial.getId(),
       htmlMaterial.getTitle(),
       htmlMaterial.getContentType(),
       htmlMaterial.getHtml(),
       htmlMaterial.getLicense(),
-      htmlMaterial.getViewRestrict());
+      htmlMaterial.getViewRestrict(),
+      editorName,
+      htmlMaterial.getEdited());
   }
   
 }
