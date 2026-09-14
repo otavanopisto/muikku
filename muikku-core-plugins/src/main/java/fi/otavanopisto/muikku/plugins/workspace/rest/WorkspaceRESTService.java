@@ -4061,18 +4061,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         result.setWorkspaceMaterialReplyState(reply.getState());
         HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
         if (htmlMaterial != null) {
-          
-          boolean isStaffRole = sessionController.hasAnyRole(
-              EnvironmentRoleArchetype.ADMINISTRATOR,
-              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-              EnvironmentRoleArchetype.TEACHER,
-              EnvironmentRoleArchetype.STUDY_GUIDER
-          );
-          
           String editorName = null;
           Date edited = null;
           
-          if (isStaffRole) {
+          if (userEntityController.isStaffMember(sessionController.getLoggedUserEntity())) {
             if (htmlMaterial.getEditor() != null) {
               UserEntity editorUserEntity = userEntityController.findUserEntityById(htmlMaterial.getEditor());
               editorName = userEntityController.getName(editorUserEntity, true).getDisplayName();
