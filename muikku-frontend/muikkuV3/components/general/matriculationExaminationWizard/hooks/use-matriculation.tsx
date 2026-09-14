@@ -83,6 +83,7 @@ export const useMatriculation = (
       degreeStructure: "POST2022",
       enrollmentDate: new Date(),
       opintopolkuUrl: "",
+      flags: [],
     },
   });
 
