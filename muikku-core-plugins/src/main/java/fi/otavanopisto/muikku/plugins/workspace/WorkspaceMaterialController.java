@@ -1001,18 +1001,11 @@ public class WorkspaceMaterialController {
       }
       
       nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
-
-      boolean isStaffRole = sessionController.hasAnyRole(
-          EnvironmentRoleArchetype.ADMINISTRATOR,
-          EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-          EnvironmentRoleArchetype.TEACHER,
-          EnvironmentRoleArchetype.STUDY_GUIDER
-      );
       
       String editorName = null;
       Date edited = null;
       
-      if (isStaffRole) {
+      if (userEntityController.isStaffMember(sessionController.getLoggedUserEntity())) {
         Long editorEntityId = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getEditor() : null;
 
         if (editorEntityId != null) {
