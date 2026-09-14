@@ -242,12 +242,12 @@ public class MuikkuEventRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // User can update properties only if created by themselves
-    if (eventController.canEditEventProperty(property)) {
-      property = eventController.updateEventProperty(property, value, new Date());
+    // User can update the property if they created it or are the student's guardians
+    if (!eventController.canEditEventProperty(property)) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("User %d is not allowed to update event property %d", sessionController.getLoggedUserEntity().getId(), propertyId)).build();
     }
     
-    return Response.ok(toRestModel(property)).build();
+    return Response.ok(toRestModel(eventController.updateEventProperty(property, value, new Date()))).build();
   }
   
   @Path("/event/property/{EVENTPROPERTYID}")
