@@ -1,100 +1,61 @@
-import { HtmlValidate, StaticConfigLoader } from "html-validate";
-
 export type MemoFieldContentFormat = "plain" | "html";
 
-/** Rules that mean "this isn't a coherent HTML fragment" (tune after logging real reports). */
-const PLAIN_TEXT_INDICATOR_RULES = new Set([
-  "no-trailing-whitespace",
-  "element-permitted-content",
-  "text-content",
+/** Root tags CKEditor writes for memo answers (post-migration detection only). */
+const CKE_ROOT_TAGS = new Set([
+  "p",
+  "h3",
+  "h4",
+  "div",
+  "ul",
+  "ol",
+  "blockquote",
+  "table",
+  "figure",
+  "pre",
+  "br",
 ]);
 
-let validator: HtmlValidate | null = null;
-
 /**
- * Shared validator instance (browser build).
+ * True when the stored value looks like a CKEditor HTML fragment,
+ * not student prose that happens to contain < or >.
+ * @param value value
  */
-function getValidator(): HtmlValidate {
-  if (!validator) {
-    const loader = new StaticConfigLoader({
-      extends: ["html-validate:recommended"],
-      elements: ["html5"],
-      // Relax rules that CKEditor often triggers during the experiment:
-      rules: {
-        "no-inline-style": "off",
-        "attribute-allowed-values": "off",
-        "void-style": "off",
-      },
-    });
-    validator = new HtmlValidate(loader);
+function looksLikeRichContentFragment(value: string): boolean {
+  const trimmed = (value ?? "").trim();
+  if (!trimmed.startsWith("<")) return false;
+  const match = trimmed.match(/^<([a-z][a-z0-9]*)/i);
+  if (!match || !CKE_ROOT_TAGS.has(match[1].toLowerCase())) {
+    return false;
   }
-  return validator;
+  const doc = new DOMParser().parseFromString(trimmed, "text/html");
+  const children = Array.from(doc.body.childNodes);
+  // CKEditor roots are elements. Bare text after </ul>/<p>/… ⇒ legacy typed HTML.
+  const hasNonWhitespaceTextNode = children.some(
+    (node) =>
+      node.nodeType === Node.TEXT_NODE && (node.textContent ?? "").trim() !== ""
+  );
+  if (hasNonWhitespaceTextNode) {
+    return false; // treat as plain
+  }
+  // Require at least one element child.
+  return children.some((node) => node.nodeType === Node.ELEMENT_NODE);
 }
 
 /**
- * Wrap stored value as a minimal document for validation.
- * @param value value
- * @returns string
+ * Classify stored memo answer for conversion to CKEditor.
+ * @param value stored answer
  */
-function wrapAsHtmlDocument(value: string): string {
-  return `<!DOCTYPE html>
-<html lang="fi">
-<head><title>snapshot</title></head>
-<body>${value}</body>
-</html>`;
-}
-
-/**
- * Classify snapshot / memo value using HTML-validate.
- * Default plain when empty, no markup, or validation suggests prose.
- * @param value value
- */
-export async function getMemoFieldContentFormat(
+export function getMemoFieldContentFormatSync(
   value: string
-): Promise<MemoFieldContentFormat> {
+): MemoFieldContentFormat {
   const trimmed = (value ?? "").trim();
   if (!trimmed) {
     return "plain";
   }
 
-  // Fast path: no angle brackets at all
-  if (!trimmed.includes("<")) {
-    return "plain";
-  }
-
-  const htmlvalidate = getValidator();
-  const report = await htmlvalidate.validateString(
-    wrapAsHtmlDocument(trimmed),
-    "snapshot.html"
-  );
-
-  // Log report in development
-  if (process.env.NODE_ENV !== "production") {
-    // eslint-disable-next-line no-console
-    console.debug("[memoContentFormat]", {
-      valid: report.valid,
-      errors: report.results.map((r) =>
-        r.messages
-          .filter((m) => m.severity === 2)
-          .map((m) => ({ ruleId: m.ruleId, message: m.message, line: m.line }))
-      ),
-    });
-  }
-
-  if (report.valid) {
+  // No raw newlines but starts like CKEditor output => saved after lazy migration.
+  if (looksLikeRichContentFragment(trimmed)) {
     return "html";
   }
-
-  const hasPlainIndicator = report.results.some((result) =>
-    result.messages.some(
-      (m) => m.severity === 2 && PLAIN_TEXT_INDICATOR_RULES.has(m.ruleId)
-    )
-  );
-
-  // If invalid but no known "prose" rules, still treat as html
-  if (!hasPlainIndicator && report.errorCount <= 2) {
-    return "html";
-  }
-
   return "plain";
 }

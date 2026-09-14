@@ -29,23 +29,23 @@ export function resolveWorkspaceMaterialIdForActiveItem(
 }
 
 /**
- * Scroll materials panel to page + highlight span.
+ * Scroll materials panel to page + notebook annotation span.
  * @param workspaceMaterialId workspaceMaterialId
- * @param highlightId highlightId
+ * @param notebookAnnotationId notebookAnnotationId
  */
-export function scrollToMaterialHighlightItem(
+export function scrollToNotebookAnnotationItem(
   workspaceMaterialId: number,
-  highlightId: number
+  notebookAnnotationId: number
 ): void {
   const page = document.getElementById(`p-${workspaceMaterialId}`);
   page?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   window.requestAnimationFrame(() => {
     const root = document.querySelector(MATERIALS_PANEL_SELECTOR) ?? document;
-    const highlight = root.querySelector(
-      `#p-${workspaceMaterialId} .material-annotation[data-muikku-annotation-id="${highlightId}"]`
+    const annotation = root.querySelector(
+      `#p-${workspaceMaterialId} .material-annotation[data-external-annotation-id="${notebookAnnotationId}"]`
     );
-    highlight?.scrollIntoView({ behavior: "smooth", block: "center" });
+    annotation?.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 }
 

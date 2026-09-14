@@ -1,6 +1,7 @@
 import {
-  FieldSnapshotPolicyContext,
-  FieldSnapshotCapabilities,
+  FieldActionCapabilities,
+  FieldActionPolicyContext,
+  FieldFeaturesCapabilities,
   StateConfig,
 } from "./types";
 
@@ -161,13 +162,38 @@ export const STATES: StateConfig[] = [
   },
 ];
 
-// Default field snapshot capabilities
-export const DEFAULT_FIELD_SNAPSHOT_CAPABILITIES: FieldSnapshotCapabilities = {
-  snapshotEnabled: false,
-  snapshotCanView: false,
-  snapshotCanTake: false,
-  snapshotCanDelete: false,
+// Default field features capabilities
+export const DISABLED_FIELD_ACTION_CAPABILITIES: FieldActionCapabilities = {
+  enabled: false,
+  canView: false,
+  canCreate: false,
+  canDelete: false,
 };
+
+// Default field features capabilities
+export const DISABLED_FIELD_FEATURES_CAPABILITIES: FieldFeaturesCapabilities = {
+  snapshot: DISABLED_FIELD_ACTION_CAPABILITIES,
+  comments: DISABLED_FIELD_ACTION_CAPABILITIES,
+};
+
+/**
+ * Evaluation tool: snapshots and comments for submitted / incomplete work
+ * @param ctx ctx
+ * @returns FieldFeaturesCapabilities
+ */
+export function resolveEvaluationFieldFeatures(
+  ctx: FieldActionPolicyContext
+): FieldFeaturesCapabilities {
+  const { compositeReply, usedAs } = ctx;
+  if (usedAs !== "evaluationTool" || !compositeReply) {
+    return DISABLED_FIELD_FEATURES_CAPABILITIES;
+  }
+
+  return {
+    snapshot: resolveEvaluationFieldSnapshotCapabilities(ctx),
+    comments: resolveEvaluationFieldCommentsCapabilities(ctx),
+  };
+}
 
 /**
  * Resolves the field snapshot capabilities for an evaluation
@@ -175,14 +201,9 @@ export const DEFAULT_FIELD_SNAPSHOT_CAPABILITIES: FieldSnapshotCapabilities = {
  * @returns FieldSnapshotCapabilities
  */
 export function resolveEvaluationFieldSnapshotCapabilities(
-  ctx: FieldSnapshotPolicyContext
-): FieldSnapshotCapabilities {
-  const { compositeReply, usedAs } = ctx;
-
-  // If not an evaluation tool or no composite reply, return disabled
-  if (usedAs !== "evaluationTool" || !compositeReply) {
-    return DEFAULT_FIELD_SNAPSHOT_CAPABILITIES;
-  }
+  ctx: FieldActionPolicyContext
+): FieldActionCapabilities {
+  const { compositeReply } = ctx;
 
   // Check the composite reply state
   const state = compositeReply.state;
@@ -194,9 +215,29 @@ export function resolveEvaluationFieldSnapshotCapabilities(
   const view = true; // hide history until student has submitted something meaningful
   const canDelete = canTake;
   return {
-    snapshotEnabled: view || canTake,
-    snapshotCanView: view,
-    snapshotCanTake: canTake,
-    snapshotCanDelete: canDelete,
+    enabled: view || canTake,
+    canView: view,
+    canCreate: canTake,
+    canDelete: canDelete,
+  };
+}
+
+/**
+ * Resolves the field comments capabilities for an evaluation
+ * @param ctx ctx
+ * @returns FieldCommentsCapabilities
+ */
+export function resolveEvaluationFieldCommentsCapabilities(
+  ctx: FieldActionPolicyContext
+): FieldActionCapabilities {
+  const { compositeReply } = ctx;
+  const canMutate =
+    compositeReply.state === "SUBMITTED" ||
+    compositeReply.state === "INCOMPLETE";
+  return {
+    enabled: canMutate,
+    canView: false,
+    canCreate: canMutate,
+    canDelete: false,
   };
 }

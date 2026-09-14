@@ -6,7 +6,13 @@ import { UsedAs } from "~/@types/shared";
 import Image from "../static/image";
 import Link from "../static/link";
 import MathJAX from "../static/mathjax";
-import { ImageDataset, LinkDataset } from "../../material-loader/types";
+import {
+  EmbeddedAnnotationDataset,
+  ImageDataset,
+  LinkDataset,
+} from "../../material-loader/types";
+import EmbedAnnotationHighlight from "../static/highlight";
+import CommentAnnotation from "../static/comment";
 
 /**
  * BaseProps
@@ -154,6 +160,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => (
+          // eslint-disable-next-line react/no-children-prop
           <MathJAX key={props.key} invisible={false} children={children} />
         ),
       },
@@ -222,6 +229,46 @@ export default class Base extends React.Component<BaseProps, BaseState> {
               dataset={dataset}
               processingRules={processingRules}
             />
+          );
+        },
+      },
+      {
+        id: "annotation-rule",
+
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
+        shouldProcessHTMLElement: (tagname, element) =>
+          !!(
+            tagname === "mark" &&
+            (element.dataset.type === "comment" ||
+              element.dataset.type === "highlight")
+          ),
+
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         * @returns any
+         */
+        processingFunction: (tag, props, children, element) => {
+          const dataset = extractDataSet<EmbeddedAnnotationDataset>(element);
+          if (dataset.type === "comment") {
+            return (
+              <CommentAnnotation key={props.key} dataset={dataset}>
+                {children}
+              </CommentAnnotation>
+            );
+          }
+          return (
+            <EmbedAnnotationHighlight key={props.key} dataset={dataset}>
+              {children}
+            </EmbedAnnotationHighlight>
           );
         },
       },

@@ -1,6 +1,6 @@
 import { NotebookNote, NotebookNoteType } from "~/generated/client";
 import { MaterialNotebookNote, WorkspaceNotebookNote } from "./notebook-layout";
-import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { NotebookAnnotation } from "~/components/base/material-loader/types";
 
 export type NotebookContextNoteDraft = {
   clientId: number;
@@ -179,7 +179,7 @@ export function removeDraftByClientId(
  */
 export function contextNoteDraftToMaterialHighlight(
   draft: NotebookContextNoteDraft
-): MaterialHighlight {
+): NotebookAnnotation {
   return {
     id: draft.clientId,
     workspaceMaterialId: draft.workspaceMaterialId,
@@ -199,7 +199,7 @@ export function contextNoteDraftToMaterialHighlight(
 export function getContextNoteDraftHighlightsForPage(
   drafts: NotebookContextNoteDraft[],
   workspaceMaterialId: number
-): MaterialHighlight[] {
+): NotebookAnnotation[] {
   return drafts
     .filter((d) => d.workspaceMaterialId === workspaceMaterialId)
     .map(contextNoteDraftToMaterialHighlight);

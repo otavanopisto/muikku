@@ -108,6 +108,13 @@
   justify-content: flex-end;
 }
 
+.memofield__field-features {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
 .memofield__word-count-container,
 .memofield__character-count-container {
   align-items: center;
