@@ -2658,6 +2658,7 @@
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
       "absenceEventDescriptionPlaceholder": "Enter the assignments or instructions for the student to make up the absence here.",
+      "absenceReasonVisible": "Enter the reason for the absence",
       "absentFrom": "Absent from:",
       "absencePeriod": "Absence period:",
       "absenceType": "Absence type",
