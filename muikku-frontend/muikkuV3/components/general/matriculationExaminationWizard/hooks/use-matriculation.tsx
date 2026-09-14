@@ -146,7 +146,7 @@ export const useMatriculation = (
     };
 
     /**
-     * Loads editable data. Checks if there is draft saved for this user and exam
+     * Loads editable data.
      */
     const loadExistingData = async () => {
       try {
