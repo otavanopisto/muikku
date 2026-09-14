@@ -144,3 +144,18 @@ export interface FieldSyncStatePatch {
   synced?: boolean;
   syncError?: string | null;
 }
+
+export type MaterialHighlightKind = "note" | "note-draft" | "highlight";
+
+/**
+ * MaterialHighlight
+ */
+export interface MaterialHighlight {
+  id: number | string;
+  workspaceMaterialId: number;
+  fieldName: string | null; // v1: always null
+  start: string; // <= 16 chars (or full selection if short rule)
+  end: string; // <= 16 chars (or full selection if short rule)
+  index: number; // 0-based
+  kind?: MaterialHighlightKind;
+}

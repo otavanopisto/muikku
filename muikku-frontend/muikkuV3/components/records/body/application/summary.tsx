@@ -35,6 +35,12 @@ import { UserStudyData } from "~/reducers/study-activity";
 import ContactCard from "~/components/general/contact-card";
 import OtherContact from "./summary/other-contact";
 import GuardianContact from "./summary/guardian-contact";
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/base/muikku-events";
+import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
+import Button from "~/components/general/button";
 
 /**
  * SummaryProps
@@ -89,13 +95,32 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             {t("labels.absences", { ns: "events" })}
           </div>
           <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-            {absenceEvents.events.map((event) => (
-              <WallAbsenceEvent
-                isUnder18={status.isUnder18}
-                key={event.id}
-                event={event}
-              />
-            ))}
+            {absenceEvents.events.map((event) => {
+              const hasFeedback = event.properties?.find(
+                (property) =>
+                  property.name == "ABSENCE_REASON" && property.value !== ""
+              );
+              return (
+                <WallAbsenceEvent
+                  isUnder18={status.isUnder18}
+                  key={event.id}
+                  event={event}
+                  actions={
+                    <AbsenceFeedbackDialog
+                      absenceEvent={event}
+                      onUpdate={updateAbsenceEventProperty}
+                      onCreate={createAbsenceEventProperty}
+                    >
+                      <Button className="button button--primary-function-content">
+                        {hasFeedback
+                          ? t("actions.editFeedback", { ns: "events" })
+                          : t("actions.giveFeedback", { ns: "events" })}
+                      </Button>
+                    </AbsenceFeedbackDialog>
+                  }
+                />
+              );
+            })}
           </div>
         </div>
       );

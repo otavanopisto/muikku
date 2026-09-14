@@ -26,17 +26,16 @@ interface WallAbsenceEventsProps {
  * @returns JSX.Element
  */
 const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
-  const { modifier, event, actions, isUnder18 = true } = props;
+  const { modifier, event, actions, isUnder18 } = props;
   const { t } = useTranslation("tasks");
-  const absenceEventProperty = event.properties.find(
+
+  const absenceEventProperty = event.properties?.find(
     (prop) => prop.name === "ABSENCE_REASON"
   );
   const absenceState =
     absenceEventProperty && absenceEventProperty.value !== ""
       ? "REVIEWED"
-      : isUnder18
-        ? "REVIEW-PENDING"
-        : "REVIEWED";
+      : "REVIEW-PENDING";
   const eventDate = (
     <>
       {" "}
@@ -66,6 +65,18 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
         });
       case AbsenceEventEnum.SkillsDemonstrationMeeting:
         return t("types.SKILLS_DEMONSTRATION_MEETING", {
+          ns: "events",
+        });
+      case AbsenceEventEnum.GroupMeeting:
+        return t("types.GROUP_MEETING", {
+          ns: "events",
+        });
+      case AbsenceEventEnum.GroupMeetingPreArranged:
+        return t("types.GROUP_MEETING_PRE_ARRANGED", {
+          ns: "events",
+        });
+      case AbsenceEventEnum.AssignmentsUndone:
+        return t("types.ASSIGNMENTS_UNDONE", {
           ns: "events",
         });
       case AbsenceEventEnum.GuidanceOrSupportSession:
@@ -149,7 +160,9 @@ const WallAbsenceEvent: React.FC<WallAbsenceEventsProps> = (props) => {
             })}
           </div>
         )}
-        {actions && <div className="wall-event__footer">{actions}</div>}
+        {actions && !isUnder18 && (
+          <div className="wall-event__footer">{actions}</div>
+        )}
       </div>
     </WallItem>
   );
