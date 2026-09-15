@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.material.dao;
 
+import java.util.Date;
+
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
@@ -24,8 +26,10 @@ public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
     super.delete(htmlMaterial);
   }
 
-  public HtmlMaterial updateData(HtmlMaterial htmlMaterial, String html) {
+  public HtmlMaterial updateData(HtmlMaterial htmlMaterial, String html, Long editor, Date edited) {
     htmlMaterial.setHtml(html);
+    htmlMaterial.setEditor(editor);
+    htmlMaterial.setEdited(edited);
     return persist(htmlMaterial);
   }
 
