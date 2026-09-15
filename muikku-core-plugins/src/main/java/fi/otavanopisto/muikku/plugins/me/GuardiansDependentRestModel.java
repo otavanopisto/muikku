@@ -7,7 +7,7 @@ public class GuardiansDependentRestModel {
 
   public GuardiansDependentRestModel(Long userEntityId, String identifier, String firstName, String lastName, String nickName,
       String studyProgrammeName, boolean hasImage, String email, String phoneNumber, String address, Date latestLogin, 
-      LocalDate studyStartDate, LocalDate studyTimeEnd, LocalDate studyEndDate) {
+      LocalDate studyStartDate, LocalDate studyTimeEnd, LocalDate studyEndDate, boolean isUnder18) {
     super();
     this.userEntityId = userEntityId;
     this.identifier = identifier;
@@ -23,6 +23,7 @@ public class GuardiansDependentRestModel {
     this.studyStartDate = studyStartDate;
     this.studyTimeEnd = studyTimeEnd;
     this.studyEndDate = studyEndDate;
+    this.setUnder18(isUnder18);
   }
 
   public String getIdentifier() {
@@ -137,6 +138,14 @@ public class GuardiansDependentRestModel {
     this.studyEndDate = studyEndDate;
   }
 
+  public boolean isUnder18() {
+    return isUnder18;
+  }
+
+  public void setUnder18(boolean isUnder18) {
+    this.isUnder18 = isUnder18;
+  }
+
   private Long userEntityId;
   private String identifier;
   private String firstName;
@@ -151,5 +160,6 @@ public class GuardiansDependentRestModel {
   private LocalDate studyStartDate;
   private LocalDate studyTimeEnd;
   private LocalDate studyEndDate;
+  private boolean isUnder18;
 
 }
