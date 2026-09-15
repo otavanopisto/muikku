@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -17,6 +18,7 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent
@@ -39,6 +41,9 @@ public class HtmlMaterialController {
 
   @Inject
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
+  
+  @Inject
+  private SessionController sessionController;
 
   public HtmlMaterial createHtmlMaterial(String title, String html, String contentType, String license) {
     return createHtmlMaterial(title, html, contentType, license, MaterialViewRestrict.NONE);
@@ -80,7 +85,7 @@ public class HtmlMaterialController {
     try {
       HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, removeAnswers);
       materialUpdateEvent.fire(event);
-      return htmlMaterialDAO.updateData(htmlMaterial, html);
+      return htmlMaterialDAO.updateData(htmlMaterial, html, sessionController.getLoggedUserEntity().getId(), new Date());
     }
     catch (Exception e) {
       Throwable cause = e;

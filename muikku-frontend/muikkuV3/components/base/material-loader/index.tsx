@@ -22,6 +22,7 @@ import {
 import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
+import { MaterialHighlight } from "./types";
 import { DEFAULT_FIELD_SNAPSHOT_CAPABILITIES, STATES } from "./helpers";
 import {
   FieldSnapshotCapabilities,
@@ -121,6 +122,7 @@ export interface MaterialLoaderProps {
   id?: string;
   websocket: WebsocketStateType;
   isInFrontPage?: boolean;
+  highlights?: MaterialHighlight[];
 
   /**
    * Can be defined for fetching current students compositereplies for
@@ -188,6 +190,7 @@ export interface MaterialLoaderProps {
   answersVisible?: boolean;
   isViewRestricted?: boolean;
   readspeakerComponent?: JSX.Element;
+  notebookAddNoteComponent?: JSX.Element;
   anchorElement?: JSX.Element;
 
   fieldSnapshotPolicy?: FieldSnapshotPolicy;

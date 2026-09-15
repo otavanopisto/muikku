@@ -129,4 +129,21 @@ public class MuikkuEventDAO extends CorePluginsDAO<MuikkuEvent> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<MuikkuEvent> listByTypeAndEnd(EventType type, Date end) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<MuikkuEvent> criteria = criteriaBuilder.createQuery(MuikkuEvent.class);
+    Root<MuikkuEvent> root = criteria.from(MuikkuEvent.class);
+
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(MuikkuEvent_.type), EventType.ABSENCE),
+            criteriaBuilder.lessThan(root.get(MuikkuEvent_.end), end)
+        )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+}
 }
