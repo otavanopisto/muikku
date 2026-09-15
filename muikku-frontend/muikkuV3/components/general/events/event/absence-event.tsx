@@ -15,7 +15,7 @@ import {
 interface AbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
-  actions: React.ReactNode;
+  actions?: React.ReactNode;
 }
 
 /**

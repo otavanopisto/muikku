@@ -91,11 +91,7 @@ const Absences = (props: AbsencesProps) => {
 
       <ApplicationSubPanel.Body modifier="workspace-absences-list">
         {absenceEvents.map((absence) => (
-          <AbsenceEvent
-            /*             actions={actions(absence)} */
-            key={absence.id}
-            event={absence}
-          />
+          <AbsenceEvent key={absence.id} event={absence} />
         ))}
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
