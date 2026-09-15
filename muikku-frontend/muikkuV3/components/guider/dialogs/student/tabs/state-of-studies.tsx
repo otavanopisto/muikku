@@ -41,6 +41,7 @@ import CommunicatorNewMessage from "~/components/communicator/dialogs/new-messag
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import WallAbsenceEvent from "~/components/index/layouts/panels/wall/walll-event";
 import ContactCard, { ContactState } from "~/components/general/contact-card";
+import Link from "~/components/general/link";
 
 /**
  * StateOfStudiesProps
@@ -459,7 +460,8 @@ class StateOfStudies extends React.Component<
               {(this.props.guider.currentStudent.labels &&
                 this.props.guider.currentStudent.labels.length) ||
               this.props.guider.currentStudent.basic.hasPedagogyForm ||
-              this.props.guider.currentStudent.basic.u18Compulsory ? (
+              this.props.guider.currentStudent.basic.u18Compulsory ||
+              this.props.guider.currentStudent.basic.externalViewLink ? (
                 <ApplicationSubPanel.Body modifier="labels">
                   <div className="labels">
                     {studentLabels}
@@ -524,6 +526,18 @@ class StateOfStudies extends React.Component<
                           </span>
                         </div>
                       </Dropdown>
+                    ) : null}
+
+                    {this.props.guider.currentStudent.basic.externalViewLink ? (
+                      <Link
+                        href={
+                          this.props.guider.currentStudent.basic
+                            .externalViewLink
+                        }
+                        openInNewTab="_blank"
+                      >
+                        Pyramus
+                      </Link>
                     ) : null}
                   </div>
                 </ApplicationSubPanel.Body>
