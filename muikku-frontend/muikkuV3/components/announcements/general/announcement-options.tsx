@@ -108,6 +108,9 @@ const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = (props) => {
       className="link link--full link--profile-dropdown"
       onClick={() => item.onClick(onClose)}
       role="menuitem"
+      data-de-aria-key="o"
+      data-de-aria-horizontal-alignment="end-outside"
+      data-de-aria-vertical-alignment="middle"
     >
       <span className={`link__icon ${item.icon}`}></span>
       <span>{item.label}</span>
@@ -122,7 +125,12 @@ const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = (props) => {
           renderAnnouncementOption(item, onClose)
       )}
     >
-      <IconButton icon="more_vert" />
+      <IconButton
+        icon="more_vert"
+        data-de-aria-key="o"
+        data-de-aria-horizontal-alignment="end-outside"
+        data-de-aria-vertical-alignment="middle"
+      />
     </Dropdown>
   );
 };

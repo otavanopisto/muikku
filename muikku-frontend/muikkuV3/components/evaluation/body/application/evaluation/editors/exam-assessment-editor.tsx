@@ -624,6 +624,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
                   type="radio"
                   name="evaluationType"
                   value="GRADED"
+                  data-de-aria-key="g"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                   checked={this.state.evaluationType === "GRADED"}
                   onChange={this.handleAssignmentEvaluationChange}
                 />
@@ -637,6 +640,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
                   type="radio"
                   name="evaluationType"
                   value="POINTS"
+                  data-de-aria-key="p"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                   checked={this.state.evaluationType === "POINTS"}
                   onChange={this.handleAssignmentEvaluationChange}
                 />
@@ -662,6 +668,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
                   className="form-element__select"
                   value={this.state.grade}
                   onChange={this.handleSelectGradeChange}
+                  data-de-aria-key="g"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {renderGradingOptions}
                 </select>
@@ -697,6 +706,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
           <Button
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             disabled={
               this.state.locked ||
               this.props.isRecording ||
@@ -709,6 +721,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="dialog-cancel"
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {t("actions.cancel")}
@@ -719,6 +734,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
               onClick={this.props.onClose}
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.cancel")}
             </Button>
@@ -729,6 +747,9 @@ class ExamAssessmentEditor extends SessionStateComponent<
               buttonModifiers="dialog-clear"
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.remove", { context: "draft" })}
             </Button>

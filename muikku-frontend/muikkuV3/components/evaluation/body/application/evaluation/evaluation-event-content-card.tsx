@@ -313,10 +313,20 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
   return (
     <>
-      <div className={`evaluation-modal__event ${evalEventClassMod(type)}`}>
+      <div
+        className={`evaluation-modal__event ${evalEventClassMod(type)}`}
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="group"
+      >
         <div
           onClick={handleOpenContentClick}
           className="evaluation-modal__event-header"
+          tabIndex={0}
+          role="button"
+          data-de-aria-key="o"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           <div className={arrowClasses + "icon-arrow-right"} />
           <div className="evaluation-modal__event-date">{parsedDate}</div>
@@ -357,6 +367,9 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                   workspaceSubjectIdentifier,
                   type === "SUPPLEMENTATION_REQUEST"
                 )}
+                data-de-aria-key="e"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {t("actions.edit")}
               </Link>
@@ -364,7 +377,12 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
 
             {showDeleteLink && (
               <DeleteDialog eventData={event}>
-                <Link className="link link--evaluation link--evaluation-delete">
+                <Link
+                  className="link link--evaluation link--evaluation-delete"
+                  data-de-aria-key="d"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
+                >
                   {t("actions.remove")}
                 </Link>
               </DeleteDialog>

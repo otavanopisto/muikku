@@ -90,6 +90,9 @@ class EvaluationToolbar extends React.Component<
           checked={this.props.evaluations.evaluationFilters.interimRequest}
           type="checkbox"
           id="filterNotEvaluated"
+          data-de-aria-key="i"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <label htmlFor="filterNotEvaluated">
           {t("labels.interimEvaluationFilter2", {
@@ -103,6 +106,9 @@ class EvaluationToolbar extends React.Component<
           checked={this.props.evaluations.evaluationFilters.assessmentRequest}
           type="checkbox"
           id="filterAssessmentRequest"
+          data-de-aria-key="r"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <label htmlFor="filterAssessmentRequest">
           {t("labels.withEvaluationRequest", { ns: "evaluation" })}
@@ -116,6 +122,9 @@ class EvaluationToolbar extends React.Component<
           }
           type="checkbox"
           id="filterSupplementationRequest"
+          data-de-aria-key="u"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <label htmlFor="filterSupplementationRequest">
           {t("labels.withSupplementationRequest", { ns: "evaluation" })}
@@ -127,6 +136,9 @@ class EvaluationToolbar extends React.Component<
           checked={this.props.evaluations.evaluationFilters.interimEvaluation}
           type="checkbox"
           id="filterNotEvaluated"
+          data-de-aria-key="v"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <label htmlFor="filterNotEvaluated">
           {t("labels.interimEvaluationFilter1", {
@@ -140,6 +152,9 @@ class EvaluationToolbar extends React.Component<
           checked={this.props.evaluations.evaluationFilters.evaluated}
           type="checkbox"
           id="filterEvaluated"
+          data-de-aria-key="e"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <label htmlFor="filterEvaluated">
           {t("labels.evaluated", { ns: "evaluation" })}
@@ -152,6 +167,9 @@ class EvaluationToolbar extends React.Component<
           checked={this.props.evaluations.evaluationFilters.notEvaluated}
           type="checkbox"
           id="filterNotEvaluated"
+          data-de-aria-key="n"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <label htmlFor="filterNotEvaluated">
           {t("labels.noEvaluation", { ns: "evaluation" })}
@@ -171,7 +189,13 @@ class EvaluationToolbar extends React.Component<
           />
           {this.props.evaluations.selectedWorkspaceId ? (
             <Dropdown items={checkboxes}>
-              <ButtonPill buttonModifiers="filter" icon="filter" />
+              <ButtonPill
+                buttonModifiers="filter"
+                icon="filter"
+                data-de-aria-key="f"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
+              />
             </Dropdown>
           ) : null}
         </ApplicationPanelToolbarActionsMain>

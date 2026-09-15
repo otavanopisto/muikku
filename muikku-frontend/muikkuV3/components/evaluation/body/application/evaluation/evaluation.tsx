@@ -299,7 +299,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
         );
       })
     ) : (
-      <div className="empty">
+      <div className="empty" data-de-aria-text="true" tabIndex={0} role="text">
         <span>
           {t("content.empty", {
             ns: "evaluation",
@@ -313,11 +313,21 @@ const Evaluation = (props: EvaluationDrawerProps) => {
       <div
         onClick={onClose}
         className="evaluation-modal__close icon-cross"
+        tabIndex={0}
+        role="button"
+        data-de-aria-key="c"
+        data-de-aria-horizontal-alignment="end-outside"
+        data-de-aria-vertical-alignment="middle"
       ></div>
 
       <section className="evaluation-modal__container">
         <header className="evaluation-modal__header evaluation-modal__header--student">
-          <div className="evaluation-modal__header-title">{`${selectedAssessment.lastName}, ${selectedAssessment.firstName} (${selectedAssessment.studyProgramme})`}</div>
+          <div
+            className="evaluation-modal__header-title"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >{`${selectedAssessment.lastName}, ${selectedAssessment.firstName} (${selectedAssessment.studyProgramme})`}</div>
         </header>
 
         <div className="evaluation-modal__content-wrapper">
@@ -336,7 +346,12 @@ const Evaluation = (props: EvaluationDrawerProps) => {
             selectedAssessment={selectedAssessment}
           />
           <div className="evaluation-modal__content">
-            <div className="evaluation-modal__content-title">
+            <div
+              className="evaluation-modal__content-title"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="section"
+            >
               {t("labels.languageProfile")}
             </div>
             <div className="evaluation-modal__item">
@@ -347,13 +362,23 @@ const Evaluation = (props: EvaluationDrawerProps) => {
       </section>
       <section className="evaluation-modal__container">
         <header className="evaluation-modal__header evaluation-modal__header--workspace">
-          <div className="evaluation-modal__header-title evaluation-modal__header-title--workspace">
+          <div
+            className="evaluation-modal__header-title evaluation-modal__header-title--workspace"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >
             {selectedAssessment.workspaceName}
           </div>
         </header>
         <div className="evaluation-modal__content-wrapper">
           <div className="evaluation-modal__content">
-            <div className="evaluation-modal__content-title">
+            <div
+              className="evaluation-modal__content-title"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="section"
+            >
               {t("labels.evaluationHistory", {
                 ns: "evaluation",
               })}
@@ -531,6 +556,9 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                   <select
                     className="form-element__select form-element__select--evaluation"
                     onChange={handleSelectSubjectEvaluationChange}
+                    data-de-aria-key="m"
+                    data-de-aria-horizontal-alignment="end-outside"
+                    data-de-aria-vertical-alignment="middle"
                   >
                     <option value="">
                       {t("actions.pickModule", {
@@ -566,6 +594,9 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                     "LOADING"
                   }
                   onClick={handleToggleAllLockedAssignment}
+                  data-de-aria-key="l"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {isAllAssignmentsLocked
                     ? t("actions.unlockAssignments", {
@@ -586,6 +617,9 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                     (selectedAssessment.subjects.length > 1 &&
                       !state.subjectToBeEvaluated)
                   }
+                  data-de-aria-key="e"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {isEvaluated &&
                   isSelectedSubjectEvaluated &&
@@ -607,6 +641,9 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                     (selectedAssessment.subjects.length > 1 &&
                       !state.subjectToBeEvaluated)
                   }
+                  data-de-aria-key="u"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {t("actions.askSupplementation", {
                     ns: "evaluation",

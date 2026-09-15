@@ -328,7 +328,12 @@ const EvaluationJournalEvent = React.forwardRef<
     props.workspaceMaterialReplyState === "ANSWERED";
 
   return (
-    <div className="evaluation-modal__item">
+    <div
+      className="evaluation-modal__item"
+      data-de-aria-text="true"
+      tabIndex={0}
+      role="group"
+    >
       <div className="evaluation-modal__item-header" ref={myRef}>
         <div
           className={
@@ -337,6 +342,11 @@ const EvaluationJournalEvent = React.forwardRef<
               : "evaluation-modal__item-header-title evaluation-modal__item-header-title--journal"
           }
           onClick={handleOpenContentClick}
+          tabIndex={0}
+          role="button"
+          data-de-aria-key="o"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           <div className="title-container">
             <div className="title-text">{title}</div>
@@ -367,6 +377,11 @@ const EvaluationJournalEvent = React.forwardRef<
           <div
             className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"
             onClick={handleShowCommentsClick}
+            tabIndex={0}
+            role="button"
+            data-de-aria-key="c"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             <div className={arrowClasses + " icon-arrow-right"} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
@@ -407,6 +422,9 @@ const EvaluationJournalEvent = React.forwardRef<
               <Link
                 className="link link--evaluation"
                 onClick={handleCreateNewComment}
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {t("labels.create", { context: "comment" })}
               </Link>

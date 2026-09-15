@@ -36,7 +36,12 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
     }
 
     return (
-      <div className="producers">
+      <div
+        className="producers"
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="group"
+      >
         <span className="producers__title">
           {t("labels.producers", { ns: "workspace" })}:
         </span>

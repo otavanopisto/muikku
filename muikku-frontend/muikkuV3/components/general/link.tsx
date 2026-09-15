@@ -42,6 +42,25 @@ interface LinkState {
 }
 
 /**
+ * Returns an explicit or derived de-aria shortcut key for a link.
+ * @param props link props
+ * @returns shortcut key
+ */
+function getDeAriaKey(props: LinkProps) {
+  const explicitKey = (props as any)["data-de-aria-key"];
+  if (explicitKey) {
+    return explicitKey;
+  }
+
+  const childText = React.Children.toArray(props.children).find(
+    (child) => typeof child === "string" || typeof child === "number"
+  );
+  const source = props["aria-label"] || props.title || childText || "link";
+
+  return String(source).trim().charAt(0).toLowerCase() || "l";
+}
+
+/**
  * Link
  */
 export class Link extends React.Component<LinkProps, LinkState> {
@@ -257,6 +276,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
           onTouchStart={this.onTouchStart}
           onTouchEnd={this.onTouchEnd}
           onTouchMove={this.onTouchMove}
+          data-de-aria-key={getDeAriaKey(this.props)}
         >
           {elementProps.children}
           {this.props.target ? (
@@ -290,6 +310,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
         onTouchStart={this.onTouchStart}
         onTouchEnd={this.onTouchEnd}
         onTouchMove={this.onTouchMove}
+        data-de-aria-key={getDeAriaKey(this.props)}
       />
     );
   }

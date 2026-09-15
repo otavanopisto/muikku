@@ -309,6 +309,9 @@ class WorkspaceNavbar extends React.Component<
                       : ""
                   }`}
                   role="menuitem"
+                  data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 ></Link>
               </Dropdown>
             ),
@@ -324,6 +327,9 @@ class WorkspaceNavbar extends React.Component<
           this.props.workspaceIsBeingEvaluated
         )}
         className="link link--full link--menu link--assessment-request"
+        data-de-aria-key="n"
+        data-de-aria-horizontal-alignment="center"
+        data-de-aria-vertical-alignment="bottom-outside"
       >
         <span
           className={`link__icon icon-assessment-${getIconForAssessmentState(
@@ -354,6 +360,9 @@ class WorkspaceNavbar extends React.Component<
             }`}
             onChange={this.toggleEditModeActive}
             checked={this.props.workspaceEditMode.active}
+            data-de-aria-key="e"
+            data-de-aria-horizontal-alignment="center"
+            data-de-aria-vertical-alignment="bottom-outside"
           />
         </span>
       );
@@ -396,6 +405,9 @@ class WorkspaceNavbar extends React.Component<
                           : item.text
                       }
                       role="menuitem"
+                      data-de-aria-key="n"
+                      data-de-aria-horizontal-alignment="center"
+                      data-de-aria-vertical-alignment="bottom-outside"
                     >
                       <span className={`link__icon icon-${item.icon}`} />
                       {item.badge ? (
@@ -419,7 +431,12 @@ class WorkspaceNavbar extends React.Component<
                   key="login-button"
                 />,
                 <ForgotPasswordDialog key="forgot-password-dialog">
-                  <Link className="link link--forgot-password link--forgot-password-main-function">
+                  <Link
+                    className="link link--forgot-password link--forgot-password-main-function"
+                    data-de-aria-key="f"
+                    data-de-aria-horizontal-alignment="center"
+                    data-de-aria-vertical-alignment="bottom-outside"
+                  >
                     <span>{t("labels.forgotPasswordLink")}</span>
                   </Link>
                 </ForgotPasswordDialog>,
@@ -445,6 +462,9 @@ class WorkspaceNavbar extends React.Component<
                   className={`link link--full link--menu ${
                     this.props.activeTrail === item.trail ? "active" : ""
                   }`}
+                  data-de-aria-key="n"
+                  data-de-aria-horizontal-alignment="center"
+                  data-de-aria-vertical-alignment="bottom-outside"
                 >
                   <span
                     className={`link__icon link__icon--workspace icon-${item.icon}`}

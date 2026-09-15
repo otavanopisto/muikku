@@ -249,6 +249,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                             <div
                               className="dialog__title"
                               id={`dialogTitle--${modifiers[0]}`}
+                              data-de-aria-text="true"
+                              tabIndex={0}
+                              role="section"
                             >
                               {this.props.title}
                             </div>
@@ -258,6 +261,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                               role="button"
                               icon="cross"
                               onClick={closePortal}
+                              data-de-aria-key="c"
+                              data-de-aria-horizontal-alignment="end-outside"
+                              data-de-aria-vertical-alignment="middle"
                             />
                           </header>
                           <section

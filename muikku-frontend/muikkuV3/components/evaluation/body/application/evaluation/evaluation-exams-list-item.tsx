@@ -459,7 +459,15 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
   return (
     <>
-      <div className="evaluation-modal__item" onClick={handleShowExamContent}>
+      <div
+        className="evaluation-modal__item"
+        onClick={handleShowExamContent}
+        tabIndex={0}
+        role="button"
+        data-de-aria-key="o"
+        data-de-aria-horizontal-alignment="end-outside"
+        data-de-aria-vertical-alignment="middle"
+      >
         <div
           ref={myRef}
           className={`evaluation-modal__item-header ${assigmentGradeClass(exam)}`}
@@ -475,6 +483,9 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
                 onClick={handleOpenAssessmentEditor}
                 buttonModifiers={["evaluate"]}
                 icon="evaluate"
+                data-de-aria-key="e"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             </div>
           )}
@@ -711,13 +722,23 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   const showContent = showExamAssignmentContent || isAssessmentEditorOpen;
 
   return (
-    <div className="evaluation-modal__item">
+    <div
+      className="evaluation-modal__item"
+      data-de-aria-text="true"
+      tabIndex={0}
+      role="group"
+    >
       <div
         ref={myRef}
         className={`evaluation-modal__item-header ${assignmentFunctionClass(compositeReply)}`}
       >
         <div
           onClick={handleToggleContent}
+          tabIndex={0}
+          role="button"
+          data-de-aria-key="o"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
           className={`evaluation-modal__item-header-title ${titleModifiers.map((modifier) => `evaluation-modal__item-header-title--${modifier}`).join(" ")}`}
         >
           {contentNode.assignment.title}
@@ -730,6 +751,9 @@ const AssignmentItem = (props: AssignmentItemProps) => {
               onClick={handleOpenAssignmentEditor}
               buttonModifiers={["evaluate"]}
               icon="evaluate"
+              data-de-aria-key="e"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
           </div>
         )}

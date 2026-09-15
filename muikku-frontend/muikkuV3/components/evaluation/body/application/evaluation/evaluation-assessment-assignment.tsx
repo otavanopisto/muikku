@@ -606,13 +606,23 @@ class EvaluationAssessmentAssignment extends React.Component<
         this.props.compositeReply === undefined);
 
     return (
-      <div className={`evaluation-modal__item `}>
+      <div
+        className={`evaluation-modal__item `}
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="group"
+      >
         <div
           className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
           ref={(ref) => (this.myRef = ref)}
         >
           <div
             onClick={this.handleOpenMaterialContent}
+            tabIndex={0}
+            role="button"
+            data-de-aria-key="o"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             className={`evaluation-modal__item-header-title
                         evaluation-modal__item-header-title--${materialTypeClass}
                         ${
@@ -665,6 +675,9 @@ class EvaluationAssessmentAssignment extends React.Component<
                     ? "lock"
                     : "lock-open"
                 }
+                data-de-aria-key="l"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             )}
 
@@ -680,6 +693,9 @@ class EvaluationAssessmentAssignment extends React.Component<
                 )}
                 buttonModifiers={["evaluate"]}
                 icon="evaluate"
+                data-de-aria-key="e"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             )}
           </div>

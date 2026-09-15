@@ -85,6 +85,9 @@ const EvaluationJournalEventComment: React.FC<
       ref={myRef}
       key={id}
       className="evaluation-modal__item evaluation-modal__item--journal-comment"
+      data-de-aria-text="true"
+      tabIndex={0}
+      role="group"
     >
       <div className="evaluation-modal__item-body evaluation-modal__item-body--journal-comment rich-text">
         <CkeditorContentLoader html={comment} />
@@ -94,6 +97,9 @@ const EvaluationJournalEventComment: React.FC<
           <Link
             className="link link--evaluation"
             onClick={handleEditCommentClick}
+            data-de-aria-key="e"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("actions.edit")}
           </Link>
@@ -104,7 +110,12 @@ const EvaluationJournalEventComment: React.FC<
               userEntityId={userEntityId}
               workspaceEntityId={workspaceEntityId}
             >
-              <Link className="link link--evaluation link--evaluation-delete">
+              <Link
+                className="link link--evaluation link--evaluation-delete"
+                data-de-aria-key="d"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
+              >
                 {t("actions.remove")}
               </Link>
             </DeleteJournalComment>

@@ -54,7 +54,7 @@ class Announcements extends React.Component<
 
     if (!this.props.announcement) {
       return (
-        <div>
+        <div data-de-aria-text="true" tabIndex={0} role="text">
           {this.props.i18n.t("content.empty", {
             ns: "messaging",
             context: "announcements",
@@ -63,7 +63,12 @@ class Announcements extends React.Component<
       );
     }
     return (
-      <article className="article">
+      <article
+        className="article"
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="article"
+      >
         <header className="article__header article__header--announcement">
           {this.props.announcement.pinned && (
             <span className="icon icon-pin"></span>

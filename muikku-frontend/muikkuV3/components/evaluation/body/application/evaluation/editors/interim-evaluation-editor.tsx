@@ -399,6 +399,9 @@ class InterimEvaluationEditor extends SessionStateComponent<
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("actions.save")}
           </Button>
@@ -406,6 +409,9 @@ class InterimEvaluationEditor extends SessionStateComponent<
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="dialog-cancel"
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {t("actions.cancel")}
@@ -416,6 +422,9 @@ class InterimEvaluationEditor extends SessionStateComponent<
               onClick={this.props.onClose}
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.cancel")}
             </Button>
@@ -426,6 +435,9 @@ class InterimEvaluationEditor extends SessionStateComponent<
               buttonModifiers="dialog-clear"
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.remove", { context: "draft" })}
             </Button>

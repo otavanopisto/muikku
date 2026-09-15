@@ -119,6 +119,9 @@ class EvaluationSorters extends React.Component<
               this.buildSorterClass("sort-amount-asc"),
             ]}
             icon="sort-amount-asc"
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </Dropdown>
 
@@ -141,6 +144,9 @@ class EvaluationSorters extends React.Component<
               this.buildSorterClass("sort-amount-desc"),
             ]}
             icon="sort-amount-desc"
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </Dropdown>
 
@@ -163,6 +169,9 @@ class EvaluationSorters extends React.Component<
               this.buildSorterClass("sort-alpha-asc"),
             ]}
             icon="sort-alpha-asc"
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </Dropdown>
 
@@ -185,6 +194,9 @@ class EvaluationSorters extends React.Component<
               this.buildSorterClass("sort-alpha-desc"),
             ]}
             icon="sort-alpha-desc"
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </Dropdown>
 
@@ -209,6 +221,9 @@ class EvaluationSorters extends React.Component<
                   this.buildSorterClass("sort-workspace-alpha-asc"),
                 ]}
                 icon="sort-asc"
+                data-de-aria-key="s"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             </Dropdown>
 
@@ -231,6 +246,9 @@ class EvaluationSorters extends React.Component<
                   this.buildSorterClass("sort-workspace-alpha-desc"),
                 ]}
                 icon="sort-desc"
+                data-de-aria-key="s"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             </Dropdown>
           </>

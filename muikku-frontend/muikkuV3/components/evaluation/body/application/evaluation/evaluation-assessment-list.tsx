@@ -158,12 +158,18 @@ const AssessmentList = (props: AssessmentListProps) => {
               <Link
                 className="link link--evaluation link--evaluation-open-close"
                 onClick={handleCloseAll}
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {t("actions.closeAll")}
               </Link>
               <Link
                 className="link link--evaluation link--evaluation-open-close"
                 onClick={handleOpenAll}
+                data-de-aria-key="o"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               >
                 {t("actions.openAll", { ns: "evaluation" })}
               </Link>

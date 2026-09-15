@@ -633,6 +633,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           <DatePicker
             id="announcementStartSate"
             className="env-dialog__input env-dialog__input--date-picker"
+            data-de-aria-key="b"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             selected={this.state.startDate}
             onChange={this.handleDateChange.bind(this, "startDate")}
             locale={outputCorrectDatePickerLocale(localize.language)}
@@ -646,6 +649,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           <DatePicker
             id="announcementEndDate"
             className="env-dialog__input env-dialog__input--date-picker"
+            data-de-aria-key="e"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             selected={this.state.endDate}
             onChange={this.handleDateChange.bind(this, "endDate")}
             locale={outputCorrectDatePickerLocale(localize.language)}
@@ -660,6 +666,9 @@ class NewEditAnnouncement extends SessionStateComponent<
               className="env-dialog__input"
               checked={this.state.pinned}
               onChange={this.handlePinnedChange}
+              data-de-aria-key="p"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
             <label
               htmlFor="announcementPinned"
@@ -732,6 +741,9 @@ class NewEditAnnouncement extends SessionStateComponent<
             value={this.state.subject}
             onChange={this.onSubjectChange}
             autoFocus={!!this.props.announcement}
+            data-de-aria-key="t"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </div>
       </div>,
@@ -761,6 +773,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           className="button button--dialog-execute"
           onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}
           disabled={this.state.locked}
+          data-de-aria-key="s"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           {this.props.i18n.t("actions.save")}
         </Button>
@@ -768,6 +783,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
+          data-de-aria-key="c"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           {this.props.i18n.t("actions.cancel")}
         </Button>
@@ -776,6 +794,9 @@ class NewEditAnnouncement extends SessionStateComponent<
             buttonModifiers="dialog-clear"
             onClick={this.clearUp}
             disabled={this.state.locked}
+            data-de-aria-key="x"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>

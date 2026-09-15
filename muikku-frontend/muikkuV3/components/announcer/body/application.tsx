@@ -47,7 +47,12 @@ class AnnouncerApplication extends React.Component<
     const title = this.props.i18n.t("labels.announcer");
     const primaryOption = (
       <NewEditAnnouncement>
-        <Button buttonModifiers="primary-function">
+        <Button
+          buttonModifiers="primary-function"
+          data-de-aria-key="c"
+          data-de-aria-horizontal-alignment="center"
+          data-de-aria-vertical-alignment="bottom-outside"
+        >
           {this.props.t("actions.create", {
             ns: "messaging",
             context: "announcement",
@@ -70,7 +75,13 @@ class AnnouncerApplication extends React.Component<
           <AnnouncementView />
         </ApplicationPanel>
         <NewEditAnnouncement>
-          <HoverButton icon="plus" modifier="new-announcement" />
+          <HoverButton
+            icon="plus"
+            modifier="new-announcement"
+            data-de-aria-key="c"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
+          />
         </NewEditAnnouncement>
       </>
     );

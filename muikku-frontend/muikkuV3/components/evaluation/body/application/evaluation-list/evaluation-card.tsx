@@ -195,7 +195,14 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     selectedWorkspaceId !== evaluationAssessmentRequest.workspaceEntityId ? (
       <div className="evaluation-card-data-row">
         <div className="eval-workspace-name">
-          <a onClick={handleWorkspaceNameClick}>
+          <a
+            onClick={handleWorkspaceNameClick}
+            tabIndex={0}
+            role="button"
+            data-de-aria-key="w"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
+          >
             {`${evaluationAssessmentRequest.workspaceName} ${
               evaluationAssessmentRequest.workspaceNameExtension !== null
                 ? `(${evaluationAssessmentRequest.workspaceNameExtension})`
@@ -229,6 +236,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             aria-label={buttonAriaLabel}
             buttonModifiers="archive-student"
             icon="archive"
+            data-de-aria-key="a"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </ArchiveDialog>
       );
@@ -262,6 +272,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         aria-label={buttonAriaLabel}
         buttonModifiers="archive-request"
         icon="trash"
+        data-de-aria-key="d"
+        data-de-aria-horizontal-alignment="end-outside"
+        data-de-aria-vertical-alignment="middle"
       />
     );
 
@@ -291,7 +304,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
   };
 
   return (
-    <div className={`evaluation-card ${cardModifierMap[state]}`}>
+    <div
+      className={`evaluation-card ${cardModifierMap[state]}`}
+      data-de-aria-text="true"
+      tabIndex={0}
+      role="group"
+    >
       <EvaluationCardLabel
         show={!!selectedWorkspaceId}
         evaluationAssessmentRequest={evaluationAssessmentRequest}
@@ -315,6 +333,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
                 : ["important"]
             }
             icon="star-full"
+            data-de-aria-key="i"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
           <IconButton
             aria-label={t("actions.markNonImportant", { ns: "evaluation" })}
@@ -325,6 +346,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
                 : ["unimportant"]
             }
             icon="star-empty"
+            data-de-aria-key="u"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </div>
 
@@ -339,6 +363,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
               aria-label={t("actions.evaluateStudent", { ns: "evaluation" })}
               buttonModifiers="evaluate"
               icon="evaluate"
+              data-de-aria-key="e"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
           </EvaluateDialog>
         </div>

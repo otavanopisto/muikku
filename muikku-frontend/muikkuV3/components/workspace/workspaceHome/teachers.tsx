@@ -63,7 +63,12 @@ class WorkspaceTeachers extends React.Component<
       <div className="panel panel--workspace-teachers">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
-          <h2 className="panel__header-title">
+          <h2
+            className="panel__header-title"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >
             {t("labels.teacher", {
               ns: "users",
               count: teacherCount,
@@ -96,6 +101,9 @@ class WorkspaceTeachers extends React.Component<
                   <div
                     className="item-list__item item-list__item--teacher"
                     key={teacher.userEntityId}
+                    data-de-aria-text="true"
+                    tabIndex={0}
+                    role="group"
                   >
                     <div className="item-list__profile-picture">
                       <Avatar
@@ -175,6 +183,9 @@ class WorkspaceTeachers extends React.Component<
                               "new-message",
                               "new-message-to-staff",
                             ]}
+                            data-de-aria-key="s"
+                            data-de-aria-horizontal-alignment="end-outside"
+                            data-de-aria-vertical-alignment="middle"
                           ></ButtonPill>
                         </CommunicatorNewMessage>
                         {teacher.properties["profile-phone"] !== undefined &&
@@ -182,6 +193,9 @@ class WorkspaceTeachers extends React.Component<
                           teacher.properties["profile-whatsapp"] === "true" && (
                             <WhatsappButtonLink
                               mobileNumber={teacher.properties["profile-phone"]}
+                              data-de-aria-key="w"
+                              data-de-aria-horizontal-alignment="end-outside"
+                              data-de-aria-vertical-alignment="middle"
                             />
                           )}
 
@@ -199,6 +213,9 @@ class WorkspaceTeachers extends React.Component<
                               icon="clock"
                               buttonModifiers="appointment-calendar"
                               openInNewTab="_blank"
+                              data-de-aria-key="a"
+                              data-de-aria-horizontal-alignment="end-outside"
+                              data-de-aria-vertical-alignment="middle"
                               href={
                                 teacher.properties[
                                   "profile-appointmentCalendar"
@@ -214,7 +231,12 @@ class WorkspaceTeachers extends React.Component<
             </div>
           </div>
         ) : (
-          <div className="panel__body panel__body--empty">
+          <div
+            className="panel__body panel__body--empty"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="text"
+          >
             {t("content.empty", { ns: "workspace", context: "teachers" })}
           </div>
         )}

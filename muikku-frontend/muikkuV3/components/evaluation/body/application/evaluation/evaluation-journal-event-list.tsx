@@ -210,7 +210,12 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
       {journalFeedbackIsReady ? (
         journalFeedback ? (
           <div className="evaluation-modal__content-body">
-            <div className="evaluation-modal__item">
+            <div
+              className="evaluation-modal__item"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="group"
+            >
               <div className="evaluation-modal__item-journal-feedback">
                 <div className="evaluation-modal__item-journal-feedback-label">
                   {t("labels.feedback", { ns: "journal" })}
@@ -234,13 +239,21 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   className="link link--evaluation"
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
+                  data-de-aria-key="e"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {t("actions.edit", { ns: "common" })}
                 </Link>
 
                 {!feedbackEditorOpen && (
                   <DeleteJournalFeedback journalFeedback={journalFeedback}>
-                    <Link className="link link--evaluation link--evaluation-delete">
+                    <Link
+                      className="link link--evaluation link--evaluation-delete"
+                      data-de-aria-key="d"
+                      data-de-aria-horizontal-alignment="end-outside"
+                      data-de-aria-vertical-alignment="middle"
+                    >
                       {t("actions.remove", { ns: "common" })}
                     </Link>
                   </DeleteJournalFeedback>
@@ -250,7 +263,12 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
           </div>
         ) : (
           <div className="evaluation-modal__content-body">
-            <div className="evaluation-modal__item">
+            <div
+              className="evaluation-modal__item"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="group"
+            >
               <div className="evaluation-modal__item-body rich-text">
                 <p>
                   {t("content.empty", { ns: "journal", context: "evaluation" })}
@@ -261,6 +279,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   className="link link--evaluation"
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
+                  data-de-aria-key="g"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {t("actions.grade", { ns: "evaluation", context: "journal" })}
                 </Link>
@@ -281,6 +302,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 ? ["journal-filter", "journal-filter-active"]
                 : ["journal-filter"]
             }
+            data-de-aria-key="m"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("labels.mandatories", { ns: "journal" })}
           </Button>
@@ -291,6 +315,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 ? ["journal-filter", "journal-filter-active"]
                 : ["journal-filter"]
             }
+            data-de-aria-key="o"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("labels.others", { ns: "journal" })}
           </Button>
@@ -301,12 +328,18 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
             <Link
               className="link link--evaluation link--evaluation-open-close"
               onClick={handleCloseAllDiaryEntriesClick}
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.closeAll")}
             </Link>
             <Link
               className="link link--evaluation link--evaluation-open-close"
               onClick={handleOpenAllDiaryEntriesClick}
+              data-de-aria-key="o"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.openAll")}
             </Link>
@@ -342,6 +375,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                       : "sort-amount-asc"
                   }
                   buttonModifiers={["evaluation-journal-sorter"]}
+                  data-de-aria-key="s"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 />
               </Dropdown>
             </div>

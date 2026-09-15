@@ -431,7 +431,12 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
     }
 
     return (
-      <div className={`evaluation-modal__item `}>
+      <div
+        className={`evaluation-modal__item `}
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="group"
+      >
         <div
           className={`evaluation-modal__item-header ${
             evaluatedFunctionClassMod ? evaluatedFunctionClassMod : ""
@@ -440,6 +445,11 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
         >
           <div
             onClick={this.handleOpenMaterialContent}
+            tabIndex={0}
+            role="button"
+            data-de-aria-key="o"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             className={`evaluation-modal__item-header-title
                         evaluation-modal__item-header-title--interim-evaluation
                         ${
@@ -477,6 +487,9 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
                   )}
                   buttonModifiers={["evaluate"]}
                   icon="evaluate"
+                  data-de-aria-key="e"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 />
               ) : null
             ) : null}

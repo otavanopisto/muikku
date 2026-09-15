@@ -98,7 +98,12 @@ class WorkspaceHomeHeader extends React.Component<
       });
 
       return (
-        <div className="meta__item">
+        <div
+          className="meta__item"
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="group"
+        >
           <span className="meta__item-label">Pakollisuus:</span>
           <span className="meta__item-description">{localString}</span>
         </div>
@@ -244,6 +249,9 @@ class WorkspaceHomeHeader extends React.Component<
             hasPassingGrade && !isCombinationWorkspace ? "STATE-passed" : ""
           }`}
           style={{ backgroundImage: headerBackgroundImage }}
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="group"
         >
           {hasPassingGrade && !isCombinationWorkspace && (
             <div className="hero__workspace-assessment-container">
@@ -281,20 +289,35 @@ class WorkspaceHomeHeader extends React.Component<
             )}
         </div>
         <div className="meta meta--workspace">
-          <div className="meta__item">
+          <div
+            className="meta__item"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="group"
+          >
             <span className="meta__item-label">
               {t("labels.length", { ns: "workspace" })}
             </span>
             {workspaceLengthOrLengths}
           </div>
-          <div className="meta__item">
+          <div
+            className="meta__item"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="group"
+          >
             <span className="meta__item-label">
               {t("labels.subject", { ns: "workspace" })}
             </span>
             {workspaceSubjectNameOrNames}
           </div>
           {this.props.workspace.additionalInfo.workspaceType ? (
-            <div className="meta__item">
+            <div
+              className="meta__item"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="group"
+            >
               <span className="meta__item-label">{t("labels.type")}</span>
               <span className="meta__item-description">
                 {this.props.workspace.additionalInfo.workspaceType}
@@ -303,7 +326,12 @@ class WorkspaceHomeHeader extends React.Component<
           ) : null}
           {this.props.workspace.additionalInfo.beginDate &&
           this.props.workspace.additionalInfo.endDate ? (
-            <div className="meta__item">
+            <div
+              className="meta__item"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="group"
+            >
               <span className="meta__item-label">
                 {t("labels.dates", { ns: "workspace" })}
               </span>
@@ -322,7 +350,12 @@ class WorkspaceHomeHeader extends React.Component<
           ) : null}
           {this.renderMandatorityDescription()}
           {this.props.workspace.activity ? (
-            <div className="meta__item meta__item--progress-data">
+            <div
+              className="meta__item meta__item--progress-data"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="group"
+            >
               <ProgressData
                 modifier="workspace-home"
                 title={t("labels.progress", { ns: "workspace" })}

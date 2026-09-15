@@ -266,7 +266,12 @@ export default class ContentPanel extends React.Component<
         <div className="content-panel__container">
           {this.props.title ? (
             <div className="content-panel__header">
-              <h1 className="content-panel__header-title">
+              <h1
+                className="content-panel__header-title"
+                data-de-aria-text="true"
+                tabIndex={0}
+                role="section"
+              >
                 {this.props.title}
               </h1>
             </div>
@@ -290,6 +295,9 @@ export default class ContentPanel extends React.Component<
                     ns: "materials",
                   })}
                   aria-hidden={!this.state.open}
+                  data-de-aria-key="t"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   <span className="icon-arrow-left"></span>
                 </div>
@@ -321,6 +329,9 @@ export default class ContentPanel extends React.Component<
                         aria-label={this.props.t("wcag.closeContentPanel", {
                           ns: "workspace",
                         })}
+                        data-de-aria-key="c"
+                        data-de-aria-horizontal-alignment="end-outside"
+                        data-de-aria-vertical-alignment="middle"
                       />
                     </div>
                     {this.props.navigation}

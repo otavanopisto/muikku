@@ -431,6 +431,9 @@ class ExerciseEditor extends SessionStateComponent<
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {this.props.t("actions.save")}
           </Button>
@@ -438,6 +441,9 @@ class ExerciseEditor extends SessionStateComponent<
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="dialog-cancel"
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {this.props.t("actions.cancel")}
@@ -447,6 +453,9 @@ class ExerciseEditor extends SessionStateComponent<
             <Button
               onClick={this.props.onClose}
               buttonModifiers="dialog-cancel"
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
               disabled={this.state.locked || this.props.isRecording}
             >
               {this.props.t("actions.cancel")}
@@ -457,6 +466,9 @@ class ExerciseEditor extends SessionStateComponent<
             <Button
               buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
               disabled={this.state.locked || this.props.isRecording}
             >
               {this.props.t("actions.remove", { context: "draft" })}
@@ -473,6 +485,9 @@ class ExerciseEditor extends SessionStateComponent<
             >
               <Button
                 buttonModifiers="dialog-delete"
+                data-de-aria-key="d"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {t("actions.remove", { context: "evaluation" })}

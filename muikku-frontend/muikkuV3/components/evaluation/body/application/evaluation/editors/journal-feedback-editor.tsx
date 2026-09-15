@@ -184,6 +184,9 @@ class JournalFeedbackEditor extends SessionStateComponent<
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveClick}
             disabled={this.state.locked}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {this.props.t("actions.save")}
           </Button>
@@ -191,6 +194,9 @@ class JournalFeedbackEditor extends SessionStateComponent<
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
+            data-de-aria-key="c"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {this.props.t("actions.cancel")}
           </Button>
@@ -199,6 +205,9 @@ class JournalFeedbackEditor extends SessionStateComponent<
               buttonModifiers="dialog-clear"
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {this.props.t("actions.remove", { context: "draft" })}
             </Button>

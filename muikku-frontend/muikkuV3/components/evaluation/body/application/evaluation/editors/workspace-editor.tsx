@@ -879,6 +879,9 @@ class WorkspaceEditor extends SessionStateComponent<
               className="form-element__select"
               onChange={this.handleSelectGradeChange}
               value={this.state.grade}
+              data-de-aria-key="g"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {renderGradingOptions}
             </select>
@@ -903,6 +906,9 @@ class WorkspaceEditor extends SessionStateComponent<
                 className="form-element__select"
                 onChange={this.handleSelectPriceChange}
                 value={this.state.selectedPriceOption}
+                data-de-aria-key="b"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={billingPriceDisabled}
               >
                 {options}
@@ -916,6 +922,9 @@ class WorkspaceEditor extends SessionStateComponent<
             buttonModifiers="dialog-execute"
             onClick={this.handleEvaluationSave}
             disabled={this.state.locked}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("actions.save")}
           </Button>
@@ -923,6 +932,9 @@ class WorkspaceEditor extends SessionStateComponent<
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
+            data-de-aria-key="c"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("actions.cancel")}
           </Button>
@@ -931,6 +943,9 @@ class WorkspaceEditor extends SessionStateComponent<
               buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.remove", { context: "draft" })}
             </Button>

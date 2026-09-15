@@ -71,6 +71,9 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
           <div
             key={assessment.date + index}
             className="panel panel--workspace-evaluation"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="group"
           >
             <div className="panel__header">
               <div

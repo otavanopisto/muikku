@@ -226,6 +226,9 @@ class Announcements extends BodyScrollLoader<
                         <Link
                           tabIndex={0}
                           className="link link--application-list"
+                          data-de-aria-key="e"
+                          data-de-aria-horizontal-alignment="end-outside"
+                          data-de-aria-vertical-alignment="middle"
                         >
                           {this.props.i18n.t("actions.edit")}
                         </Link>
@@ -235,6 +238,9 @@ class Announcements extends BodyScrollLoader<
                           <Link
                             tabIndex={0}
                             className="link link--application-list"
+                            data-de-aria-key="r"
+                            data-de-aria-horizontal-alignment="end-outside"
+                            data-de-aria-vertical-alignment="middle"
                           >
                             {this.props.i18n.t("actions.remove")}
                           </Link>

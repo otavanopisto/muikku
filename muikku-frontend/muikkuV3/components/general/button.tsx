@@ -7,6 +7,26 @@ const REACTIVATION_DELAY = 400;
 let reactivationDelayLastCalled = 0;
 
 /**
+ * Returns an explicit or derived de-aria shortcut key for a button.
+ * @param props button props
+ * @param fallback fallback text, typically the icon name
+ * @returns shortcut key
+ */
+function getDeAriaKey(props: ButtonProps, fallback = "button") {
+  const explicitKey = (props as any)["data-de-aria-key"];
+  if (explicitKey) {
+    return explicitKey;
+  }
+
+  const childText = React.Children.toArray(props.children).find(
+    (child) => typeof child === "string" || typeof child === "number"
+  );
+  const source = props["aria-label"] || props.title || childText || fallback;
+
+  return String(source).trim().charAt(0).toLowerCase() || "b";
+}
+
+/**
  * reactivationDelayWrapper
  * @param onClickFn onClickFn
  * @param args args
@@ -96,6 +116,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
           .map((s) => `button--${s}`)
           .join(" ")}`}
         role="button"
+        data-de-aria-key={getDeAriaKey(this.props, this.props.icon)}
       >
         {this.props.icon && this.props.iconPosition === "left" && (
           <span
@@ -147,6 +168,7 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
           this.props.className ? this.props.className : ""
         } ${(modifiers || []).map((s) => `button-social--${s}`).join(" ")}`}
         role="button"
+        data-de-aria-key={getDeAriaKey(this.props)}
       />
     );
   }
@@ -194,6 +216,7 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
           .map((s) => `button-pill--${s}`)
           .join(" ")}`}
         role="button"
+        data-de-aria-key={getDeAriaKey(this.props, this.props.icon)}
       >
         {this.props.icon && (
           <span className={`button-pill__icon icon-${this.props.icon}`}></span>
@@ -246,6 +269,7 @@ export class IconButton extends React.Component<IconButtonProps, ButtonState> {
           this.props.className ? this.props.className : ""
         } ${(modifiers || []).map((s) => `button-icon--${s}`).join(" ")}`}
         role="button"
+        data-de-aria-key={getDeAriaKey(this.props, this.props.icon)}
       >
         {this.props.icon && <span className={`icon-${this.props.icon}`}></span>}
         {this.props.children}

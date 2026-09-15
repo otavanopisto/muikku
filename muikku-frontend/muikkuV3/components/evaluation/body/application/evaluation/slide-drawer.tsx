@@ -76,7 +76,12 @@ const SlideDrawer = React.forwardRef<
         }`}
       >
         <header className="evaluation-modal__evaluate-drawer-header">
-          <div className="evaluation-modal__evaluate-drawer-header-title">
+          <div
+            className="evaluation-modal__evaluate-drawer-header-title"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >
             {title}
           </div>
           {showWarning ? (
@@ -86,6 +91,9 @@ const SlideDrawer = React.forwardRef<
                 disabled={disableClose}
                 buttonModifiers={closeIconModifiers}
                 icon="arrow-right"
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               ></IconButton>
             </WarningDialog>
           ) : (
@@ -94,6 +102,9 @@ const SlideDrawer = React.forwardRef<
               disabled={disableClose}
               buttonModifiers={closeIconModifiers}
               icon="arrow-right"
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             ></IconButton>
           )}
         </header>

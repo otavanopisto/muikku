@@ -66,7 +66,12 @@ export class NavigationTopic extends React.Component<
 
     return (
       <ul className={`menu ${listClassNameModifier}`}>
-        <li className="menu__title">
+        <li
+          className="menu__title"
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="section"
+        >
           {this.props.name ? this.props.name : null}
         </li>
         {this.props.children}
@@ -136,6 +141,9 @@ export class NavigationElement extends React.Component<
             as="span"
             buttonModifiers="navigation-edit-label"
             icon={this.props.editableIcon ? this.props.editableIcon : "pencil"}
+            data-de-aria-key="e"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           />
         </EditableWrapper>
       );
@@ -148,6 +156,9 @@ export class NavigationElement extends React.Component<
           buttonModifiers="navigation-edit-label"
           icon={this.props.editableIcon ? this.props.editableIcon : "pencil"}
           onClick={this.props.editableAction}
+          data-de-aria-key="e"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
       );
     }
@@ -165,6 +176,9 @@ export class NavigationElement extends React.Component<
           to={this.props.href}
           onClick={this.props.onClick}
           ref="element"
+          data-de-aria-key="n"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           {this.props.icon ? (
             <span
@@ -375,6 +389,10 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
                 id="editOption"
                 role="menuitem"
                 aria-disabled={disableEdit}
+                tabIndex={disableEdit ? -1 : 0}
+                data-de-aria-key="e"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 onClick={(e) => !disableEdit && handleOptions(e, "edit")}
               >
                 <span className="menu__item-dropdown-icon icon-pencil"></span>
@@ -386,6 +404,10 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
                   id="customActionOption"
                   role="menuitem"
                   aria-disabled={disableCustomAction}
+                  tabIndex={disableCustomAction ? -1 : 0}
+                  data-de-aria-key="a"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                   onClick={(e) =>
                     !disableCustomAction && handleOptions(e, "custom")
                   }
@@ -401,6 +423,10 @@ export const NavigationDropdown: React.FC<NavigationDropdownProps> = (
                 id="deleteOption"
                 role="menuitem"
                 aria-disabled={disableDelete}
+                tabIndex={disableDelete ? -1 : 0}
+                data-de-aria-key="d"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 onClick={(e) => !disableDelete && handleOptions(e, "delete")}
               >
                 <span className="menu__item-dropdown-icon icon-trash"></span>

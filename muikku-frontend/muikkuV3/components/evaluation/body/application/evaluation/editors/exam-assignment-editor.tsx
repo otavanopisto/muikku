@@ -335,6 +335,9 @@ class ExamAssignmentEditor extends SessionStateComponent<
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("actions.save")}
           </Button>
@@ -342,6 +345,9 @@ class ExamAssignmentEditor extends SessionStateComponent<
             onClick={this.props.onClose}
             buttonModifiers="dialog-cancel"
             disabled={this.state.locked}
+            data-de-aria-key="c"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {t("actions.cancel")}
           </Button>
@@ -351,6 +357,9 @@ class ExamAssignmentEditor extends SessionStateComponent<
               buttonModifiers="dialog-clear"
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.remove", { context: "draft" })}
             </Button>

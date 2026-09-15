@@ -81,7 +81,12 @@ const WorkspaceAnnouncements: React.FC = () => {
       <div className="panel panel--workspace-announcements">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
-          <h2 className="panel__header-title">
+          <h2
+            className="panel__header-title"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >
             {t("labels.announcement", { ns: "messaging" })}
             {unreadCount > 0 && (
               <span className="indicator indicator--panel-header">
@@ -105,6 +110,9 @@ const WorkspaceAnnouncements: React.FC = () => {
                   key={a.id}
                   as="div"
                   className={`item-list__item item-list__item--announcements  ${a.unread ? "item-list__item--unread" : ""} item-list__item--has-workspaces`}
+                  data-de-aria-key="a"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                   <span className="item-list__text-body item-list__text-body--multiline">
@@ -145,7 +153,12 @@ const WorkspaceAnnouncements: React.FC = () => {
             {announcements.length > itemsPerPage ? renderPaginationBody : null}
           </div>
         ) : (
-          <div className="panel__body panel__body--empty">
+          <div
+            className="panel__body panel__body--empty"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="text"
+          >
             {t("content.empty", {
               ns: "messaging",
               context: "announcements",

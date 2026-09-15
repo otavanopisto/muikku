@@ -94,6 +94,9 @@ const AnnouncementsAside: React.FC = () => {
                       : ""
                   } ${announcement.unread ? "item-list__item--unread" : ""}`}
                   href={`#${announcement.id}`}
+                  data-de-aria-key="a"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
 
@@ -162,7 +165,9 @@ const AnnouncementsAside: React.FC = () => {
           {announcements.length > itemsPerPage ? renderPaginationBody : null}
         </>
       ) : (
-        <div>{t("content.empty", { context: "announcements" })}</div>
+        <div data-de-aria-text="true" tabIndex={0} role="text">
+          {t("content.empty", { context: "announcements" })}
+        </div>
       )}
     </>
   );

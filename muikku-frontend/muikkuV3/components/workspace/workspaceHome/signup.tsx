@@ -37,16 +37,32 @@ class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
       <div className="panel panel--workspace-signup">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-signup icon-sign-in"></div>
-          <div className="panel__header-title">
+          <div
+            className="panel__header-title"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >
             {t("labels.guidance", { ns: "materials" })}
           </div>
         </div>
         <div className="panel__body">
-          <div className="panel__body-content panel__body-content--signup">
+          <div
+            className="panel__body-content panel__body-content--signup"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="text"
+          >
             {t("content.logInGuidingInformation", { ns: "workspace" })}
           </div>
           <div className="panel__body-footer">
-            <Button buttonModifiers="signup-read-more" href="/">
+            <Button
+              buttonModifiers="signup-read-more"
+              href="/"
+              data-de-aria-key="r"
+              data-de-aria-horizontal-alignment="center"
+              data-de-aria-vertical-alignment="bottom-outside"
+            >
               {t("actions.readMore", { ns: "workspace" })}
             </Button>
           </div>

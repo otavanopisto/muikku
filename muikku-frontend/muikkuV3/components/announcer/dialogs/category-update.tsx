@@ -231,6 +231,9 @@ class AnnouncerLabelUpdateDialog extends React.Component<
           buttonModifiers={["success", "standard-ok"]}
           disabled={this.state.locked}
           onClick={this.update.bind(this, closeDialog)}
+          data-de-aria-key="s"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           {this.props.t("actions.save")}
         </Button>
@@ -238,6 +241,9 @@ class AnnouncerLabelUpdateDialog extends React.Component<
           buttonModifiers={["cancel", "standard-cancel"]}
           disabled={this.state.locked}
           onClick={closeDialog}
+          data-de-aria-key="c"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           {this.props.t("actions.cancel")}
         </Button>
@@ -245,6 +251,9 @@ class AnnouncerLabelUpdateDialog extends React.Component<
           buttonModifiers={["fatal", "communicator-remove-label"]}
           disabled={this.state.removed || this.state.locked}
           onClick={this.removeLabel}
+          data-de-aria-key="r"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         >
           {
             // TODO: use i18next
@@ -279,6 +288,11 @@ class AnnouncerLabelUpdateDialog extends React.Component<
               borderColor: this.state.removed ? "#aaa" : this.state.color,
             }}
             onClick={this.onHandleClick}
+            tabIndex={this.state.removed ? -1 : 0}
+            role="button"
+            data-de-aria-key="k"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             <span
               className={`glyph icon-tag`}
@@ -309,6 +323,9 @@ class AnnouncerLabelUpdateDialog extends React.Component<
               className="form-element__input form-element__input--announcement-category-name"
               disabled={this.state.removed}
               onChange={this.onNameChange}
+              data-de-aria-key="n"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
           </div>
         </div>

@@ -95,6 +95,9 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
           tabIndex={0}
           aria-haspopup="true"
           aria-label={this.props.t("wcag.profileMenu")}
+          data-de-aria-key="m"
+          data-de-aria-horizontal-alignment="center"
+          data-de-aria-vertical-alignment="bottom-outside"
         >
           {this.props.status.hasImage ? (
             <img

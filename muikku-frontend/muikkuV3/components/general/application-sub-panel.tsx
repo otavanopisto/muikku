@@ -46,6 +46,9 @@ const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
     className={`application-sub-panel__header ${
       props.modifier ? `application-sub-panel__header--${props.modifier}` : ""
     }`}
+    data-de-aria-text="true"
+    tabIndex={0}
+    role="section"
   >
     {props.children}
   </div>
@@ -88,6 +91,9 @@ export const ApplicationSubPanelViewHeader: React.FC<
             ? `application-sub-panel__header-main--${props.modifier}`
             : ""
         } `}
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="section"
       >
         {props.title}
       </h2>
@@ -98,6 +104,9 @@ export const ApplicationSubPanelViewHeader: React.FC<
               ? `application-sub-panel__header-main-detail--${props.modifier}`
               : ""
           }`}
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="text"
         >
           {props.titleDetail}
         </div>

@@ -33,7 +33,14 @@ export const Toc: React.FC<TocProps> = (props) => (
       }`}
     >
       {props.tocHeaderTitle && (
-        <h2 className="toc__title">{props.tocHeaderTitle}</h2>
+        <h2
+          className="toc__title"
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="section"
+        >
+          {props.tocHeaderTitle}
+        </h2>
       )}
       {props.tocHeaderExtraContent && props.tocHeaderExtraContent}
     </div>
@@ -170,6 +177,9 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
                 ? t("wcag.tocTopicExpand", { ns: "materials" })
                 : t("wcag.tocTopicCollapse", { ns: "materials" })
             }
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             <span
               className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
@@ -285,6 +295,9 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
         href={hash ? "#" + hash : null}
         onClick={handleLinkClick}
         aria-current={isActive}
+        data-de-aria-key="p"
+        data-de-aria-horizontal-alignment="end-outside"
+        data-de-aria-vertical-alignment="middle"
       >
         <span className="toc__text-body">{children}</span>
         {iconAfter ? (
@@ -338,6 +351,9 @@ export const BackToToc = (props: BackToTocProps) => {
       onClick={handleLinkClick}
       buttonModifiers={["back-to-toc rs_skip_always"]}
       aria-label={t("wcag.focusToToc", { ns: "materials" })}
+      data-de-aria-key="t"
+      data-de-aria-horizontal-alignment="end-outside"
+      data-de-aria-vertical-alignment="middle"
     />
   );
 };

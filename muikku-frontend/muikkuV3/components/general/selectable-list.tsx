@@ -306,6 +306,9 @@ export default class SelectableList extends React.Component<
                     checked={child.isSelected}
                     onChange={this.onCheckBoxItemChange.bind(this, child)}
                     onClick={this.onCheckBoxItemClick}
+                    data-de-aria-key="s"
+                    data-de-aria-horizontal-alignment="end-outside"
+                    data-de-aria-vertical-alignment="middle"
                   />
                 )
               )}

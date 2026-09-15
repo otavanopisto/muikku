@@ -19,7 +19,7 @@ import {
   GroupedOption,
   OptionDefault,
 } from "~/components/general/react-select/types";
-import Select from "react-select";
+import Select, { components as selectComponents } from "react-select";
 import "~/sass/elements/react-select-override.scss";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
@@ -152,6 +152,17 @@ class EvaluationApplication extends React.Component<
           classNamePrefix="react-select-override"
           value={selectedOptions}
           options={groupedOptions}
+          components={{
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            Input: (inputProps) => (
+              <selectComponents.Input
+                {...inputProps}
+                data-de-aria-key="w"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
+              />
+            ),
+          }}
           styles={{
             // eslint-disable-next-line jsdoc/require-jsdoc
             container: (baseStyles, state) => ({

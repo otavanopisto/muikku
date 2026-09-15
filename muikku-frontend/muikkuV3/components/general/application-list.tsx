@@ -112,9 +112,20 @@ export class ApplicationListItem extends React.Component<
         : [this.props.modifiers];
     delete newProps["modifiers"];
     delete newProps["classState"];
+    const isInteractive =
+      typeof newProps.onClick === "function" ||
+      typeof newProps.onKeyDown === "function";
+
     return (
       <div
         tabIndex={0}
+        data-de-aria-text={isInteractive ? undefined : "true"}
+        data-de-aria-key={isInteractive ? "i" : undefined}
+        data-de-aria-horizontal-alignment={
+          isInteractive ? "end-outside" : undefined
+        }
+        data-de-aria-vertical-alignment={isInteractive ? "middle" : undefined}
+        role={isInteractive ? "button" : "group"}
         {...newProps}
         className={`application-list__item ${
           this.props.className ? this.props.className : ""

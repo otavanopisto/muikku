@@ -447,7 +447,12 @@ export class EvaluationList extends React.Component<
         }
 
         content = (
-          <div className="empty">
+          <div
+            className="empty"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="text"
+          >
             <span>{message}</span>
           </div>
         );

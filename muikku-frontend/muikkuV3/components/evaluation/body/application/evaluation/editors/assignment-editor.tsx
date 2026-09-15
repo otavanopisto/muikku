@@ -717,6 +717,9 @@ class AssignmentEditor extends SessionStateComponent<
                   type="radio"
                   name="evaluationType"
                   value="GRADED"
+                  data-de-aria-key="g"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                   checked={this.state.evaluationType === "GRADED"}
                   onChange={this.handleAssignmentEvaluationChange}
                 />
@@ -730,6 +733,9 @@ class AssignmentEditor extends SessionStateComponent<
                   type="radio"
                   name="evaluationType"
                   value="POINTS"
+                  data-de-aria-key="p"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                   checked={this.state.evaluationType === "POINTS"}
                   onChange={this.handleAssignmentEvaluationChange}
                 />
@@ -743,6 +749,9 @@ class AssignmentEditor extends SessionStateComponent<
                   type="radio"
                   name="evaluationType"
                   value="SUPPLEMENTATIONREQUEST"
+                  data-de-aria-key="i"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                   checked={
                     this.state.evaluationType === "SUPPLEMENTATIONREQUEST"
                   }
@@ -770,6 +779,9 @@ class AssignmentEditor extends SessionStateComponent<
                   className="form-element__select"
                   value={this.state.grade}
                   onChange={this.handleSelectGradeChange}
+                  data-de-aria-key="g"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 >
                   {renderGradingOptions}
                 </select>
@@ -813,6 +825,9 @@ class AssignmentEditor extends SessionStateComponent<
           <Button
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
+            data-de-aria-key="s"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             disabled={
               this.state.locked ||
               this.props.isRecording ||
@@ -825,6 +840,9 @@ class AssignmentEditor extends SessionStateComponent<
             <WarningDialog onContinueClick={this.props.onClose}>
               <Button
                 buttonModifiers="dialog-cancel"
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {t("actions.cancel")}
@@ -835,6 +853,9 @@ class AssignmentEditor extends SessionStateComponent<
               onClick={this.props.onClose}
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.cancel")}
             </Button>
@@ -845,6 +866,9 @@ class AssignmentEditor extends SessionStateComponent<
               buttonModifiers="dialog-clear"
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
+              data-de-aria-key="x"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             >
               {t("actions.remove", { context: "draft" })}
             </Button>
@@ -860,6 +884,9 @@ class AssignmentEditor extends SessionStateComponent<
             >
               <Button
                 buttonModifiers="dialog-delete"
+                data-de-aria-key="d"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
                 disabled={this.state.locked || this.props.isRecording}
               >
                 {t("actions.remove", { context: "evaluation" })}

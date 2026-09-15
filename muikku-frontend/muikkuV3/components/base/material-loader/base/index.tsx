@@ -213,6 +213,29 @@ function preprocessor($html: any): any {
     elem.appendChild(this);
   });
 
+  // Rich material content is otherwise rendered as opaque HTML. Make each
+  // non-empty paragraph an independently readable keyboard stop.
+  $newHTML
+    .filter("p")
+    .add($newHTML.find("p"))
+    .each(function () {
+      if (this.textContent && this.textContent.trim()) {
+        this.setAttribute("data-de-aria-text", "true");
+        this.setAttribute("tabindex", "0");
+      }
+    });
+
+  // Expose links embedded in rich material HTML to de-aria as individual
+  // actions and position their shortcut indicators beside the link.
+  $newHTML
+    .filter("a")
+    .add($newHTML.find("a"))
+    .each(function () {
+      this.setAttribute("data-de-aria-key", "l");
+      this.setAttribute("data-de-aria-horizontal-alignment", "end-outside");
+      this.setAttribute("data-de-aria-vertical-alignment", "middle");
+    });
+
   return $newHTML;
 }
 

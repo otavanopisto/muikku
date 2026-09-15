@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 /**
  * WhatsappLinkProps
  */
-interface WhatsappLinkProps {
+interface WhatsappLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   mobileNumber?: string;
 }
 
@@ -16,7 +17,7 @@ interface WhatsappLinkProps {
  */
 export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
   const { t } = useTranslation(["profile", "common"]);
-  const { mobileNumber } = props;
+  const { mobileNumber, ...buttonProps } = props;
 
   /**
    * handleOpenLinkClick
@@ -41,6 +42,7 @@ export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
 
   return (
     <Button
+      {...buttonProps}
       icon="whatsapp"
       buttonModifiers="whatsapp-me"
       onClick={handleOpenLinkClick}
@@ -57,7 +59,7 @@ export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
  */
 export const WhatsappButtonLink: React.FC<WhatsappLinkProps> = (props) => {
   const { t } = useTranslation(["profile", "common"]);
-  const { mobileNumber } = props;
+  const { mobileNumber, ...buttonProps } = props;
 
   /**
    * handleOpenLinkClick
@@ -82,6 +84,7 @@ export const WhatsappButtonLink: React.FC<WhatsappLinkProps> = (props) => {
 
   return (
     <ButtonPill
+      {...buttonProps}
       aria-label={t("labels.whatsApp")}
       icon="whatsapp"
       title={t("labels.whatsApp")}

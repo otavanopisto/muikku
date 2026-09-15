@@ -429,12 +429,20 @@ export class SearchFormElement extends React.Component<
           }`}
           placeholder={this.props.placeholder}
           onChange={this.updateSearchField}
+          data-de-aria-key="s"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         />
         <div
           className={`form-element__input-decoration form-element__input-decoration--clear-search icon-cross ${
             this.props.value.length > 0 ? "active" : ""
           }`}
           onClick={this.clearSearchField}
+          tabIndex={0}
+          role="button"
+          data-de-aria-key="c"
+          data-de-aria-horizontal-alignment="end-outside"
+          data-de-aria-vertical-alignment="middle"
         ></div>
         <div className="form-element__input-decoration form-element__input-decoration--search icon-search"></div>
       </div>

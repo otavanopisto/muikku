@@ -209,9 +209,17 @@ class AnnouncerToolbar extends React.Component<
               buttonModifiers="go-back"
               icon="back"
               onClick={this.onGoBackClick}
+              data-de-aria-key="b"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
 
-            <div className="application-panel__mobile-current-folder">
+            <div
+              className="application-panel__mobile-current-folder"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="text"
+            >
               <span className="application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
                 {this.props.i18n.t("labels.category", {
@@ -224,7 +232,13 @@ class AnnouncerToolbar extends React.Component<
             <NewEditAnnouncement
               announcement={this.props.announcements.current}
             >
-              <ButtonPill buttonModifiers="edit" icon="pencil" />
+              <ButtonPill
+                buttonModifiers="edit"
+                icon="pencil"
+                data-de-aria-key="e"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
+              />
             </NewEditAnnouncement>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
             {this.props.announcements.location !== "archived" ? (
@@ -232,7 +246,13 @@ class AnnouncerToolbar extends React.Component<
                 announcement={this.props.announcements.current}
                 onDeleteAnnouncementSuccess={this.onGoBackClick}
               >
-                <ButtonPill buttonModifiers="delete" icon="trash" />
+                <ButtonPill
+                  buttonModifiers="delete"
+                  icon="trash"
+                  data-de-aria-key="d"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
+                />
               </DeleteAnnouncementDialog>
             ) : null}
             {this.props.announcements.location === "archived" ? (
@@ -240,6 +260,9 @@ class AnnouncerToolbar extends React.Component<
                 buttonModifiers="restore"
                 icon="undo"
                 onClick={this.restoreCurrentAnnouncement}
+                data-de-aria-key="r"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             ) : null}
           </ApplicationPanelToolbarActionsMain>
@@ -249,12 +272,18 @@ class AnnouncerToolbar extends React.Component<
               disabled={!prev}
               onClick={this.go.bind(this, prev)}
               icon="arrow-left"
+              data-de-aria-key="p"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
             <ButtonPill
               buttonModifiers="next-page"
               disabled={!next}
               onClick={this.go.bind(this, next)}
               icon="arrow-right"
+              data-de-aria-key="n"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
           </ApplicationPanelToolbarActionsAside>
         </ApplicationPanelToolbar>
@@ -264,7 +293,12 @@ class AnnouncerToolbar extends React.Component<
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <div className="application-panel__mobile-current-folder">
+            <div
+              className="application-panel__mobile-current-folder"
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="text"
+            >
               <span className="glyph application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
                 {this.props.i18n.t("labels.category", {
@@ -280,6 +314,9 @@ class AnnouncerToolbar extends React.Component<
                   buttonModifiers="delete"
                   disabled={this.props.announcements.selected.length === 0}
                   icon="trash"
+                  data-de-aria-key="d"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
                 />
               </DeleteAnnouncementDialog>
             ) : null}
@@ -289,6 +326,9 @@ class AnnouncerToolbar extends React.Component<
                 icon="undo"
                 disabled={this.props.announcements.selected.length === 0}
                 onClick={this.restoreSelectedAnnouncements}
+                data-de-aria-key="r"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             ) : null}
             <ButtonPill
@@ -296,6 +336,9 @@ class AnnouncerToolbar extends React.Component<
               icon="envelope-open"
               disabled={this.props.announcements.unreadCount === 0}
               onClick={this.markAllAsRead}
+              data-de-aria-key="m"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
             {this.props.roles.includes("ADMINISTRATOR") && (
               <Dropdown
@@ -310,6 +353,9 @@ class AnnouncerToolbar extends React.Component<
                       value={this.state.category}
                       onChange={this.onUpdateCategory}
                       type="text"
+                      data-de-aria-key="c"
+                      data-de-aria-horizontal-alignment="end-outside"
+                      data-de-aria-vertical-alignment="middle"
                       placeholder={this.props.i18n.t(
                         "labels.createAndSearchCategories",
                         { ns: "messaging" }
@@ -321,6 +367,9 @@ class AnnouncerToolbar extends React.Component<
                     tabIndex={0}
                     className="link link--full link--new"
                     onClick={this.onCreateNewCategory}
+                    data-de-aria-key="c"
+                    data-de-aria-horizontal-alignment="end-outside"
+                    data-de-aria-vertical-alignment="middle"
                   >
                     {this.props.i18n.t("actions.create", {
                       ns: "messaging",
@@ -366,6 +415,9 @@ class AnnouncerToolbar extends React.Component<
                               category
                             )
                           }
+                          data-de-aria-key="l"
+                          data-de-aria-horizontal-alignment="end-outside"
+                          data-de-aria-vertical-alignment="middle"
                         >
                           <span
                             className="link__icon icon-tag"
@@ -382,7 +434,13 @@ class AnnouncerToolbar extends React.Component<
                     })
                 )}
               >
-                <ButtonPill buttonModifiers="label" icon="tag" />
+                <ButtonPill
+                  buttonModifiers="label"
+                  icon="tag"
+                  data-de-aria-key="l"
+                  data-de-aria-horizontal-alignment="end-outside"
+                  data-de-aria-vertical-alignment="middle"
+                />
               </Dropdown>
             )}
           </ApplicationPanelToolbarActionsMain>

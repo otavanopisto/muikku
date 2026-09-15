@@ -75,7 +75,12 @@ class License extends React.Component<LicenseProps, LicenseState> {
       this.props.workspace.materialDefaultLicense.indexOf("http://") === 0 ||
       this.props.workspace.materialDefaultLicense.indexOf("https://") === 0;
     return (
-      <div className="license">
+      <div
+        className="license"
+        data-de-aria-text="true"
+        tabIndex={0}
+        role="group"
+      >
         <span className="license__icons">
           {materialLicenseIcons.map((i) => (
             <span className={`license__icon icon-${i}`} key={i}></span>
@@ -89,6 +94,9 @@ class License extends React.Component<LicenseProps, LicenseState> {
             className="license__link"
             href={this.props.workspace.materialDefaultLicense}
             openInNewTab="_blank"
+            data-de-aria-key="l"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
           >
             {this.props.workspace.materialDefaultLicense}
           </Link>

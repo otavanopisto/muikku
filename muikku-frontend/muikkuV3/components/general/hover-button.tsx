@@ -6,7 +6,8 @@ import "~/sass/elements/buttons.scss";
 /**
  * HoverButtonProps
  */
-interface HoverButtonProps {
+interface HoverButtonProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => any;
   modifier: string;
   icon: string;
@@ -38,13 +39,14 @@ export default class HoverButton extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { modifier, icon, ...linkProps } = this.props;
+
     return (
       <Link
-        href={this.props.href}
-        onClick={this.props.onClick}
-        className={`button-pill button-pill--floating button-pill--${this.props.modifier}`}
+        {...linkProps}
+        className={`button-pill button-pill--floating button-pill--${modifier}`}
       >
-        <span className={`button-pill__icon icon-${this.props.icon}`}></span>
+        <span className={`button-pill__icon icon-${icon}`}></span>
       </Link>
     );
   }

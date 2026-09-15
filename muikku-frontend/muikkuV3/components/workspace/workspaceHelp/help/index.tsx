@@ -479,6 +479,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           <input
             type="file"
             id="baseFileInput"
+            data-de-aria-key="f"
+            data-de-aria-horizontal-alignment="end-outside"
+            data-de-aria-vertical-alignment="middle"
             onChange={(e) => {
               closeDropdown();
               item.onChange && item.onChange(e);
@@ -496,6 +499,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           closeDropdown();
           item.onClick && item.onClick();
         }}
+        data-de-aria-key="o"
+        data-de-aria-horizontal-alignment="end-outside"
+        data-de-aria-vertical-alignment="middle"
       >
         <span className={`link__icon icon-${item.icon}`}></span>
         <span>{item.text}</span>
@@ -544,6 +550,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               buttonModifiers="material-management-master"
               icon="plus"
               onClick={this.createSection.bind(this, null)}
+              data-de-aria-key="c"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
           </Dropdown>
         </div>
@@ -551,7 +560,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     const emptyMessage =
       this.props.materials.length === 0 ? (
-        <div className="material-page material-page--empty">
+        <div
+          className="material-page material-page--empty"
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="text"
+        >
           {t("content.empty", { ns: "workspace", context: "instructions" })}
         </div>
       ) : null;
@@ -578,6 +592,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                 buttonModifiers="material-management-master"
                 icon="plus"
                 onClick={this.createSection.bind(this, section)}
+                data-de-aria-key="c"
+                data-de-aria-horizontal-alignment="end-outside"
+                data-de-aria-vertical-alignment="middle"
               />
             </Dropdown>
           </div>
@@ -603,6 +620,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             <ButtonPill
               buttonModifiers="material-management-master"
               icon="plus"
+              data-de-aria-key="m"
+              data-de-aria-horizontal-alignment="end-outside"
+              data-de-aria-vertical-alignment="middle"
             />
           </Dropdown>
         </div>
@@ -648,6 +668,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   <ButtonPill
                     buttonModifiers="material-management-master"
                     icon="plus"
+                    data-de-aria-key="m"
+                    data-de-aria-horizontal-alignment="end-outside"
+                    data-de-aria-vertical-alignment="middle"
                   />
                 </Dropdown>
               </div>
@@ -768,6 +791,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                     buttonModifiers="material-management-chapter"
                     icon="pencil"
                     onClick={this.startupEditor.bind(this, section)}
+                    data-de-aria-key="e"
+                    data-de-aria-horizontal-alignment="end-outside"
+                    data-de-aria-vertical-alignment="middle"
                   />
                 </Dropdown>
                 <Dropdown
@@ -783,6 +809,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                     buttonModifiers="material-management-chapter"
                     icon="eye"
                     onClick={this.toggleSectionHiddenStatus.bind(this, section)}
+                    data-de-aria-key="v"
+                    data-de-aria-horizontal-alignment="end-outside"
+                    data-de-aria-vertical-alignment="middle"
                   />
                 </Dropdown>
               </div>
@@ -790,6 +819,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             <div
               className="content-panel__chapter-title-text"
               lang={section.titleLanguage || this.props.workspace.language}
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="section"
             >
               {section.title}
               <BackToToc
@@ -809,7 +841,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           {isSectionViewRestricted ? (
             <div className="content-panel__item">
               <article className="material-page">
-                <div className="material-page__content material-page__content--view-restricted">
+                <div
+                  className="material-page__content material-page__content--view-restricted"
+                  data-de-aria-text="true"
+                  tabIndex={0}
+                  role="text"
+                >
                   {this.buildViewRestrictionLocaleString(section.viewRestrict)}
                 </div>
               </article>

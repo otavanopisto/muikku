@@ -74,6 +74,9 @@ export default class ApplicationPanel extends React.Component<
                   ? "application-panel__header--" + this.props.modifier
                   : ""
               }`}
+              data-de-aria-text="true"
+              tabIndex={0}
+              role="section"
             >
               <span
                 className={`application-panel__header-title ${

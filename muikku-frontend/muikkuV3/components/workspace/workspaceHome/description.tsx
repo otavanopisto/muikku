@@ -72,7 +72,12 @@ class DescriptionPanel extends React.Component<
       <div className="panel panel--workspace-description">
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
-          <h2 className="panel__header-title">
+          <h2
+            className="panel__header-title"
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="section"
+          >
             {t("labels.introduction", { ns: "workspace" })}
           </h2>
         </div>
