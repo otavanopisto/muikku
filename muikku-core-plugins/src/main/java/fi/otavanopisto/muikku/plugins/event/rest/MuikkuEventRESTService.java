@@ -207,12 +207,17 @@ public class MuikkuEventRESTService {
     
     // Access checks
     
-    boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
+    boolean hasAccessToEvent = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
     
-    if (!hasAccess) {
-      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to edit event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
+    if (!hasAccessToEvent) {
+      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to create event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
     }
     
+    boolean hasAccess = eventController.canCreateProperty(event);
+    
+    if (!hasAccess) {
+      return Response.status(Status.FORBIDDEN).entity((String.format("User %d attempt to create event property %d revoked", sessionController.getLoggedUserEntity().getId(), event.getId()))).build();
+    }
     MuikkuEventProperty property = eventController.createEventProperty(event, name, value, sessionController.getLoggedUserEntity().getId(), new Date());
     
     return Response.ok(toRestModel(property)).build();
@@ -237,12 +242,12 @@ public class MuikkuEventRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // User can update properties only if created by themselves
-    if (eventController.canEditEventProperty(property)) {
-      property = eventController.updateEventProperty(property, value, new Date());
+    // User can update the property if they created it or are the student's guardians
+    if (!eventController.canEditEventProperty(property)) {
+      return Response.status(Status.FORBIDDEN).entity(String.format("User %d is not allowed to update event property %d", sessionController.getLoggedUserEntity().getId(), propertyId)).build();
     }
     
-    return Response.ok(toRestModel(property)).build();
+    return Response.ok(toRestModel(eventController.updateEventProperty(property, value, new Date()))).build();
   }
   
   @Path("/event/property/{EVENTPROPERTYID}")
@@ -356,7 +361,7 @@ public class MuikkuEventRESTService {
     
     // List events and convert to rest
     
-    List<MuikkuEvent> events = eventController.listEvents(userEntityId, workspaceEntityId, startDate, endDate, type != null ? type : null);
+    List<MuikkuEvent> events = eventController.listEvents(userEntityId, workspaceEntityId, startDate, endDate, type != null ? EventType.valueOf(type) : null);
     List<MuikkuEventRestModel> restEvents = new ArrayList<>();
     for (MuikkuEvent event : events) {
       // Access to specific event

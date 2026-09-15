@@ -18,7 +18,7 @@ const MatriculationExaminationEnrollmentAct = () => {
   const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "hops_new"]);
 
   /**
    * Handles examination information changes and passes it to parent component
@@ -133,6 +133,30 @@ const MatriculationExaminationEnrollmentAct = () => {
             />
           </div>
         </div>
+
+        <div className="matriculation-container__row">
+          <div className="matriculation__form-element-container">
+            <label className="matriculation__label">
+              {t("labels.matriculationFormFieldSpecialArrangements", {
+                ns: "hops_new",
+              })}
+            </label>
+            {examinationInformation.flags?.length ? (
+              <ul className="matriculation-special-arrangements__list">
+                {examinationInformation.flags.map((flag) => (
+                  <li key={flag}>
+                    {t(`matriculationExamSpecialArrangements.${flag}`, {
+                      ns: "hops_new",
+                    })}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>-</p> // or an empty-state translation
+            )}
+          </div>
+        </div>
+
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <label className="matriculation__label">

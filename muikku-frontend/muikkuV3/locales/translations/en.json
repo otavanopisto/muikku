@@ -848,6 +848,7 @@
       "matriculationFormFieldRestart": "I will restart completing the degree",
       "matriculationFormFieldPlace": "Location of examination",
       "matriculationFormFieldInfoForCouncelor": "Additional information about the examination not taken in Mikkeli (school name and address, contact person name, email address and phone number)",
+      "matriculationFormFieldSpecialArrangements": "Special arrangements (School fills)",
       "matriculationFormFieldPublishName": "Permission to publish",
       "matriculationFormFieldTermDate": "Date",
       "matriculationFormFieldFunding": "Funding",
@@ -1051,6 +1052,19 @@
       "SELF_FUNDED": "Self-funded",
       "COMPULSORYEDUCATION_FREE": "Free matriculation exam",
       "COMPULSORYEDUCATION_FREE_RETRY": "Free matriculation exam (retake)"
+    },
+    "matriculationExamSpecialArrangements": {
+      "EXTENDED_EXAM_TIME": "Extended exam time",
+      "SEPARATE_GROUP_SPACE": "Separate small group space",
+      "SEPARATE_STUDIO": "Separate studio space",
+      "RESTING_SPACE": "Space for resting",
+      "VISION_IMPAIRED_SPACE": "Vision impaired exam arrangement",
+      "PERMISSION_ENLARGED_FONT": "Permission to enlarge font",
+      "PERMISSION_BIGGER_MONITOR": "Permission to use bigger monitor",
+      "AUDIO_RESTRICTED_EXAM": "Restricted audio material",
+      "PERMISSION_ASSISTANT": "Permission to use assistant",
+      "ADJUSTABLE_ERGONOMICS": "Adjustable ergonomics",
+      "OTHER_SUPPORTIVE_ELEMENT": "Other supportive arrangement"
     },
     "matriculationSubjectsYTL": {
       "A": "Finnish language and literature",
@@ -1794,7 +1808,7 @@
       "statusUploading": "Uploading to server {{progress}} %",
       "startRecording": "Begin recording by clicking the button",
       "stopRecording": "Stop recording by clicking the button",
-      "viewRestricted": "Viewing this material has been restricted to logged in users",
+      "viewRestricted": "This material is visible only to logged in users",
       "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
       "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
     },
@@ -1867,6 +1881,7 @@
       "interimEvaluation": "Interim evaluation",
       "interimEvaluations": "Interim evaluations",
       "interimEvaluationAssignments": "Interim evaluation assignments",
+      "latestEdit": "Last edited",
       "license": "Material license",
       "licenseLink": "License URL address or license text",
       "materials": "Materials",
