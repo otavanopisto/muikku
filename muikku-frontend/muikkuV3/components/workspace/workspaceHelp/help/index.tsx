@@ -36,6 +36,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialViewRestriction } from "~/generated/client";
 import ReadSpeakerReader from "~/components/general/readspeaker";
 import { BackToToc } from "~/components/general/toc";
+import HelpSelectionPopover from "./selection-popover";
 
 /**
  * HelpMaterialsProps
@@ -724,6 +725,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                       }
                     />
                   }
+                />
+                {/*SELECTION CONTEXT POPOVER*/}
+                <HelpSelectionPopover
+                  workspaceMaterialId={node.workspaceMaterialId}
+                  pageIndex={pageI}
+                  materialHtml={node.html}
                 />
               </ContentPanelItem>
             );

@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.event;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -355,11 +356,10 @@ public class MuikkuEventController {
       return true;
     }
 
-    // Admin
-    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+    // Admin & study programme leader
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR) || sessionController.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
       return true;
     }
-
 
     // A null check is needed at this point to avoid a NullPointerException when checking relations etc
     if (event.getUserEntityId() == null) {
@@ -598,9 +598,49 @@ public class MuikkuEventController {
     return false;
   }
   
+  public boolean canCreateProperty(MuikkuEvent event) {
+    // At this stage, only ABSENCE events are considered
+    if (event.getType() == EventType.ABSENCE) {
+      // Staff can create properties
+      if (userEntityController.isStaffMember(sessionController.getLoggedUserEntity())) {
+        return true;
+      }
+      
+      // Event must have a target user
+      if (event.getUserEntityId() == null) {
+        return false;
+      }
+  
+      UserEntity targetUserEntity = userEntityController.findUserEntityById(
+          event.getUserEntityId());
+  
+      if (targetUserEntity == null) {
+        return false;
+      }
+  
+      SchoolDataIdentifier identifier = targetUserEntity.defaultSchoolDataIdentifier();
+      
+      boolean under18 = userEntityController.isUnder18Student(identifier);
+      boolean ownEvent = targetUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId());
+  
+      // Under 18: only the parent can create a property
+      if (under18) {
+        StudentGuidanceRelation relation = userController.getGuidanceRelation(identifier.getDataSource(), identifier.getIdentifier());
+        
+        boolean studentParent = relation != null && relation.isStudentParent();
+        return studentParent;
+      }
+      
+      // 18 or older: only the student can create a property
+      return ownEvent;
+    }
+    
+    return true;
+  }
+  
   public boolean canEditEventProperty(MuikkuEventProperty property) {
     // Property creator always
-    if (sessionController.getLoggedUserEntity().getId() == property.getUserEntityId()) {
+    if (Objects.equals(sessionController.getLoggedUserEntity().getId(), property.getUserEntityId())) {
       return true;
     }
 
@@ -663,5 +703,12 @@ public class MuikkuEventController {
         .stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
 
     return !Collections.disjoint(loggedUserWorkspaceIds, studentWorkspaceIds);
+  }
+  
+  public List<MuikkuEvent> listDeprecatedAbsences(){
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.MONTH, -12);
+    Date twelveMonthsAgo = calendar.getTime();
+    return eventDAO.listByTypeAndEnd(EventType.ABSENCE, twelveMonthsAgo);
   }
 }

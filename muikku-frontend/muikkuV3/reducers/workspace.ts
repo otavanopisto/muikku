@@ -9,7 +9,6 @@ import { discussion } from "./discussion";
 import { userIndex } from "./user-index";
 import { evaluations } from "../reducers/main-function/evaluation";
 import { profile } from "./main-function/profile";
-import { notebook } from "./notebook/notebook";
 import { combineReducers } from "redux";
 import { journals } from "./workspaces/journals";
 import { contacts } from "./base/contacts";
@@ -23,7 +22,6 @@ export default combineReducers({
   evaluations,
   journals,
   locales,
-  notebook,
   notifications,
   profile,
   status,

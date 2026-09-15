@@ -1794,7 +1794,7 @@
       "statusUploading": "Uploading to server {{progress}} %",
       "startRecording": "Begin recording by clicking the button",
       "stopRecording": "Stop recording by clicking the button",
-      "viewRestricted": "Viewing this material has been restricted to logged in users",
+      "viewRestricted": "This material is visible only to logged in users",
       "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
       "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
     },
@@ -1867,6 +1867,7 @@
       "interimEvaluation": "Interim evaluation",
       "interimEvaluations": "Interim evaluations",
       "interimEvaluationAssignments": "Interim evaluation assignments",
+      "latestEdit": "Last edited",
       "license": "Material license",
       "licenseLink": "License URL address or license text",
       "materials": "Materials",
@@ -1988,17 +1989,25 @@
       "edit": "Edit the note",
       "hideContent": "Hide content",
       "organize": "Organize notes",
-      "remove": "Delete the note",
-      "showContent": "Show content"
+      "remove": "Remove",
+      "remove_highlight": "Remove highlight",
+      "remove_note": "Remove note",
+      "showContent": "Show content",
+      "upgrade": "Create note"
     },
     "content": {
       "empty": "No notes",
       "defaultPosition": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
       "defaultPosition_bottom": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
-      "remove": "Are you sure you wish to deöete the note?"
+      "remove": "Are you sure you wish to delete the note?",
+      "remove_highlight": "Are you sure you wish to delete the highlight?"
     },
     "labels": {
-      "defaultPosition": "Default position"
+      "defaultPosition": "Default position",
+      "noteSectionTitle": "Notes",
+      "noteSectionTitle_workspace": "General Notes",
+      "noteSectionTitle_page": "Targeted Notes",
+      "orphanedNote": "Obsolete"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
@@ -2688,11 +2697,14 @@
       "removing_absence": "Are you sure you want to remove the absence: {{label}}, from user {{userName}}?"
     },
     "types": {
+      "ASSIGNMENTS_UNDONE": "Assignments undone",
+      "EXAM": "Exam",
+      "GROUP_MEETING": "Ryhmätapaaminen",
+      "GROUP_MEETING_PRE_ARRANGED": "Group meeting (pre-arranged)",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session",
       "LESSON": "Lesson",
       "LESSON_PRE_ARRANGED": "Lesson (pre-arranged)",
-      "EXAM": "Exam",
-      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session"
+      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting"
     },
     "reasons": {
       "MEDICAL_REASON": "Medical reason",
@@ -2840,6 +2852,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Listen to selected text"
+    },
     "messages": {
       "assignment": "Assignment",
       "assignment_audio": "Audio assignment",

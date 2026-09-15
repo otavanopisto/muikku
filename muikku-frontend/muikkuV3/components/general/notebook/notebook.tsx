@@ -1,0 +1,171 @@
+import * as React from "react";
+import { StateType } from "~/reducers";
+import { useDispatch, useSelector } from "react-redux";
+import "~/sass/elements/buttons.scss";
+import "~/sass/elements/notebook.scss";
+import { NoteList } from "./notebook-notes-list";
+import {
+  loadNotebookV2Entries,
+  clearNotebookV2FocusDraft,
+  clearNotebookV2DraftsAll,
+  clearNotebookV2ActiveItem,
+} from "~/actions/notebook/notebookV2";
+import { useNotebookViewModel } from "./hooks/useNotebookViewModel";
+import NotebookWorkspaceSection from "./sections/notebook-workspace-section";
+import NotebookMaterialSection from "./sections/notebook-material-section";
+import { useDragDropManager } from "react-dnd";
+import { useScroll } from "./hooks/useScroll";
+import { useDismissNotebookActiveItem } from "./hooks/useDismissActiveItem";
+import { scrollToNotebookItem } from "./helpers/notebook-active-item";
+import NotebookItemDeleteDialog from "./items/notebook-item-delete-confirm";
+import NotebookNoteEditorDialog from "./notebook-note-editor-dialog";
+import NotebookPdfDialog from "./notebook-pdf-dialog";
+
+/**
+ * NotebookProps
+ */
+interface NotebookProps {}
+
+/**
+ * Notebook V2 shell.
+ * @param props props
+ * @returns React.ReactNode
+ */
+const Notebook = (props: NotebookProps) => {
+  const dispatch = useDispatch();
+  const notebookV2 = useSelector((state: StateType) => state.notebookV2);
+  const currentWorkspace = useSelector(
+    (state: StateType) => state.workspaces.currentWorkspace
+  );
+  const userId = useSelector((state: StateType) => state.status.userId);
+  const focusDraftClientId = useSelector(
+    (state: StateType) => state.notebookV2.focusDraftClientId
+  );
+  const activeItemId = useSelector(
+    (state: StateType) => state.notebookV2.activeItemId
+  );
+
+  const [isPdfDialogOpen, setIsPdfDialogOpen] = React.useState(false);
+
+  const viewModel = useNotebookViewModel();
+
+  const { state, drafts } = notebookV2;
+
+  const workspaceDraftNotePosition = drafts.workspaceNote?.position;
+
+  const workspaceOpenStorageKey = `opened-notes-v2-workspace-${currentWorkspace?.id}-${userId}`;
+  const materialOpenStorageKey = `opened-notes-v2-material-${currentWorkspace?.id}-${userId}`;
+
+  // Load notebook entries
+  React.useEffect(() => {
+    if (!currentWorkspace?.id) {
+      return;
+    }
+    dispatch(clearNotebookV2DraftsAll());
+    dispatch(loadNotebookV2Entries());
+  }, [dispatch, currentWorkspace?.id]);
+
+  const notebookBodyRef = React.useRef<HTMLDivElement>(null);
+  const { updatePosition } = useScroll(notebookBodyRef);
+  const dragDropManager = useDragDropManager();
+  const monitor = dragDropManager.getMonitor();
+
+  // Notebook scroll handling
+  React.useEffect(() => {
+    const unsubscribe = monitor.subscribeToOffsetChange(() => {
+      const offset = monitor.getSourceClientOffset()?.y as number;
+      updatePosition({ position: offset, isScrollAllowed: true });
+    });
+    return unsubscribe;
+  }, [monitor, updatePosition]);
+
+  // Focus draft scroll target handling
+  React.useEffect(() => {
+    if (focusDraftClientId == null) {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      const el = document.querySelector(
+        `[data-notebook-draft-id="${focusDraftClientId}"]`
+      );
+      el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      dispatch(clearNotebookV2FocusDraft());
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [dispatch, focusDraftClientId]);
+
+  // Active item scroll target handling
+  React.useEffect(() => {
+    if (activeItemId == null) {
+      return;
+    }
+
+    // Scroll to active item
+    const frame = window.requestAnimationFrame(() => {
+      scrollToNotebookItem(activeItemId);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [dispatch, activeItemId]);
+
+  /**
+   * Handle dismiss active item
+   */
+  const handleDismissActiveItem = React.useCallback(() => {
+    dispatch(clearNotebookV2ActiveItem());
+  }, [dispatch]);
+
+  /**
+   * Handle open PDF dialog
+   */
+  const handleOpenPdfDialog = React.useCallback(() => {
+    setIsPdfDialogOpen(true);
+  }, []);
+
+  /**
+   * Handle close PDF dialog
+   */
+  const handleClosePdfDialog = React.useCallback(() => {
+    setIsPdfDialogOpen(false);
+  }, []);
+
+  useDismissNotebookActiveItem(activeItemId, handleDismissActiveItem);
+
+  const isLoading = state === "LOADING";
+
+  return (
+    <div className="notebook">
+      <NotebookItemDeleteDialog />
+      <NotebookNoteEditorDialog />
+      <NotebookPdfDialog
+        workspaceNotes={viewModel.workspaceNotes}
+        materialGroups={viewModel.materialGroups}
+        workspace={currentWorkspace}
+        isOpen={isPdfDialogOpen}
+        onClose={handleClosePdfDialog}
+      />
+      <div className="notebook__body" ref={notebookBodyRef}>
+        <NoteList>
+          {isLoading ? (
+            <div className="empty-loader" />
+          ) : (
+            <>
+              <NotebookWorkspaceSection
+                notes={viewModel.workspaceNotes}
+                storageKey={workspaceOpenStorageKey}
+                workspaceDraftNote={viewModel.workspaceDraftNote}
+                workspaceDraftNotePosition={workspaceDraftNotePosition}
+                onOpenPdfDialog={handleOpenPdfDialog}
+              />
+              <NotebookMaterialSection
+                groups={viewModel.materialGroups}
+                storageKey={materialOpenStorageKey}
+              />
+            </>
+          )}
+        </NoteList>
+      </div>
+    </div>
+  );
+};
+
+export default Notebook;
