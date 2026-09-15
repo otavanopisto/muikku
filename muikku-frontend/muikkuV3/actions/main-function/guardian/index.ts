@@ -745,7 +745,7 @@ const loadCurrentDependantActivityGraphData: LoadCurrentDependantActivityGraphDa
       const state = getState();
 
       if (
-        state.guardian.currentDependant.dependantActivityGraphDataStatus ===
+        state?.guardian?.currentDependant.dependantActivityGraphDataStatus ===
         "READY"
       ) {
         return;
