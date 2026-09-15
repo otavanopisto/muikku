@@ -41,6 +41,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
@@ -64,6 +65,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
@@ -237,6 +239,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private GuidanceCounselorRestModels guidanceCounselorRestModels;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @GET
   @Path("/students")
@@ -578,6 +583,13 @@ public class GuiderRESTService extends PluginRESTService {
       "profile-whatsapp", "profile-vacation-start", "profile-vacation-end"};
     List<GuidanceCounselorRestModel> guidanceCounselors = guidanceCounselorRestModels.getGuidanceCounselorRestModels(studentIdentifier, propertyArray);
     
+    String externalViewLink = null;
+    if (sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_STUDENT_LINK)) {
+      String pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+      Long studentId = Long.parseLong(StringUtils.substringAfterLast(studentIdentifier.getIdentifier(), "-"));
+      externalViewLink = String.format("https://%s/students/viewstudent.page?student=%d", pyramusHost, studentId);
+    }
+    
     GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(),
         user.getFirstName(),
@@ -607,7 +619,8 @@ public class GuiderRESTService extends PluginRESTService {
         u18Compulsory,
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
         hopsController.getHOPSStudentPermissions(studentIdentifier),
-        guidanceCounselors
+        guidanceCounselors,
+        externalViewLink
     );
 
     return Response
