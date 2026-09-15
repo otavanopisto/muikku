@@ -52,6 +52,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentFlag;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationGrade;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
@@ -577,6 +578,8 @@ public class MatriculationRESTService {
       }
     }
     
+    Set<MatriculationExamEnrollmentFlag> flags = enrollment.getFlags() != null ? Collections.unmodifiableSet(enrollment.getFlags()) : Collections.emptySet();
+    
     MatriculationExamEnrollment restModel = new MatriculationExamEnrollment();
 
     restModel.setId(enrollment.getId());
@@ -594,6 +597,7 @@ public class MatriculationRESTService {
     restModel.setRestartExam(enrollment.isRestartExam());
     restModel.setState(enrollment.getState());
     restModel.setOpintopolkuUrl(enrollment.getOpintopolkuUrl());
+    restModel.setFlags(flags);
 //    restModel.setStudentIdentifier(enrollment.getstudentAddress()); // TODO the id mess
     
     

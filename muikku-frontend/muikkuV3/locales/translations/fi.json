@@ -848,6 +848,7 @@
       "matriculationFormFieldRestart": "Aloitan tutkinnon suorittamisen uudelleen",
       "matriculationFormFieldPlace": "Suorituspaikka",
       "matriculationFormFieldInfoForCouncelor": "Lisätietoa muualla kuin Mikkelissä suoritettavasta kokeesta (koulun nimi ja osoite, yhteyshenkilön nimi, sähköpostiosoite ja puhelinnumero)",
+      "matriculationFormFieldSpecialArrangements": "Kokeen erityisjärjestelyt (oppilaitos täyttää)",
       "matriculationFormFieldPublishName": "Julkaisulupa",
       "matriculationFormFieldTermDate": "Ajankohta",
       "matriculationFormFieldFunding": "Rahoitus",
@@ -1051,6 +1052,19 @@
       "SELF_FUNDED": "Itserahoitettu",
       "COMPULSORYEDUCATION_FREE": "Maksuton ylioppilaskoe",
       "COMPULSORYEDUCATION_FREE_RETRY": "Maksuton ylioppilaskoe (uusinta)"
+    },
+    "matriculationExamSpecialArrangements": {
+      "EXTENDED_EXAM_TIME": "Lisäaika kokeen suorittamiseen",
+      "SEPARATE_GROUP_SPACE": "Erillinen pienryhmätila",
+      "SEPARATE_STUDIO": "Erillinen yksilötila",
+      "RESTING_SPACE": "Lepäämiseen tarkoitettu tila",
+      "VISION_IMPAIRED_SPACE": "Näkövammaisen koejärjestelyt",
+      "PERMISSION_ENLARGED_FONT": "Oikeus suurentaa kirjasinkokoa",
+      "PERMISSION_BIGGER_MONITOR": "Oikeus käyttää suurempaa näyttöä",
+      "AUDIO_RESTRICTED_EXAM": "Ääniaineistoltaan rajoitettu koe",
+      "PERMISSION_ASSISTANT": "Avustajan käyttö",
+      "ADJUSTABLE_ERGONOMICS": "Säädettävä työskentelyasento",
+      "OTHER_SUPPORTIVE_ELEMENT": "Muu tukitoimi"
     },
     "matriculationSubjectsYTL": {
       "A": "Äidinkieli ja kirjallisuus, suomi",
