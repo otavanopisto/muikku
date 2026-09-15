@@ -361,7 +361,9 @@ public class MuikkuEventRESTService {
     
     // List events and convert to rest
     
-    List<MuikkuEvent> events = eventController.listEvents(userEntityId, workspaceEntityId, startDate, endDate, type != null ? EventType.valueOf(type) : null);
+    List<MuikkuEvent> events = eventController.listEvents(userEntityId, workspaceEntityId, startDate, endDate, type != null ? type : null);
+    
+    
     List<MuikkuEventRestModel> restEvents = new ArrayList<>();
     for (MuikkuEvent event : events) {
       // Access to specific event
