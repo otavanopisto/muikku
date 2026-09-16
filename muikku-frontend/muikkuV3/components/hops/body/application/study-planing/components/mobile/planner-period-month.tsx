@@ -382,7 +382,6 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    * @param type type
    */
   const handleDrop = (item: SelectedItem, type: DroppableCardType) => {
-    console.log("handleDrop", item, type);
     if (
       isSelectedItemStudyPlannerNoteNew(item) ||
       isSelectedItemStudyPlannerNote(item)
