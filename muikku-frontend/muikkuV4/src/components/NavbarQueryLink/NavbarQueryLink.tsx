@@ -1,102 +1,67 @@
-import { Group, Text, ThemeIcon, Tooltip, UnstyledButton } from "@mantine/core";
-import { useLocation, useNavigate } from "react-router";
-import classes from "./NavbarQueryLink.module.css";
-import type { NavigationQueryLink } from "src/layouts/helpers/navigation";
+import { NavLink } from "@mantine/core";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useResolvedPath,
+} from "react-router";
+import type { NavigationQueryLink } from "~/src/navigation/navigation";
+import { navLinkClassNames } from "~/src/components/NavbarLink/navLinkClassnames";
 
 /**
- * NavbarSubQueryLinkProps - Interface for navbar sub-query-link props
+ * NavbarQueryLink - A link that navigates to a query-based route
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface NavbarQueryLinkProps extends Omit<NavigationQueryLink, "type"> {}
 
 /**
- * NavbarSubQueryLink - Sub-query-link component for navigation groups
- * @param props - NavbarSubQueryLinkProps
- * @returns NavbarSubQueryLink component
+ * NavbarQueryLink - A link that navigates to a query-based route
+ * @param props - The props for the NavbarQueryLink component
  */
 export function NavbarQueryLink(props: NavbarQueryLinkProps) {
-  const { icon: Icon, label, queryName, queryValue: linkQueryValue } = props;
+  const {
+    icon: Icon,
+    label,
+    link,
+    queryName,
+    queryValue: linkQueryValue,
+  } = props;
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
 
-  const getQueryParams = (search: string) => new URLSearchParams(search);
-  const currentQueryValue = getQueryParams(location.search).get(queryName);
-  const isActive = currentQueryValue === linkQueryValue;
+  const to = typeof link === "function" ? link(params) : link;
+  const resolved = useResolvedPath(to);
 
-  /**
-   * Handle click
-   * @param e - React.MouseEvent
-   */
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const currentQueryValue = new URLSearchParams(location.search).get(queryName);
+  const isOnTargetPath =
+    location.pathname === resolved.pathname ||
+    location.pathname.startsWith(`${resolved.pathname}/`);
+  const isActive = isOnTargetPath && currentQueryValue === linkQueryValue;
 
-    const currentParams = new URLSearchParams(location.search);
+  const handleClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    const nextParams = isOnTargetPath
+      ? new URLSearchParams(location.search)
+      : new URLSearchParams(resolved.search);
 
     if (isActive) {
-      // Toggle off - remove query parameter
-      currentParams.delete(queryName);
+      nextParams.delete(queryName);
     } else {
-      // Toggle on - set query parameter
-      currentParams.set(queryName, linkQueryValue);
+      nextParams.set(queryName, linkQueryValue);
     }
 
-    const newSearch = currentParams.toString();
-    const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ""}`;
-
-    void navigate(newUrl);
+    const newSearch = nextParams.toString();
+    void navigate(`${resolved.pathname}${newSearch ? `?${newSearch}` : ""}`);
   };
 
-  const collapsed = false;
-
-  // Main content
-  const renderMainLinkContent = ({ isActive }: { isActive: boolean }) => (
-    <Group gap="md" align="center" className={classes.mainContent}>
-      {Icon && (
-        <ThemeIcon
-          variant="light"
-          size={36}
-          className={classes.icon}
-          style={{
-            backgroundColor: isActive ? "#228be6" : "transparent",
-            color: isActive ? "white" : "#228be6",
-          }}
-        >
-          {<Icon size={20} />}
-          {/* {loading ? <Loader size={16} /> : <Icon size={20} />} */}
-        </ThemeIcon>
-      )}
-      <Text
-        className={classes.text}
-        style={{
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-        }}
-      >
-        {label}
-      </Text>
-    </Group>
-  );
-
-  // Render the sub-query-link
-  const subLinkElement = (
-    <UnstyledButton
+  return (
+    <NavLink
+      label={label}
+      leftSection={Icon ? <Icon size={20} stroke={1.5} /> : null}
+      active={isActive}
       onClick={handleClick}
-      className={`${classes.link} ${
-        isActive && isActive ? classes.active : ""
-      }`}
-      p="sm"
-    >
-      {collapsed ? (
-        <Tooltip label={label} position="right" withArrow>
-          {renderMainLinkContent({ isActive })}
-        </Tooltip>
-      ) : (
-        <Group justify="space-between" gap={0}>
-          {renderMainLinkContent({ isActive })}
-        </Group>
-      )}
-    </UnstyledButton>
+      classNames={navLinkClassNames}
+    />
   );
-
-  return subLinkElement;
 }

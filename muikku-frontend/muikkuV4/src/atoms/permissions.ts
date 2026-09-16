@@ -1,54 +1,35 @@
 import { atom } from "jotai";
-import { getDiscussionApi, getWorkspaceApi } from "~/api";
-import { userAtom } from "./auth";
+import { atomWithQuery } from "jotai-tanstack-query";
+import { getWorkspaceApi } from "~/api";
+import { workspaceIdAtom } from "./workspace";
 import {
   PermissionsService,
   type WorkspacePermissions,
 } from "../services/permissions";
+import { workspacePermissionsQueryKey } from "src/queryClient";
 
-const discussionApi = getDiscussionApi();
 const workspaceApi = getWorkspaceApi();
 
-// Discussion area permissions atom
-export const discussionAreaPermissionsAtom = atom<unknown>(null);
-export const workspacePermissionsAtom = atom<WorkspacePermissions | null>(null);
+/** Server cache — do not useAtomValue in components. */
+export const workspacePermissionsQueryAtom = atomWithQuery((get) => {
+  const workspaceId = get(workspaceIdAtom);
+  return {
+    queryKey: workspacePermissionsQueryKey(workspaceId ?? -1),
+    queryFn: async (): Promise<WorkspacePermissions> => {
+      if (workspaceId == null) {
+        throw new Error("Workspace id is required");
+      }
+      const permissions = await workspaceApi.getWorkspacePermissions({
+        workspaceEntityId: workspaceId,
+      });
+      return PermissionsService.transformWorkspacePermissions(permissions);
+    },
+    enabled: workspaceId != null,
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  };
+});
 
-/**
- * Load discussion area permissions atom action
- */
-export const initializeDiscussionAreaPermissionsAtom = atom(
-  null,
-  async (get, set) => {
-    const user = get(userAtom);
-    const oldDiscussionAreaPermissions = get(discussionAreaPermissionsAtom);
-
-    // If user is not logged in or discussion area permissions are already loaded, return
-    if (oldDiscussionAreaPermissions) {
-      return;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const areaPermissions = user?.services?.environmentForum?.isAvailable
-      ? await discussionApi.getDiscussionEnvironmentAreaPermissions()
-      : null;
-
-    set(discussionAreaPermissionsAtom, areaPermissions);
-  }
-);
-
-/**
- * Load workspace permissions atom action
- */
-export const initializeWorkspacePermissionsAtom = atom(
-  null,
-  async (_, set, workspaceId: number) => {
-    const permissions = await workspaceApi.getWorkspacePermissions({
-      workspaceEntityId: workspaceId,
-    });
-
-    set(
-      workspacePermissionsAtom,
-      PermissionsService.transformWorkspacePermissions(permissions)
-    );
-  }
+export const workspacePermissionsAtom = atom(
+  (get) => get(workspacePermissionsQueryAtom).data ?? null
 );
