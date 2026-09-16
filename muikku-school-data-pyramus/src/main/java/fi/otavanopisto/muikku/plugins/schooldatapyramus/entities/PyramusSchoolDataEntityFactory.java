@@ -534,6 +534,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier(),
         studentGroupUser.isGroupAdvisor(),
         studentGroupUser.isStudyAdvisor(),
+        studentGroupUser.isSpecialEducationTeacher(),
         studentGroupUser.isMessageReceiver());
   }
   

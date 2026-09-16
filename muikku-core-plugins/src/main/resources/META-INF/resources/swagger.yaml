@@ -15696,6 +15696,7 @@ components:
         - hasImage
         - groupAdvisor
         - studyAdvisor
+        - specialEducationTeacher
         - properties
       properties:
         id:
@@ -15714,6 +15715,8 @@ components:
         groupAdvisor:
           type: boolean
         studyAdvisor:
+          type: boolean
+        specialEducationTeacher:
           type: boolean
         properties:
           $ref: "#/components/schemas/AnyValue"
