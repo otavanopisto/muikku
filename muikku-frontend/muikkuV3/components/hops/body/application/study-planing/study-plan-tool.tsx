@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { useMemo } from "react";
-import { createAndAllocateCoursesToPeriods } from "./helper";
+import {
+  createAndAllocateCoursesToPeriods,
+  isPeriodCalculationAllowedToBeBasedOnGraduationGoal,
+} from "./helper";
 import "~/sass/elements/study-planner.scss";
 import { useMediaQuery } from "usehooks-ts";
 import DesktopStudyPlanner from "./components/desktop/study-plan-tool-desktop";
@@ -115,6 +118,16 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     [curriculumConfig.strategy, userStudyActivity]
   );
 
+  // Restrict graduation goal picker max date by default to study end date.
+  // If the period calculation is allowed to be based on graduation goal,
+  // we don't restrict the max date.
+  const graduationGoalPickerMaxDate =
+    isPeriodCalculationAllowedToBeBasedOnGraduationGoal(
+      studentInfoContext.studyProgramName
+    ) || !studentInfo.studyTimeEnd
+      ? null
+      : new Date(studentInfo.studyTimeEnd);
+
   // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
@@ -220,11 +233,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   className="hops__input"
                   wrapperClassName="react-datepicker-override"
                   id="graduationGoalDate"
-                  maxDate={
-                    studentInfo.studyTimeEnd
-                      ? new Date(studentInfo.studyTimeEnd)
-                      : null
-                  }
+                  maxDate={graduationGoalPickerMaxDate}
                   minDate={
                     studentInfo.studyStartDate
                       ? new Date(studentInfo.studyStartDate)

@@ -21,6 +21,25 @@ import {
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
 /**
+ * Checks if the period calculation is allowed to be based on graduation goal
+ * @param studyProgramName study program name
+ * @returns true if the period calculation is allowed to be based on graduation goal
+ */
+export const isPeriodCalculationAllowedToBeBasedOnGraduationGoal = (
+  studyProgramName: string
+) => {
+  const listOfExceptions = [
+    "Nettilukio/yksityisopiskelu (aineopintoina)",
+    "Aineopiskelu/yo-tutkinto",
+    "Kahden tutkinnon opinnot",
+    "Aineopiskelu/lukio (oppivelvolliset)",
+    "Nettiperuskoulu/yksityisopiskelu",
+  ];
+
+  return listOfExceptions.includes(studyProgramName);
+};
+
+/**
  * Gets period type by month number
  * @param monthNumber month number
  * @returns period type
@@ -103,30 +122,26 @@ const createPeriods = (
 
   // If study end date is provided, use it to calculate the end year
   if (studyEndDateYear) {
-    console.log("Study end date year is provided", studyEndDateYear);
     // If graduation goal is further than study end date, use graduation goal year instead
     const goalIsFurtherThanStudyEndDate = graduationGoalYear > studyEndDateYear;
-    console.log("goalIsFurtherThanStudyEndDate", goalIsFurtherThanStudyEndDate);
-    endYear = goalIsFurtherThanStudyEndDate
-      ? graduationGoalYear
-      : studyEndDateYear;
+    endYear =
+      goalIsFurtherThanStudyEndDate &&
+      isPeriodCalculationAllowedToBeBasedOnGraduationGoal(studyProgramName)
+        ? graduationGoalYear
+        : studyEndDateYear;
   } else {
-    console.log("No study end date provided");
     // If no study end date provided, use default end year of 4 years from start date
     const defaultEndYear = startYear + 4;
 
     // If graduation goal is further than default end year, use graduation goal year instead
     const goalIsFurtherThanDefaultEndYear = graduationGoalYear > defaultEndYear;
-    console.log(
-      "goalIsFurtherThanDefaultEndYear",
-      goalIsFurtherThanDefaultEndYear
-    );
 
-    endYear = goalIsFurtherThanDefaultEndYear
-      ? graduationGoalYear
-      : defaultEndYear;
+    endYear =
+      goalIsFurtherThanDefaultEndYear &&
+      isPeriodCalculationAllowedToBeBasedOnGraduationGoal(studyProgramName)
+        ? graduationGoalYear
+        : defaultEndYear;
   }
-  console.log("endYear", endYear);
   // Generate array of years between start and end (inclusive)
   const years = Array.from(
     { length: endYear - startYear + 1 },
