@@ -252,7 +252,8 @@
   padding: 0;
 }
 
-.application-sub-panel__header--workspace-absences {
+.application-sub-panel__header--workspace-absences,
+.application-sub-panel__header--guider-absences {
   justify-content: space-between;
 }
 
@@ -385,6 +386,10 @@
 
 .application-sub-panel__body--workspace-absences-list {
   padding: 10px 0 0 5px;
+}
+
+.application-sub-panel__body--guider-absences-list {
+  display: flex;
 }
 
 .application-sub-panel__body--yo-status-incomplete {

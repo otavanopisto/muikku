@@ -59,8 +59,8 @@ const Absences = (props: AbsencesProps) => {
   }
 
   return (
-    <ApplicationSubPanel modifier="workspace-absences">
-      <ApplicationSubPanel.Header modifier="workspace-absences">
+    <ApplicationSubPanel modifier="guider-absences">
+      <ApplicationSubPanel.Header modifier="guider-absences">
         <span>{t("labels.absences", { ns: "events" })}</span>
         <EventListSorters
           sortBy={sortBy}
@@ -68,18 +68,22 @@ const Absences = (props: AbsencesProps) => {
           onSort={setSort}
         />
       </ApplicationSubPanel.Header>
-      <ApplicationSubPanel.Body modifier="workspace-absences-list">
-        <NavigationAside
-          setEventFilter={toggleFilter}
-          activeFilters={eventFilters}
-        />
-        {sortedEvents.map((absence) => (
-          <AbsenceEvent
-            key={absence.id}
-            title={getAbsenceTitle(absence)}
-            event={absence}
+      <ApplicationSubPanel.Body modifier="guider-absences-list">
+        <ApplicationSubPanel.Body.Aside>
+          <NavigationAside
+            setEventFilter={toggleFilter}
+            activeFilters={eventFilters}
           />
-        ))}
+        </ApplicationSubPanel.Body.Aside>
+        <ApplicationSubPanel.Body.Content>
+          {sortedEvents.map((absence) => (
+            <AbsenceEvent
+              key={absence.id}
+              title={getAbsenceTitle(absence)}
+              event={absence}
+            />
+          ))}
+        </ApplicationSubPanel.Body.Content>
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
   );
