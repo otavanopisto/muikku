@@ -16,6 +16,7 @@ interface AbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
   actions?: React.ReactNode;
+  title?: string;
 }
 
 /**
@@ -24,7 +25,7 @@ interface AbsenceEventsProps {
  * @returns JSX.Element
  */
 const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
-  const { modifier, event, actions } = props;
+  const { modifier, event, actions, title } = props;
   const { t } = useTranslation("tasks");
 
   const absenceState = event.properties?.some(
@@ -74,7 +75,7 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
       endDate={event.end}
       modifier={modifier}
       state={absenceState}
-      title={event.targetUserName + " - " + absentFromLabel()}
+      title={title ?? event.targetUserName + " - " + absentFromLabel()}
     >
       <div className="muikku-absence-event">
         {event.description && (

@@ -252,6 +252,10 @@
   padding: 0;
 }
 
+.application-sub-panel__header--workspace-absences {
+  justify-content: space-between;
+}
+
 .application-sub-panel__header--worklist-entries {
   background: $color-subpanel-header-background;
   cursor: pointer;

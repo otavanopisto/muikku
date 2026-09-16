@@ -2702,6 +2702,12 @@
       "reason": "Syy",
       "start": "Alkaa",
       "selectAbsenceReason": "Poissaolon syy",
+      "sortAscending": "$t(common:labels.sortAscending)",
+      "sortAscending_date": "Lajittele päivämäärän mukaan nousevasti",
+      "sortAscending_title": "Lajittele otsikon mukaan nousevasti",
+      "sortDescending": "$t(common:labels.sortDescending)",
+      "sortDescending_date": "Lajittele päivämäärän mukaan laskevasti",
+      "sortDescending_title": "Lajittele otsikon mukaan laskevasti",
       "totalAbsences": "Yhteensä poissaoloja"
     },
     "content": {
@@ -2719,6 +2725,10 @@
       "LESSON": "Oppitunti",
       "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
       "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen"
+    },
+    "filters": {
+      "WITH_REASON": "Selvitetyt poissaolot",
+      "WITHOUT_REASON": "Poissaolot ilman selvitystä"
     },
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
