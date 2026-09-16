@@ -413,6 +413,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
         studentInfo={{
           identifier: studentInfo.id,
           studyStartDate: studentInfo.studyStartDate,
+          studyProgramName: studyProgrammeName,
         }}
         curriculumConfig={curriculumConfig}
         userStudyActivity={studyActivity}

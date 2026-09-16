@@ -33,7 +33,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     (state: StateType) => state.hopsNew
   );
 
-  const { curriculumConfig, userStudyActivity } = useHopsBasicInfo();
+  const {
+    curriculumConfig,
+    userStudyActivity,
+    studentInfo: studentInfoContext,
+  } = useHopsBasicInfo();
 
   const dispatch = useDispatch();
 
@@ -81,11 +85,13 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   const calculatedPeriods = useMemo(
     () =>
       createAndAllocateCoursesToPeriods(
+        studentInfoContext.studyProgramName,
         {
           studyStartDate: new Date(studentInfo.studyStartDate),
           studyTimeEnd: studentInfo.studyTimeEnd
             ? new Date(studentInfo.studyTimeEnd)
             : null,
+          graduationGoal: usedGoalInfo.graduationGoal,
         },
         userStudyActivity?.items ?? [],
         usedPlannedCourses,
@@ -97,6 +103,8 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
       usedPlanNotes,
       curriculumConfig,
       studentInfo,
+      studentInfoContext,
+      usedGoalInfo.graduationGoal,
       userStudyActivity,
     ]
   );

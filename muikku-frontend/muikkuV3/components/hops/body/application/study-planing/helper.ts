@@ -83,26 +83,50 @@ const periodIsInThePast = (period: PlannedPeriod) => {
 
 /**
  * Convert planned course to period
+ * @param studyProgramName study program name
  * @param studentDateInfo student date info
  * @param curriculumStrategy curriculum strategy
  * @returns period
  */
 const createPeriods = (
+  studyProgramName: string,
   studentDateInfo: StudentDateInfo,
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
+  const studyEndDateYear = studentDateInfo.studyTimeEnd?.getFullYear();
+  const graduationGoalYear = studentDateInfo.graduationGoal?.getFullYear();
+
   // Calculate start and end years based on studentDateInfo
   const startYear = studentDateInfo.studyStartDate.getFullYear();
 
   let endYear: number;
 
-  if (studentDateInfo.studyTimeEnd) {
-    endYear = studentDateInfo.studyTimeEnd.getFullYear();
+  // If study end date is provided, use it to calculate the end year
+  if (studyEndDateYear) {
+    console.log("Study end date year is provided", studyEndDateYear);
+    // If graduation goal is further than study end date, use graduation goal year instead
+    const goalIsFurtherThanStudyEndDate = graduationGoalYear > studyEndDateYear;
+    console.log("goalIsFurtherThanStudyEndDate", goalIsFurtherThanStudyEndDate);
+    endYear = goalIsFurtherThanStudyEndDate
+      ? graduationGoalYear
+      : studyEndDateYear;
   } else {
-    // Default to 4 years from start date if no end date provided
-    endYear = startYear + 4;
-  }
+    console.log("No study end date provided");
+    // If no study end date provided, use default end year of 4 years from start date
+    const defaultEndYear = startYear + 4;
 
+    // If graduation goal is further than default end year, use graduation goal year instead
+    const goalIsFurtherThanDefaultEndYear = graduationGoalYear > defaultEndYear;
+    console.log(
+      "goalIsFurtherThanDefaultEndYear",
+      goalIsFurtherThanDefaultEndYear
+    );
+
+    endYear = goalIsFurtherThanDefaultEndYear
+      ? graduationGoalYear
+      : defaultEndYear;
+  }
+  console.log("endYear", endYear);
   // Generate array of years between start and end (inclusive)
   const years = Array.from(
     { length: endYear - startYear + 1 },
@@ -135,6 +159,7 @@ const createPeriods = (
 
 /**
  * Creates and allocates planned courses to academic periods
+ * @param studyProgramName study program name
  * @param studentDateInfo student date info
  * @param studyActivities study activities
  * @param plannedCourses List of planned courses to allocate
@@ -143,6 +168,7 @@ const createPeriods = (
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
+  studyProgramName: string,
   studentDateInfo: StudentDateInfo,
   studyActivities: StudyActivityItem[],
   plannedCourses: PlannedCourseWithIdentifier[],
@@ -150,7 +176,11 @@ const createAndAllocateCoursesToPeriods = (
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
-  const periods = createPeriods(studentDateInfo, curriculumStrategy);
+  const periods = createPeriods(
+    studyProgramName,
+    studentDateInfo,
+    curriculumStrategy
+  );
 
   const plannedCourseKeys = new Set(
     plannedCourses.map((pc) => `${pc.subjectCode}-${pc.courseNumber}`)
