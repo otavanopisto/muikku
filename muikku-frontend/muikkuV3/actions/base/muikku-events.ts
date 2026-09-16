@@ -29,7 +29,7 @@ export type EVENTS_UPDATE_ABSENCE_PROPERTY = SpecificActionType<
 /**
  * SetAbsenceEventsTriggerType
  */
-export interface LoadAbsenceEventsTriggerType {
+export interface LoadUserAbsenceEventsTriggerType {
   (userId: number): AnyActionType;
 }
 
@@ -49,11 +49,11 @@ export interface CreateAbsenceEventPropertyTriggerType {
 
 const eventsApi = MApi.getEventsApi();
 /**
- * loadAbsenceEvents
+ * loadUserAbsenceEvents
  * @param userId userId
  */
-const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
-  function loadAbsenceEvents(userId: number) {
+const loadUserAbsenceEvents: LoadUserAbsenceEventsTriggerType =
+  function loadUserAbsenceEvents(userId: number) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
@@ -85,7 +85,7 @@ const loadAbsenceEvents: LoadAbsenceEventsTriggerType =
             i18n.t("notifications.loadError", {
               ns: "events",
               context: "absence",
-              error: err.message,
+              error: err instanceof Error ? err.message : "Unknown error",
             }),
             "error"
           )
@@ -185,7 +185,7 @@ const updateAbsenceEventProperty: UpdateAbsenceEventPropertyTriggerType =
   };
 
 export {
-  loadAbsenceEvents,
+  loadUserAbsenceEvents,
   createAbsenceEventProperty,
   updateAbsenceEventProperty,
 };
