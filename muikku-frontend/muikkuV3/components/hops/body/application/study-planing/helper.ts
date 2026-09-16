@@ -25,7 +25,7 @@ import { CurriculumStrategy } from "~/util/curriculum-config";
  * @param studyProgramName study program name
  * @returns true if the period calculation is allowed to be based on graduation goal
  */
-export const isPeriodCalculationAllowedToBeBasedOnGraduationGoal = (
+const isPeriodCalculationAllowedToBeBasedOnGraduationGoal = (
   studyProgramName: string
 ) => {
   const listOfExceptions = [
@@ -170,6 +170,76 @@ const createPeriods = (
 
   // Sort periods by years
   return periods.sort((a, b) => a.year - b.year);
+};
+
+/**
+ * Finds planner items outside periods
+ * @param studyProgramName study program name
+ * @param studentDateInfo student date info
+ * @param plannedCourses planned courses
+ * @param planNotes plan notes
+ * @param studyActivities study activities
+ * @param curriculumStrategy curriculum strategy
+ */
+const findPlannerItemsOutsidePeriods = (
+  studyProgramName: string,
+  studentDateInfo: StudentDateInfo,
+  plannedCourses: PlannedCourseWithIdentifier[],
+  planNotes: StudyPlannerNoteWithIdentifier[],
+  studyActivities: StudyActivityItem[],
+  curriculumStrategy: CurriculumStrategy
+) => {
+  const periods = createPeriods(
+    studyProgramName,
+    studentDateInfo,
+    curriculumStrategy
+  );
+
+  /**
+   * Checks if the date matches a period
+   * @param date date
+   * @returns true if the date matches a period
+   */
+  const matchesPeriod = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    return periods.some(
+      (p) =>
+        year === p.year &&
+        ((p.type === "SPRING" && month >= 0 && month <= 6) ||
+          (p.type === "AUTUMN" && month >= 7 && month <= 11))
+    );
+  };
+
+  /**
+   * Gets the course allocation date
+   * @param course course
+   * @returns course allocation date
+   */
+  const getCourseAllocationDate = (course: PlannedCourseWithIdentifier) => {
+    const studyActivity = studyActivities.find(
+      (sa) =>
+        sa.courseNumber === course.courseNumber &&
+        sa.subject === course.subjectCode
+    );
+
+    const useStudyActivityDate =
+      studyActivity &&
+      (studyActivity.state === "GRADED" ||
+        studyActivity.state === "SUPPLEMENTATIONREQUEST");
+
+    return useStudyActivityDate
+      ? new Date(studyActivity.date)
+      : new Date(course.startDate);
+  };
+
+  return {
+    courses: plannedCourses.filter(
+      (course) => !matchesPeriod(getCourseAllocationDate(course))
+    ),
+    notes: planNotes.filter((note) => !matchesPeriod(new Date(note.startDate))),
+  };
 };
 
 /**
@@ -618,4 +688,6 @@ export {
   isNoTimeContextSelection,
   getPeriodMonthNames,
   getPeriodTypeByMonthNumber,
+  isPeriodCalculationAllowedToBeBasedOnGraduationGoal,
+  findPlannerItemsOutsidePeriods,
 };

@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   createAndAllocateCoursesToPeriods,
+  findPlannerItemsOutsidePeriods,
   isPeriodCalculationAllowedToBeBasedOnGraduationGoal,
 } from "./helper";
 import "~/sass/elements/study-planner.scss";
@@ -16,11 +17,19 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
 import PlannerTimelineProgress from "./components/planner-timeline-progress";
-import { updateEditingGoals } from "~/actions/main-function/hops";
+import {
+  updateEditingGoals,
+  updateEditingStudyPlanBatch,
+} from "~/actions/main-function/hops";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
+import {
+  PlannedCourseWithIdentifier,
+  StudyPlannerNoteWithIdentifier,
+} from "~/reducers/hops";
+import OrphanedStudyPlannerItemsDialog from "~/components/hops/dialogs/orphaned-studyplanner-items-dialog";
 
 /**
  * MatriculationPlanProps
@@ -41,6 +50,16 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     userStudyActivity,
     studentInfo: studentInfoContext,
   } = useHopsBasicInfo();
+
+  const [orphanedItemsDialogState, setOrphanedItemsDialogState] = useState<{
+    open: boolean;
+    courses: PlannedCourseWithIdentifier[];
+    notes: StudyPlannerNoteWithIdentifier[];
+  }>({
+    open: false,
+    courses: [],
+    notes: [],
+  });
 
   const dispatch = useDispatch();
 
@@ -155,33 +174,107 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
    * @param date date
    */
   const handleGraduationGoalDateChange = (date: Date | null) => {
-    if (!date) {
-      dispatch(
-        updateEditingGoals({
-          goals: {
-            graduationGoal: null,
-            studyHours: usedGoalInfo.studyHours,
-          },
-        })
-      );
-    } else {
-      // Set to last day of the selected month
-      date.setMonth(date.getMonth() + 1);
-      date.setDate(0);
+    const normalizedDate = date
+      ? (() => {
+          const next = new Date(date);
+          next.setMonth(next.getMonth() + 1);
+          next.setDate(0);
+          return next;
+        })()
+      : null;
 
-      dispatch(
-        updateEditingGoals({
-          goals: {
-            graduationGoal: date,
-            studyHours: usedGoalInfo.studyHours,
-          },
-        })
-      );
+    dispatch(
+      updateEditingGoals({
+        goals: {
+          graduationGoal: normalizedDate,
+          studyHours: usedGoalInfo.studyHours,
+        },
+      })
+    );
+
+    if (
+      !isPeriodCalculationAllowedToBeBasedOnGraduationGoal(
+        studentInfoContext.studyProgramName
+      )
+    ) {
+      return;
     }
+
+    const { courses, notes } = findPlannerItemsOutsidePeriods(
+      studentInfoContext.studyProgramName,
+      {
+        studyStartDate: new Date(studentInfo.studyStartDate),
+        studyTimeEnd: studentInfo.studyTimeEnd
+          ? new Date(studentInfo.studyTimeEnd)
+          : null,
+        graduationGoal: normalizedDate,
+      },
+      usedPlannedCourses,
+      usedPlanNotes,
+      userStudyActivity?.items ?? [],
+      curriculumConfig.strategy
+    );
+
+    if (courses.length > 0 || notes.length > 0) {
+      setOrphanedItemsDialogState({
+        open: true,
+        courses,
+        notes,
+      });
+      return;
+    }
+  };
+
+  /**
+   * Close orphaned items dialog
+   */
+  const closeOrphanedItemsDialog = () => {
+    setOrphanedItemsDialogState({
+      open: false,
+      courses: [],
+      notes: [],
+    });
+  };
+
+  /**
+   * Handle keep orphaned items
+   */
+  const handleKeepOrphanedItems = () => {
+    closeOrphanedItemsDialog();
+  };
+
+  /**
+   * Handle remove orphaned items
+   */
+  const handleRemoveOrphanedItems = () => {
+    const orphanedCourseIds = new Set(
+      orphanedItemsDialogState.courses.map((course) => course.identifier)
+    );
+    const orphanedNoteIds = new Set(
+      orphanedItemsDialogState.notes.map((note) => note.identifier)
+    );
+    dispatch(
+      updateEditingStudyPlanBatch({
+        plannedCourses: usedPlannedCourses.filter(
+          (course) => !orphanedCourseIds.has(course.identifier)
+        ),
+        planNotes: usedPlanNotes.filter(
+          (note) => !orphanedNoteIds.has(note.identifier)
+        ),
+      })
+    );
+    closeOrphanedItemsDialog();
   };
 
   return (
     <>
+      <OrphanedStudyPlannerItemsDialog
+        isOpen={orphanedItemsDialogState.open}
+        courseCount={orphanedItemsDialogState.courses.length}
+        noteCount={orphanedItemsDialogState.notes.length}
+        onRemove={handleRemoveOrphanedItems}
+        onKeep={handleKeepOrphanedItems}
+      />
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
           {t("labels.studyPlannerFormTitle", {
