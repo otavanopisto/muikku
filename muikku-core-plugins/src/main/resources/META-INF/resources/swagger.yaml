@@ -5980,6 +5980,16 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: hasPublishedPedagogyForm
+          in: query
+          description: List only students who either have or don't have a published pedagogy form
+          schema:
+            type: boolean
+        - name: hasDecisionOnSpecialEducation
+          in: query
+          description: List only students who either have or don't have a decision on special education. Only available for special education teachers.
+          schema:
+            type: boolean
       responses:
         "200":
           description: Students

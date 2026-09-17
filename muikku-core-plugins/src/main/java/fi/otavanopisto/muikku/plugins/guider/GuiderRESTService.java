@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.guider;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -101,6 +102,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.UserSearchQuery;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
@@ -256,6 +258,8 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userIdentifier") String userIdentifier,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
+      @QueryParam("hasPublishedPedagogyForm") Boolean hasPublishedPedagogyForm,
+      @QueryParam("hasDecisionOnSpecialEducation") Boolean hasDecisionOnSpecialEducation,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
 
@@ -271,6 +275,11 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
+    // hasDecisionOnSpecialEducation filter is only available for Special Education Teachers
+    if (hasDecisionOnSpecialEducation != null && !currentUserSession.isSpecialEducationTeacher()) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     List<Flag> flags = null;
     if (flagIds != null && flagIds.length > 0) {
       flags = new ArrayList<>(flagIds.length);
@@ -419,22 +428,26 @@ public class GuiderRESTService extends PluginRESTService {
 
       OrganizationEntity organization = loggedUserSchoolDataIdentifier.getOrganization();
 
-      SearchResult result = elasticSearchProvider.searchUsers(
-          Arrays.asList(organization),
-          currentUserSession.getStudyProgrammeIdentifiers(),
-          searchString,
-          fields,
-          Arrays.asList(EnvironmentRoleArchetype.STUDENT),
-          userGroupFilters,
-          workspaceFilters,
-          userIdentifiers,
-          includeInactiveStudents,
-          true,
-          false,
-          firstResult,
-          maxResults,
-          joinGroupsAndWorkspaces);
-
+      SearchResult result = elasticSearchProvider.searchUsers(new UserSearchQuery.Builder()
+          .organizations(Arrays.asList(organization))
+          .studyProgrammeIdentifiers(currentUserSession.getStudyProgrammeIdentifiers())
+          .text(searchString)
+          .textFields(fields)
+          .roles(Arrays.asList(EnvironmentRoleArchetype.STUDENT))
+          .groups(userGroupFilters)
+          .workspaces(workspaceFilters)
+          .userIdentifiers(userIdentifiers)
+          .includeInactiveStudents(includeInactiveStudents)
+          .includeHidden(true)
+          .onlyDefaultUsers(false)
+          .start(firstResult)
+          .maxResults(maxResults)
+          .joinGroupsAndWorkspaces(joinGroupsAndWorkspaces)
+          .hasPublishedPedagogyForm(hasPublishedPedagogyForm)
+          .hasDecisionOnSpecialEducation(hasDecisionOnSpecialEducation)
+          .build()
+      );
+      
       List<Map<String, Object>> results = result.getResults();
 
       if (results != null && !results.isEmpty()) {
