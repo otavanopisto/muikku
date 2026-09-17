@@ -6,14 +6,14 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { useTranslation } from "react-i18next";
-import { EventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
+import { AbsenceEventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
 
 /**
  * NavigationAsideProps
  */
 interface NavigationAsideProps {
-  setEventFilter: (filter: EventFilter) => void;
-  activeFilters: EventFilter[];
+  setEventFilter: (filter: AbsenceEventFilter) => void;
+  activeFilters: AbsenceEventFilter[];
 }
 
 /**
@@ -25,7 +25,7 @@ const NavigationAside = (props: NavigationAsideProps) => {
   const { setEventFilter, activeFilters } = props;
   return (
     <Navigation>
-      <NavigationTopic name={t("labels.absences", { ns: "events" })}>
+      <NavigationTopic name={t("labels.absencesStatus", { ns: "events" })}>
         <NavigationElement
           isActive={activeFilters.includes("WITH_REASON")}
           onClick={() => setEventFilter("WITH_REASON")}

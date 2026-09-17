@@ -158,9 +158,9 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     },
     {
       id: "ABSENCES",
-      name: t("labels.absences"),
+      name: t("labels.absences", { ns: "events" }),
       type: "guider-student",
-      component: <Absences userId={student.basic?.userEntityId} />,
+      component: <Absences />,
     },
   ];
 
