@@ -36,6 +36,7 @@ import {
   MaterialCompositeReplyStateType,
   EducationType,
   WorkspaceSettings,
+  MuikkuEventProperty,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceCompositeMaterialReplies } from "./material";
@@ -1821,6 +1822,7 @@ export type CreateWorkspaceAbsenceEventData = {
   start: string;
   end: string;
   eventContainerId: number;
+  properties?: MuikkuEventProperty[];
 };
 
 /** CreateWorkspaceAbsenceEventTriggerType */
