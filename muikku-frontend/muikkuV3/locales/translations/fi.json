@@ -2729,7 +2729,7 @@
     },
     "filters": {
       "WITH_REASON": "Selvitetyt poissaolot",
-      "WITHOUT_REASON": "Poissaolot ilman selvitystä"
+      "WITHOUT_REASON": "Selvittämättömät poissaolot"
     },
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
