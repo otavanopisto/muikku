@@ -431,14 +431,15 @@
 }
 
 .application-sub-panel__body-aside {
-  padding: 0 12px;
   display: flex;
   flex-basis: 220px;
+  padding: 0 12px;
 }
 
 .application-sub-panel__body-content {
   flex-grow: 1;
 }
+
 .application-sub-panel__notification-item {
   flex-basis: 100%;
 }

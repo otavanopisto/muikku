@@ -231,10 +231,12 @@
   &:last-child {
     margin-right: 0;
   }
+
   &:hover,
   &.hover {
     background-color: $color-link-hover-background;
   }
+  
   &.selected {
     background-color: $color-item-list-item-aside-background-active;
     color: $color-item-list-item-font-color-active;
