@@ -24,6 +24,7 @@ import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 import { updateHopsEditingStudyPlan } from "~/actions/main-function/hops";
+import DeletePlannedCourseDialog from "~/components/hops/dialogs/delete-planned-course-dialog";
 
 /**
  * PlannerSidebarProps
@@ -490,12 +491,8 @@ const PlannerCourseTrayPlannedLabel: React.FC<
 
   /**
    * Handles remove from plan
-   * @param e event
    */
-  const handleRemoveFromPlan = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.preventDefault();
+  const handleRemoveFromPlan = () => {
     const plannedCourse = plannedCourses.find(
       (course) =>
         course.subjectCode === subjectCode &&
@@ -520,23 +517,24 @@ const PlannerCourseTrayPlannedLabel: React.FC<
         ns: "common",
       })}
       {canDelete && hopsMode !== "READ" && (
-        <Dropdown
-          openByHover
-          content={
-            <p>
-              {t("actions.removeFromPlan", {
-                ns: "hops_new",
-              })}
-            </p>
-          }
-        >
-          <IconButton
-            icon="cross"
-            buttonModifiers={["remove-from-plan"]}
-            disablePropagation
-            onClick={handleRemoveFromPlan}
-          />
-        </Dropdown>
+        <DeletePlannedCourseDialog onDelete={handleRemoveFromPlan}>
+          <Dropdown
+            openByHover
+            content={
+              <p>
+                {t("actions.removeFromPlan", {
+                  ns: "hops_new",
+                })}
+              </p>
+            }
+          >
+            <IconButton
+              icon="cross"
+              buttonModifiers={["remove-from-plan"]}
+              disablePropagation
+            />
+          </Dropdown>
+        </DeletePlannedCourseDialog>
       )}
     </PlannerCardLabel>
   );
