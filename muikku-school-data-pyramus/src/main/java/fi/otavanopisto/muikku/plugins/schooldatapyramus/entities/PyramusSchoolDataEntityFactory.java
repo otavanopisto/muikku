@@ -108,7 +108,9 @@ public class PyramusSchoolDataEntityFactory {
         false, // evaluationFees
         false, // hidden
         false, // matriculationEligibility
-        studyProgrammeIdentifiers);
+        studyProgrammeIdentifiers,
+        staffMember.isSpecialEducationTeacher()
+    );
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StudentParent studentParent) {
@@ -134,7 +136,9 @@ public class PyramusSchoolDataEntityFactory {
         false, // evaluationFees
         false, // hidden
         false, // matriculationEligibility
-        new HashSet<>());
+        new HashSet<>(),
+        false // specialEducationTeacher
+    );
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
@@ -207,7 +211,9 @@ public class PyramusSchoolDataEntityFactory {
         evaluationFees,
         hidden, 
         matriculationEligibility,
-        new HashSet<>());
+        new HashSet<>(),
+        false // specialEducationTeacher
+    );
   }
   
   public StudyProgramme createEntity(fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme) {

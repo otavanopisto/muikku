@@ -15,7 +15,7 @@ public class LocalUserImpl  extends AbstractUser implements User {
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, SchoolDataIdentifier curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
       Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
     super(identifier, firstName, lastName, nickName, displayName, studyProgrammeName, educationTypeCode, studyProgrammeIdentifier, nationality, language, municipality, school,
-        studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier, organizationIdentifier, matriculationEligibility, studyProgrammeIdentifiers);
+        studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier, organizationIdentifier, matriculationEligibility, studyProgrammeIdentifiers, false);
   }
 
   @Override
