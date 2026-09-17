@@ -7,12 +7,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
@@ -34,6 +38,9 @@ import fi.otavanopisto.muikku.users.UserEntityName;
 
 public class PedagogyController {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private Mailer mailer;
 
@@ -234,4 +241,30 @@ public class PedagogyController {
   public boolean isPublished(Long userEntityId) {
     return findFormByUserEntityIdAndPublished(userEntityId) != null;
   }
+
+  /**
+   * If the user has a pedagogy form, tries to parse the form and return 
+   * the value of the decisionToSpecialEducation field. If the form
+   * doesn't exist or an error happens, returns null.
+   * 
+   * @param userEntityId
+   * @return
+   */
+  public Boolean hasDecisionToSpecialEducation(Long userEntityId) {
+    PedagogyForm pedagogyForm = findFormByUserEntityId(userEntityId);
+    if (pedagogyForm == null) {
+      return null;
+    }
+    
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      PedagogyFormDataModel pedagogyFormDataModel = objectMapper.readValue(pedagogyForm.getFormData(), PedagogyFormDataModel.class);
+      return pedagogyFormDataModel != null ? pedagogyFormDataModel.getDecisionToSpecialEducation() : null;
+    } 
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Couldn't parse pedagogy form.", e);
+      return null;
+    }
+  }
+  
 }
