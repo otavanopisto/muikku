@@ -19133,6 +19133,7 @@ components:
         - emails
         - hasImage
         - roles
+        - specialEducationTeacher
         - permissions
         - curriculumName
         - curriculumIdentifier
@@ -19198,6 +19199,10 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
+        specialEducationTeacher:
+          type: boolean
+          description: Is the user a special education teacher. Null when unspecified (user likely logged off)
+          nullable: true
         permissions:
           type: array
           nullable: true
