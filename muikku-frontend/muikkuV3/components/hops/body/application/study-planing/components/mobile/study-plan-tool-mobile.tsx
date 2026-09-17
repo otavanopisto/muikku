@@ -16,6 +16,10 @@ import PlannerTimelineMobile from "./planner-timeline";
 import { MobilePlannerControls } from "../planner-controls";
 import { useTranslation } from "react-i18next";
 import { ActivePeriodProvider } from "../../context/active-period-context";
+import {
+  HopsBasicInfoProvider,
+  useHopsBasicInfo,
+} from "~/context/hops-basic-info-context";
 
 // Memoized components
 const MemoizedMobilePlannerControls = React.memo(MobilePlannerControls);
@@ -49,6 +53,9 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   }>(null);
 
   const [shouldRenderPortal, setShouldRenderPortal] = useState(false);
+
+  const { useCase, studentInfo, curriculumConfig, userStudyActivity } =
+    useHopsBasicInfo();
 
   useEffect(() => {
     if (isOpen) {
@@ -85,68 +92,75 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
             <Portal isOpen={true}>
               <Provider store={store}>
                 <DndProvider manager={manager}>
-                  <ActivePeriodProvider calculatedPeriods={calculatedPeriods}>
-                    <AnimatePresence>
-                      {isOpen && (
-                        <motion.div
-                          key="study-planner-fullscreen"
-                          className="study-planner study-planner--mobile-open swiper-no-swiping"
-                          initial={{
-                            height: "100vh",
-                            width: "100%",
-                            position: "fixed",
-                            inset: 0,
-                            zIndex: 1000,
-                            scale: 0.8,
-                            opacity: 0,
-                          }}
-                          animate={{
-                            height: "100vh",
-                            width: "100%",
-                            position: "fixed",
-                            inset: 0,
-                            zIndex: 1000,
-                            scale: 1,
-                            opacity: 1,
-                          }}
-                          exit={{
-                            height: "100vh",
-                            width: "100%",
-                            position: "fixed",
-                            inset: 0,
-                            zIndex: 1000,
-                            scale: 0.8,
-                            opacity: 0,
-                          }}
-                          transition={{
-                            type: "tween",
-                            duration: 0.3,
-                          }}
-                          style={{
-                            transformOrigin: "center center",
-                            margin: "auto",
-                          }}
-                        >
-                          <StudyPlannerDragLayer />
+                  <HopsBasicInfoProvider
+                    useCase={useCase}
+                    studentInfo={studentInfo}
+                    curriculumConfig={curriculumConfig}
+                    userStudyActivity={userStudyActivity}
+                  >
+                    <ActivePeriodProvider calculatedPeriods={calculatedPeriods}>
+                      <AnimatePresence>
+                        {isOpen && (
+                          <motion.div
+                            key="study-planner-fullscreen"
+                            className="study-planner study-planner--mobile-open swiper-no-swiping"
+                            initial={{
+                              height: "100vh",
+                              width: "100%",
+                              position: "fixed",
+                              inset: 0,
+                              zIndex: 1000,
+                              scale: 0.8,
+                              opacity: 0,
+                            }}
+                            animate={{
+                              height: "100vh",
+                              width: "100%",
+                              position: "fixed",
+                              inset: 0,
+                              zIndex: 1000,
+                              scale: 1,
+                              opacity: 1,
+                            }}
+                            exit={{
+                              height: "100vh",
+                              width: "100%",
+                              position: "fixed",
+                              inset: 0,
+                              zIndex: 1000,
+                              scale: 0.8,
+                              opacity: 0,
+                            }}
+                            transition={{
+                              type: "tween",
+                              duration: 0.3,
+                            }}
+                            style={{
+                              transformOrigin: "center center",
+                              margin: "auto",
+                            }}
+                          >
+                            <StudyPlannerDragLayer />
 
-                          <MemoizedMobilePlannerControls
-                            onPeriodChange={handlePeriodChange}
-                            onClose={() => setIsOpen(false)}
-                            onShowPlanStatus={() =>
-                              setShowPlanStatus(!showPlanStatus)
-                            }
-                          />
-
-                          <div className="study-planner__content">
-                            <MemoizedPlannerTimelineMobile
-                              calculatedPeriods={calculatedPeriods}
-                              ref={timelineComponentRef}
+                            <MemoizedMobilePlannerControls
+                              onPeriodChange={handlePeriodChange}
+                              onClose={() => setIsOpen(false)}
+                              onShowPlanStatus={() =>
+                                setShowPlanStatus(!showPlanStatus)
+                              }
                             />
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </ActivePeriodProvider>
+
+                            <div className="study-planner__content">
+                              <MemoizedPlannerTimelineMobile
+                                calculatedPeriods={calculatedPeriods}
+                                ref={timelineComponentRef}
+                              />
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </ActivePeriodProvider>
+                  </HopsBasicInfoProvider>
                 </DndProvider>
               </Provider>
             </Portal>

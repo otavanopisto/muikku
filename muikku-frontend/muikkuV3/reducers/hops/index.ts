@@ -57,6 +57,10 @@ export interface StudentDateInfo {
    * End date when student study time expires
    */
   studyTimeEnd?: Date | null;
+  /**
+   * Graduation goal date
+   */
+  graduationGoal: Date | null;
 }
 
 /**

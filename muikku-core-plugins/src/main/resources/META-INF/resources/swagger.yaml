@@ -15887,7 +15887,6 @@ components:
       description: HopsGoals object
       required:
         - graduationGoal
-        - followUpGoal
       properties:
         graduationGoal:
           nullable: true

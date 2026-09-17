@@ -644,6 +644,8 @@
       "addNote": "Lisää muistiinpano",
       "addSubject": "Lisää aine",
       "confirmRegistration": "Vahvista ilmoittautuminen",
+      "keepInPlan": "Säilytä suunnitelmassa",
+      "removeFromPlan": "Poista suunnitelmasta",
       "openStudyPlanner": "Avaa suunnittelutyökalu",
       "showSummary": "Näytä yhteenveto",
       "showOldSummary": "Näytä vanha yhteenveto",
@@ -892,6 +894,7 @@
       "studyPlannerFormGraduationDateDescription": "Määrittele päivämäärä, mihin mennessä haluaisit valmistua.",
       "studyPlannerFormHoursPerWeekTitle": "Kuinka monta tuntia ehdit opiskella viikossa?",
       "studyPlannerFormHoursPerWeekDescription": "Arvioi, kuinka monta tuntia viikossa voit käyttää aikaa opiskeluun.",
+      "studyPlannerOrphanedItemsTitle": "Kohteita näkyvien lukukausien ulkopuolella",
       "studyPlannerStatisticTitle": "Opintojen eteneminen",
       "studyPlannerStatisticMandatoryCompleted_uppersecondary": "Suoritetut pakolliset opintojaksot (op).",
       "studyPlannerStatisticOptionalCompleted_uppersecondary": "Suoritetut valinnaisopinnot (op).",
@@ -1012,7 +1015,8 @@
       "studyPlannerInfoGraduationNotPossibleTooLowHours": "Valmistuminen ei ole mahdollista tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk). Arvioitu valmistumisaika on {{estimatedDateOfCompletion}}. Tarvitset vähintään {{estimatedTimeToCompletion}} kuukautta opintojen suorittamiseen. Muuta laskuriin arvioimaasi viikoittaista tuntimäärää ja katso, miten se vaikuttaa arvioituun valmistumisaikaan.",
       "studyPlannerInfoGraduationNotPossibleExceedsRightToStudy": "Arvioitu valmistumisaika {{estimatedDateOfCompletion}} ylittää opinto-oikeutesi päättymispäivän {{studyEndTimeDate}}. Et siis ehtisi valmistua suunnittelemallasi viikoittaisella opiskelutahdilla ennen opinto-oikeutesi päättymispäivää. Muuta laskuriin arvioimaasi viikoittaista tuntimäärää ja katso, miten se vaikuttaa arvioituun valmistumisaikaan.",
       "studyPlannerInfoGraduationPossible": "Valmistuminen tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk) on mahdollista. Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta).",
-      "studyPlannerInfoGraduationPossibleWithoutGraduationGoal": "Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta). Se sopii hyvin opinto-oikeuteesi, joka päättyy {{studyEndTimeDate}}. Voit myös asettaa valmistumiselle tavoiteajan ja säätää viikoittaista opiskelutahtia sopimaan tavoitteeseesi."
+      "studyPlannerInfoGraduationPossibleWithoutGraduationGoal": "Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta). Se sopii hyvin opinto-oikeuteesi, joka päättyy {{studyEndTimeDate}}. Voit myös asettaa valmistumiselle tavoiteajan ja säätää viikoittaista opiskelutahtia sopimaan tavoitteeseesi.",
+      "studyPlannerOrphanedItemsDescription": "Tavoiteajan muuttaminen muuttaa lukukausien määrää. Niihin sijoitetut kurssit ({{courseCount}}) ja muistiinpanot ({{noteCount}}) jäävät suunnitelmaan, mutta ne eivät näy aikajanalla. Voit poistaa ne tai jättää ne, jos muutat tavoiteaikaa myöhemmin."
     },
     "matriculationTerms": {
       "AUTUMN": "Syksy {{year}}",
