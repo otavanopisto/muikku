@@ -301,6 +301,22 @@ public class IndexedUser {
     this.birthday = birthday;
   }
 
+  public Boolean getHasPublishedPedagogyForm() {
+    return hasPublishedPedagogyForm;
+  }
+
+  public void setHasPublishedPedagogyForm(Boolean hasPublishedPedagogyForm) {
+    this.hasPublishedPedagogyForm = hasPublishedPedagogyForm;
+  }
+
+  public Boolean getHasDecisionOnSpecialEducation() {
+    return hasDecisionOnSpecialEducation;
+  }
+
+  public void setHasDecisionOnSpecialEducation(Boolean hasDecisionOnSpecialEducation) {
+    this.hasDecisionOnSpecialEducation = hasDecisionOnSpecialEducation;
+  }
+
   private String identifier;
   private String schoolDataSource;
   private String firstName;
@@ -328,4 +344,6 @@ public class IndexedUser {
   private Set<Long> groups;
   private List<IndexedUserStudyPeriod> studyPeriods;
   private LocalDate birthday;
+  private Boolean hasPublishedPedagogyForm;
+  private Boolean hasDecisionOnSpecialEducation;
 }

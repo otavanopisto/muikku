@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -34,6 +35,9 @@ public class UserIndexer {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private PedagogyController pedagogyController;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -132,6 +136,11 @@ public class UserIndexer {
               environmentRoles.contains(EnvironmentRoleArchetype.ADMINISTRATOR)) {
             String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
             indexedUser.setEmail(userDefaultEmailAddress);
+          }
+          
+          if (environmentRoles.contains(EnvironmentRoleArchetype.STUDENT)) {
+            indexedUser.setHasPublishedPedagogyForm(pedagogyController.isPublished(userEntity.getId()));
+            indexedUser.setHasDecisionOnSpecialEducation(pedagogyController.hasDecisionToSpecialEducation(userEntity.getId()));
           }
         }
         
