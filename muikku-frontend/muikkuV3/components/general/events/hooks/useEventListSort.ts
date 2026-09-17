@@ -7,7 +7,7 @@ export type EventSortOrder = "asc" | "desc";
 /**
  * UseEventListProps
  */
-interface UseEventListProps {
+interface UseEventListSortProps {
   events: MuikkuEvent[] | undefined;
   getTitle?: (event: MuikkuEvent) => string;
   locale?: string;
@@ -113,7 +113,7 @@ const sortEvents = (
  * @param props props
  * @returns sorted events and sort controls
  */
-export const useEventList = (props: UseEventListProps) => {
+export const useEventListSort = (props: UseEventListSortProps) => {
   const { events, getTitle, locale } = props;
   const [sortBy, setSortBy] = useState<EventSortBy>("start");
   const [sortOrder, setSortOrder] = useState<EventSortOrder>("asc");

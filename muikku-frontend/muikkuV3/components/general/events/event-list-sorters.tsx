@@ -5,7 +5,7 @@ import { ButtonPill } from "~/components/general/button";
 import {
   EventSortBy,
   EventSortOrder,
-} from "~/components/general/events/hooks/useEventList";
+} from "~/components/general/events/hooks/useEventListSort";
 import "~/sass/elements/items-sorter.scss";
 import "~/sass/elements/buttons.scss";
 

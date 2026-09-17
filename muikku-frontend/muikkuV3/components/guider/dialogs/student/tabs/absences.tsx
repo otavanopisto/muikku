@@ -5,7 +5,7 @@ import { StateType } from "~/reducers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import AbsenceEvent from "~/components/general/events/event/absence-event";
 import EventListSorters from "~/components/general/events/event-list-sorters";
-import { useEventList } from "~/components/general/events/hooks/useEventList";
+import { useEventListSort } from "~/components/general/events/hooks/useEventListSort";
 import { useAbsenceEventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
 import { MuikkuEvent } from "~/generated/client";
 import NavigationAside from "./absences/aside";
@@ -44,7 +44,7 @@ const Absences = (props: AbsencesProps) => {
     events: absenceEvents,
   });
 
-  const { sortedEvents, sortBy, sortOrder, setSort } = useEventList({
+  const { sortedEvents, sortBy, sortOrder, setSort } = useEventListSort({
     events: filteredEvents,
     getTitle: getAbsenceTitle,
     locale: i18n.language,

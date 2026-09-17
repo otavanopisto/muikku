@@ -10,7 +10,7 @@ import PromptDialog from "~/components/general/prompt-dialog";
 import { MuikkuEvent } from "~/generated/client";
 import { EditAbsenceDialog } from "~/components/workspace/workspaceUsers/dialogs/edit-absence";
 import { useDispatch } from "react-redux";
-import { useEventList } from "~/components/general/events/hooks/useEventList";
+import { useEventListSort } from "~/components/general/events/hooks/useEventListSort";
 import { useAbsenceEventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
 import EventListSorters from "~/components/general/events/event-list-sorters";
 import Link from "~/components/general/link";
@@ -53,7 +53,7 @@ const AbsenceEvents = (props: AbsenceEventsProps) => {
     events: absenceEvents,
   });
 
-  const { sortedEvents, sortBy, sortOrder, setSort } = useEventList({
+  const { sortedEvents, sortBy, sortOrder, setSort } = useEventListSort({
     events: filteredEvents,
     getTitle: getAbsenceTitle,
     locale: i18n.language,
