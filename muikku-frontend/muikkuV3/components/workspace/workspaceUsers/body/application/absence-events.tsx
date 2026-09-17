@@ -10,6 +10,10 @@ import PromptDialog from "~/components/general/prompt-dialog";
 import { MuikkuEvent } from "~/generated/client";
 import { EditAbsenceDialog } from "~/components/workspace/workspaceUsers/dialogs/edit-absence";
 import { useDispatch } from "react-redux";
+import { useEventList } from "~/components/general/events/hooks/useEventList";
+import { useAbsenceEventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
+import EventListSorters from "~/components/general/events/event-list-sorters";
+import Link from "~/components/general/link";
 /**
  * AbsencesProps
  */
@@ -23,12 +27,37 @@ interface AbsenceEventsProps {
  * @param props AbsencesProps
  */
 const AbsenceEvents = (props: AbsenceEventsProps) => {
-  const { t } = useTranslation(["events", "common"]);
+  const { t, i18n } = useTranslation(["events", "common"]);
   const { onDelete } = props;
   const dispatch = useDispatch();
   const absenceEvents = useSelector(
     (state: StateType) => state.workspaces?.currentWorkspace?.absenceEvents
   );
+  /**
+   * Returns the displayed absence title used for rendering and sorting.
+   * @param absence absence
+   * @returns displayed title
+   */
+  const getAbsenceTitle = React.useCallback(
+    (absence: MuikkuEvent) =>
+      absence.targetUserName +
+      " - " +
+      t(`types.${absence.title}`, {
+        ns: "events",
+        defaultValue: "UNKNOWN_TYPE",
+      }),
+    [t]
+  );
+
+  const { filteredEvents, eventFilters, toggleFilter } = useAbsenceEventFilter({
+    events: absenceEvents,
+  });
+
+  const { sortedEvents, sortBy, sortOrder, setSort } = useEventList({
+    events: filteredEvents,
+    getTitle: getAbsenceTitle,
+    locale: i18n.language,
+  });
 
   if (!absenceEvents || absenceEvents.length === 0) {
     return (
@@ -85,12 +114,33 @@ const AbsenceEvents = (props: AbsenceEventsProps) => {
       <ApplicationSubPanel.Header modifier="workspace-absences">
         {t("labels.absences", { ns: "events" })}
       </ApplicationSubPanel.Header>
+
       <ApplicationSubPanel.Body modifier="workspace-absences-summary">
         <AbsencesSummary absences={absenceEvents} />
       </ApplicationSubPanel.Body>
 
       <ApplicationSubPanel.Body modifier="workspace-absences-list">
-        {absenceEvents.map((absence) => (
+        <div>
+          <Link
+            className={`link link--workspace-absences-filter ${eventFilters.includes("WITH_REASON") ? "selected" : ""}`}
+            onClick={() => toggleFilter("WITH_REASON")}
+          >
+            {t("labels.absencesWithFeedback", { ns: "events" })}
+          </Link>
+          <Link
+            className={`link link--workspace-absences-filter ${eventFilters.includes("WITHOUT_REASON") ? "selected" : ""}`}
+            onClick={() => toggleFilter("WITHOUT_REASON")}
+          >
+            {t("labels.absencesWithoutFeedback", { ns: "events" })}
+          </Link>
+        </div>
+        <EventListSorters
+          modifier="workspace-absences-list"
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={setSort}
+        />
+        {sortedEvents.map((absence) => (
           <AbsenceEvent
             actions={actions(absence)}
             key={absence.id}

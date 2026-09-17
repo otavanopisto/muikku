@@ -16,6 +16,7 @@ interface EventListSortersProps {
   sortBy: EventSortBy;
   sortOrder: EventSortOrder;
   onSort: (sortBy: EventSortBy, sortOrder: EventSortOrder) => void;
+  modifier?: string;
 }
 
 /**
@@ -24,7 +25,7 @@ interface EventListSortersProps {
  * @returns JSX.Element
  */
 const EventListSorters: React.FC<EventListSortersProps> = (props) => {
-  const { sortBy, sortOrder, onSort } = props;
+  const { sortBy, sortOrder, onSort, modifier } = props;
   const { t } = useTranslation(["events", "common"]);
 
   /**
@@ -37,7 +38,9 @@ const EventListSorters: React.FC<EventListSortersProps> = (props) => {
     sortBy === by && sortOrder === order ? "sorter-selected" : "";
 
   return (
-    <div className="items-sorter items-sorter--header">
+    <div
+      className={`items-sorter items-sorter--header ${modifier && `items-sorter--${modifier}`}`}
+    >
       <Dropdown
         openByHover
         key="date-asc"
