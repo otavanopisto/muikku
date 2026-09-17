@@ -12,7 +12,6 @@ const initialOrganizationWorkspacesState: WorkspacesState = {
   templateWorkspaces: [],
   currentWorkspace: null,
   settings: null,
-  absenceEvents: [],
   availableFilters: {
     educationTypes: [],
     curriculums: [],
