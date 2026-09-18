@@ -3,8 +3,6 @@ import { useCallback, useMemo, useState } from "react";
 
 export type AbsenceEventFilter = "WITH_REASON" | "WITHOUT_REASON";
 
-const ABSENCE_REASON_PROPERTY = "ABSENCE_REASON";
-
 /**
  * UseAbsenceEventFilterProps
  */
@@ -18,9 +16,8 @@ interface UseAbsenceEventFilterProps {
  * @returns true if the event has an absence reason
  */
 const hasAbsenceReason = (event: MuikkuEvent): boolean =>
-  event.properties?.some(
-    (property) => property.name === ABSENCE_REASON_PROPERTY
-  ) ?? false;
+  event.properties?.some((property) => property.name === "ABSENCE_REASON") ??
+  false;
 
 /**
  * Filters events by absence reason. No filter or both filters returns all events.
@@ -36,22 +33,14 @@ const filterAbsenceEvents = (
     return [];
   }
 
-  const hasWithReason = eventFilters.includes("WITH_REASON");
-  const hasWithoutReason = eventFilters.includes("WITHOUT_REASON");
+  const withReason = eventFilters.includes("WITH_REASON");
+  const withoutReason = eventFilters.includes("WITHOUT_REASON");
 
-  if (eventFilters.length === 0 || (hasWithReason && hasWithoutReason)) {
+  if (withReason === withoutReason) {
     return events;
   }
 
-  if (hasWithReason) {
-    return events.filter(hasAbsenceReason);
-  }
-
-  if (hasWithoutReason) {
-    return events.filter((event) => !hasAbsenceReason(event));
-  }
-
-  return events;
+  return events.filter((event) => hasAbsenceReason(event) === withReason);
 };
 
 /**
@@ -68,6 +57,10 @@ export const useAbsenceEventFilter = (props: UseAbsenceEventFilterProps) => {
     [events, eventFilters]
   );
 
+  /**
+   * Toggles a filter.
+   * @param filter filter
+   */
   const toggleFilter = useCallback((filter: AbsenceEventFilter) => {
     setEventFilters((currentFilters) =>
       currentFilters.includes(filter)

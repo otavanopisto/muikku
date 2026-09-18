@@ -14,28 +14,25 @@ interface UseEventListSortProps {
 }
 
 /**
- * Returns a comparable value for the given sort key.
+ * Returns the title of the event.
  * @param event event
- * @param sortBy sortBy
  * @param getTitle getTitle
- * @returns comparable sort value
+ * @returns title
  */
-const getEventSortValue = (
+const getEventTitle = (
   event: MuikkuEvent,
-  sortBy: EventSortBy,
   getTitle?: (event: MuikkuEvent) => string
-): string | number => {
-  if (sortBy === "start" || sortBy === "end") {
-    const time = new Date(String(event[sortBy] ?? "")).getTime();
-    return Number.isNaN(time) ? 0 : time;
-  }
+): string =>
+  getTitle?.(event) ?? `${event.title ?? ""} ${event.containerName ?? ""}`;
 
-  if (getTitle) {
-    return getTitle(event);
-  }
-
-  return `${event.title ?? ""} ${event.containerName ?? ""}`;
-};
+/**
+ * Returns the time of the event for the given key.
+ * @param event event
+ * @param key key
+ * @returns time
+ */
+const getEventTime = (event: MuikkuEvent, key: "start" | "end") =>
+  new Date(String(event[key])).getTime();
 
 /**
  * Compares two events by the active sort key.
@@ -56,30 +53,23 @@ const compareEvents = (
   locale?: string
 ): number => {
   const direction = sortOrder === "asc" ? 1 : -1;
-  const aValue = getEventSortValue(a, sortBy, getTitle);
-  const bValue = getEventSortValue(b, sortBy, getTitle);
 
-  if (typeof aValue === "number" && typeof bValue === "number") {
-    return direction * (aValue - bValue);
+  if (sortBy === "title") {
+    const result = getEventTitle(a, getTitle).localeCompare(
+      getEventTitle(b, getTitle),
+      locale,
+      {
+        sensitivity: "base",
+      }
+    );
+
+    if (result !== 0) {
+      return direction * result;
+    }
   }
 
-  const result =
-    direction *
-    String(aValue).localeCompare(String(bValue), locale, {
-      sensitivity: "base",
-    });
-
-  if (result !== 0) {
-    return result;
-  }
-
-  const aTime = new Date(String(a.start ?? "")).getTime();
-  const bTime = new Date(String(b.start ?? "")).getTime();
-
-  return (
-    direction *
-    ((Number.isNaN(aTime) ? 0 : aTime) - (Number.isNaN(bTime) ? 0 : bTime))
-  );
+  const dateKey = sortBy === "start" ? "start" : "end";
+  return direction * (getEventTime(a, dateKey) - getEventTime(b, dateKey));
 };
 
 /**
@@ -87,7 +77,6 @@ const compareEvents = (
  * @param events events
  * @param sortBy sortBy
  * @param sortOrder sortOrder
- * @param propertyFilter propertyFilter
  * @param getTitle getTitle
  * @param locale locale
  * @returns sorted events

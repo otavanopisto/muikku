@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import { CreateAbsenceDialog } from "../dialogs/create-absence";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
-import { deleteWorkspaceAbsenceEvent } from "~/actions/workspaces/index";
+
 /**
  * WorkspaceUsersApplication
  * @returns JSX.Element
@@ -43,7 +43,7 @@ const WorkspaceUsersApplication = () => {
       return (
         <>
           <Users />
-          <AbsenceEvents onDelete={deleteWorkspaceAbsenceEvent} />
+          <AbsenceEvents />
         </>
       );
     } else {
@@ -51,15 +51,9 @@ const WorkspaceUsersApplication = () => {
         case "users":
           return <Users />;
         case "absences":
-          return <AbsenceEvents onDelete={deleteWorkspaceAbsenceEvent} />;
+          return <AbsenceEvents />;
         default:
-          return [
-            <Users key="users" />,
-            <AbsenceEvents
-              onDelete={deleteWorkspaceAbsenceEvent}
-              key="absences"
-            />,
-          ];
+          return [<Users key="users" />, <AbsenceEvents key="absences" />];
       }
     }
   };

@@ -14,21 +14,15 @@ import { useEventListSort } from "~/components/general/events/hooks/useEventList
 import { useAbsenceEventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
 import EventListSorters from "~/components/general/events/event-list-sorters";
 import Link from "~/components/general/link";
-/**
- * AbsencesProps
- */
-interface AbsenceEventsProps {
-  onDelete: (eventId: number) => void;
-}
+import { deleteWorkspaceAbsenceEvent } from "~/actions/workspaces/index";
 
 /**
  * Absences component
  * @returns JSX.Element
  * @param props AbsencesProps
  */
-const AbsenceEvents = (props: AbsenceEventsProps) => {
+const AbsenceEvents = () => {
   const { t, i18n } = useTranslation(["events", "common"]);
-  const { onDelete } = props;
   const dispatch = useDispatch();
   const absenceEvents = useSelector(
     (state: StateType) => state.workspaces?.currentWorkspace?.absenceEvents
@@ -72,7 +66,7 @@ const AbsenceEvents = (props: AbsenceEventsProps) => {
    * @param eventId eventId
    */
   const handleDelete = (eventId: number) => {
-    dispatch(onDelete(eventId));
+    dispatch(deleteWorkspaceAbsenceEvent(eventId));
   };
   /**
    * Returns the actions for the absence event
