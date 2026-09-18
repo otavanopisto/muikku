@@ -1,16 +1,13 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/note.scss";
-import BaseEvent from "./base/base-event";
+import BaseEvent from "../base/base-event";
 import { MuikkuEvent } from "~/generated/client";
 import "~/sass/elements/muikku-absence-event.scss";
 import {
   AbsenceEventEnum,
   AbsenceReasonEnum,
 } from "~/reducers/base/muikku-events";
-import Button from "~/components/general/button";
-import PromptDialog from "~/components/general/prompt-dialog";
-import EditAbsenceDialog from "~/components/workspace/workspaceUsers/dialogs/edit-absence";
 
 /**
  * WallAbsenceEventsProps
@@ -18,9 +15,8 @@ import EditAbsenceDialog from "~/components/workspace/workspaceUsers/dialogs/edi
 interface AbsenceEventsProps {
   modifier?: string;
   event: MuikkuEvent;
-  actions?: React.ReactElement;
-  onDelete?: (eventId: number) => void;
-  onUpdate?: (eventId: number, muikkuEvent: MuikkuEvent) => void;
+  actions?: React.ReactNode;
+  title?: string;
 }
 
 /**
@@ -29,8 +25,9 @@ interface AbsenceEventsProps {
  * @returns JSX.Element
  */
 const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
-  const { modifier, event, onDelete, onUpdate } = props;
+  const { modifier, event, actions, title } = props;
   const { t } = useTranslation("tasks");
+
   const absenceState = event.properties?.some(
     (prop) => prop.name === "ABSENCE_REASON"
   )
@@ -72,44 +69,13 @@ const AbsenceEvent: React.FC<AbsenceEventsProps> = (props) => {
     }
   };
 
-  const actions = (
-    <div className="muikku-absence-event__footer">
-      {onUpdate && (
-        <EditAbsenceDialog absenceEvent={event}>
-          <Button buttonModifiers={["info"]}>
-            {t("actions.edit", { ns: "common" })}
-          </Button>
-        </EditAbsenceDialog>
-      )}
-      {onDelete && (
-        <PromptDialog
-          title={t("labels.remove", {
-            ns: "events",
-            context: "absence",
-          })}
-          content={t("content.removing", {
-            ns: "events",
-            context: "absence",
-            label: absentFromLabel(),
-            userName: event.targetUserName,
-          })}
-          onExecute={() => onDelete(event.id!)}
-        >
-          <Button buttonModifiers={["fatal", "standard-ok"]}>
-            {t("actions.remove", { ns: "common" })}
-          </Button>
-        </PromptDialog>
-      )}
-    </div>
-  );
-
   return (
     <BaseEvent
       beginDate={event.start}
       endDate={event.end}
       modifier={modifier}
       state={absenceState}
-      title={event.targetUserName + " - " + absentFromLabel()}
+      title={title ?? event.targetUserName + " - " + absentFromLabel()}
     >
       <div className="muikku-absence-event">
         {event.description && (
