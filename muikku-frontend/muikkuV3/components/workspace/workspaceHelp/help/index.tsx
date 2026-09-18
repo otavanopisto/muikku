@@ -819,11 +819,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             <div
               className="content-panel__chapter-title-text"
               lang={section.titleLanguage || this.props.workspace.language}
-              data-de-aria-text="true"
-              tabIndex={0}
-              role="section"
             >
-              {section.title}
+              <span
+                data-de-aria-text="true"
+                tabIndex={0}
+                role="heading"
+                aria-level={2}
+              >
+                {section.title}
+              </span>
               <BackToToc
                 tocElementId={
                   this.props.status.loggedIn

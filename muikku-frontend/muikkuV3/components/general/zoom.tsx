@@ -73,7 +73,16 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
     }
     return (
       <span onClick={this.toggleZoom} className="zoom rs_skip_always">
-        <span className="zoom__clickable-item">{this.props.children}</span>
+        <span
+          className="zoom__clickable-item"
+          tabIndex={0}
+          role="button"
+          data-de-aria-key="i"
+          data-de-aria-horizontal-alignment="end-inside"
+          data-de-aria-vertical-alignment="top-inside"
+        >
+          {this.props.children}
+        </span>
         {zoomComponent}
       </span>
     );

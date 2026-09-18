@@ -53,6 +53,8 @@ export const FieldSnapshotItem = (props: FieldSnapshotItemProps) => {
           className="field-snapshot__toggle"
           onClick={() => setIsOpen((open) => !open)}
           aria-expanded={isOpen}
+          data-de-aria-key="h"
+          data-de-aria-action="focus"
         >
           <span
             className={`field-snapshot__toggle-icon icon-arrow-right ${

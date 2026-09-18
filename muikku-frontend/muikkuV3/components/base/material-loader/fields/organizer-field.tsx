@@ -917,6 +917,8 @@ class OrganizerField extends React.Component<
               <ul
                 ref={(ref) => (this.termListRef = ref)}
                 tabIndex={0}
+                data-de-aria-key="o"
+                data-de-aria-action="focus"
                 onKeyDown={this.handleTermListKeyDown}
                 className="organizerfield__terms-container"
               >
@@ -958,7 +960,13 @@ class OrganizerField extends React.Component<
                   if (this.props.readOnly) {
                     // if readOnly we just return a non draggable thingy
                     return (
-                      <li tabIndex={0} className={className} key={id}>
+                      <li
+                        tabIndex={0}
+                        data-de-aria-key="o"
+                        data-de-aria-action="focus"
+                        className={className}
+                        key={id}
+                      >
                         <span className="organizerfield__term-icon icon-move"></span>
                         <span className="organizerfield__term-label">
                           <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
@@ -998,6 +1006,8 @@ class OrganizerField extends React.Component<
                         onKeyDown={this.handleTermKeyDown(id)}
                         onBlur={this.handleTermBlur(i)}
                         className="organizerfield__term-data-container"
+                        data-de-aria-key="o"
+                        data-de-aria-action="focus"
                       >
                         <span className="organizerfield__term-icon icon-move"></span>
                         <span className="organizerfield__term-label">
@@ -1012,6 +1022,8 @@ class OrganizerField extends React.Component<
             <ul
               ref={(ref) => (this.categoryListRef = ref)}
               tabIndex={0}
+              data-de-aria-key="g"
+              data-de-aria-action="focus"
               onKeyDown={this.handleCategoriesListKeyDown}
               className="organizerfield__categories"
             >
@@ -1084,6 +1096,8 @@ class OrganizerField extends React.Component<
                       ref={callbackRef}
                       role="button"
                       className="organizerfield__category-container"
+                      data-de-aria-key="g"
+                      data-de-aria-action="focus"
                       onKeyDown={this.handleCategoryListKeyDown(category)}
                       onBlur={this.handleCategoryListBlur(categoryIndex)}
                     >
@@ -1136,6 +1150,8 @@ class OrganizerField extends React.Component<
                                     termIndex
                                   )}
                                   className="organizerfield__term-data-container"
+                                  data-de-aria-key="d"
+                                  data-de-aria-action="focus"
                                   aria-label={this.props.t(
                                     "wcag.organiserTermRemove",
                                     {

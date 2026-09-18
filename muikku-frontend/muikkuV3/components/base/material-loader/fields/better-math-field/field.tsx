@@ -924,6 +924,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         onBlur={this.onBlurField}
         onInput={this.onChange}
         onMouseDown={this.checkTheFocus}
+        data-de-aria-key="q"
+        data-de-aria-action="focus"
       />
     );
   }

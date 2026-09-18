@@ -250,6 +250,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
                 })
               }
               invisible={this.props.invisible}
+              deAriaKey="f"
               notificationOfSuccessText={t("notifications.uploadSuccess", {
                 ns: "files",
               })}

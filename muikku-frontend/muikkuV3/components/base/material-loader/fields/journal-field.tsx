@@ -209,7 +209,13 @@ class JournalField extends React.Component<
           />
         );
       } else {
-        unloadedField = <textarea className="journalfield" />;
+        unloadedField = (
+          <textarea
+            className="journalfield"
+            data-de-aria-key="j"
+            data-de-aria-action="focus"
+          />
+        );
       }
 
       return (
@@ -261,6 +267,7 @@ class JournalField extends React.Component<
             <CKEditor
               configuration={ckEditorConfig}
               onChange={this.onCKEditorChange}
+              deAriaKey="j"
             >
               {this.state.value}
             </CKEditor>

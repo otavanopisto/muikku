@@ -293,6 +293,8 @@ class MultiSelectField extends React.Component<
                     tabIndex={0}
                     aria-describedby={tooltipId}
                     role="button"
+                    data-de-aria-key="e"
+                    data-de-aria-action="focus"
                   />
                 </Dropdown>
               </span>
@@ -405,6 +407,8 @@ class MultiSelectField extends React.Component<
                   checked={isChecked}
                   onChange={this.toggleValue}
                   disabled={this.props.readOnly}
+                  data-de-aria-key="u"
+                  data-de-aria-action="focus"
                 />
                 <label
                   htmlFor={uniqueElementID}

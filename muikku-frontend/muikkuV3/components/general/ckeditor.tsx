@@ -83,6 +83,7 @@ interface CKEditorProps {
   maxChars?: number;
   maxWords?: number;
   editorTitle?: string;
+  deAriaKey?: string;
 }
 
 /**
@@ -358,6 +359,12 @@ export default class CKEditor extends React.Component<
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 
+      const editable = instance.editable && instance.editable();
+      if (props.deAriaKey && editable && editable.$) {
+        editable.$.setAttribute("data-de-aria-key", props.deAriaKey);
+        editable.$.setAttribute("data-de-aria-action", "focus");
+      }
+
       // Height can be given from the ancestor or from instance container.
       // Instance container is "unstable" and changes according to the content it seems, so for example
       // material editor is given the ancestorHeight - the dialog height, which is stable.
@@ -447,7 +454,13 @@ export default class CKEditor extends React.Component<
   render() {
     return (
       <div className="rs_skip_always" style={{ display: "contents" }}>
-        <textarea className="cke" ref="ckeditor" name={this.name} />
+        <textarea
+          className="cke"
+          ref="ckeditor"
+          name={this.name}
+          data-de-aria-key={this.props.deAriaKey}
+          data-de-aria-action={this.props.deAriaKey ? "focus" : undefined}
+        />
       </div>
     );
   }

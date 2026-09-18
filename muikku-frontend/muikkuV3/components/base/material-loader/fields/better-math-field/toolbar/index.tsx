@@ -163,6 +163,8 @@ export default class MathFieldToolbar extends React.Component<
                 : "icon-arrow-down")
             }
             onClick={this.toggleIsExpanded}
+            data-de-aria-key="z"
+            data-de-aria-action="focus"
           />
         </div>
         <div
@@ -178,6 +180,8 @@ export default class MathFieldToolbar extends React.Component<
             <button
               className={this.props.className + "-more-math-button"}
               onClick={this.props.onRequestToOpenMathMode}
+              data-de-aria-key="q"
+              data-de-aria-action="focus"
             >
               Σ {this.props.mathi18n.mathFormulas}
             </button>
@@ -186,6 +190,8 @@ export default class MathFieldToolbar extends React.Component<
             <button
               className={this.props.className + "-add-image-button"}
               onClick={this.props.onRequestImage}
+              data-de-aria-key="v"
+              data-de-aria-action="focus"
             >
               {this.props.mathi18n.image}
             </button>

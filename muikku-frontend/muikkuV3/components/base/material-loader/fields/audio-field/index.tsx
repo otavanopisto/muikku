@@ -598,6 +598,8 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                 accept="audio/*"
                 onChange={this.onFileChanged}
                 multiple
+                data-de-aria-key="a"
+                data-de-aria-action="focus"
               />
             ) : null}
             {!this.props.readOnly && this.state.supportsMediaAPI() ? (

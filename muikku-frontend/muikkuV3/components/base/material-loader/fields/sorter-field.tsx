@@ -544,6 +544,8 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           </span>
           <ol
             tabIndex={0}
+            data-de-aria-key="r"
+            data-de-aria-action="focus"
             onKeyDown={this.handleOrderedListKeyDown}
             className={`sorterfield sorterfield--${elementClassName} ${elementDisabledStateClassName} ${fieldStateAfterCheck}`}
           >
@@ -625,6 +627,8 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                     role="button"
                     className="sorterfield__data-container"
                     tabIndex={0}
+                    data-de-aria-key="r"
+                    data-de-aria-action="focus"
                     ref={callBackRef}
                     onKeyDown={this.handleKeyDown(item)}
                     onBlur={this.handleFocusBlur(index)}

@@ -787,6 +787,8 @@ class ConnectField extends React.Component<
             <ol
               className="connectfield__terms-container"
               tabIndex={0}
+              data-de-aria-key="c"
+              data-de-aria-action="focus"
               onKeyDown={this.handleOrderedListKeyDown(false)}
             >
               {this.state.fields.map((field, index) => {
@@ -869,6 +871,8 @@ class ConnectField extends React.Component<
                         this.state.selectedField.name === field.name
                       }
                       className="connectfield__term-data-container"
+                      data-de-aria-key="c"
+                      data-de-aria-action="focus"
                     >
                       <span className="connectfield__term-number">
                         {index + 1}
@@ -884,6 +888,8 @@ class ConnectField extends React.Component<
             <ol
               className="connectfield__counterparts-container"
               tabIndex={0}
+              data-de-aria-key="p"
+              data-de-aria-action="focus"
               onKeyDown={this.handleOrderedListKeyDown(true)}
             >
               {this.state.counterparts.map((field, index) => {
@@ -1030,6 +1036,8 @@ class ConnectField extends React.Component<
                       role="button"
                       ref={callBackRef}
                       className="connectfield__counterpart-data-container"
+                      data-de-aria-key="p"
+                      data-de-aria-action="focus"
                       onKeyDown={this.handleKeyDown(field, true)}
                       onBlur={this.handleFocusBlur(index, true)}
                       aria-label={field.text}

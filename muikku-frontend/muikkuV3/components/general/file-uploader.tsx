@@ -49,6 +49,7 @@ interface FileUploaderProps {
   displayNotificationOnSuccess?: boolean;
   notificationOfSuccessText?: string;
   invisible?: boolean;
+  deAriaKey?: string;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -341,6 +342,8 @@ class FileUploader extends React.Component<
                 type="file"
                 multiple
                 className="file-uploader__field"
+                data-de-aria-key={this.props.deAriaKey}
+                data-de-aria-action={this.props.deAriaKey ? "focus" : undefined}
               />
             )}
           </div>
@@ -553,6 +556,8 @@ class FileUploader extends React.Component<
               className="file-uploader__field"
               onChange={this.onFileInputChange}
               value=""
+              data-de-aria-key={this.props.deAriaKey}
+              data-de-aria-action={this.props.deAriaKey ? "focus" : undefined}
             />
           )}
         </div>

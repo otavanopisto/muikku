@@ -503,6 +503,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             }
             className="memofield"
             rows={parseInt(this.props.content.rows)}
+            data-de-aria-key="m"
+            data-de-aria-action="focus"
           />
         ) : (
           <span
@@ -519,6 +521,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             }
             className="memofield"
             rows={parseInt(this.props.content.rows)}
+            data-de-aria-key="m"
+            data-de-aria-action="focus"
           />
         );
       }
@@ -554,6 +558,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             value={this.state.value}
             onChange={this.onInputChange}
             onPaste={this.onInputPaste}
+            data-de-aria-key="m"
+            data-de-aria-action="focus"
           />
         ) : (
           <span
@@ -572,6 +578,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             value={this.state.value}
             onChange={this.onInputChange}
             onPaste={this.onInputPaste}
+            data-de-aria-key="m"
+            data-de-aria-action="focus"
           />
         ) : (
           <CKEditor
@@ -586,6 +594,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
               this.props.content.maxWords &&
               parseInt(this.props.content.maxWords)
             }
+            deAriaKey="m"
           >
             {ckeditorValue}
           </CKEditor>
@@ -602,6 +611,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             value={this.state.value}
             onChange={this.onInputChange}
             onPaste={this.onInputPaste}
+            data-de-aria-key="m"
+            data-de-aria-action="focus"
           />
         ) : (
           <div

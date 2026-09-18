@@ -431,6 +431,7 @@ const translations: any = {
   tabindex: "tabIndex",
   "data-de-aria-text": "data-de-aria-text",
   "data-de-aria-key": "data-de-aria-key",
+  "data-de-aria-action": "data-de-aria-action",
   "data-de-aria-horizontal-alignment": "data-de-aria-horizontal-alignment",
   "data-de-aria-vertical-alignment": "data-de-aria-vertical-alignment",
   hidden: "hidden",

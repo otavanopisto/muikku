@@ -35,7 +35,14 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
             props.workspace.language
           }
         >
-          {props.material.title}
+          <span
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="heading"
+            aria-level={2}
+          >
+            {props.material.title}
+          </span>
         </h2>
       </>
     );
@@ -79,7 +86,14 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
           props.workspace.language
         }
       >
-        {props.material.title}
+        <span
+          data-de-aria-text="true"
+          tabIndex={0}
+          role="heading"
+          aria-level={2}
+        >
+          {props.material.title}
+        </span>
         {props.anchorElement ? (
           <span className="material-page__title-back-to-toc">
             {props.anchorElement}

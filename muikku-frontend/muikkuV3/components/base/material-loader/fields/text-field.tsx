@@ -281,7 +281,11 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           />
           <span ref={this.baseRef} className="textfield-wrapper rs_skip_always">
             <span className="textfield">
-              <input readOnly />
+              <input
+                readOnly
+                data-de-aria-key="t"
+                data-de-aria-action="focus"
+              />
             </span>
             {correctAnswersummaryComponent}
           </span>
@@ -355,6 +359,8 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           className={`textfield ${fieldStateAfterCheck}`}
           type="text"
           value={this.state.value}
+          data-de-aria-key="t"
+          data-de-aria-action="focus"
           size={
             this.props.content.columns && parseInt(this.props.content.columns)
           }
@@ -365,6 +371,8 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
             type="text"
             value={this.state.value}
             readOnly
+            data-de-aria-key="t"
+            data-de-aria-action="focus"
             size={
               this.props.content.columns && parseInt(this.props.content.columns)
             }
@@ -425,6 +433,8 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           className={`textfield ${fieldStateAfterCheck}`}
           type="text"
           value={this.state.value}
+          data-de-aria-key="t"
+          data-de-aria-action="focus"
           size={
             this.props.content.columns && parseInt(this.props.content.columns)
           }
@@ -452,6 +462,8 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
               placeholder={this.props.content.hint}
               style={textfieldStyle}
               onChange={this.onInputChange}
+              data-de-aria-key="t"
+              data-de-aria-action="focus"
             />
           </span>
         </>

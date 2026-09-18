@@ -312,6 +312,8 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
                     tabIndex={0}
                     aria-describedby={tooltipId}
                     role="button"
+                    data-de-aria-key="e"
+                    data-de-aria-action="focus"
                   />
                 </Dropdown>
               </span>
@@ -382,6 +384,8 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
               value={this.state.value}
               onChange={this.onSelectChange}
               disabled={this.props.readOnly}
+              data-de-aria-key="s"
+              data-de-aria-action="focus"
             >
               {this.props.content.listType === "dropdown" ? (
                 <option value="" />
@@ -440,6 +444,8 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
                     checked={this.state.value === o.name}
                     onChange={this.onSelectChange}
                     disabled={this.props.readOnly}
+                    data-de-aria-key="s"
+                    data-de-aria-action="focus"
                   />
                   <label
                     htmlFor={uniqueElementID}

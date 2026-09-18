@@ -150,6 +150,8 @@ export default class ToolbarButton extends React.Component<
         onTouchEnd={this.onTouchEnd}
         onContextMenu={this.disableMenu}
         style={{ userSelect: "none" }}
+        data-de-aria-key="k"
+        data-de-aria-action="focus"
       >
         {this.props.html ? (
           <span dangerouslySetInnerHTML={{ __html: this.props.html }} />

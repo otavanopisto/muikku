@@ -527,7 +527,14 @@ const ExamInstanceContent = withTranslation("workspace")((
       {/*TOP OF THE CHAPTER*/}
       <h2 className={`content-panel__chapter-title`}>
         <div className="content-panel__chapter-title-text">
-          {currentExam.name}
+          <span
+            data-de-aria-text="true"
+            tabIndex={0}
+            role="heading"
+            aria-level={2}
+          >
+            {currentExam.name}
+          </span>
           <BackToToc
             tocElementId={`tocTopic-${currentExam.folderId}_${status.userId}`}
             openToc={
