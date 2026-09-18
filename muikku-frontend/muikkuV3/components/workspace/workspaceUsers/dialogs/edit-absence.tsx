@@ -113,20 +113,21 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 ) => {
   const { children, onConfirm, absenceEvent } = props;
 
+  const currentAbsenceReason = absenceEvent.properties?.find(
+    (property) => property.name === "ABSENCE_REASON"
+  )?.value as AbsenceReasonEnum | null;
+
   /**
    * initialAbsenceEventFormState
    * @returns Initial absence event form state
    */
-
   const initialAbsenceEventFormState: AbsenceEventFormState = {
     targetUser: absenceEvent.userEntityId ?? null,
     type: (absenceEvent.title as AbsenceEventEnum) || AbsenceEventEnum.Lesson,
     description: absenceEvent.description ?? "",
     startDate: new Date(absenceEvent.start),
     endDate: new Date(absenceEvent.end),
-    absenceReason: absenceEvent.properties?.find(
-      (property) => property.name === "ABSENCE_REASON"
-    )?.value as AbsenceReasonEnum | null,
+    absenceReason: currentAbsenceReason,
     absenceReasonVisible:
       absenceEvent.properties?.some(
         (property) => property.name === "ABSENCE_REASON"
@@ -168,13 +169,24 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       return;
     }
 
-    const properties: MuikkuEventProperty[] = [];
+    const properties: MuikkuEventProperty[] = [
+      ...(absenceEvent.properties ?? []),
+    ];
 
     if (formState.absenceReason) {
-      properties.push({
-        name: "ABSENCE_REASON",
-        value: formState.absenceReason,
-      } as MuikkuEventProperty);
+      if (currentAbsenceReason) {
+        const currentAbsenceReasonIndex = properties.findIndex(
+          (property) => property.name === "ABSENCE_REASON"
+        );
+        if (currentAbsenceReasonIndex !== -1) {
+          properties[currentAbsenceReasonIndex].value = formState.absenceReason;
+        }
+      } else {
+        properties.push({
+          name: "ABSENCE_REASON",
+          value: formState.absenceReason,
+        } as MuikkuEventProperty);
+      }
     }
 
     dispatch(
