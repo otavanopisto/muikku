@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -159,6 +160,8 @@ public class MuikkuEventRESTService {
         restEvent.isRemovable());
     
     // Event properties
+    updateEventProperties(event, restEvent.getProperties());
+    
     List<MuikkuEventProperty> properties = eventController.listPropertiesByEvent(event);
     List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<MuikkuEventPropertyRestModel>();
     if (properties != null) {
@@ -443,6 +446,27 @@ public class MuikkuEventRESTService {
     }
     
     return Response.ok(container != null ? container.getId() : null).build();
+  }
+  
+  private void updateEventProperties(MuikkuEvent event, List<MuikkuEventPropertyRestModel> restProperties) {
+    
+    if (restProperties == null || restProperties.isEmpty()) {
+      return;
+    }
+    
+    Long userEntityId = sessionController.getLoggedUserEntity().getId();
+
+    for (MuikkuEventPropertyRestModel p : restProperties) {
+      if (p.getId() != null) {
+        MuikkuEventProperty property = eventController.findEventProperty(p.getId());
+
+        if (property != null && !Objects.equals(property.getValue(), p.getValue())) {
+          eventController.updateEventProperty(property, p.getValue(), new Date());
+        }
+      } else {
+        eventController.createEventProperty(event, p.getName(), p.getValue(), userEntityId, new Date());
+      }
+    }
   }
   
   private MuikkuEventRestModel toRestModel(MuikkuEvent event, List<MuikkuEventPropertyRestModel> properties) {
