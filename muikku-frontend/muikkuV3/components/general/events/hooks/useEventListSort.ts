@@ -32,7 +32,7 @@ const getEventTitle = (
  * @returns time
  */
 const getEventTime = (event: MuikkuEvent, key: "start" | "end") =>
-  new Date(String(event[key])).getTime();
+  new Date(event[key]).getTime();
 
 /**
  * Compares two events by the active sort key.
