@@ -11,7 +11,7 @@ import {
   GetWorkspaceStudentsRequest,
   MuikkuEventProperty,
 } from "~/generated/client";
-import MApi, { isMApiError } from "~/api/api";
+import MApi from "~/api/api";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
