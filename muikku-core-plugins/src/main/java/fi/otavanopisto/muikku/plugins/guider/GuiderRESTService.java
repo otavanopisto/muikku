@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.guider;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -97,6 +96,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
+import fi.otavanopisto.muikku.search.IndexedUserPedagogyFormState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -258,8 +258,8 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userIdentifier") String userIdentifier,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @QueryParam("hasPublishedPedagogyForm") Boolean hasPublishedPedagogyForm,
-      @QueryParam("hasDecisionOnSpecialEducation") Boolean hasDecisionOnSpecialEducation,
+      @QueryParam("pedagogyForm") Set<IndexedUserPedagogyFormState> pedagogyFormFilter,
+      @QueryParam("decisionOnSpecialEducation") Set<Boolean> decisionOnSpecialEducationFilter,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
 
@@ -275,8 +275,13 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
+    // Unpublished pedagogy form filter available only for special education teachers
+    if (CollectionUtils.isNotEmpty(pedagogyFormFilter) && pedagogyFormFilter.contains(IndexedUserPedagogyFormState.UNPUBLISHED) && !currentUserSession.isSpecialEducationTeacher()) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     // hasDecisionOnSpecialEducation filter is only available for Special Education Teachers
-    if (hasDecisionOnSpecialEducation != null && !currentUserSession.isSpecialEducationTeacher()) {
+    if (CollectionUtils.isNotEmpty(decisionOnSpecialEducationFilter) && !currentUserSession.isSpecialEducationTeacher()) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
@@ -443,8 +448,8 @@ public class GuiderRESTService extends PluginRESTService {
           .start(firstResult)
           .maxResults(maxResults)
           .joinGroupsAndWorkspaces(joinGroupsAndWorkspaces)
-          .hasPublishedPedagogyForm(hasPublishedPedagogyForm)
-          .hasDecisionOnSpecialEducation(hasDecisionOnSpecialEducation)
+          .hasPedagogyForm(pedagogyFormFilter)
+          .hasDecisionOnSpecialEducation(decisionOnSpecialEducationFilter)
           .build()
       );
       

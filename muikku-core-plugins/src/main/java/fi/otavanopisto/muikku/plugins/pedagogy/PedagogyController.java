@@ -243,16 +243,14 @@ public class PedagogyController {
   }
 
   /**
-   * If the user has a pedagogy form, tries to parse the form and return 
-   * the value of the decisionToSpecialEducation field. If the form
-   * doesn't exist or an error happens, returns null.
+   * Tries to parse the form and return the value of the decisionToSpecialEducation field.
+   * Returns null if the form is null, the form data is blank or the parsing fails.
    * 
-   * @param userEntityId
+   * @param pedagogyForm
    * @return
    */
-  public Boolean hasDecisionToSpecialEducation(Long userEntityId) {
-    PedagogyForm pedagogyForm = findFormByUserEntityId(userEntityId);
-    if (pedagogyForm == null) {
+  public Boolean hasDecisionToSpecialEducation(PedagogyForm pedagogyForm) {
+    if (pedagogyForm == null || StringUtils.isBlank(pedagogyForm.getFormData())) {
       return null;
     }
     

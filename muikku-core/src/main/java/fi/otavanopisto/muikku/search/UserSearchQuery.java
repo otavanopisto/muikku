@@ -32,8 +32,8 @@ public class UserSearchQuery {
   private final Date startedStudiesBefore;
   private final Date studyTimeEndsBefore;
   private final boolean joinGroupsAndWorkspaces;
-  private final Boolean hasPublishedPedagogyForm;
-  private final Boolean hasDecisionOnSpecialEducation;
+  private final Set<IndexedUserPedagogyFormState> hasPedagogyForm;
+  private final Set<Boolean> hasDecisionOnSpecialEducation;
 
   private UserSearchQuery(Builder builder) {
     this.organizations = builder.organizations;
@@ -54,7 +54,7 @@ public class UserSearchQuery {
     this.startedStudiesBefore = builder.startedStudiesBefore;
     this.studyTimeEndsBefore = builder.studyTimeEndsBefore;
     this.joinGroupsAndWorkspaces = builder.joinGroupsAndWorkspaces;
-    this.hasPublishedPedagogyForm = builder.hasPublishedPedagogyForm;
+    this.hasPedagogyForm = builder.hasPedagogyForm;
     this.hasDecisionOnSpecialEducation = builder.hasDecisionOnSpecialEducation;
   }
 
@@ -130,11 +130,11 @@ public class UserSearchQuery {
     return joinGroupsAndWorkspaces;
   }
 
-  public Boolean getHasPublishedPedagogyForm() {
-    return hasPublishedPedagogyForm;
+  public Set<IndexedUserPedagogyFormState> getHasPedagogyForm() {
+    return hasPedagogyForm;
   }
 
-  public Boolean getHasDecisionOnSpecialEducation() {
+  public Set<Boolean> getHasDecisionOnSpecialEducation() {
     return hasDecisionOnSpecialEducation;
   }
 
@@ -157,8 +157,8 @@ public class UserSearchQuery {
     private Date startedStudiesBefore;
     private Date studyTimeEndsBefore;
     private boolean joinGroupsAndWorkspaces = false;
-    private Boolean hasPublishedPedagogyForm;
-    private Boolean hasDecisionOnSpecialEducation;
+    private Set<IndexedUserPedagogyFormState> hasPedagogyForm;
+    private Set<Boolean> hasDecisionOnSpecialEducation;
 
     public UserSearchQuery build() {
       return new UserSearchQuery(this);
@@ -254,12 +254,12 @@ public class UserSearchQuery {
       return this;
     }
 
-    public Builder hasPublishedPedagogyForm(Boolean hasPublishedPedagogyForm) {
-      this.hasPublishedPedagogyForm = hasPublishedPedagogyForm;
+    public Builder hasPedagogyForm(Set<IndexedUserPedagogyFormState> hasPedagogyForm) {
+      this.hasPedagogyForm = hasPedagogyForm;
       return this;
     }
 
-    public Builder hasDecisionOnSpecialEducation(Boolean hasDecisionOnSpecialEducation) {
+    public Builder hasDecisionOnSpecialEducation(Set<Boolean> hasDecisionOnSpecialEducation) {
       this.hasDecisionOnSpecialEducation = hasDecisionOnSpecialEducation;
       return this;
     }

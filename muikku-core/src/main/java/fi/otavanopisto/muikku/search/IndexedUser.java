@@ -64,6 +64,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
     @IndexableFieldOption (
       name = "organizationIdentifier",
       type = IndexableFieldType.KEYWORD
+    ),
+    @IndexableFieldOption (
+      name = "pedagogyFormState",
+      type = IndexableFieldType.KEYWORD
     )
   }
 )
@@ -301,20 +305,20 @@ public class IndexedUser {
     this.birthday = birthday;
   }
 
-  public Boolean getHasPublishedPedagogyForm() {
-    return hasPublishedPedagogyForm;
-  }
-
-  public void setHasPublishedPedagogyForm(Boolean hasPublishedPedagogyForm) {
-    this.hasPublishedPedagogyForm = hasPublishedPedagogyForm;
-  }
-
   public Boolean getHasDecisionOnSpecialEducation() {
     return hasDecisionOnSpecialEducation;
   }
 
   public void setHasDecisionOnSpecialEducation(Boolean hasDecisionOnSpecialEducation) {
     this.hasDecisionOnSpecialEducation = hasDecisionOnSpecialEducation;
+  }
+
+  public IndexedUserPedagogyFormState getPedagogyFormState() {
+    return pedagogyFormState;
+  }
+
+  public void setPedagogyFormState(IndexedUserPedagogyFormState pedagogyFormState) {
+    this.pedagogyFormState = pedagogyFormState;
   }
 
   private String identifier;
@@ -344,6 +348,6 @@ public class IndexedUser {
   private Set<Long> groups;
   private List<IndexedUserStudyPeriod> studyPeriods;
   private LocalDate birthday;
-  private Boolean hasPublishedPedagogyForm;
+  private IndexedUserPedagogyFormState pedagogyFormState;
   private Boolean hasDecisionOnSpecialEducation;
 }

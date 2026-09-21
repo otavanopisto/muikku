@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,6 +73,7 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.IndexedUser;
+import fi.otavanopisto.muikku.search.IndexedUserPedagogyFormState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -377,12 +379,19 @@ public class ElasticSearchProvider implements SearchProvider {
         query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
       }
 
-      if (search.getHasPublishedPedagogyForm() != null) {
-        query.filter(termQuery("hasPublishedPedagogyForm", search.getHasPublishedPedagogyForm()));
+      // Pedagogy form filter can be null, empty or exhaustive in which case there's going to be no filtering based on the property (list all).
+      if (CollectionUtils.isNotEmpty(search.getHasPedagogyForm()) && !search.getHasPedagogyForm().equals(EnumSet.allOf(IndexedUserPedagogyFormState.class))) {
+        if (search.getHasPedagogyForm().contains(IndexedUserPedagogyFormState.PUBLISHED)) {
+          query.filter(termQuery("pedagogyFormState", IndexedUserPedagogyFormState.PUBLISHED.name()));
+        }
+        else if (search.getHasPedagogyForm().contains(IndexedUserPedagogyFormState.UNPUBLISHED)) {
+          query.filter(termQuery("pedagogyFormState", IndexedUserPedagogyFormState.UNPUBLISHED.name()));
+        }
       }
 
-      if (search.getHasDecisionOnSpecialEducation() != null) {
-        query.filter(termQuery("hasDecisionOnSpecialEducation", search.getHasDecisionOnSpecialEducation()));
+      if (CollectionUtils.isNotEmpty(search.getHasDecisionOnSpecialEducation()) && search.getHasDecisionOnSpecialEducation().size() == 1) {
+        boolean value = search.getHasDecisionOnSpecialEducation().contains(Boolean.TRUE) ? true : false;
+        query.filter(termQuery("hasDecisionOnSpecialEducation", value));
       }
 
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
