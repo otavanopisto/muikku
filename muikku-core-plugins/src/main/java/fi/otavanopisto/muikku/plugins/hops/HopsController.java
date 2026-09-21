@@ -142,20 +142,26 @@ public class HopsController {
     // If user could sign up, revoke that if they have already been evaluated
     
     if (canSignUp) {
-      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
-      if (workspaceUserEntity != null) {
-        WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
-        WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
-        if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
-          // TODO Unavoidable Pyramus call. Not exactly fun when this method is called in a loop
-          List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-          
-          for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
-              canSignUp = false;
+      List<UserSchoolDataIdentifier> usdis = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+      for (UserSchoolDataIdentifier usdi : usdis) {
+        workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, usdi.schoolDataIdentifier());
+        if (workspaceUserEntity != null) {
+          WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
+          WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
+          if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
+            // TODO Unavoidable Pyramus call. Not exactly fun when this method is called in a loop
+            List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+            for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+              if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
+                canSignUp = false;
+                break;
+              }
             }
-          }
-        }  
+          }  
+        }
+        if (!canSignUp) {
+          break;
+        }
       }
     }
 
