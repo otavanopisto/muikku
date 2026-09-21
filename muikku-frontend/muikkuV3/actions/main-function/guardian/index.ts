@@ -1010,7 +1010,8 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
       ) {
         return;
       }
-
+      const start = dates.getStartDate();
+      const end = dates.getEndDate();
       try {
         const events = await eventsApi.listEvents({
           user: dependantId,

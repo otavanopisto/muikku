@@ -66,10 +66,10 @@ export const absenceReasonLabel = (value: string) => {
 };
 
 /**
- * EventRange class abstraction for absence event range
- * @param start start date
- * @param end end date
- * @returns EventRange
+ * A class abstraction for absence event range
+ * @param beginMonthsFromDate date range start in months from now
+ * @param endMonthsFromDate date range end in months from now
+ * @returns AbsenceEventDateRange
  */
 export class AbsenceEventDateRange {
   private beginMonthsFromDate: number;
@@ -80,7 +80,7 @@ export class AbsenceEventDateRange {
    * @param beginMonthsFromDate number of months from now
    * @param endMonthsFromDate number of months from now
    */
-  constructor(beginMonthsFromDate = -12, endMonthsFromDate = 6) {
+  constructor(beginMonthsFromDate = 12, endMonthsFromDate = 6) {
     this.beginMonthsFromDate = beginMonthsFromDate;
     this.endMonthsFromDate = endMonthsFromDate;
   }
