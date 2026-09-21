@@ -147,7 +147,11 @@ class StateOfStudies extends React.Component<
     const defaultEmailAddress = (
       this.props.guider.currentStudent.contactInfos ?? []
     ).find((e) => e.defaultContact)?.email;
-
+    const unexcusedAbsences =
+      this.props.guider.currentStudent.absenceEvents?.filter(
+        (event) =>
+          !event.properties?.find((prop) => prop.name === "ABSENCE_REASON")
+      ) ?? [];
     const avatar = (
       <Avatar
         id={
@@ -270,19 +274,16 @@ class StateOfStudies extends React.Component<
       </ApplicationSubPanel>
     );
 
-    const absences = (this.props.guider.currentStudent.absenceEvents ?? [])
-      .length > 0 && (
+    const absences = unexcusedAbsences.length > 0 && (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
-          {this.props.i18n.t("labels.absences", { ns: "events" })}
+          {this.props.i18n.t("labels.absencesWithoutFeedback", {
+            ns: "events",
+          })}
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-          {this.props.guider.currentStudent.absenceEvents.map((event) => (
-            <WallAbsenceEvent
-              canEdit={this.props.guider.currentStudent.basic.under18}
-              key={event.id}
-              event={event}
-            />
+          {unexcusedAbsences.map((event) => (
+            <WallAbsenceEvent key={event.id} event={event} />
           ))}
         </div>
       </div>
