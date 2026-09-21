@@ -250,8 +250,14 @@ public class PedagogyController {
    * @return
    */
   public Boolean hasDecisionToSpecialEducation(PedagogyForm pedagogyForm) {
-    if (pedagogyForm == null || StringUtils.isBlank(pedagogyForm.getFormData())) {
+    if (pedagogyForm == null) {
       return null;
+    }
+
+    // Form exists, but it has no data. This is how it is for a 
+    // newly created form so in this case we just default to false.
+    if (StringUtils.isBlank(pedagogyForm.getFormData())) {
+      return Boolean.FALSE;
     }
     
     try {
