@@ -250,14 +250,22 @@ public class PedagogyController {
    * @return
    */
   public Boolean hasDecisionToSpecialEducation(PedagogyForm pedagogyForm) {
-    if (pedagogyForm == null || StringUtils.isBlank(pedagogyForm.getFormData())) {
+    if (pedagogyForm == null) {
       return null;
+    }
+
+    // Form exists, but it has no data. This is how it is for a 
+    // newly created form so in this case we just default to false.
+    if (StringUtils.isBlank(pedagogyForm.getFormData())) {
+      return Boolean.FALSE;
     }
     
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       PedagogyFormDataModel pedagogyFormDataModel = objectMapper.readValue(pedagogyForm.getFormData(), PedagogyFormDataModel.class);
-      return pedagogyFormDataModel != null ? pedagogyFormDataModel.getDecisionToSpecialEducation() : null;
+      // Fresh forms have no fields, if the field doesn't exist, default to false
+      return pedagogyFormDataModel != null && pedagogyFormDataModel.getDecisionToSpecialEducation() != null 
+          ? pedagogyFormDataModel.getDecisionToSpecialEducation() : false;
     } 
     catch (Exception e) {
       logger.log(Level.SEVERE, "Couldn't parse pedagogy form.", e);
