@@ -286,6 +286,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         <input
           id="absence-reason-visible"
           type="checkbox"
+          disabled={!!currentAbsenceReason}
           checked={formState.absenceReasonVisible}
           onChange={handleAbsenceReasonVisibleChange}
         />
@@ -308,7 +309,9 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
                 })
               }
             >
-              <option value="">{t("labels.select", { ns: "common" })}</option>
+              <option disabled={!!currentAbsenceReason} value="">
+                {t("labels.select", { ns: "common" })}
+              </option>
               {Object.values(AbsenceReasonEnum).map((reason) => (
                 <option key={reason} value={reason}>
                   {t(`reasons.${reason}`, {
