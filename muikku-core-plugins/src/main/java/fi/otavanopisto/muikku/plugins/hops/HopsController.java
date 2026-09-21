@@ -147,8 +147,7 @@ public class HopsController {
         workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, usdi.schoolDataIdentifier());
         if (workspaceUserEntity != null) {
           WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
-          WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
-          if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
+          if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
             // TODO Unavoidable Pyramus call. Not exactly fun when this method is called in a loop
             List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
             for (WorkspaceAssessmentState assessmentState : assessmentStates) {
