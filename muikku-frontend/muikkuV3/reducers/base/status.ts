@@ -23,6 +23,7 @@ export interface StatusType {
   isUnder18: boolean;
   roles: Role[];
   isStudent: boolean;
+  isSpecialEducationTeacher: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
   services: UserWhoAmIServices | null;
@@ -90,6 +91,7 @@ export default function status(
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: false, // check if role is STUDENT
+    isSpecialEducationTeacher: false, // check if whoami contains value
     isUnder18: false, // lets assume adult first
     currentWorkspaceInfo: null,
     hasImage: false,
