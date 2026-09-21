@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -379,19 +378,15 @@ public class ElasticSearchProvider implements SearchProvider {
         query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
       }
 
-      // Pedagogy form filter can be null, empty or exhaustive in which case there's going to be no filtering based on the property (list all).
-      if (CollectionUtils.isNotEmpty(search.getHasPedagogyForm()) && !search.getHasPedagogyForm().equals(EnumSet.allOf(IndexedUserPedagogyFormState.class))) {
-        if (search.getHasPedagogyForm().contains(IndexedUserPedagogyFormState.PUBLISHED)) {
-          query.filter(termQuery("pedagogyFormState", IndexedUserPedagogyFormState.PUBLISHED.name()));
-        }
-        else if (search.getHasPedagogyForm().contains(IndexedUserPedagogyFormState.UNPUBLISHED)) {
-          query.filter(termQuery("pedagogyFormState", IndexedUserPedagogyFormState.UNPUBLISHED.name()));
-        }
+      // Pedagogy form filter can be null or empty in which case there's going to be no filtering based on the property (list all).
+      if (CollectionUtils.isNotEmpty(search.getHasPedagogyForm())) {
+        String[] states = search.getHasPedagogyForm().stream().map(IndexedUserPedagogyFormState::name).toArray(String[]::new);
+        query.filter(termsQuery("pedagogyFormState", states));
       }
 
-      if (CollectionUtils.isNotEmpty(search.getHasDecisionOnSpecialEducation()) && search.getHasDecisionOnSpecialEducation().size() == 1) {
-        boolean value = search.getHasDecisionOnSpecialEducation().contains(Boolean.TRUE) ? true : false;
-        query.filter(termQuery("hasDecisionOnSpecialEducation", value));
+      if (CollectionUtils.isNotEmpty(search.getHasDecisionOnSpecialEducation())) {
+        String[] states = search.getHasDecisionOnSpecialEducation().stream().map(b -> String.valueOf(b)).toArray(String[]::new);
+        query.filter(termsQuery("hasDecisionOnSpecialEducation", states));
       }
 
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
