@@ -10,6 +10,7 @@ import {
   CreateEventPropertyRequest,
   MuikkuEventProperty,
 } from "~/generated/client";
+import { AbsenceEventDateRange } from "~/util/events";
 
 export type EVENTS_SET_ABSENCE_EVENTS_STATE = SpecificActionType<
   "EVENTS_SET_ABSENCE_EVENTS_STATE",
@@ -48,6 +49,8 @@ export interface CreateAbsenceEventPropertyTriggerType {
 }
 
 const eventsApi = MApi.getEventsApi();
+const dates = new AbsenceEventDateRange();
+
 /**
  * loadUserAbsenceEvents
  * @param userId userId
@@ -58,14 +61,10 @@ const loadUserAbsenceEvents: LoadUserAbsenceEventsTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       try {
-        const end = new Date();
-        const start = new Date(end);
-        start.setMonth(start.getMonth() - 6);
-
         const events = await eventsApi.listEvents({
           user: userId,
-          start,
-          end,
+          start: dates.getStartDate(),
+          end: dates.getEndDate(),
           adjustTimes: true,
           type: "ABSENCE",
         });

@@ -64,3 +64,43 @@ export const absenceReasonLabel = (value: string) => {
       return t("reasons.UNAUTHORIZED_ABSENCE_EXPLAINED", { ns: "events" });
   }
 };
+
+/**
+ * EventRange class abstraction for absence event range
+ * @param start start date
+ * @param end end date
+ * @returns EventRange
+ */
+export class AbsenceEventDateRange {
+  private beginMonthsFromDate: number;
+  private endMonthsFromDate: number;
+
+  /**
+   * Constructor
+   * @param beginMonthsFromDate number of months from now
+   * @param endMonthsFromDate number of months from now
+   */
+  constructor(beginMonthsFromDate = -12, endMonthsFromDate = 6) {
+    this.beginMonthsFromDate = beginMonthsFromDate;
+    this.endMonthsFromDate = endMonthsFromDate;
+  }
+  /**
+   * Get start date
+   * @returns start date
+   */
+  public getStartDate(): Date {
+    const start = new Date();
+    start.setMonth(start.getMonth() - this.beginMonthsFromDate);
+    return start;
+  }
+
+  /**
+   * Get end date
+   * @returns end date
+   */
+  public getEndDate(): Date {
+    const end = new Date();
+    end.setMonth(end.getMonth() + this.endMonthsFromDate);
+    return end;
+  }
+}

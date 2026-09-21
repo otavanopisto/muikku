@@ -41,6 +41,7 @@ import {
 import i18n from "~/locales/i18n";
 import { loadWorkspaceCompositeMaterialReplies } from "./material";
 import { MuikkuEvent } from "~/generated/client";
+import { AbsenceEventDateRange } from "~/util/events";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -163,6 +164,8 @@ export interface LoadWorkspaceAbsenceEventsTriggerType {
 }
 const workspaceApi = MApi.getWorkspaceApi();
 const eventsApi = MApi.getEventsApi();
+const dates = new AbsenceEventDateRange();
+
 /**
  * SelectItem
  */
@@ -1774,15 +1777,10 @@ const loadAbsenceEventsOfWorkspace: LoadAbsenceEventsOfWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const end = new Date();
-        const start = new Date(end);
-        start.setMonth(start.getMonth() - 6);
-        end.setMonth(end.getMonth() + 6);
-
         const events = await eventsApi.listEvents({
           workspace: data.workspace.id,
-          start,
-          end,
+          start: dates.getStartDate(),
+          end: dates.getEndDate(),
           adjustTimes: true,
           type: "ABSENCE",
         });
