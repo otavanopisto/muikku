@@ -1809,7 +1809,7 @@
       "startRecording": "Begin recording by clicking the button",
       "stopRecording": "Stop recording by clicking the button",
       "viewRestricted": "This material is visible only to logged in users",
-      "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
+      "viewRestricted_workspaceMembers": "This material is visible only to course members",
       "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
     },
     "instructions": {
