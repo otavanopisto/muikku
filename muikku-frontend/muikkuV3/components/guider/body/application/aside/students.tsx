@@ -38,7 +38,6 @@ const StudentNavigationAside = () => {
   const pedagogyFromHash = [].concat((locationData.p as string) || []);
   const decisionFromHash = [].concat((locationData.s as string) || []);
   const hasDecision = decisionFromHash.includes("true");
-  const hasNoDecision = decisionFromHash.includes("false");
 
   return (
     <Navigation>
@@ -200,80 +199,29 @@ const StudentNavigationAside = () => {
             )
           }
         >
-          Pedagogisen tuen lomake
+          {t("labels.pedagogyFormPublished", { ns: "guider" })}
         </NavigationElement>
 
         {isSpecialEducationTeacher && (
-          <>
-            <NavigationElement
-              modifiers="aside-navigation-guider-user-group"
-              icon="users"
-              isActive={guider.activeFilters.withPedagogyFormFilters.includes(
-                GetGuiderStudentsPedagogyFormEnum.Unpublished
-              )}
-              hash={
-                "?" +
-                queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    p: guider.activeFilters.withPedagogyFormFilters.includes(
-                      GetGuiderStudentsPedagogyFormEnum.Unpublished
-                    )
-                      ? pedagogyFromHash.filter(
-                          (v) =>
-                            v !== GetGuiderStudentsPedagogyFormEnum.Unpublished
-                        )
-                      : pedagogyFromHash.concat(
-                          GetGuiderStudentsPedagogyFormEnum.Unpublished
-                        ),
-                  }),
-                  { arrayFormat: "bracket" }
-                )
-              }
-            >
-              Julkaisematon pedagoginen lomake
-            </NavigationElement>
-
-            <NavigationElement
-              modifiers="aside-navigation-guider-user-group"
-              icon="users"
-              isActive={hasDecision}
-              hash={
-                "?" +
-                queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    s: hasDecision
-                      ? decisionFromHash.filter((v) => v !== "true")
-                      : decisionFromHash.concat("true"),
-                  }),
-                  { arrayFormat: "bracket" }
-                )
-              }
-            >
-              Päätös erityisopetuksesta
-            </NavigationElement>
-
-            <NavigationElement
-              modifiers="aside-navigation-guider-user-group"
-              icon="users"
-              isActive={hasNoDecision}
-              hash={
-                "?" +
-                queryString.stringify(
-                  Object.assign({}, locationData, {
-                    c: "",
-                    s: hasNoDecision
-                      ? decisionFromHash.filter((v) => v !== "false")
-                      : decisionFromHash.concat("false"),
-                  }),
-                  { arrayFormat: "bracket" }
-                )
-              }
-            >
-              Ei päätöstä erityisopetuksesta
-            </NavigationElement>
-          </>
+          <NavigationElement
+            modifiers="aside-navigation-guider-user-group"
+            icon="users"
+            isActive={hasDecision}
+            hash={
+              "?" +
+              queryString.stringify(
+                Object.assign({}, locationData, {
+                  c: "",
+                  s: hasDecision
+                    ? decisionFromHash.filter((v) => v !== "true")
+                    : decisionFromHash.concat("true"),
+                }),
+                { arrayFormat: "bracket" }
+              )
+            }
+          >
+            {t("labels.specialEducationhasDecision", { ns: "guider" })}
+          </NavigationElement>
         )}
       </NavigationTopic>
     </Navigation>
