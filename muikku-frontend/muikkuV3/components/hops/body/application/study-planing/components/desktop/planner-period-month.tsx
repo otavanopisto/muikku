@@ -134,7 +134,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
 
     for (const identifier of selectedPlanItemIds) {
       if (
-        identifier.startsWith("ops-course-") ||
+        identifier.startsWith("ops-module-") ||
         identifier.startsWith("planned-course-")
       ) {
         selectedCourseIds.push(identifier);
