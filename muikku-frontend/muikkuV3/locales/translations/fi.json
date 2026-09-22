@@ -1809,7 +1809,7 @@
       "startRecording": "Aloita äänitys klikkaamalla painiketta",
       "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
       "viewRestricted": "Tämä materiaali näkyy vain kirjautuneille käyttäjille",
-      "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain kurssin jäsenille",
+      "viewRestricted_workspaceMembers": "Tämä materiaali näkyy vain kurssin opiskelijoille",
       "undoMaterialPage": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palata sivun julkaistuun versioon?"
     },
     "instructions": {
