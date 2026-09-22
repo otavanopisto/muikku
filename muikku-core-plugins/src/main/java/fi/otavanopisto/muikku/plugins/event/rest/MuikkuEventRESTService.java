@@ -449,23 +449,44 @@ public class MuikkuEventRESTService {
   }
   
   private void updateEventProperties(MuikkuEvent event, List<MuikkuEventPropertyRestModel> restProperties) {
-    
-    if (restProperties == null || restProperties.isEmpty()) {
-      return;
-    }
-    
     Long userEntityId = sessionController.getLoggedUserEntity().getId();
+
+    // Existing properties by event
+    List<MuikkuEventProperty> existingProperties = eventController.listPropertiesByEvent(event);
+
+    if (restProperties == null) {
+      restProperties = new ArrayList<>();
+    }
 
     for (MuikkuEventPropertyRestModel p : restProperties) {
       if (p.getId() != null) {
         MuikkuEventProperty property = eventController.findEventProperty(p.getId());
 
-        if (property != null && !Objects.equals(property.getValue(), p.getValue())) {
-          eventController.updateEventProperty(property, p.getValue(), new Date());
+        // Delete from existing properties list if found
+        if (property != null && property.getEvent().getId().equals(event.getId())) {
+          existingProperties.removeIf(existing ->
+              Objects.equals(existing.getId(), property.getId()));
+
+          // Update
+          if (!Objects.equals(property.getValue(), p.getValue())) {
+            eventController.updateEventProperty(property, p.getValue(), new Date());
+          }
         }
       } else {
-        eventController.createEventProperty(event, p.getName(), p.getValue(), userEntityId, new Date());
+        // Create
+        eventController.createEventProperty(
+            event,
+            p.getName(),
+            p.getValue(),
+            userEntityId,
+            new Date()
+        );
       }
+    }
+
+    // Delete properties that were not included in the payload
+    for (MuikkuEventProperty property : existingProperties) {
+      eventController.deleteEventProperty(property);
     }
   }
   
