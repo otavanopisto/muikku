@@ -5,11 +5,13 @@ import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 
 public class PyramusGroupStaffMember implements GroupStaffMember {
 
-  public PyramusGroupStaffMember(String identifier, String userIdentifier, boolean groupAdvisor, boolean studyAdvisor, boolean messageReceiver) {
+  public PyramusGroupStaffMember(String identifier, String userIdentifier, boolean groupAdvisor, boolean studyAdvisor, 
+      boolean specialEducationTeacher, boolean messageReceiver) {
     this.identifier = identifier;
     this.userIdentifier = userIdentifier;
     this.groupAdvisor = groupAdvisor;
     this.studyAdvisor = studyAdvisor;
+    this.specialEducationTeacher = specialEducationTeacher;
     this.messageReceiver = messageReceiver;
   }
   
@@ -60,9 +62,19 @@ public class PyramusGroupStaffMember implements GroupStaffMember {
     this.messageReceiver = messageReceiver;
   }
 
+  @Override
+  public boolean isSpecialEducationTeacher() {
+    return specialEducationTeacher;
+  }
+
+  public void setSpecialEducationTeacher(boolean specialEducationTeacher) {
+    this.specialEducationTeacher = specialEducationTeacher;
+  }
+
   private String identifier;
   private String userIdentifier;
   private boolean groupAdvisor;
   private boolean studyAdvisor;
+  private boolean specialEducationTeacher;
   private boolean messageReceiver;
 }

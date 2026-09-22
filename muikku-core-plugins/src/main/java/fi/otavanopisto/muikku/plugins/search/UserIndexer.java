@@ -17,11 +17,14 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.search.IndexedUser;
+import fi.otavanopisto.muikku.search.IndexedUserPedagogyFormState;
 import fi.otavanopisto.muikku.search.IndexedUserStudyPeriod;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
@@ -34,6 +37,9 @@ public class UserIndexer {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private PedagogyController pedagogyController;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -132,6 +138,15 @@ public class UserIndexer {
               environmentRoles.contains(EnvironmentRoleArchetype.ADMINISTRATOR)) {
             String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
             indexedUser.setEmail(userDefaultEmailAddress);
+          }
+          
+          if (environmentRoles.contains(EnvironmentRoleArchetype.STUDENT)) {
+            PedagogyForm pedagogyForm = pedagogyController.findFormByUserEntityId(userEntity.getId());
+
+            if (pedagogyForm != null) {
+              indexedUser.setPedagogyFormState(pedagogyForm.isPublished() ? IndexedUserPedagogyFormState.PUBLISHED : IndexedUserPedagogyFormState.UNPUBLISHED);
+              indexedUser.setHasDecisionOnSpecialEducation(pedagogyController.hasDecisionToSpecialEducation(pedagogyForm));
+            }
           }
         }
         

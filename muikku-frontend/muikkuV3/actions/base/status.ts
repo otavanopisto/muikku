@@ -103,6 +103,7 @@ async function loadWhoAMI(
       roles: Array.from(whoAmI.roles),
       isStudent: whoAmI.roles.has(Role.Student),
       isUnder18: whoAmI.under18,
+      isSpecialEducationTeacher: whoAmI.specialEducationTeacher,
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
       permissions: {

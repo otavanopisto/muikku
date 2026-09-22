@@ -97,7 +97,8 @@ public class GuidanceCounselorRestModels {
           propertyMap,
           hasImage,
           guidanceCounselor.isGroupAdvisor(),
-          guidanceCounselor.isStudyAdvisor()));
+          guidanceCounselor.isStudyAdvisor(),
+          guidanceCounselor.isSpecialEducationTeacher()));
     }
     
     return guidanceCounselorRestModels;

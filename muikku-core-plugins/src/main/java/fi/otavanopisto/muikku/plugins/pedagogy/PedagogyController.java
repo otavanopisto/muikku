@@ -7,12 +7,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
@@ -34,6 +38,9 @@ import fi.otavanopisto.muikku.users.UserEntityName;
 
 public class PedagogyController {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private Mailer mailer;
 
@@ -234,4 +241,36 @@ public class PedagogyController {
   public boolean isPublished(Long userEntityId) {
     return findFormByUserEntityIdAndPublished(userEntityId) != null;
   }
+
+  /**
+   * Tries to parse the form and return the value of the decisionToSpecialEducation field.
+   * Returns null if the form is null, the form data is blank or the parsing fails.
+   * 
+   * @param pedagogyForm
+   * @return
+   */
+  public Boolean hasDecisionToSpecialEducation(PedagogyForm pedagogyForm) {
+    if (pedagogyForm == null) {
+      return null;
+    }
+
+    // Form exists, but it has no data. This is how it is for a 
+    // newly created form so in this case we just default to false.
+    if (StringUtils.isBlank(pedagogyForm.getFormData())) {
+      return Boolean.FALSE;
+    }
+    
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      PedagogyFormDataModel pedagogyFormDataModel = objectMapper.readValue(pedagogyForm.getFormData(), PedagogyFormDataModel.class);
+      // Fresh forms have no fields, if the field doesn't exist, default to false
+      return pedagogyFormDataModel != null && pedagogyFormDataModel.getDecisionToSpecialEducation() != null 
+          ? pedagogyFormDataModel.getDecisionToSpecialEducation() : false;
+    } 
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Couldn't parse pedagogy form.", e);
+      return null;
+    }
+  }
+  
 }

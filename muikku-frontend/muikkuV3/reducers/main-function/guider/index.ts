@@ -22,6 +22,7 @@ import {
   CourseMatrix,
   StudyActivity,
   Guardian,
+  GetGuiderStudentsPedagogyFormEnum,
 } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { MuikkuEvent } from "~/generated/client";
@@ -55,6 +56,8 @@ export interface GuiderActiveFiltersType {
   labelFilters: Array<number>;
   userGroupFilters: Array<number>;
   query: string;
+  withPedagogyFormFilters: Array<GetGuiderStudentsPedagogyFormEnum>;
+  withSpecialEducationDecisionFilters: Array<boolean>;
 }
 
 //These are actually dates, might be present or not
@@ -227,6 +230,8 @@ const initialGuiderState: GuiderState = {
     labelFilters: [],
     userGroupFilters: [],
     query: "",
+    withPedagogyFormFilters: [],
+    withSpecialEducationDecisionFilters: [],
   },
   availablePurchaseProducts: [],
   students: [],
