@@ -644,7 +644,7 @@
       "addNote": "Add a node",
       "addSubject": "Add a subject",
       "confirmRegistration": "Confirm registration",
-      "keepInPlan": "Keep in plan",
+      "keepInPlan": "Keep saved",
       "removeFromPlan": "Remove from plan",
       "openStudyPlanner": "Open Study Planner",
       "showSummary": "Show summary",
@@ -894,7 +894,7 @@
       "studyPlannerFormGraduationDateDescription": "Set your target graduation date.",
       "studyPlannerFormHoursPerWeekTitle": "How many hours a week do you have time to study?",
       "studyPlannerFormHoursPerWeekDescription": "Estimate how many hours per week you can spend on studying.",
-      "studyPlannerOrphanedItemsTitle": "Items outside visible periods",
+      "studyPlannerOrphanedItemsTitle": "What to do with hidden items?",
       "studyPlannerStatisticTitle": "Progress of Your Studies",
       "studyPlannerStatisticMandatoryCompleted_uppersecondary": "Mandatory courses completed (op).",
       "studyPlannerStatisticOptionalCompleted_uppersecondary": "Optional courses completed (op).",
@@ -1016,7 +1016,7 @@
       "studyPlannerInfoGraduationNotPossibleExceedsRightToStudy": "The estimated graduation time of {{estimatedDateOfCompletion}} exceeds your study right expiration date of {{studyEndTimeDate}}. Therefore, you would not be able to graduate with your planned weekly study pace before your study right ends. Change your estimated weekly hours in the calculator to see how it affects the estimated graduation date.",
       "studyPlannerInfoGraduationPossible": "Graduation within the target time of {{graduationGoalDate}} ({{monthsUntilGoal}} months) is possible. The estimated graduation time is {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} months).",
       "studyPlannerInfoGraduationPossibleWithoutGraduationGoal": "The estimated graduation time is {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} months). This fits well within your study right, which expires on {{studyEndTimeDate}}. You can also set a target graduation date and adjust your weekly study pace to align with your goal.",
-      "studyPlannerOrphanedItemsDescription": "Changing the target graduation date changes the number of periods. The courses ({{courseCount}}) and notes ({{noteCount}}) placed in these periods remain in the plan, but they do not appear on the timeline. You can remove them or keep them if you change the target graduation date later."
+      "studyPlannerOrphanedItemsDescription": "Changing the target time removes semesters containing {{courseCount}} courses and {{noteCount}} notes. Do you want to delete them permanently, or keep them saved for later use?"
     },
     "matriculationTerms": {
       "AUTUMN": "Autumn {{year}}",

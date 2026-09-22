@@ -74,7 +74,7 @@ const OrphanedStudyPlannerItemsDialog: React.FC<
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleRemoveClick(closePortal)}
       >
-        {t("actions.removeFromPlan", { ns: "hops_new" })}
+        {t("actions.remove")}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
