@@ -251,7 +251,7 @@ const StudentNavigationAside = () => {
                 )
               }
             >
-              Päätös erikoisopetuksesta
+              Päätös erityisopetuksesta
             </NavigationElement>
 
             <NavigationElement
@@ -271,7 +271,7 @@ const StudentNavigationAside = () => {
                 )
               }
             >
-              Ei päätöstä erikoisopetuksesta
+              Ei päätöstä erityisopetuksesta
             </NavigationElement>
           </>
         )}
