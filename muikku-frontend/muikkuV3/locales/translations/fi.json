@@ -2682,9 +2682,10 @@
       "absencePeriod": "Ajankohta:",
       "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
+      "absencesStatus": "Poissaolojen tila",
       "absencesSummary": "Poissaolojen yhteenveto",
-      "absencesWithFeedback": "Selvitettyjä poissaoloja",
-      "absencesWithoutFeedback": "Poissaoloja ilman selvitystä",
+      "absencesWithFeedback": "Selvitetyt poissaolot",
+      "absencesWithoutFeedback": "Selvittämättömät poissaolot",
       "editAbsence": "Muokkaa poissaoloa",
       "end": "Päättyy",
       "event": "Tapahtuma",
@@ -2703,6 +2704,12 @@
       "reason": "Syy",
       "start": "Alkaa",
       "selectAbsenceReason": "Poissaolon syy",
+      "sortAscending": "$t(common:labels.sortAscending)",
+      "sortAscending_date": "Lajittele päivämäärän mukaan nousevasti",
+      "sortAscending_title": "Lajittele otsikon mukaan nousevasti",
+      "sortDescending": "$t(common:labels.sortDescending)",
+      "sortDescending_date": "Lajittele päivämäärän mukaan laskevasti",
+      "sortDescending_title": "Lajittele otsikon mukaan laskevasti",
       "totalAbsences": "Yhteensä poissaoloja"
     },
     "content": {
@@ -2720,6 +2727,10 @@
       "LESSON": "Oppitunti",
       "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
       "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen"
+    },
+    "filters": {
+      "WITH_REASON": "Selvitetyt poissaolot",
+      "WITHOUT_REASON": "Selvittämättömät poissaolot"
     },
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",

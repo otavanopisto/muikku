@@ -2,7 +2,7 @@ import * as React from "react";
 import Navigation, { NavigationElement } from "~/components/general/navigation";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Users from "./application/users";
-import AbsenceEvents from "./application/absences";
+import AbsenceEvents from "./application/absence-events";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
