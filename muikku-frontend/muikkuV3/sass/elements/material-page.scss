@@ -326,6 +326,13 @@
   padding: 5px 0;
 }
 
+.material-page__extra-info {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0;
+}
+
 .material-page__latest-edit-label,
 .material-page__license-label {
   color: $color-default-contrast;

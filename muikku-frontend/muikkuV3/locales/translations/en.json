@@ -1809,7 +1809,7 @@
       "startRecording": "Begin recording by clicking the button",
       "stopRecording": "Stop recording by clicking the button",
       "viewRestricted": "This material is visible only to logged in users",
-      "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
+      "viewRestricted_workspaceMembers": "This material is visible only to course members",
       "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
     },
     "instructions": {
@@ -2677,11 +2677,13 @@
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
       "absenceEventDescriptionPlaceholder": "Enter the assignments or instructions for the student to make up the absence here.",
+      "absenceReasonVisible": "Enter the reason for the absence",
       "absentFrom": "Absent from:",
       "absencePeriod": "Absence period:",
       "absenceType": "Absence type",
       "absences": "Absences",
-      "absencesSummary": "Absences summary",
+      "absencesStatus": "Status of absences",
+      "absencesSummary": "Summary of absences",
       "absencesWithFeedback": "Absences with feedback",
       "absencesWithoutFeedback": "Absences without feedback",
       "editAbsence": "Edit absence",
@@ -2702,6 +2704,12 @@
       "reason": "Reason",
       "start": "Starts",
       "selectAbsenceReason": "Select absence reason",
+      "sortAscending": "$t(common:labels.sortAscending)",
+      "sortAscending_date": "Sort ascending by date",
+      "sortAscending_title": "Sort ascending by title",
+      "sortDescending": "$t(common:labels.sortDescending)",
+      "sortDescending_date": "Sort descending by date",
+      "sortDescending_title": "Sort descending by title",
       "totalAbsences": "Total absences"
     },
     "content": {
@@ -2719,6 +2727,10 @@
       "LESSON": "Lesson",
       "LESSON_PRE_ARRANGED": "Lesson (pre-arranged)",
       "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting"
+    },
+    "filters": {
+      "WITH_REASON": "Absences with feedback",
+      "WITHOUT_REASON": "Absences without feedback"
     },
     "reasons": {
       "MEDICAL_REASON": "Medical reason",
@@ -2739,12 +2751,14 @@
       "endDateRequired": "End date is mandatory",
       "loadError": "Loading the events failed. Please try again",
       "loadError_absence": "Loading absences failed: {{error}}",
+      "noDateError": "The start and end date must be selected. Please check the date selections.",
       "noWorkspaceEventContainerIdError": "Course event container id is required",
       "removeError": "Removing the event failed. Please try again.",
       "removeError_absence": "Removing the absence event failed: {{error}}",
       "removeSuccess": "Removing the event succeeded",
       "removeSuccess_absence": "Removing the absence event succeeded",
       "startDateRequired": "Start date is mandatory",
+      "startDateGreaterThanEndDateError": "The start date cannot be later than the end date. Please check the start date.",
       "updateError": "Updating the event failed. Please try again.",
       "updateError_absence": "Updating the absence failed: {{error}}",
       "updatePropertyError": "Updating the event property failed: {{error}}. Please try again.",

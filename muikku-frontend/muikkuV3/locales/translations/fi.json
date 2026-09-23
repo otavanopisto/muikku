@@ -1809,7 +1809,7 @@
       "startRecording": "Aloita äänitys klikkaamalla painiketta",
       "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
       "viewRestricted": "Tämä materiaali näkyy vain kirjautuneille käyttäjille",
-      "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain kurssin jäsenille",
+      "viewRestricted_workspaceMembers": "Tämä materiaali näkyy vain kurssin opiskelijoille",
       "undoMaterialPage": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palata sivun julkaistuun versioon?"
     },
     "instructions": {
@@ -2677,13 +2677,15 @@
       "absenceDetails": "Poissaolon tiedot",
       "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
       "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
+      "absenceReasonVisible": "Anna syy poissaololle",
       "absentFrom": "Mistä oli poissa:",
       "absencePeriod": "Ajankohta:",
       "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
+      "absencesStatus": "Poissaolojen tila",
       "absencesSummary": "Poissaolojen yhteenveto",
-      "absencesWithFeedback": "Selvitettyjä poissaoloja",
-      "absencesWithoutFeedback": "Poissaoloja ilman selvitystä",
+      "absencesWithFeedback": "Selvitetyt poissaolot",
+      "absencesWithoutFeedback": "Selvittämättömät poissaolot",
       "editAbsence": "Muokkaa poissaoloa",
       "end": "Päättyy",
       "event": "Tapahtuma",
@@ -2702,6 +2704,12 @@
       "reason": "Syy",
       "start": "Alkaa",
       "selectAbsenceReason": "Poissaolon syy",
+      "sortAscending": "$t(common:labels.sortAscending)",
+      "sortAscending_date": "Lajittele päivämäärän mukaan nousevasti",
+      "sortAscending_title": "Lajittele otsikon mukaan nousevasti",
+      "sortDescending": "$t(common:labels.sortDescending)",
+      "sortDescending_date": "Lajittele päivämäärän mukaan laskevasti",
+      "sortDescending_title": "Lajittele otsikon mukaan laskevasti",
       "totalAbsences": "Yhteensä poissaoloja"
     },
     "content": {
@@ -2719,6 +2727,10 @@
       "LESSON": "Oppitunti",
       "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
       "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen"
+    },
+    "filters": {
+      "WITH_REASON": "Selvitetyt poissaolot",
+      "WITHOUT_REASON": "Selvittämättömät poissaolot"
     },
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
@@ -2739,12 +2751,14 @@
       "endDateRequired": "Loppuaika on pakollinen tieto",
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
+      "noDateError": "Alkuajan ja loppuajan on oltava valittuja. Ole hyvä ja tarkista ajanvalinnat.",
       "noWorkspaceEventContainerIdError": "Kurssin kalenteritunniste puuttuu",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
       "removeError_absence": "Poissaolotapahtuman poisto epäonnistui: {{error}}",
       "removeSuccess": "Tapahtuman poisto onnistui",
       "removeSuccess_absence": "Poissaolon poisto onnistui",
       "startDateRequired": "Alkuaika on pakollinen tieto",
+      "startDateGreaterThanEndDateError": "Alkuaika ei voi olla myöhempi kuin loppuaika. Ole hyvä ja tarkista alkuaika.",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
       "updateError_absence": "Poissaolon päivittäminen epäonnistui: {{error}}",
       "updatePropertyError": "Tapahtuman ominaisuuden päivitys epäonnistui: {{error}}. Yritä uudelleen.",
