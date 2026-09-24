@@ -1968,6 +1968,7 @@
       "organizerCategoryName": "Kategoria {{name}}",
       "sorterTermSelected": "Termi valittu",
       "focusToToc": "Siirry tämän hetkistä sisältöä vastaavaan sisällysluettelon kohtaan painamalla Enteriä",
+      "interactiveGroupInstructions": "Paina Enteriä tai välilyöntiä siirtyäksesi ryhmään ja käyttääksesi sen toimintoja.",
       "tocTopicAllExpand": "Laajenna kaikki osiot sisällysluettelossa",
       "tocTopicAllCollapse": "Kutista kaikki osiot sisällysluettelossa",
       "tocTopicExpand": "Laajenna osion sisältö oikealla nuolella",

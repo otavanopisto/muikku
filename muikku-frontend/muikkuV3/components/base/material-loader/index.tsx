@@ -119,6 +119,9 @@ export interface MaterialLoaderProps {
   status: StatusType;
   modifiers?: string | Array<string>;
   id?: string;
+  deAriaGroupLabel?: string;
+  deAriaGroupDescription?: string;
+  deAriaGroupKey?: string;
   websocket: WebsocketStateType;
   isInFrontPage?: boolean;
 
@@ -811,8 +814,32 @@ class MaterialLoader extends React.Component<
       );
     }
 
+    const deAriaGroupDescriptionId =
+      this.props.deAriaGroupLabel && this.props.deAriaGroupDescription
+        ? `material-${this.props.material.workspaceMaterialId}-group-description`
+        : undefined;
+
     return (
-      <article className={className} ref={this.rootRef} id={this.props.id}>
+      <article
+        className={className}
+        ref={this.rootRef}
+        id={this.props.id}
+        role={this.props.deAriaGroupLabel ? "group" : undefined}
+        aria-label={this.props.deAriaGroupLabel}
+        aria-describedby={deAriaGroupDescriptionId}
+        tabIndex={this.props.deAriaGroupLabel ? 0 : undefined}
+        data-de-aria-group={this.props.deAriaGroupLabel ? "dynamic" : undefined}
+        data-de-aria-key={
+          this.props.deAriaGroupLabel
+            ? this.props.deAriaGroupKey || "p"
+            : undefined
+        }
+      >
+        {deAriaGroupDescriptionId ? (
+          <span id={deAriaGroupDescriptionId} className="visually-hidden">
+            {this.props.deAriaGroupDescription}
+          </span>
+        ) : null}
         {content}
       </article>
     );

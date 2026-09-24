@@ -125,6 +125,14 @@ class WorkspaceMaterial extends React.Component<
             editable={this.props.workspaceEditMode.active}
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
+            deAriaGroupKey="p"
+            deAriaGroupLabel={
+              this.props.materialContentNode.title || this.props.folder.title
+            }
+            deAriaGroupDescription={this.props.t(
+              "wcag.interactiveGroupInstructions",
+              { ns: "materials" }
+            )}
             answerable={this.props.status.loggedIn}
             readOnly={!this.props.status.loggedIn}
             onAssignmentStateModified={this.updateWorkspaceActivity}
@@ -194,6 +202,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   );
 }
 
-export default withTranslation(["common"])(
+export default withTranslation(["materials", "common"])(
   connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial)
 );

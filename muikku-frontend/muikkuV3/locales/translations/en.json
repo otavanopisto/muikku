@@ -1968,6 +1968,7 @@
       "organizerCategoryName": "Category {{name}}",
       "sorterTermSelected": "Term selected",
       "focusToToc": "Press Enter to go to the item in the table of contents corresponding to the current content",
+      "interactiveGroupInstructions": "Press Enter or Space to enter and interact.",
       "tocTopicAllExpand": "Expand all sections in the table of contents",
       "tocTopicAllCollapse": "Collapse all sections in the table of contents",
       "tocTopicExpand": "Expand section content with right arrow",

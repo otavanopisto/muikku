@@ -764,7 +764,19 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
           id={`s-${section.workspaceMaterialId}`}
+          role="group"
+          aria-label={section.title}
+          aria-describedby={`help-chapter-${section.workspaceMaterialId}-group-description`}
+          tabIndex={0}
+          data-de-aria-group="dynamic"
+          data-de-aria-key="c"
         >
+          <span
+            id={`help-chapter-${section.workspaceMaterialId}-group-description`}
+            className="visually-hidden"
+          >
+            {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+          </span>
           <div
             id={"s-" + section.workspaceMaterialId}
             style={{

@@ -219,9 +219,17 @@ function preprocessor($html: any): any {
     .filter("p")
     .add($newHTML.find("p"))
     .each(function () {
-      if (this.textContent && this.textContent.trim()) {
+      const hasText = Boolean(this.textContent && this.textContent.trim());
+      const hasLinks = this.querySelector("a[href]") !== null;
+
+      if (hasText || hasLinks) {
         this.setAttribute("data-de-aria-text", "true");
         this.setAttribute("tabindex", "0");
+      }
+
+      if (hasLinks) {
+        this.setAttribute("data-de-aria-group", "dynamic");
+        this.setAttribute("data-de-aria-key", "p");
       }
     });
 

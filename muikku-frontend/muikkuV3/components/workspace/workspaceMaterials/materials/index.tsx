@@ -582,7 +582,19 @@ class WorkspaceMaterials extends React.Component<
         style={{
           scrollMarginTop: this.state.defaultOffset + "px",
         }}
+        role="group"
+        aria-label={section.title}
+        aria-describedby={`chapter-${section.workspaceMaterialId}-group-description`}
+        tabIndex={0}
+        data-de-aria-group="dynamic"
+        data-de-aria-key="c"
       >
+        <span
+          id={`chapter-${section.workspaceMaterialId}-group-description`}
+          className="visually-hidden"
+        >
+          {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+        </span>
         {/*TOP OF THE CHAPTER*/}
         <h2 className="content-panel__chapter-title">
           <div
@@ -612,7 +624,21 @@ class WorkspaceMaterials extends React.Component<
         </h2>
 
         <div className="content-panel__item">
-          <article className="material-page">
+          <article
+            className="material-page"
+            role="group"
+            aria-label={section.title}
+            aria-describedby={`exam-page-${section.workspaceMaterialId}-group-description`}
+            tabIndex={0}
+            data-de-aria-group="dynamic"
+            data-de-aria-key="p"
+          >
+            <span
+              id={`exam-page-${section.workspaceMaterialId}-group-description`}
+              className="visually-hidden"
+            >
+              {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+            </span>
             <div className="material-page__content-wrapper">
               <div className="material-page__content rich-text">
                 {descriptionElement}
@@ -957,7 +983,19 @@ class WorkspaceMaterials extends React.Component<
           style={{
             scrollMarginTop: this.state.defaultOffset + "px",
           }}
+          role="group"
+          aria-label={section.title}
+          aria-describedby={`chapter-${section.workspaceMaterialId}-group-description`}
+          tabIndex={0}
+          data-de-aria-group="dynamic"
+          data-de-aria-key="c"
         >
+          <span
+            id={`chapter-${section.workspaceMaterialId}-group-description`}
+            className="visually-hidden"
+          >
+            {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+          </span>
           {/*TOP OF THE CHAPTER*/}
           <h2
             className={`content-panel__chapter-title ${
