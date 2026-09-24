@@ -848,6 +848,7 @@
       "matriculationFormFieldRestart": "I will restart completing the degree",
       "matriculationFormFieldPlace": "Location of examination",
       "matriculationFormFieldInfoForCouncelor": "Additional information about the examination not taken in Mikkeli (school name and address, contact person name, email address and phone number)",
+      "matriculationFormFieldSpecialArrangements": "Special arrangements (School fills)",
       "matriculationFormFieldPublishName": "Permission to publish",
       "matriculationFormFieldTermDate": "Date",
       "matriculationFormFieldFunding": "Funding",
@@ -1051,6 +1052,19 @@
       "SELF_FUNDED": "Self-funded",
       "COMPULSORYEDUCATION_FREE": "Free matriculation exam",
       "COMPULSORYEDUCATION_FREE_RETRY": "Free matriculation exam (retake)"
+    },
+    "matriculationExamSpecialArrangements": {
+      "EXTENDED_EXAM_TIME": "Extended exam time",
+      "SEPARATE_GROUP_SPACE": "Separate small group space",
+      "SEPARATE_STUDIO": "Separate studio space",
+      "RESTING_SPACE": "Space for resting",
+      "VISION_IMPAIRED_SPACE": "Vision impaired exam arrangement",
+      "PERMISSION_ENLARGED_FONT": "Permission to enlarge font",
+      "PERMISSION_BIGGER_MONITOR": "Permission to use bigger monitor",
+      "AUDIO_RESTRICTED_EXAM": "Restricted audio material",
+      "PERMISSION_ASSISTANT": "Permission to use assistant",
+      "ADJUSTABLE_ERGONOMICS": "Adjustable ergonomics",
+      "OTHER_SUPPORTIVE_ELEMENT": "Other supportive arrangement"
     },
     "matriculationSubjectsYTL": {
       "A": "Finnish language and literature",
@@ -1794,8 +1808,8 @@
       "statusUploading": "Uploading to server {{progress}} %",
       "startRecording": "Begin recording by clicking the button",
       "stopRecording": "Stop recording by clicking the button",
-      "viewRestricted": "Viewing this material has been restricted to logged in users",
-      "viewRestricted_workspaceMembers": "Viewing this material has been restricted to members only",
+      "viewRestricted": "This material is visible only to logged in users",
+      "viewRestricted_workspaceMembers": "This material is visible only to course members",
       "undoMaterialPage": "Are you sure you want to undo all the changes and return the page to it's published state?"
     },
     "instructions": {
@@ -1867,6 +1881,7 @@
       "interimEvaluation": "Interim evaluation",
       "interimEvaluations": "Interim evaluations",
       "interimEvaluationAssignments": "Interim evaluation assignments",
+      "latestEdit": "Last edited",
       "license": "Material license",
       "licenseLink": "License URL address or license text",
       "materials": "Materials",
@@ -1989,17 +2004,25 @@
       "edit": "Edit the note",
       "hideContent": "Hide content",
       "organize": "Organize notes",
-      "remove": "Delete the note",
-      "showContent": "Show content"
+      "remove": "Remove",
+      "remove_highlight": "Remove highlight",
+      "remove_note": "Remove note",
+      "showContent": "Show content",
+      "upgrade": "Create note"
     },
     "content": {
       "empty": "No notes",
       "defaultPosition": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
       "defaultPosition_bottom": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
-      "remove": "Are you sure you wish to deöete the note?"
+      "remove": "Are you sure you wish to delete the note?",
+      "remove_highlight": "Are you sure you wish to delete the highlight?"
     },
     "labels": {
-      "defaultPosition": "Default position"
+      "defaultPosition": "Default position",
+      "noteSectionTitle": "Notes",
+      "noteSectionTitle_workspace": "General Notes",
+      "noteSectionTitle_page": "Targeted Notes",
+      "orphanedNote": "Obsolete"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
@@ -2643,44 +2666,72 @@
       "editFeedback": "Edit feedback",
       "create": "Create event",
       "edit": "Edit event",
-      "remove": "Remove event"
+      "edit_absence": "Edit absence",
+      "remove": "Remove event",
+      "remove_absence": "Remove absence event",
+      "update": "Update event",
+      "update_absence": "Update absence"
     },
     "labels": {
       "absence": "Absence",
+      "absenceCreator": "Absence marked by: {{creator}}",
       "absenceDetails": "Absence details",
       "absenceEventDescription": "Instructions for making up the absence",
       "absenceEventDescriptionPlaceholder": "Enter the assignments or instructions for the student to make up the absence here.",
+      "absenceReasonVisible": "Enter the reason for the absence",
       "absentFrom": "Absent from:",
       "absencePeriod": "Absence period:",
       "absenceType": "Absence type",
       "absences": "Absences",
-      "absence_explanation": "Absence_explanation",
+      "absencesStatus": "Status of absences",
+      "absencesSummary": "Summary of absences",
+      "absencesWithFeedback": "Absences with feedback",
+      "absencesWithoutFeedback": "Absences without feedback",
+      "editAbsence": "Edit absence",
       "end": "Ends",
       "event": "Event",
-      "eventBeginning": "Tapahtuman alku",
-      "eventEnding": "Tapahtuman loppu",
+      "eventBeginning": "Event beginning",
+      "eventEnding": "Event ending",
       "events": "Events",
       "explainAbsence": "Explain absence",
       "newAbsence": "New absence",
       "makeUpInstructions": "Instructions for making up the absence:",
       "markAbsence": "Mark absence",
-      "pickAbsenceStudents": "(Select absent students",
+      "pickAbsenceStudents": "Select absent students",
       "property": "Unkown property",
       "property_ABSENCE_REASON": "Absence reason",
+      "remove": "Remove event",
+      "remove_absence": "Remove absence event",
       "reason": "Reason",
       "start": "Starts",
-      "selectAbsenceReason": "Select absence reason"
+      "selectAbsenceReason": "Select absence reason",
+      "sortAscending": "$t(common:labels.sortAscending)",
+      "sortAscending_date": "Sort ascending by date",
+      "sortAscending_title": "Sort ascending by title",
+      "sortDescending": "$t(common:labels.sortDescending)",
+      "sortDescending_date": "Sort descending by date",
+      "sortDescending_title": "Sort descending by title",
+      "totalAbsences": "Total absences"
     },
     "content": {
       "empty": "No events",
-      "removing": "Are you sure you want to remove the event?"
+      "empty_absence": "No absences",
+      "removing": "Are you sure you want to remove the event?",
+      "removing_absence": "Are you sure you want to remove the absence: {{label}}, from user {{userName}}?"
     },
     "types": {
+      "ASSIGNMENTS_UNDONE": "Assignments undone",
+      "EXAM": "Exam",
+      "GROUP_MEETING": "Ryhmätapaaminen",
+      "GROUP_MEETING_PRE_ARRANGED": "Group meeting (pre-arranged)",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session",
       "LESSON": "Lesson",
       "LESSON_PRE_ARRANGED": "Lesson (pre-arranged)",
-      "EXAM": "Exam",
-      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Guidance or support session"
+      "SKILLS_DEMONSTRATION_MEETING": "Skills demonstration meeting"
+    },
+    "filters": {
+      "WITH_REASON": "Absences with feedback",
+      "WITHOUT_REASON": "Absences without feedback"
     },
     "reasons": {
       "MEDICAL_REASON": "Medical reason",
@@ -2688,6 +2739,7 @@
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Unauthorized absence (explained)"
     },
     "notifications": {
+      "absenceEventIdRequiredError": "Absence event id is required",
       "attendanceError": "Updating the attendees failed. Please try again.",
       "createError": "Creating the event failed",
       "createError_absence": "Marking the absence failed: {{error}}",
@@ -2697,14 +2749,25 @@
       "createPropertySuccess_absence": "The absence explanation was marked successfully",
       "createSuccess": "The event was created successfully",
       "createSuccess_absence": "The absence was marked successfully",
+      "endDateRequired": "End date is mandatory",
       "loadError": "Loading the events failed. Please try again",
       "loadError_absence": "Loading absences failed: {{error}}",
+      "noDateError": "The start and end date must be selected. Please check the date selections.",
+      "noWorkspaceEventContainerIdError": "Course event container id is required",
       "removeError": "Removing the event failed. Please try again.",
+      "removeError_absence": "Removing the absence event failed: {{error}}",
+      "removeSuccess": "Removing the event succeeded",
+      "removeSuccess_absence": "Removing the absence event succeeded",
+      "startDateRequired": "Start date is mandatory",
+      "startDateGreaterThanEndDateError": "The start date cannot be later than the end date. Please check the start date.",
       "updateError": "Updating the event failed. Please try again.",
+      "updateError_absence": "Updating the absence failed: {{error}}",
       "updatePropertyError": "Updating the event property failed: {{error}}. Please try again.",
       "updatePropertyError_absence": "Updating the absence explanation failed: {{error}}. Please try again.",
       "updatePropertySuccess": "The event property was updated successfully",
-      "updatePropertySuccess_absence": "The absence explanation was updated successfully"
+      "updatePropertySuccess_absence": "The absence explanation was updated successfully",
+      "updateSuccess": "The event was updated successfully",
+      "updateSuccess_absence": "The absence was updated successfully"
     }
   },
   "orders": {
@@ -2818,6 +2881,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Listen to selected text"
+    },
     "messages": {
       "assignment": "Assignment",
       "assignment_audio": "Audio assignment",

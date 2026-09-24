@@ -252,6 +252,11 @@
   padding: 0;
 }
 
+.application-sub-panel__header--workspace-absences,
+.application-sub-panel__header--guider-absences {
+  justify-content: space-between;
+}
+
 .application-sub-panel__header--worklist-entries {
   background: $color-subpanel-header-background;
   cursor: pointer;
@@ -375,6 +380,18 @@
 }
 
 // Subpanel body
+.application-sub-panel__body--workspace-absences-summary {
+  padding: 10px 0 0 5px;
+}
+
+.application-sub-panel__body--workspace-absences-list {
+  padding: 10px 0 0 5px;
+}
+
+.application-sub-panel__body--guider-absences-list {
+  display: flex;
+}
+
 .application-sub-panel__body--yo-status-incomplete {
   border-left: 4px solid $color-sub-panel-status-incomplete-border;
 }
@@ -411,6 +428,16 @@
 .application-sub-panel__body--guidance-relation {
   display: flex;
   flex-flow: wrap;
+}
+
+.application-sub-panel__body-aside {
+  display: flex;
+  flex-basis: 220px;
+  padding: 0 12px;
+}
+
+.application-sub-panel__body-content {
+  flex-grow: 1;
 }
 
 .application-sub-panel__notification-item {

@@ -848,6 +848,7 @@
       "matriculationFormFieldRestart": "Aloitan tutkinnon suorittamisen uudelleen",
       "matriculationFormFieldPlace": "Suorituspaikka",
       "matriculationFormFieldInfoForCouncelor": "Lisätietoa muualla kuin Mikkelissä suoritettavasta kokeesta (koulun nimi ja osoite, yhteyshenkilön nimi, sähköpostiosoite ja puhelinnumero)",
+      "matriculationFormFieldSpecialArrangements": "Kokeen erityisjärjestelyt (oppilaitos täyttää)",
       "matriculationFormFieldPublishName": "Julkaisulupa",
       "matriculationFormFieldTermDate": "Ajankohta",
       "matriculationFormFieldFunding": "Rahoitus",
@@ -1051,6 +1052,19 @@
       "SELF_FUNDED": "Itserahoitettu",
       "COMPULSORYEDUCATION_FREE": "Maksuton ylioppilaskoe",
       "COMPULSORYEDUCATION_FREE_RETRY": "Maksuton ylioppilaskoe (uusinta)"
+    },
+    "matriculationExamSpecialArrangements": {
+      "EXTENDED_EXAM_TIME": "Lisäaika kokeen suorittamiseen",
+      "SEPARATE_GROUP_SPACE": "Erillinen pienryhmätila",
+      "SEPARATE_STUDIO": "Erillinen yksilötila",
+      "RESTING_SPACE": "Lepäämiseen tarkoitettu tila",
+      "VISION_IMPAIRED_SPACE": "Näkövammaisen koejärjestelyt",
+      "PERMISSION_ENLARGED_FONT": "Oikeus suurentaa kirjasinkokoa",
+      "PERMISSION_BIGGER_MONITOR": "Oikeus käyttää suurempaa näyttöä",
+      "AUDIO_RESTRICTED_EXAM": "Ääniaineistoltaan rajoitettu koe",
+      "PERMISSION_ASSISTANT": "Avustajan käyttö",
+      "ADJUSTABLE_ERGONOMICS": "Säädettävä työskentelyasento",
+      "OTHER_SUPPORTIVE_ELEMENT": "Muu tukitoimi"
     },
     "matriculationSubjectsYTL": {
       "A": "Äidinkieli ja kirjallisuus, suomi",
@@ -1794,8 +1808,8 @@
       "statusUploading": "Ladataan palvelimelle {{progress}} %",
       "startRecording": "Aloita äänitys klikkaamalla painiketta",
       "stopRecording": "Lopeta äänitys klikkaamalla painiketta",
-      "viewRestricted": "Tämän materiaalin näyttäminen on rajattu vain kirjautuneille käyttäjille",
-      "viewRestricted_workspaceMembers": "Tämän materiaalin näyttäminen on rajattu vain kurssin jäsenille",
+      "viewRestricted": "Tämä materiaali näkyy vain kirjautuneille käyttäjille",
+      "viewRestricted_workspaceMembers": "Tämä materiaali näkyy vain kurssin opiskelijoille",
       "undoMaterialPage": "Oletko varma, että haluat peruuttaa kaikki muutokset ja palata sivun julkaistuun versioon?"
     },
     "instructions": {
@@ -1867,6 +1881,7 @@
       "interimEvaluation": "Välipalaute",
       "interimEvaluations": "Välipalautteet",
       "interimEvaluationAssignments": "Välipalautetehtävät",
+      "latestEdit": "Päivitetty viimeksi",
       "license": "Materiaalin käyttöoikeus",
       "licenseLink": "URL-osoite lisenssiin tai lisenssiteksti",
       "materials": "Materiaalit",
@@ -1989,17 +2004,25 @@
       "edit": "Muokkaa muistiinpanoa",
       "hideContent": "Piilota sisältö",
       "organize": "Järjestele muistiinpanoja",
-      "remove": "Poista muistiinpano",
-      "showContent": "Näytä sisältö"
+      "remove": "Poista",
+      "remove_highlight": "Poista korostus",
+      "remove_note": "Poista muistiinpano",
+      "showContent": "Näytä sisältö",
+      "upgrade": "Muuta muistiinpanoksi"
     },
     "content": {
       "empty": "Ei muistiinpanoja",
       "defaultPosition": "Uusi muistiinpano luodaan listan ensimmäiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
       "defaultPosition_bottom": "Uusi muistiinpano luodaan listan viimeiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
-      "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
+      "remove": "Oletko varma, että haluat poistaa muistiinpanon?",
+      "remove_highlight": "Oletko varma, että haluat poistaa korostuksen?"
     },
     "labels": {
-      "defaultPosition": "Oletussijainti"
+      "defaultPosition": "Oletussijainti",
+      "noteSectionTitle": "Muistiinpanot",
+      "noteSectionTitle_workspace": "Yleiset muistiinpanot",
+      "noteSectionTitle_page": "Kohdennetut muistiinpanot",
+      "orphanedNote": "Vanhentunut"
     },
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
@@ -2643,18 +2666,28 @@
       "editFeedback": "Muokkaa selvitystä",
       "create": "Luo tapahtuma",
       "edit": "Muokkaa tapahtumaa",
-      "remove": "Poista tapahtuma"
+      "edit_absence": "Muokkaa poissaoloa",
+      "remove": "Poista tapahtuma",
+      "remove_absence": "Poista poissaolo",
+      "update": "Päivitä tapahtuma",
+      "update_absence": "Päivitä poissaolo"
     },
     "labels": {
       "absence": "Poissaolo",
+      "absenceCreator": "Poissaolon merkinnyt: {{creator}}",
       "absenceDetails": "Poissaolon tiedot",
       "absenceEventDescription": "Ohjeet poissaolon korvaamiseen",
       "absenceEventDescriptionPlaceholder": "Kirjoita tähän tehtävät tai ohjeet, joilla opiskelija korvaa poissaolon.",
+      "absenceReasonVisible": "Anna syy poissaololle",
       "absentFrom": "Mistä oli poissa:",
       "absencePeriod": "Ajankohta:",
       "absenceType": "Poissaolotyyppi",
       "absences": "Poissaolot",
-      "absence_explanation": "Selitys poissaololle",
+      "absencesStatus": "Poissaolojen tila",
+      "absencesSummary": "Poissaolojen yhteenveto",
+      "absencesWithFeedback": "Selvitetyt poissaolot",
+      "absencesWithoutFeedback": "Selvittämättömät poissaolot",
+      "editAbsence": "Muokkaa poissaoloa",
       "end": "Päättyy",
       "event": "Tapahtuma",
       "eventBeginning": "Alkaa",
@@ -2667,20 +2700,38 @@
       "pickAbsenceStudents": "Valitse poissaolijat",
       "property": "Tuntematon ominaisuus",
       "property_ABSENCE_REASON": "Poissaolon syy",
+      "remove": "Poista tapahtuma",
+      "remove_absence": "Poista poissaolo",
       "reason": "Syy",
       "start": "Alkaa",
-      "selectAbsenceReason": "Poissaolon syy"
+      "selectAbsenceReason": "Poissaolon syy",
+      "sortAscending": "$t(common:labels.sortAscending)",
+      "sortAscending_date": "Lajittele päivämäärän mukaan nousevasti",
+      "sortAscending_title": "Lajittele otsikon mukaan nousevasti",
+      "sortDescending": "$t(common:labels.sortDescending)",
+      "sortDescending_date": "Lajittele päivämäärän mukaan laskevasti",
+      "sortDescending_title": "Lajittele otsikon mukaan laskevasti",
+      "totalAbsences": "Yhteensä poissaoloja"
     },
     "content": {
       "empty": "Ei tapahtumia",
-      "removing": "Oletko varma, että haluat poistaa tapahtuman?"
+      "empty_absence": "Ei poissaoloja",
+      "removing": "Oletko varma, että haluat poistaa tapahtuman?",
+      "removing_absence": "Oletko varma, että haluat poistaa poissaolon: {{label}}, käyttäjältä {{userName}}?"
     },
     "types": {
+      "ASSIGNMENTS_UNDONE": "Tehtävät tekemättä",
+      "EXAM": "Koe",
+      "GROUP_MEETING": "Ryhmätapaaminen",
+      "GROUP_MEETING_PRE_ARRANGED": "Ryhmätapaaminen (etukäteen sovittu)",
+      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen",
       "LESSON": "Oppitunti",
       "LESSON_PRE_ARRANGED": "Oppitunti (etukäteen sovittu)",
-      "EXAM": "Koe",
-      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen",
-      "GUIDANCE_OR_SUPPORT_SESSION": "Ohjaus- tai tukitapaaminen"
+      "SKILLS_DEMONSTRATION_MEETING": "Näyttötapaaminen"
+    },
+    "filters": {
+      "WITH_REASON": "Selvitetyt poissaolot",
+      "WITHOUT_REASON": "Selvittämättömät poissaolot"
     },
     "reasons": {
       "MEDICAL_REASON": "Terveydellinen syy",
@@ -2688,23 +2739,35 @@
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Poissaololle ei ollut lupaa (selvitetty)"
     },
     "notifications": {
+      "absenceEventIdRequiredError": "Poissaolotapahtuman tunniste puuttuu",
       "attendanceError": "Tapahtuman osallistumisen muutos epäonnistui",
       "createError": "Tapahtuman luonti epäonnistui: {{error}}",
       "createError_absence": "Poissaolon merkitseminen epäonnistui: {{error}}",
       "createPropertyError": "Tapahtuman ominaisuuden luonti epäonnistui: {{error}}",
       "createPropertyError_absence": "Poissaoloselvityksen luonti epäonnistui: {{error}}",
       "createPropertySuccess": "Tapahtuman ominaisuuden luonti onnistui",
-      "createPropertySuccess_absence": "Poisssaoloselvityksen luonti onnistui",
+      "createPropertySuccess_absence": "Poissaoloselvityksen luonti onnistui",
       "createSuccess": "Tapahtuman luonti onnistui",
       "createSuccess_absence": "Poissaolon merkitseminen onnistui",
+      "endDateRequired": "Loppuaika on pakollinen tieto",
       "loadError": "Tapahtumien lataus epäonnistui",
       "loadError_absence": "Poissaolojen lataus epäonnistui: {{error}}",
+      "noDateError": "Alkuajan ja loppuajan on oltava valittuja. Ole hyvä ja tarkista ajanvalinnat.",
+      "noWorkspaceEventContainerIdError": "Kurssin kalenteritunniste puuttuu",
       "removeError": "Tapahtuman poisto epäonnistui. Yritä uudelleen.",
+      "removeError_absence": "Poissaolotapahtuman poisto epäonnistui: {{error}}",
+      "removeSuccess": "Tapahtuman poisto onnistui",
+      "removeSuccess_absence": "Poissaolon poisto onnistui",
+      "startDateRequired": "Alkuaika on pakollinen tieto",
+      "startDateGreaterThanEndDateError": "Alkuaika ei voi olla myöhempi kuin loppuaika. Ole hyvä ja tarkista alkuaika.",
       "updateError": "Tapahtuman päivittäminen epäonnistui. Yritä uudelleen.",
+      "updateError_absence": "Poissaolon päivittäminen epäonnistui: {{error}}",
       "updatePropertyError": "Tapahtuman ominaisuuden päivitys epäonnistui: {{error}}. Yritä uudelleen.",
       "updatePropertyError_absence": "Poissaoloselvityksen päivitys epäonnistui: {{error}}. Yritä uudelleen.",
       "updatePropertySuccess": "Tapahtuman ominaisuuden päivitys onnistui",
-      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui"
+      "updatePropertySuccess_absence": "Poissaoloselvityksen päivitys onnistui",
+      "updateSuccess": "Tapahtuman päivittäminen onnistui",
+      "updateSuccess_absence": "Poissaolon päivittäminen onnistui"
     }
   },
   "orders": {
@@ -2818,6 +2881,9 @@
     }
   },
   "readSpeaker": {
+    "actions": {
+      "listenSelectedText": "Kuuntele valittu teksti"
+    },
     "messages": {
       "assignment": "Tehtävä",
       "assignment_audio": "Äänitystehtävä",

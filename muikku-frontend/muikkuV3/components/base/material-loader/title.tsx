@@ -7,10 +7,6 @@ import { MaterialLoaderRenderProps } from "~/components/base/material-loader";
  */
 interface MaterialLoaderTitleProps extends MaterialLoaderRenderProps {}
 
-/* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
-  e.stopPropagation();
-} */
-
 /**
  * MaterialLoaderTitle
  * @param props props
@@ -71,9 +67,6 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
     }
   };
 
-  /*   const modifiers: Array<string> =
-    typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers; */
-
   const materialPageType = returnMaterialPageType();
 
   return (
@@ -99,8 +92,11 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
             {props.anchorElement}
           </span>
         ) : null}
+
+        {props.notebookAddNoteComponent ? props.notebookAddNoteComponent : null}
         {props.readspeakerComponent ? props.readspeakerComponent : null}
       </h2>
+
       {hidden &&
       (materialPageType === "exercise" || materialPageType === "assignment") ? (
         <div className="material-page__title-meta">

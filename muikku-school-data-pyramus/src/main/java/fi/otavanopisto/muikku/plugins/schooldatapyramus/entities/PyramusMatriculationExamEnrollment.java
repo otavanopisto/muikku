@@ -2,11 +2,13 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentFlag;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PyramusMatriculationExamEnrollment
@@ -172,6 +174,11 @@ public class PyramusMatriculationExamEnrollment
     this.opintopolkuUrl = opintopolkuUrl;
   }
 
+  @Override
+  public Set<MatriculationExamEnrollmentFlag> getFlags() {
+    return flags;
+  }
+  
   public Long id;
   public Long examId;
   public String enrollAs;
@@ -188,4 +195,5 @@ public class PyramusMatriculationExamEnrollment
   private String degreeStructure;
   private OffsetDateTime enrollmentDate;
   private String opintopolkuUrl;
+  private Set<MatriculationExamEnrollmentFlag> flags;
 }

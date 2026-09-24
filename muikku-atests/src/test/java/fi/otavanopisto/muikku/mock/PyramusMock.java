@@ -17,7 +17,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -47,7 +46,6 @@ import com.google.common.hash.Hashing;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.CeeposPaymentResponseRestModel;
 import fi.otavanopisto.muikku.atests.HopsCourseMatrix;
-import fi.otavanopisto.muikku.atests.HopsCourseMatrixProblem;
 import fi.otavanopisto.muikku.atests.HopsCourseMatrixType;
 import fi.otavanopisto.muikku.atests.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
@@ -1324,7 +1322,8 @@ public class PyramusMock {
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location",
-              "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+              "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111&state={{request.query.state}}")
+            .withTransformers("response-template")));
 
         stubFor(post(urlEqualTo("/1/oauth/token"))
           .willReturn(aResponse()

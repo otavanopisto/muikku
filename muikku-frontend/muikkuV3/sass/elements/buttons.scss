@@ -2282,7 +2282,7 @@
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
     height: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2        2
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2
     );
     width: calc(
       #{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size}

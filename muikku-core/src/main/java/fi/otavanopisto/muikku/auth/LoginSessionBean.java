@@ -3,18 +3,24 @@ package fi.otavanopisto.muikku.auth;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 
-import org.scribe.model.Token;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @SessionScoped
 @Stateful
 public class LoginSessionBean {
 
-  public Token getRequestToken() {
-    return requestToken;
+  public String newAuthorizationStateIdentifier() {
+    this.authorizationStateIdentifier = RandomStringUtils.randomAlphanumeric(8);
+    return this.authorizationStateIdentifier;
+  }
+
+  public String getAuthorizationStateIdentifier() {
+    return this.authorizationStateIdentifier;
   }
   
-  public void setRequestToken(Token requestToken) {
-    this.requestToken = requestToken;
+  public boolean isValidAuthorizationStateIdentifier(String requestStateIdentifier) {
+    return authorizationStateIdentifier != null && StringUtils.equals(this.authorizationStateIdentifier, requestStateIdentifier);
   }
   
   public String[] getRequestedScopes() {
@@ -41,8 +47,13 @@ public class LoginSessionBean {
     this.postLoginRedirectUrl = postLoginRedirectUrl;
   }
   
-  private Token requestToken;
+  public void resetLoginState() {
+    requestedScopes = null;
+    authorizationStateIdentifier = null;
+  }
+  
   private String[] requestedScopes;
   private Long authSourceId;
   private String postLoginRedirectUrl;
+  private String authorizationStateIdentifier;
 }

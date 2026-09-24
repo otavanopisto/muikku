@@ -75,6 +75,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 
@@ -110,7 +112,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected static final String aXeScript = AbstractWCAGTest.class.getResource("/axe.min.js").getFile();
   
   @ClassRule
-  public static WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
+  public static WireMockRule wireMockRule = new WireMockRule(
+      WireMockConfiguration.wireMockConfig()
+        .port(Integer.parseInt(System.getProperty("it.wiremock.port")))
+        .extensions(new ResponseTemplateTransformer(true))
+      );
     
   @Rule
   public TestWatcher testWatcher = new TestWatcher() {
@@ -751,6 +757,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     clickXPath(xpath);
   }
   
+  protected void assertPresentXPath(String xpath) {
+    waitForPresentXPath(xpath);
+    assertTrue(String.format("Could not find element %s", xpath), getWebDriver().findElements(By.xpath(xpath)).size() > 0);
+  }
+  
   /** 
    * Clicks on an selector and checks
    * if given element appears after defined (ms) interval as a result, 
@@ -774,28 +785,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
       sleep(interval);
       elements = findElements(elementToAppear);
-    }
-    if(elements.isEmpty())
-      throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
-  }
-  
-  protected void waitAndClickAndConfirmVisible(String clickSelector, String elementToAppear, int timesToTry, int interval) {
-    List<WebElement> elements = new ArrayList<WebElement>();
-    int i = 0;
-    while(elements.isEmpty()) {
-      if (i > timesToTry) {
-        break;
-      }
-      i++;
-      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
-      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
-      sleep(interval);
-      elements = findElements(elementToAppear);
-      if (elements.get(0).isDisplayed()) {
-        break;
-      }else {
-        elements.clear();
-      }
     }
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");

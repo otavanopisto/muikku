@@ -32,6 +32,14 @@ public class MuikkuEventRestModel {
     this.eventContainerId = eventContainerId;
   }
 
+  public String getContainerName() {
+    return containerName;
+  }
+
+  public void setContainerName(String containerName) {
+    this.containerName = containerName;
+  }
+
   public boolean isInvitation() {
     return invitation;
   }
@@ -72,12 +80,28 @@ public class MuikkuEventRestModel {
     this.userEntityId = userEntityId;
   }
 
+  public String getTargetUserName() {
+    return targetUserName;
+  }
+
+  public void setTargetUserName(String targetUserName) {
+    this.targetUserName = targetUserName;
+  }
+
   public Long getCreator() {
     return creator;
   }
 
   public void setCreator(Long creator) {
     this.creator = creator;
+  }
+
+  public String getCreatorName() {
+    return creatorName;
+  }
+
+  public void setCreatorName(String creatorName) {
+    this.creatorName = creatorName;
   }
 
   public List<MuikkuEventParticipantRestModel> getParticipants() {
@@ -151,6 +175,7 @@ public class MuikkuEventRestModel {
   private Long id;
   private Long eventId;
   private Long eventContainerId;
+  private String containerName;
   private boolean invitation;
   private OffsetDateTime start;
   private OffsetDateTime end;
@@ -160,7 +185,9 @@ public class MuikkuEventRestModel {
   private EventType type;
   private boolean isPrivate;
   private Long userEntityId;
+  private String targetUserName;
   private Long creator;
+  private String creatorName;
   private List<MuikkuEventParticipantRestModel> participants = new ArrayList<>();
   private List<MuikkuEventPropertyRestModel> properties = new ArrayList<>();
   private boolean editable;

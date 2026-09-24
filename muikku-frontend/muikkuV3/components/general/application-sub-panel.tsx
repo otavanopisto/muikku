@@ -6,7 +6,33 @@ import "~/sass/elements/application-sub-panel.scss";
  */
 interface SubPanelProps {
   modifier?: string;
+  children?: React.ReactNode;
 }
+
+/**
+ * ApplicationSubPanelHeaderProps
+ */
+interface ApplicationSubPanelHeaderProps {
+  modifier?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * ApplicationSubPanelBodyProps
+ */
+interface ApplicationSubPanelBodyProps {
+  modifier?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * ApplicationSubPanelBodyComponent
+ */
+type ApplicationSubPanelBodyComponent =
+  React.FC<ApplicationSubPanelBodyProps> & {
+    Content: React.FC<ApplicationSubPanelBodyContentProps>;
+    Aside: React.FC<ApplicationSubPanelBodyAsideProps>;
+  };
 
 /**
  * ApplicationSubPanel
@@ -16,9 +42,9 @@ interface SubPanelProps {
  * ApplicationSubpanel.Header, ApplicationSubpanel.Body, ApplicationSubpanel.ViewHeader
  */
 const ApplicationSubPanel: React.FC<SubPanelProps> & {
-  Header?: React.FC<{ modifier?: string }>;
-  ViewHeader?: React.FC<{ modifier?: string }>;
-  Body?: React.FC<{ modifier?: string }>;
+  Header: React.FC<ApplicationSubPanelHeaderProps>;
+  ViewHeader: React.FC<SubPanelViewHeaderProps>;
+  Body: ApplicationSubPanelBodyComponent;
 } = (props) => {
   const { modifier, children } = props;
   /**
@@ -41,7 +67,9 @@ const ApplicationSubPanel: React.FC<SubPanelProps> & {
  * @param props component props
  * @returns JSX.Element
  */
-const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
+const ApplicationSubPanelHeader: React.FC<ApplicationSubPanelHeaderProps> = (
+  props
+) => (
   <div
     className={`application-sub-panel__header ${
       props.modifier ? `application-sub-panel__header--${props.modifier}` : ""
@@ -68,6 +96,7 @@ interface SubPanelViewHeaderProps {
    */
   titleDetail?: string;
   modifier?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -121,20 +150,71 @@ export const ApplicationSubPanelViewHeader: React.FC<
 );
 
 /**
- * ApplicationSubpanelBody
- * @param props comopnent props
+ * ApplicationSubPanelBodyContentProps
  */
-const ApplicationSubPanelBody: React.FC<{ modifier?: string }> = (props) => (
+interface ApplicationSubPanelBodyContentProps {
+  modifier?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * ApplicationSubPanelBodyContent
+ * @param props component props
+ * @returns JSX.Element
+ */
+const ApplicationSubPanelBodyContent: React.FC<
+  ApplicationSubPanelBodyContentProps
+> = (props) => (
   <div
-    className={`application-sub-panel__body ${
-      props.modifier ? `application-sub-panel__body--${props.modifier}` : ""
-    }
-    `}
+    className={`application-sub-panel__body-content ${props.modifier ? `application-sub-panel__body-content--${props.modifier}` : ""}`}
   >
     {props.children}
   </div>
 );
 
+/**
+ * ApplicationSubPanelBodyAsideProps
+ */
+interface ApplicationSubPanelBodyAsideProps {
+  modifier?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * ApplicationSubPanelBodyAside
+ * @param props component props
+ * @returns JSX.Element
+ */
+const ApplicationSubPanelBodyAside: React.FC<
+  ApplicationSubPanelBodyAsideProps
+> = (props) => (
+  <div
+    className={`application-sub-panel__body-aside ${props.modifier ? `application-sub-panel__body-aside--${props.modifier}` : ""}`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * ApplicationSubpanelBody
+ * @param props component props
+ * @returns JSX.Element
+ */
+const ApplicationSubPanelBody: ApplicationSubPanelBodyComponent = Object.assign(
+  (props: ApplicationSubPanelBodyProps) => (
+    <div
+      className={`application-sub-panel__body ${
+        props.modifier ? `application-sub-panel__body--${props.modifier}` : ""
+      }`}
+    >
+      {props.children}
+    </div>
+  ),
+  {
+    Content: ApplicationSubPanelBodyContent,
+    Aside: ApplicationSubPanelBodyAside,
+  }
+);
 /**
  * SubPanelItemDataProps
  */

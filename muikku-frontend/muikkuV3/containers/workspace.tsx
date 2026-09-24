@@ -19,6 +19,7 @@ import {
   loadStaffMembersOfWorkspace,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
+  loadAbsenceEventsOfWorkspace,
   loadWorkspaceTypes,
   loadWorkspaceSettings,
   setAvailableCurriculums,
@@ -807,6 +808,31 @@ export default class Workspace extends React.Component<
   }
 
   /**
+   * loadWorkspaceUsersData
+   */
+  loadWorkspaceAbsenceEventsData(): void {
+    const state = this.props.store.getState();
+
+    this.props.store.dispatch(
+      setCurrentWorkspace({
+        workspaceId: state.status.currentWorkspaceId,
+        /**
+         * success
+         * @param workspace workspace
+         */
+        success: (workspace) => {
+          // Load students absence events if not loaded yet
+          if (!workspace.absenceEvents && state.status.loggedIn) {
+            this.props.store.dispatch(
+              loadAbsenceEventsOfWorkspace({ workspace }) as Action
+            );
+          }
+        },
+      }) as Action
+    );
+  }
+
+  /**
    * renderWorkspaceMaterials
    * @param props props
    * @returns JSX.Element
@@ -996,7 +1022,7 @@ export default class Workspace extends React.Component<
           (window as any).CKEDITOR.disableAutoInline = true;
         }
       );
-
+      this.loadWorkspaceAbsenceEventsData();
       this.loadWorkspaceUsersData();
     }
 

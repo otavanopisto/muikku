@@ -83,7 +83,7 @@
   border: 1px solid $color-default-separator-border;
   border-radius: 3px;
   box-shadow: 0 0 15px rgba(0 0 0 / 2%);
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   padding: 10px;
   width: 100%;
 
@@ -93,31 +93,49 @@
   }
 }
 
-.notebook__item-delete-container {
-  padding: 5px 0 10px;
+.notebook__item--highlight {
+  border-left-color: darken($color-annotation-highlight, 20%);
+  border-left-width: 5px;
+  border-radius: 5px;
+
+  .rich-text blockquote {
+    background-color: lighten($color-annotation-highlight, 10%);
+    border: none;
+  }
+
+  &.state-ACTIVE {
+    border: 2px solid $color-annotation-highlight-active;
+    border-left: 5px solid $color-annotation-highlight-active;
+    padding: 9px 9px 9px 10px;
+  }
+
+  &.state-DELETING {
+    border: 2px solid $color-fatal;
+    border-left: 5px solid $color-fatal;
+    padding: 9px 9px 9px 10px;
+  }
 }
 
-.notebook__item-delete {
-  align-items: center;
-  background: lighten($color-fatal, 40%);
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 10px;
-}
+.notebook__item--note {
+  border-left-color: darken($color-annotation-note, 20%);
+  border-left-width: 5px;
+  border-radius: 5px;
 
-.notebook__item-description {
-  font-weight: 400;
-  margin: 5px 0;
-}
+  .rich-text blockquote {
+    background-color: lighten($color-annotation-note, 10%);
+    border: none;
+  }
 
-.notebook__item-buttonset {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 5px 0;
+  &.state-ACTIVE {
+    border: 2px solid $color-annotation-note-active;
+    border-left: 5px solid $color-annotation-note-active;
+    padding: 9px 9px 9px 10px;
+  }
 
-  .button {
-    margin: 0 5px;
+  &.state-DELETING {
+    border: 2px solid $color-fatal;
+    border-left: 5px solid $color-fatal;
+    padding: 9px 9px 9px 10px;
   }
 }
 
@@ -128,9 +146,12 @@
 }
 
 .notebook__item-title {
+  align-items: center;
   cursor: pointer;
+  display: flex;
   font-size: 0.8125rem;
   font-weight: 600;
+  gap: 0.5rem;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 0.9375rem;
@@ -221,4 +242,102 @@
   font-size: 0.8125rem;
   margin: 5px 0 0;
   padding: 5px 0 0;
+}
+
+.notebook__section {
+  margin-bottom: 1.5rem;
+}
+
+.notebook__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.notebook__section-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.notebook__section-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.notebook__page-group {
+  margin-bottom: 1.25rem;
+}
+
+.notebook__page-group-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.notebook__page-group-title {
+  align-items: center;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 400;
+  gap: 5px;
+
+  &::before {
+    align-items: center;
+    border-radius: 5px;
+    color: $color-workspace;
+    content: "\e92c";
+    display: flex;
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 20px;
+    justify-content: center;
+    width: 20px;
+  }
+}
+
+.notebook__page-group-divider {
+  border-top: 1px solid $color-default-item-separator-border;
+  margin: 20px;
+}
+
+.notebook__page-group-body {
+  border-left: 1px solid $color-default-separator-border;
+  margin: 0 0 0 10px;
+  padding: 0 0 0 10px;
+}
+
+.notebook__item-editor {
+  margin-top: 0.5rem;
+}
+
+.notebook__item.state-EDITING {
+  .notebook__item-title {
+    cursor: default;
+  }
+}
+
+.notebook__item-title-text {
+  min-width: 0;
+}
+
+.notebook__item-orphan-badge {
+  background: lighten($color-incomplete, 45%);
+  border: 1px solid lighten($color-incomplete, 10%);
+  border-radius: 5px;
+  color: darken($color-incomplete, 30%);
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 4px 6px;
+  text-transform: uppercase;
+}
+
+.notebook__item.state-ORPHANED {
+  .notebook__item-title-text {
+    opacity: 85%;
+  }
 }
