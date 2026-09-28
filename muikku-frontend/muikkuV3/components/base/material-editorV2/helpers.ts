@@ -219,6 +219,9 @@ export const materialSectionOrPageChanges = (
     "ai",
     "exam",
     "examSettings",
+    "smowlActivity",
+    "smowlFrontCameraAlarm",
+    "smowlComputerMonitoringAlarm",
     "extraInfo",
   ];
 

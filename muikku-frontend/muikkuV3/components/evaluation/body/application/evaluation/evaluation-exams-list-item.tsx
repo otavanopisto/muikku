@@ -20,6 +20,8 @@ import ExamAssignmentEditor from "./editors/exam-assignment-editor";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { createAssignmentInfoArray } from "~/components/general/evaluation-assessment-details/helper";
 import { updateOpenedAssignmentOrExamId } from "~/actions/main-function/evaluation/evaluationActions";
+import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
+import Link from "~/components/general/link";
 
 /**
  * EvaluationExamsListItemProps
@@ -214,8 +216,42 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
     return (
       <div className="evaluation-modal__item-meta">
+        {exam.proctored && (
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-label">
+              {t("labels.proctored", { ns: "exams" })}:
+            </span>
+            <span className="evaluation-modal__item-meta-item-data">
+              {t("labels.yes", { ns: "common" })}
+            </span>
+          </div>
+        )}
         {isEnded ? (
           <>
+            {exam.proctored && (
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
+                  Proktorointitulokset:
+                </span>
+                <span className="evaluation-modal__item-meta-item-data">
+                  <SmowlActivityResultsDialog
+                    activityId={exam.folderId}
+                    activityType="exam"
+                    lang="fi"
+                    dataLoader={() =>
+                      Promise.resolve({
+                        aNamesJson: JSON.stringify({
+                          [evaluationSelectedAssessmentId.userEntityId]: `${evaluationSelectedAssessmentId.firstName} ${evaluationSelectedAssessmentId.lastName}`,
+                        }),
+                      })
+                    }
+                  >
+                    <Link>Näytä tulokset</Link>
+                  </SmowlActivityResultsDialog>
+                </span>
+              </div>
+            )}
+
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
                 {t("labels.examStarted", { ns: "exams" })}:

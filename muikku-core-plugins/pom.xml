@@ -239,6 +239,15 @@
       <groupId>rocks.xmpp</groupId>
       <artifactId>xmpp-extensions-client</artifactId>
     </dependency>
+
+    <!-- Nimbus JWT for Smowl JWT signing -->
+    
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+      <version>10.5</version>
+    </dependency>
+    
   </dependencies>
 
   <build>

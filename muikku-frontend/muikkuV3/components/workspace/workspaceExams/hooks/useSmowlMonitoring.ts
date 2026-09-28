@@ -1,0 +1,144 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as React from "react";
+import { useSelector } from "react-redux";
+import { generateMonitoringLinkWithJwt } from "~/api_smowl/index";
+import { localize } from "~/locales/i18n";
+import { StateType } from "~/reducers";
+
+/**
+ * SMOWL monitoring status
+ */
+export type SmowlMonitoringStatus = "OK" | "NOTOK" | "PENDING" | null;
+
+/**
+ * UseSmowlMonitoringStatusProps
+ */
+interface UseSmowlMonitoringStatusProps {
+  examId: number;
+  proctored: boolean;
+  isMonitoring: boolean;
+}
+
+/**
+ * Hook to listen for SMOWL monitoring status messages
+ * @param props - The properties for the hook
+ * @returns The current monitoring status
+ */
+export const useSmowlMonitoringStatus = (
+  props: UseSmowlMonitoringStatusProps
+) => {
+  const { examId, proctored, isMonitoring } = props;
+
+  const { status, workspaces } = useSelector((state: StateType) => state);
+
+  const [monitoringStatus, setMonitoringStatus] =
+    React.useState<SmowlMonitoringStatus>(proctored ? "PENDING" : null);
+
+  const [monitoringLink, setMonitoringLink] = React.useState<{
+    link: string | null;
+    loading: boolean;
+    error: Error | null;
+  }>({
+    link: null,
+    loading: false,
+    error: null,
+  });
+
+  React.useEffect(() => {
+    if (!proctored) {
+      setMonitoringStatus(null);
+      return;
+    }
+
+    /**
+     * Handle SMOWL monitoring status messages
+     * @param e - Message event
+     */
+    const handleMessage = (e: MessageEvent | any) => {
+      const message = e.data || e.message;
+
+      if (message === "monitoringstatusOK") {
+        setMonitoringStatus("OK");
+      } else if (message === "monitoringstatusNOTOK") {
+        setMonitoringStatus("NOTOK");
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("message", handleMessage);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [proctored]);
+
+  React.useEffect(() => {
+    if (!proctored || !examId || !workspaces.currentWorkspace) {
+      setMonitoringLink({
+        link: null,
+        loading: false,
+        error: null,
+      });
+      return;
+    }
+
+    /**
+     * generateLink
+     */
+    const generateLink = async () => {
+      try {
+        setMonitoringLink({
+          link: null,
+          loading: true,
+          error: null,
+        });
+
+        const monitoringLink = await generateMonitoringLinkWithJwt(
+          {
+            activityType: "exam",
+            activityId: examId.toString(),
+            activityContainerId: workspaces.currentWorkspace.id.toString(),
+            isMonitoring: isMonitoring ? 1 : 0,
+          },
+          {
+            userName: `${status.profile.firstName} ${status.profile.lastName}`,
+            userEmail: status.profile.emails[0],
+            lang: localize.lang,
+            type: 0,
+            activityUrl: window.location.href,
+          }
+        );
+
+        setMonitoringLink({
+          link: monitoringLink,
+          loading: false,
+          error: null,
+        });
+      } catch (err) {
+        setMonitoringLink({
+          link: null,
+          loading: false,
+          error: err instanceof Error ? err : new Error(String(err)),
+        });
+      }
+    };
+
+    generateLink();
+  }, [
+    proctored,
+    status.userId,
+    status.profile.loggedUserName,
+    status.profile.emails,
+    workspaces.currentWorkspace,
+    examId,
+    isMonitoring,
+    status.profile.firstName,
+    status.profile.lastName,
+  ]);
+
+  return {
+    monitoringStatus,
+    monitoringLink,
+  };
+};

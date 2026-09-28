@@ -55,6 +55,8 @@ export interface StatusType {
  * ProfileStatusType
  */
 export interface ProfileStatusType {
+  firstName: string;
+  lastName: string;
   displayName: string;
   loggedUserName: string;
   emails: Array<string>;

@@ -24,11 +24,13 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
+import fi.otavanopisto.muikku.plugins.smowl.SmowlController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -63,6 +65,9 @@ public class ExamRESTService {
   private ExamController examController;
 
   @Inject
+  private SmowlController smowlController;
+
+  @Inject
   private WorkspaceController workspaceController;
 
   @Inject
@@ -82,6 +87,9 @@ public class ExamRESTService {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private SystemSettingsController systemSettingsController; 
   
   @Path("/compositeReplies/{WORKSPACEFOLDERID}")
   @GET
@@ -171,10 +179,14 @@ public class ExamRESTService {
   public Response createOrUpdateSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, ExamSettingsRestModel settings) {
     WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
     WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (settings == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Settings payload not defined").build();
+    }
     if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     examController.createOrUpdateSettings(workspaceFolderId, settings);
+    smowlController.setActivity(String.format("%s-%d", systemSettingsController.getSetting("sys.env"), workspaceFolderId), settings.isProctored());
     return Response.ok().entity(settings).build();
   }
   

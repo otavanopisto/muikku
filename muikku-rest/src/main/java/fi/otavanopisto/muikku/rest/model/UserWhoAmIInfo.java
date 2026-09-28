@@ -38,6 +38,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               OffsetDateTime studyStartDate,
               OffsetDateTime studyEndDate,
               OffsetDateTime studyTimeEnd,
+              String sysEnv,
               UserWhoAmIInfoServices services) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
@@ -62,6 +63,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.setStudyTimeEnd(studyTimeEnd);
     this.setServices(services);
     this.educationTypeCode = educationTypeCode;
+    this.sysEnv = sysEnv;
   }
 
   public String getStudyProgrammeName() {
@@ -240,6 +242,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.under18 = under18;
   }
 
+  public String getSysEnv() {
+    return sysEnv;
+  }
+
+  public void setSysEnv(String sysEnv) {
+    this.sysEnv = sysEnv;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -262,4 +272,5 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private UserWhoAmIInfoServices services;
   private String educationTypeCode; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
   private Boolean under18;
+  private String sysEnv;
 }
