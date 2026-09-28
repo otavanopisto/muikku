@@ -420,6 +420,15 @@
   font-weight: 600;
 }
 
+.matriculation-special-arrangements__list {
+  list-style-type: disc;
+  margin: 0 30px;
+}
+
+.matriculation-special-arrangements__list li {
+  display: list-item;
+}
+
 // Animations
 
 // blink

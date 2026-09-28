@@ -50,6 +50,7 @@ import {
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { MaterialLoaderLatestEdit } from "~/components/base/material-loader/latest-edit";
 
 /**
  * WorkspaceMaterialProps
@@ -256,6 +257,7 @@ class WorkspaceMaterial extends React.Component<
                   </div>
                 ) : null}
                 <MaterialLoaderProducersLicense {...props} {...state} />
+                <MaterialLoaderLatestEdit {...props} {...state} />
               </div>
             )}
           </MaterialLoader>

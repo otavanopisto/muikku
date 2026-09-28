@@ -83,7 +83,7 @@ const Summary = (props: SummaryProps) => {
             );
             return (
               <WallEvent
-                isUnder18={isUnder18}
+                canEdit={isUnder18}
                 key={e.id}
                 event={e}
                 actions={

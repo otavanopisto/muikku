@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface MatriculationExamEnrollment {
   public Long getId();
@@ -36,5 +37,6 @@ public interface MatriculationExamEnrollment {
   public void setEnrollmentDate(OffsetDateTime enrollmentDate);
   public String getOpintopolkuUrl();
   public void setOpintopolkuUrl(String opintopolkuUrl);
+  public Set<MatriculationExamEnrollmentFlag> getFlags();
 }
 
