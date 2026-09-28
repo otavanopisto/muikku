@@ -56,7 +56,6 @@ export function useMaterialsLoader(
     localOnly: boolean,
     workspaceId: number,
     workspaceMaterialId: number,
-    workspaceMaterialReplyId?: number,
     successText?: string,
     callback?: () => void
   ) => void,
@@ -92,7 +91,6 @@ export function useMaterialsLoader(
         true, // localOnly — no server call (answer already saved)
         workspace.id,
         material.workspaceMaterialId ?? 0,
-        compositeReplies?.workspaceMaterialReplyId,
         assignmentState.stateConfig?.successText
       );
     }
@@ -118,7 +116,6 @@ export function useMaterialsLoader(
         true, // localOnly
         workspace.id,
         material.workspaceMaterialId ?? 0,
-        compositeReplies?.workspaceMaterialReplyId,
         assignmentState.stateConfig?.successText
       );
     }
@@ -126,7 +123,6 @@ export function useMaterialsLoader(
     assignmentState.stateConfig?.modifyState,
     assignmentState.stateConfig?.successText,
     compositeReplies?.state,
-    compositeReplies?.workspaceMaterialReplyId,
     material.workspaceMaterialId,
     updateAssignmentState,
     workspace.id,

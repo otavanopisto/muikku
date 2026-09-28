@@ -42,7 +42,6 @@ export function useAssignmentState(
     localOnly: boolean,
     workspaceId: number,
     workspaceMaterialId: number,
-    workspaceMaterialReplyId?: number,
     successText?: string,
     callback?: () => void
   ) => void,
@@ -104,7 +103,6 @@ export function useAssignmentState(
           false, // localOnly = false (update server)
           workspace.id,
           material.workspaceMaterialId ?? 0,
-          compositeReplies?.workspaceMaterialReplyId,
           stateConfig.successText,
           onAssignmentStateModified
         );
@@ -115,7 +113,6 @@ export function useAssignmentState(
       updateAssignmentState,
       workspace.id,
       material.workspaceMaterialId,
-      compositeReplies?.workspaceMaterialReplyId,
       onAssignmentStateModified,
     ]
   );
