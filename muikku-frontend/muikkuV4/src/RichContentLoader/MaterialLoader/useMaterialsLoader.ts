@@ -5,6 +5,8 @@ import { useAssignmentState } from "../coreMaterial/hooks/useAssignmentState";
 import { useAnswerManager } from "../coreMaterial/hooks/useAnswerManager";
 import type {
   MaterialContentLoaderValue,
+  MaterialEditingConfig,
+  MaterialEditingHandlers,
   MaterialLoaderConfig,
   MaterialProcessingContext,
   Workspace,
@@ -16,6 +18,7 @@ import type {
   WorkspaceMaterial,
 } from "~/generated/client";
 import { useFieldManager } from "../coreMaterial/hooks/useFieldManager";
+import { createEditingCapability } from "../coreMaterial/utils/createEditingCapability";
 
 /**
  * Student/materials orchestrator for MaterialLoader.
@@ -57,7 +60,9 @@ export function useMaterialsLoader(
     successText?: string,
     callback?: () => void
   ) => void,
-  onAssignmentStateModified?: () => void
+  onAssignmentStateModified?: () => void,
+  editingConfig?: Partial<MaterialEditingConfig>,
+  editingHandlers?: MaterialEditingHandlers
 ): MaterialContentLoaderValue {
   // Create assignment state
   const assignmentState = useAssignmentState(
@@ -168,6 +173,12 @@ export function useMaterialsLoader(
     ]
   );
 
+  // Create editing capability
+  const editing = useMemo(
+    () => createEditingCapability(editingConfig, editingHandlers),
+    [editingConfig, editingHandlers]
+  );
+
   // Create processing rules
   const rules = useMemo(() => createMaterialsRules(), []);
 
@@ -216,5 +227,8 @@ export function useMaterialsLoader(
 
     // Field management
     fieldManager,
+
+    // Editing capability
+    editing,
   };
 }

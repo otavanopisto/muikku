@@ -4,7 +4,12 @@ import type {
   MaterialContentNode,
   WorkspaceMaterial,
 } from "~/generated/client";
-import type { MaterialLoaderConfig, Workspace } from "../coreMaterial/types";
+import type {
+  MaterialEditingConfig,
+  MaterialEditingHandlers,
+  MaterialLoaderConfig,
+  Workspace,
+} from "../coreMaterial/types";
 import { MaterialLoaderCore } from "./MaterialLoaderCore";
 import { useMaterialClassName } from "../coreMaterial/hooks/useMaterialLoaderUtils";
 
@@ -21,7 +26,10 @@ export interface MaterialLoaderContainerProps {
   id?: string;
   className?: string;
   config?: Partial<MaterialLoaderConfig>;
-  onModification?: () => void;
+  editing?: {
+    config?: Partial<MaterialEditingConfig>;
+    handlers?: MaterialEditingHandlers;
+  };
   children: ReactNode;
 }
 
@@ -37,7 +45,6 @@ export function MaterialLoaderContainer(props: MaterialLoaderContainerProps) {
     folder,
     modifiers,
     config,
-    onModification,
     id,
     className,
     children,
@@ -62,7 +69,6 @@ export function MaterialLoaderContainer(props: MaterialLoaderContainerProps) {
         compositeReplies={compositeReplies}
         assignment={assignment}
         config={mergedConfig}
-        onModification={onModification}
       >
         {children}
       </MaterialLoaderCore>

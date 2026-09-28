@@ -1,4 +1,9 @@
-import type { MaterialLoaderConfig, Workspace } from "../coreMaterial/types";
+import type {
+  MaterialEditingConfig,
+  MaterialEditingHandlers,
+  MaterialLoaderConfig,
+  Workspace,
+} from "../coreMaterial/types";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
@@ -9,6 +14,7 @@ import { MaterialTitle } from "../coreMaterial/MaterialTitle";
 import { MaterialContent } from "../coreMaterial/MaterialContent";
 import { MaterialButtons } from "../coreMaterial/MaterialButtons";
 import { MaterialAssessment } from "../coreMaterial/MaterialAssessment";
+import { MaterialEditingToolbar } from "../coreMaterial/MaterialEditingToolbar";
 
 /**
  * MaterialLoaderProps
@@ -23,7 +29,10 @@ export interface MaterialLoaderProps {
   id?: string;
   className?: string;
   config?: Partial<MaterialLoaderConfig>;
-  onModification?: () => void;
+  editing?: {
+    config?: Partial<MaterialEditingConfig>;
+    handlers?: MaterialEditingHandlers;
+  };
 }
 
 /**
@@ -35,6 +44,7 @@ export function MaterialLoader(props: MaterialLoaderProps) {
   return (
     <MaterialLoaderContainer {...props}>
       <div>
+        <MaterialEditingToolbar />
         <MaterialTitle />
         <MaterialContent />
         <div className="material-page__de-floater" />

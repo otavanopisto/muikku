@@ -10,6 +10,57 @@ import type {
 } from "~/generated/client";
 
 /**
+ * Optional material editing/authoring capability.
+ * Omit on loaders that don't edit pages (e.g. evaluation).
+ *
+ * Used both as toolbar chrome flags and as the editor-init baseline
+ * (same role as V3 editing config when starting the material editor).
+ */
+export interface MaterialEditingConfig {
+  /** Master switch for editing chrome */
+  enabled: boolean;
+  canDelete?: boolean;
+  canHide?: boolean;
+  disablePlugins?: boolean;
+  canPublish?: boolean;
+  canRevert?: boolean;
+  canRestrictView?: boolean;
+  canCopy?: boolean;
+  canChangePageType?: boolean;
+  canChangeExerciseType?: boolean;
+  canSetLicense?: boolean;
+  canSetProducers?: boolean;
+  canAddAttachments?: boolean;
+  canEditContent?: boolean;
+  canSetTitle?: boolean;
+}
+/**
+ * Context passed to editing actions (toolbar → parent).
+ * Includes the resolved editing settings used as editor baseline.
+ */
+export interface MaterialEditingActionContext {
+  material: MaterialContentNode;
+  workspace: Workspace;
+  /** Resolved capability flags (editor init baseline) */
+  editing: MaterialEditingConfig;
+}
+/**
+ * Parent-supplied editing actions.
+ * Prefer these over closing over material/workspace yourself.
+ */
+export interface MaterialEditingHandlers {
+  onEdit?: (ctx: MaterialEditingActionContext) => void;
+  onToggleHidden?: (ctx: MaterialEditingActionContext) => void;
+  onCopyPage?: (ctx: MaterialEditingActionContext) => void;
+}
+/**
+ * Resolved editing capability on MaterialContentLoaderValue.
+ * Handlers receive the same action context as above.
+ */
+export interface MaterialEditingCapability
+  extends MaterialEditingConfig, MaterialEditingHandlers {}
+
+/**
  * Optional snapshot capability — omit on loaders that don't use snapshots
  */
 export interface MaterialSnapshotCapability {
@@ -87,6 +138,9 @@ export interface MaterialContentLoaderValue {
 
   // --- optional capabilities ---
   snapshots?: MaterialSnapshotCapability;
+
+  // --- optional editing capability ---
+  editing?: MaterialEditingCapability;
 }
 
 /**

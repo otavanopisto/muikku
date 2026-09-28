@@ -1,5 +1,10 @@
 import type { ReactNode } from "react";
-import type { Workspace, MaterialLoaderConfig } from "../coreMaterial/types";
+import type {
+  Workspace,
+  MaterialLoaderConfig,
+  MaterialEditingHandlers,
+  MaterialEditingConfig,
+} from "../coreMaterial/types";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
@@ -17,7 +22,10 @@ export interface MaterialLoaderCoreProps {
   compositeReplies?: MaterialCompositeReply;
   assignment?: WorkspaceMaterial;
   config?: MaterialLoaderConfig;
-  onModification?: () => void;
+  editing?: {
+    config?: Partial<MaterialEditingConfig>;
+    handlers?: MaterialEditingHandlers;
+  };
   children: ReactNode;
 }
 
@@ -32,7 +40,7 @@ export function MaterialLoaderCore({
   assignment,
   // eslint-disable-next-line react-x/no-unstable-default-props
   config = {},
-  onModification,
+  editing,
   children,
 }: MaterialLoaderCoreProps) {
   // Use the main hook to get all functionality
@@ -42,7 +50,10 @@ export function MaterialLoaderCore({
     compositeReplies,
     assignment,
     config,
-    onModification
+    undefined, // <-- TODO: add updateAssignmentState
+    undefined, // <-- TODO: add onAssignmentStateModified
+    editing?.config,
+    editing?.handlers
   );
 
   return (
