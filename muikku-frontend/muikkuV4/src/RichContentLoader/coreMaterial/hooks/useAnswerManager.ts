@@ -12,12 +12,23 @@ import type {
 import _ from "lodash";
 
 /**
- * Hook for managing answer checking and validation
- * Extracted from MaterialLoader component's answer management logic
- * @param material - material
- * @param _compositeReplies - compositeReplies
- * @param stateConfig - stateConfig
- * @param config - config
+ * Tracks interactive answer-checking UI state for fields.
+ *
+ * Owns:
+ * - answersVisible / answersChecked / answerCheckable
+ * - answerRegistry (fieldName → correct/incorrect)
+ * - handleAnswerChange (fields report check results)
+ * - Syncing visible/checked flags when stateConfig.checksAnswers changes
+ *
+ * Does not own:
+ * - Assignment reply state transitions (useAssignmentState / orchestrator)
+ * - Field value save/sync (useFieldManager)
+ * - Whether evaluation forces check/show (orchestrator config/policy)
+ *
+ * @param material - Used for correctAnswers policy (ALWAYS/ON_REQUEST/NEVER)
+ * @param _compositeReplies - Reserved; not used for registry today
+ * @param stateConfig - From useAssignmentState; drives checksAnswers side effects
+ * @param config - Loader config (checkAnswers / answerable seeds)
  * @returns AnswerManagerReturn
  */
 export function useAnswerManager(

@@ -12,14 +12,30 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REP
 const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE = 666;
 
 /**
- * Hook for managing field synchronization and websocket communication
- * Extracted from Base component's field management logic
- * @param material - The material to manage
- * @param workspace - The workspace to manage
+ * Saves field values over websocket and tracks per-field sync status.
+ *
+ * Owns:
+ * - Debounced workspace:field-answer-save
+ * - Listening to field-answer-saved / field-answer-error
+ * - Marking field React instances modified / synced / syncError
+ * - Invoking onModification when the user edits a value
+ * - Invoking onAnswerSynced when the server confirms a successful save
+ *
+ * Does not own:
+ * - What assignment state changes mean (caller supplies callbacks)
+ * - Answer correctness registry (useAnswerManager)
+ * - Button submit/withdraw (useAssignmentState)
+ *
+ * @param material - Ids for save payload
+ * @param workspace - workspaceEntityId for save payload
+ * @param onAnswerSynced - Optional; e.g. UNANSWERED → ANSWERED (localOnly)
+ * @param onModification - Optional; e.g. apply stateConfig.modifyState (localOnly)
  */
 export function useFieldManager(
   material: MaterialContentNode,
-  workspace: Workspace
+  workspace: Workspace,
+  onAnswerSynced?: () => void,
+  onModification?: () => void
 ) {
   // Timeout registries for field synchronization
   const timeoutChangeRegistry = useRef<
@@ -41,15 +57,9 @@ export function useFieldManager(
    * @param context - The context to use for the field
    * @param name - The name of the field
    * @param newValue - The new value of the field
-   * @param onModification - The callback to call when the field is modified
    */
   const handleValueChange = useCallback(
-    (
-      context: React.Component<any, any>,
-      name: string,
-      newValue: any,
-      onModification?: () => void
-    ) => {
+    (context: React.Component<any, any>, name: string, newValue: any) => {
       if (!websocketInstance) {
         return;
       }
@@ -101,7 +111,7 @@ export function useFieldManager(
         }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
       }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE);
     },
-    [material, websocketInstance, workspace.id]
+    [material, onModification, websocketInstance, workspace.id]
   );
 
   // Setup websocket listeners
@@ -137,6 +147,8 @@ export function useFieldManager(
           }
           return;
         }
+
+        onAnswerSynced?.();
 
         // Handle success case
         if (nameContextRegistry.current[actualData.fieldName]) {
@@ -177,7 +189,7 @@ export function useFieldManager(
         );
       }
     };
-  }, [material, websocketInstance, workspace.id]);
+  }, [material, onAnswerSynced, websocketInstance, workspace.id]);
 
   // Cleanup timeouts on unmount
   useEffect(

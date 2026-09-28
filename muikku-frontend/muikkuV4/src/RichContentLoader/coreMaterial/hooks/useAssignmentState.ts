@@ -1,7 +1,11 @@
 /* eslint-disable no-console */
 import { useMemo, useCallback } from "react";
 import { AssignmentStateManager } from "../state/AssignmentStateManager";
-import { type AssignmentStateReturn, type ButtonConfig } from "../types";
+import {
+  type AssignmentStateReturn,
+  type ButtonConfig,
+  type Workspace,
+} from "../types";
 import type {
   MaterialCompositeReply,
   MaterialCompositeReplyStateType,
@@ -9,17 +13,30 @@ import type {
 } from "~/generated/client";
 
 /**
- * Hook for managing assignment state logic
- * @param material - material
- * @param compositeReplies - compositeReplies
- * @param onAssignmentStateModified - onAssignmentStateModified
- * @param updateAssignmentState - updateAssignmentState
- * @returns AssignmentStateReturn
+ * Derives assignment/exercise reply UI state from composite reply + AssignmentStateManager.
+ *
+ * Owns:
+ * - Resolving stateConfig for current assignmentType + reply state
+ * - Derived readOnly / answerable (including lock)
+ * - Button config for submit/withdraw/etc.
+ * - handleStateTransition → calls updateAssignmentState (typically with server update)
+ *
+ * Does not own:
+ * - Local-only transitions on field edit/sync (orchestrator: handleModification / handleAnswerSynced)
+ * - Answer correctness registry (useAnswerManager)
+ * - Websocket field saves (useFieldManager)
+ * - Persisting state (injected updateAssignmentState)
+ *
+ * @param material - Material content node
+ * @param compositeReplies - Current composite reply, if any
+ * @param updateAssignmentState - App-provided updater (Redux/API adapter)
+ * @param onAssignmentStateModified - Callback to call when the assignment state is modified
+ * @returns Array of React nodes for rendering
  */
 export function useAssignmentState(
+  workspace: Workspace,
   material: MaterialContentNode,
   compositeReplies?: MaterialCompositeReply,
-  onAssignmentStateModified?: () => void,
   updateAssignmentState?: (
     newState: MaterialCompositeReplyStateType,
     localOnly: boolean,
@@ -28,7 +45,8 @@ export function useAssignmentState(
     workspaceMaterialReplyId?: number,
     successText?: string,
     callback?: () => void
-  ) => void
+  ) => void,
+  onAssignmentStateModified?: () => void
 ): AssignmentStateReturn {
   const currentState = compositeReplies?.state ?? "UNANSWERED";
 
@@ -79,24 +97,12 @@ export function useAssignmentState(
         return;
       }
 
-      // Validate transition
-      /* if (
-        !AssignmentStateManager.isValidTransition(
-          material.assignmentType,
-          currentState,
-          newState
-        )
-      ) {
-        console.error(`Invalid transition from ${currentState} to ${newState}`);
-        return;
-      } */
-
-      // If we have an updateAssignmentState function, use it
+      // Update assignment state locally
       if (updateAssignmentState) {
         updateAssignmentState(
           newState,
           false, // localOnly = false (update server)
-          0, // This should come from workspace prop
+          workspace.id,
           material.workspaceMaterialId ?? 0,
           compositeReplies?.workspaceMaterialReplyId,
           stateConfig.successText,
@@ -107,6 +113,7 @@ export function useAssignmentState(
     [
       stateConfig,
       updateAssignmentState,
+      workspace.id,
       material.workspaceMaterialId,
       compositeReplies?.workspaceMaterialReplyId,
       onAssignmentStateModified,

@@ -9,12 +9,20 @@ import type {
 } from "../types";
 
 /**
- * Processes HTML into React nodes using the given rule set
- * Combines HTML preprocessing, processing rules, and React conversion
- * @param html - The HTML content to process
- * @param processingRules - The processing rules to apply
- * @param context - The context to use for processing
- * @returns The processed content as React components
+ * Converts material/simple HTML into React nodes.
+ *
+ * Owns:
+ * - HTML preprocessing (HTMLPreprocessor)
+ * - Applying the given processing rules (HTMLtoReactComponent)
+ *
+ * Does not own:
+ * - Which rules to use (caller passes them)
+ * - Assignment/answer/field state (passed in via optional context)
+ *
+ * @param html - Raw HTML string, or null
+ * @param processingRules - Rule package for this loader
+ * @param context - Optional processing context (material loaders pass MaterialProcessingContext)
+ * @returns Array of React nodes for rendering
  */
 export function useContentProcessor(
   html: string | null,

@@ -117,7 +117,11 @@ export interface MaterialProcessingContext extends Record<string, any> {
 
   // --- optional event handlers ---
   onAnswerChange?: (name: string, value: boolean) => void;
-  onValueChange?: (context: any, name: string, newValue: any) => void;
+  onValueChange?: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) => void;
 }
 
 export type MaterialRichContentContext =

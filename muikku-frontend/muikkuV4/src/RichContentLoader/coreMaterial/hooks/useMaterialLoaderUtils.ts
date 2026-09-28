@@ -2,9 +2,7 @@ import { useMemo } from "react";
 import type { MaterialContentNode } from "~/generated/client";
 
 /**
- * Use the material page type
- * @param material - The material
- * @returns The material page type
+ * Maps assignmentType → CSS page type token (exercise, assignment, theory, …).
  */
 export function useMaterialPageType(material: MaterialContentNode): string {
   return useMemo(() => {
@@ -24,10 +22,10 @@ export function useMaterialPageType(material: MaterialContentNode): string {
 }
 
 /**
- * Use the material visibility
- * @param material - The material
- * @param folder - The folder
- * @returns The material visibility
+ * Whether the material (or its folder) is hidden.
+ * @param material - Material content node
+ * @param folder - Folder content node
+ * @returns Whether the material (or its folder) is hidden
  */
 export function useMaterialVisibility(
   material: MaterialContentNode,
@@ -40,11 +38,12 @@ export function useMaterialVisibility(
 }
 
 /**
- * Use the material class name
- * @param material - The material
- * @param modifiers - The modifiers
- * @param folder - The folder
- * @returns The material class name
+ * Builds material-page className from page type, modifiers, and hidden state.
+ * Used by loader containers for the <article> wrapper.
+ * @param material - Material content node
+ * @param modifiers - Modifiers
+ * @param folder - Folder content node
+ * @returns Material class name
  */
 export function useMaterialClassName(
   material: MaterialContentNode,

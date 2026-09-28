@@ -18,13 +18,29 @@ import { resolveEvaluationSnapshotCapabilities } from "../coreMaterial/utils/res
 import { createSnapshotCapability } from "../coreMaterial/utils/createSnapshotCapability";
 
 /**
- * Main hook that orchestrates all EvaluationMaterialLoader functionality
- * Combines answer management, content processing, and configuration
- * @param material - The material to manage
- * @param workspace - The workspace to manage
- * @param compositeReplies - The composite replies to manage
- * @param assignment - The assignment to manage
- * @param config - The config to use for the evaluation material loader
+ * Evaluation orchestrator for EvaluationMaterialLoader.
+ *
+ * Composes:
+ * - useAnswerManager — registry for preprocess boxes / counts (when wired)
+ * - useContentProcessor + evaluation rules — HTML → React
+ * - Optional snapshots capability (policy + app take/delete handlers)
+ *
+ * Policy (fixed for evaluation):
+ * - readOnly, not answerable
+ * - answers always checked/visible for field UI
+ *
+ * Does not own:
+ * - Student submit/withdraw or field websocket saves
+ * - Snapshot API actions (injected snapshotHandlers)
+ * - Materials modifyState / UNANSWERED→ANSWERED side effects
+ *
+ * @param material
+ * @param workspace
+ * @param compositeReplies
+ * @param assignment
+ * @param config - Merged with evaluation defaults
+ * @param snapshotHandlers - Optional take/delete from evaluation feature
+ * @returns MaterialContentLoaderValue for EvaluationContentProvider
  */
 export function useEvaluationMaterialsLoader(
   material: MaterialContentNode,
@@ -38,7 +54,11 @@ export function useEvaluationMaterialsLoader(
   }
 ): MaterialContentLoaderValue {
   // Assignment state management
-  const assignmentState = useAssignmentState(material, compositeReplies);
+  const assignmentState = useAssignmentState(
+    workspace,
+    material,
+    compositeReplies
+  );
 
   // No assignment button machine on evaluation side (for now)
   const answerManager = useAnswerManager(

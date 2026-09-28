@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useContentProcessor } from "../core/hooks/useContentProcessor";
 import { createMaterialsRules } from "./rules";
 import { useAssignmentState } from "../coreMaterial/hooks/useAssignmentState";
@@ -11,20 +11,36 @@ import type {
 } from "../coreMaterial/types";
 import type {
   MaterialCompositeReply,
+  MaterialCompositeReplyStateType,
   MaterialContentNode,
   WorkspaceMaterial,
 } from "~/generated/client";
 import { useFieldManager } from "../coreMaterial/hooks/useFieldManager";
 
 /**
- * Main hook that orchestrates all MaterialLoader functionality
- * Combines state management, answer management, field management, and content processing
- * @param material - The material to manage
- * @param workspace - The workspace to manage
- * @param compositeReplies - The composite replies to manage
- * @param assignment - The assignment to manage
- * @param config - The config to use for the material loader
- * @param onModification - The callback to call when the material is modified
+ * Student/materials orchestrator for MaterialLoader.
+ *
+ * Composes:
+ * - useAssignmentState — reply state machine + submit button
+ * - useAnswerManager — correctness registry / show answers
+ * - useFieldManager — websocket save + sync
+ * - useContentProcessor + materials rules — HTML → React
+ *
+ * Additionally owns materials-specific side effects:
+ * - handleAnswerSynced: after save, if UNANSWERED → ANSWERED (localOnly)
+ * - handleModification: on edit, apply stateConfig.modifyState when needed (localOnly)
+ *
+ * Does not own:
+ * - How updateAssignmentState is implemented (injected from app)
+ * - Field/static component rendering (registry + stubs)
+ *
+ * @param material
+ * @param workspace
+ * @param compositeReplies
+ * @param assignment
+ * @param config
+ * @param updateAssignmentState - Required for submit + local state bumps when wired
+ * @returns MaterialContentLoaderValue for MaterialContentProvider
  */
 export function useMaterialsLoader(
   material: MaterialContentNode,
@@ -32,15 +48,24 @@ export function useMaterialsLoader(
   compositeReplies?: MaterialCompositeReply,
   assignment?: WorkspaceMaterial,
   config: MaterialLoaderConfig = {},
-  onModification?: () => void,
-  updateAssignmentState?: Parameters<typeof useAssignmentState>[3]
+  updateAssignmentState?: (
+    newState: MaterialCompositeReplyStateType,
+    localOnly: boolean,
+    workspaceId: number,
+    workspaceMaterialId: number,
+    workspaceMaterialReplyId?: number,
+    successText?: string,
+    callback?: () => void
+  ) => void,
+  onAssignmentStateModified?: () => void
 ): MaterialContentLoaderValue {
   // Create assignment state
   const assignmentState = useAssignmentState(
+    workspace,
     material,
     compositeReplies,
-    onModification,
-    updateAssignmentState
+    updateAssignmentState,
+    onAssignmentStateModified
   );
 
   // Create answer manager
@@ -51,8 +76,64 @@ export function useMaterialsLoader(
     config
   );
 
+  /**
+   * After a field answer is confirmed saved: bump UNANSWERED → ANSWERED locally
+   * (server already has the answer; no state API call).
+   */
+  const handleAnswerSynced = useCallback(() => {
+    if (!compositeReplies || compositeReplies.state === "UNANSWERED") {
+      updateAssignmentState?.(
+        "ANSWERED",
+        true, // localOnly — no server call (answer already saved)
+        workspace.id,
+        material.workspaceMaterialId ?? 0,
+        compositeReplies?.workspaceMaterialReplyId,
+        assignmentState.stateConfig?.successText
+      );
+    }
+  }, [
+    assignmentState.stateConfig?.successText,
+    compositeReplies,
+    material.workspaceMaterialId,
+    updateAssignmentState,
+    workspace.id,
+  ]);
+
+  /**
+   * When the student edits a field: if stateConfig.modifyState is set and
+   * current reply state differs, apply modifyState locally (e.g. exercise
+   * SUBMITTED → ANSWERED).
+   */
+  const handleModification = useCallback(() => {
+    const modifyState = assignmentState.stateConfig?.modifyState;
+    const currentState = compositeReplies?.state ?? "UNANSWERED";
+    if (modifyState && currentState !== modifyState) {
+      updateAssignmentState?.(
+        modifyState,
+        true, // localOnly
+        workspace.id,
+        material.workspaceMaterialId ?? 0,
+        compositeReplies?.workspaceMaterialReplyId,
+        assignmentState.stateConfig?.successText
+      );
+    }
+  }, [
+    assignmentState.stateConfig?.modifyState,
+    assignmentState.stateConfig?.successText,
+    compositeReplies?.state,
+    compositeReplies?.workspaceMaterialReplyId,
+    material.workspaceMaterialId,
+    updateAssignmentState,
+    workspace.id,
+  ]);
+
   // Field management
-  const fieldManager = useFieldManager(material, workspace);
+  const fieldManager = useFieldManager(
+    material,
+    workspace,
+    handleAnswerSynced,
+    handleModification
+  );
 
   // Create processing context
   const processingContext = useMemo<MaterialProcessingContext>(
@@ -66,10 +147,7 @@ export function useMaterialsLoader(
       checkAnswers: config.checkAnswers ?? answerManager.answersChecked,
       invisible: false,
       onAnswerChange: answerManager.handleAnswerChange,
-      onValueChange: (_ctx, _name, _value) => {
-        // TODO: useFieldManager.handleValueChange
-        onModification?.();
-      },
+      onValueChange: fieldManager.handleValueChange,
       answerRegistry: answerManager.answerRegistry,
     }),
     [
@@ -86,7 +164,7 @@ export function useMaterialsLoader(
       answerManager.answersChecked,
       answerManager.handleAnswerChange,
       answerManager.answerRegistry,
-      onModification,
+      fieldManager,
     ]
   );
 
