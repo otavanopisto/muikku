@@ -1,7 +1,7 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
-import Users from "./users";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import WorkspaceUsersApplication from "./body";
 
 /**
  * WorkspaceUsersBodyProps
@@ -24,7 +24,7 @@ const WorkspaceUsersBody = (props: WorkspaceUsersBodyProps) => {
         activeTrail="users"
         workspaceUrl={props.workspaceUrl}
       />
-      <Users />
+      <WorkspaceUsersApplication />
     </div>
   );
 };

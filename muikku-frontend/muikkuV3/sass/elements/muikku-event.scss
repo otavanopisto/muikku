@@ -1,0 +1,67 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.muikku-event {
+  border-left: 3px solid $color-default;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 5px 0 5px 5px;
+
+ &.state-REVIEWED {
+    border-color: $color-priority-normal;
+  }
+
+  
+  &.state-OVERDUE, 
+  &.state-REVIEW-PENDING {
+    animation: muikku-event-border 1s ease-in alternate infinite;
+    border-left: 3px solid $color-priority-high;
+  }
+}
+
+.muikku-event__date {
+  font-weight: normal;
+  padding: 5px 10px;
+}
+
+.muikku-event__header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.muikku-event__date-decoration {
+  padding: 0 5px;
+}
+
+.muikku-event__property {
+  background-color: $color-label-background;
+  padding: 10px;
+}
+
+.muikku-event__property-name {
+  font-weight: 600;
+}
+
+.muikku-event__property-value {
+  font-weight: normal;
+  padding-left: 5px;
+}
+
+.muikku-event__footer {
+  padding: 5px;
+}
+
+@keyframes muikku-event-border {
+  from {
+    border-left: 3px solid $color-priority-high;
+  }
+
+  to {
+    border-left: 3px solid $color-default;
+  }
+}

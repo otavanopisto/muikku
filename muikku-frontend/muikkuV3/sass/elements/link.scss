@@ -214,12 +214,32 @@
   &:last-child {
     margin-right: 0;
   }
-
+  
   &.selected {
     background-color: $color-info;
     color: $color-text-link-selected;
     cursor: not-allowed;
     font-weight: 600;
+  }
+}
+
+.link--workspace-absences-filter {
+  color: $color-default-contrast;
+  margin: 0 10px 0 0;
+  padding: 8px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:hover,
+  &.hover {
+    background-color: $color-link-hover-background;
+  }
+  
+  &.selected {
+    background-color: $color-item-list-item-aside-background-active;
+    color: $color-item-list-item-font-color-active;
   }
 }
 

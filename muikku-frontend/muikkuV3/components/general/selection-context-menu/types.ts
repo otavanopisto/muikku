@@ -1,0 +1,28 @@
+export type SelectionContext = {
+  text: string;
+  position: { x: number; y: number };
+  readAreaId: string | null;
+};
+
+export type SelectionActionRuntimeContext = {
+  text: string;
+  readAreaId: string | null;
+  restoreSelection: () => void;
+  getSavedRange: () => Range | null;
+  close: () => void;
+};
+export type SelectionContextAction = {
+  id: string;
+  label: string;
+  icon?: string;
+  title?: string;
+  disabled?: boolean;
+  isVisible?: (ctx: SelectionActionRuntimeContext) => boolean;
+  triggerOn?: "mousedown" | "click";
+  onAction: (ctx: SelectionActionRuntimeContext) => void;
+};
+
+export type TextSelectionPopoverState = {
+  open: boolean;
+  context: SelectionContext | null;
+};
