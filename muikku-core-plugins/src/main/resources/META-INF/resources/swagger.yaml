@@ -19141,6 +19141,7 @@ components:
         - isDefaultOrganization
         - services
         - educationTypeCode
+        - sysEnv
       properties:
         id:
           type: integer
@@ -19244,6 +19245,10 @@ components:
           type: string
           nullable: true
           description: Student's education type code, e.g. lukio or peruskoulu
+        sysEnv:
+          type: string
+          nullable: true
+          description: System environment the code is running on, e.g. dev-mynane
 
     UserWhoAmIServices:
       type: object

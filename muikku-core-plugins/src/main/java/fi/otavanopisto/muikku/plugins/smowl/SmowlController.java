@@ -35,22 +35,18 @@ public class SmowlController {
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
 
-  public void setActivity(Long workspaceFolderId, boolean enabled) {
-    if (workspaceFolderId == null) {
-      throw new IllegalArgumentException("workspaceFolderId not set.");
-    }
-
+  public void setActivity(String examIdentifier, boolean enabled) {
     // Name for this exam folder in Smowl
-    final String fieldName = ACTIVITY_TYPE + workspaceFolderId.toString();
+    final String fieldName = ACTIVITY_TYPE + examIdentifier;
 
     // Get the activity to get the state in Smowl
-    JsonNode activity = getActivity(workspaceFolderId);
+    JsonNode activity = getActivity(examIdentifier);
     boolean examExistsInSmowl = activity != null && activity.has(fieldName);
 
     if (!examExistsInSmowl) {
       // If exam doesn't exist in smowl but it should be enabled, do so
       if (enabled) {
-        addActivity(workspaceFolderId);
+        addActivity(examIdentifier);
       }
     }
     else {
@@ -60,16 +56,12 @@ public class SmowlController {
       boolean enabledInSmowl = examRecord.get("enabled").booleanValue();
       
       if (enabled != enabledInSmowl) {
-        modifyActivity(workspaceFolderId, enabled);
+        modifyActivity(examIdentifier, enabled);
       }
     }
   }
 
-  private JsonNode getActivity(Long workspaceFolderId) {
-    if (workspaceFolderId == null) {
-      throw new IllegalArgumentException("workspaceFolderId not set.");
-    }
-    
+  private JsonNode getActivity(String examIdentifier) {
     String smowlUrl = SMOWL_BASE_URL + "/configs/activeServices/get";
 
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
@@ -84,7 +76,7 @@ public class SmowlController {
     Form payload = new Form();
     
     payload.param("activityType", ACTIVITY_TYPE);
-    payload.param("activityId", workspaceFolderId.toString());
+    payload.param("activityId", examIdentifier);
         
     // Credentials
     
@@ -117,11 +109,8 @@ public class SmowlController {
     }
   }
   
-  private void addActivity(Long workspaceFolderId) {
-    if (workspaceFolderId == null) {
-      throw new IllegalArgumentException("workspaceFolderId not set.");
-    }
-    
+  private void addActivity(String examIdentifier) {
+    Long workspaceFolderId = Long.parseLong(StringUtils.substringAfterLast(examIdentifier, "-"));
     String smowlUrl = SMOWL_BASE_URL + "/configs/activeServices/addActivity";
 
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
@@ -149,8 +138,8 @@ public class SmowlController {
     Form payload = new Form();
     
     payload.param("activityType", ACTIVITY_TYPE);
-    payload.param("activityId", workspaceFolderId.toString());
-    payload.param("courseId", workspaceEntity.getId().toString());
+    payload.param("activityId", examIdentifier);
+    payload.param("courseId", String.format("%s-%d", systemSettingsController.getSetting("sys.env"), workspaceEntity.getId()));
     payload.param("numberUsers", "999");
     payload.param("startDate", formatter.format(startDateTime));
     payload.param("endDate", formatter.format(endDateTime));
@@ -180,11 +169,7 @@ public class SmowlController {
     }
   }
 
-  private void modifyActivity(Long workspaceFolderId, boolean enabled) {
-    if (workspaceFolderId == null) {
-      throw new IllegalArgumentException("workspaceFolderId not set.");
-    }
-    
+  private void modifyActivity(String examIdentifier, boolean enabled) {
     String smowlUrl = SMOWL_BASE_URL + "/configs/activeServices/modifyActivity";
 
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
@@ -194,19 +179,12 @@ public class SmowlController {
       throw new IllegalStateException("Smowl credentials are not set.");
     }
 
-    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
-    WorkspaceEntity workspaceEntity = workspaceNode != null ? workspaceMaterialController.findWorkspaceEntityByNode(workspaceNode) : null;
-    
-    if (workspaceEntity == null) {
-      throw new IllegalArgumentException("Smowl credentials are not set.");
-    }
-    
     // Payload
     
     Form payload = new Form();
     
     payload.param("activityType", ACTIVITY_TYPE);
-    payload.param("activityId", workspaceFolderId.toString());
+    payload.param("activityId", examIdentifier);
     payload.param("enable", enabled ? "true" : "false");
     
     if (enabled) {

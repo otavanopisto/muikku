@@ -58,7 +58,7 @@ public class SmowlRESTService extends AbstractRESTService {
 
   /*
   insert into SystemSetting (settingKey, settingValue) values ('smowl.entityName', ''), ('smowl.apiKey', ''), 
-    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', ''), ('smowl.entityName', '');
+    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', ''), ('smowl.entityName', ''), ('sys.env', '');
   */
   
   @POST
