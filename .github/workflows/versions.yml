@@ -3,7 +3,7 @@ on:
   push:
     branches: [versions-update-fixing]
 jobs:
-  release:
+  versions:
     env:
       OOM2_USER: ${{secrets.OOM2_USER}}
       OOM2_PASSWORD: ${{secrets.OOM2_PASSWORD}}
