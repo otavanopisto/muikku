@@ -74,14 +74,10 @@ export function createFieldParameters(
   }
 
   return {
-    // Parsed JSON is the real content; cast keeps stub/null paths typing-happy
     content: content,
     readOnly: context.readOnly,
     initialValue,
     onChange: context.onValueChange,
-    displayCorrectAnswers: context.displayCorrectAnswers,
-    checkAnswers: context.checkAnswers,
-    onAnswerChange: context.onAnswerChange,
     invisible: context.invisible,
     userId: 0,
   };

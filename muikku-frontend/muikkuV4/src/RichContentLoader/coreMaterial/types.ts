@@ -154,23 +154,16 @@ export interface Workspace {
 /**
  * Material-domain processing context (extends core's open context)
  */
-export interface MaterialProcessingContext extends Record<string, any> {
+export interface MaterialProcessingContext {
   material: MaterialContentNode;
   workspace: Workspace;
   compositeReplies?: MaterialCompositeReply;
   assignment?: WorkspaceMaterial;
-  readOnly: boolean;
-  answerable: boolean;
-  displayCorrectAnswers: boolean;
-  checkAnswers: boolean;
   invisible: boolean;
-  answerRegistry: Record<string, any>;
 
   // --- optional snapshot capabilities ---
   snapshots?: MaterialSnapshotCapability;
 
-  // --- optional event handlers ---
-  onAnswerChange?: (name: string, value: boolean) => void;
   onValueChange?: (
     context: React.Component<any, any>,
     name: string,

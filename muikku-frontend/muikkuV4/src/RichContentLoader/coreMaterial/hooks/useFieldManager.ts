@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useRef, useEffect } from "react";
+import { useCallback, useRef, useEffect, useMemo } from "react";
 import type { Workspace } from "../types";
 import { MuikkuWebsocket } from "src/utils/websocket";
 import type { MaterialContentNode } from "~/generated/client";
@@ -202,8 +202,11 @@ export function useFieldManager(
     []
   );
 
-  return {
-    handleValueChange,
-    nameContextRegistry: nameContextRegistry.current,
-  };
+  return useMemo(
+    () => ({
+      handleValueChange,
+      nameContextRegistry: nameContextRegistry.current,
+    }),
+    [handleValueChange]
+  );
 }

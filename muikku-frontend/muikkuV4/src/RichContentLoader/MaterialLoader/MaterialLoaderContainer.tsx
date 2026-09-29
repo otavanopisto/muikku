@@ -48,6 +48,7 @@ export function MaterialLoaderContainer(props: MaterialLoaderContainerProps) {
     id,
     className,
     children,
+    editing,
   } = props;
 
   const mergedConfig: MaterialLoaderConfig = {
@@ -69,6 +70,7 @@ export function MaterialLoaderContainer(props: MaterialLoaderContainerProps) {
         compositeReplies={compositeReplies}
         assignment={assignment}
         config={mergedConfig}
+        editing={editing}
       >
         {children}
       </MaterialLoaderCore>

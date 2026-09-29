@@ -50,6 +50,7 @@ export function EvaluationMaterialLoaderContainer(
     answerable: false, // <--- evaluation is always not answerable
     showAnswers: true, // <--- evaluation is always shows correct answers
     checkAnswers: true, // <--- evaluation is always checks answers
+    enableButtons: false,
   };
 
   const baseClassName = useMaterialClassName(material, modifiers, folder);

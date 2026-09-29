@@ -12,32 +12,33 @@ import type {
  * Converts material/simple HTML into React nodes.
  *
  * Owns:
- * - HTML preprocessing (HTMLPreprocessor)
- * - Applying the given processing rules (HTMLtoReactComponent)
+ * - HTML preprocessing (HTMLPreprocessor) — only when `html` changes
+ * - Applying processing rules (HTMLtoReactComponent)
  *
  * Does not own:
  * - Which rules to use (caller passes them)
- * - Assignment/answer/field state (passed in via optional context)
+ * - Assignment/answer/field state (optional context)
  *
- * @param html - Raw HTML string, or null
- * @param processingRules - Rule package for this loader
- * @param context - Optional processing context (material loaders pass MaterialProcessingContext)
- * @returns Array of React nodes for rendering
+ * Invariant: jQuery preprocess is gated on html identity (V3 Base behavior).
+ * React conversion may still re-run when `context` changes until Fix 2.
  */
 export function useContentProcessor(
   html: string | null,
   processingRules: EnhancedHTMLToReactComponentRule[],
   context?: RichContentProcessingContext
 ): React.ReactNode[] {
-  return useMemo(() => {
-    if (!html) return [];
-
-    // Preprocess HTML with jQuery (preserve existing logic)
+  // A) Preprocess only when HTML changes
+  const preprocessedElements = useMemo(() => {
+    if (!html) return [] as HTMLElement[];
     const $html = $(html);
-    const preprocessedElements = HTMLPreprocessor.preprocess($html).toArray();
-
-    return preprocessedElements.map((element, index) =>
-      HTMLtoReactComponent(element, processingRules, index, context)
-    );
-  }, [html, processingRules, context]);
+    return HTMLPreprocessor.preprocess($html).toArray();
+  }, [html]);
+  // B) Convert cached elements → React
+  return useMemo(
+    () =>
+      preprocessedElements.map((element, index) =>
+        HTMLtoReactComponent(element, processingRules, index, context)
+      ),
+    [preprocessedElements, processingRules, context]
+  );
 }

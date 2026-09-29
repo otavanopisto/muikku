@@ -5,9 +5,11 @@ import type {
   FieldComponentProps,
   FieldContent,
 } from "../types";
+import { FieldWithLiveProps } from "../fields/FieldWithLiveProps";
 
 /**
  * Creates a field React element from an object tag using an injectable registry.
+ * Live check/show props are resolved by FieldWithLiveProps from material context.
  */
 export function createFieldElement(
   element: HTMLElement,
@@ -17,7 +19,6 @@ export function createFieldElement(
 ): React.ReactElement {
   const fieldType = element.getAttribute("type") ?? "";
   const entry = registry[fieldType];
-
   if (!entry) {
     return (
       <span key={key}>
@@ -25,23 +26,22 @@ export function createFieldElement(
       </span>
     );
   }
-
   const parameters = entry.processor(element, context);
-
-  const componentProps: FieldComponentProps<FieldContent> = {
+  const stableKey = parameters.content?.name ?? key;
+  const fieldProps: FieldComponentProps<FieldContent> = {
     content: parameters.content,
+    // Structural / initial only — live flags come from FieldWithLiveProps
     readOnly: parameters.readOnly,
     initialValue: parameters.initialValue,
     onChange: parameters.onChange,
-    displayCorrectAnswers: parameters.displayCorrectAnswers,
-    checkAnswers: parameters.checkAnswers,
-    onAnswerChange: parameters.onAnswerChange,
     invisible: parameters.invisible,
     userId: parameters.userId,
   };
-
-  return React.createElement(entry.component, {
-    ...componentProps,
-    key,
-  });
+  return (
+    <FieldWithLiveProps
+      key={stableKey}
+      Field={entry.component}
+      fieldProps={fieldProps}
+    />
+  );
 }

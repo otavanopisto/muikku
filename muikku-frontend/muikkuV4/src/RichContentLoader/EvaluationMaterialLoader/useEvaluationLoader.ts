@@ -16,6 +16,7 @@ import type {
 import { useAssignmentState } from "../coreMaterial/hooks/useAssignmentState";
 import { resolveEvaluationSnapshotCapabilities } from "../coreMaterial/utils/resolveEvaluationSnapshotCapabilities";
 import { createSnapshotCapability } from "../coreMaterial/utils/createSnapshotCapability";
+import { resolveEffectiveLoaderFlags } from "../coreMaterial/utils/resolveEffectiveLoaderFlags";
 
 /**
  * Evaluation orchestrator for EvaluationMaterialLoader.
@@ -86,21 +87,10 @@ export function useEvaluationMaterialsLoader(
       material,
       workspace,
       compositeReplies,
-      readOnly: true, // <--- evaluation is always read only
-      answerable: false, // <--- evaluation is always not answerable
-      displayCorrectAnswers: true, // <--- evaluation is always shows correct answers
-      checkAnswers: true, // <--- evaluation is always checks answers
       invisible: false,
-      answerRegistry: answerManager.answerRegistry,
       snapshots: snapshotCapability,
     }),
-    [
-      material,
-      workspace,
-      compositeReplies,
-      answerManager.answerRegistry,
-      snapshotCapability,
-    ]
+    [material, workspace, compositeReplies, snapshotCapability]
   );
 
   // Create processing rules
@@ -113,17 +103,27 @@ export function useEvaluationMaterialsLoader(
     processingContext
   );
 
+  const { answersVisible, answersChecked } = answerManager;
+  const { readOnly, answerable } = assignmentState;
+
+  const effective = resolveEffectiveLoaderFlags(config, {
+    readOnly,
+    answerable,
+    answersVisible,
+    answersChecked,
+  });
+
   return {
     material,
     workspace,
     processedContent,
     config,
-    readOnly: true, // <--- evaluation is always read only
-    answerable: false, // <--- evaluation is always not answerable
+    readOnly: effective.readOnly,
+    answerable: effective.answerable,
 
     // what evaluation cares about: show/check answers
-    answersVisible: true, // <--- evaluation is always shows correct answers
-    answersChecked: true, // <--- evaluation is always checks answers
+    answersVisible: effective.answersVisible,
+    answersChecked: effective.answersChecked,
     answerRegistry: answerManager.answerRegistry,
 
     // optional data

@@ -19,6 +19,7 @@ import type {
 } from "~/generated/client";
 import { useFieldManager } from "../coreMaterial/hooks/useFieldManager";
 import { createEditingCapability } from "../coreMaterial/utils/createEditingCapability";
+import { resolveEffectiveLoaderFlags } from "../coreMaterial/utils/resolveEffectiveLoaderFlags";
 
 /**
  * Student/materials orchestrator for MaterialLoader.
@@ -142,31 +143,10 @@ export function useMaterialsLoader(
       material,
       workspace,
       compositeReplies,
-      readOnly: config.readOnly ?? assignmentState.readOnly,
-      answerable: config.answerable ?? assignmentState.answerable,
-      displayCorrectAnswers: config.showAnswers ?? answerManager.answersVisible,
-      checkAnswers: config.checkAnswers ?? answerManager.answersChecked,
       invisible: false,
-      onAnswerChange: answerManager.handleAnswerChange,
       onValueChange: fieldManager.handleValueChange,
-      answerRegistry: answerManager.answerRegistry,
     }),
-    [
-      material,
-      workspace,
-      compositeReplies,
-      config.readOnly,
-      config.answerable,
-      config.showAnswers,
-      config.checkAnswers,
-      assignmentState.readOnly,
-      assignmentState.answerable,
-      answerManager.answersVisible,
-      answerManager.answersChecked,
-      answerManager.handleAnswerChange,
-      answerManager.answerRegistry,
-      fieldManager,
-    ]
+    [material, workspace, compositeReplies, fieldManager.handleValueChange]
   );
 
   // Create editing capability
@@ -191,6 +171,13 @@ export function useMaterialsLoader(
   const { currentState, stateConfig, readOnly, answerable, buttonConfig } =
     assignmentState;
 
+  const effective = resolveEffectiveLoaderFlags(config, {
+    readOnly,
+    answerable,
+    answersVisible,
+    answersChecked,
+  });
+
   return {
     // Core data
     material,
@@ -201,12 +188,12 @@ export function useMaterialsLoader(
     // State
     currentState,
     stateConfig,
-    readOnly,
-    answerable,
+    readOnly: effective.readOnly,
+    answerable: effective.answerable,
     buttonConfig,
     // Answer management
-    answersVisible,
-    answersChecked,
+    answersVisible: effective.answersVisible,
+    answersChecked: effective.answersChecked,
     answerCheckable,
     answerRegistry,
 

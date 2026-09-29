@@ -18,6 +18,9 @@ import {
   getMaterialMediaPath,
   isAbsoluteUrl,
 } from "../utils/getMaterialMediaPath";
+import { ExercisesIncorrectStyleBox } from "../static/ExcercisesIncorrectStyleBox";
+import { ExercisesCorrectStyleBox } from "../static/ExcercisesCorrectStyleBox";
+import { DataShowBox } from "../static/DataShowBox";
 
 /**
  * Cast a context to a MaterialProcessingContext
@@ -46,33 +49,11 @@ export function createMaterialContentRules(): EnhancedHTMLToReactComponentRule[]
         element.getAttribute("data-show") !== null &&
         element.getAttribute("data-name") === "excercises-incorrect-style-box",
 
-      preprocessReactProperties: (
-        _tag,
-        props,
-        _children,
-        _element,
-        context
-      ) => {
-        const ctx = asMaterialContext(context);
-        if (!ctx) return;
-
-        // prerequisites for showing the box
-        if (ctx.checkAnswers && ctx.answerRegistry) {
-          // We get the correct answers
-          const correctAnswers = Object.keys(ctx.answerRegistry).filter(
-            (key) => ctx.answerRegistry[key]
-          ).length;
-
-          // And the total answers
-          const totalAnswers = Object.keys(ctx.answerRegistry).length;
-
-          // If there are incorrect answers, show the box, otherwise hide it
-          props["data-show"] =
-            correctAnswers !== totalAnswers ? "true" : "false";
-        } else {
-          props["data-show"] = "false";
-        }
-      },
+      processingFunction: (_tag, props, children) => (
+        <ExercisesIncorrectStyleBox key={props.key} {...props}>
+          {children}
+        </ExercisesIncorrectStyleBox>
+      ),
     },
 
     // Exercises correct box rule
@@ -82,33 +63,11 @@ export function createMaterialContentRules(): EnhancedHTMLToReactComponentRule[]
         tagname === "div" &&
         element.getAttribute("data-show") !== null &&
         element.getAttribute("data-name") === "excercises-correct-style-box",
-      preprocessReactProperties: (
-        _tag,
-        props,
-        _children,
-        _element,
-        context
-      ) => {
-        const ctx = asMaterialContext(context);
-        if (!ctx) return;
-
-        // prerequisites for showing the box
-        if (ctx.checkAnswers && ctx.answerRegistry) {
-          // We get the correct answers
-          const correctAnswers = Object.keys(ctx.answerRegistry).filter(
-            (key) => ctx.answerRegistry[key]
-          ).length;
-
-          // And the total answers
-          const totalAnswers = Object.keys(ctx.answerRegistry).length;
-
-          // If all answers are correct show the box, otherwise hide it
-          props["data-show"] =
-            correctAnswers === totalAnswers ? "true" : "false";
-        } else {
-          props["data-show"] = "false";
-        }
-      },
+      processingFunction: (_tag, props, children) => (
+        <ExercisesCorrectStyleBox key={props.key} {...props}>
+          {children}
+        </ExercisesCorrectStyleBox>
+      ),
     },
 
     // Generic data-show div processing
@@ -117,19 +76,11 @@ export function createMaterialContentRules(): EnhancedHTMLToReactComponentRule[]
       shouldProcessHTMLElement: (tagname, element) =>
         tagname === "div" && element.getAttribute("data-show") !== null,
 
-      preprocessReactProperties: (
-        _tag,
-        props,
-        _children,
-        _element,
-        context
-      ) => {
-        const ctx = asMaterialContext(context);
-        if (!ctx) return;
-
-        props["data-show"] =
-          ctx.checkAnswers && ctx.displayCorrectAnswers ? "true" : "false";
-      },
+      processingFunction: (_tag, props, children) => (
+        <DataShowBox key={props.key} {...props}>
+          {children}
+        </DataShowBox>
+      ),
     },
 
     // Iframe elements

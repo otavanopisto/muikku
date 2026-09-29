@@ -13,6 +13,8 @@ import type {
 import { MaterialContentProvider } from "../coreMaterial/MaterialContentProvider";
 import { useMaterialsLoader } from "./useMaterialsLoader";
 
+const EMPTY_CONFIG: MaterialLoaderConfig = {};
+
 /**
  * Props for MaterialLoaderCore
  */
@@ -38,8 +40,7 @@ export function MaterialLoaderCore({
   workspace,
   compositeReplies,
   assignment,
-  // eslint-disable-next-line react-x/no-unstable-default-props
-  config = {},
+  config,
   editing,
   children,
 }: MaterialLoaderCoreProps) {
@@ -49,7 +50,7 @@ export function MaterialLoaderCore({
     workspace,
     compositeReplies,
     assignment,
-    config,
+    config ?? EMPTY_CONFIG,
     undefined, // <-- TODO: add updateAssignmentState
     undefined, // <-- TODO: add onAssignmentStateModified
     editing?.config,
