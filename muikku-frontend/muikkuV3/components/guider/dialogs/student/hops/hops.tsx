@@ -122,9 +122,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
-  // Get the study programme name from the student info
-  const studyProgrammeName = studentInfo.studyProgrammeName;
-
   // Check if the HOPS form has changes
   const hopsFormHasChanges = React.useMemo(
     () => !_.isEqual(hops.hopsForm, hops.hopsEditing.hopsForm),
@@ -326,16 +323,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
           (curriculumConfig?.isMatrixAvailable ?? false)
         );
       case "MATRICULATION":
-        return [
-          "Nettilukio",
-          "Aikuislukio",
-          "Nettilukio/yksityisopiskelu (aineopintoina)",
-          "Aineopiskelu/yo-tutkinto",
-          "Aineopiskelu/lukio",
-          "Aineopiskelu/lukio (oppivelvolliset)",
-          "Aineopiskelu/valmistuneet",
-          "Kahden tutkinnon opinnot",
-        ].includes(studyProgrammeName);
+        return studentInfo.educationTypeCode === "lukio";
       default:
         return true;
     }

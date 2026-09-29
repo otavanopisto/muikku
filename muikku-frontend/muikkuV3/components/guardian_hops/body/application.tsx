@@ -23,17 +23,6 @@ import WebsocketWatcher from "~/components/hops/body/application/helper/websocke
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 import { initializeCurrentDependantEssentials } from "~/actions/main-function/guardian";
 
-const UPPERSECONDARY_PROGRAMMES = [
-  "Nettilukio",
-  "Aikuislukio",
-  "Nettilukio/yksityisopiskelu (aineopintoina)",
-  "Aineopiskelu/yo-tutkinto",
-  "Aineopiskelu/lukio",
-  "Aineopiskelu/lukio (oppivelvolliset)",
-  "Aineopiskelu/valmistuneet",
-  "Kahden tutkinnon opinnot",
-];
-
 /**
  * GuardianHopsTab. Restricted to only MATRICULATION tab and upcoming STUDYPLAN tab.
  */
@@ -157,12 +146,10 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
   // Returns whether section with given hash should be visible or not
   const isVisible = useCallback(
     (tab: Tab) => {
-      const selectUserStudyProgramme = selectedDependant?.studyProgrammeName;
-
       switch (tab.id) {
         case "MATRICULATION":
-          return UPPERSECONDARY_PROGRAMMES.includes(
-            selectUserStudyProgramme || ""
+          return (
+            currentDependant.dependantSelectedEducationTypeCode === "lukio"
           );
         case "STUDYPLAN":
           return (
@@ -173,7 +160,7 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
           return false;
       }
     },
-    [selectedDependant, currentDependantStudyData]
+    [currentDependant, currentDependantStudyData]
   );
 
   // Prepare dependants options
