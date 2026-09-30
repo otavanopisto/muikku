@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.search;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,9 +21,11 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.search.IndexedUser;
+import fi.otavanopisto.muikku.search.IndexedUserDependant;
 import fi.otavanopisto.muikku.search.IndexedUserStudyPeriod;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
@@ -132,6 +136,30 @@ public class UserIndexer {
               environmentRoles.contains(EnvironmentRoleArchetype.ADMINISTRATOR)) {
             String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
             indexedUser.setEmail(userDefaultEmailAddress);
+          }
+
+          // If the user is a guardian, save basic info on the dependants
+          if (environmentRoles.contains(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+            List<GuardiansDependent> guardiansDependents = userController.listGuardiansDependents(userIdentifier);
+            List<IndexedUserDependant> indexedDependants = new ArrayList<>();
+            for (GuardiansDependent guardiansDependent : guardiansDependents) {
+              SchoolDataIdentifier dependantIdentifier = guardiansDependent.getUserIdentifier();
+              
+              Set<Long> dependantsWorkspaces = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(dependantIdentifier)
+                  .stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
+              Set<Long> dependantsGroups = userGroupEntityController.listUserGroupsByUserIdentifier(dependantIdentifier)
+                  .stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
+              OffsetDateTime expiryDate = guardiansDependent.getExpiryDate() != null ? guardiansDependent.getExpiryDate().minusDays(1).atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime() : null;
+
+              indexedDependants.add(new IndexedUserDependant(
+                  guardiansDependent.getUserIdentifier().toId(),
+                  expiryDate,
+                  dependantsWorkspaces,
+                  dependantsGroups
+                )
+              );
+            }
+            indexedUser.setDependants(indexedDependants);
           }
         }
         

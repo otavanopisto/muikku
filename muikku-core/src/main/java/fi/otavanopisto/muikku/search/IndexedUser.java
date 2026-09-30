@@ -14,6 +14,8 @@ import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectType;
 
 @Indexable (
   indexName = IndexedUser.INDEX_NAME,
@@ -64,6 +66,12 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
     @IndexableFieldOption (
       name = "organizationIdentifier",
       type = IndexableFieldType.KEYWORD
+    )
+  },
+  subObjects = {
+    @IndexableSubObject (
+      name = "dependants",
+      type = IndexableSubObjectType.NESTED
     )
   }
 )
@@ -301,6 +309,14 @@ public class IndexedUser {
     this.birthday = birthday;
   }
 
+  public List<IndexedUserDependant> getDependants() {
+    return dependants;
+  }
+
+  public void setDependants(List<IndexedUserDependant> dependants) {
+    this.dependants = dependants;
+  }
+
   private String identifier;
   private String schoolDataSource;
   private String firstName;
@@ -328,4 +344,5 @@ public class IndexedUser {
   private Set<Long> groups;
   private List<IndexedUserStudyPeriod> studyPeriods;
   private LocalDate birthday;
+  private List<IndexedUserDependant> dependants;
 }
