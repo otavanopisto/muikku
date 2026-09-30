@@ -3780,6 +3780,28 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+          
+  /rest/evaluationNotes/note/{id}:
+    delete:
+      operationId: archiveEvaluationNote
+      summary: Archives selected evaluation note
+      tags:
+        - EvaluationNotes
+      parameters:
+        - name: id
+          in: path
+          description: Evaluation note id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Evaluation note deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   #MUIKKUEVENTS
   /rest/muikkuEvent/event:
