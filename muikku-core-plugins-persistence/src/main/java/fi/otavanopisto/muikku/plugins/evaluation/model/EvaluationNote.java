@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
     @Index (columnList = "userEntityId, workspaceEntityId")
   }
 )
+
 public class EvaluationNote {
 
   public Long getId() {
@@ -50,11 +51,9 @@ public class EvaluationNote {
     return type;
   }
 
-
   public void setType(NoteType type) {
     this.type = type;
   }
-
 
   public Date getCreated() {
     return created;
@@ -84,21 +83,17 @@ public class EvaluationNote {
     return lastModifier;
   }
 
-
   public void setLastModifier(Long lastModifier) {
     this.lastModifier = lastModifier;
   }
-
 
   public Date getLastModified() {
     return lastModified;
   }
 
-
   public void setLastModified(Date lastModified) {
     this.lastModified = lastModified;
   }
-
 
   public boolean isArchived() {
     return archived;
@@ -107,7 +102,6 @@ public class EvaluationNote {
   public void setArchived(boolean archived) {
     this.archived = archived;
   }
-
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
