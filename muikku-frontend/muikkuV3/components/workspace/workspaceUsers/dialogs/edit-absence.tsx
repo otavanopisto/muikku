@@ -7,10 +7,14 @@ import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { useDispatch } from "react-redux";
-import { AbsenceEventEnum } from "~/reducers/base/muikku-events";
 import { updateWorkspaceAbsenceEvent } from "~/actions/workspaces/";
-import { MuikkuEvent } from "~/generated/client";
+import { MuikkuEvent, MuikkuEventProperty } from "~/generated/client";
 import { displayNotification } from "~/actions/base/notifications";
+import AnimateHeight from "react-animate-height";
+import {
+  AbsenceEventEnum,
+  AbsenceReasonEnum,
+} from "~/reducers/base/muikku-events";
 
 /**
  * CreateAbsenceDialogProps
@@ -30,6 +34,8 @@ export interface AbsenceEventFormState {
   targetUser: number | null;
   type: AbsenceEventEnum;
   description: string;
+  absenceReason: AbsenceReasonEnum | null;
+  absenceReasonVisible: boolean;
   startDate: Date | null;
   endDate: Date | null;
 }
@@ -50,6 +56,14 @@ type AbsenceEventFormAction =
   | {
       type: "SET_END_DATE";
       payload: Date | null;
+    }
+  | {
+      type: "SHOW_ABSENCE_REASON";
+      payload: boolean;
+    }
+  | {
+      type: "SET_ABSENCE_REASON";
+      payload: AbsenceReasonEnum | null;
     };
 
 /**
@@ -74,6 +88,15 @@ const absenceEventFormReducer = (
 
     case "SET_END_DATE":
       return { ...state, endDate: action.payload };
+    case "SHOW_ABSENCE_REASON":
+      return {
+        ...state,
+        absenceReasonVisible: action.payload,
+        absenceReason: action.payload ? state.absenceReason : null,
+      };
+
+    case "SET_ABSENCE_REASON":
+      return { ...state, absenceReason: action.payload };
 
     default:
       return state;
@@ -90,17 +113,25 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
 ) => {
   const { children, onConfirm, absenceEvent } = props;
 
+  const currentAbsenceReason = absenceEvent.properties?.find(
+    (property) => property.name === "ABSENCE_REASON"
+  )?.value as AbsenceReasonEnum | null;
+
   /**
    * initialAbsenceEventFormState
    * @returns Initial absence event form state
    */
-
   const initialAbsenceEventFormState: AbsenceEventFormState = {
     targetUser: absenceEvent.userEntityId ?? null,
     type: (absenceEvent.title as AbsenceEventEnum) || AbsenceEventEnum.Lesson,
     description: absenceEvent.description ?? "",
     startDate: new Date(absenceEvent.start),
     endDate: new Date(absenceEvent.end),
+    absenceReason: currentAbsenceReason,
+    absenceReasonVisible:
+      absenceEvent.properties?.some(
+        (property) => property.name === "ABSENCE_REASON"
+      ) ?? false,
   };
 
   const [formState, dispatchForm] = useReducer(
@@ -138,6 +169,26 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
       return;
     }
 
+    const properties: MuikkuEventProperty[] = [
+      ...(absenceEvent.properties ?? []),
+    ];
+
+    if (formState.absenceReason) {
+      if (currentAbsenceReason) {
+        const currentAbsenceReasonIndex = properties.findIndex(
+          (property) => property.name === "ABSENCE_REASON"
+        );
+        if (currentAbsenceReasonIndex !== -1) {
+          properties[currentAbsenceReasonIndex].value = formState.absenceReason;
+        }
+      } else {
+        properties.push({
+          name: "ABSENCE_REASON",
+          value: formState.absenceReason,
+        } as MuikkuEventProperty);
+      }
+    }
+
     dispatch(
       updateWorkspaceAbsenceEvent(id, {
         title: formState.type,
@@ -146,6 +197,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
         start: formState.startDate?.toISOString(),
         end: formState.endDate?.toISOString(),
         eventContainerId,
+        properties,
       })
     );
     onConfirm?.(formState);
@@ -158,6 +210,19 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
    */
   const handleClose = (closeDialog?: () => void) => {
     closeDialog?.();
+  };
+
+  /**
+   * Toggles the absence reason field and clears it when hidden.
+   * @param event checkbox change event
+   */
+  const handleAbsenceReasonVisibleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    dispatchForm({
+      type: "SHOW_ABSENCE_REASON",
+      payload: event.target.checked,
+    });
   };
 
   /**
@@ -211,6 +276,54 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           }
         />
       </div>
+      <div className="form__row form__row--absence-event-reason">
+        <label htmlFor="absence-reason-visible">
+          {t("labels.absenceReasonVisible", {
+            ns: "events",
+            defaultValue: "Absence reason visible",
+          })}
+        </label>
+        <input
+          id="absence-reason-visible"
+          type="checkbox"
+          disabled={!!currentAbsenceReason}
+          checked={formState.absenceReasonVisible}
+          onChange={handleAbsenceReasonVisibleChange}
+        />
+
+        <AnimateHeight height={formState.absenceReasonVisible ? "auto" : 0}>
+          <div className="form__row form__row--absence-event">
+            <label htmlFor="absence-reason">
+              {t("labels.selectAbsenceReason", { ns: "events" })}
+            </label>
+            <select
+              id="absence-reason"
+              className="form-element__select"
+              value={formState.absenceReason ?? ""}
+              onChange={(event) =>
+                dispatchForm({
+                  type: "SET_ABSENCE_REASON",
+                  payload: event.target.value
+                    ? (event.target.value as AbsenceReasonEnum)
+                    : null,
+                })
+              }
+            >
+              <option disabled={!!currentAbsenceReason} value="">
+                {t("labels.select", { ns: "common" })}
+              </option>
+              {Object.values(AbsenceReasonEnum).map((reason) => (
+                <option key={reason} value={reason}>
+                  {t(`reasons.${reason}`, {
+                    ns: "events",
+                    defaultValue: reason,
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
+        </AnimateHeight>
+      </div>
       <div className="form__row form__row--absence-event">
         <label htmlFor="absence-start">
           {t("labels.eventBeginning", { ns: "events" })}
@@ -259,7 +372,7 @@ export const EditAbsenceDialog: React.FC<CreateAbsenceDialogProps> = (
           className="button button--execute button--standard-ok"
           onClick={() => handleConfirm(closeDialog)}
         >
-          {t("actions.create", { ns: "common" })}
+          {t("actions.save", { ns: "common" })}
         </Button>
         <Button
           className="button button--cancel button--standard-cancel"

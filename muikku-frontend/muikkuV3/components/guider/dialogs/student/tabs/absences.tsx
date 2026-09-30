@@ -9,6 +9,8 @@ import { useEventListSort } from "~/components/general/events/hooks/useEventList
 import { useAbsenceEventFilter } from "~/components/general/events/hooks/useAbsenceEventFilter";
 import { MuikkuEvent } from "~/generated/client";
 import NavigationAside from "./absences/aside";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * AbsencesProps
@@ -22,6 +24,7 @@ interface AbsencesProps {}
  */
 const Absences = (props: AbsencesProps) => {
   const { t, i18n } = useTranslation(["events", "common"]);
+  const isAtDesktopWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const absenceEvents = useSelector(
     (state: StateType) => state.guider?.currentStudent?.absenceEvents
   );
@@ -69,12 +72,14 @@ const Absences = (props: AbsencesProps) => {
         />
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body modifier="guider-absences-list">
-        <ApplicationSubPanel.Body.Aside>
-          <NavigationAside
-            setEventFilter={toggleFilter}
-            activeFilters={eventFilters}
-          />
-        </ApplicationSubPanel.Body.Aside>
+        {!isAtDesktopWidth && (
+          <ApplicationSubPanel.Body.Aside>
+            <NavigationAside
+              setEventFilter={toggleFilter}
+              activeFilters={eventFilters}
+            />
+          </ApplicationSubPanel.Body.Aside>
+        )}
         <ApplicationSubPanel.Body.Content>
           {sortedEvents.map((absence) => (
             <AbsenceEvent
