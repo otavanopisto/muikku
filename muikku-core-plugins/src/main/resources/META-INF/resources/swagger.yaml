@@ -3780,7 +3780,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-          
+
   /rest/evaluationNotes/note/{id}:
     delete:
       operationId: archiveEvaluationNote
@@ -15625,6 +15625,10 @@ components:
           description: last modified date
           type: string
           format: date-time
+        userEntityId:
+          description: The id of the student
+          type: integer
+          format: int64
         workspaceEntityId:
           description: The id of the workspace
           type: integer
