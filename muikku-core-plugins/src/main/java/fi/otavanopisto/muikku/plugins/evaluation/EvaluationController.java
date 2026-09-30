@@ -37,12 +37,14 @@ import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.EvaluationNoteDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.InterimEvaluationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceJournalFeedbackDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationAudioClipDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.EvaluationNote;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
@@ -52,6 +54,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationTy
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
@@ -180,6 +183,9 @@ public class EvaluationController {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private EvaluationNoteDAO evaluationNoteDAO;
 
   
   /* Workspace activity */
@@ -1127,7 +1133,27 @@ public class EvaluationController {
   public void deleteWorkspaceJournalFeedback(WorkspaceJournalFeedback journalFeedback) {
     workspaceJournalFeedbackDAO.delete(journalFeedback);
   }
+  
+  public EvaluationNote createEvaluationNote(Long workspaceEntityId, Long studentEntityId, Long creator, String note, NoteType type, Date created) {
+    return evaluationNoteDAO.create(studentEntityId, creator, workspaceEntityId, note, created, type);
+  }
+  
+  public List<EvaluationNote> listEvaluationNotesByStudentAndWorkspace(Long workspaceEntityId, Long studentEntityId) {
+    return evaluationNoteDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, false);
+  }
+  
+  public EvaluationNote updateEvaluationNote(EvaluationNote evaluationNote, String note, Long lastModifier, Date lastModified) {
+    return evaluationNoteDAO.update(evaluationNote, note, lastModifier, lastModified);
+  }
 
+  public EvaluationNote findEvaluationNoteById(Long evaluationNoteId) {
+    return evaluationNoteDAO.findById(evaluationNoteId);
+  }
+  
+  public void archiveEvaluationNote(EvaluationNote note) {
+    evaluationNoteDAO.setArchived(note, true);
+  }
+  
   private void sendInterimEvaluationRequestMessage(InterimEvaluationRequest interimEvaluationRequest) {
 
     // Gather message contents
