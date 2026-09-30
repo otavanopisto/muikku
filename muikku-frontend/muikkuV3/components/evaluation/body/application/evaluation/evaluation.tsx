@@ -26,6 +26,7 @@ import { useEvaluationState } from "~/components/evaluation/hooks/evaluation";
 import { useEvaluationLogic } from "~/components/evaluation/hooks/evaluation";
 import EvaluationExamsList from "./evaluation-exams-list";
 import UserLanguageProfile from "~/components/general/user-language-profile";
+import EvaluationNotesList from "./evaluation-notes-list";
 
 /**
  * CKEditorConfig
@@ -321,6 +322,8 @@ const Evaluation = (props: EvaluationDrawerProps) => {
         </header>
 
         <div className="evaluation-modal__content-wrapper">
+          <EvaluationNotesList selectedAssessment={selectedAssessment} />
+
           <EvaluationAssessmentList
             workspaces={workspaces}
             selectedAssessment={selectedAssessment}
