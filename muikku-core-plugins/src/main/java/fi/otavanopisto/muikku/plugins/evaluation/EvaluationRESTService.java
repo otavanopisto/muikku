@@ -2057,6 +2057,7 @@ public class EvaluationRESTService extends PluginRESTService {
     Boolean passing = compositeAssessmentRequest.getPassing();
     Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
     Boolean graded = evaluationDate != null;
+    Long evaluationNoteCount = 0L;
     if (userEntity != null) {
       SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
           userEntity.getId(),
@@ -2073,6 +2074,7 @@ public class EvaluationRESTService extends PluginRESTService {
         restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
         resolvedState = true;
       }
+      evaluationNoteCount = evaluationController.countByStudentAndWorkspace(userEntity.getId(), workspaceEntity.getId());
     }
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
@@ -2094,6 +2096,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
+    restAssessmentRequest.setEvaluationNoteCount(evaluationNoteCount);
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {

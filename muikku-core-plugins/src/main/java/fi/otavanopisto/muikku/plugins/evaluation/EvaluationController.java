@@ -1146,6 +1146,10 @@ public class EvaluationController {
     return evaluationNoteDAO.update(evaluationNote, note, lastModifier, lastModified);
   }
 
+  public Long countByStudentAndWorkspace(Long userEntityId, Long workspaceEntityId) {
+    return evaluationNoteDAO.countByStudentAndWorkspace(userEntityId, workspaceEntityId);
+  }
+  
   public EvaluationNote findEvaluationNoteById(Long evaluationNoteId) {
     return evaluationNoteDAO.findById(evaluationNoteId);
   }

@@ -54,6 +54,25 @@ public class EvaluationNoteDAO extends CorePluginsDAO<EvaluationNote> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public Long countByStudentAndWorkspace(Long student, Long workspaceEntityId) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<EvaluationNote> root = criteria.from(EvaluationNote.class);
+    
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(EvaluationNote_.userEntityId), student),
+            criteriaBuilder.equal(root.get(EvaluationNote_.workspaceEntityId), workspaceEntityId),
+            criteriaBuilder.equal(root.get(EvaluationNote_.archived), false)
+        )
+    );
+   
+    return entityManager.createQuery(criteria).getSingleResult();
+}
+  
   
   public EvaluationNote setArchived(EvaluationNote EvaluationNote, Boolean archived) {
     EvaluationNote.setArchived(archived);
