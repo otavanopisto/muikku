@@ -15462,6 +15462,8 @@ components:
           type: boolean
         state:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
+        evaluationNoteCount:
+          type: integer
 
     EvaluationSupplementationRequest:
       type: object

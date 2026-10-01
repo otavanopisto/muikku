@@ -151,7 +151,7 @@ public class EvaluationNoteRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    // List notes by creator
+    // List notes by workspace and student
     List<EvaluationNote> notes = evaluationController.listEvaluationNotesByStudentAndWorkspace(workspaceEntityId, userEntityId);
 
     List<EvaluationNoteRestModel> noteList = new ArrayList<EvaluationNoteRestModel>();
