@@ -2,7 +2,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocalStorage } from "usehooks-ts";
 import { CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
@@ -23,6 +23,8 @@ import { useTranslation } from "react-i18next";
 import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
+import { updateHopsEditingStudyPlan } from "~/actions/main-function/hops";
+import DeletePlannedCourseDialog from "~/components/hops/dialogs/delete-planned-course-dialog";
 
 /**
  * PlannerSidebarProps
@@ -440,11 +442,11 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             </PlannerCardLabel>
 
             {isPlannedCourse && (
-              <PlannerCardLabel modifiers={["planned"]}>
-                {t("labels.planned", {
-                  ns: "common",
-                })}
-              </PlannerCardLabel>
+              <PlannerCourseTrayPlannedLabel
+                subjectCode={subjectCode}
+                courseNumber={course.courseNumber}
+                canDelete={!courseState.state}
+              />
             )}
 
             {courseState.state && (
@@ -456,6 +458,85 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         </PlannerCardContent>
       </PlannerCard>
     </li>
+  );
+};
+
+/**
+ * PlannerCourseTrayPlannedLabelProps
+ */
+interface PlannerCourseTrayPlannedLabelProps {
+  subjectCode: string;
+  courseNumber: number;
+  canDelete: boolean;
+}
+
+/**
+ * Planned label for course tray items. Orphaned planned courses
+ * can be removed here because they are not visible on the timeline.
+ * @param props props
+ */
+const PlannerCourseTrayPlannedLabel: React.FC<
+  PlannerCourseTrayPlannedLabelProps
+> = (props) => {
+  const { subjectCode, courseNumber, canDelete } = props;
+  const { t } = useTranslation(["hops_new", "common"]);
+
+  const dispatch = useDispatch();
+  const hopsMode = useSelector((state: StateType) => state.hopsNew.hopsMode);
+  const plannedCourses = useSelector((state: StateType) =>
+    state.hopsNew.hopsMode === "READ"
+      ? state.hopsNew.hopsStudyPlanState.plannedCourses
+      : state.hopsNew.hopsEditing.plannedCourses
+  );
+
+  /**
+   * Handles remove from plan
+   */
+  const handleRemoveFromPlan = () => {
+    const plannedCourse = plannedCourses.find(
+      (course) =>
+        course.subjectCode === subjectCode &&
+        course.courseNumber === courseNumber
+    );
+
+    if (!plannedCourse) {
+      return;
+    }
+
+    dispatch(
+      updateHopsEditingStudyPlan({
+        updatedCourse: plannedCourse,
+        action: "delete",
+      })
+    );
+  };
+
+  return (
+    <PlannerCardLabel modifiers={["planned"]}>
+      {t("labels.planned", {
+        ns: "common",
+      })}
+      {canDelete && hopsMode !== "READ" && (
+        <DeletePlannedCourseDialog onDelete={handleRemoveFromPlan}>
+          <Dropdown
+            openByHover
+            content={
+              <p>
+                {t("actions.removeFromPlan", {
+                  ns: "hops_new",
+                })}
+              </p>
+            }
+          >
+            <IconButton
+              icon="cross"
+              buttonModifiers={["remove-from-plan"]}
+              disablePropagation
+            />
+          </Dropdown>
+        </DeletePlannedCourseDialog>
+      )}
+    </PlannerCardLabel>
   );
 };
 
