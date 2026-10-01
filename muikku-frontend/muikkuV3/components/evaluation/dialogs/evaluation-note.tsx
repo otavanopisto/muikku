@@ -40,6 +40,7 @@ const EvaluationNoteDialog: React.FC<EvaluationNoteDialogProps> = (props) => {
     useEvaluationNotes({
       userEntityId: evaluationAssessmentRequest.userEntityId,
       workspaceEntityId: evaluationAssessmentRequest.workspaceEntityId,
+      workspaceUserEntityId: evaluationAssessmentRequest.workspaceUserEntityId,
       enabled: isOpen,
     });
 

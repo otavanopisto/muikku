@@ -19,6 +19,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface DeleteEvaluationNoteProps extends WithTranslation {
   evaluationNote: EvaluationNote;
+  workspaceUserEntityId: number;
   deleteEvaluationNote: DeleteEvaluationNoteTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -64,6 +65,7 @@ class DeleteEvaluationNote extends React.Component<
 
     this.props.deleteEvaluationNote({
       noteId: evaluationNote.id,
+      workspaceUserEntityId: this.props.workspaceUserEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
       onSuccess: () => {
         localStorage.removeItem(

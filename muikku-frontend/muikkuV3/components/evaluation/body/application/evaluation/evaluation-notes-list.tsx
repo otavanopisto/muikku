@@ -98,7 +98,12 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
                 </Link>
 
                 {!evaluationNoteEditorOpen && (
-                  <DeleteEvaluationNote evaluationNote={evaluationNote}>
+                  <DeleteEvaluationNote
+                    evaluationNote={evaluationNote}
+                    workspaceUserEntityId={
+                      selectedAssessment.workspaceUserEntityId
+                    }
+                  >
                     <Link className="link link--evaluation link--evaluation-delete">
                       {t("actions.remove", { ns: "common" })}
                     </Link>
@@ -149,6 +154,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
           evaluationNote={evaluationNotes.data?.[0]}
           userEntityId={selectedAssessment.userEntityId}
           workspaceEntityId={selectedAssessment.workspaceEntityId}
+          workspaceUserEntityId={selectedAssessment.workspaceUserEntityId}
           onClose={handleEvaluationNoteEditorStateClick}
         />
       </SlideDrawer>
