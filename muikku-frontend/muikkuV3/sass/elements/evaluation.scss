@@ -779,3 +779,81 @@
   flex-shrink: 0;
   margin: 5px;
 }
+
+// evaluation-note card dialog
+.evaluation-note {
+  display: flex;
+  flex-direction: column;
+}
+
+.evaluation-note__body {
+  background: $color-evaluation-modal-meta-background;
+  border: 1px solid $color-panel-border-color;
+  border-radius: 2px;
+  font-size: 0.825rem;
+  padding: 10px;
+}
+
+.evaluation-note__meta {
+  align-items: center;
+  color: $color-default-contrast;
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 0.825rem;
+  padding: 5px 0;
+}
+
+.evaluation-note__meta-item {
+  align-items: center;
+  display: flex;
+  margin: 0 15px 0 0;
+}
+
+.evaluation-note__meta-label {
+  font-weight: 600;
+  margin: 0 5px 0 0;
+  padding: 4px 0;
+}
+
+.evaluation-note__meta-data {
+  padding: 4px 0;
+}
+
+.evaluation-note__actions {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  padding: 5px 0 0;
+
+  &--end {
+    justify-content: flex-end;
+  }
+}
+
+.evaluation-note__link {
+  color: $color-link-application-item-footer;
+  cursor: pointer;
+  font-size: 0.825rem;
+  text-decoration: underline;
+}
+
+.evaluation-note__link--delete {
+  color: $color-fatal;
+}
+
+.evaluation-note__confirm-text {
+  margin: 0 0 15px;
+}
+
+.evaluation-note--editor {
+  .cke {
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}

@@ -30,6 +30,7 @@ import {
 } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
 import { localize } from "~/locales/i18n";
+import EvaluationNoteDialog from "~/components/evaluation/dialogs/evaluation-note";
 
 /**
  * EvaluationCardProps
@@ -341,6 +342,16 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
               icon="evaluate"
             />
           </EvaluateDialog>
+
+          <EvaluationNoteDialog
+            evaluationAssessmentRequest={evaluationAssessmentRequest}
+          >
+            <ButtonPill
+              aria-label={t("labels.evaluationNote", { ns: "evaluation" })}
+              buttonModifiers="evaluation-note"
+              icon="note"
+            />
+          </EvaluationNoteDialog>
         </div>
       </EvaluationCardFooter>
     </div>
