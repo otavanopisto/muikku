@@ -113,7 +113,7 @@ const EvaluationNoteDialog: React.FC<EvaluationNoteDialogProps> = (props) => {
   return (
     <Dialog
       modifier="evaluation-note"
-      title={t("labels.evaluationNote", { ns: "evaluation" })}
+      title={t("labels.evaluationNotes", { ns: "evaluation" })}
       content={content}
       onOpen={handleOpen}
       onClose={handleClose}
@@ -218,14 +218,13 @@ const EvaluationNoteEmptyView: React.FC<EvaluationNoteEmptyViewProps> = (
       <div className="evaluation-note__body">
         <p>
           {t("content.empty", {
-            ns: "evaluation",
-            context: "evaluationNote",
+            ns: "notebook",
           })}
         </p>
       </div>
       <div className="evaluation-note__actions">
         <Link className="evaluation-note__link" onClick={onAdd}>
-          {t("actions.addEvaluationNote", { ns: "evaluation" })}
+          {t("actions.add", { ns: "notebook" })}
         </Link>
       </div>
     </div>
@@ -258,7 +257,7 @@ const EvaluationNoteReadonlyView: React.FC<EvaluationNoteReadonlyViewProps> = (
       <div className="evaluation-note__meta">
         <div className="evaluation-note__meta-item">
           <span className="evaluation-note__meta-label">
-            {t("labels.evaluationNoteCreationDate", { ns: "evaluation" })}
+            {`${t("labels.evaluationNoteCreationDate", { ns: "evaluation" })}:`}
           </span>
           <span className="evaluation-note__meta-data">
             {localize.date(note.created)}
@@ -267,10 +266,10 @@ const EvaluationNoteReadonlyView: React.FC<EvaluationNoteReadonlyViewProps> = (
         {note.lastModified && note.lastModifierName && (
           <div className="evaluation-note__meta-item">
             <span className="evaluation-note__meta-label">
-              {t("labels.evaluationNoteLastModified", { ns: "evaluation" })}
+              {`${t("labels.evaluationNoteLastModified", { ns: "evaluation" })}:`}
             </span>
             <span className="evaluation-note__meta-data">
-              {`${localize.date(note.lastModified)} ${note.lastModifierName}`}
+              {`${localize.date(note.lastModified)}, ${note.lastModifierName}`}
             </span>
           </div>
         )}

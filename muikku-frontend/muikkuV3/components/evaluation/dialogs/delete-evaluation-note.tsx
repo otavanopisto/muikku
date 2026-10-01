@@ -125,9 +125,8 @@ class DeleteEvaluationNote extends React.Component<
     return (
       <Dialog
         modifier="delete-journal"
-        title={this.props.t("actions.remove", {
+        title={this.props.t("labels.evaluationNoteDelete", {
           ns: "evaluation",
-          context: "evaluationNote",
         })}
         content={content}
         footer={footer}
