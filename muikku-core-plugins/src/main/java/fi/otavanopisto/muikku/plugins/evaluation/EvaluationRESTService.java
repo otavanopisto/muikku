@@ -2197,6 +2197,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(workspaceEntityName.getNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setState(WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST);
+    restAssessmentRequest.setEvaluationNoteCount(evaluationController.countByStudentAndWorkspace(userEntity == null ? null : userEntity.getId(), workspaceEntity.getId()));
 
     Workspace workspace = workspaceCache.get(workspaceEntity.getId());
     if (workspace == null) {
