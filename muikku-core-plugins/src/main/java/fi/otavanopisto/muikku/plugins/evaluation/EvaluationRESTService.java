@@ -1944,7 +1944,8 @@ public class EvaluationRESTService extends PluginRESTService {
         supplementationRequest.getWorkspaceEntityId(),
         supplementationRequest.getWorkspaceSubjectIdentifier(),
         supplementationRequest.getRequestDate(),
-        supplementationRequest.getRequestText());
+        supplementationRequest.getRequestText(),
+        evaluationController.countByStudentAndWorkspace(supplementationRequest.getUserEntityId(), supplementationRequest.getWorkspaceEntityId()));
 
     return restSupplementationRequest;
   }
@@ -2301,6 +2302,7 @@ public class EvaluationRESTService extends PluginRESTService {
         interimEvaluationRequest.getRequestDate(),
         interimEvaluationRequest.getCancellationDate(),
         interimEvaluationRequest.getRequestText(),
+        evaluationController.countByStudentAndWorkspace(interimEvaluationRequest.getUserEntityId(), interimEvaluationRequest.getWorkspaceEntityId()),
         interimEvaluationRequest.getArchived());
   }
 }

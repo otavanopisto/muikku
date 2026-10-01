@@ -15495,6 +15495,8 @@ components:
           type: string
         requestText:
           type: string
+        EvaluationNoteCount:
+          type: integer
 
     EvaluationEventType:
       type: string
@@ -16080,6 +16082,8 @@ components:
           format: date-time
         requestText:
           type: string
+        EvaluationNoteCount:
+          type: integer
         archived:
           type: boolean
 
