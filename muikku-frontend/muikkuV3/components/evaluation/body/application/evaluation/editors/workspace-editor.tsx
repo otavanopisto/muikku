@@ -18,7 +18,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
-import { CKEditorConfig } from "../evaluation";
+import { CKEditorConfig } from "~/components/evaluation/helper";
 import {
   EvaluationAssessmentRequest,
   EvaluationEventType,

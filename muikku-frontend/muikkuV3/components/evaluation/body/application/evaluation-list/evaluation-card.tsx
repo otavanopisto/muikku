@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import * as React from "react";
+import "~/sass/elements/indicator.scss";
 import ArchiveDialog from "../../../dialogs/archive";
 import EvaluateDialog from "../../../dialogs/evaluate";
 import DeleteRequestDialog from "../../../dialogs/delete-request";
@@ -30,6 +31,7 @@ import {
 } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
 import { localize } from "~/locales/i18n";
+import EvaluationNoteDialog from "~/components/evaluation/dialogs/evaluation-note";
 
 /**
  * EvaluationCardProps
@@ -326,6 +328,19 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             }
             icon="star-empty"
           />
+          <EvaluationNoteDialog
+            evaluationAssessmentRequest={evaluationAssessmentRequest}
+          >
+            <IconButton
+              aria-label={t("labels.evaluationNote", { ns: "evaluation" })}
+              buttonModifiers="evaluation-note"
+              icon="note"
+            >
+              {evaluationAssessmentRequest.evaluationNoteCount > 0 ? (
+                <span className="indicator indicator--evaluation-note" />
+              ) : null}
+            </IconButton>
+          </EvaluationNoteDialog>
         </div>
 
         <div className="evaluation-card__button-set">

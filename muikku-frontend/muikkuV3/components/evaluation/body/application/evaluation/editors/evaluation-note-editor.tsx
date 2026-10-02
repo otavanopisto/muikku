@@ -11,57 +11,61 @@ import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "~/components/evaluation/helper";
 import {
-  createOrUpdateEvaluationJournalFeedback,
-  CreateOrUpdateEvaluationJournalFeedbackTriggerType,
+  CreateEvaluationNoteTriggerType,
+  UpdateEvaluationNoteTriggerType,
+  createEvaluationNote,
+  updateEvaluationNote,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { EvaluationJournalFeedback } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { EvaluationNote } from "~/generated/client";
 
 /**
- * SupplementationEditorProps
+ * Evaluation Note Editor Props
  */
-interface JournalFeedbackEditorProps extends WithTranslation {
+interface EvaluationNoteEditorProps extends WithTranslation {
   locale: LocaleState;
-  journalFeedback?: EvaluationJournalFeedback;
+  evaluationNote?: EvaluationNote;
   userEntityId: number;
   workspaceEntityId: number;
+  workspaceUserEntityId: number;
   editorLabel?: string;
   modifiers?: string[];
-  createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFeedbackTriggerType;
+  createEvaluationNote: CreateEvaluationNoteTriggerType;
+  updateEvaluationNote: UpdateEvaluationNoteTriggerType;
   onClose?: () => void;
 }
 
 /**
- * SupplementationEditorState
+ * EvaluationNoteEditorState
  */
-interface JournalFeedbackEditorState {
-  feedbackText: string;
+interface EvaluationNoteEditorState {
+  noteText: string;
   draftId: string;
   locked: boolean;
+  mode: "edit" | "new";
 }
 
 /**
- * SupplementationEditor
+ * Evaluation Note Editor
  */
-class JournalFeedbackEditor extends SessionStateComponent<
-  JournalFeedbackEditorProps,
-  JournalFeedbackEditorState
+class EvaluationNoteEditor extends SessionStateComponent<
+  EvaluationNoteEditorProps,
+  EvaluationNoteEditorState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: JournalFeedbackEditorProps) {
+  constructor(props: EvaluationNoteEditorProps) {
     /**
-     * This is wierd one, setting namespace and identificated type for it from props...
-     * If existing journalFeedback is given, then we editor type is "edit" otherwise "new"
+     * If existing evaluationNote is given, then we editor type is "edit" otherwise "new"
      */
     super(
       props,
-      `diary-journalFeedback-${props.journalFeedback ? "edit" : "new"}`
+      `diary-evaluationNote-${props.evaluationNote ? "edit" : "new"}`
     );
 
-    const { userEntityId, workspaceEntityId, journalFeedback } = props;
+    const { userEntityId, workspaceEntityId, evaluationNote } = props;
 
     /**
      * When there is not existing event data we use only user id and workspace id as
@@ -70,19 +74,20 @@ class JournalFeedbackEditor extends SessionStateComponent<
      */
     let draftId = `${userEntityId}-${workspaceEntityId}`;
 
-    if (journalFeedback) {
-      draftId = `${userEntityId}-${workspaceEntityId}-${journalFeedback.id}`;
+    if (evaluationNote) {
+      draftId = `${userEntityId}-${workspaceEntityId}-${evaluationNote.id}`;
     }
 
     this.state = {
       ...this.getRecoverStoredState(
         {
-          feedbackText: journalFeedback ? journalFeedback.feedback : "",
+          noteText: evaluationNote ? evaluationNote.note : "",
           draftId,
         },
         draftId
       ),
       locked: false,
+      mode: evaluationNote ? "edit" : "new",
     };
   }
 
@@ -93,8 +98,8 @@ class JournalFeedbackEditor extends SessionStateComponent<
     this.setState(
       this.getRecoverStoredState(
         {
-          feedbackText: this.props.journalFeedback
-            ? this.props.journalFeedback.feedback
+          noteText: this.props.evaluationNote
+            ? this.props.evaluationNote.note
             : "",
         },
         this.state.draftId
@@ -103,22 +108,22 @@ class JournalFeedbackEditor extends SessionStateComponent<
   };
 
   /**
-   * Handle save click
+   * Creates evaluation note
    */
-  handleSaveClick = () => {
-    this.setState({
-      locked: true,
-    });
-
+  createEvaluationNote = () => {
     // Creates or updates feedback
-    this.props.createOrUpdateEvaluationJournalFeedback({
+    this.props.createEvaluationNote({
       userEntityId: this.props.userEntityId,
       workspaceEntityId: this.props.workspaceEntityId,
-      feedback: this.state.feedbackText,
+      workspaceUserEntityId: this.props.workspaceUserEntityId,
+      note: {
+        ...this.props.evaluationNote,
+        note: this.state.noteText,
+      },
       // eslint-disable-next-line jsdoc/require-jsdoc
-      success: () => {
+      onSuccess: () => {
         // Clears drafts
-        this.justClear(["feedbackText"], this.state.draftId);
+        this.justClear(["noteText"], this.state.draftId);
 
         this.setState(
           {
@@ -130,7 +135,7 @@ class JournalFeedbackEditor extends SessionStateComponent<
         );
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
-      fail: () => {
+      onFail: () => {
         this.setState({
           locked: false,
         });
@@ -139,11 +144,60 @@ class JournalFeedbackEditor extends SessionStateComponent<
   };
 
   /**
+   * Updates evaluation note
+   */
+  updateEvaluationNote = () => {
+    this.props.updateEvaluationNote({
+      userEntityId: this.props.userEntityId,
+      workspaceEntityId: this.props.workspaceEntityId,
+      note: {
+        ...this.props.evaluationNote,
+        note: this.state.noteText,
+      },
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      onSuccess: () => {
+        // Clears drafts
+        this.justClear(["noteText"], this.state.draftId);
+
+        this.setState(
+          {
+            locked: false,
+          },
+          () => {
+            this.props.onClose && this.props.onClose();
+          }
+        );
+      },
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      onFail: () => {
+        this.setState({
+          locked: false,
+        });
+      },
+    });
+  };
+
+  /**
+   * Handle save click
+   */
+  handleSaveClick = () => {
+    this.setState({
+      locked: true,
+    });
+
+    if (this.state.mode === "new") {
+      this.createEvaluationNote();
+    } else {
+      this.updateEvaluationNote();
+    }
+  };
+
+  /**
    * Handles ckeditor change
    * @param e e
    */
   handleCKEditorChange = (e: string) => {
-    this.setStateAndStore({ feedbackText: e }, this.state.draftId);
+    this.setStateAndStore({ noteText: e }, this.state.draftId);
   };
 
   /**
@@ -152,8 +206,7 @@ class JournalFeedbackEditor extends SessionStateComponent<
   handleDeleteEditorDraft = () => {
     this.setStateAndClear(
       {
-        feedbackText:
-          this.props.journalFeedback && this.props.journalFeedback.feedback,
+        noteText: this.props.evaluationNote && this.props.evaluationNote.note,
       },
       this.state.draftId
     );
@@ -174,7 +227,7 @@ class JournalFeedbackEditor extends SessionStateComponent<
               onChange={this.handleCKEditorChange}
               configuration={CKEditorConfig(this.props.locale.current)}
             >
-              {this.state.feedbackText}
+              {this.state.noteText}
             </CKEditor>
           </div>
         </div>
@@ -225,11 +278,11 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { createOrUpdateEvaluationJournalFeedback },
+    { createEvaluationNote, updateEvaluationNote },
     dispatch
   );
 }
 
 export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(JournalFeedbackEditor)
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationNoteEditor)
 );

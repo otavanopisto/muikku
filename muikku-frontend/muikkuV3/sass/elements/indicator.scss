@@ -43,3 +43,17 @@
 .indicator:empty {
   display: none;
 }
+
+.indicator--evaluation-note {
+  height: 8px;
+  max-width: 8px;
+  min-width: 8px;
+  padding: 0;
+  pointer-events: none;
+  right: 2px;
+  top: 2px;
+  
+  &:empty {
+    display: block;
+  }
+}

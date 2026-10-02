@@ -38,6 +38,7 @@ import {
   StudentCardsApi,
   ExamApi,
   LanguageProfileApi,
+  EvaluationNotesApi,
 } from "../generated/client";
 
 /**
@@ -205,6 +206,15 @@ export default class MApi {
    */
   public static getEvaluationApi() {
     return new EvaluationApi(configuration);
+  }
+
+  /**
+   * Get initialized EvaluationNotesApi API
+   *
+   * @returns initialized EvaluationNotesApi API
+   */
+  public static getEvaluationNotesApi() {
+    return new EvaluationNotesApi(configuration);
   }
 
   /**
