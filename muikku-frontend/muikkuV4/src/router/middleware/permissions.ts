@@ -8,6 +8,7 @@ import type {
   WorkspacePermissions,
 } from "src/services/permissions";
 import { type User } from "src/services/auth";
+import { isActiveUser, isLoggedIn } from "~/src/services/access";
 
 /**
  * Permission check configuration
@@ -53,7 +54,7 @@ export function createPermissionMiddleware(
     } = config;
 
     // Check authentication
-    if (requireAuth && !user?.loggedIn) {
+    if (requireAuth && !isLoggedIn(user)) {
       throw new Response("", {
         status: 302,
         headers: { Location: loginPath },
@@ -113,7 +114,7 @@ export const permissionMiddlewares = {
   homeView: createPermissionMiddleware({
     redirectPath: "/dashboard",
     customCheck(user) {
-      return !user?.loggedIn;
+      return !isLoggedIn(user);
     },
   }),
 
@@ -124,12 +125,15 @@ export const permissionMiddlewares = {
     requireAuth: true,
   }),
 
+  // Calendar view
+  calendarView: createPermissionMiddleware({
+    requireAuth: true,
+  }),
+
   // Communicator view
   communicatorView: createPermissionMiddleware({
     requireAuth: true,
-    customCheck(user) {
-      return user?.isActive ?? false;
-    },
+    customCheck: (user) => isActiveUser(user),
   }),
 
   // Coursepicker view

@@ -1,25 +1,26 @@
 import { Group, Text, Loader, Title } from "@mantine/core";
-import { currentStudentAtom } from "src/atoms/guider";
+import {
+  currentStudentDataAtom,
+  currentStudentIsLoadingAtom,
+} from "src/atoms/guider";
 import { useAtomValue } from "jotai";
 import { NavbarLink } from "src/components/NavbarLink/NavbarLink";
 
 /**
- * StudentNavigationContentProps - Props for student navigation content
+ * Student navigation content
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StudentNavigationContentProps {}
 
 /**
- * StudentNavigationContent - Dynamic content component for student-specific navigation
- * @param _props - StudentNavigationContentProps
- * @returns StudentNavigationContent component
+ * Student navigation content component
  */
 export function StudentNavigationContent(
   _props: StudentNavigationContentProps
 ) {
-  const currentStudent = useAtomValue(currentStudentAtom);
+  const isLoading = useAtomValue(currentStudentIsLoadingAtom);
+  const currentStudentData = useAtomValue(currentStudentDataAtom);
 
-  if (currentStudent.isLoading) {
+  if (isLoading) {
     return (
       <Group
         gap="sm"
@@ -33,9 +34,7 @@ export function StudentNavigationContent(
     );
   }
 
-  if (!currentStudent.data) return null;
-
-  const { data: currentStudentData } = currentStudent;
+  if (!currentStudentData) return null;
 
   return (
     <>
@@ -43,38 +42,44 @@ export function StudentNavigationContent(
         {currentStudentData.firstName} {currentStudentData.lastName}
       </Title>
 
-      {/* Student-specific sub-links */}
       <NavbarLink
+        variant="secondary"
         label="Perustiedot | Tilanne"
-        link={`/guider/${currentStudentData.id}/`}
+        link={`/guider/${currentStudentData.id}`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Aktiivisuus"
         link={`/guider/${currentStudentData.id}/activity`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Opiskelusuunnitelma (HOPS)"
         link={`/guider/${currentStudentData.id}/hops`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Oppimisen tuki"
         link={`/guider/${currentStudentData.id}/pedagogy-support`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Ohjaussuhde"
         link={`/guider/${currentStudentData.id}/guidance-relationship`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Opintohistoria"
         link={`/guider/${currentStudentData.id}/study-history`}
         exactMatch
       />
       <NavbarLink
+        variant="secondary"
         label="Tiedostot"
         link={`/guider/${currentStudentData.id}/files`}
         exactMatch
