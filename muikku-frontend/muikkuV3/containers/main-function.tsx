@@ -115,7 +115,11 @@ import { loadAllContactGroups } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
-import { Announcement, UserWhoAmI } from "~/generated/client";
+import {
+  Announcement,
+  GetGuiderStudentsPedagogyFormEnum,
+  UserWhoAmI,
+} from "~/generated/client";
 import {
   initializeHops,
   loadMatriculationData,
@@ -318,6 +322,9 @@ export default class MainFunction extends React.Component<
       { arrayFormat: "bracket" }
     );
 
+    const pedagogyFromHash = [].concat(originalData.p || []);
+    const decisionFromHash = [].concat(originalData.s || []);
+
     const filters: GuiderActiveFiltersType = {
       workspaceFilters: (originalData.w || []).map((num: string) =>
         parseInt(num)
@@ -327,6 +334,14 @@ export default class MainFunction extends React.Component<
         parseInt(num)
       ),
       query: originalData.q || "",
+      withPedagogyFormFilters: pedagogyFromHash.filter(
+        (v): v is GetGuiderStudentsPedagogyFormEnum =>
+          v === GetGuiderStudentsPedagogyFormEnum.Published ||
+          v === GetGuiderStudentsPedagogyFormEnum.Unpublished
+      ),
+      withSpecialEducationDecisionFilters: decisionFromHash
+        .filter((v) => v === "true" || v === "false")
+        .map((v) => v === "true"),
     };
     this.props.store.dispatch(loadStudents(filters) as Action);
     if (originalData.c) {

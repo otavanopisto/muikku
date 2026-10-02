@@ -72,10 +72,12 @@ import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageSender;
 import fi.otavanopisto.muikku.search.IndexedUser;
+import fi.otavanopisto.muikku.search.IndexedUserPedagogyFormState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.UserSearchQuery;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -249,29 +251,54 @@ public class ElasticSearchProvider implements SearchProvider {
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
       Date startedStudiesBefore, Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces) {
+    return searchUsers(new UserSearchQuery.Builder()
+        .organizations(organizations)
+        .studyProgrammeIdentifiers(studyProgrammeIdentifiers)
+        .text(text)
+        .textFields(textFields)
+        .roles(roles)
+        .groups(groups)
+        .workspaces(workspaces)
+        .userIdentifiers(userIdentifiers)
+        .includeInactiveStudents(includeInactiveStudents)
+        .includeHidden(includeHidden)
+        .onlyDefaultUsers(onlyDefaultUsers)
+        .start(start)
+        .maxResults(maxResults)
+        .resultFields(fields)
+        .excludeSchoolDataIdentifiers(excludeSchoolDataIdentifiers)
+        .startedStudiesBefore(startedStudiesBefore)
+        .studyTimeEndsBefore(studyTimeEndsBefore)
+        .joinGroupsAndWorkspaces(joinGroupsAndWorkspaces)
+        .build()
+    );
+  }    
+    
+  @Override
+  public SearchResult searchUsers(UserSearchQuery search) {
     try {
-      if (CollectionUtils.isEmpty(organizations)) {
+      if (CollectionUtils.isEmpty(search.getOrganizations())) {
         throw new IllegalArgumentException("Cannot search with no organizations specified.");
       }
 
-      text = sanitizeSearchString(text);
+      String text = sanitizeSearchString(search.getText());
 
       BoolQueryBuilder query = boolQuery();
 
-      if (!Boolean.TRUE.equals(includeHidden)) {
+      if (!Boolean.TRUE.equals(search.getIncludeHidden())) {
         query.mustNot(termQuery("hidden", true));
       }
 
-      if (Boolean.TRUE.equals(onlyDefaultUsers)) {
+      if (Boolean.TRUE.equals(search.getOnlyDefaultUsers())) {
         query.filter(termQuery("isDefaultIdentifier", true));
       }
 
-      if (StringUtils.isNotBlank(text) && !ArrayUtils.isEmpty(textFields)) {
+      if (StringUtils.isNotBlank(text) && !ArrayUtils.isEmpty(search.getTextFields())) {
         String[] words = text.split(" ");
         for (int i = 0; i < words.length; i++) {
           if (StringUtils.isNotBlank(words[i])) {
             BoolQueryBuilder fieldBuilder = boolQuery();
-            for (String textField : textFields) {
+            for (String textField : search.getTextFields()) {
               fieldBuilder.should(prefixQuery(textField, words[i]));
             }
             query.must(fieldBuilder);
@@ -279,33 +306,33 @@ public class ElasticSearchProvider implements SearchProvider {
         }
       }
 
-      if (excludeSchoolDataIdentifiers != null) {
+      if (search.getExcludeSchoolDataIdentifiers() != null) {
         IdsQueryBuilder excludeIdsQuery = idsQuery();
         
-        for (SchoolDataIdentifier excludeSchoolDataIdentifier : excludeSchoolDataIdentifiers) {
+        for (SchoolDataIdentifier excludeSchoolDataIdentifier : search.getExcludeSchoolDataIdentifiers()) {
           excludeIdsQuery.addIds(String.format("%s/%s", excludeSchoolDataIdentifier.getIdentifier(), excludeSchoolDataIdentifier.getDataSource()));
         }
         query.mustNot(excludeIdsQuery);
       }
 
-      if (startedStudiesBefore != null) {
-        query.filter(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
+      if (search.getStartedStudiesBefore() != null) {
+        query.filter(rangeQuery("studyStartDate").lt((long) search.getStartedStudiesBefore().getTime() / 1000));
       }
 
-      if (studyTimeEndsBefore != null) {
-        query.filter(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
+      if (search.getStudyTimeEndsBefore() != null) {
+        query.filter(rangeQuery("studyTimeEnd").lt((long) search.getStudyTimeEndsBefore().getTime() / 1000));
       }
 
-      if (roles != null) {
-        List<String> roleNames = new ArrayList<>(roles.size());
-        for (EnvironmentRoleArchetype role : roles) {
+      if (search.getRoles() != null) {
+        List<String> roleNames = new ArrayList<>(search.getRoles().size());
+        for (EnvironmentRoleArchetype role : search.getRoles()) {
           roleNames.add(archetypeToIndexString(role));
         }
 
         query.filter(termsQuery("roles", roleNames.toArray(new String[0])));
       }
 
-      Set<String> organizationIdentifiers = organizations
+      Set<String> organizationIdentifiers = search.getOrganizations()
           .stream()
           .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
           .collect(Collectors.toSet());
@@ -315,51 +342,62 @@ public class ElasticSearchProvider implements SearchProvider {
       
       // #6250: Limit search to given study programmes only (note that the search should only be about students in this case)
       
-      if (studyProgrammeIdentifiers != null && !studyProgrammeIdentifiers.isEmpty()) {
-        Set<String> studyProgrammeStrings = studyProgrammeIdentifiers.stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
+      if (CollectionUtils.isNotEmpty(search.getStudyProgrammeIdentifiers())) {
+        Set<String> studyProgrammeStrings = search.getStudyProgrammeIdentifiers().stream().map(SchoolDataIdentifier::toId).collect(Collectors.toSet());
         query.filter(termsQuery("studyProgrammeIdentifier", studyProgrammeStrings.toArray()));
       }
 
       // #6170: If both group and workspace filters have been provided, possibly treat them as a join rather than an intersection
       
-      if (groups != null && workspaces != null && joinGroupsAndWorkspaces) {
+      if (search.getGroups() != null && search.getWorkspaces() != null && search.isJoinGroupsAndWorkspaces()) {
         query.filter(
             boolQuery()
-            .should(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))))
-            .should(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))))
+            .should(termsQuery("groups", ArrayUtils.toPrimitive(search.getGroups().toArray(new Long[0]))))
+            .should(termsQuery("workspaces", ArrayUtils.toPrimitive(search.getWorkspaces().toArray(new Long[0]))))
           );
       }
       else {
-        if (groups != null) {
-          query.filter(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
+        if (search.getGroups() != null) {
+          query.filter(termsQuery("groups", ArrayUtils.toPrimitive(search.getGroups().toArray(new Long[0]))));
         }
 
-        if (workspaces != null) {
-          query.filter(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
+        if (search.getWorkspaces() != null) {
+          query.filter(termsQuery("workspaces", ArrayUtils.toPrimitive(search.getWorkspaces().toArray(new Long[0]))));
         }
       }
 
-      if (userIdentifiers != null) {
+      if (search.getUserIdentifiers() != null) {
         IdsQueryBuilder includeIdsQuery = idsQuery();
-        for (SchoolDataIdentifier userIdentifier : userIdentifiers) {
+        for (SchoolDataIdentifier userIdentifier : search.getUserIdentifiers()) {
           includeIdsQuery.addIds(String.format("%s/%s", userIdentifier.getIdentifier(), userIdentifier.getDataSource()));
         }
         query.filter(includeIdsQuery);
       }
 
-      if (includeInactiveStudents == false) {
+      if (search.getIncludeInactiveStudents() == false) {
         query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
       }
-      
+
+      // Pedagogy form filter can be null or empty in which case there's going to be no filtering based on the property (list all).
+      if (CollectionUtils.isNotEmpty(search.getHasPedagogyForm())) {
+        String[] states = search.getHasPedagogyForm().stream().map(IndexedUserPedagogyFormState::name).toArray(String[]::new);
+        query.filter(termsQuery("pedagogyFormState", states));
+      }
+
+      if (CollectionUtils.isNotEmpty(search.getHasDecisionOnSpecialEducation())) {
+        String[] states = search.getHasDecisionOnSpecialEducation().stream().map(b -> String.valueOf(b)).toArray(String[]::new);
+        query.filter(termsQuery("hasDecisionOnSpecialEducation", states));
+      }
+
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
-          .from(start)
-          .size(maxResults)
+          .from(search.getStart())
+          .size(search.getMaxResults())
           .sort("lastName.untouched", SortOrder.ASC)
           .sort("firstName.untouched", SortOrder.ASC);
 
-      if (CollectionUtils.isNotEmpty(fields)) {
-        fields.forEach(field -> searchSourceBuilder.fetchField(field)); // TODO Stored vs docfield vs fetchfield?
+      if (CollectionUtils.isNotEmpty(search.getResultFields())) {
+        search.getResultFields().forEach(field -> searchSourceBuilder.fetchField(field)); // TODO Stored vs docfield vs fetchfield?
       }
       
       SearchResponse response = searchRequest(MUIKKU_USER_INDEX, searchSourceBuilder);
@@ -380,7 +418,7 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
 
-      SearchResult result = new SearchResult(start, searchResults, totalHitCount);
+      SearchResult result = new SearchResult(search.getStart(), searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);

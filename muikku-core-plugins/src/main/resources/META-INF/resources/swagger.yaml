@@ -5980,6 +5980,21 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: pedagogyForm
+          in: query
+          description: List only students who either have or don't have a published pedagogy form
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [PUBLISHED, UNPUBLISHED]
+        - name: decisionOnSpecialEducation
+          in: query
+          description: List only students who either have or don't have a decision on special education. Only available for special education teachers.
+          schema:
+            type: array
+            items:
+              type: boolean
       responses:
         "200":
           description: Students
@@ -15696,6 +15711,7 @@ components:
         - hasImage
         - groupAdvisor
         - studyAdvisor
+        - specialEducationTeacher
         - properties
       properties:
         id:
@@ -15714,6 +15730,8 @@ components:
         groupAdvisor:
           type: boolean
         studyAdvisor:
+          type: boolean
+        specialEducationTeacher:
           type: boolean
         properties:
           $ref: "#/components/schemas/AnyValue"
@@ -19120,6 +19138,7 @@ components:
         - emails
         - hasImage
         - roles
+        - specialEducationTeacher
         - permissions
         - curriculumName
         - curriculumIdentifier
@@ -19185,6 +19204,10 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
+        specialEducationTeacher:
+          type: boolean
+          description: Is the user a special education teacher. Null when unspecified (user likely logged off)
+          nullable: true
         permissions:
           type: array
           nullable: true
