@@ -47,6 +47,7 @@ import {
   guiderSubItems,
 } from "../navigation/navigation";
 import { Calendar } from "../pages/Calendar";
+import { WorkspaceOverlayLayout } from "../layouts/WorkspaceOverlayLayout";
 
 // Router
 export const router = createBrowserRouter([
@@ -291,6 +292,7 @@ export const router = createBrowserRouter([
         },
         children: [
           {
+            element: <WorkspaceOverlayLayout />,
             errorElement: <ErrorBoundary />,
             children: [
               {
