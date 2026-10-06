@@ -16054,6 +16054,7 @@ components:
         - state
         - attendances
         - opintopolkuUrl
+        - flags
       properties:
         id:
           type: integer
@@ -16092,6 +16093,10 @@ components:
           format: date-time
         opintopolkuUrl:
           type: string
+        flags:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatriculationExamEnrollmentFlag"
 
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
@@ -16127,6 +16132,22 @@ components:
         - ENROLLMENT_CREATED
         - ENROLLMENT_UPDATED
         - STATE_CHANGED
+
+    MatriculationExamEnrollmentFlag:
+      description: Matriculation exam term, either autumn or spring
+      type: string
+      enum:
+        - EXTENDED_EXAM_TIME
+        - SEPARATE_GROUP_SPACE
+        - SEPARATE_STUDIO
+        - RESTING_SPACE
+        - VISION_IMPAIRED_SPACE
+        - PERMISSION_ENLARGED_FONT
+        - PERMISSION_BIGGER_MONITOR
+        - AUDIO_RESTRICTED_EXAM
+        - PERMISSION_ASSISTANT
+        - ADJUSTABLE_ERGONOMICS
+        - OTHER_SUPPORTIVE_ELEMENT
 
     MatriculationExam:
       type: object
@@ -18076,6 +18097,7 @@ components:
             - curriculumName
             - matriculationEligibility
             - under18
+            - externalViewLink
           properties:
             curriculumName:
               type: string
@@ -18084,6 +18106,9 @@ components:
               type: boolean
             under18:
               type: boolean
+            externalViewLink:
+              type: string
+              nullable: true
             permissions:
               type: object
               required:
@@ -18851,6 +18876,9 @@ components:
           description: The target user entity id of the event
           type: integer
           format: int64
+        targetUserName:
+          description: The name of the user the event applies to
+          type: string
         creatorEntityId:
           description: Creator entity id
           type: integer
