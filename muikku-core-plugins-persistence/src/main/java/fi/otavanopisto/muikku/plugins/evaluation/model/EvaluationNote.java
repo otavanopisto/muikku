@@ -47,14 +47,6 @@ public class EvaluationNote {
     this.note = note;
   }
 
-  public NoteType getType() {
-    return type;
-  }
-
-  public void setType(NoteType type) {
-    this.type = type;
-  }
-
   public Date getCreated() {
     return created;
   }
@@ -113,10 +105,6 @@ public class EvaluationNote {
   
   @Lob
   private String note;
-  
-  @Enumerated (EnumType.STRING)
-  @Column (nullable = false)
-  private NoteType type;
   
   @NotNull
   @Column(nullable = false)

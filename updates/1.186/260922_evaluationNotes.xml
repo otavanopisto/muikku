@@ -10,7 +10,6 @@
         lastModified datetime,
         lastModifier bigint,
         note longtext,
-        type varchar(255) not null,
         userEntityId bigint not null,
         workspaceEntityId bigint not null,
         primary key (id)
