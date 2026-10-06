@@ -71,6 +71,14 @@ export type EVALUATION_INTERMIN_REQUESTS_LOAD = SpecificActionType<
   InterimEvaluationRequest[]
 >;
 
+export type EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE = SpecificActionType<
+  "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+  {
+    workspaceUserEntityId: number;
+    delta: 1 | -1;
+  }
+>;
+
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
   "EVALUATION_REQUESTS_STATE_UPDATE",
   EvaluationStateType
@@ -760,6 +768,7 @@ export interface CreateEvaluationNoteTriggerType {
     note: EvaluationNote;
     userEntityId: number;
     workspaceEntityId: number;
+    workspaceUserEntityId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -784,6 +793,7 @@ export interface UpdateEvaluationNoteTriggerType {
 export interface DeleteEvaluationNoteTriggerType {
   (data: {
     noteId: number;
+    workspaceUserEntityId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -3226,7 +3236,14 @@ const createEvaluationNote: CreateEvaluationNoteTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { note, userEntityId, workspaceEntityId, onSuccess, onFail } = data;
+      const {
+        note,
+        userEntityId,
+        workspaceEntityId,
+        workspaceUserEntityId,
+        onSuccess,
+        onFail,
+      } = data;
 
       try {
         const newNote = await evaluationNotesApi.createOrUpdateEvaluationNote({
@@ -3240,6 +3257,14 @@ const createEvaluationNote: CreateEvaluationNoteTriggerType =
         dispatch({
           type: "EVALUATION_NOTES_CREATE",
           payload: newNote,
+        });
+
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+          payload: {
+            workspaceUserEntityId,
+            delta: 1, // create
+          },
         });
 
         onSuccess?.();
@@ -3322,7 +3347,7 @@ const deleteEvaluationNote: DeleteEvaluationNoteTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { noteId, onSuccess, onFail } = data;
+      const { noteId, workspaceUserEntityId, onSuccess, onFail } = data;
 
       try {
         await evaluationNotesApi.archiveEvaluationNote({
@@ -3332,6 +3357,14 @@ const deleteEvaluationNote: DeleteEvaluationNoteTriggerType =
         dispatch({
           type: "EVALUATION_NOTES_DELETE",
           payload: noteId,
+        });
+
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+          payload: {
+            workspaceUserEntityId,
+            delta: -1, // delete
+          },
         });
 
         onSuccess?.();

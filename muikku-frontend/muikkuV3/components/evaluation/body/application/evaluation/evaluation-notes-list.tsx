@@ -49,7 +49,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
   return (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
-        {t("labels.evaluationNote", { ns: "evaluation" })}
+        {t("labels.evaluationNotes", { ns: "evaluation" })}
       </div>
 
       {evaluationNoteIsReady ? (
@@ -64,9 +64,9 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
               <div className="evaluation-modal__item-meta">
                 <div className="evaluation-modal__item-meta-item">
                   <span className="evaluation-modal__item-meta-item-label">
-                    {t("labels.evaluationNoteCreationDate", {
+                    {`${t("labels.evaluationNoteCreationDate", {
                       ns: "evaluation",
-                    })}
+                    })}:`}
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
                     {localize.date(evaluationNote.created)}
@@ -76,14 +76,14 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
                   evaluationNote.lastModifierName && (
                     <div className="evaluation-modal__item-meta-item">
                       <span className="evaluation-modal__item-meta-item-label">
-                        {t("labels.evaluationNoteLastModified", {
+                        {`${t("labels.evaluationNoteLastModified", {
                           ns: "evaluation",
                           date: localize.date(evaluationNote.lastModified),
                           name: evaluationNote.lastModifierName,
-                        })}
+                        })}:`}
                       </span>
                       <span className="evaluation-modal__item-meta-item-data">
-                        {`${localize.date(evaluationNote.lastModified)} ${evaluationNote.lastModifierName}`}
+                        {`${localize.date(evaluationNote.lastModified)}, ${evaluationNote.lastModifierName}`}
                       </span>
                     </div>
                   )}
@@ -98,9 +98,14 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
                 </Link>
 
                 {!evaluationNoteEditorOpen && (
-                  <DeleteEvaluationNote evaluationNote={evaluationNote}>
+                  <DeleteEvaluationNote
+                    evaluationNote={evaluationNote}
+                    workspaceUserEntityId={
+                      selectedAssessment.workspaceUserEntityId
+                    }
+                  >
                     <Link className="link link--evaluation link--evaluation-delete">
-                      {t("actions.remove", { ns: "common" })}
+                      {t("actions.remove", { ns: "notebook" })}
                     </Link>
                   </DeleteEvaluationNote>
                 )}
@@ -113,8 +118,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
               <div className="evaluation-modal__item-body rich-text">
                 <p>
                   {t("content.empty", {
-                    ns: "evaluation",
-                    context: "evaluationNote",
+                    ns: "notebook",
                   })}
                 </p>
               </div>
@@ -124,7 +128,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
                   onClick={handleEvaluationNoteEditorStateClick}
                   disabled={evaluationNoteEditorOpen}
                 >
-                  {t("actions.addEvaluationNote", { ns: "evaluation" })}
+                  {t("actions.add", { ns: "notebook" })}
                 </Link>
               </div>
             </div>
@@ -149,6 +153,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
           evaluationNote={evaluationNotes.data?.[0]}
           userEntityId={selectedAssessment.userEntityId}
           workspaceEntityId={selectedAssessment.workspaceEntityId}
+          workspaceUserEntityId={selectedAssessment.workspaceUserEntityId}
           onClose={handleEvaluationNoteEditorStateClick}
         />
       </SlideDrawer>

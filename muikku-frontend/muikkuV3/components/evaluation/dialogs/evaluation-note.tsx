@@ -40,6 +40,7 @@ const EvaluationNoteDialog: React.FC<EvaluationNoteDialogProps> = (props) => {
     useEvaluationNotes({
       userEntityId: evaluationAssessmentRequest.userEntityId,
       workspaceEntityId: evaluationAssessmentRequest.workspaceEntityId,
+      workspaceUserEntityId: evaluationAssessmentRequest.workspaceUserEntityId,
       enabled: isOpen,
     });
 
@@ -60,6 +61,53 @@ const EvaluationNoteDialog: React.FC<EvaluationNoteDialogProps> = (props) => {
   };
 
   /**
+   * Handle start new note process
+   */
+  const handleStartNew = () => {
+    setMode("new");
+  };
+
+  /**
+   * Handle start editing process
+   */
+  const handleStartEditing = () => {
+    setMode("edit");
+  };
+
+  /**
+   * Handle start deleting process
+   */
+  const handleStartDeleting = () => {
+    setMode("delete");
+  };
+
+  /**
+   * Handle save click
+   * @param noteText Note text
+   */
+  const handleSave = async (noteText: string) => {
+    if (mode === "new") await createNote(noteText);
+    else if (firstNote) await updateNote(firstNote, noteText);
+    setMode("readonly");
+  };
+
+  /**
+   * Handle confirm delete click
+   */
+  const handleConfirmDelete = async () => {
+    if (!firstNote) return;
+    await deleteNote(firstNote.id);
+    setMode("readonly");
+  };
+
+  /**
+   * Handle cancel click
+   */
+  const handleCancel = () => {
+    setMode("readonly");
+  };
+
+  /**
    * Get content
    * @returns Content
    */
@@ -76,35 +124,27 @@ const EvaluationNoteDialog: React.FC<EvaluationNoteDialogProps> = (props) => {
             mode={mode}
             evaluationNote={mode === "edit" ? firstNote : undefined}
             locked={isSaving}
-            onSave={async (noteText) => {
-              if (mode === "new") await createNote(noteText);
-              else if (firstNote) await updateNote(firstNote, noteText);
-              setMode("readonly");
-            }}
-            onCancel={() => setMode("readonly")}
+            onSave={handleSave}
+            onCancel={handleCancel}
           />
         );
       case "delete":
         return (
           <EvaluationNoteDeleteView
             locked={isSaving}
-            onConfirm={async () => {
-              if (!firstNote) return;
-              await deleteNote(firstNote.id);
-              setMode("readonly");
-            }}
-            onCancel={() => setMode("readonly")}
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCancel}
           />
         );
       default:
         return firstNote ? (
           <EvaluationNoteReadonlyView
             note={firstNote}
-            onEdit={() => setMode("edit")}
-            onDelete={() => setMode("delete")}
+            onEdit={handleStartEditing}
+            onDelete={handleStartDeleting}
           />
         ) : (
-          <EvaluationNoteEmptyView onAdd={() => setMode("new")} />
+          <EvaluationNoteEmptyView onAdd={handleStartNew} />
         );
     }
   };
@@ -112,7 +152,7 @@ const EvaluationNoteDialog: React.FC<EvaluationNoteDialogProps> = (props) => {
   return (
     <Dialog
       modifier="evaluation-note"
-      title={t("labels.evaluationNote", { ns: "evaluation" })}
+      title={t("labels.evaluationNotes", { ns: "evaluation" })}
       content={content}
       onOpen={handleOpen}
       onClose={handleClose}
@@ -149,14 +189,10 @@ const EvaluationNoteDialogEditor: React.FC<EvaluationNoteDialogEditorProps> = (
   );
 
   /**
-   *
+   * Handle save click
    */
   const handleSaveClick = async () => {
-    try {
-      await onSave(noteText);
-    } catch {
-      // Hook already shows the notification; stay in edit/new
-    }
+    await onSave(noteText);
   };
   return (
     <div className="evaluation-note evaluation-note--editor">
@@ -217,14 +253,13 @@ const EvaluationNoteEmptyView: React.FC<EvaluationNoteEmptyViewProps> = (
       <div className="evaluation-note__body">
         <p>
           {t("content.empty", {
-            ns: "evaluation",
-            context: "evaluationNote",
+            ns: "notebook",
           })}
         </p>
       </div>
       <div className="evaluation-note__actions">
         <Link className="evaluation-note__link" onClick={onAdd}>
-          {t("actions.addEvaluationNote", { ns: "evaluation" })}
+          {t("actions.add", { ns: "notebook" })}
         </Link>
       </div>
     </div>
@@ -257,7 +292,7 @@ const EvaluationNoteReadonlyView: React.FC<EvaluationNoteReadonlyViewProps> = (
       <div className="evaluation-note__meta">
         <div className="evaluation-note__meta-item">
           <span className="evaluation-note__meta-label">
-            {t("labels.evaluationNoteCreationDate", { ns: "evaluation" })}
+            {`${t("labels.evaluationNoteCreationDate", { ns: "evaluation" })}:`}
           </span>
           <span className="evaluation-note__meta-data">
             {localize.date(note.created)}
@@ -266,10 +301,10 @@ const EvaluationNoteReadonlyView: React.FC<EvaluationNoteReadonlyViewProps> = (
         {note.lastModified && note.lastModifierName && (
           <div className="evaluation-note__meta-item">
             <span className="evaluation-note__meta-label">
-              {t("labels.evaluationNoteLastModified", { ns: "evaluation" })}
+              {`${t("labels.evaluationNoteLastModified", { ns: "evaluation" })}:`}
             </span>
             <span className="evaluation-note__meta-data">
-              {`${localize.date(note.lastModified)} ${note.lastModifierName}`}
+              {`${localize.date(note.lastModified)}, ${note.lastModifierName}`}
             </span>
           </div>
         )}
@@ -311,11 +346,7 @@ const EvaluationNoteDeleteView: React.FC<EvaluationNoteDeleteViewProps> = (
    * Handle confirm click
    */
   const handleConfirmClick = async () => {
-    try {
-      await onConfirm();
-    } catch {
-      // Hook already shows the notification; stay in delete
-    }
+    await onConfirm();
   };
   return (
     <div className="evaluation-note evaluation-note--confirm">

@@ -14,6 +14,7 @@ const evaluationNotesApi = MApi.getEvaluationNotesApi();
 interface UseEvaluationNotesProps {
   userEntityId: number;
   workspaceEntityId: number;
+  workspaceUserEntityId: number;
   enabled: boolean;
 }
 
@@ -23,7 +24,8 @@ interface UseEvaluationNotesProps {
  * @returns Evaluation notes
  */
 export const useEvaluationNotes = (props: UseEvaluationNotesProps) => {
-  const { userEntityId, workspaceEntityId, enabled } = props;
+  const { userEntityId, workspaceEntityId, workspaceUserEntityId, enabled } =
+    props;
   const dispatch = useDispatch();
   const { t } = useTranslation("evaluation");
 
@@ -76,6 +78,14 @@ export const useEvaluationNotes = (props: UseEvaluationNotesProps) => {
         },
       });
       setNotes((prev) => [...prev, created]);
+
+      dispatch({
+        type: "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+        payload: {
+          workspaceUserEntityId,
+          delta: 1, // create
+        },
+      });
     } catch (err) {
       if (!isMApiError(err)) throw err;
       dispatch(
@@ -132,6 +142,14 @@ export const useEvaluationNotes = (props: UseEvaluationNotesProps) => {
     try {
       await evaluationNotesApi.archiveEvaluationNote({ id: noteId });
       setNotes((prev) => prev.filter((note) => note.id !== noteId));
+
+      dispatch({
+        type: "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+        payload: {
+          workspaceUserEntityId,
+          delta: -1, // delete
+        },
+      });
     } catch (err) {
       if (!isMApiError(err)) throw err;
       dispatch(
@@ -140,6 +158,7 @@ export const useEvaluationNotes = (props: UseEvaluationNotesProps) => {
           "error"
         )
       );
+
       throw err;
     } finally {
       setIsSaving(false);

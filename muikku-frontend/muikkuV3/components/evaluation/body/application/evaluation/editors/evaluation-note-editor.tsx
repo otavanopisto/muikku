@@ -27,6 +27,7 @@ interface EvaluationNoteEditorProps extends WithTranslation {
   evaluationNote?: EvaluationNote;
   userEntityId: number;
   workspaceEntityId: number;
+  workspaceUserEntityId: number;
   editorLabel?: string;
   modifiers?: string[];
   createEvaluationNote: CreateEvaluationNoteTriggerType;
@@ -114,6 +115,7 @@ class EvaluationNoteEditor extends SessionStateComponent<
     this.props.createEvaluationNote({
       userEntityId: this.props.userEntityId,
       workspaceEntityId: this.props.workspaceEntityId,
+      workspaceUserEntityId: this.props.workspaceUserEntityId,
       note: {
         ...this.props.evaluationNote,
         note: this.state.noteText,

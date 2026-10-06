@@ -611,6 +611,26 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
+    case "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE":
+      return {
+        ...state,
+        evaluationRequests: {
+          ...state.evaluationRequests,
+          data: state.evaluationRequests.data?.map((request) =>
+            request.workspaceUserEntityId ===
+            action.payload.workspaceUserEntityId
+              ? {
+                  ...request,
+                  evaluationNoteCount: Math.max(
+                    0,
+                    (request.evaluationNoteCount ?? 0) + action.payload.delta
+                  ),
+                }
+              : request
+          ),
+        },
+      };
+
     default:
       return state;
   }
