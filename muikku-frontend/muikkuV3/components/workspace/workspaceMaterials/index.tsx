@@ -5,7 +5,6 @@ import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
 import Tabs, { Tab } from "~/components/general/tabs";
-import NoteBook from "~/components/general/note-book/note-book";
 import {
   DndProvider,
   MouseTransition,
@@ -20,6 +19,9 @@ import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialEditorV2 } from "~/components/base/material-editorV2";
+import Notebook from "~/components/general/notebook/notebook";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -129,7 +131,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         name: this.props.t("labels.notes", { ns: "materials" }),
         component: (
           <DndProvider options={HTML5toTouch}>
-            <NoteBook />
+            <Notebook />
           </DndProvider>
         ),
       });
@@ -180,10 +182,17 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators({}, dispatch);
+}
 const componentWithTranslation = withTranslation("materials", {
   withRef: true,
 })(WorkspaceMaterialsBody);
 
-export default connect(mapStateToProps, null, null, {
+export default connect(mapStateToProps, mapDispatchToProps, null, {
   forwardRef: true,
 })(componentWithTranslation);

@@ -1265,12 +1265,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
 //          Create note
           waitAndClick("#tabControl-notebook");
-          waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
-          waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "First test note");
+          waitAndClickAndConfirm(".button-icon--notebook-action .icon-note-add", ".notebook__section-editor #notebook-note-editor-title-create", 3, 2000);
+          waitAndSendKeys(".notebook__section-editor #notebook-note-editor-title-create", "First test note");
           String note = "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. Fusce vitae tortor lectus. Praesent imperdiet pulvinar nulla, et dictum quam faucibus et. Quisque dictum ligula at diam venenatis cursus. "
               + "Nullam efficitur diam id commodo interdum. Pellentesque neque lectus, bibendum ac neque ut, sodales commodo eros. Morbi ac sem tortor.";
-          addTextToCKEditor(".notebook__editor.state-OPEN", note);
-          waitAndClick(".notebook__editor.state-OPEN .button--dialog-execute");
+          addTextToCKEditor(note);
+          waitAndClick(".notebook__section-editor .button--dialog-execute");
           assertPresent(".notification-queue__items .notification-queue__item--success");
 //          Assert note
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -1278,47 +1278,46 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick("#tabControl-notebook");
           waitForVisible(".notebook__items .notebook__item");
           assertText(".notebook__items .notebook__item-title", "First test note");
-          waitAndClick(".notebook__items .notebook__item-title");
-          waitForPresent(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p");
           assertText(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p", note);
 //          Edit note
           waitAndClick(".notebook__items .notebook__item .notebook__item-header .icon-pencil");
-          waitForVisible(".notebook__editor.state-OPEN #note-entry-title");
-          clearElement(".notebook__editor.state-OPEN #note-entry-title");
-          waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "First testing note (edited)");
-          clearCKEditor(".notebook__editor.state-OPEN");
-          addTextToCKEditor(".notebook__editor.state-OPEN", "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. "
+          waitForVisible("#notebook-note-editor-title-edit");
+          clearElement("#notebook-note-editor-title-edit");
+          waitAndSendKeys("#notebook-note-editor-title-edit", "First testing note (edited)");
+          clearCKEditor(".notebook__item-editor");
+          addTextToCKEditor("Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. "
               + "The all mighty vendace is nigh! (edited)");
-          waitAndClick(".notebook__editor.state-OPEN .button--dialog-execute");
-          waitForNotVisible(".notebook__editor.state-OPEN #note-entry-title");
+          waitAndClick(".notebook__section .button--dialog-execute");
+          waitForNotVisible("#notebook-note-editor-title-edit");
+
+          waitForVisible(".notebook__items .notebook__item");
+          assertText(".notebook__items .notebook__item-title", "First testing note (edited)");          
           waitForVisible(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p");
           assertText(".notebook__items .notebook__item .rah-static--height-auto .notebook__item-body p", "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. "
               + "The all mighty vendace is nigh! (edited)");
 //         Create second note
-          waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
-          waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "Second test note");
+          waitAndClickAndConfirm(".button-icon--notebook-action .icon-note-add", ".notebook__section-editor #notebook-note-editor-title-create", 3, 2000);
+          waitAndSendKeys(".notebook__section-editor #notebook-note-editor-title-create", "Second test note");
           note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In auctor massa ac gravida iaculis. Sed iaculis odio eget tortor auctor feugiat."
               + " Fusce urna dolor, aliquet cursus tempor vitae, rutrum nec urna. In luctus, tortor vel tempor cursus, leo diam venenatis est.";
-          addTextToCKEditor(".notebook__editor.state-OPEN", note);
-          waitAndClick(".notebook__editor.state-OPEN .button--dialog-execute");
+          addTextToCKEditor(note);
+          waitAndClick(".notebook__section-editor .button--dialog-execute");
           assertPresent(".notification-queue__items .notification-queue__item--success");
-//        Test expand function      
+//        Test actions
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
           waitAndClick("#tabControl-notebook");
-          waitForVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title");
-          assertText(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title", "Second test note");
-          waitAndClick(".notebook__actions .icon-arrow-down");
-          waitForPresent("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p");
-          assertText("div.notebook__items > div:nth-child(1) .notebook__item .rah-static--height-auto .notebook__item-body p", note);
-//        Test collapse function
-          waitAndClick(".notebook__actions .icon-arrow-up");
-          waitForPresent(".notebook__items .draggable-element:first-child .notebook__item .rah-static--height-specific");
-          waitForPresent(".notebook__items .draggable-element:last-child .notebook__item .rah-static--height-specific");
+          waitForVisible(".notebook__item[data-notebook-item-id='2'] .notebook__item-title");
+          assertText(".notebook__item[data-notebook-item-id='2'] .notebook__item-title", "Second test note");
+          waitForPresent(".notebook__item[data-notebook-item-id='2'] .rah-static--height-auto .notebook__item-body p");
+          assertText(".notebook__item[data-notebook-item-id='2'] .rah-static--height-auto .notebook__item-body p", note);
+          waitAndClick(".notebook__item[data-notebook-item-id='2'] .notebook__item-actions .state-OPEN .icon-arrow-down");
+          waitForPresent(".notebook__item[data-notebook-item-id='2'] .rah-static--height-specific");
 //          Test deleting
-          waitAndClickAndConfirmVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-header .icon-trash", ".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal", 5, 500);
-          waitAndClick(".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal");
-          waitForNotVisible(".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal");
+          waitAndClick(".notebook__item[data-notebook-item-id='2'] .notebook__item-actions .icon-trash");
+          waitForVisible(".dialog--delete-notebook-note .button--fatal");
+          waitAndClick(".dialog--delete-notebook-note .button--fatal");
+          waitForNotVisible(".dialog--delete-notebook-note .button--fatal");
           assertCount("#tabPanel-notebook .notebook__items .notebook__item", 1);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

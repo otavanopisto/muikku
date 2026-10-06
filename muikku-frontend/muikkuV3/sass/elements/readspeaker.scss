@@ -481,4 +481,10 @@
   }
 }
 
+#rsbtn_popup.rspopup {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  /* keep it "open" in layout terms if RS checks geometry; avoid display:none if clicks get ignored */
+}
+
 /* stylelint-enable */

@@ -2,6 +2,9 @@ package fi.otavanopisto.muikku.plugins.matriculation.restmodel;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
+
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentFlag;
 
 public class MatriculationExamEnrollment {
   
@@ -133,6 +136,14 @@ public class MatriculationExamEnrollment {
     this.opintopolkuUrl = opintopolkuUrl;
   }
 
+  public Set<MatriculationExamEnrollmentFlag> getFlags() {
+    return flags;
+  }
+
+  public void setFlags(Set<MatriculationExamEnrollmentFlag> flags) {
+    this.flags = flags;
+  }
+
   private Long id;
   private Long examId;
   private String enrollAs;
@@ -149,4 +160,5 @@ public class MatriculationExamEnrollment {
   private String degreeStructure;
   private OffsetDateTime enrollmentDate;
   private String opintopolkuUrl;
+  private Set<MatriculationExamEnrollmentFlag> flags;
 }

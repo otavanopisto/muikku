@@ -14,7 +14,11 @@ import MainChart from "~/components/general/graph/main-chart";
 import { getName } from "~/util/modifiers";
 import WallEvent from "~/components/index/layouts/panels/wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-import { MuikkuEvents } from "~/reducers/base/muikku-events";
+import {
+  createAbsenceEventProperty,
+  updateAbsenceEventProperty,
+} from "~/actions/main-function/guardian";
+import { GuardianState } from "~/reducers/main-function/guardian";
 
 /**
  * SummaryProps
@@ -35,17 +39,28 @@ const Summary = (props: SummaryProps) => {
     "common",
   ]);
   const { status } = useSelector((state: StateType) => state);
+  const guardian = useSelector((state: StateType) => state.guardian);
 
-  const { currentDependant, absencesByDependantId } = useSelector(
-    (state: StateType) => state.guardian
-  );
-  const dependantAbsences: MuikkuEvents =
-    absencesByDependantId[currentDependant.dependantInfo?.userEntityId] ?? null;
+  if (!guardian) {
+    return null;
+  }
+
+  const { currentDependant, absencesByDependantId, dependants } = guardian;
+  const dependantId = currentDependant.dependantInfo?.userEntityId;
+
+  if (!dependantId) {
+    return null;
+  }
+
+  const dependantAbsences = absencesByDependantId[dependantId];
 
   const currentDependantStudyData =
-    currentDependant.dependantStudyDataByEducationTypeCode[
-      currentDependant.dependantSelectedEducationTypeCode
-    ] ?? null;
+    currentDependant.dependantStudyDataByEducationTypeCode &&
+    currentDependant.dependantSelectedEducationTypeCode
+      ? currentDependant.dependantStudyDataByEducationTypeCode[
+          currentDependant.dependantSelectedEducationTypeCode
+        ]
+      : null;
 
   if (
     currentDependant.dependantInfoStatus !== "READY" ||
@@ -56,37 +71,45 @@ const Summary = (props: SummaryProps) => {
   ) {
     return null;
   } else {
+    const isUnder18 =
+      dependants.find((d) => d.userEntityId === dependantId)?.under18 ?? true;
+
     const absences = (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
           {t("labels.absences", { ns: "events" })}
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-          {dependantAbsences &&
-            dependantAbsences.events?.map((e) => {
-              const hasFeedback = e.properties?.find(
-                (property) =>
-                  property.name == "ABSENCE_REASON" && property.value !== ""
-              );
-              return (
-                <WallEvent
-                  key={e.id}
-                  event={e}
-                  actions={
-                    <AbsenceFeedbackDialog
-                      studentId={currentDependant.dependantInfo.userEntityId}
-                      absenceEvent={e}
-                    >
-                      <Button className="button button--primary-function-content">
-                        {hasFeedback
-                          ? t("actions.editFeedback", { ns: "events" })
-                          : t("actions.giveFeedback", { ns: "events" })}
-                      </Button>
-                    </AbsenceFeedbackDialog>
-                  }
-                />
-              );
-            })}
+          {dependantAbsences.events.map((e) => {
+            const hasFeedback = e.properties?.find(
+              (property) =>
+                property.name == "ABSENCE_REASON" && property.value !== ""
+            );
+            return (
+              <WallEvent
+                canEdit={isUnder18}
+                key={e.id}
+                event={e}
+                actions={
+                  <AbsenceFeedbackDialog
+                    absenceEvent={e}
+                    onUpdate={(data) =>
+                      updateAbsenceEventProperty(data, dependantId)
+                    }
+                    onCreate={(data) =>
+                      createAbsenceEventProperty(data, dependantId)
+                    }
+                  >
+                    <Button className="button button--primary-function-content">
+                      {hasFeedback
+                        ? t("actions.editFeedback", { ns: "events" })
+                        : t("actions.giveFeedback", { ns: "events" })}
+                    </Button>
+                  </AbsenceFeedbackDialog>
+                }
+              />
+            );
+          })}
         </div>
       </div>
     );
@@ -340,7 +363,7 @@ const Summary = (props: SummaryProps) => {
               currentDependant.dependantInfo.studyProgrammeName
             }
             studentIdentifier={currentDependant.dependantInfo.id}
-            studentUserEntityId={currentDependant.dependantInfo.userEntityId}
+            studentUserEntityId={dependantId}
           />
         </div>
         {status.isActiveUser ? (

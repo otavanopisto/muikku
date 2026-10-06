@@ -17,8 +17,10 @@ import { UserGuardiansDependant } from "~/generated/client";
 import { StateType } from "~/reducers";
 import WallEvent from "../wall/walll-event";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
-import { MuikkuEvent } from "~/generated/client";
-import { UserGuardiansDependantWorkspace } from "~/generated/client";
+import {
+  updateAbsenceEventProperty,
+  createAbsenceEventProperty,
+} from "~/actions/main-function/guardian";
 /**
  * DependantProps
  */
@@ -130,9 +132,15 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
             return (
               <WallEvent
                 key={event.id}
+                canEdit={dependant.under18}
                 actions={
                   <AbsenceFeedbackDialog
-                    studentId={dependant.userEntityId}
+                    onUpdate={(data) =>
+                      updateAbsenceEventProperty(data, dependant.userEntityId)
+                    }
+                    onCreate={(data) =>
+                      createAbsenceEventProperty(data, dependant.userEntityId)
+                    }
                     absenceEvent={event}
                   >
                     <Button className="button button--primary-function-content">

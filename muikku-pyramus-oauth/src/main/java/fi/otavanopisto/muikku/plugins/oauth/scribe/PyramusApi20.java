@@ -1,16 +1,10 @@
 package fi.otavanopisto.muikku.plugins.oauth.scribe;
 
-import org.scribe.builder.api.DefaultApi20;
-import org.scribe.extractors.AccessTokenExtractor;
-import org.scribe.extractors.JsonTokenExtractor;
-import org.scribe.model.OAuthConfig;
-import org.scribe.model.Verb;
-import org.scribe.oauth.OAuthService;
-import org.scribe.utils.OAuthEncoder;
+import com.github.scribejava.core.builder.api.DefaultApi20;
 
 public class PyramusApi20 extends DefaultApi20 {
 
-  private final static String AUTHORIZATION_PATH = "/users/authorize.page?client_id=%s&response_type=code&redirect_uri=%s&scope=%s";
+  private final static String AUTHORIZATION_PATH = "/users/authorize.page";
   private final static String TOKEN_PATH = "/1/oauth/token";
   
   public PyramusApi20(String pyramusOrigin) {
@@ -23,23 +17,8 @@ public class PyramusApi20 extends DefaultApi20 {
   }
 
   @Override
-  public String getAuthorizationUrl(OAuthConfig config) {
-    return String.format(pyramusOrigin + AUTHORIZATION_PATH, config.getApiKey(), OAuthEncoder.encode(config.getCallback()), config.getScope());
-  }
-
-  @Override
-  public AccessTokenExtractor getAccessTokenExtractor() {
-    return new JsonTokenExtractor();
-  }
-
-  @Override
-  public Verb getAccessTokenVerb() {
-    return Verb.POST;
-  }
-
-  @Override
-  public OAuthService createService(OAuthConfig config) {
-    return new PyramusApi20ServiceImpl(this, config);
+  protected String getAuthorizationBaseUrl() {
+    return pyramusOrigin + AUTHORIZATION_PATH;
   }
   
   private String pyramusOrigin;

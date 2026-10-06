@@ -20,7 +20,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./material";
-import Button, { ButtonPill } from "~/components/general/button";
+import Button, { ButtonPill, IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -46,9 +46,26 @@ import {
 import {
   MaterialCompositeReply,
   MaterialViewRestriction,
+  NotebookNote,
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
+import MaterialSelectionPopover from "./material-selection-popover";
+import { MaterialHighlight } from "~/components/base/material-loader/types";
+import { getMaterialHighlightsByPageFromNotes } from "~/helper-functions/notebook";
+import {
+  beginNotebookV2ContextNoteDraft,
+  BeginNotebookV2ContextNoteDraft,
+  saveNewNotebookV2ContextHighlight,
+  SaveNewNotebookV2ContextHighlight,
+  beginNotebookV2MaterialNoteDraft,
+  BeginNotebookV2MaterialNoteDraft,
+} from "~/actions/notebook/notebookV2";
+import { filterActiveMaterialHighlights } from "~/util/html";
+import {
+  getContextNoteDraftHighlightsForPage,
+  NotebookContextNoteDraft,
+} from "~/components/general/notebook/helpers/notebook-drafts";
 
 /**
  * WorkspaceMaterialsProps
@@ -58,10 +75,13 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   workspace: WorkspaceDataType;
   materials: MaterialContentNodeWithIdAndLogic[];
   materialReplies: MaterialCompositeReply[];
+  noteBookNotes: NotebookNote[];
+  notebookContextNoteDrafts: NotebookContextNoteDraft[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
   workspaceEditMode: WorkspaceEditModeStateType;
+  activeNotebookItemId: number | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
@@ -69,6 +89,9 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType;
   displayNotification: DisplayNotificationTriggerType;
+  saveNewNotebookV2ContextHighlight: SaveNewNotebookV2ContextHighlight;
+  beginNotebookV2ContextNoteDraft: BeginNotebookV2ContextNoteDraft;
+  beginNotebookV2MaterialNoteDraft: BeginNotebookV2MaterialNoteDraft;
 }
 
 /**
@@ -136,6 +159,16 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: WorkspaceMaterialsProps) {
+    if (this.props.materials !== prevProps.materials) {
+      this.getFlattenedMaterials(this.props);
+    }
+  }
+
+  /**
    * componentWillUnmount
    */
   componentWillUnmount() {
@@ -143,14 +176,93 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
+   * getHighlightsForPage
+   * Saved context items + preview for unsaved context note drafts.
+   * @param workspaceMaterialId workspaceMaterialId
+   * @param materialHtml materialHtml
+   * @returns MaterialHighlight[]
    */
-  UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
-    if (this.props.materials !== nextProps.materials) {
-      this.getFlattenedMaterials(nextProps);
-    }
+  private getHighlightsForPage(
+    workspaceMaterialId: number,
+    materialHtml: string
+  ): MaterialHighlight[] {
+    const fromNotebook =
+      getMaterialHighlightsByPageFromNotes(this.props.noteBookNotes ?? [])[
+        workspaceMaterialId
+      ] ?? [];
+    const savedHighlights = filterActiveMaterialHighlights(
+      materialHtml,
+      fromNotebook
+    );
+    const draftHighlights = getContextNoteDraftHighlightsForPage(
+      this.props.notebookContextNoteDrafts ?? [],
+      workspaceMaterialId
+    );
+    const activeDraftHighlights = filterActiveMaterialHighlights(
+      materialHtml,
+      draftHighlights
+    );
+    return [...savedHighlights, ...activeDraftHighlights];
   }
+
+  /**
+   * handleMakeHighlight
+   * @param text text
+   * @param start start
+   * @param end end
+   * @param index index
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleMakeHighlight = (
+    text: string,
+    start: string,
+    end: string,
+    index: number,
+    workspaceMaterialId: number
+  ) => {
+    this.props.saveNewNotebookV2ContextHighlight({
+      workspaceMaterialId,
+      text,
+      start,
+      end,
+      index,
+    });
+  };
+
+  /**
+   * handleAddNote
+   * @param text text
+   * @param start start
+   * @param end end
+   * @param index index
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleAddNote = (
+    text: string,
+    start: string,
+    end: string,
+    index: number,
+    workspaceMaterialId: number
+  ) => {
+    this.props.beginNotebookV2ContextNoteDraft({
+      workspaceMaterialId,
+      selectedText: text,
+      start,
+      end,
+      index,
+      openNotebookTab: true,
+    });
+  };
+
+  /**
+   * Handles begin add note.
+   * @param workspaceMaterialId workspaceMaterialId
+   */
+  handleBeginAddNote =
+    (workspaceMaterialId: number) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.beginNotebookV2MaterialNoteDraft(workspaceMaterialId);
+    };
 
   /**
    * toggleSectionHiddenStatus
@@ -627,6 +739,41 @@ class WorkspaceMaterials extends React.Component<
   };
 
   /**
+   * renderNotebookAddNoteButton
+   * @param workspaceMaterialId workspaceMaterialId
+   * @returns JSX.Element | null
+   */
+  renderNotebookAddNoteButton = (workspaceMaterialId: number) => {
+    if (!this.props.status.loggedIn) {
+      return null;
+    }
+    return (
+      <span className="material-page__title-notebook-action">
+        <Dropdown
+          openByHover
+          content={
+            <p>
+              {this.props.t("actions.add", {
+                ns: "notebook",
+              })}
+            </p>
+          }
+        >
+          <IconButton
+            icon="note-add"
+            aria-label={this.props.t("actions.add", {
+              ns: "notebook",
+            })}
+            buttonModifiers={["notebook-action"]}
+            disablePropagation={true}
+            onClick={this.handleBeginAddNote(workspaceMaterialId)}
+          />
+        </Dropdown>
+      </span>
+    );
+  };
+
+  /**
    * render
    */
   render() {
@@ -914,12 +1061,19 @@ class WorkspaceMaterials extends React.Component<
               >
                 {/*TOP OF THE PAGE*/}
                 <WorkspaceMaterial
+                  highlights={this.getHighlightsForPage(
+                    node.workspaceMaterialId,
+                    node.html
+                  )}
                   folder={section}
                   materialContentNode={node}
                   workspace={this.props.workspace}
                   compositeReplies={compositeReplies}
                   isViewRestricted={false}
                   showEvenIfHidden={showEvenIfHidden}
+                  notebookAddNoteComponent={this.renderNotebookAddNoteButton(
+                    node.workspaceMaterialId
+                  )}
                   readspeakerComponent={readSpeakerComponent}
                   anchorItem={
                     <BackToToc
@@ -930,6 +1084,14 @@ class WorkspaceMaterials extends React.Component<
                       }
                     />
                   }
+                />
+                {/*SELECTION CONTEXT POPOVER*/}
+                <MaterialSelectionPopover
+                  workspaceMaterialId={node.workspaceMaterialId}
+                  pageIndex={pageI}
+                  materialHtml={node.html}
+                  onMakeHighlight={this.handleMakeHighlight}
+                  onAddNote={this.handleAddNote}
                 />
               </ContentPanelItem>
             );
@@ -1077,6 +1239,9 @@ function mapStateToProps(state: StateType) {
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
+    noteBookNotes: state.notebookV2.notes,
+    notebookContextNoteDrafts: state.notebookV2.drafts.contextNotes,
+    activeNotebookItemId: state.notebookV2.activeItemId,
   };
 }
 
@@ -1092,6 +1257,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       updateWorkspaceMaterialContentNode,
       materialShowOrHideExtraTools,
       displayNotification,
+      saveNewNotebookV2ContextHighlight,
+      beginNotebookV2ContextNoteDraft,
+      beginNotebookV2MaterialNoteDraft,
     },
     dispatch
   );

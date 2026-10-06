@@ -58,6 +58,14 @@ function useReadspeakerContext() {
 }
 
 /**
+ * Method to returns context of readspeaker.
+ * Check if context is defined and if not, return undefined
+ */
+function useReadspeakerContextOptional() {
+  return React.useContext(ReadspeakerContext);
+}
+
+/**
  * mapStateToProps
  * @param state state
  */
@@ -78,7 +86,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   );
 }
 
-export { useReadspeakerContext };
+export { useReadspeakerContext, useReadspeakerContextOptional };
 
 export default connect(
   mapStateToProps,
