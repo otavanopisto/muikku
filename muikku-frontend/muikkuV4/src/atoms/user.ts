@@ -1,5 +1,5 @@
 import { atomWithQuery } from "jotai-tanstack-query";
-import { getUserApi, isMApiError, isResponseError } from "~/api";
+import { getUserApi, isMApiError } from "~/api";
 
 const userApi = getUserApi();
 

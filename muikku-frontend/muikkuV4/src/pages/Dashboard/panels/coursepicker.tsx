@@ -24,7 +24,6 @@ export function Workspaces() {
               Jatka opintoja: {workspace.workspaceName} -{" "}
               {workspace.materialName}
             </Title>
-
             <Button
               key={workspace.workspaceId}
               component={Link}
