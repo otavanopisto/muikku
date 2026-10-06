@@ -1,0 +1,54 @@
+.rail {
+  --rail-bullet-size: 18px;
+  --rail-line-width: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: var(--rail-bullet-size) minmax(0, 1fr);
+  column-gap: var(--mantine-spacing-sm);
+  position: relative;
+}
+
+.item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: var(--rail-bullet-size);
+  bottom: 0;
+  left: calc(var(--rail-bullet-size) / 2 - var(--rail-line-width) / 2);
+  width: var(--rail-line-width);
+  background: var(--mantine-color-default-border);
+}
+
+.bullet {
+  position: relative;
+  z-index: 1;
+  width: var(--rail-bullet-size);
+  height: var(--rail-bullet-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: var(--rail-line-width) solid
+    var(--rail-item-color, var(--mantine-color-dimmed));
+  background: var(--mantine-color-body);
+  color: var(--rail-item-color, var(--mantine-color-dimmed));
+}
+
+.bullet[data-filled="true"] {
+  background: var(--rail-item-color, var(--mantine-color-teal-6));
+  border-color: var(--rail-item-color, var(--mantine-color-teal-6));
+  color: var(--mantine-color-white);
+}
+
+.body {
+  min-width: 0;
+  padding-bottom: var(--mantine-spacing-sm);
+}
+
+.item:last-child .body {
+  padding-bottom: 0;
+}

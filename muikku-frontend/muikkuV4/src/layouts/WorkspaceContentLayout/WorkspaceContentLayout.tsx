@@ -11,6 +11,11 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { useMemo } from "react";
+import {
+  WorkspaceContentLayoutProvider,
+  type WorkspaceContentLayoutContextValue,
+} from "./WorkspaceContentLayoutContext";
 
 const TOC_WIDTH = 335;
 const ASIDE_WIDTH = 300;
@@ -35,30 +40,45 @@ export interface WorkspaceContentLayoutProps {
 export function WorkspaceContentLayout(props: WorkspaceContentLayoutProps) {
   const { title, closeLabel, onClose, toc, aside, children } = props;
   const hasAside = aside != null;
-  const [tocOpened, { toggle: toggleToc, close: closeToc }] =
-    useDisclosure(false);
-  const [asideOpened, { toggle: toggleAside, close: closeAside }] =
-    useDisclosure(false);
+  const [tocOpened, tocHandlers] = useDisclosure(false);
+  const [asideOpened, asideHandlers] = useDisclosure(false);
 
-  /**
-   * Toggle TOC drawer; close aside so only one panel is open on mobile
-   */
-  function handleToggleToc() {
-    if (!tocOpened) {
-      closeAside();
-    }
-    toggleToc();
-  }
-
-  /**
-   * Toggle aside drawer; close TOC so only one panel is open on mobile
-   */
-  function handleToggleAside() {
-    if (!asideOpened) {
-      closeToc();
-    }
-    toggleAside();
-  }
+  const layout = useMemo<WorkspaceContentLayoutContextValue>(
+    () => ({
+      tocOpened,
+      asideOpened,
+      hasAside,
+      openToc: () => {
+        asideHandlers.close();
+        tocHandlers.open();
+      },
+      closeToc: tocHandlers.close,
+      toggleToc: () => {
+        if (!tocOpened) {
+          asideHandlers.close();
+        }
+        tocHandlers.toggle();
+      },
+      openAside: () => {
+        if (!hasAside) {
+          return;
+        }
+        tocHandlers.close();
+        asideHandlers.open();
+      },
+      closeAside: asideHandlers.close,
+      toggleAside: () => {
+        if (!hasAside) {
+          return;
+        }
+        if (!asideOpened) {
+          tocHandlers.close();
+        }
+        asideHandlers.toggle();
+      },
+    }),
+    [tocOpened, asideOpened, hasAside, tocHandlers, asideHandlers]
+  );
 
   const tocColumn = (
     <Flex direction="column" h="100%">
@@ -77,110 +97,111 @@ export function WorkspaceContentLayout(props: WorkspaceContentLayoutProps) {
           Sisällysluettelo
         </Text>
       </Box>
-      <ScrollArea flex={1} px="sm" pb="sm" onClick={closeToc}>
+      <ScrollArea flex={1} px="sm" pb="sm">
         {toc}
       </ScrollArea>
     </Flex>
   );
 
   return (
-    <Flex
-      direction="column"
-      h="100%"
-      w="100%"
-      miw={0}
-      style={{ overflow: "hidden" }}
-    >
-      <Group
-        hiddenFrom="sm"
-        h={56}
-        px="md"
-        justify="space-between"
-        wrap="nowrap"
-        style={{
-          borderBottom:
-            "1px solid var(--app-shell-border-color, var(--mantine-color-default-border))",
-        }}
+    <WorkspaceContentLayoutProvider value={layout}>
+      <Flex
+        direction="column"
+        h="100%"
+        w="100%"
+        miw={0}
+        style={{ overflow: "hidden" }}
       >
-        <Group wrap="nowrap" gap="sm" miw={0}>
-          <Burger
-            opened={tocOpened}
-            onClick={handleToggleToc}
-            size="sm"
-            aria-label="Sisällysluettelo"
-          />
-          <Title order={4} lineClamp={1}>
-            {title}
-          </Title>
-        </Group>
-        {hasAside && (
-          <Burger
-            opened={asideOpened}
-            onClick={handleToggleAside}
-            size="sm"
-            aria-label="Muistiinpanot"
-          />
-        )}
-      </Group>
-
-      <Flex flex={1} mih={0} miw={0}>
-        <Box
-          visibleFrom="sm"
-          w={TOC_WIDTH}
-          h="100%"
+        <Group
+          hiddenFrom="sm"
+          h={56}
+          px="md"
+          justify="space-between"
+          wrap="nowrap"
           style={{
-            flexShrink: 0,
-            borderInlineEnd: "1px solid var(--mantine-color-default-border)",
+            borderBottom: "1px solid var(--mantine-color-default-border)",
           }}
         >
-          {tocColumn}
-        </Box>
+          <Group wrap="nowrap" gap="sm" miw={0}>
+            <Burger
+              opened={tocOpened}
+              onClick={layout.toggleToc}
+              size="sm"
+              aria-label="Sisällysluettelo"
+            />
+            <Title order={4} lineClamp={1}>
+              {title}
+            </Title>
+          </Group>
+          {hasAside && (
+            <Burger
+              opened={asideOpened}
+              onClick={layout.toggleAside}
+              size="sm"
+              aria-label="Muistiinpanot"
+            />
+          )}
+        </Group>
 
-        <Box flex={1} miw={0} h="100%" style={{ overflow: "auto" }}>
-          {children}
-        </Box>
-
-        {hasAside && (
+        <Flex flex={1} mih={0} miw={0}>
           <Box
             visibleFrom="sm"
-            w={ASIDE_WIDTH}
+            w={TOC_WIDTH}
             h="100%"
-            p="md"
             style={{
               flexShrink: 0,
-              overflow: "auto",
-              borderInlineStart:
-                "1px solid var(--mantine-color-default-border)",
+              borderInlineEnd: "1px solid var(--mantine-color-default-border)",
             }}
           >
-            {aside}
+            {tocColumn}
           </Box>
-        )}
-      </Flex>
 
-      <Drawer
-        opened={tocOpened}
-        onClose={closeToc}
-        size={TOC_WIDTH}
-        padding={0}
-        title={null}
-        withCloseButton={false}
-        hiddenFrom="sm"
-      >
-        <Box h="100%">{tocColumn}</Box>
-      </Drawer>
+          <Box flex={1} miw={0} h="100%" style={{ overflow: "auto" }}>
+            {children}
+          </Box>
 
-      {hasAside && (
+          {hasAside && (
+            <Box
+              visibleFrom="sm"
+              w={ASIDE_WIDTH}
+              h="100%"
+              p="md"
+              style={{
+                flexShrink: 0,
+                overflow: "auto",
+                borderInlineStart:
+                  "1px solid var(--mantine-color-default-border)",
+              }}
+            >
+              {aside}
+            </Box>
+          )}
+        </Flex>
+
         <Drawer
-          opened={asideOpened}
-          onClose={closeAside}
-          position="right"
-          size={ASIDE_WIDTH}
+          opened={tocOpened}
+          onClose={layout.closeToc}
+          size={TOC_WIDTH}
+          padding={0}
+          title={null}
+          withCloseButton={false}
           hiddenFrom="sm"
         >
-          {aside}
+          <Box h="100%">{tocColumn}</Box>
         </Drawer>
-      )}
-    </Flex>
+
+        {hasAside && (
+          <Drawer
+            opened={asideOpened}
+            onClose={layout.closeAside}
+            position="right"
+            size={ASIDE_WIDTH}
+            hiddenFrom="sm"
+          >
+            {aside}
+          </Drawer>
+        )}
+      </Flex>
+    </WorkspaceContentLayoutProvider>
   );
 }
