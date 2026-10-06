@@ -5995,6 +5995,13 @@ paths:
             type: array
             items:
               type: boolean
+        - name: u18compulsory
+          in: query
+          description: List only students who either are or aren't under 18 compulsory education students.
+          schema:
+            type: array
+            items:
+              type: boolean
       responses:
         "200":
           description: Students
