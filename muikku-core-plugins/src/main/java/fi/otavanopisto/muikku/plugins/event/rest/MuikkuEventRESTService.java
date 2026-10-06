@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -159,6 +160,8 @@ public class MuikkuEventRESTService {
         restEvent.isRemovable());
     
     // Event properties
+    updateEventProperties(event, restEvent.getProperties());
+    
     List<MuikkuEventProperty> properties = eventController.listPropertiesByEvent(event);
     List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<MuikkuEventPropertyRestModel>();
     if (properties != null) {
@@ -296,7 +299,7 @@ public class MuikkuEventRESTService {
       @QueryParam("start") String start,
       @QueryParam("end") String end,
       @QueryParam("adjustTimes") @DefaultValue("true") boolean adjustTimes,
-      @QueryParam("type") String type) {
+      @QueryParam("type") EventType type) {
     
     // Request validation
     
@@ -314,19 +317,27 @@ public class MuikkuEventRESTService {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid time format: %s", e.getMessage())).build();
     }
     
-    // Access checks
-    
-    if (userEntityId == null) {
-      userEntityId = sessionController.getLoggedUserEntity().getId();
+    // Both cannot be null at the same time
+    // Note: This may no longer be applicable once events are expanded beyond absences
+    if (userEntityId == null && workspaceEntityId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceEntityId or userEntityId parameter").build();
     }
-    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
-      UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-      if (userEntityController.isStudent(loggedUserEntity)) {
-        UserEntity target = userEntityController.findUserEntityById(userEntityId);
-        if (userEntityController.isStudent(target)) {
-          logger.warning(String.format("User %d attempt to list event of user %d revoked", sessionController.getLoggedUserEntity().getId(), userEntityId));
-          return Response.status(Status.FORBIDDEN).build();
+    
+    // Access checks
+    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+    if (userEntityId != null) {
+      if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+        if (userEntityController.isStudent(loggedUserEntity)) {
+          UserEntity target = userEntityController.findUserEntityById(userEntityId);
+          if (userEntityController.isStudent(target)) {
+            logger.warning(String.format("User %d attempt to list event of user %d revoked", sessionController.getLoggedUserEntity().getId(), userEntityId));
+            return Response.status(Status.FORBIDDEN).build();
+          }
         }
+      }
+    } else { // Students can only view their own events
+      if (!userEntityController.isStaffMember(loggedUserEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
       }
     }
     
@@ -353,12 +364,13 @@ public class MuikkuEventRESTService {
     
     // List events and convert to rest
     
-    List<MuikkuEvent> events = eventController.listEvents(userEntityId, workspaceEntityId, startDate, endDate, type != null ? EventType.valueOf(type) : null);
+    List<MuikkuEvent> events = eventController.listEvents(userEntityId, workspaceEntityId, startDate, endDate, type != null ? type : null);
+    
+    
     List<MuikkuEventRestModel> restEvents = new ArrayList<>();
     for (MuikkuEvent event : events) {
       // Access to specific event
       boolean hasAccess = eventController.canViewEvent(sessionController.getLoggedUserEntity(), event);
-      
       if (!hasAccess) { 
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
         
@@ -436,6 +448,48 @@ public class MuikkuEventRESTService {
     return Response.ok(container != null ? container.getId() : null).build();
   }
   
+  private void updateEventProperties(MuikkuEvent event, List<MuikkuEventPropertyRestModel> restProperties) {
+    Long userEntityId = sessionController.getLoggedUserEntity().getId();
+
+    // Existing properties by event
+    List<MuikkuEventProperty> existingProperties = eventController.listPropertiesByEvent(event);
+
+    if (restProperties == null) {
+      restProperties = new ArrayList<>();
+    }
+
+    for (MuikkuEventPropertyRestModel p : restProperties) {
+      if (p.getId() != null) {
+        MuikkuEventProperty property = eventController.findEventProperty(p.getId());
+
+        // Delete from existing properties list if found
+        if (property != null && property.getEvent().getId().equals(event.getId())) {
+          existingProperties.removeIf(existing ->
+              Objects.equals(existing.getId(), property.getId()));
+
+          // Update
+          if (!Objects.equals(property.getValue(), p.getValue())) {
+            eventController.updateEventProperty(property, p.getValue(), new Date());
+          }
+        }
+      } else {
+        // Create
+        eventController.createEventProperty(
+            event,
+            p.getName(),
+            p.getValue(),
+            userEntityId,
+            new Date()
+        );
+      }
+    }
+
+    // Delete properties that were not included in the payload
+    for (MuikkuEventProperty property : existingProperties) {
+      eventController.deleteEventProperty(property);
+    }
+  }
+  
   private MuikkuEventRestModel toRestModel(MuikkuEvent event, List<MuikkuEventPropertyRestModel> properties) {
 
     if (event == null) {
@@ -456,6 +510,12 @@ public class MuikkuEventRESTService {
     restEvent.setDescription(event.getDescription());
     restEvent.setType(event.getType());
     restEvent.setUserEntityId(event.getUserEntityId());
+    
+    if (event.getUserEntityId() != null) {
+      UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
+      restEvent.setTargetUserName(userEntityController.getName(userEntity, true).getDisplayName());
+    }
+    restEvent.setCreator(event.getCreatorEntityId());
     List<MuikkuEventParticipant> participants = eventController.listParticipants(event);
     restEvent.setCreator(event.getCreatorEntityId());
     UserEntity creatorEntity = userEntityController.findUserEntityById(event.getCreatorEntityId());

@@ -6,7 +6,6 @@ import { WorkspaceActivity } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
 /**
  * ProgressDataProps
  */
