@@ -17,23 +17,22 @@ public class EvaluationNoteDAO extends CorePluginsDAO<EvaluationNote> {
   
   private static final long serialVersionUID = 6908820355669025446L;
 
-  public EvaluationNote create(Long student, Long creator, Long workspaceEntityId, String note, Date created, NoteType type){
+  public EvaluationNote create(Long student, Long creator, Long workspaceEntityId, String note, Date created){
     EvaluationNote EvaluationNote = new EvaluationNote();
     EvaluationNote.setCreator(creator);
     EvaluationNote.setUserEntityId(student);
     EvaluationNote.setNote(note);
     EvaluationNote.setWorkspaceEntityId(workspaceEntityId);
     EvaluationNote.setCreated(created);
-    EvaluationNote.setType(type);
     EvaluationNote.setArchived(Boolean.FALSE);
     return persist(EvaluationNote);
   }
   
-  public EvaluationNote update(EvaluationNote EvaluationNote, String note, Long lastModifier, Date lastModified){
-    EvaluationNote.setNote(note);
-    EvaluationNote.setLastModifier(lastModifier);
-    EvaluationNote.setLastModified(lastModified);
-    return persist(EvaluationNote);
+  public EvaluationNote update(EvaluationNote evaluationNote, String note, Long lastModifier, Date lastModified){
+    evaluationNote.setNote(note);
+    evaluationNote.setLastModifier(lastModifier);
+    evaluationNote.setLastModified(lastModified);
+    return persist(evaluationNote);
   }
   
   public List<EvaluationNote> listByStudentAndWorkspaceAndArchived(Long student, Long workspaceEntityId, Boolean archived){
@@ -78,22 +77,5 @@ public class EvaluationNoteDAO extends CorePluginsDAO<EvaluationNote> {
     EvaluationNote.setArchived(archived);
     getEntityManager().persist(EvaluationNote);
     return EvaluationNote;
-  }
-
-  public EvaluationNote findByIdAndArchived(Long id, boolean archived) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<EvaluationNote> criteria = criteriaBuilder.createQuery(EvaluationNote.class);
-    Root<EvaluationNote> root = criteria.from(EvaluationNote.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(EvaluationNote_.id), id),
-        criteriaBuilder.equal(root.get(EvaluationNote_.archived), archived)
-      )
-    );
-
-    return getSingleResult(entityManager.createQuery(criteria));
   }
 }
