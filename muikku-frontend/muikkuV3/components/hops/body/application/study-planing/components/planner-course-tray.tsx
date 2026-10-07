@@ -340,7 +340,11 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
               ns: "common",
             }),
           };
+        // Following states are considered as in progress
         case "ONGOING":
+        case "INTERIM_EVALUATION_REQUEST":
+        case "INTERIM_EVALUATION":
+        case "PENDING":
           return {
             state: "inprogress",
             label: t("labels.inProgress", {

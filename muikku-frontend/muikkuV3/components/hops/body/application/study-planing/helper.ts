@@ -394,7 +394,11 @@ const filterSubjectsAndCourses = (
             (selectedFilters.includes("planned") && course.planned) ||
             (selectedFilters.includes("GRADED") && course.state === "GRADED") ||
             (selectedFilters.includes("ONGOING") &&
-              course.state === "ONGOING") ||
+              // Following states are considered as in progress
+              (course.state === "ONGOING" ||
+                course.state === "INTERIM_EVALUATION_REQUEST" ||
+                course.state === "INTERIM_EVALUATION" ||
+                course.state === "PENDING")) ||
             (selectedFilters.includes("SUPPLEMENTATIONREQUEST") &&
               course.state === "SUPPLEMENTATIONREQUEST") ||
             (selectedFilters.includes("TRANSFERRED") &&
