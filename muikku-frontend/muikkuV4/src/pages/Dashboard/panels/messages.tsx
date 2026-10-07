@@ -1,7 +1,6 @@
 import { Title, Text, Paper, Button, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageCommunicatorThreadsDataAtom } from "src/atoms/communicator";
-import { Link } from "react-router";
 import { Empty } from "src/components/Empty";
 import { Fragment } from "react";
 
@@ -16,7 +15,7 @@ export function Messages() {
     return <Empty title="No messages found" />;
   }
   return (
-    <Paper p="xl" withBorder>
+    <Paper p="xl" mb="md" withBorder>
       <Group>
         {messages?.map((message) => (
           <Fragment key={message.id}>

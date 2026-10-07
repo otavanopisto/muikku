@@ -1,4 +1,4 @@
-import { Workspaces } from "../panels/workspaces";
+import { Workspaces } from "../panels/studies";
 import { Announcements } from "../panels/announcements";
 import { Messages } from "../panels/messages";
 
@@ -7,6 +7,7 @@ export interface Panel {
   title: string;
   description: string;
   icon: React.ReactNode;
+  mandatory: boolean;
   color: string;
   component: React.ComponentType | null;
 }
@@ -18,6 +19,7 @@ export const panels: Panel[] = [
     title: "Opinnot",
     description: "",
     icon: null,
+    mandatory: false,
     color: "blue",
     component: Workspaces,
   },
@@ -26,6 +28,7 @@ export const panels: Panel[] = [
     title: "Viestit",
     description: "",
     icon: null,
+    mandatory: false,
     color: "cyan",
     component: Messages,
   },
@@ -34,6 +37,7 @@ export const panels: Panel[] = [
     title: "Seinämä",
     description: "",
     icon: null,
+    mandatory: false,
     color: "grape",
     component: null,
   },
@@ -42,6 +46,7 @@ export const panels: Panel[] = [
     title: "Kurssipoimuri",
     description: "",
     icon: null,
+    mandatory: false,
     color: "teal",
     component: null,
   },
@@ -50,6 +55,7 @@ export const panels: Panel[] = [
     title: "Tiedotteet",
     description: "",
     icon: null,
+    mandatory: true,
     color: "cyan",
     component: Announcements,
   },

@@ -1,14 +1,24 @@
-// Dashboard actions
-// Dashboard view actions consisting of mantine Group component
-// Only action at this point is a button to open a menu with a search input to filter existing panels and ability to add a panel to the dashboard
-
 import { IconDotsVertical } from "@tabler/icons-react";
-import { Menu, Group, TextInput, ActionIcon } from "@mantine/core";
-import { panels } from "./model/panels";
+import { Menu, Group, ActionIcon } from "@mantine/core";
+import { panels } from "../model/panels";
 import { useState } from "react";
 import { useInputState } from "@mantine/hooks";
+import classes from "./ActionBar.module.css";
 
-export function DashboardActions() {
+/**
+ * Dashboard actions
+ * Dashboard view actions consisting of mantine Group component */
+interface DashboardActionsProps {
+  onItemClick: (panelId: number) => void;
+  userPanelIds: number[];
+}
+
+/**
+ * @param props - DashboardActionsProps
+ * @returns - DashboardActions component
+ */
+export function DashboardActions(props: DashboardActionsProps) {
+  const { onItemClick, userPanelIds } = props;
   const [filterValue, setFilterValue] = useInputState("");
   const [filteredPanels, setFilteredPanels] = useState(panels);
 
@@ -30,14 +40,20 @@ export function DashboardActions() {
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
-          <TextInput
+          <Menu.Search
             placeholder="Search panels"
             value={filterValue}
             onChange={(event) => onFilterChange(event.target.value)}
           />
           <Menu.Divider />
           {filteredPanels.map((panel) => (
-            <Menu.Item key={panel.id}>{panel.title}</Menu.Item>
+            <Menu.Item
+              className={userPanelIds.includes(panel.id) ? classes.active : ""}
+              onClick={() => onItemClick(panel.id)}
+              key={panel.id}
+            >
+              {panel.title}
+            </Menu.Item>
           ))}
         </Menu.Dropdown>
       </Menu>

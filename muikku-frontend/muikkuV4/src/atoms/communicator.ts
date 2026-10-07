@@ -7,11 +7,12 @@ const communicatorApi = getCommunicatorApi();
 
 export const frontpageCommunicatorThreadsQueryAtom = atomWithQuery(() => {
   const params: GetCommunicatorThreadsRequest = {
+    firstResult: 0,
     maxResults: 10,
   };
 
   return {
-    queryKey: ["frontpage", "announcements"],
+    queryKey: ["frontpage", "messages"],
     queryFn: () => communicatorApi.getCommunicatorThreads(params),
   };
 });

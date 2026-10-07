@@ -1,4 +1,4 @@
-import { Box, Text, Title } from "@mantine/core";
+import { Box, Paper, Text, Title } from "@mantine/core";
 
 /**
  * EmptyProps - Empty props
@@ -13,9 +13,11 @@ interface EmptyProps {
 export function Empty(props: EmptyProps) {
   const { title, description } = props;
   return (
-    <Box>
-      <Title order={1}>{title}</Title>
-      <Text>{description}</Text>
-    </Box>
+    <Paper mb="md" p="md" withBorder>
+      <Box>
+        <Title order={1}>{title}</Title>
+        <Text>{description}</Text>
+      </Box>
+    </Paper>
   );
 }

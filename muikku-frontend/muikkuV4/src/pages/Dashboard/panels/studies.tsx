@@ -16,7 +16,7 @@ export function Workspaces() {
     return <Empty title="No workspaces found" />;
   }
   return (
-    <Paper p="xl" withBorder>
+    <Paper p="xl" mb="md" withBorder>
       <Group>
         {lastWorkspaces.data?.map((workspace) => (
           <Fragment key={workspace.workspaceId}>

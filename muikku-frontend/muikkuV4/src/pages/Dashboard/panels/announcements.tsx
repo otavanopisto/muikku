@@ -12,7 +12,7 @@ export function Announcements() {
   const announcements = useAtomValue(frontpageAnnouncementsDataAtom);
 
   if (announcements?.announcements.length === 0) {
-    return <Empty title="No workspaces found" />;
+    return <Empty title="No announcements found" />;
   }
   return (
     <Paper p="xl" withBorder>
