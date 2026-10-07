@@ -227,6 +227,7 @@ const GuardianHopsApplication = (props: GuardianHopsApplicationProps) => {
         studentInfo={{
           identifier: selectedDependant?.identifier || "",
           studyStartDate: selectedDependant?.studyStartDate || new Date(),
+          studyProgramName: selectedDependant?.studyProgrammeName || "",
         }}
         curriculumConfig={currentDependantStudyData?.curriculumConfig ?? null}
         userStudyActivity={currentDependantStudyData?.studyActivity ?? null}
