@@ -18,6 +18,7 @@ import {
   createAbsenceEventProperty,
   updateAbsenceEventProperty,
 } from "~/actions/main-function/guardian";
+import { GuardianState } from "~/reducers/main-function/guardian";
 
 /**
  * SummaryProps
@@ -54,9 +55,12 @@ const Summary = (props: SummaryProps) => {
   const dependantAbsences = absencesByDependantId[dependantId];
 
   const currentDependantStudyData =
-    currentDependant.dependantStudyDataByEducationTypeCode[
-      currentDependant.dependantSelectedEducationTypeCode
-    ] ?? null;
+    currentDependant.dependantStudyDataByEducationTypeCode &&
+    currentDependant.dependantSelectedEducationTypeCode
+      ? currentDependant.dependantStudyDataByEducationTypeCode[
+          currentDependant.dependantSelectedEducationTypeCode
+        ]
+      : null;
 
   if (
     currentDependant.dependantInfoStatus !== "READY" ||
@@ -77,7 +81,7 @@ const Summary = (props: SummaryProps) => {
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
           {dependantAbsences.events.map((e) => {
-            const hasFeedback = e.properties.find(
+            const hasFeedback = e.properties?.find(
               (property) =>
                 property.name == "ABSENCE_REASON" && property.value !== ""
             );
