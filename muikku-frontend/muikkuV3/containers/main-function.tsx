@@ -324,6 +324,7 @@ export default class MainFunction extends React.Component<
 
     const pedagogyFromHash = [].concat(originalData.p || []);
     const decisionFromHash = [].concat(originalData.s || []);
+    const u18compulsoryFromHash = [].concat(originalData.u18 || []);
 
     const filters: GuiderActiveFiltersType = {
       workspaceFilters: (originalData.w || []).map((num: string) =>
@@ -340,6 +341,9 @@ export default class MainFunction extends React.Component<
           v === GetGuiderStudentsPedagogyFormEnum.Unpublished
       ),
       withSpecialEducationDecisionFilters: decisionFromHash
+        .filter((v) => v === "true" || v === "false")
+        .map((v) => v === "true"),
+      withU18CompulsoryFilters: u18compulsoryFromHash
         .filter((v) => v === "true" || v === "false")
         .map((v) => v === "true"),
     };

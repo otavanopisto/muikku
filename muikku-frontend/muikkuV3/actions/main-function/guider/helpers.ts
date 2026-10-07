@@ -109,6 +109,9 @@ export async function loadStudentsHelper(
         .withSpecialEducationDecisionFilters.length
         ? actualFilters.withSpecialEducationDecisionFilters
         : undefined,
+      u18compulsory: actualFilters.withU18CompulsoryFilters.length
+        ? actualFilters.withU18CompulsoryFilters
+        : undefined,
     });
 
     //TODO why in the world does the server return nothing rather than an empty array?

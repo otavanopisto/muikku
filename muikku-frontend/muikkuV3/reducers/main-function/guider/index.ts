@@ -58,6 +58,7 @@ export interface GuiderActiveFiltersType {
   query: string;
   withPedagogyFormFilters: Array<GetGuiderStudentsPedagogyFormEnum>;
   withSpecialEducationDecisionFilters: Array<boolean>;
+  withU18CompulsoryFilters: Array<boolean>;
 }
 
 //These are actually dates, might be present or not
@@ -232,6 +233,7 @@ const initialGuiderState: GuiderState = {
     query: "",
     withPedagogyFormFilters: [],
     withSpecialEducationDecisionFilters: [],
+    withU18CompulsoryFilters: [],
   },
   availablePurchaseProducts: [],
   students: [],

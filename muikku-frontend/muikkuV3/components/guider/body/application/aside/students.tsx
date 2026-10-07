@@ -37,7 +37,9 @@ const StudentNavigationAside = () => {
 
   const pedagogyFromHash = [].concat((locationData.p as string) || []);
   const decisionFromHash = [].concat((locationData.s as string) || []);
+  const u18compulsoryFromHash = [].concat((locationData.u18 as string) || []);
   const hasDecision = decisionFromHash.includes("true");
+  const hasU18Compulsory = u18compulsoryFromHash.includes("true");
 
   return (
     <Navigation>
@@ -173,7 +175,27 @@ const StudentNavigationAside = () => {
           })}
         </NavigationTopic>
       )}
-      <NavigationTopic name={"Muut"}>
+      <NavigationTopic name={t("labels.others", { ns: "users" })}>
+        <NavigationElement
+          modifiers="aside-navigation-guider-user-group"
+          icon="users"
+          isActive={hasU18Compulsory}
+          hash={
+            "?" +
+            queryString.stringify(
+              Object.assign({}, locationData, {
+                c: "",
+                u18: hasU18Compulsory
+                  ? u18compulsoryFromHash.filter((v) => v !== "true")
+                  : u18compulsoryFromHash.concat("true"),
+              }),
+              { arrayFormat: "bracket" }
+            )
+          }
+        >
+          {t("labels.u18compulsory", { ns: "users" })}
+        </NavigationElement>
+
         <NavigationElement
           modifiers="aside-navigation-guider-user-group"
           icon="users"
