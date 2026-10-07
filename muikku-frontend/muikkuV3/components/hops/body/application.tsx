@@ -94,7 +94,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Note that this component is used by student, thats why
   // we need to check the study programme name from profile
-  const studyProgrammeName = status.profile.studyProgrammeName;
 
   // Check if the HOPS form has changes
   const hopsFormHasChanges = React.useMemo(
@@ -297,16 +296,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "STUDYPLAN":
         return curriculumConfig?.isMatrixAvailable ?? false;
       case "MATRICULATION":
-        return [
-          "Nettilukio",
-          "Aikuislukio",
-          "Nettilukio/yksityisopiskelu (aineopintoina)",
-          "Aineopiskelu/yo-tutkinto",
-          "Aineopiskelu/lukio",
-          "Aineopiskelu/lukio (oppivelvolliset)",
-          "Aineopiskelu/valmistuneet",
-          "Kahden tutkinnon opinnot",
-        ].includes(studyProgrammeName);
+        return hops.studentInfo?.educationTypeCode === "lukio";
       default:
         return false;
     }
