@@ -577,11 +577,20 @@ export default class CKEditor extends React.Component<
     // If init throws, instanceReady never runs; destroy still unblocks the queue.
     instance.once("destroy", releaseOnce);
 
+    // On change, we need to check if the user has exceeded the limit of characters or words
     instance.on("change", () => {
       this.onDataChange();
     });
-    instance.on("key", () => {
+
+    // On key, we need to check if the user has exceeded the limit of characters or words
+    instance.on("key", (evt: CKEditorKeyEventInfo) => {
       this.cancelChangeTrigger = false;
+      this.props.onKey && this.props.onKey(evt);
+    });
+
+    // On paste, we need to check if the user has exceeded the limit of characters or words
+    instance.on("paste", (evt: CKEditorPasteEventInfo) => {
+      this.props.onPaste && this.props.onPaste(evt);
     });
 
     /**
@@ -613,11 +622,7 @@ export default class CKEditor extends React.Component<
             setTimeout(this.onDataChange, 3000);
           });
           ev.editor.document.on("paste", (event: CKEditorPasteEventInfo) => {
-            if (this.props.onPaste && (props.maxChars || props.maxWords)) {
-              props.onPaste();
-            }
-            // Same as above. When pasting an image, onDataChange doesn't fire at all because text hasn't changed.
-            // Also, the image has to be uploaded to the server first, hence these timeout shenanigans
+            // Image paste still needs delayed getData; limit policy lives on editor "paste" above
             setTimeout(this.onDataChange, 1000);
             setTimeout(this.onDataChange, 2000);
             setTimeout(this.onDataChange, 3000);
@@ -634,56 +639,73 @@ export default class CKEditor extends React.Component<
         }
         this.enableCancelChangeTrigger();
 
-        // Height can be given from the ancestor or from instance container.
-        // Instance container is "unstable" and changes according to the content it seems, so for example
-        // material editor is given the ancestorHeight - the dialog height, which is stable.
-        // We need to get .cke_top and .cke_bottom elements height, which are the editor's toolbar and footer, so we can retract those from overall height
-        // Under div.cke_inner childNodes[0] is span.cke_top and childNodes[2] is span.cke_bottom
-        // This should be fairly stable way to get the height of these element as the DOM seems to be steady already
-        // We rely on this when we use editor parent container's height as a starting point for cke height calculations
-        const inner = readyInstance.container.$.querySelector(".cke_inner");
-        const topEl = inner && inner.childNodes[0];
-        const bottomEl = inner && inner.childNodes[2];
-        const ckeTopHeight =
-          topEl && topEl.getBoundingClientRect
-            ? topEl.getBoundingClientRect().height
+        let contentHeight: number;
+
+        // Height calculation order if rows are used:
+        if (typeof this.props.rows === "number" && this.props.rows > 0) {
+          // Match memofield.scss line-heights: 1.25rem default, 1.75rem from $breakpoint-pad (48em)
+          const rootFontSize =
+            parseFloat(getComputedStyle(document.documentElement).fontSize) ||
+            16;
+          const isPadUp = window.matchMedia("(min-width: 48em)").matches;
+          const lineHeightPx = (isPadUp ? 1.75 : 1.25) * rootFontSize;
+          // Approximate vertical padding of .cke_editable / memofield content area
+          const verticalPaddingPx = 16;
+          contentHeight = Math.round(
+            this.props.rows * lineHeightPx + verticalPaddingPx
+          );
+        } else {
+          // Height calculation order if rows are not used:
+          const ckeTopHeight =
+            readyInstance.container.$.querySelector(
+              ".cke_inner"
+            ).childNodes[0].getBoundingClientRect().height;
+
+          const ckeBottomHeight =
+            readyInstance.container.$.querySelector(
+              ".cke_inner"
+            ).childNodes[2].getBoundingClientRect().height;
+
+          // Generic 2px border on all sides; (2 * 2) is retracted from container-based height calc
+          const ckeBorder = 4;
+
+          // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
+          // cke_contents element and it will cause the editor to overflow the screen in mobile views.
+          const height = this.props.ancestorHeight
+            ? this.props.ancestorHeight
+            : readyInstance.container.$.getBoundingClientRect().height -
+              ckeTopHeight -
+              ckeBottomHeight -
+              ckeBorder;
+
+          // CKE content-element id (needed for ancestorHeight offset)
+          const contentElementId: string = readyInstance.id + "_contents";
+
+          // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
+
+          const contentElementOffset: number = this.props.ancestorHeight
+            ? document.getElementById(contentElementId).offsetTop
             : 0;
-        const ckeBottomHeight =
-          bottomEl && bottomEl.getBoundingClientRect
-            ? bottomEl.getBoundingClientRect().height
-            : 0;
-        // We use generic 2px all around border and that value (times 2)) has to be retracted from the height calculations also
-        const ckeBorder = 4;
-        // We need to retract the ckeTop and ckeBottom height form the overall cke height, if we don't then the cke container's height will be translated to
-        // cke_contents element and it will cause the editor to overflow the screen in mobile views.
-        const height = this.props.ancestorHeight
-          ? this.props.ancestorHeight
-          : readyInstance.container.$.getBoundingClientRect().height -
-            ckeTopHeight -
-            ckeBottomHeight -
-            ckeBorder;
-        // CKE content-element id
-        const contentElementId: string = readyInstance.id + "_contents";
-        // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
-        const contentEl = document.getElementById(contentElementId);
-        const contentElementOffset: number = this.props.ancestorHeight
-          ? contentEl
-            ? contentEl.offsetTop
-            : 0
-          : 0;
-        // Calculate the height
-        const contentHeight: number = height - contentElementOffset;
-        // Resize
+
+          contentHeight = height - contentElementOffset;
+        }
+
+        // Resize editable contents area (isContentHeight = true)
         if (typeof readyInstance.resize === "function") {
           readyInstance.resize("100%", contentHeight, true);
         }
+
         // This prevents empty children from overriding current data.
-        // It is a problem in the workspace management where the props
-        // are at an initial empty state when the editor is setup
         // current data gets overridden by the empty children
         // I did not find any case where this would break anything
         if ((props.children || "").trim() !== "") {
-          readyInstance.setData(props.children || "");
+          // Reset undo history to prevent undo history from being corrupted when setting data
+          readyInstance.setData(props.children || "", {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            callback: function () {
+              readyInstance.resetUndo();
+            },
+          });
         }
         //TODO somehow, the autofocus doesn't focus in the last row but in the first
         //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
