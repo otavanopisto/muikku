@@ -23,7 +23,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.model.EvaluationNote;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.EvaluationNoteRestModel;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -95,7 +94,7 @@ public class EvaluationNoteRESTService extends PluginRESTService {
         note = evaluationController.updateEvaluationNote(note, payload.getNote(), sessionController.getLoggedUserEntity().getId(), new Date());
       }
     } else {
-      note = evaluationController.createEvaluationNote(payload.getWorkspaceEntityId(), payload.getUserEntityId(), sessionController.getLoggedUserEntity().getId(), payload.getNote(), NoteType.MANUAL, new Date()); 
+      note = evaluationController.createEvaluationNote(payload.getWorkspaceEntityId(), payload.getUserEntityId(), sessionController.getLoggedUserEntity().getId(), payload.getNote(), new Date()); 
     }
     return Response.ok(toRestModel(note)).build();
   }

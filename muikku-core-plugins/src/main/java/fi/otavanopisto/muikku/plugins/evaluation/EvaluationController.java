@@ -54,7 +54,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationTy
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
@@ -1134,8 +1133,8 @@ public class EvaluationController {
     workspaceJournalFeedbackDAO.delete(journalFeedback);
   }
   
-  public EvaluationNote createEvaluationNote(Long workspaceEntityId, Long studentEntityId, Long creator, String note, NoteType type, Date created) {
-    return evaluationNoteDAO.create(studentEntityId, creator, workspaceEntityId, note, created, type);
+  public EvaluationNote createEvaluationNote(Long workspaceEntityId, Long studentEntityId, Long creator, String note, Date created) {
+    return evaluationNoteDAO.create(studentEntityId, creator, workspaceEntityId, note, created);
   }
   
   public List<EvaluationNote> listEvaluationNotesByStudentAndWorkspace(Long workspaceEntityId, Long studentEntityId) {
