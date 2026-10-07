@@ -11,21 +11,20 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.EvaluationNote;
 import fi.otavanopisto.muikku.plugins.evaluation.model.EvaluationNote_;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 
 public class EvaluationNoteDAO extends CorePluginsDAO<EvaluationNote> {
   
   private static final long serialVersionUID = 6908820355669025446L;
 
   public EvaluationNote create(Long student, Long creator, Long workspaceEntityId, String note, Date created){
-    EvaluationNote EvaluationNote = new EvaluationNote();
-    EvaluationNote.setCreator(creator);
-    EvaluationNote.setUserEntityId(student);
-    EvaluationNote.setNote(note);
-    EvaluationNote.setWorkspaceEntityId(workspaceEntityId);
-    EvaluationNote.setCreated(created);
-    EvaluationNote.setArchived(Boolean.FALSE);
-    return persist(EvaluationNote);
+    EvaluationNote evaluationNote = new EvaluationNote();
+    evaluationNote.setCreator(creator);
+    evaluationNote.setUserEntityId(student);
+    evaluationNote.setNote(note);
+    evaluationNote.setWorkspaceEntityId(workspaceEntityId);
+    evaluationNote.setCreated(created);
+    evaluationNote.setArchived(Boolean.FALSE);
+    return persist(evaluationNote);
   }
   
   public EvaluationNote update(EvaluationNote evaluationNote, String note, Long lastModifier, Date lastModified){
@@ -73,9 +72,9 @@ public class EvaluationNoteDAO extends CorePluginsDAO<EvaluationNote> {
 }
   
   
-  public EvaluationNote setArchived(EvaluationNote EvaluationNote, Boolean archived) {
-    EvaluationNote.setArchived(archived);
-    getEntityManager().persist(EvaluationNote);
-    return EvaluationNote;
+  public EvaluationNote setArchived(EvaluationNote evaluationNote, Boolean archived) {
+    evaluationNote.setArchived(archived);
+    getEntityManager().persist(evaluationNote);
+    return evaluationNote;
   }
 }
