@@ -191,20 +191,17 @@ public class UserIndexer {
 
         // If the end date is null, try to figure out if the period has ended (based on some other period cancelling it)
         if (end == null && begin != null && type != null) {
-          EnumSet<UserStudyPeriodType> compulsoryComplementStates = EnumSet.of(UserStudyPeriodType.COMPULSORY_EDUCATION, UserStudyPeriodType.NON_COMPULSORY_EDUCATION, UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION);
           switch (type) {
             case COMPULSORY_EDUCATION:
-              end = findPeriodEnd(studentStudyPeriods, begin, compulsoryComplementStates);
-            break;
             case NON_COMPULSORY_EDUCATION:
-              end = findPeriodEnd(studentStudyPeriods, begin, compulsoryComplementStates);
-            break;
             case EXTENDED_COMPULSORY_EDUCATION:
-              end = findPeriodEnd(studentStudyPeriods, begin, compulsoryComplementStates);
+              end = findPeriodEnd(studentStudyPeriods, begin, EnumSet.of(UserStudyPeriodType.COMPULSORY_EDUCATION, 
+                  UserStudyPeriodType.NON_COMPULSORY_EDUCATION, UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION));
             break;
             
             case PROLONGED_STUDYENDDATE:
             case TEMPORARILY_SUSPENDED:
+              // None for these, for now anyways
             break;
           }
         }
