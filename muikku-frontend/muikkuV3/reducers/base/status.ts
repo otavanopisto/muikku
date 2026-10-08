@@ -49,6 +49,7 @@ export interface StatusType {
   hopsEnabled: boolean;
   currentWorkspaceId: number;
   chatSettings: ChatUser;
+  sysEnvironment: string;
 }
 
 /**
@@ -101,6 +102,7 @@ export default function status(
     hopsEnabled: false, // /user/property/hops.enabled
     services: null,
     chatSettings: null,
+    sysEnvironment: null,
   },
   action: ActionType
 ): StatusType {

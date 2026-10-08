@@ -105,6 +105,7 @@ async function loadWhoAMI(
       isUnder18: whoAmI.under18,
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
+      sysEnvironment: whoAmI.sysEnv,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.has(
           "CREATE_ANNOUNCEMENT"

@@ -27,6 +27,7 @@ import {
   createComputerMonitoringAlarmsJson,
   createFrontAlarmHashMap,
   isSmowlApiError,
+  getEnviromentPrefixedId,
 } from "~/api_smowl/index";
 import { ActivityConfigResult } from "~/api_smowl/types";
 
@@ -892,6 +893,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 material: data.material,
                 update: data.update,
               },
+              getState().status.sysEnvironment,
               dispatch
             );
           }
@@ -902,6 +904,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               material: data.material,
               update: data.update,
             },
+            getState().status.sysEnvironment,
             dispatch
           );
 
@@ -1085,7 +1088,8 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
               computerAlarmsHashMap,
             } = await getSmowlDataFormMaterials(
               workspaceId,
-              materialContentNodes
+              materialContentNodes,
+              state.status.sysEnvironment
             );
 
             // Update the material content nodes with the exam settings and smowl data
@@ -1100,7 +1104,7 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
                 (setting) => setting.examId === node.workspaceMaterialId
               );
 
-              const activityId = `exam${node.workspaceMaterialId}`;
+              const activityId = `exam${getEnviromentPrefixedId(node.workspaceMaterialId, state.status.sysEnvironment)}`;
 
               if (examSetting) {
                 updatedNode = {
@@ -1448,14 +1452,18 @@ const materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType =
  * Gets the smowl data for the materials
  * @param workspaceId workspaceId
  * @param materials materials
+ * @param sysEnvironment sysEnvironment
  * @returns smowl activities (hash map), front alarms hash map, computer alarms hash map
  */
 async function getSmowlDataFormMaterials(
   workspaceId: number,
-  materials: MaterialContentNodeWithIdAndLogic[]
+  materials: MaterialContentNodeWithIdAndLogic[],
+  sysEnvironment: string
 ) {
   const activityListJson = createActivityListJson(
-    materials.map((node) => `${node.workspaceMaterialId}`),
+    materials.map((node) =>
+      getEnviromentPrefixedId(node.workspaceMaterialId, sysEnvironment)
+    ),
     "exam"
   );
 
@@ -1465,7 +1473,7 @@ async function getSmowlDataFormMaterials(
         try {
           return await smowlApi.getActiveServices({
             activityType: "course",
-            activityId: workspaceId.toString(),
+            activityId: getEnviromentPrefixedId(workspaceId, sysEnvironment),
           });
         } catch (error) {
           if (!isSmowlApiError(error)) {
@@ -1514,6 +1522,7 @@ async function getSmowlDataFormMaterials(
  * @param data data
  * @param data.material material
  * @param data.update update
+ * @param sysEnvironment sysEnvironment
  * @param dispatch dispatch
  */
 async function getSmowlDataForExam(
@@ -1521,6 +1530,7 @@ async function getSmowlDataForExam(
     material: MaterialContentNodeWithIdAndLogic;
     update: Partial<MaterialContentNodeWithIdAndLogic>;
   },
+  sysEnvironment: string,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>
 ) {
   // If proctoring is enabled first time, we need to fetch the smowl activity
@@ -1534,12 +1544,20 @@ async function getSmowlDataForExam(
 
   const newActivity = await smowlApi.getActiveServices({
     activityType: "exam",
-    activityId: data.material.workspaceMaterialId.toString(),
+    activityId: getEnviromentPrefixedId(
+      data.material.workspaceMaterialId,
+      sysEnvironment
+    ),
   });
   const frontAlarms = await smowlApi.getFrontCameraAlarms({
     // eslint-disable-next-line camelcase
     activityList_json: createActivityListJson(
-      [data.material.workspaceMaterialId.toString()],
+      [
+        getEnviromentPrefixedId(
+          data.material.workspaceMaterialId,
+          sysEnvironment
+        ),
+      ],
       "exam"
     ),
   });
@@ -1550,14 +1568,22 @@ async function getSmowlDataForExam(
   const computerMonitoringAlarms = await smowlApi.getComputerMonitoringAlarms({
     // eslint-disable-next-line camelcase
     activityList_json: createActivityListJson(
-      [data.material.workspaceMaterialId.toString()],
+      [
+        getEnviromentPrefixedId(
+          data.material.workspaceMaterialId,
+          sysEnvironment
+        ),
+      ],
       "exam"
     ),
   });
   const computerAlarmsHashMap = createComputerMonitoringAlarmHashMap(
     computerMonitoringAlarms.ActivityList_alarms
   );
-  const activityId = `exam${data.material.workspaceMaterialId}`;
+  const activityId = `exam${getEnviromentPrefixedId(
+    data.material.workspaceMaterialId,
+    sysEnvironment
+  )}`;
 
   dispatch({
     type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -1598,6 +1624,7 @@ async function getSmowlDataForExam(
  * @param data data
  * @param data.material material
  * @param data.update update
+ * @param sysEnvironment sysEnvironment
  * @param dispatch dispatch
  */
 async function updateSmowlData(
@@ -1605,6 +1632,7 @@ async function updateSmowlData(
     material: MaterialContentNodeWithIdAndLogic;
     update: Partial<MaterialContentNodeWithIdAndLogic>;
   },
+  sysEnvironment: string,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>
 ) {
   const promises = [];
@@ -1618,6 +1646,7 @@ async function updateSmowlData(
       updateSmowlComputerMonitoring({
         material: data.material,
         update: data.update,
+        sysEnvironment: sysEnvironment,
         // eslint-disable-next-line jsdoc/require-jsdoc
         onSuccess: (computerMonitoring) => {
           if (
@@ -1672,6 +1701,7 @@ async function updateSmowlData(
       updateSmowlTestExamMode({
         material: data.material,
         update: data.update,
+        sysEnvironment: sysEnvironment,
         // eslint-disable-next-line jsdoc/require-jsdoc
         onSuccess: (testExamMode) => {
           // Status false tells that update was unsuccessful and reason is QUIZ_HAS_DATA which means that the quiz has data and we need to show the notification
@@ -1736,7 +1766,12 @@ async function updateSmowlData(
       smowlApi.setFrontCameraAlarms({
         // eslint-disable-next-line camelcase
         activityList_json: createActivityListJson(
-          [data.material.workspaceMaterialId.toString()],
+          [
+            getEnviromentPrefixedId(
+              data.material.workspaceMaterialId,
+              sysEnvironment
+            ),
+          ],
           "exam"
         ),
         // eslint-disable-next-line camelcase
@@ -1757,7 +1792,12 @@ async function updateSmowlData(
       smowlApi.setComputerMonitoringAlarms({
         // eslint-disable-next-line camelcase
         activityList_json: createActivityListJson(
-          [data.material.workspaceMaterialId.toString()],
+          [
+            getEnviromentPrefixedId(
+              data.material.workspaceMaterialId,
+              sysEnvironment
+            ),
+          ],
           "exam"
         ),
         // eslint-disable-next-line camelcase
@@ -1777,11 +1817,13 @@ async function updateSmowlData(
  * @param data data
  * @param data.material material
  * @param data.update update
+ * @param data.sysEnvironment sysEnvironment
  * @param data.onSuccess onSuccess
  */
 async function updateSmowlTestExamMode(data: {
   material: MaterialContentNodeWithIdAndLogic;
   update: Partial<MaterialContentNodeWithIdAndLogic>;
+  sysEnvironment: string;
   onSuccess?: (testExamMode: ActivityConfigResult) => void;
 }) {
   // If there is not data for test exam mode to update, we don't need to do anything
@@ -1801,7 +1843,12 @@ async function updateSmowlTestExamMode(data: {
     const response = await smowlApi.activateTestExamMode({
       // eslint-disable-next-line camelcase
       activityList_json: createActivityListJson(
-        [data.material.workspaceMaterialId.toString()],
+        [
+          getEnviromentPrefixedId(
+            data.material.workspaceMaterialId,
+            data.sysEnvironment
+          ),
+        ],
         "exam"
       ),
     });
@@ -1816,7 +1863,12 @@ async function updateSmowlTestExamMode(data: {
     await smowlApi.deactivateTestExamMode({
       // eslint-disable-next-line camelcase
       activityList_json: createActivityListJson(
-        [data.material.workspaceMaterialId.toString()],
+        [
+          getEnviromentPrefixedId(
+            data.material.workspaceMaterialId,
+            data.sysEnvironment
+          ),
+        ],
         "exam"
       ),
     });
@@ -1828,11 +1880,13 @@ async function updateSmowlTestExamMode(data: {
  * @param data data
  * @param data.material material
  * @param data.update update
+ * @param data.sysEnvironment sysEnvironment
  * @param data.onSuccess onSuccess
  */
 async function updateSmowlComputerMonitoring(data: {
   material: MaterialContentNodeWithIdAndLogic;
   update: Partial<MaterialContentNodeWithIdAndLogic>;
+  sysEnvironment: string;
   onSuccess?: (computerMonitoring: ActivityConfigResult) => void;
 }) {
   // If there is not data for computer monitoring to update, we don't need to do anything
@@ -1854,7 +1908,12 @@ async function updateSmowlComputerMonitoring(data: {
     const response = await smowlApi.activateComputerMonitoring({
       // eslint-disable-next-line camelcase
       activityList_json: createActivityListJson(
-        [data.material.workspaceMaterialId.toString()],
+        [
+          getEnviromentPrefixedId(
+            data.material.workspaceMaterialId,
+            data.sysEnvironment
+          ),
+        ],
         "exam"
       ),
     });
@@ -1871,7 +1930,12 @@ async function updateSmowlComputerMonitoring(data: {
     await smowlApi.deactivateComputerMonitoring({
       // eslint-disable-next-line camelcase
       activityList_json: createActivityListJson(
-        [data.material.workspaceMaterialId.toString()],
+        [
+          getEnviromentPrefixedId(
+            data.material.workspaceMaterialId,
+            data.sysEnvironment
+          ),
+        ],
         "exam"
       ),
     });

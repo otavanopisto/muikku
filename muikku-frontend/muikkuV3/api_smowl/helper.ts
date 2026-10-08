@@ -329,3 +329,16 @@ export function getSmowlApi(config: SmowlApiConfig): SmowlApi {
     },
   });
 }
+
+/**
+ * Gets the environment prefixed ID
+ * @param id - The ID to prefix
+ * @param sysEnvironment - The system environment (e.g. "production", "development")
+ * @returns The environment prefixed ID
+ */
+export function getEnviromentPrefixedId(
+  id: string | number,
+  sysEnvironment: string
+): string {
+  return `${sysEnvironment}${id}`;
+}

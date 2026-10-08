@@ -2,7 +2,10 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { useSelector } from "react-redux";
-import { generateRegistrationLinkWithJwt } from "~/api_smowl/index";
+import {
+  generateRegistrationLinkWithJwt,
+  getEnviromentPrefixedId,
+} from "~/api_smowl/index";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 
@@ -44,7 +47,7 @@ export const useExamActivity = (props: UseExamActivityProps) => {
 
         const registrationLink = await generateRegistrationLinkWithJwt(
           {
-            activityId: examId.toString(),
+            activityId: getEnviromentPrefixedId(examId, status.sysEnvironment),
             activityType: "exam",
           },
           {
@@ -74,6 +77,7 @@ export const useExamActivity = (props: UseExamActivityProps) => {
     status.userId,
     status.profile.loggedUserName,
     status.profile.emails,
+    status.sysEnvironment,
     workspaces.currentWorkspace,
     status.profile.firstName,
     status.profile.lastName,

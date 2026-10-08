@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useSelector } from "react-redux";
-import { generateMonitoringLinkWithJwt } from "~/api_smowl/index";
+import {
+  generateMonitoringLinkWithJwt,
+  getEnviromentPrefixedId,
+} from "~/api_smowl/index";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 
@@ -97,8 +100,11 @@ export const useSmowlMonitoringStatus = (
         const monitoringLink = await generateMonitoringLinkWithJwt(
           {
             activityType: "exam",
-            activityId: examId.toString(),
-            activityContainerId: workspaces.currentWorkspace.id.toString(),
+            activityId: getEnviromentPrefixedId(examId, status.sysEnvironment),
+            activityContainerId: getEnviromentPrefixedId(
+              workspaces.currentWorkspace.id,
+              status.sysEnvironment
+            ),
             isMonitoring: isMonitoring ? 1 : 0,
           },
           {
@@ -130,6 +136,7 @@ export const useSmowlMonitoringStatus = (
     status.userId,
     status.profile.loggedUserName,
     status.profile.emails,
+    status.sysEnvironment,
     workspaces.currentWorkspace,
     examId,
     isMonitoring,

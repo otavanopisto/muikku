@@ -43,6 +43,7 @@ import {
   generateMonitoringLinkWithJwt,
   getSmowlApiAccountInfo,
   getSmowlApi,
+  getEnviromentPrefixedId,
 } from "./helper";
 
 export {
@@ -93,4 +94,5 @@ export {
   generateMonitoringLinkWithJwt,
   getSmowlApiAccountInfo,
   getSmowlApi,
+  getEnviromentPrefixedId,
 };
