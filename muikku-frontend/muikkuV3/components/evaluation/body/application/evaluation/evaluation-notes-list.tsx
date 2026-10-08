@@ -56,8 +56,8 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
         evaluationNote ? (
           <div className="evaluation-modal__content-body">
             <div className="evaluation-modal__item">
-              <div className="evaluation-modal__item-journal-feedback">
-                <div className="evaluation-modal__item-journal-feedback-data rich-text rich-text--evaluation-literal">
+              <div className="evaluation-modal__item-evaluation-note">
+                <div className="evaluation-modal__item-evaluation-note-data rich-text rich-text--evaluation-literal">
                   <CkeditorContentLoader html={evaluationNote.note} />
                 </div>
               </div>
@@ -88,7 +88,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
                     </div>
                   )}
               </div>
-              <div className="evaluation-modal__item-actions">
+              <div className="evaluation-modal__item-actions evaluation-modal__item-actions--evaluation-note">
                 <Link
                   className="link link--evaluation"
                   onClick={handleEvaluationNoteEditorStateClick}
@@ -122,7 +122,7 @@ const EvaluationNotesList: React.FC<EvaluationNotesListProps> = (props) => {
                   })}
                 </p>
               </div>
-              <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-feedback">
+              <div className="evaluation-modal__item-actions evaluation-modal__item-actions--evaluation-note">
                 <Link
                   className="link link--evaluation"
                   onClick={handleEvaluationNoteEditorStateClick}

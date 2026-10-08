@@ -594,6 +594,7 @@
   }
 }
 
+.evaluation-modal__item-evaluation-note,
 .evaluation-modal__item-journal-feedback {
   margin: 10px 0;
 }
@@ -604,6 +605,7 @@
   font-weight: 600;
 }
 
+.evaluation-modal__item-evaluation-note-data,
 .evaluation-modal__item-literal-assessment-data,
 .evaluation-modal__item-journal-feedback-data {
   margin: 5px 0;
@@ -626,6 +628,8 @@
   padding: 5px 0;
 }
 
+
+.evaluation-modal__item-actions--evaluation-note
 .evaluation-modal__item-actions--journal-feedback {
   justify-content: flex-start;
 }
