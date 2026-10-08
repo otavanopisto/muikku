@@ -123,6 +123,7 @@ export interface MaterialLoaderProps {
   deAriaGroupLabel?: string;
   deAriaGroupDescription?: string;
   deAriaGroupKey?: string;
+  deAriaGroupExitLabel?: string;
   websocket: WebsocketStateType;
   isInFrontPage?: boolean;
   highlights?: MaterialHighlight[];
@@ -844,6 +845,16 @@ class MaterialLoader extends React.Component<
           </span>
         ) : null}
         {content}
+        {this.props.deAriaGroupLabel ? (
+          <button
+            data-de-aria-group-exit
+            data-de-aria-key="esc"
+            tabIndex={0}
+            aria-label={
+              this.props.deAriaGroupExitLabel || this.props.deAriaGroupLabel
+            }
+          />
+        ) : null}
       </article>
     );
   }

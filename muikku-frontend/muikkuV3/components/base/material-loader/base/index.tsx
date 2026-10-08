@@ -153,13 +153,17 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
  * @param highlights highlights
  * @returns HTMLElement[]
  */
-function buildElementsFromHtml(html: string, highlights: MaterialHighlight[]) {
+function buildElementsFromHtml(
+  html: string,
+  highlights: MaterialHighlight[],
+  t?: (key: string, opts?: any) => string
+) {
   const $dom = $(html);
   // Inject highlights into the DOM copy BEFORE preprocessor.
   // IMPORTANT: use ALL top-level nodes, not just $dom[0].
   const roots = $dom.toArray() as HTMLElement[];
   injectHtmlAnnotations(roots, highlights || []);
-  return preprocessor($dom).toArray() as HTMLElement[];
+  return preprocessor($dom, t).toArray() as HTMLElement[];
 }
 
 /**
@@ -167,7 +171,7 @@ function buildElementsFromHtml(html: string, highlights: MaterialHighlight[]) {
  * @param $html html
  * @returns any
  */
-function preprocessor($html: any): any {
+function preprocessor($html: any, t?: (key: string, opts?: any) => string): any {
   $html.find("img").each(function () {
     if (!$(this).parent("figure").length) {
       const elem = document.createElement("span");
@@ -250,6 +254,19 @@ function preprocessor($html: any): any {
       if (hasLinks) {
         this.setAttribute("data-de-aria-group", "dynamic");
         this.setAttribute("data-de-aria-key", "p");
+        const exitBtn = document.createElement("button");
+        exitBtn.setAttribute("data-de-aria-group-exit", "");
+        exitBtn.setAttribute("data-de-aria-key", "esc");
+        exitBtn.setAttribute("tabindex", "0");
+        const labelText = (this.textContent || "").trim().slice(0, 80).trim();
+        const label = t
+          ? t("wcag.exitInteractiveGroup", {
+              ns: "materials",
+              title: labelText || "paragraph",
+            })
+          : "Go back: " + (labelText || "paragraph");
+        exitBtn.setAttribute("aria-label", label);
+        this.appendChild(exitBtn);
       }
     });
 
@@ -319,7 +336,7 @@ class Base extends React.Component<BaseProps, BaseState> {
 
     // We preprocess the html
     this.state = {
-      elements: buildElementsFromHtml(props.material.html, props.highlights),
+      elements: buildElementsFromHtml(props.material.html, props.highlights, props.t),
     };
 
     // prepare the registries
@@ -377,7 +394,8 @@ class Base extends React.Component<BaseProps, BaseState> {
     ) {
       const elements = buildElementsFromHtml(
         this.props.material.html,
-        this.props.highlights
+        this.props.highlights,
+        this.props.t
       );
       this.setState({
         elements,

@@ -877,6 +877,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           ) : null}
           {sectionSpecificContentData}
           {lastManagementOptionsWithinSectionItem}
+          <button
+            data-de-aria-group-exit
+            data-de-aria-key="esc"
+            tabIndex={0}
+            aria-label={t("wcag.exitInteractiveGroup", {
+              ns: "materials",
+              title: section.title,
+            })}
+          />
         </section>
       );
     });

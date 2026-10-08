@@ -765,8 +765,26 @@ class WorkspaceMaterials extends React.Component<
                 {t("actions.goToExam", { ns: "exams" })}
               </Button>
             </div>
+            <button
+              data-de-aria-group-exit
+              data-de-aria-key="esc"
+              tabIndex={0}
+              aria-label={t("wcag.exitInteractiveGroup", {
+                ns: "materials",
+                title: section.title,
+              })}
+            />
           </article>
         </div>
+        <button
+          data-de-aria-group-exit
+          data-de-aria-key="esc"
+          tabIndex={0}
+          aria-label={t("wcag.exitInteractiveGroup", {
+            ns: "materials",
+            title: section.title,
+          })}
+        />
       </section>
     );
   };
@@ -1241,6 +1259,15 @@ class WorkspaceMaterials extends React.Component<
           ) : null}
           {sectionSpecificContentData}
           {lastManagementOptionsWithinSectionItem}
+          <button
+            data-de-aria-group-exit
+            data-de-aria-key="esc"
+            tabIndex={0}
+            aria-label={t("wcag.exitInteractiveGroup", {
+              ns: "materials",
+              title: section.title,
+            })}
+          />
         </section>
       );
     });

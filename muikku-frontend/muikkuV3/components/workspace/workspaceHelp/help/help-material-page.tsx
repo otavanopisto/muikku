@@ -129,6 +129,11 @@ class WorkspaceMaterial extends React.Component<
             deAriaGroupLabel={
               this.props.materialContentNode.title || this.props.folder.title
             }
+            deAriaGroupExitLabel={this.props.t("wcag.exitInteractiveGroup", {
+              ns: "materials",
+              title:
+                this.props.materialContentNode.title || this.props.folder.title,
+            })}
             deAriaGroupDescription={this.props.t(
               "wcag.interactiveGroupInstructions",
               { ns: "materials" }
