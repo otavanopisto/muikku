@@ -22,6 +22,7 @@ import { createAssignmentInfoArray } from "~/components/general/evaluation-asses
 import { updateOpenedAssignmentOrExamId } from "~/actions/main-function/evaluation/evaluationActions";
 import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
 import Link from "~/components/general/link";
+import { getEnviromentPrefixedId } from "~/api_smowl";
 
 /**
  * EvaluationExamsListItemProps
@@ -44,6 +45,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
   const myRef = React.useRef<HTMLDivElement>(null);
 
   const evaluations = useSelector((state: StateType) => state.evaluations);
+  const { status } = useSelector((state: StateType) => state);
 
   const dispatch = useDispatch();
 
@@ -237,11 +239,16 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
                   <SmowlActivityResultsDialog
                     activityId={exam.folderId}
                     activityType="exam"
+                    sysEnvironment={status.sysEnvironment}
                     lang="fi"
                     dataLoader={() =>
                       Promise.resolve({
                         aNamesJson: JSON.stringify({
-                          [evaluationSelectedAssessmentId.userEntityId]: `${evaluationSelectedAssessmentId.firstName} ${evaluationSelectedAssessmentId.lastName}`,
+                          [getEnviromentPrefixedId(
+                            evaluationSelectedAssessmentId.userEntityId,
+                            status.sysEnvironment
+                          )]:
+                            `${evaluationSelectedAssessmentId.firstName} ${evaluationSelectedAssessmentId.lastName}`,
                         }),
                       })
                     }

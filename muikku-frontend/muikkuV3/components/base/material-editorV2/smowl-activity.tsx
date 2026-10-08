@@ -209,6 +209,8 @@ const SmowlActivity = (props: SmowlActivityProps) => {
     (state: StateType) => state.workspaces.materialEditor
   );
 
+  const { status } = useSelector((state: StateType) => state);
+
   const { currentDraftNodeValue } = editorState;
 
   const {
@@ -224,6 +226,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
 
   const { hasProctoredData, loadingExamResults } = useSmowlExamResults({
     examId: currentDraftNodeValue.workspaceMaterialId,
+    sysEnvironment: status.sysEnvironment,
   });
 
   const dispatch = useDispatch();

@@ -1,7 +1,10 @@
 import * as React from "react";
 import Dialog from "../dialog";
 import { SmowlActivityResults } from "./smowl-activity-results";
-import { getSmowlApiAccountInfo } from "~/api_smowl/index";
+import {
+  getEnviromentPrefixedId,
+  getSmowlApiAccountInfo,
+} from "~/api_smowl/index";
 import { isMApiError } from "~/api/api";
 import { FetchError, ResponseError } from "~/generated/client";
 
@@ -12,7 +15,7 @@ interface SmowlActivityResultsDialogProps {
   activityId: number;
   activityType: string;
   lang: string;
-
+  sysEnvironment: string;
   /**
    * Loader function that returns a JSON string of activity names, must include student id as key and first name
    * and last name as value e.g.: {"0":"John Doe","1":"Jane Doe","2":"Jim Doe"}
@@ -29,7 +32,14 @@ interface SmowlActivityResultsDialogProps {
  * @param props SmowlActivityResultsDialogProps
  */
 const SmowlActivityResultsDialog = (props: SmowlActivityResultsDialogProps) => {
-  const { activityId, activityType, lang, dataLoader, children } = props;
+  const {
+    activityId,
+    activityType,
+    lang,
+    sysEnvironment,
+    dataLoader,
+    children,
+  } = props;
 
   const [isOpen, setIsOpen] = React.useState(false);
   const { loading, smowlApiAccountInfo, aNamesJson } =
@@ -59,7 +69,7 @@ const SmowlActivityResultsDialog = (props: SmowlActivityResultsDialogProps) => {
 
     return (
       <SmowlActivityResults
-        activityId={activityId.toString()}
+        activityId={getEnviromentPrefixedId(activityId, sysEnvironment)}
         activityType={activityType}
         entityName={smowlApiAccountInfo.entityName}
         swlAPIKey={smowlApiAccountInfo.swlAPIKey}

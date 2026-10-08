@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  getEnviromentPrefixedId,
   getSmowlApi,
   isSmowlApiError,
   ResultsStatusResponse,
@@ -12,6 +13,7 @@ const smowlApi = getSmowlApi({});
  */
 interface UseSmowlExamResultsProps {
   examId: number | string | null | undefined;
+  sysEnvironment: string;
 }
 
 /**
@@ -20,7 +22,7 @@ interface UseSmowlExamResultsProps {
  * @returns The results of the exam
  */
 export const useSmowlExamResults = (props: UseSmowlExamResultsProps) => {
-  const { examId } = props;
+  const { examId, sysEnvironment } = props;
 
   const [state, setState] = React.useState<{
     loadingExamResults: boolean;
@@ -50,7 +52,7 @@ export const useSmowlExamResults = (props: UseSmowlExamResultsProps) => {
 
         const results = await smowlApi.getResultsStatus({
           activityType: "exam",
-          activityId: examId,
+          activityId: getEnviromentPrefixedId(examId, sysEnvironment),
         });
 
         if (!cancelled) {
@@ -76,7 +78,7 @@ export const useSmowlExamResults = (props: UseSmowlExamResultsProps) => {
     return () => {
       cancelled = true;
     };
-  }, [examId]);
+  }, [examId, sysEnvironment]);
 
   const hasProctoredData = (state.results?.users?.length ?? 0) > 0;
 

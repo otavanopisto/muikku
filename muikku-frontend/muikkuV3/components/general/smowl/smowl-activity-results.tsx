@@ -8,7 +8,8 @@ interface SmowlActivityResultsProps {
   swlAPIKey: string;
   /**
    * JSON string of activity names, must include student id as key and first name and last name as value
-   * e.g.: {"0":"John Doe","1":"Jane Doe","2":"Jim Doe"}
+   * e.g.: {"0":"John Doe","1":"Jane Doe","2":"Jim Doe"}. Note that the key must be the environment prefixed ID
+   * of the student (a.k.a userEntityId related to the environment) e.g "prod-123"
    */
   aNamesJson: string;
   /**
@@ -16,7 +17,8 @@ interface SmowlActivityResultsProps {
    */
   lang: string;
   /**
-   * The ID of the activity, e.g.: "123"
+   * The ID of the activity, e.g.: "123". Note that the ID must be the environment prefixed ID
+   * of the activity (a.k.a folderId related to the environment) e.g "prod-123"
    */
   activityId: string;
   /**
