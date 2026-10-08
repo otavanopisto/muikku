@@ -80,6 +80,14 @@ public class MuikkuEventRestModel {
     this.userEntityId = userEntityId;
   }
 
+  public String getTargetUserName() {
+    return targetUserName;
+  }
+
+  public void setTargetUserName(String targetUserName) {
+    this.targetUserName = targetUserName;
+  }
+
   public Long getCreator() {
     return creator;
   }
@@ -177,6 +185,7 @@ public class MuikkuEventRestModel {
   private EventType type;
   private boolean isPrivate;
   private Long userEntityId;
+  private String targetUserName;
   private Long creator;
   private String creatorName;
   private List<MuikkuEventParticipantRestModel> participants = new ArrayList<>();

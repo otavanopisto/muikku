@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.workspace.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table (
   indexes = {
-    @Index (columnList = "owner, workspace")
+    @Index (columnList = "owner, workspaceEntityId")
   }
 )
 public class WorkspaceNote {
@@ -38,14 +40,6 @@ public class WorkspaceNote {
   public void setNote(String note) {
     this.note = note;
   }
-  
-  public Long getWorkspace() {
-    return workspace;
-  }
-
-  public void setWorkspace(Long workspace) {
-    this.workspace = workspace;
-  }
 
   public Long getOwner() {
     return owner;
@@ -54,20 +48,60 @@ public class WorkspaceNote {
   public void setOwner(Long owner) {
     this.owner = owner;
   }
-  
-  public Integer getOrderNumber() {
-    return orderNumber;
+
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
   }
 
-  public void setOrderNumber(Integer orderNumber) {
-    this.orderNumber = orderNumber;
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
   }
 
-  public Boolean getArchived() {
+  public Long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
+  }
+
+  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
+  }
+
+  public String getStart() {
+    return start;
+  }
+
+  public void setStart(String start) {
+    this.start = start;
+  }
+
+  public String getEnd() {
+    return end;
+  }
+
+  public void setEnd(String end) {
+    this.end = end;
+  }
+
+  public Long getIndex() {
+    return index;
+  }
+
+  public void setIndex(Long index) {
+    this.index = index;
+  }
+
+  public WorkspaceNoteType getType() {
+    return type;
+  }
+
+  public void setType(WorkspaceNoteType type) {
+    this.type = type;
+  }
+
+  public boolean getArchived() {
     return archived;
   }
 
-  public void setArchived(Boolean archived) {
+  public void setArchived(boolean archived) {
     this.archived = archived;
   }
   
@@ -80,7 +114,24 @@ public class WorkspaceNote {
   
   @NotNull
   @Column (nullable = false)
-  private Long workspace;
+  private Long workspaceEntityId;
+  
+  @Column
+  private Long workspaceMaterialId;
+  
+  @Column(length=16)
+  private String start;
+
+  @Column(length=16)
+  private String end;
+  
+  @Column(name = "noteIndex")
+  private Long index;
+  
+  @NotNull
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private WorkspaceNoteType type;
   
   @Lob
   private String note;
@@ -89,12 +140,6 @@ public class WorkspaceNote {
   @Column (nullable=false)
   private Long owner;
   
-  @NotNull
-  @Column (nullable=false)
-  private Integer orderNumber;
-  
   @Column (nullable = false)
-  private Boolean archived;
+  private boolean archived;
 }
-
-  

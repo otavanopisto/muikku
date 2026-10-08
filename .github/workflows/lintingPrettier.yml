@@ -2,6 +2,8 @@ name: Prettier Code Quality Review
 on:
   pull_request:
     branches: devel
+permissions:
+  contents: read
 jobs:
   prettier:
     name: Prettier

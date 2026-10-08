@@ -142,7 +142,8 @@ public class MeRESTService {
           userEntity.getLastLogin(),
           guardiansDependent.getStudyStartDate(),
           guardiansDependent.getStudyTimeEnd(),
-          guardiansDependent.getStudyEndDate()
+          guardiansDependent.getStudyEndDate(),
+          userEntityController.isUnder18Student(guardiansDependent.getUserIdentifier())
       ));
     }
 
