@@ -94,6 +94,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Note that this component is used by student, thats why
   // we need to check the study programme name from profile
+  const studyProgrammeName = status.profile.studyProgrammeName;
+
+  // Note that this component is used by student, thats why
+  // we need to check the study programme name from profile
 
   // Check if the HOPS form has changes
   const hopsFormHasChanges = React.useMemo(
