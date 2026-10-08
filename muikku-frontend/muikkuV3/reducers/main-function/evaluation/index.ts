@@ -53,6 +53,10 @@ export interface EvaluationState {
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
   evaluationExams?: EvaluationStateAndData<ExamAttendance[]>;
+  evaluationExamsSmowlProctoringInfo?: {
+    swlAPIKey: string;
+    entityName: string;
+  };
   openedAssigmentOrExamId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
@@ -101,6 +105,7 @@ export const initialState: EvaluationState = {
     state: "LOADING",
     data: undefined,
   },
+  evaluationExamsSmowlProctoringInfo: undefined,
   evaluationCompositeReplies: { state: "LOADING", data: undefined },
   needsReloadEvaluationRequests: false,
   basePrice: {
@@ -472,6 +477,12 @@ export const evaluations: Reducer<EvaluationState> = (
           state: state.evaluationExams.state,
           data: action.payload,
         },
+      };
+
+    case "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD":
+      return {
+        ...state,
+        evaluationExamsSmowlProctoringInfo: action.payload,
       };
 
     case "EVALUATION_EXAMS_STATE_UPDATE":

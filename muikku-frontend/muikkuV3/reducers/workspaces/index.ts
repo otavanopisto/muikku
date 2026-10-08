@@ -2,6 +2,12 @@ import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
+  ActivityConfig,
+  ComputerMonitoringAlarmsConfig,
+  FrontCameraAlarmsConfig,
+  MonitoringAlarmsActivityResult,
+} from "~/api_smowl/index";
+import {
   ActivityLogEntry,
   AssessmentRequest,
   WorkspaceAdditionalInfo,
@@ -289,6 +295,11 @@ export interface MaterialContentNodeWithIdAndLogic extends MaterialContentNode {
 
   // This is available for student only
   examAttendance?: ExamAttendance;
+
+  // This is available for only other users than student
+  smowlActivity?: ActivityConfig;
+  smowlFrontCameraAlarm?: MonitoringAlarmsActivityResult<FrontCameraAlarmsConfig>;
+  smowlComputerMonitoringAlarm?: MonitoringAlarmsActivityResult<ComputerMonitoringAlarmsConfig>;
 }
 
 /* export type MaterialContentNodeListType = Array<MaterialContentNodeWithIdAndLogic>; */

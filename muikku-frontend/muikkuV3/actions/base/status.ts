@@ -105,6 +105,7 @@ async function loadWhoAMI(
       isUnder18: whoAmI.under18,
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
+      sysEnvironment: whoAmI.sysEnv,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.has(
           "CREATE_ANNOUNCEMENT"
@@ -156,6 +157,8 @@ async function loadWhoAMI(
         WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {
+        firstName: whoAmI.firstName,
+        lastName: whoAmI.lastName,
         addresses: whoAmI.addresses,
         emails: whoAmI.emails,
         displayName: whoAmI.displayName,

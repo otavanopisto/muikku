@@ -96,6 +96,14 @@ public class ExamAttendanceRestModel {
     this.assignmentInfos = assignmentInfos;
   }
 
+  public boolean isProctored() {
+    return proctored;
+  }
+
+  public void setProctored(boolean proctored) {
+    this.proctored = proctored;
+  }
+  
   public long getMinutesLeft() {
     return minutesLeft;
   }
@@ -114,6 +122,7 @@ public class ExamAttendanceRestModel {
   private long minutesLeft;
   private List<ContentNode> contents;
   private RestAssignmentEvaluation evaluationInfo;
+  private boolean proctored;
   private List<ExamAssignmentRestModel> assignmentInfos = new ArrayList<>();
 
 }

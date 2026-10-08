@@ -38,6 +38,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import { getSmowlApiAccountInfo } from "~/api_smowl/index";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
@@ -283,6 +284,15 @@ export type EVALUATION_EXAMS_LOAD = SpecificActionType<
 export type EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO = SpecificActionType<
   "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
   ExamAttendance
+>;
+
+// SMOWL PROCTORING
+export type EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD = SpecificActionType<
+  "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD",
+  {
+    swlAPIKey: string;
+    entityName: string;
+  }
 >;
 
 // Server events
@@ -2926,9 +2936,16 @@ const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
           studentEntityId: studentEntityId,
         });
 
+        const smowlApiAccountInfo = await getSmowlApiAccountInfo();
+
         dispatch({
           type: "EVALUATION_EXAMS_LOAD",
           payload: exams,
+        });
+
+        dispatch({
+          type: "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD",
+          payload: smowlApiAccountInfo,
         });
 
         dispatch({

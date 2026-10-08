@@ -13,6 +13,13 @@ import { useTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
+import Button from "~/components/general/button";
+import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
+import MApi from "~/api/api";
+import SmowlRegistrationReportsDialog from "~/components/general/smowl/smowl-registration-reports-dialog";
+import { getEnviromentPrefixedId } from "~/api_smowl/helper";
+
+const examApi = MApi.getExamApi();
 
 /**
  * ExamsListProps
@@ -27,6 +34,9 @@ interface ExamsListProps {}
 const ExamsList = (props: ExamsListProps) => {
   const { t } = useTranslation(["exams", "evaluation", "common"]);
   const { exams, examsStatus } = useSelector((state: StateType) => state.exams);
+  const { isStudent, sysEnvironment } = useSelector(
+    (state: StateType) => state.status
+  );
   const currentWorkspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
   );
@@ -52,7 +62,12 @@ const ExamsList = (props: ExamsListProps) => {
   return (
     <div className="exams">
       {exams.map((exam) => (
-        <ExamsListItem key={exam.folderId} exam={exam} />
+        <ExamsListItem
+          key={exam.folderId}
+          exam={exam}
+          isStudent={isStudent}
+          sysEnvironment={sysEnvironment}
+        />
       ))}
     </div>
   );
@@ -63,6 +78,8 @@ const ExamsList = (props: ExamsListProps) => {
  */
 interface ExamsListItemProps {
   exam: ExamAttendance;
+  isStudent: boolean;
+  sysEnvironment: string;
 }
 
 /**
@@ -71,9 +88,40 @@ interface ExamsListItemProps {
  * @returns ExamsListItem
  */
 const ExamsListItem = (props: ExamsListItemProps) => {
-  const { exam } = props;
+  const { exam, isStudent, sysEnvironment } = props;
   const { workspaceUrl } = useParams<{ workspaceUrl: string }>();
   const { t } = useTranslation(["evaluation", "common"]);
+
+  /**
+   * SMOWL data loader
+   * @param activityId activityId
+   * @returns SMOWL data
+   */
+  const smowlDataLoader = React.useCallback(
+    async (activityId: number) => {
+      // Loads the attendees for the exam
+      const attendees = await examApi.getExamAttendees({
+        workspaceFolderId: activityId,
+      });
+
+      // Which are transformed to a JSON string
+      // The key is the environment prefixed ID
+      // of the attendee (a.k.a userEntityId related to the environment)
+      return {
+        aNamesJson: JSON.stringify(
+          attendees.reduce(
+            (acc, attendee) => {
+              acc[getEnviromentPrefixedId(attendee.id, sysEnvironment)] =
+                `${attendee.firstName} ${attendee.lastName}`;
+              return acc;
+            },
+            {} as Record<string, string>
+          )
+        ),
+      };
+    },
+    [sysEnvironment]
+  );
 
   /**
    * Render assessment content
@@ -211,6 +259,11 @@ const ExamsListItem = (props: ExamsListItemProps) => {
       <h2 className="exam__header">
         <span>{exam.name}</span>
         <div className="exam__labels">
+          {exam.proctored && (
+            <span className="exam__label">
+              {t("labels.proctored", { ns: "exams", context: "student" })}
+            </span>
+          )}
           {restartAllowed && (
             <span className="exam__label">
               {t("labels.allowMultipleAttempts", {
@@ -273,15 +326,43 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         </div>
       </div>
 
-      {restartAllowed || !isEnded ? (
+      {restartAllowed || !isEnded || !isStudent ? (
         <div className="exam__footer">
           <div className="exam__actions">
-            <Link
-              className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
-              to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
-            >
-              {t("actions.openExam", { ns: "exams" })}
-            </Link>
+            {(restartAllowed || !isEnded) && (
+              <Link
+                className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
+                to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
+              >
+                {t("actions.openExam", { ns: "exams" })}
+              </Link>
+            )}
+
+            {!isStudent && exam.proctored && (
+              <SmowlRegistrationReportsDialog
+                activityId={exam.folderId}
+                lang="fi"
+                dataLoader={smowlDataLoader}
+              >
+                <Button className="exam__actions-button">
+                  Näytä rekisteröitymisraportit
+                </Button>
+              </SmowlRegistrationReportsDialog>
+            )}
+
+            {!isStudent && exam.proctored && (
+              <SmowlActivityResultsDialog
+                activityId={exam.folderId}
+                sysEnvironment={sysEnvironment}
+                activityType="exam"
+                lang="fi"
+                dataLoader={smowlDataLoader}
+              >
+                <Button className="exam__actions-button">
+                  Näytä proktorointitulokset
+                </Button>
+              </SmowlActivityResultsDialog>
+            )}
 
             {hasTimeLimit && isStarted && !isEnded && <ExamTimer exam={exam} />}
           </div>

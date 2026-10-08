@@ -5,6 +5,7 @@ import {
   WithTranslation,
 } from "react-i18next";
 import "~/sass/elements/hops.scss";
+import "~/sass/elements/draggable-window.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { endExam, startExam } from "~/actions/workspaces/exams";
 import Button from "~/components/general/button";
@@ -26,6 +27,12 @@ import ExamTimer from "./exam-timer";
 import { displayNotification } from "~/actions/base/notifications";
 import { ExamTimerRegistry } from "~/util/exam-timer";
 import { AnimatePresence, motion, Transition, Variants } from "framer-motion";
+import { useExamActivity } from "../../hooks/useExamActivity";
+import {
+  SmowlMonitoringStatus,
+  useSmowlMonitoringStatus,
+} from "../../hooks/useSmowlMonitoring";
+import DraggableWindow from "~/components/general/draggable-window";
 
 const variants: Variants = {
   entering: {
@@ -78,6 +85,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
   const { examId } = props;
 
   const [currentExamExpired, setCurrentExamExpired] = React.useState(false);
+  const [isMonitoring, setIsMonitoring] = React.useState(false);
 
   const dispatch = useDispatch();
 
@@ -88,6 +96,13 @@ const ExamInstance = (props: ExamInstanceProps) => {
     () => exams.find((exam) => exam.folderId === examId),
     [exams, examId]
   );
+
+  // Get SMOWL monitoring status (hook listens for messages)
+  const { monitoringStatus, monitoringLink } = useSmowlMonitoringStatus({
+    examId,
+    proctored: preExamInfo?.proctored || false,
+    isMonitoring,
+  });
 
   // Handle timer expiration for active exam
   React.useEffect(() => {
@@ -199,7 +214,13 @@ const ExamInstance = (props: ExamInstanceProps) => {
           key="pre-info"
           className="exam__info"
         >
-          <PreExamInfo exam={preExamInfo} onCloseExam={props.onCloseExam} />
+          <PreExamInfo
+            exam={preExamInfo}
+            isSmowlActivity={true}
+            monitoringStatus={monitoringStatus}
+            onStartExam={() => setIsMonitoring(true)}
+            onCloseExam={props.onCloseExam}
+          />
         </motion.div>
       );
     } else if (currentExamStatusInfo.status === "ERROR") {
@@ -293,9 +314,28 @@ const ExamInstance = (props: ExamInstanceProps) => {
   };
 
   return (
-    <AnimatePresence exitBeforeEnter initial={false}>
-      {renderContent()}
-    </AnimatePresence>
+    <>
+      {/* SMOWL monitoring iframe - persists throughout exam session */}
+      {monitoringLink.link && (
+        <DraggableWindow initialPosition={{ x: 0, y: 0 }}>
+          <iframe
+            src={monitoringLink.link}
+            title="SMOWL Monitoring"
+            aria-hidden="true"
+            allow="microphone; camera"
+            sandbox="allow-top-navigation allow-scripts allow-modals allow-same-origin allow-popups allow-downloads allow-popups-to-escape-sandbox"
+            width="220"
+            height="300"
+            frameBorder={0}
+            allowFullScreen
+            scrolling="no"
+          />
+        </DraggableWindow>
+      )}
+      <AnimatePresence exitBeforeEnter initial={false}>
+        {renderContent()}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -306,6 +346,9 @@ const ExamInstance = (props: ExamInstanceProps) => {
  */
 interface PreExamInfoProps {
   exam?: ExamAttendance;
+  isSmowlActivity: boolean;
+  monitoringStatus: SmowlMonitoringStatus;
+  onStartExam?: () => void;
   onCloseExam: () => void;
 }
 
@@ -316,9 +359,15 @@ interface PreExamInfoProps {
  */
 const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   const { t } = useTranslation(["exams", "common"]);
-  const { exam, onCloseExam } = props;
+  const { exam, isSmowlActivity, monitoringStatus, onCloseExam, onStartExam } =
+    props;
 
   const dispatch = useDispatch();
+
+  const { link, loading } = useExamActivity({
+    examId: exam?.folderId,
+    isSmowlActivity,
+  });
 
   /**
    * handleStartExam
@@ -326,6 +375,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   const handleStartExam = () => {
     if (exam && exam.folderId) {
       dispatch(startExam({ workspaceFolderId: exam.folderId }));
+      onStartExam?.();
     }
   };
 
@@ -337,6 +387,63 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   const allowRestart = exam?.allowRestart || false;
   // Check if exam has time limit
   const hasTimeLimit = exam?.minutes > 0 || false;
+
+  /**
+   * renderMonitoringStatus
+   * @returns JSX.Element
+   */
+  const renderMonitoringStatus = () => {
+    /**
+     * renderLink
+     * @returns JSX.Element
+     */
+    const renderLink = () => {
+      if (loading) {
+        return <span>Luodaan linkkiä...</span>;
+      }
+
+      if (!link) {
+        return null;
+      }
+
+      return (
+        <>
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            Rekisteröidy SMOWL-palveluun
+          </a>
+        </>
+      );
+    };
+
+    if (!isSmowlActivity) {
+      return null;
+    }
+
+    if (monitoringStatus === "PENDING") {
+      return (
+        <div className="exam__content">
+          <div className="exam__content-status">
+            Alustetaan SMOWL proktoroitua koetta...
+          </div>
+        </div>
+      );
+    }
+
+    if (monitoringStatus === "NOTOK") {
+      return (
+        <div className="exam__content">
+          <div className="exam__content-status">
+            SMOWL-palvelu ei ole käytettävissä. Tarkista, että käytät SMOWL:n
+            tukemaa selainta ja että kamera, mikrofoni ja CM sovellus ovat
+            käytettävissä. Varmista myös, että olet rekisteröitynyt
+            SMOWL-järjestelmään.
+            <br />
+            {renderLink()}
+          </div>
+        </div>
+      );
+    }
+  };
 
   /**
    * buttonText
@@ -352,6 +459,10 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
         <Button
           buttonModifiers={["standard-ok", "continue-exam"]}
           onClick={handleStartExam}
+          disabled={
+            isSmowlActivity &&
+            (monitoringStatus === "NOTOK" || monitoringStatus === "PENDING")
+          }
         >
           {t("actions.continueExam", { ns: "exams" })}
         </Button>
@@ -362,6 +473,10 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       <Button
         buttonModifiers={["standard-ok", "start-exam"]}
         onClick={handleStartExam}
+        disabled={
+          isSmowlActivity &&
+          (monitoringStatus === "NOTOK" || monitoringStatus === "PENDING")
+        }
       >
         {t("actions.startExam", { ns: "exams" })}
       </Button>
@@ -425,6 +540,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
           ></div>
         )}
 
+        {renderMonitoringStatus()}
         <div className="exam__footer">
           <div className="exam__actions exam__actions--centered">
             {getButton()}
@@ -724,9 +840,9 @@ const ExamInstanceTableOfContents = (
     };
 
   /**
-   * getTopicElementAttributes
+   * Get topic element attributes
    * @param content content
-   * @returns topic element attributes
+   * @returns Icon, icon title, class name, aria label
    */
   const getTopicElementAttributes = (content: MaterialContentNode) => {
     let icon: string | null = null;
