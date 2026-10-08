@@ -14,6 +14,8 @@ import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectType;
 
 @Indexable (
   indexName = IndexedUser.INDEX_NAME,
@@ -69,6 +71,31 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
       name = "pedagogyFormState",
       type = IndexableFieldType.KEYWORD
     )
+  },
+  subObjects = {
+    // Original studyPeriods array was not nested and to avoid having 
+    // to reconstruct the whole index, we sneakily rename the nested
+    // version to new field. Rename this back to original if there
+    // is ever need to do a full rebuild.
+    
+    @IndexableSubObject (
+      name = IndexedUser.FIELD_STUDYPERIODS,
+      type = IndexableSubObjectType.NESTED,
+      options = {
+        @IndexableFieldOption (
+          name = "type",
+          type = IndexableFieldType.KEYWORD
+        ),
+        @IndexableFieldOption (
+          name = "begin",
+          type = IndexableFieldType.DATE
+        ),
+        @IndexableFieldOption (
+          name = "end",
+          type = IndexableFieldType.DATE
+        ),
+      }
+    )
   }
 )
 public class IndexedUser {
@@ -76,6 +103,8 @@ public class IndexedUser {
   public static final String INDEX_NAME = "muikku_user";
   public static final String TYPE_NAME = "User";
 
+  public static final String FIELD_STUDYPERIODS = "studyPeriods2";
+  
   public IndexedUser() {
   }
 
@@ -280,12 +309,12 @@ public class IndexedUser {
     this.groups = groups;
   }
 
-  public List<IndexedUserStudyPeriod> getStudyPeriods() {
-    return studyPeriods;
+  public List<IndexedUserStudyPeriod> getStudyPeriods2() {
+    return studyPeriods2;
   }
 
-  public void setStudyPeriods(List<IndexedUserStudyPeriod> studyPeriods) {
-    this.studyPeriods = studyPeriods;
+  public void setStudyPeriods2(List<IndexedUserStudyPeriod> studyPeriods2) {
+    this.studyPeriods2 = studyPeriods2;
   }
 
   public Set<EnvironmentRoleArchetype> getRoles() {
@@ -346,7 +375,7 @@ public class IndexedUser {
   private String email;
   private Set<Long> workspaces;
   private Set<Long> groups;
-  private List<IndexedUserStudyPeriod> studyPeriods;
+  private List<IndexedUserStudyPeriod> studyPeriods2;
   private LocalDate birthday;
   private IndexedUserPedagogyFormState pedagogyFormState;
   private Boolean hasDecisionOnSpecialEducation;

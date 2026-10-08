@@ -45,6 +45,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -55,6 +56,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -67,6 +69,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
@@ -245,6 +248,7 @@ public class ElasticSearchProvider implements SearchProvider {
     }
   }
 
+  // TODO This delegates all queries to searchUsers(UserSearchQuery). This should be deprecated and removed. Maintaining long parameter lists is pain.
   @Override
   public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> roles,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
@@ -389,6 +393,38 @@ public class ElasticSearchProvider implements SearchProvider {
         query.filter(termsQuery("hasDecisionOnSpecialEducation", states));
       }
 
+      if (CollectionUtils.isNotEmpty(search.getIsU18Compulsory())) {
+        // Under 18 compulsory studies filter, this one's complicated so only apply it when only one choice is present
+        if (search.getIsU18Compulsory().size() == 1) {
+          LocalDate thresholdU18 = LocalDate.now().minusYears(18);
+
+          /*
+           *  Match by 
+           *  - type 
+           *  - begin date before or equal to now
+           *  - end date either non-existing or later than or equal to now
+           */
+          NestedQueryBuilder compulsoryPeriodQuery = nestedQuery("studyPeriods2", 
+              boolQuery()
+                .must(termQuery("studyPeriods2.type", UserStudyPeriodType.COMPULSORY_EDUCATION.name()))
+                .must(rangeQuery("studyPeriods2.begin").lte(LocalDate.now().toString()))
+                .should(rangeQuery("studyPeriods2.end").gte(LocalDate.now().toString()))
+                .should(boolQuery().mustNot(existsQuery("studyPeriods2.end")))
+                .minimumShouldMatch(1)
+              , ScoreMode.Avg);
+          
+          Boolean u18comp = search.getIsU18Compulsory().iterator().next();
+          if (Boolean.TRUE.equals(u18comp)) {
+            query.filter(rangeQuery("birthday").gt(thresholdU18.toString()));
+            query.filter(compulsoryPeriodQuery);
+          }
+          else {
+            query.filter(rangeQuery("birthday").lte(thresholdU18.toString()));
+            query.filter(boolQuery().mustNot(compulsoryPeriodQuery));
+          }
+        }
+      }
+      
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
           .query(query)
           .from(search.getStart())

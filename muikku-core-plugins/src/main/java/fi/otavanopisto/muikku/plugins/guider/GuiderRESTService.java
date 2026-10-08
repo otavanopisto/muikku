@@ -260,6 +260,7 @@ public class GuiderRESTService extends PluginRESTService {
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("pedagogyForm") Set<IndexedUserPedagogyFormState> pedagogyFormFilter,
       @QueryParam("decisionOnSpecialEducation") Set<Boolean> decisionOnSpecialEducationFilter,
+      @QueryParam("u18compulsory") Set<Boolean> u18CompulsoryFilter,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
 
@@ -450,6 +451,7 @@ public class GuiderRESTService extends PluginRESTService {
           .joinGroupsAndWorkspaces(joinGroupsAndWorkspaces)
           .hasPedagogyForm(pedagogyFormFilter)
           .hasDecisionOnSpecialEducation(decisionOnSpecialEducationFilter)
+          .isU18Compulsory(u18CompulsoryFilter)
           .build()
       );
       

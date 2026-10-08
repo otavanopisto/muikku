@@ -34,6 +34,7 @@ public class UserSearchQuery {
   private final boolean joinGroupsAndWorkspaces;
   private final Set<IndexedUserPedagogyFormState> hasPedagogyForm;
   private final Set<Boolean> hasDecisionOnSpecialEducation;
+  private Set<Boolean> u18Compulsory;
 
   private UserSearchQuery(Builder builder) {
     this.organizations = builder.organizations;
@@ -56,6 +57,7 @@ public class UserSearchQuery {
     this.joinGroupsAndWorkspaces = builder.joinGroupsAndWorkspaces;
     this.hasPedagogyForm = builder.hasPedagogyForm;
     this.hasDecisionOnSpecialEducation = builder.hasDecisionOnSpecialEducation;
+    this.u18Compulsory = builder.u18Compulsory;
   }
 
   public List<OrganizationEntity> getOrganizations() {
@@ -138,6 +140,10 @@ public class UserSearchQuery {
     return hasDecisionOnSpecialEducation;
   }
 
+  public Set<Boolean> getIsU18Compulsory() {
+    return u18Compulsory;
+  }
+
   public static class Builder {
     private List<OrganizationEntity> organizations;
     private Set<SchoolDataIdentifier> studyProgrammeIdentifiers;
@@ -159,6 +165,7 @@ public class UserSearchQuery {
     private boolean joinGroupsAndWorkspaces = false;
     private Set<IndexedUserPedagogyFormState> hasPedagogyForm;
     private Set<Boolean> hasDecisionOnSpecialEducation;
+    private Set<Boolean> u18Compulsory;
 
     public UserSearchQuery build() {
       return new UserSearchQuery(this);
@@ -261,6 +268,11 @@ public class UserSearchQuery {
 
     public Builder hasDecisionOnSpecialEducation(Set<Boolean> hasDecisionOnSpecialEducation) {
       this.hasDecisionOnSpecialEducation = hasDecisionOnSpecialEducation;
+      return this;
+    }
+    
+    public Builder isU18Compulsory(Set<Boolean> u18Compulsory) {
+      this.u18Compulsory = u18Compulsory;
       return this;
     }
   }
