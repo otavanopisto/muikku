@@ -97,8 +97,8 @@ public class SmowlRESTService extends AbstractRESTService {
       }
     }    
     claims.put("entityKey", licenseKey);
-    claims.put("userId", sessionController.getLoggedUserEntity().getId().toString());
-    
+    claims.put("userId", String.format("%s-%d", systemSettingsController.getSetting("sys.env"), sessionController.getLoggedUserEntity().getId()));
+
     try {
       JWTClaimsSet.Builder claimBuilder = new JWTClaimsSet.Builder()
           .issuer(issuer)
