@@ -7,7 +7,10 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import { UserGroup } from "~/generated/client";
+import {
+  GetGuiderStudentsPedagogyFormEnum,
+  UserGroup,
+} from "~/generated/client";
 import { GuiderContext } from "../../../context";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
@@ -20,7 +23,7 @@ import GuiderLabel from "./students/label";
  */
 const StudentNavigationAside = () => {
   const { view, setView } = React.useContext(GuiderContext);
-  const { guider } = useSelector((state: StateType) => state);
+  const { guider, status } = useSelector((state: StateType) => state);
 
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
@@ -29,6 +32,14 @@ const StudentNavigationAside = () => {
     document.location.hash.split("?")[1] || "",
     { arrayFormat: "bracket" }
   );
+
+  const isSpecialEducationTeacher = status.isSpecialEducationTeacher;
+
+  const pedagogyFromHash = [].concat((locationData.p as string) || []);
+  const decisionFromHash = [].concat((locationData.s as string) || []);
+  const u18compulsoryFromHash = [].concat((locationData.u18 as string) || []);
+  const hasDecision = decisionFromHash.includes("true");
+  const hasU18Compulsory = u18compulsoryFromHash.includes("true");
 
   return (
     <Navigation>
@@ -164,6 +175,77 @@ const StudentNavigationAside = () => {
           })}
         </NavigationTopic>
       )}
+      <NavigationTopic name={t("labels.others", { ns: "users" })}>
+        <NavigationElement
+          modifiers="aside-navigation-guider-user-group"
+          icon="users"
+          isActive={hasU18Compulsory}
+          hash={
+            "?" +
+            queryString.stringify(
+              Object.assign({}, locationData, {
+                c: "",
+                u18: hasU18Compulsory
+                  ? u18compulsoryFromHash.filter((v) => v !== "true")
+                  : u18compulsoryFromHash.concat("true"),
+              }),
+              { arrayFormat: "bracket" }
+            )
+          }
+        >
+          {t("labels.u18compulsory", { ns: "users" })}
+        </NavigationElement>
+
+        <NavigationElement
+          modifiers="aside-navigation-guider-user-group"
+          icon="users"
+          isActive={guider.activeFilters.withPedagogyFormFilters.includes(
+            GetGuiderStudentsPedagogyFormEnum.Published
+          )}
+          hash={
+            "?" +
+            queryString.stringify(
+              Object.assign({}, locationData, {
+                c: "",
+                p: guider.activeFilters.withPedagogyFormFilters.includes(
+                  GetGuiderStudentsPedagogyFormEnum.Published
+                )
+                  ? pedagogyFromHash.filter(
+                      (v) => v !== GetGuiderStudentsPedagogyFormEnum.Published
+                    )
+                  : pedagogyFromHash.concat(
+                      GetGuiderStudentsPedagogyFormEnum.Published
+                    ),
+              }),
+              { arrayFormat: "bracket" }
+            )
+          }
+        >
+          {t("labels.pedagogyFormPublished", { ns: "guider" })}
+        </NavigationElement>
+
+        {isSpecialEducationTeacher && (
+          <NavigationElement
+            modifiers="aside-navigation-guider-user-group"
+            icon="users"
+            isActive={hasDecision}
+            hash={
+              "?" +
+              queryString.stringify(
+                Object.assign({}, locationData, {
+                  c: "",
+                  s: hasDecision
+                    ? decisionFromHash.filter((v) => v !== "true")
+                    : decisionFromHash.concat("true"),
+                }),
+                { arrayFormat: "bracket" }
+              )
+            }
+          >
+            {t("labels.specialEducationhasDecision", { ns: "guider" })}
+          </NavigationElement>
+        )}
+      </NavigationTopic>
     </Navigation>
   );
 };

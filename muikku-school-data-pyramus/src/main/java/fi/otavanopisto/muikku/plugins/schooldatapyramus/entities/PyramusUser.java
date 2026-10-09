@@ -30,7 +30,8 @@ public class PyramusUser extends AbstractUser implements User {
                      boolean evaluationFees,
                      boolean hidden,
                      boolean matriculationEligibility,
-                     Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
+                     Set<SchoolDataIdentifier> studyProgrammeIdentifiers, 
+                     boolean specialEducationTeacher) {
     
     super(identifier, 
         firstName, 
@@ -52,7 +53,8 @@ public class PyramusUser extends AbstractUser implements User {
         curriculumIdentifier,
         organizationIdentifier,
         matriculationEligibility,
-        studyProgrammeIdentifiers);
+        studyProgrammeIdentifiers,
+        specialEducationTeacher);
   }
 
   @Override

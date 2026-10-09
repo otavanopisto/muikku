@@ -654,6 +654,7 @@ class StateOfStudies extends React.Component<
                           hasImage,
                           groupAdvisor,
                           studyAdvisor,
+                          specialEducationTeacher,
                           properties,
                         } = counselor;
                         const councelorActions = (
@@ -716,6 +717,7 @@ class StateOfStudies extends React.Component<
                             phone={properties["profile-phone"]}
                             groupAdvisor={groupAdvisor}
                             studyAdvisor={studyAdvisor}
+                            specialEducationTeacher={specialEducationTeacher}
                             vacationStart={properties["profile-vacationStart"]}
                             vacationEnd={properties["profile-vacationEnd"]}
                           />

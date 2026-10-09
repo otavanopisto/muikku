@@ -64,4 +64,5 @@ public interface User extends SchoolDataEntity {
   // #6250: Staff member study programme identifiers 
   public Set<SchoolDataIdentifier> getStudyProgrammeIdentifiers();
 
+  boolean isSpecialEducationTeacher();
 }

@@ -1,8 +1,11 @@
 package fi.otavanopisto.muikku.plugins.search;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,13 +22,17 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.search.IndexedUser;
 import fi.otavanopisto.muikku.search.IndexedUserDependant;
+import fi.otavanopisto.muikku.search.IndexedUserPedagogyFormState;
 import fi.otavanopisto.muikku.search.IndexedUserStudyPeriod;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.UserController;
@@ -38,6 +45,9 @@ public class UserIndexer {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private PedagogyController pedagogyController;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -161,14 +171,20 @@ public class UserIndexer {
             }
             indexedUser.setDependants(indexedDependants);
           }
+
+          if (environmentRoles.contains(EnvironmentRoleArchetype.STUDENT)) {
+            PedagogyForm pedagogyForm = pedagogyController.findFormByUserEntityId(userEntity.getId());
+
+            if (pedagogyForm != null) {
+              indexedUser.setPedagogyFormState(pedagogyForm.isPublished() ? IndexedUserPedagogyFormState.PUBLISHED : IndexedUserPedagogyFormState.UNPUBLISHED);
+              indexedUser.setHasDecisionOnSpecialEducation(pedagogyController.hasDecisionToSpecialEducation(pedagogyForm));
+            }
+          }
         }
         
-        List<UserStudyPeriod> studentStudyPeriods = userController.listStudentStudyPeriods(userIdentifier);
+        List<IndexedUserStudyPeriod> studyPeriods = getIndexedUserStudyPeriods(userIdentifier);
         
-        List<IndexedUserStudyPeriod> studyPeriods = CollectionUtils.isEmpty(studentStudyPeriods) ? new ArrayList<>() :
-          studentStudyPeriods.stream().map(studyPeriod -> new IndexedUserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), studyPeriod.getType())).collect(Collectors.toList());
-
-        indexedUser.setStudyPeriods(studyPeriods);
+        indexedUser.setStudyPeriods2(studyPeriods);
         
         indexer.index(IndexedUser.INDEX_NAME, IndexedUser.TYPE_NAME, indexedUser);
       } else {
@@ -182,6 +198,71 @@ public class UserIndexer {
     } 
   }
   
+  /**
+   * Fetches user's study periods and turns them into IndexedUserStudyPeriods.
+   * Tries to fill in missing end dates in order for the search to be more convenient.
+   * 
+   * @param userIdentifier
+   * @return
+   */
+  private List<IndexedUserStudyPeriod> getIndexedUserStudyPeriods(SchoolDataIdentifier userIdentifier) {
+    List<UserStudyPeriod> studentStudyPeriods = userController.listStudentStudyPeriods(userIdentifier);
+    
+    List<IndexedUserStudyPeriod> studyPeriods = new ArrayList<>();
+
+    if (CollectionUtils.isNotEmpty(studentStudyPeriods)) {
+      for (UserStudyPeriod studyPeriod : studentStudyPeriods) {
+        
+        UserStudyPeriodType type = studyPeriod.getType();
+        LocalDate begin = studyPeriod.getBegin();
+        LocalDate end = studyPeriod.getEnd();
+
+        // If the end date is null, try to figure out if the period has ended (based on some other period cancelling it)
+        if (end == null && begin != null && type != null) {
+          switch (type) {
+            case COMPULSORY_EDUCATION:
+            case NON_COMPULSORY_EDUCATION:
+            case EXTENDED_COMPULSORY_EDUCATION:
+              end = findPeriodEnd(studentStudyPeriods, begin, EnumSet.of(UserStudyPeriodType.COMPULSORY_EDUCATION, 
+                  UserStudyPeriodType.NON_COMPULSORY_EDUCATION, UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION));
+            break;
+            
+            case PROLONGED_STUDYENDDATE:
+            case TEMPORARILY_SUSPENDED:
+              // None for these, for now anyways
+            break;
+          }
+        }
+        
+        studyPeriods.add(new IndexedUserStudyPeriod(begin, end, type));
+      }
+    }
+    
+    return studyPeriods;
+  }
+
+  /**
+   * Finds periods of type endStates and greater date than begin.
+   * If any are found, the one with smallest begin date is used
+   * as an assumed end date for the period for which this method
+   * is called for. One day gets automatically removed from the date.
+   * @param studentStudyPeriods
+   * @param begin
+   * @param of
+   * @return
+   */
+  private LocalDate findPeriodEnd(List<UserStudyPeriod> studentStudyPeriods, LocalDate begin, EnumSet<UserStudyPeriodType> endStates) {
+    LocalDate nearestCancellingPeriodTypeBeginDate = studentStudyPeriods.stream()
+      .filter(period -> period.getBegin() != null)
+      .filter(period -> period.getBegin().isAfter(begin))
+      .filter(period -> endStates.contains(period.getType()))
+      .map(UserStudyPeriod::getBegin)
+      .min(Comparator.naturalOrder())
+      .orElse(null);
+
+    return nearestCancellingPeriodTypeBeginDate != null ? nearestCancellingPeriodTypeBeginDate.minusDays(1) : null;
+  }
+
   public void indexUser(UserEntity userEntity) {
     schoolDataBridgeSessionController.startSystemSession();
     try {

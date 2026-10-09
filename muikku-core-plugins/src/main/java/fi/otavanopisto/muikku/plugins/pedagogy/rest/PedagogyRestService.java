@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyFormWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -111,6 +112,12 @@ public class PedagogyRestService {
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
+  // TODO: User indexing should probably be triggered to run via events in order to move it outside transaction.
+  //       If the transaction fails, the indexing doesn't get reversed which may leave index in wrong state.
+  //       Also triggering the indexing is probably better suited as Controller's responsibility.
+  @Inject
+  private UserIndexer userIndexer;
+  
   /**
    * mApi().pedagogy.form.access.read(123);
    */
@@ -159,6 +166,8 @@ public class PedagogyRestService {
     }
     
     form = pedagogyController.createForm(userEntity.getId(), payload.getFormData());
+
+    userIndexer.indexUser(userEntity);
     
     return Response.ok(toRestModel(form)).build();
   }
@@ -242,6 +251,9 @@ public class PedagogyRestService {
     if (form.getPublished() != null) {
       pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:pedagogy-form-updated", restModel);
     }
+    
+    userIndexer.indexUser(userEntity);
+    
     return Response.ok(restModel).build();
   }
   
@@ -273,6 +285,8 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     // Form data update
     
     form = pedagogyController.updatePublished(form, sessionController.getLoggedUserEntity().getId());
+
+    userIndexer.indexUser(userEntity);
     
     return Response.ok(toRestModel(form)).build();
   }
