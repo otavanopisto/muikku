@@ -1,0 +1,6 @@
+.panelTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--mantine-color-brand-8);
+}

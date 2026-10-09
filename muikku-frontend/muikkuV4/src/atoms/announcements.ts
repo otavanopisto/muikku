@@ -7,10 +7,6 @@ const announcerApi = getAnnouncerApi();
 
 export const frontpageAnnouncementsQueryAtom = atomWithQuery(() => {
   const params: GetAnnouncementsRequest = {
-    hideEnvironmentAnnouncements: false,
-    hideWorkspaceAnnouncements: false,
-    hideGroupAnnouncements: false,
-    onlyMine: true,
     maxResults: 10,
   };
 

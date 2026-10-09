@@ -18,6 +18,10 @@ import { brandIdAtom } from "src/atoms/theme";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { DashboardActions } from "./ActionBar/ActionBar";
 import { panels } from "./model/panels";
+import SortablePanel from "./SortablePanel/SortablePanel";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { isSortable } from "@dnd-kit/react/sortable";
+
 /**
  * Dashboard - Dashboard page
  */
@@ -40,8 +44,6 @@ export function Dashboard() {
     return panel ? [panel] : [];
   });
 
-  const mandatoryPanels = panels.filter((panel) => panel.mandatory);
-
   const handlePanelClick = (panelId: number) => {
     if (userPanelIds.includes(panelId)) {
       setLocalStoragePanelIds(
@@ -50,6 +52,24 @@ export function Dashboard() {
       return;
     } else {
       setLocalStoragePanelIds([...userPanelIds, panelId].toString());
+    }
+  };
+
+  const handlePanelDragEnd = (event: DragEndEvent) => {
+    if (event.canceled) {
+      return;
+    }
+    const { source } = event.operation;
+    if (isSortable(source)) {
+      // If the panel is moved to a new position, update the local storage
+      const { initialIndex, index } = source;
+      if (initialIndex !== index) {
+        const newPanelOrder = [...userPanelIds];
+        const removedPanel = newPanelOrder.splice(initialIndex, 1);
+        newPanelOrder.splice(index, 0, removedPanel[0]);
+
+        setLocalStoragePanelIds(newPanelOrder.join(","));
+      }
     }
   };
 
@@ -100,22 +120,16 @@ export function Dashboard() {
             </Stack>
           </Paper>
         </Grid.Col>
-        {userPanels.map((panel) => {
-          const PanelComponent = panel.component;
-          return PanelComponent ? (
-            <Grid.Col span={4}>
-              <PanelComponent key={panel.id} />
-            </Grid.Col>
-          ) : null;
-        })}
-        {mandatoryPanels.map((panel) => {
-          const PanelComponent = panel.component;
-          return PanelComponent ? (
-            <Grid.Col span={4}>
-              <PanelComponent key={panel.id} />
-            </Grid.Col>
-          ) : null;
-        })}
+        <DragDropProvider onDragEnd={handlePanelDragEnd}>
+          {userPanels.map((panel, index) => {
+            const PanelComponent = panel.component;
+            return PanelComponent ? (
+              <SortablePanel key={panel.id} id={panel.id} index={index}>
+                <PanelComponent key={panel.id} />
+              </SortablePanel>
+            ) : null;
+          })}
+        </DragDropProvider>
       </Grid>
     </PageLayout>
   );

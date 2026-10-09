@@ -21,7 +21,7 @@ export function Workspaces() {
         {lastWorkspaces.data?.map((workspace) => (
           <Fragment key={workspace.workspaceId}>
             <Title order={1} mb="md">
-              Jatka opintoja: {workspace.workspaceName} -{" "}
+              Jatka opintoja: {workspace.workspaceName} -
               {workspace.materialName}
             </Title>
             <Button

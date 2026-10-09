@@ -1,8 +1,10 @@
-import { Title, Text, Paper, Button, Group } from "@mantine/core";
+import { Title, Text, Stack, Box } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageAnnouncementsDataAtom } from "src/atoms/announcements";
 import { Empty } from "src/components/Empty";
-import { Fragment } from "react";
+import { Panel } from "~/src/components/Panel/Panel";
+import { IconSpeakerphone } from "@tabler/icons-react";
+import { localize } from "~/src/locales/i18n";
 
 /**
  * Workspaces
@@ -15,17 +17,23 @@ export function Announcements() {
     return <Empty title="No announcements found" />;
   }
   return (
-    <Paper p="xl" withBorder>
-      <Group>
+    <Panel
+      unreadCount={announcements?.unreadCount}
+      icon={<IconSpeakerphone />}
+      title="Announcements"
+    >
+      <Stack>
         {announcements?.announcements.map((announcement) => (
-          <Fragment key={announcement.id}>
-            <Title order={1} mb="md">
+          <Box mt="md" key={announcement.id}>
+            <Title c="brand.3" order={3}>
               {announcement.caption}
             </Title>
-            <Text dangerouslySetInnerHTML={{ __html: announcement.content }} />
-          </Fragment>
+            <Text c="brand.1">
+              {localize.date(announcement.created, "DD.MM.YYYY")}
+            </Text>
+          </Box>
         ))}
-      </Group>
-    </Paper>
+      </Stack>
+    </Panel>
   );
 }
