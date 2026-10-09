@@ -3804,7 +3804,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
-  
+
   #EVALUATIONNOTES
   /rest/evaluationNotes/workspaces/{workspaceEntityId}/students/{userEntityId}:
     get:
@@ -12864,7 +12864,7 @@ components:
                 type: string
               workspaceSubjectIdentifier:
                 type: string
-    
+
     EvaluationNoteCreateOrUpdateRequestBody:
       content:
         application/json:
@@ -15487,6 +15487,7 @@ components:
         - hasPedagogyForm
         - u18Compulsory
         - state
+        - deadline
       properties:
         id:
           type: integer
@@ -15549,6 +15550,11 @@ components:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
         evaluationNoteCount:
           type: integer
+        deadline:
+          description: Deadline by which the assessment must be completed
+          type: string
+          format: date-time
+          nullable: true
 
     EvaluationSupplementationRequest:
       type: object

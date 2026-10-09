@@ -32,6 +32,7 @@ import {
 import Dropdown from "~/components/general/dropdown";
 import { localize } from "~/locales/i18n";
 import EvaluationNoteDialog from "~/components/evaluation/dialogs/evaluation-note";
+import EditDeadlineDateDialog from "~/components/evaluation/dialogs/edit-deadline-date";
 
 /**
  * EvaluationCardProps
@@ -292,6 +293,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     transferred: "",
   };
 
+  const canEditDeadline =
+    state === "pending" ||
+    state === "pending_fail" ||
+    state === "pending_pass" ||
+    state === "interim_evaluation_request";
+
   return (
     <div className={`evaluation-card ${cardModifierMap[state]}`}>
       <EvaluationCardLabel
@@ -341,6 +348,25 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
               ) : null}
             </IconButton>
           </EvaluationNoteDialog>
+
+          {canEditDeadline ? (
+            <EditDeadlineDateDialog
+              evaluationAssessmentRequest={evaluationAssessmentRequest}
+            >
+              <Dropdown
+                openByHover
+                content={t("actions.editDeadline", { ns: "evaluation" })}
+              >
+                <IconButton
+                  aria-label={t("labels.editEvaluationDeadline", {
+                    ns: "evaluation",
+                  })}
+                  buttonModifiers="evaluation-deadline"
+                  icon="clock"
+                />
+              </Dropdown>
+            </EditDeadlineDateDialog>
+          ) : null}
         </div>
 
         <div className="evaluation-card__button-set">
@@ -541,6 +567,11 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       ? localize.date(evaluationAssessmentRequest.assessmentRequestDate)
       : "-";
 
+  const evaluationDeadlineLocalized =
+    evaluationAssessmentRequest.deadline !== null
+      ? localize.date(evaluationAssessmentRequest.deadline)
+      : "-";
+
   const enrollmentDateRow = (
     <EvaluationCardContentRow
       hightlight={evaluationAssessmentRequest.state === "unassessed"}
@@ -573,6 +604,20 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       </span>
     </EvaluationCardContentRow>
   );
+
+  const evaluationDeadlineRow =
+    evaluationAssessmentRequest.state !== "incomplete" ? (
+      <EvaluationCardContentRow>
+        <span className="evaluation-card__content-label">
+          {evaluationAssessmentRequest.state === "interim_evaluation_request"
+            ? t("labels.mustGiveFeedbackBy", { ns: "evaluation" })
+            : t("labels.mustBeEvaluatedBy", { ns: "evaluation" })}
+        </span>
+        <span className="evaluation-card__content-data">
+          {evaluationDeadlineLocalized}
+        </span>
+      </EvaluationCardContentRow>
+    ) : null;
 
   const evaluatedRow = (
     <EvaluationCardContentRow
@@ -614,6 +659,7 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       {enrollmentDateRow}
       {evaluationRequestRow}
       {evaluatedRow}
+      {evaluationDeadlineRow}
       {tasksDonwRow}
     </div>
   );
