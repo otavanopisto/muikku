@@ -35,6 +35,7 @@ import {
   InterimEvaluationRequest,
   ExamAttendance,
   MaterialAnswerSnapshot,
+  EvaluationNote,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -68,6 +69,14 @@ export type EVALUATION_ASSESSMENT_EVENTS_LOAD = SpecificActionType<
 export type EVALUATION_INTERMIN_REQUESTS_LOAD = SpecificActionType<
   "EVALUATION_INTERMIN_REQUESTS_LOAD",
   InterimEvaluationRequest[]
+>;
+
+export type EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE = SpecificActionType<
+  "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+  {
+    workspaceUserEntityId: number;
+    delta: 1 | -1;
+  }
 >;
 
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
@@ -283,6 +292,33 @@ export type EVALUATION_EXAMS_LOAD = SpecificActionType<
 export type EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO = SpecificActionType<
   "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
   ExamAttendance
+>;
+
+// EVALUATION NOTES
+
+export type EVALUATION_NOTES_STATE_UPDATE = SpecificActionType<
+  "EVALUATION_NOTES_STATE_UPDATE",
+  EvaluationStateType
+>;
+
+export type EVALUATION_NOTES_LOAD = SpecificActionType<
+  "EVALUATION_NOTES_LOAD",
+  EvaluationNote[]
+>;
+
+export type EVALUATION_NOTES_CREATE = SpecificActionType<
+  "EVALUATION_NOTES_CREATE",
+  EvaluationNote
+>;
+
+export type EVALUATION_NOTES_UPDATE = SpecificActionType<
+  "EVALUATION_NOTES_UPDATE",
+  EvaluationNote
+>;
+
+export type EVALUATION_NOTES_DELETE = SpecificActionType<
+  "EVALUATION_NOTES_DELETE",
+  number
 >;
 
 // Server events
@@ -712,7 +748,59 @@ export interface DeleteFieldSnapshotTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * Load Evaluation Notes Trigger Type
+ */
+export interface LoadEvaluationNotesTriggerType {
+  (data: {
+    workspaceEntityId: number;
+    userEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Create Evaluation Note Trigger Type
+ */
+export interface CreateEvaluationNoteTriggerType {
+  (data: {
+    note: EvaluationNote;
+    userEntityId: number;
+    workspaceEntityId: number;
+    workspaceUserEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Update Evaluation Note Trigger Type
+ */
+export interface UpdateEvaluationNoteTriggerType {
+  (data: {
+    note: EvaluationNote;
+    userEntityId: number;
+    workspaceEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Delete Evaluation Note Trigger Type
+ */
+export interface DeleteEvaluationNoteTriggerType {
+  (data: {
+    noteId: number;
+    workspaceUserEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
 const evaluationApi = MApi.getEvaluationApi();
+const evaluationNotesApi = MApi.getEvaluationNotesApi();
 const workspaceApi = MApi.getWorkspaceApi();
 const userApi = MApi.getUserApi();
 const worklistApi = MApi.getWorklistApi();
@@ -3084,6 +3172,222 @@ const deleteFieldSnapshot: DeleteFieldSnapshotTriggerType =
     };
   };
 
+/**
+ * Load Evaluation Notes
+ * @param data data
+ */
+const loadEvaluationNotes: LoadEvaluationNotesTriggerType =
+  function loadEvaluationNotes(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { workspaceEntityId, userEntityId, onSuccess, onFail } = data;
+
+      try {
+        const notes = await evaluationNotesApi.getEvaluationNotes({
+          workspaceEntityId: workspaceEntityId,
+          userEntityId: userEntityId,
+        });
+
+        dispatch({
+          type: "EVALUATION_NOTES_LOAD",
+          payload: notes,
+        });
+
+        dispatch({
+          type: "EVALUATION_NOTES_STATE_UPDATE",
+          payload: "READY",
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "EVALUATION_NOTES_STATE_UPDATE",
+          payload: "ERROR",
+        });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.loadError_evaluationNotes", {
+              error: err.message,
+              ns: "evaluation",
+            }),
+            "error"
+          )
+        );
+
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Create Evaluation Note
+ * @param data data
+ */
+const createEvaluationNote: CreateEvaluationNoteTriggerType =
+  function createEvaluationNote(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const {
+        note,
+        userEntityId,
+        workspaceEntityId,
+        workspaceUserEntityId,
+        onSuccess,
+        onFail,
+      } = data;
+
+      try {
+        const newNote = await evaluationNotesApi.createOrUpdateEvaluationNote({
+          createOrUpdateEvaluationNoteRequest: {
+            userEntityId: userEntityId,
+            workspaceEntityId: workspaceEntityId,
+            note: note.note,
+          },
+        });
+
+        dispatch({
+          type: "EVALUATION_NOTES_CREATE",
+          payload: newNote,
+        });
+
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+          payload: {
+            workspaceUserEntityId,
+            delta: 1, // create
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.saveError_evaluationNote", {
+              error: err.message,
+              ns: "evaluation",
+            }),
+            "error"
+          )
+        );
+
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Update Evaluation Note
+ * @param data data
+ */
+const updateEvaluationNote: UpdateEvaluationNoteTriggerType =
+  function updateEvaluationNote(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { note, userEntityId, workspaceEntityId, onSuccess, onFail } = data;
+
+      try {
+        const updatedNote =
+          await evaluationNotesApi.createOrUpdateEvaluationNote({
+            createOrUpdateEvaluationNoteRequest: {
+              userEntityId: userEntityId,
+              workspaceEntityId: workspaceEntityId,
+              note: note.note,
+              id: note.id,
+            },
+          });
+
+        dispatch({
+          type: "EVALUATION_NOTES_UPDATE",
+          payload: updatedNote,
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError_evaluationNote", {
+              error: err.message,
+              ns: "evaluation",
+            }),
+            "error"
+          )
+        );
+
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Delete Evaluation Note
+ * @param data data
+ */
+const deleteEvaluationNote: DeleteEvaluationNoteTriggerType =
+  function deleteEvaluationNote(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { noteId, workspaceUserEntityId, onSuccess, onFail } = data;
+
+      try {
+        await evaluationNotesApi.archiveEvaluationNote({
+          id: noteId,
+        });
+
+        dispatch({
+          type: "EVALUATION_NOTES_DELETE",
+          payload: noteId,
+        });
+
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE",
+          payload: {
+            workspaceUserEntityId,
+            delta: -1, // delete
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.removeError_evaluationNote", {
+              error: err.message,
+              ns: "evaluation",
+            }),
+            "error"
+          )
+        );
+
+        onFail?.();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -3125,4 +3429,8 @@ export {
   updateEvaluationExamEvaluationInfo,
   createFieldSnapshot,
   deleteFieldSnapshot,
+  loadEvaluationNotes,
+  createEvaluationNote,
+  updateEvaluationNote,
+  deleteEvaluationNote,
 };
