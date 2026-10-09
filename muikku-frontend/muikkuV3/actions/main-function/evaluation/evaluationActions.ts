@@ -79,6 +79,11 @@ export type EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE = SpecificActionType<
   }
 >;
 
+export type EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE = SpecificActionType<
+  "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE",
+  EvaluationAssessmentRequest
+>;
+
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
   "EVALUATION_REQUESTS_STATE_UPDATE",
   EvaluationStateType
@@ -799,8 +804,33 @@ export interface DeleteEvaluationNoteTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * Update Assessment Request Deadline Trigger Type
+ */
+export interface UpdateAssessmentRequestDeadlineTriggerType {
+  (data: {
+    evaluationAssessmentRequest: EvaluationAssessmentRequest;
+    deadline?: Date;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Update Interim Evaluation Request Deadline Trigger Type
+ */
+export interface UpdateInterimEvaluationRequestDeadlineTriggerType {
+  (data: {
+    evaluationAssessmentRequest: EvaluationAssessmentRequest;
+    deadline?: Date;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
 const evaluationApi = MApi.getEvaluationApi();
 const evaluationNotesApi = MApi.getEvaluationNotesApi();
+const assessmentApi = MApi.getAssessmentApi();
 const workspaceApi = MApi.getWorkspaceApi();
 const userApi = MApi.getUserApi();
 const worklistApi = MApi.getWorklistApi();
@@ -3388,6 +3418,98 @@ const deleteEvaluationNote: DeleteEvaluationNoteTriggerType =
     };
   };
 
+/**
+ * Update Assessment Request Deadline
+ * @param data data
+ */
+const updateAssessmentRequestDeadline: UpdateAssessmentRequestDeadlineTriggerType =
+  function updateAssessmentRequestDeadline(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      const { evaluationAssessmentRequest, deadline, onSuccess, onFail } = data;
+
+      try {
+        const updated = await assessmentApi.updateAssessmentRequestDeadline({
+          workspaceEntityId: evaluationAssessmentRequest.workspaceEntityId,
+          studentEntityId: evaluationAssessmentRequest.userEntityId,
+          assessmentRequestIdentifier: evaluationAssessmentRequest.identifier,
+          deadline,
+        });
+
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE",
+          payload: {
+            ...evaluationAssessmentRequest,
+            deadline: updated.deadline,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "deadline",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Update Interim Evaluation Request Deadline
+ * @param data data
+ */
+const updateInterimEvaluationRequestDeadline: UpdateInterimEvaluationRequestDeadlineTriggerType =
+  function updateInterimEvaluationRequestDeadline(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      const { evaluationAssessmentRequest, deadline, onSuccess, onFail } = data;
+
+      try {
+        const updated =
+          await evaluationApi.updateInterimEvaluationRequestDeadline({
+            interimEvaluationRequestId: evaluationAssessmentRequest.id,
+            deadline,
+          });
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE",
+          payload: {
+            ...evaluationAssessmentRequest,
+            deadline: updated.deadline,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "deadline",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+        onFail?.();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -3433,4 +3555,6 @@ export {
   createEvaluationNote,
   updateEvaluationNote,
   deleteEvaluationNote,
+  updateAssessmentRequestDeadline,
+  updateInterimEvaluationRequestDeadline,
 };

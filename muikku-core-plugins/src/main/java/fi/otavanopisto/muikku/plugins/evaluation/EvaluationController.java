@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -567,14 +568,23 @@ public class EvaluationController {
     WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
     Long userEntityId = sessionController.getLoggedUserEntity().getId();
     Date requestDate = new Date();
+    
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.DAY_OF_MONTH, +5);
+    Date deadline = calendar.getTime();
     InterimEvaluationRequest interimEvaluationRequest =  interimEvaluationRequestDAO.createInterimEvaluationRequest(
         userEntityId,
         workspaceEntity.getId(),
         workspaceMaterialId,
         requestDate,
+        deadline,
         requestText);
     sendInterimEvaluationRequestMessage(interimEvaluationRequest);
     return interimEvaluationRequest;
+  }
+  
+  public InterimEvaluationRequest updateInterimEvaluationRequestDeadline(InterimEvaluationRequest interimEvaluationRequest, Date deadline) {
+    return interimEvaluationRequestDAO.updateInterimEvaluationRequestDeadline(interimEvaluationRequest, deadline);
   }
 
   public InterimEvaluationRequest cancelInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest, boolean sendCancellationMessage) {

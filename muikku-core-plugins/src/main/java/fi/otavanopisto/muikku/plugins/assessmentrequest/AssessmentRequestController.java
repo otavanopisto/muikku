@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +70,19 @@ public class AssessmentRequestController {
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
         requestText,
         new Date());
+  }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestDeadline(WorkspaceEntity workspaceEntity, String studentIdentifier, Long assessmentRequestId, Date deadline) {
+    String dataSource = workspaceEntity.getDataSource().getIdentifier();
+
+    // Return object
+
+    return gradingController.updateWorkspaceAssessmentRequestDeadline(
+        dataSource, 
+        workspaceEntity.getIdentifier(), 
+        studentIdentifier, 
+        assessmentRequestId, 
+        deadline);
   }
 
   public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(SchoolDataIdentifier assessmentRequestIdentifier, SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
@@ -180,6 +194,14 @@ public class AssessmentRequestController {
       WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
       UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
       
+      Date deadline = workspaceAssessmentRequest.getDeadline();
+      
+      if (deadline == null) {
+        deadline = Date.from(
+            workspaceAssessmentRequest.getDate().toInstant().plus(Duration.ofDays(14))
+        );
+      }
+      
       AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
           workspaceAssessmentRequestIdentifier.toId(), 
           userIdentifier.toId(),
@@ -187,7 +209,8 @@ public class AssessmentRequestController {
           workspaceEntity.getId(), 
           userEntity.getId(), 
           workspaceAssessmentRequest.getRequestText(), 
-          workspaceAssessmentRequest.getDate());
+          workspaceAssessmentRequest.getDate(),
+          deadline);
   
       return restAssessmentRequest;
     }

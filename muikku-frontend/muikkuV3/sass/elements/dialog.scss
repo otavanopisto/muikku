@@ -19,6 +19,12 @@
   z-index: 9990;
 }
 
+.dialog--evaluation-deadline {
+  .dialog__content {
+    overflow: visible;
+  }
+}
+
 .dialog--local {
   position: absolute;
 
