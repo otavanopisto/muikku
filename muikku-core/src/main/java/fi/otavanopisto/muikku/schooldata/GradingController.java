@@ -198,6 +198,11 @@ public class GradingController {
       String studentIdentifier, String requestText, Date date) {
     return gradingSchoolDataController.createWorkspaceAssessmentRequest(schoolDataSource, workspaceUserIdentifier, workspaceUserSchoolDataSource, workspaceIdentifier, studentIdentifier, requestText, date);
   }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestDeadline(String schoolDataSource, String workspaceIdentifier, String studentIdentifier,
+      Long assesmentRequestId, Date deadline) {
+    return gradingSchoolDataController.updateWorkspaceAssessmentRequestDeadline(schoolDataSource, assesmentRequestId, workspaceIdentifier, studentIdentifier, deadline);
+  }
 
   public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {
     return gradingSchoolDataController.findWorkspaceAssessmentRequest(schoolDataSource, identifier, workspaceIdentifier, studentIdentifier);

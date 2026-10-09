@@ -871,6 +871,53 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
 
+  /rest/assessmentrequest/workspace/{workspaceEntityId}/student/{studentEntityId}/assessmentRequest/{assessmentRequestId}/deadline:
+    put:
+      operationId: updateAssessmentRequestDeadline
+      summary: Update assessment request deadline
+      description: Update assessment request deadline
+      tags:
+        - AssessmentRequest
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: studentEntityId
+          in: path
+          description: Student's user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentRequestId
+          in: path
+          description: Assessment request id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: deadline
+          in: query
+          description: new deadline
+          required: true
+          schema:
+            type: date-time
+      responses:
+        "200":
+          description: Assessment request deadline updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssessmentRequest"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
   #CHAT
   /rest/chat/room:
     post:
@@ -2927,6 +2974,39 @@ paths:
       responses:
         "200":
           description: Interim evaluation request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterimEvaluationRequest"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
+  /rest/evaluation/interimEvaluationRequest/{interimEvaluationRequestId}/deadline:
+    put:
+      operationId: updateInterimEvaluationRequestDeadline
+      summary: Update interim evaluation request deadline
+      description: Update interim evaluation request deadline
+      tags:
+        - Evaluation
+      parameters:
+        - name: interimEvaluationRequestId
+          in: path
+          description: Interim evaluation request id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: deadline
+          in: query
+          description: new deadline
+          required: true
+          schema:
+            type: date-time
+      responses:
+        "200":
+          description: Interim evaluation request deadline updated successfully
           content:
             application/json:
               schema:
@@ -14392,6 +14472,7 @@ components:
         - workspaceEntityId
         - requestText
         - date
+        - deadline
       properties:
         id:
           type: integer
@@ -14409,6 +14490,10 @@ components:
         requestText:
           type: string
         date:
+          type: string
+          format: date-time
+        deadline:
+          description: Deadline by which the assessment must be completed
           type: string
           format: date-time
 
@@ -15908,6 +15993,7 @@ components:
         - workspaceMaterialId
         - requestDate
         - cancellationDate
+        - deadline
         - requestText
         - archived
       properties:
@@ -15927,6 +16013,10 @@ components:
           type: string
           format: date-time
         cancellationDate:
+          type: string
+          format: date-time
+        deadline:
+          description: Deadline by which the assessment must be completed
           type: string
           format: date-time
         requestText:

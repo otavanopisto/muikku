@@ -193,6 +193,8 @@ public interface GradingSchoolDataBridge {
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
       String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled);
   
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestDeadline(Long assessmentRequestId, String workspaceIdentifier, String studentIdentifier, Date deadline);
+  
   public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier);
 
   public Long countStudentWorkspaceAssessments(String studentIdentifier, Date fromDate, Date toDate,

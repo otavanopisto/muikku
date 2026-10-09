@@ -81,6 +81,14 @@ public class InterimEvaluationRequest implements ArchivableEntity {
     this.cancellationDate = cancellationDate;
   }
 
+  public Date getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(Date deadline) {
+    this.deadline = deadline;
+  }
+
   public String getRequestText() {
     return requestText;
   }
@@ -115,6 +123,9 @@ public class InterimEvaluationRequest implements ArchivableEntity {
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date cancellationDate;
+  
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date deadline;
 
   @NotNull
   @Column(nullable = false)

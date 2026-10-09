@@ -7,7 +7,7 @@ public class AssessmentRequestRESTModel {
   public AssessmentRequestRESTModel() {
   }
 
-  public AssessmentRequestRESTModel(String id, String userIdentifier, String workspaceUserIdentifier, Long workspaceEntityId, Long userEntityId, String requestText, Date date) {
+  public AssessmentRequestRESTModel(String id, String userIdentifier, String workspaceUserIdentifier, Long workspaceEntityId, Long userEntityId, String requestText, Date date, Date deadline) {
     this.id = id;
     this.userIdentifier = userIdentifier;
     this.workspaceUserIdentifier = workspaceUserIdentifier;
@@ -15,6 +15,8 @@ public class AssessmentRequestRESTModel {
     this.userEntityId = userEntityId;
     this.requestText = requestText;
     this.date = date;
+    this.setDeadline(deadline);
+    
   }
   
   public String getRequestText() {
@@ -31,6 +33,14 @@ public class AssessmentRequestRESTModel {
 
   public void setDate(Date date) {
     this.date = date;
+  }
+
+  public Date getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(Date deadline) {
+    this.deadline = deadline;
   }
 
   public String getId() {
@@ -78,6 +88,7 @@ public class AssessmentRequestRESTModel {
   private String workspaceUserIdentifier;
   private String requestText;
   private Date date;
+  private Date deadline;
   private Long workspaceEntityId;
   private Long userEntityId;
 }

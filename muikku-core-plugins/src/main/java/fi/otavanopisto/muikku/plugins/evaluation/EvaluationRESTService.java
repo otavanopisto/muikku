@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1093,6 +1095,42 @@ public class EvaluationRESTService extends PluginRESTService {
     return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
   
+  @PUT
+  @Path("/interimEvaluationRequest/{INTERIMEVALUATIONREQUESTID}/deadline")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response UpdateInterimEvaluationRequestDeadline(@PathParam("INTERIMEVALUATIONREQUESTID") Long ierId, @QueryParam("deadline") String deadlineStr) {
+    
+    // Access
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_INTERIM_EVALUATION_REQUESTS)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Find interim evaluation request
+    
+    InterimEvaluationRequest interimEvaluationRequest = evaluationController.findInterimEvaluationRequestById(ierId);
+    
+    if (interimEvaluationRequest == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Interin evaluation request %d not found", ierId)).build();
+    }
+    
+    Date deadline = deadlineStr != null && !deadlineStr.isEmpty()
+        ? Date.from(Instant.parse(deadlineStr))
+        : null;
+    
+    Date maxDeadline = Date.from(
+        interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+    );
+    
+    if (deadline != null && (deadline.before(interimEvaluationRequest.getRequestDate()) || deadline.after(maxDeadline))) {
+      return Response.status(Status.BAD_REQUEST).entity("The deadline may be no later than 5 days after the submission of the interim evaluation request").build();
+    }
+    
+    evaluationController.updateInterimEvaluationRequestDeadline(interimEvaluationRequest, deadline);
+    
+    return Response.ok(toRestModel(interimEvaluationRequest)).build();
+  }
+  
   /**
    * mApi().evaluation.workspace.interimEvaluationRequest.read(123);
    * 
@@ -2094,6 +2132,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
+    restAssessmentRequest.setDeadline(compositeAssessmentRequest.getDeadline());
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {
@@ -2176,6 +2215,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
     restAssessmentRequest.setEvaluationDate(null);
+    restAssessmentRequest.setDeadline(interimEvaluationRequest.getDeadline());
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     if (workspaceUser != null && workspaceUser.getEnrolmentTime() != null) {
@@ -2297,6 +2337,7 @@ public class EvaluationRESTService extends PluginRESTService {
         interimEvaluationRequest.getWorkspaceMaterialId(),
         interimEvaluationRequest.getRequestDate(),
         interimEvaluationRequest.getCancellationDate(),
+        interimEvaluationRequest.getDeadline(),
         interimEvaluationRequest.getRequestText(),
         interimEvaluationRequest.getArchived());
   }

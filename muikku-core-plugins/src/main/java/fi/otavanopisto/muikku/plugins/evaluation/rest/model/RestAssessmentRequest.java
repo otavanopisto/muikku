@@ -183,6 +183,14 @@ public class RestAssessmentRequest {
     this.u18Compulsory = u18Compulsory;
   }
 
+  public Date getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(Date deadline) {
+    this.deadline = deadline;
+  }
+
   private Long id;
   private String identifier; // for assessment requests
   private Long userEntityId;
@@ -205,4 +213,5 @@ public class RestAssessmentRequest {
   private boolean locked;
   private boolean u18Compulsory;
   private String state; // essentially state string of WorkspaceAssessmentState
+  private Date deadline;
 }

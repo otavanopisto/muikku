@@ -470,6 +470,7 @@ public class PyramusSchoolDataEntityFactory {
       assessmentRequest.getCourseEnrollmentDate(),
       assessmentRequest.getAssessmentRequestDate(),
       assessmentRequest.getEvaluationDate(),
+      assessmentRequest.getDeadline(), 
       assessmentRequest.getPassing(),
       assessmentRequest.getLocked());
   }
@@ -485,9 +486,14 @@ public class PyramusSchoolDataEntityFactory {
       created = Date.from(courseAssessmentRequest.getCreated().toInstant());
     }
     
+    Date deadline = null;
+    if (courseAssessmentRequest.getDeadline() != null) {
+      deadline = Date.from(courseAssessmentRequest.getDeadline().toInstant());
+    }
+    
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(),
+        courseAssessmentRequest.getRequestText(), created, deadline, courseAssessmentRequest.getArchived(),
         courseAssessmentRequest.getHandled());
   }
 

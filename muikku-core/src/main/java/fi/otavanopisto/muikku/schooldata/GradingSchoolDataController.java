@@ -449,6 +449,19 @@ public class GradingSchoolDataController {
   
     return null;
   }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestDeadline(String schoolDataSource, Long assessmentRequestId,
+      String workspaceIdentifier, String studentIdentifier, Date deadline) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.updateWorkspaceAssessmentRequestDeadline(assessmentRequestId, workspaceIdentifier, studentIdentifier, deadline);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+    }
+  
+    return null;
+  }
 
   private GradingSchoolDataBridge getGradingBridge(String schoolDataSource) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);

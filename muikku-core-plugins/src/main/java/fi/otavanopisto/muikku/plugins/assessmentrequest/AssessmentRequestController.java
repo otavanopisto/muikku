@@ -70,6 +70,19 @@ public class AssessmentRequestController {
         requestText,
         new Date());
   }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestDeadline(WorkspaceEntity workspaceEntity, String studentIdentifier, Long assessmentRequestId, Date deadline) {
+    String dataSource = workspaceEntity.getDataSource().getIdentifier();
+
+    // Return object
+
+    return gradingController.updateWorkspaceAssessmentRequestDeadline(
+        dataSource, 
+        workspaceEntity.getIdentifier(), 
+        studentIdentifier, 
+        assessmentRequestId, 
+        deadline);
+  }
 
   public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(SchoolDataIdentifier assessmentRequestIdentifier, SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
     return gradingController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier.getDataSource(),
@@ -187,7 +200,8 @@ public class AssessmentRequestController {
           workspaceEntity.getId(), 
           userEntity.getId(), 
           workspaceAssessmentRequest.getRequestText(), 
-          workspaceAssessmentRequest.getDate());
+          workspaceAssessmentRequest.getDate(),
+          workspaceAssessmentRequest.getDeadline());
   
       return restAssessmentRequest;
     }
