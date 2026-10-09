@@ -871,7 +871,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
 
-  /rest/assessmentrequest/workspace/{workspaceEntityId}/student/{studentEntityId}/assessmentRequest/{assessmentRequestId}/deadline:
+  /rest/assessmentrequest/workspace/{workspaceEntityId}/student/{studentEntityId}/assessmentRequest/{assessmentRequestIdentifier}/deadline:
     put:
       operationId: updateAssessmentRequestDeadline
       summary: Update assessment request deadline
@@ -893,13 +893,12 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: assessmentRequestId
+        - name: assessmentRequestIdentifier
           in: path
-          description: Assessment request id
+          description: Assessment request identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
         - name: deadline
           in: query
           description: new deadline

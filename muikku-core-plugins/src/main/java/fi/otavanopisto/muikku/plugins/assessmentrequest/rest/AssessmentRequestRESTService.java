@@ -244,19 +244,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   }
 
   @PUT
-  @Path("/workspace/{WORKSPACEENTITYID}/student/{STUDENTENTITYID}/assessmentRequest/{ID}/deadline")
+  @Path("/workspace/{WORKSPACEENTITYID}/student/{STUDENTENTITYID}/assessmentRequest/{IDENTIFIER}/deadline")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateAssessmentRequestDeadline(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId, @PathParam("ID") String assessmentRequestId, @QueryParam("deadline") String deadlineStr) {
+  public Response updateAssessmentRequestDeadline(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId, @PathParam("IDENTIFIER") String assessmentRequestIdentifierStr, @QueryParam("deadline") String deadlineStr) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Course not found").build();
     }
     
-    if (assessmentRequestId == null) {
+    if (assessmentRequestIdentifierStr == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing assessment request id").build();
     }
     try {
-      SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
+      SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestIdentifierStr);
       UserEntity student = userEntityController.findUserEntityById(studentEntityId);
       WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), student.defaultSchoolDataIdentifier());
       
