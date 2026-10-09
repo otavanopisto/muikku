@@ -152,6 +152,10 @@
   font-weight: 600;
 }
 
+.evaluation-card__content-row--fatal {
+  color: $color-fatal;
+}
+
 .evaluation-card__content-data--all-done {
   background-color: $color-grade-passed;
   color: $color-default;
