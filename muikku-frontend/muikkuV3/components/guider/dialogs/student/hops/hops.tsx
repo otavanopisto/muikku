@@ -122,6 +122,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
+  // Get the study programme name from the student info
+  const studyProgrammeName = studentInfo.studyProgrammeName;
+
   // Check if the HOPS form has changes
   const hopsFormHasChanges = React.useMemo(
     () => !_.isEqual(hops.hopsForm, hops.hopsEditing.hopsForm),

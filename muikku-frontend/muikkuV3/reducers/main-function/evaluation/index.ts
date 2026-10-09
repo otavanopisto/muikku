@@ -14,6 +14,7 @@ import {
   EvaluationEvent,
   EvaluationGradeScale,
   EvaluationJournalFeedback,
+  EvaluationNote,
   ExamAttendance,
   MaterialCompositeReply,
   WorkspaceJournalEntry,
@@ -50,6 +51,7 @@ export interface EvaluationState {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];
   };
+  evaluationNotes?: EvaluationStateAndData<EvaluationNote[]>;
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
   evaluationExams?: EvaluationStateAndData<ExamAttendance[]>;
@@ -94,6 +96,10 @@ export const initialState: EvaluationState = {
   evaluationJournalComments: { comments: {}, commentsLoaded: [] },
   evaluationJournalFeedback: { state: "LOADING", data: undefined },
   evaluationDiaryEntries: {
+    state: "LOADING",
+    data: undefined,
+  },
+  evaluationNotes: {
     state: "LOADING",
     data: undefined,
   },
@@ -555,6 +561,75 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
     }
+
+    case "EVALUATION_NOTES_STATE_UPDATE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: action.payload,
+          data: state.evaluationNotes.data,
+        },
+      };
+
+    case "EVALUATION_NOTES_LOAD":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: action.payload,
+        },
+      };
+
+    case "EVALUATION_NOTES_CREATE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: [...(state.evaluationNotes.data ?? []), action.payload],
+        },
+      };
+
+    case "EVALUATION_NOTES_UPDATE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: state.evaluationNotes.data?.map((note) =>
+            note.id === action.payload.id ? action.payload : note
+          ),
+        },
+      };
+
+    case "EVALUATION_NOTES_DELETE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: state.evaluationNotes.data?.filter(
+            (note) => note.id !== action.payload
+          ),
+        },
+      };
+
+    case "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE":
+      return {
+        ...state,
+        evaluationRequests: {
+          ...state.evaluationRequests,
+          data: state.evaluationRequests.data?.map((request) =>
+            request.workspaceUserEntityId ===
+            action.payload.workspaceUserEntityId
+              ? {
+                  ...request,
+                  evaluationNoteCount: Math.max(
+                    0,
+                    (request.evaluationNoteCount ?? 0) + action.payload.delta
+                  ),
+                }
+              : request
+          ),
+        },
+      };
 
     default:
       return state;
