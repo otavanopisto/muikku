@@ -95,6 +95,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectType;
           type = IndexableFieldType.DATE
         ),
       }
+    ),
+    @IndexableSubObject (
+      name = "dependants",
+      type = IndexableSubObjectType.NESTED
     )
   }
 )
@@ -349,6 +353,14 @@ public class IndexedUser {
   public void setPedagogyFormState(IndexedUserPedagogyFormState pedagogyFormState) {
     this.pedagogyFormState = pedagogyFormState;
   }
+  
+  public List<IndexedUserDependant> getDependants() {
+    return dependants;
+  }
+
+  public void setDependants(List<IndexedUserDependant> dependants) {
+    this.dependants = dependants;
+  }
 
   private String identifier;
   private String schoolDataSource;
@@ -379,4 +391,5 @@ public class IndexedUser {
   private LocalDate birthday;
   private IndexedUserPedagogyFormState pedagogyFormState;
   private Boolean hasDecisionOnSpecialEducation;
+  private List<IndexedUserDependant> dependants;
 }
