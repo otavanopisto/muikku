@@ -901,10 +901,11 @@ paths:
             type: string
         - name: deadline
           in: query
-          description: new deadline
-          required: true
+          description: Deadline value. If not provided, the deadline will be removed.
+          required: false
           schema:
-            type: date-time
+            type: string
+            format: date-time
       responses:
         "200":
           description: Assessment request deadline updated successfully
@@ -2999,10 +3000,11 @@ paths:
             format: int64
         - name: deadline
           in: query
-          description: new deadline
-          required: true
+          description: Deadline value. If not provided, the deadline will be removed.
+          required: false
           schema:
-            type: date-time
+            type: string
+            format: date-time
       responses:
         "200":
           description: Interim evaluation request deadline updated successfully

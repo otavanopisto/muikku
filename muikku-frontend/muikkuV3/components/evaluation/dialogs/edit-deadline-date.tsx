@@ -83,11 +83,10 @@ const EditDeadlineDateDialog: React.FC<EditDeadlineDateDialogProps> = (
    * @param closeDialog () => void
    */
   const handleSave = (closeDialog: () => void) => {
-    if (!selectedDate) return;
     setLocked(true);
     const data = {
       evaluationAssessmentRequest,
-      deadline: selectedDate,
+      deadline: selectedDate ?? undefined,
       // eslint-disable-next-line jsdoc/require-jsdoc
       onSuccess: () => {
         setLocked(false);
@@ -140,7 +139,7 @@ const EditDeadlineDateDialog: React.FC<EditDeadlineDateDialogProps> = (
       <Button
         buttonModifiers={["execute", "standard-ok"]}
         onClick={() => handleSave(closeDialog)}
-        disabled={locked || !selectedDate}
+        disabled={locked}
       >
         {t("actions.save")}
       </Button>
@@ -161,6 +160,7 @@ const EditDeadlineDateDialog: React.FC<EditDeadlineDateDialogProps> = (
       content={content}
       footer={footer}
       onOpen={handleOpen}
+      closeOnOverlayClick={false}
     >
       {children}
     </Dialog>

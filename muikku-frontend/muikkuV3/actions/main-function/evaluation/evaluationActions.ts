@@ -810,7 +810,7 @@ export interface DeleteEvaluationNoteTriggerType {
 export interface UpdateAssessmentRequestDeadlineTriggerType {
   (data: {
     evaluationAssessmentRequest: EvaluationAssessmentRequest;
-    deadline: Date;
+    deadline?: Date;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -822,7 +822,7 @@ export interface UpdateAssessmentRequestDeadlineTriggerType {
 export interface UpdateInterimEvaluationRequestDeadlineTriggerType {
   (data: {
     evaluationAssessmentRequest: EvaluationAssessmentRequest;
-    deadline: Date;
+    deadline?: Date;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -3433,7 +3433,7 @@ const updateAssessmentRequestDeadline: UpdateAssessmentRequestDeadlineTriggerTyp
         const updated = await assessmentApi.updateAssessmentRequestDeadline({
           workspaceEntityId: evaluationAssessmentRequest.workspaceEntityId,
           studentEntityId: evaluationAssessmentRequest.userEntityId,
-          assessmentRequestId: evaluationAssessmentRequest.id,
+          assessmentRequestIdentifier: evaluationAssessmentRequest.identifier,
           deadline,
         });
 
