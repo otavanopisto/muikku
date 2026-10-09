@@ -360,6 +360,7 @@ public class ElasticSearchProvider implements SearchProvider {
             .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.groups", ArrayUtils.toPrimitive(search.getGroups().toArray(new Long[0])))), ScoreMode.Avg))
             .should(termsQuery("workspaces", ArrayUtils.toPrimitive(search.getWorkspaces().toArray(new Long[0]))))
             .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.workspaces", ArrayUtils.toPrimitive(search.getWorkspaces().toArray(new Long[0])))), ScoreMode.Avg))
+            .minimumShouldMatch(1)
           );
       }
       else {
@@ -368,6 +369,7 @@ public class ElasticSearchProvider implements SearchProvider {
               boolQuery()
               .should(termsQuery("groups", ArrayUtils.toPrimitive(search.getGroups().toArray(new Long[0]))))
               .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.groups", ArrayUtils.toPrimitive(search.getGroups().toArray(new Long[0])))), ScoreMode.Avg))
+              .minimumShouldMatch(1)
           );
         }
 
@@ -376,6 +378,7 @@ public class ElasticSearchProvider implements SearchProvider {
               boolQuery()
               .should(termsQuery("workspaces", ArrayUtils.toPrimitive(search.getWorkspaces().toArray(new Long[0]))))
               .should(nestedQuery("dependants", boolQuery().must(termsQuery("dependants.workspaces", ArrayUtils.toPrimitive(search.getWorkspaces().toArray(new Long[0])))), ScoreMode.Avg))
+              .minimumShouldMatch(1)
           );
         }
       }
