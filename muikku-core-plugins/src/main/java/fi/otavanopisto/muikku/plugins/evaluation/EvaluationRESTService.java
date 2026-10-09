@@ -2132,7 +2132,15 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
-    restAssessmentRequest.setDeadline(compositeAssessmentRequest.getDeadline());
+    
+    Date deadline = compositeAssessmentRequest.getDeadline();
+    
+    if (deadline == null) {
+      deadline = Date.from(
+         requestDate.toInstant().plus(Duration.ofDays(14))
+      );
+    }
+    restAssessmentRequest.setDeadline(deadline);
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {
@@ -2215,7 +2223,15 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
     restAssessmentRequest.setEvaluationDate(null);
-    restAssessmentRequest.setDeadline(interimEvaluationRequest.getDeadline());
+    
+    Date deadline = interimEvaluationRequest.getDeadline();
+    
+    if (deadline == null) {
+      deadline = Date.from(
+          interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+      );
+    }
+    restAssessmentRequest.setDeadline(deadline);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     if (workspaceUser != null && workspaceUser.getEnrolmentTime() != null) {
@@ -2331,13 +2347,20 @@ public class EvaluationRESTService extends PluginRESTService {
   }
 
   private RestInterimEvaluationRequest toRestModel(InterimEvaluationRequest interimEvaluationRequest) {
+    Date deadline = interimEvaluationRequest.getDeadline();
+    
+    if (deadline == null) {
+      deadline = Date.from(
+          interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+      );
+    }
     return new RestInterimEvaluationRequest(
         interimEvaluationRequest.getId(),
         interimEvaluationRequest.getUserEntityId(),
         interimEvaluationRequest.getWorkspaceMaterialId(),
         interimEvaluationRequest.getRequestDate(),
         interimEvaluationRequest.getCancellationDate(),
-        interimEvaluationRequest.getDeadline(),
+        deadline,
         interimEvaluationRequest.getRequestText(),
         interimEvaluationRequest.getArchived());
   }

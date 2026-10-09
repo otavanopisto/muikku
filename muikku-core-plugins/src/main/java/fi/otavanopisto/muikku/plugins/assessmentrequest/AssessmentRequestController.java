@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -193,6 +194,14 @@ public class AssessmentRequestController {
       WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
       UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
       
+      Date deadline = workspaceAssessmentRequest.getDeadline();
+      
+      if (deadline == null) {
+        deadline = Date.from(
+            workspaceAssessmentRequest.getDate().toInstant().plus(Duration.ofDays(14))
+        );
+      }
+      
       AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
           workspaceAssessmentRequestIdentifier.toId(), 
           userIdentifier.toId(),
@@ -201,7 +210,7 @@ public class AssessmentRequestController {
           userEntity.getId(), 
           workspaceAssessmentRequest.getRequestText(), 
           workspaceAssessmentRequest.getDate(),
-          workspaceAssessmentRequest.getDeadline());
+          deadline);
   
       return restAssessmentRequest;
     }
