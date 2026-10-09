@@ -1944,7 +1944,8 @@ public class EvaluationRESTService extends PluginRESTService {
         supplementationRequest.getWorkspaceEntityId(),
         supplementationRequest.getWorkspaceSubjectIdentifier(),
         supplementationRequest.getRequestDate(),
-        supplementationRequest.getRequestText());
+        supplementationRequest.getRequestText(),
+        evaluationController.countByStudentAndWorkspace(supplementationRequest.getUserEntityId(), supplementationRequest.getWorkspaceEntityId()));
 
     return restSupplementationRequest;
   }
@@ -2057,6 +2058,7 @@ public class EvaluationRESTService extends PluginRESTService {
     Boolean passing = compositeAssessmentRequest.getPassing();
     Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
     Boolean graded = evaluationDate != null;
+    Long evaluationNoteCount = 0L;
     if (userEntity != null) {
       SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
           userEntity.getId(),
@@ -2073,6 +2075,7 @@ public class EvaluationRESTService extends PluginRESTService {
         restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
         resolvedState = true;
       }
+      evaluationNoteCount = evaluationController.countByStudentAndWorkspace(userEntity.getId(), workspaceEntity.getId());
     }
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
@@ -2094,6 +2097,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
+    restAssessmentRequest.setEvaluationNoteCount(evaluationNoteCount);
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {
@@ -2193,6 +2197,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(workspaceEntityName.getNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setState(WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST);
+    restAssessmentRequest.setEvaluationNoteCount(evaluationController.countByStudentAndWorkspace(userEntity == null ? null : userEntity.getId(), workspaceEntity.getId()));
 
     Workspace workspace = workspaceCache.get(workspaceEntity.getId());
     if (workspace == null) {
@@ -2274,6 +2279,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(workspaceEntityName.getNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
+    restAssessmentRequest.setEvaluationNoteCount(evaluationController.countByStudentAndWorkspace(userEntity.getId(), workspaceEntity.getId()));
 
     Workspace workspace = workspaceCache.get(workspaceEntity.getId());
     if (workspace == null) {
@@ -2298,6 +2304,7 @@ public class EvaluationRESTService extends PluginRESTService {
         interimEvaluationRequest.getRequestDate(),
         interimEvaluationRequest.getCancellationDate(),
         interimEvaluationRequest.getRequestText(),
+        evaluationController.countByStudentAndWorkspace(interimEvaluationRequest.getUserEntityId(), interimEvaluationRequest.getWorkspaceEntityId()),
         interimEvaluationRequest.getArchived());
   }
 }
