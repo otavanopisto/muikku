@@ -22,6 +22,7 @@ import {
   WorkspaceAssessmentStateType,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { getDaysUntilDeadline } from "~/components/evaluation/helper";
 
 /**
  * EvaluationListProps
@@ -247,6 +248,14 @@ export class EvaluationList extends React.Component<
           const workspaceB = b.workspaceName.trim().toLowerCase();
           return workspaceB.localeCompare(workspaceA);
         });
+        break;
+
+      case "sort-deadline-asc":
+        filteredBySortAssessments.sort(byDeadline(true));
+        break;
+
+      case "sort-deadline-desc":
+        filteredBySortAssessments.sort(byDeadline(false));
         break;
 
       case "no-sort":
@@ -483,6 +492,30 @@ const byDate =
     else {
       return a.assessmentRequestDate < b.assessmentRequestDate ? 1 : -1;
     }
+  };
+
+/**
+ * By deadline sorting function
+ * @param ascending ascending
+ */
+const byDeadline =
+  (ascending: boolean) =>
+  (a: EvaluationAssessmentRequest, b: EvaluationAssessmentRequest) => {
+    const daysA = getDaysUntilDeadline(a);
+    const daysB = getDaysUntilDeadline(b);
+    if (daysA === daysB) {
+      return 0;
+    }
+    if (daysA === null) {
+      return 1;
+    }
+    if (daysB === null) {
+      return -1;
+    }
+    if (ascending) {
+      return daysA < daysB ? -1 : 1;
+    }
+    return daysA < daysB ? 1 : -1;
   };
 
 /**

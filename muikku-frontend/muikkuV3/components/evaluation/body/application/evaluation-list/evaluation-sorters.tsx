@@ -235,6 +235,49 @@ class EvaluationSorters extends React.Component<
             </Dropdown>
           </>
         )}
+
+        <Dropdown
+          openByHover
+          key="deadline-asc"
+          content={t("labels.sortAscending", {
+            ns: "evaluation",
+            context: "deadline",
+          })}
+        >
+          <ButtonPill
+            aria-label={t("labels.sortAscending", {
+              ns: "evaluation",
+              context: "deadline",
+            })}
+            onClick={this.handleClickSorter("sort-deadline-asc")}
+            buttonModifiers={[
+              "sorter",
+              this.buildSorterClass("sort-deadline-asc"),
+            ]}
+            icon="sort-amount-asc"
+          />
+        </Dropdown>
+        <Dropdown
+          openByHover
+          key="deadline-desc"
+          content={t("labels.sortDescending", {
+            ns: "evaluation",
+            context: "deadline",
+          })}
+        >
+          <ButtonPill
+            aria-label={t("labels.sortDescending", {
+              ns: "evaluation",
+              context: "deadline",
+            })}
+            onClick={this.handleClickSorter("sort-deadline-desc")}
+            buttonModifiers={[
+              "sorter",
+              this.buildSorterClass("sort-deadline-desc"),
+            ]}
+            icon="sort-amount-desc"
+          />
+        </Dropdown>
       </div>
     );
   }

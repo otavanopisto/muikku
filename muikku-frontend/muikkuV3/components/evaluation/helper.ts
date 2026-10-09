@@ -1,3 +1,5 @@
+import moment from "moment";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import { MATHJAXSRC } from "~/lib/mathjax";
 
 /**
@@ -78,3 +80,19 @@ export const CKEditorConfig = (locale: string) => ({
   resize_enabled: true,
   extraPlugins: "divarea,image2,muikku-mathjax",
 });
+
+/**
+ * Returns the number of days until the deadline of an evaluation assessment request.
+ * @param request EvaluationAssessmentRequest
+ * @returns number | null
+ */
+export const getDaysUntilDeadline = (
+  request: EvaluationAssessmentRequest
+): number | null => {
+  if (request.deadline === null) {
+    return null;
+  }
+  return moment(request.deadline)
+    .startOf("day")
+    .diff(moment().startOf("day"), "days");
+};
