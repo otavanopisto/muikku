@@ -110,6 +110,11 @@ const EditDeadlineDateDialog: React.FC<EditDeadlineDateDialogProps> = (
     <div className="form" role="form">
       <div className="form__row">
         <div className="form-element">
+          <p>{t("content.deadlineGuide", { ns: "evaluation" })}</p>
+        </div>
+      </div>
+      <div className="form__row">
+        <div className="form-element">
           <label htmlFor="evaluation-deadline">
             {t("labels.deadline", { ns: "evaluation" })}
           </label>

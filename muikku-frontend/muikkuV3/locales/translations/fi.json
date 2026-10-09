@@ -2458,6 +2458,7 @@
     },
     "content": {
       "archive_student": "Haluatko arkistoida opiskelijan <b>{{studentName}}</b> kurssilta?",
+      "deadlineGuide": "Määräpäivän on oltava 14 vuorokauden sisällä arviointipyynnön ja 5 vuorokauden sisällä välipalautepyynnön jättämisestä",
       "empty": "$t(common:content.empty)",
       "empty_evaluationHistory": "Arviointihistoria on tyhjä",
       "empty_assignments": "Ei tehtäviä",

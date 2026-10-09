@@ -2459,6 +2459,7 @@
     },
     "content": {
       "archive_student": "Do you wish to archive the student <b>{{studentName}}</b> from the workspace?",
+      "deadlineGuide": "The deadline must be within 14 days of the evaluation request and 5 days of the interim evaluation request",
       "empty": "$t(common:content.empty)",
       "empty_evaluationHistory": "The evaluation history is empty",
       "empty_assignments": "No assigments",
