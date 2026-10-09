@@ -826,6 +826,15 @@
   }
 }
 
+.dialog--evaluation-note {
+  .dialog__window {
+    @include breakpoint($breakpoint-pad) {
+      max-width: 640px;
+      width: 100%;
+    }
+  }
+}
+
 .dialog--enrollment {
   background: transparent;
   bottom: auto;
