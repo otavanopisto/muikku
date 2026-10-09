@@ -12,6 +12,10 @@ import { updateSelectedPlanItem } from "~/actions/main-function/hops";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { CourseMatrixModuleEnriched } from "~/@types/course-matrix";
+import {
+  HopsBasicInfoProvider,
+  useHopsBasicInfo,
+} from "~/context/hops-basic-info-context";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -37,6 +41,8 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     props;
 
   const manager = useDragDropManager();
+  const { useCase, studentInfo, curriculumConfig, userStudyActivity } =
+    useHopsBasicInfo();
 
   const { selectedPlanItemIds } = useSelector(
     (state: StateType) => state.hopsNew.hopsEditing
@@ -150,24 +156,31 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
    * @returns The dialog content
    */
   const dialogContent = () => (
-    <DndProvider manager={manager}>
-      <PlannerAddNote
-        disabled={false}
-        activated={selectedPlanItemIds.includes("new-note-card")}
-        onActivateNewNote={handleActivateNewNote}
-      />
-      <PlannerCourseTray
-        plannedCourses={plannedCoursesWithoutCurrentSelection}
-        onCourseClick={handleCourseClick}
-        isCourseSelected={(course) =>
-          selectedMonthItems.some(
-            (selected) =>
-              selected.subjectCode === course.subjectCode &&
-              selected.courseNumber === course.courseNumber
-          )
-        }
-      />
-    </DndProvider>
+    <HopsBasicInfoProvider
+      useCase={useCase}
+      studentInfo={studentInfo}
+      curriculumConfig={curriculumConfig}
+      userStudyActivity={userStudyActivity}
+    >
+      <DndProvider manager={manager}>
+        <PlannerAddNote
+          disabled={false}
+          activated={selectedPlanItemIds.includes("new-note-card")}
+          onActivateNewNote={handleActivateNewNote}
+        />
+        <PlannerCourseTray
+          plannedCourses={plannedCoursesWithoutCurrentSelection}
+          onCourseClick={handleCourseClick}
+          isCourseSelected={(course) =>
+            selectedMonthItems.some(
+              (selected) =>
+                selected.subjectCode === course.subjectCode &&
+                selected.courseNumber === course.courseNumber
+            )
+          }
+        />
+      </DndProvider>
+    </HopsBasicInfoProvider>
   );
 
   /**

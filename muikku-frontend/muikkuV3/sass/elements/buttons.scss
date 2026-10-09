@@ -1816,6 +1816,7 @@
 .button-pill--remove-evaluation,
 .button-icon--important,
 .button-icon--unimportant,
+.button-icon--evaluation-note,
 .button-pill--assignment-locked,
 .button-pill--assignment-unlocked {
   border-radius: 3px;
@@ -2824,4 +2825,12 @@
   color: $color-fatal;
   font-size: 1rem;
   text-decoration: none;
+}
+
+.button-icon--remove-from-plan {
+  color: $color-default-contrast;
+  font-size: 0.75rem;
+  height: 1.5rem;
+  text-decoration: none;
+  width: 1.5rem;
 }

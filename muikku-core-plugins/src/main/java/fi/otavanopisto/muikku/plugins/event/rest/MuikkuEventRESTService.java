@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -159,6 +160,8 @@ public class MuikkuEventRESTService {
         restEvent.isRemovable());
     
     // Event properties
+    updateEventProperties(event, restEvent.getProperties());
+    
     List<MuikkuEventProperty> properties = eventController.listPropertiesByEvent(event);
     List<MuikkuEventPropertyRestModel> restProperties = new ArrayList<MuikkuEventPropertyRestModel>();
     if (properties != null) {
@@ -443,6 +446,48 @@ public class MuikkuEventRESTService {
     }
     
     return Response.ok(container != null ? container.getId() : null).build();
+  }
+  
+  private void updateEventProperties(MuikkuEvent event, List<MuikkuEventPropertyRestModel> restProperties) {
+    Long userEntityId = sessionController.getLoggedUserEntity().getId();
+
+    // Existing properties by event
+    List<MuikkuEventProperty> existingProperties = eventController.listPropertiesByEvent(event);
+
+    if (restProperties == null) {
+      restProperties = new ArrayList<>();
+    }
+
+    for (MuikkuEventPropertyRestModel p : restProperties) {
+      if (p.getId() != null) {
+        MuikkuEventProperty property = eventController.findEventProperty(p.getId());
+
+        // Delete from existing properties list if found
+        if (property != null && property.getEvent().getId().equals(event.getId())) {
+          existingProperties.removeIf(existing ->
+              Objects.equals(existing.getId(), property.getId()));
+
+          // Update
+          if (!Objects.equals(property.getValue(), p.getValue())) {
+            eventController.updateEventProperty(property, p.getValue(), new Date());
+          }
+        }
+      } else {
+        // Create
+        eventController.createEventProperty(
+            event,
+            p.getName(),
+            p.getValue(),
+            userEntityId,
+            new Date()
+        );
+      }
+    }
+
+    // Delete properties that were not included in the payload
+    for (MuikkuEventProperty property : existingProperties) {
+      eventController.deleteEventProperty(property);
+    }
   }
   
   private MuikkuEventRestModel toRestModel(MuikkuEvent event, List<MuikkuEventPropertyRestModel> properties) {
