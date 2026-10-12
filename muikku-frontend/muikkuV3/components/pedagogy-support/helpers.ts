@@ -316,6 +316,13 @@ export const supportActionsOptionsCompulsory: OptionDefault<SupportAction>[] = [
     }),
   },
   {
+    value: "extraTime",
+    label: i18n.t("labels.extraTime", {
+      ns: "pedagogySupportPlan",
+      context: "action",
+    }),
+  },
+  {
     value: "other",
     label: i18n.t("labels.other", {
       ns: "pedagogySupportPlan",
