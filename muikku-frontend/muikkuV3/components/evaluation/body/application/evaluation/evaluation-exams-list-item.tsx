@@ -22,7 +22,7 @@ import { createAssignmentInfoArray } from "~/components/general/evaluation-asses
 import { updateOpenedAssignmentOrExamId } from "~/actions/main-function/evaluation/evaluationActions";
 import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
 import Link from "~/components/general/link";
-import { getEnviromentPrefixedId } from "~/api_smowl";
+import { getEnviromentPrefixedId } from "~/api_smowl/index";
 
 /**
  * EvaluationExamsListItemProps

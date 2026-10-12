@@ -17,7 +17,7 @@ import Button from "~/components/general/button";
 import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
 import MApi from "~/api/api";
 import SmowlRegistrationReportsDialog from "~/components/general/smowl/smowl-registration-reports-dialog";
-import { getEnviromentPrefixedId } from "~/api_smowl/helper";
+import { getEnviromentPrefixedId } from "~/api_smowl/index";
 
 const examApi = MApi.getExamApi();
 
