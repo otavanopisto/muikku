@@ -186,7 +186,7 @@ public class ExamRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     examController.createOrUpdateSettings(workspaceFolderId, settings);
-    smowlController.setActivity(String.format("%s-%d", systemSettingsController.getSetting("sys.env"), workspaceFolderId), settings.isProctored());
+    smowlController.setActivity(String.format("%s%d", systemSettingsController.getSetting("sys.env"), workspaceFolderId), settings.isProctored());
     return Response.ok().entity(settings).build();
   }
   

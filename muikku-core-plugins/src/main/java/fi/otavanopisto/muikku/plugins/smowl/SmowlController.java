@@ -110,7 +110,8 @@ public class SmowlController {
   }
   
   private void addActivity(String examIdentifier) {
-    Long workspaceFolderId = Long.parseLong(StringUtils.substringAfterLast(examIdentifier, "-"));
+    // Due to Smowl idiocy, we assume this identifier is prefixed with four letters indicating the system environment
+    Long workspaceFolderId = Long.parseLong(StringUtils.substring(examIdentifier, 4));
     String smowlUrl = SMOWL_BASE_URL + "/configs/activeServices/addActivity";
 
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
@@ -139,7 +140,7 @@ public class SmowlController {
     
     payload.param("activityType", ACTIVITY_TYPE);
     payload.param("activityId", examIdentifier);
-    payload.param("courseId", String.format("%s-%d", systemSettingsController.getSetting("sys.env"), workspaceEntity.getId()));
+    payload.param("courseId", String.format("%s%d", systemSettingsController.getSetting("sys.env"), workspaceEntity.getId()));
     payload.param("numberUsers", "999");
     payload.param("startDate", formatter.format(startDateTime));
     payload.param("endDate", formatter.format(endDateTime));
