@@ -286,6 +286,8 @@ export function createActivityListJson(
  * @returns JSON string in the required format
  */
 export function createAlarmsJson(alarms: FrontCameraAlarmsConfig): string {
+  // Must be deleted because SMOWL API does not support setting it, but returns it when getting the alarms.
+  delete alarms.MIN_USERS_DETECTED;
   return JSON.stringify(alarms);
 }
 

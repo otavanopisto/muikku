@@ -465,6 +465,12 @@ export interface FrontCameraAlarmsConfig {
   WEBCAM_BLOCKED: number | string;
   /** Number of allowed occurrences of the browser being unsupported */
   UNSUPPORTED_BROWSER: number | string;
+  /**
+   * Number of allowed occurrences of the minimum number of users detected (Probably).
+   * This alarm is not used in the Front Camera Service, nor does Smowl API let you set it
+   * but returns it when getting the alarms.
+   */
+  MIN_USERS_DETECTED: number | string;
 }
 
 export type FrontCameraAlarms = keyof FrontCameraAlarmsConfig;

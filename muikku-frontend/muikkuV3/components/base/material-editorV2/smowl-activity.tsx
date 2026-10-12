@@ -28,7 +28,7 @@ import { useSmowlExamResults } from "./hooks/useSmowlExamResults";
  * @returns The label for the alarm
  */
 const getFrontCameraAlarmLabel = (alarmKey: FrontCameraAlarms): string => {
-  const labelMap: Record<FrontCameraAlarms, string> = {
+  const labelMap: Partial<Record<FrontCameraAlarms, string>> = {
     INCORRECT_USER: "Väärä henkilö",
     MORE_THAN_ONE: "Useita henkilöitä",
     NOBODY: "Kuvassa ei näy ketään",
@@ -55,7 +55,7 @@ const getFrontCameraAlarmLabel = (alarmKey: FrontCameraAlarms): string => {
 const getFrontCameraAlarmDescription = (
   alarmKey: FrontCameraAlarms
 ): string => {
-  const labelMap: Record<FrontCameraAlarms, string> = {
+  const labelMap: Partial<Record<FrontCameraAlarms, string>> = {
     INCORRECT_USER: "Kuvassa on joku muu kuin rekisteröitynyt käyttäjä.",
     MORE_THAN_ONE: "Kuvassa näkyy useampi kuin yksi henkilö.",
     NOBODY: "Kuvassa ei näy yhtään henkilöä.",
@@ -84,7 +84,7 @@ const getFrontCameraAlarmDescription = (
 const getComputerMonitoringActionLabel = (
   alarmKey: ComputerMonitoringAllowedActions
 ): string => {
-  const labelMap: Record<ComputerMonitoringAllowedActions, string> = {
+  const labelMap: Partial<Record<ComputerMonitoringAllowedActions, string>> = {
     WEB_NAVIGATION: "Nettisivujen selaus",
     VIRTUAL_MACHINE: "Virtuaalikone",
     VIRTUAL_WEBCAM: "Virtuaalikamera",
@@ -104,7 +104,7 @@ const getComputerMonitoringActionLabel = (
 const getComputerMonitoringActionDescription = (
   alarmKey: ComputerMonitoringAllowedActions
 ): string => {
-  const labelMap: Record<ComputerMonitoringAllowedActions, string> = {
+  const labelMap: Partial<Record<ComputerMonitoringAllowedActions, string>> = {
     WEB_NAVIGATION:
       "Käyttäjä siirtyy kokeen aikana kokeen ulkopuolisille verkkosivuille. Käydyt sivustot tallennetaan raporttiin.",
     VIRTUAL_MACHINE: "Kokeen suorittamiseen käytetään virtuaalikonetta.",
