@@ -35,6 +35,10 @@ public class CurrentUserSession {
     return studyProgrammeIdentifiers;
   }
   
+  public boolean isSpecialEducationTeacher() {
+    return specialEducationTeacher;
+  }
+  
   private void ensureInitialization() {
     if (!initialized) {
       if (sessionController.isLoggedIn()) {
@@ -42,6 +46,7 @@ public class CurrentUserSession {
           User user = userSchoolDataController.findUser(sessionController.getLoggedUser());
           isActive = userSchoolDataController.isActiveUser(user);
           studyProgrammeIdentifiers = user.getStudyProgrammeIdentifiers();
+          specialEducationTeacher = user.isSpecialEducationTeacher();
           initialized = true;
         }
         catch (Exception ex) {
@@ -54,4 +59,5 @@ public class CurrentUserSession {
   private boolean initialized = false;
   private boolean isActive = false;
   private Set<SchoolDataIdentifier> studyProgrammeIdentifiers;
+  private boolean specialEducationTeacher = false;
 }

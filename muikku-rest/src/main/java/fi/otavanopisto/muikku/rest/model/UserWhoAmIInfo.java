@@ -29,6 +29,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isActive,
               Set<String> permissions,
               Set<EnvironmentRoleArchetype> roles,
+              Boolean specialEducationTeacher,
               String locale,
               String displayName,
               List<String> emails,
@@ -51,6 +52,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
     this.roles = roles;
+    this.specialEducationTeacher = specialEducationTeacher;
     this.locale = locale;
     this.setPermissions(permissions);
     this.displayName = displayName;
@@ -250,6 +252,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.sysEnv = sysEnv;
   }
 
+  public Boolean isSpecialEducationTeacher() {
+    return specialEducationTeacher;
+  }
+
+  public void setSpecialEducationTeacher(Boolean specialEducationTeacher) {
+    this.specialEducationTeacher = specialEducationTeacher;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -269,6 +279,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyTimeEnd;
   private String locale;
   private Set<EnvironmentRoleArchetype> roles;
+  private Boolean specialEducationTeacher;
   private UserWhoAmIInfoServices services;
   private String educationTypeCode; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
   private Boolean under18;

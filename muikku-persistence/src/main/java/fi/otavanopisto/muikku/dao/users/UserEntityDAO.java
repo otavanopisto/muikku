@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntity_;
 
 public class UserEntityDAO extends CoreDAO<UserEntity> {
 
@@ -74,4 +75,32 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     userEntity.setUpdatedByStudent(updatedByStudent);
     return persist(userEntity);
   }
+
+  public Long getMaximumUserEntityId() {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<UserEntity> root = criteria.from(UserEntity.class);
+
+    criteria.select(criteriaBuilder.max(root.get(UserEntity_.id)));
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public List<UserEntity> listInReverseOrder(long highestId, int maxResults) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserEntity> criteria = criteriaBuilder.createQuery(UserEntity.class);
+    Root<UserEntity> root = criteria.from(UserEntity.class);
+    
+    criteria.select(root).orderBy(criteriaBuilder.desc(root.get(UserEntity_.id)));
+
+    criteria.where(
+        criteriaBuilder.lessThanOrEqualTo(root.get(UserEntity_.id), highestId)
+    );
+    
+    return entityManager.createQuery(criteria).setMaxResults(maxResults).getResultList();
+  }
+  
 }

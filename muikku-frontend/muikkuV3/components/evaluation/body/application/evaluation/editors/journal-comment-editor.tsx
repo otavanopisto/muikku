@@ -9,7 +9,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
-import { CKEditorConfig } from "../evaluation";
+import { CKEditorConfig } from "~/components/evaluation/helper";
 import { WorkspaceJournalComment } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 

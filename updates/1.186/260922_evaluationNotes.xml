@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+   <sql>
+     create table EvaluationNote (
+       id bigint not null auto_increment,
+        archived bit not null,
+        created datetime not null,
+        creator bigint not null,
+        lastModified datetime,
+        lastModifier bigint,
+        note longtext,
+        userEntityId bigint not null,
+        workspaceEntityId bigint not null,
+        primary key (id)
+    );
+   </sql>
+   <sql>
+    create index IDX92lnwg2km45x1hhn9ng3bupd9 on EvaluationNote (userEntityId, workspaceEntityId);
+   </sql>
+</update>
