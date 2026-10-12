@@ -58,7 +58,7 @@ public class SmowlRESTService extends AbstractRESTService {
 
   /*
   insert into SystemSetting (settingKey, settingValue) values ('smowl.entityName', ''), ('smowl.apiKey', ''), 
-    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', ''), ('smowl.entityName', ''), ('sys.env', '');
+    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', ''), ('sys.env', '');
   */
   
   @POST
@@ -97,7 +97,7 @@ public class SmowlRESTService extends AbstractRESTService {
       }
     }    
     claims.put("entityKey", licenseKey);
-    claims.put("userId", String.format("%s-%d", systemSettingsController.getSetting("sys.env"), sessionController.getLoggedUserEntity().getId()));
+    claims.put("userId", String.format("%s%d", systemSettingsController.getSetting("sys.env"), sessionController.getLoggedUserEntity().getId()));
 
     try {
       JWTClaimsSet.Builder claimBuilder = new JWTClaimsSet.Builder()
