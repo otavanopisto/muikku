@@ -1,6 +1,6 @@
 import { Box, Text, Textarea, Title } from "@mantine/core";
-import { useEffect } from "react";
-import { useOutletContext, useParams } from "react-router";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useOutletContext, useParams } from "react-router";
 import { useAtomValue, useSetAtom } from "jotai";
 import { workspaceInfoAtom } from "src/atoms/workspace";
 import { WorkspaceContentLayout } from "src/layouts";
@@ -11,12 +11,17 @@ import {
   workspaceMaterialContentNodesEnabledAtom,
 } from "src/atoms/workspaceContent";
 import { Toc } from "./Toc";
+import {
+  resolveMaterialLocation,
+  workspaceMaterialsHref,
+} from "./materialLoaction";
 
 /**
- * WorkspaceMaterials - Temporary materials dialog content.
+ * WorkspaceMaterials - Materials dialog content.
  */
 export function WorkspaceMaterials() {
-  const { workspaceUrlName } = useParams();
+  const { workspaceUrlName, "*": splat = "" } = useParams();
+  const navigate = useNavigate();
   const { onClose } = useOutletContext<{ onClose: () => void }>();
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
   const setMaterialsEnabled = useSetAtom(
@@ -29,9 +34,24 @@ export function WorkspaceMaterials() {
     workspaceCompositeRepliesByMaterialIdAtom
   );
 
+  const location = useMemo(
+    () => resolveMaterialLocation(nodes, splat),
+    [nodes, splat]
+  );
+
   useEffect(() => {
     setMaterialsEnabled(true);
   }, [setMaterialsEnabled]);
+
+  useEffect(() => {
+    if (asyncState !== "ready") return;
+    if (splat !== "") return;
+    if (!workspaceUrlName || !location.defaultPath) return;
+    void navigate(
+      workspaceMaterialsHref(workspaceUrlName, location.defaultPath),
+      { replace: true }
+    );
+  }, [asyncState, splat, workspaceUrlName, location.defaultPath, navigate]);
 
   const toc =
     asyncState === "loading" ? (
@@ -48,6 +68,45 @@ export function WorkspaceMaterials() {
         repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
       />
     );
+
+  let main: React.ReactNode;
+  if (asyncState === "loading" || location.status === "empty") {
+    main = (
+      <Text size="sm" c="dimmed">
+        Ladataan...
+      </Text>
+    );
+  } else if (location.status === "not-found") {
+    main = (
+      <Text size="sm" c="red">
+        Sivua ei löytynyt.
+      </Text>
+    );
+  } else {
+    main = (
+      <>
+        <Title order={3} mb="md">
+          {location.section?.title ?? "Materiaalit"}
+        </Title>
+        {location.pages.map((page) => {
+          const active = page.path === location.page?.path;
+          return (
+            <Box
+              key={page.workspaceMaterialId}
+              id={
+                page.workspaceMaterialId != null
+                  ? `p-${page.workspaceMaterialId}`
+                  : undefined
+              }
+              py="sm"
+            >
+              <Text fw={active ? 700 : 500}>{page.title}</Text>
+            </Box>
+          );
+        })}
+      </>
+    );
+  }
 
   return (
     <WorkspaceContentLayout
@@ -68,9 +127,7 @@ export function WorkspaceMaterials() {
         </>
       }
     >
-      <Box p="md">
-        <Text c="dimmed">Valitse sivu sisällysluettelosta.</Text>
-      </Box>
+      <Box p="md">{main}</Box>
     </WorkspaceContentLayout>
   );
 }

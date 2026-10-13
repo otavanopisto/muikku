@@ -1,12 +1,17 @@
 import { Box, Collapse, Group, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconCheck, IconChevronDown } from "@tabler/icons-react";
+import { useNavigate, useParams } from "react-router";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
 import { useWorkspaceContentLayout } from "src/layouts/WorkspaceContentLayout/WorkspaceContentLayoutContext";
 import { getTocItemChrome } from "./tocChrome";
+import {
+  workspaceMaterialsHref,
+  normalizeMaterialPath,
+} from "./materialLoaction";
 import {
   buildTocItems,
   groupTocChildren,
@@ -24,12 +29,31 @@ interface TocProps {
 }
 
 /**
+ * Navigate to a material path without stacking history inside the overlay.
+ */
+function useMaterialsNavigate() {
+  const navigate = useNavigate();
+  const { workspaceUrlName } = useParams();
+  const { closeToc } = useWorkspaceContentLayout();
+
+  return (path: string) => {
+    if (!workspaceUrlName || !path) return;
+    void navigate(workspaceMaterialsHref(workspaceUrlName, path), {
+      replace: true,
+    });
+    closeToc();
+  };
+}
+
+/**
  * Materials table of contents.
- * Folders collapse; consecutive pages share a Timeline.
+ * Folders collapse; consecutive pages share a rail.
  * Must render inside WorkspaceContentLayout.
  */
 export function Toc(props: TocProps) {
   const { nodes, repliesByWorkspaceMaterialId } = props;
+  const { "*": splat = "" } = useParams();
+  const activePath = normalizeMaterialPath(splat);
   const items = buildTocItems(nodes);
 
   if (items.length === 0) {
@@ -44,18 +68,20 @@ export function Toc(props: TocProps) {
     <TocGroupList
       groups={groupTocChildren(items)}
       repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
+      activePath={activePath}
     />
   );
 }
 
 /**
- * Render grouped folders and page timelines.
+ * Render grouped folders and page rails.
  */
 function TocGroupList(props: {
   groups: TocChildGroup[];
   repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
+  activePath: string;
 }) {
-  const { groups, repliesByWorkspaceMaterialId } = props;
+  const { groups, repliesByWorkspaceMaterialId, activePath } = props;
 
   return (
     <>
@@ -65,12 +91,14 @@ function TocGroupList(props: {
             key={group.item.id}
             item={group.item}
             repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
+            activePath={activePath}
           />
         ) : (
           <TocPageRail
             key={group.items[0]?.id}
             items={group.items}
             repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
+            activePath={activePath}
           />
         )
       )}
@@ -79,22 +107,31 @@ function TocGroupList(props: {
 }
 
 /**
- * Collapsible folder. Nested content is another group list, not Timeline items.
+ * Collapsible folder. Title navigates; chevron only toggles.
  */
 function TocFolder(props: {
   item: TocItem;
   repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
+  activePath: string;
 }) {
-  const { item, repliesByWorkspaceMaterialId } = props;
+  const { item, repliesByWorkspaceMaterialId, activePath } = props;
   const [opened, { toggle }] = useDisclosure(true);
+  const go = useMaterialsNavigate();
+  const isActive =
+    activePath === item.path || activePath.startsWith(`${item.path}/`);
 
   return (
     <Box>
-      <UnstyledButton onClick={toggle} w="100%" py={6} px={4}>
-        <Group justify="space-between" wrap="nowrap" gap="xs">
-          <Text size="sm" fw={600} lineClamp={2}>
+      <Group wrap="nowrap" gap={4} py={6} px={4}>
+        <UnstyledButton flex={1} miw={0} onClick={() => go(item.path)}>
+          <Text size="sm" fw={isActive ? 700 : 600} lineClamp={2} ta="left">
             {item.title}
           </Text>
+        </UnstyledButton>
+        <UnstyledButton
+          onClick={toggle}
+          aria-label={opened ? "Sulje kansio" : "Avaa kansio"}
+        >
           <IconChevronDown
             size={16}
             style={{
@@ -103,13 +140,14 @@ function TocFolder(props: {
               transition: "transform 150ms ease",
             }}
           />
-        </Group>
-      </UnstyledButton>
+        </UnstyledButton>
+      </Group>
       <Collapse expanded={opened}>
         <Box pl="sm">
           <TocGroupList
             groups={groupTocChildren(item.children)}
             repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
+            activePath={activePath}
           />
         </Box>
       </Collapse>
@@ -118,19 +156,22 @@ function TocFolder(props: {
 }
 
 /**
- * Timeline of pages only. active={-1}: no sequential "progress" highlighting.
+ * Rail of pages only.
  */
 export function TocPageRail(props: {
   items: TocItem[];
   repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
+  activePath: string;
 }) {
-  const { items, repliesByWorkspaceMaterialId } = props;
-  const { closeToc } = useWorkspaceContentLayout();
+  const { items, repliesByWorkspaceMaterialId, activePath } = props;
+  const go = useMaterialsNavigate();
+
   return (
     <Rail>
       {items.map((item) => {
         const reply = repliesByWorkspaceMaterialId?.[item.id];
         const chrome = getTocItemChrome(item, reply);
+        const isActive = activePath === item.path;
         return (
           <Rail.Item
             key={item.id}
@@ -139,9 +180,11 @@ export function TocPageRail(props: {
             bullet={
               chrome.done ? <IconCheck size={12} stroke={3} /> : undefined
             }
-            onClick={closeToc}
+            onClick={() => go(item.path)}
           >
-            <Text size="sm">{item.title}</Text>
+            <Text size="sm" fw={isActive ? 700 : 400}>
+              {item.title}
+            </Text>
             {chrome.kindLabel && (
               <Group
                 gap={8}

@@ -320,7 +320,7 @@ export const router = createBrowserRouter([
                 middleware: [permissionMiddlewares.workspaceJournalView],
               },
               {
-                path: "workspaceMaterials",
+                path: "workspaceMaterials/*",
                 element: <WorkspaceMaterials />,
                 //loader: workspaceMaterialsLoader,
                 middleware: [permissionMiddlewares.workspaceMaterialsView],
