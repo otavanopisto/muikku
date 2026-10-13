@@ -24,9 +24,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.plugins.search.SchoolDataSearchReindexListener;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
+import fi.otavanopisto.muikku.search.IndexedUser;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 
 public abstract class AbstractTimedNotificationStrategy implements TimedNotificationStrategy {
@@ -43,14 +45,18 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
+  @Inject
+  private SchoolDataSearchReindexListener reindexer;
+  
   @PostConstruct
   public void init(){
     startTimer(getDuration());
   }
   
   @Timeout
-  public void handleTimeout(){
-    if (isActive()) {
+  public void handleTimeout() {
+    // Notifications are suspended while reindexing is active as many notifiers depend on the indices
+    if (isActive() && !reindexer.isReindexingActive()) {
       schoolDataBridgeSessionController.startSystemSession();
       try {
         sendNotifications();
@@ -127,7 +133,7 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
     Date studyStartDate = getDateResult(studentSearchResult.get("studyStartDate"));
 
     @SuppressWarnings("unchecked")
-    List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) studentSearchResult.get("studyPeriods");
+    List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) studentSearchResult.get(IndexedUser.FIELD_STUDYPERIODS);
     
     LocalDate maxEndDate = null;
     

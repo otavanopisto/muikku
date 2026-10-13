@@ -26,7 +26,7 @@ interface WallItemProps {
 const WallItem: React.FC<WallItemProps> = (props) => {
   const { modifier, state, title, dueDate, children, customDate } = props;
   const { t } = useTranslation("tasks");
-  const overdue = isOverdue(dueDate);
+  const overdue = dueDate ? isOverdue(dueDate) : false;
   const [showDescription, setShowDescription] = React.useState(false);
 
   /**
@@ -35,10 +35,6 @@ const WallItem: React.FC<WallItemProps> = (props) => {
   const toggleShowDescription = () => {
     setShowDescription(!showDescription);
   };
-
-  /**
-   * Handles status change
-   */
 
   return (
     <div

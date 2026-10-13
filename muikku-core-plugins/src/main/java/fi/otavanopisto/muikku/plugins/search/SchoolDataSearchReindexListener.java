@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
@@ -78,6 +80,13 @@ public class SchoolDataSearchReindexListener {
     active = false;
   }
 
+  // Technically read-lock doesn't help much if reindexing is ongoing as everything else is 
+  // (by default) write-locked. Figuring out the locking in smarter way needs it's own issue.
+  @Lock(LockType.READ)
+  public boolean isReindexingActive() {
+    return active;
+  }
+  
   public void onReindexEvent(@Observes SearchReindexEvent event) {
     if (active) {
       logger.log(Level.INFO, "Already reindexing, refused to start another reindexing task");
@@ -89,7 +98,9 @@ public class SchoolDataSearchReindexListener {
 
     if (!event.isResume()) {
       if (tasks.contains(Task.ALL) || tasks.contains(Task.USERS)) {
-        setOffset("userIndex", 0);
+        // Reverse order, start from the highest id
+        Long maximumUserEntityId = userEntityController.getMaximumUserEntityId();
+        setOffset("userIndex", maximumUserEntityId != null ? maximumUserEntityId.intValue() : 0);
       }
 
       if (tasks.contains(Task.ALL) || tasks.contains(Task.WORKSPACES)) {
@@ -181,16 +192,17 @@ public class SchoolDataSearchReindexListener {
 
   private boolean reindexUsers() {
     try {
-      List<UserEntity> users = userEntityController.listUserEntities();
-      int userIndex = getOffset("userIndex");
+      final int batchStartOffset = getOffset("userIndex");
+      final int batchSize = getBatchSize();
 
-      if (userIndex < users.size()) {
-        int last = Math.min(users.size(), userIndex + getBatchSize());
-
-        for (int i = userIndex; i < last; i++) {
+      if (batchStartOffset > 0) {
+        int userIndex = batchStartOffset;
+        List<UserEntity> batch = userEntityController.listUserEntitiesInReverseOrder((long) userIndex, batchSize);
+        
+        for (UserEntity userEntity : batch) {
           try {
-            UserEntity userEntity = users.get(i);
-
+            userIndex = Math.min(userIndex, userEntity.getId().intValue());
+            
             userIndexer.indexUser(userEntity);
           }
           catch (Exception uex) {
@@ -198,10 +210,19 @@ public class SchoolDataSearchReindexListener {
           }
         }
 
-        logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");
+        logger.log(Level.INFO, String.format("Reindexed %d users from index %d", batch.size(), batchStartOffset));
+        
+        // listUserEntitiesInReverseOrder should always return a full batch size until the very last batch
+        // If the batch isn't full, all users should be processed (also implies there's no user with id 1).
+        if (batch.size() < batchSize && userIndex > 1) {
+          logger.log(Level.INFO, String.format("User indexing stopping at index %d because the batch size is unfilled.", userIndex));
+          userIndex = 0;
+        }
 
-        setOffset("userIndex", userIndex + getBatchSize());
-        return false;
+        // If userIndex was updated in the loop, go one smaller to start the next batch from next user or 0 to stop
+        userIndex = Math.max(0, userIndex - 1);
+        setOffset("userIndex", userIndex);
+        return userIndex == 0;
       }
       else {
         return true;
