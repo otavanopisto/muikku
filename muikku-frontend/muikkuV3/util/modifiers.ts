@@ -63,38 +63,21 @@ export function filterHighlight(string: string, filter: string) {
   if (filter === "") {
     return React.createElement("span", {}, string);
   }
-  const accumulator: Array<Array<any>> = [[]];
-  string
-    .split(new RegExp("(" + escapeRegExp(filter) + "|\\s)", "i"))
-    .forEach((element, index) => {
-      if (element === "") {
-        return;
-      } else if (element === " ") {
-        accumulator.push([]);
-      } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
-        accumulator[accumulator.length - 1].push(
-          React.createElement(
-            "span",
-            { key: index, className: "form-element__autocomplete-highlight" },
-            element
-          )
-        );
-      } else {
-        accumulator[accumulator.length - 1].push(element);
-      }
-    });
-
-  const spans = accumulator.map((childMap, index) =>
-    React.createElement("span", { key: index }, ...childMap)
-  );
-  const newChild: Array<any> = [];
-  spans.forEach((s, index) => {
-    newChild.push(s);
-    if (index !== spans.length - 1) {
-      newChild.push(" ");
+  const parts = string.split(new RegExp("(" + escapeRegExp(filter) + ")", "i"));
+  const children = parts.map((part, index) => {
+    if (part === "") {
+      return null;
     }
+    if (part.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
+      return React.createElement(
+        "span",
+        { key: index, className: "form-element__autocomplete-highlight" },
+        part
+      );
+    }
+    return part;
   });
-  return newChild;
+  return React.createElement("span", {}, ...children);
 }
 
 /**

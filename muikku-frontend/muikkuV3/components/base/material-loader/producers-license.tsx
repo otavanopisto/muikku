@@ -17,7 +17,8 @@ export function MaterialLoaderProducersLicense(
   if (
     !(
       (props.material.producers && props.material.producers.length) ||
-      props.material.license
+      props.material.license ||
+      props.material.extraInfo
     )
   ) {
     return null;
@@ -57,6 +58,12 @@ export function MaterialLoaderProducersLicense(
           ) : (
             <span>{license}</span>
           )}
+        </div>
+      ) : null}
+
+      {props.material.extraInfo ? (
+        <div className="material-page__extra-info">
+          {props.material.extraInfo}
         </div>
       ) : null}
     </div>

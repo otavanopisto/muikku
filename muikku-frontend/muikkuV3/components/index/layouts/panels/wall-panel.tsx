@@ -79,7 +79,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
               return (
                 <WallAbsenceEvent
                   key={event.id}
-                  isUnder18={status.isUnder18}
+                  canEdit={!status.isUnder18}
                   event={event}
                   actions={
                     <AbsenceFeedbackDialog

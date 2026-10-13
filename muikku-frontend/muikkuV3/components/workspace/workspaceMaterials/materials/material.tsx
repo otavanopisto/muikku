@@ -51,6 +51,7 @@ import {
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DISABLED_FIELD_FEATURES_CAPABILITIES } from "~/components/base/material-loader/helpers";
 import { NotebookAnnotation } from "~/components/base/material-loader/types";
+import { MaterialLoaderLatestEdit } from "~/components/base/material-loader/latest-edit";
 
 /**
  * WorkspaceMaterialProps
@@ -264,6 +265,7 @@ class WorkspaceMaterial extends React.Component<
                   </div>
                 ) : null}
                 <MaterialLoaderProducersLicense {...props} {...state} />
+                <MaterialLoaderLatestEdit {...props} {...state} />
               </div>
             )}
           </MaterialLoader>

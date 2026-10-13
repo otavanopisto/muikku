@@ -27,4 +27,6 @@ public interface GuardiansDependent {
   LocalDate getStudyTimeEnd();
   
   LocalDate getStudyEndDate();
+  
+  LocalDate getExpiryDate();
 }

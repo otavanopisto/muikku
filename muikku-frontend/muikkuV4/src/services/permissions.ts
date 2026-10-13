@@ -116,7 +116,7 @@ export class PermissionsService {
         permissions?.includes("MANAGE_WORKSPACE_MEMBERS") ?? false,
       WORKSPACE_VIEW_WORKSPACE_DETAILS:
         permissions?.includes("VIEW_WORKSPACE_DETAILS") ?? false,
-      WORSKPACE_LIST_WORKSPACE_MEMBERS:
+      WORKSPACE_LIST_WORKSPACE_MEMBERS:
         permissions?.includes("LIST_WORKSPACE_MEMBERS") ?? false,
     };
   }

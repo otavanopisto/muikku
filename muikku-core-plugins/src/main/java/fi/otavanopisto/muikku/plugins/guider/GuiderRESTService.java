@@ -41,6 +41,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
@@ -64,6 +65,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
@@ -94,11 +96,13 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityRestModel;
+import fi.otavanopisto.muikku.search.IndexedUserPedagogyFormState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.UserSearchQuery;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
@@ -238,6 +242,9 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   private GuidanceCounselorRestModels guidanceCounselorRestModels;
 
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+
   @GET
   @Path("/students")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -251,6 +258,9 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
       @QueryParam("userIdentifier") String userIdentifier,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
+      @QueryParam("pedagogyForm") Set<IndexedUserPedagogyFormState> pedagogyFormFilter,
+      @QueryParam("decisionOnSpecialEducation") Set<Boolean> decisionOnSpecialEducationFilter,
+      @QueryParam("u18compulsory") Set<Boolean> u18CompulsoryFilter,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
 
@@ -266,6 +276,16 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
+    // Unpublished pedagogy form filter available only for special education teachers
+    if (CollectionUtils.isNotEmpty(pedagogyFormFilter) && pedagogyFormFilter.contains(IndexedUserPedagogyFormState.UNPUBLISHED) && !currentUserSession.isSpecialEducationTeacher()) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // hasDecisionOnSpecialEducation filter is only available for Special Education Teachers
+    if (CollectionUtils.isNotEmpty(decisionOnSpecialEducationFilter) && !currentUserSession.isSpecialEducationTeacher()) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     List<Flag> flags = null;
     if (flagIds != null && flagIds.length > 0) {
       flags = new ArrayList<>(flagIds.length);
@@ -414,22 +434,27 @@ public class GuiderRESTService extends PluginRESTService {
 
       OrganizationEntity organization = loggedUserSchoolDataIdentifier.getOrganization();
 
-      SearchResult result = elasticSearchProvider.searchUsers(
-          Arrays.asList(organization),
-          currentUserSession.getStudyProgrammeIdentifiers(),
-          searchString,
-          fields,
-          Arrays.asList(EnvironmentRoleArchetype.STUDENT),
-          userGroupFilters,
-          workspaceFilters,
-          userIdentifiers,
-          includeInactiveStudents,
-          true,
-          false,
-          firstResult,
-          maxResults,
-          joinGroupsAndWorkspaces);
-
+      SearchResult result = elasticSearchProvider.searchUsers(new UserSearchQuery.Builder()
+          .organizations(Arrays.asList(organization))
+          .studyProgrammeIdentifiers(currentUserSession.getStudyProgrammeIdentifiers())
+          .text(searchString)
+          .textFields(fields)
+          .roles(Arrays.asList(EnvironmentRoleArchetype.STUDENT))
+          .groups(userGroupFilters)
+          .workspaces(workspaceFilters)
+          .userIdentifiers(userIdentifiers)
+          .includeInactiveStudents(includeInactiveStudents)
+          .includeHidden(true)
+          .onlyDefaultUsers(false)
+          .start(firstResult)
+          .maxResults(maxResults)
+          .joinGroupsAndWorkspaces(joinGroupsAndWorkspaces)
+          .hasPedagogyForm(pedagogyFormFilter)
+          .hasDecisionOnSpecialEducation(decisionOnSpecialEducationFilter)
+          .isU18Compulsory(u18CompulsoryFilter)
+          .build()
+      );
+      
       List<Map<String, Object>> results = result.getResults();
 
       if (results != null && !results.isEmpty()) {
@@ -578,6 +603,13 @@ public class GuiderRESTService extends PluginRESTService {
       "profile-whatsapp", "profile-vacation-start", "profile-vacation-end"};
     List<GuidanceCounselorRestModel> guidanceCounselors = guidanceCounselorRestModels.getGuidanceCounselorRestModels(studentIdentifier, propertyArray);
     
+    String externalViewLink = null;
+    if (sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_STUDENT_LINK)) {
+      String pyramusHost = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "pyramusHost");
+      Long studentId = Long.parseLong(StringUtils.substringAfterLast(studentIdentifier.getIdentifier(), "-"));
+      externalViewLink = String.format("https://%s/students/viewstudent.page?student=%d", pyramusHost, studentId);
+    }
+    
     GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(),
         user.getFirstName(),
@@ -607,7 +639,8 @@ public class GuiderRESTService extends PluginRESTService {
         u18Compulsory,
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
         hopsController.getHOPSStudentPermissions(studentIdentifier),
-        guidanceCounselors
+        guidanceCounselors,
+        externalViewLink
     );
 
     return Response

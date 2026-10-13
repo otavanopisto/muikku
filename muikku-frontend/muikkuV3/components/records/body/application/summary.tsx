@@ -102,7 +102,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               );
               return (
                 <WallAbsenceEvent
-                  isUnder18={status.isUnder18}
+                  canEdit={!status.isUnder18}
                   key={event.id}
                   event={event}
                   actions={

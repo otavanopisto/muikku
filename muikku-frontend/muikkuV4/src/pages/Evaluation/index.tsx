@@ -1,25 +1,20 @@
 import { Text, Paper, Box, Burger } from "@mantine/core";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { useAppLayout } from "src/hooks/useAppLayout";
-import { evaluationSubItems } from "src/layouts/helpers/navigation";
 import { useRootAside } from "src/layouts/helpers/useRootAside";
-import { useRootNav } from "src/layouts/helpers/useRootNav";
+import { Outlet } from "react-router";
 
 /**
  * Evaluation - Evaluation page
  */
 export function Evaluation() {
-  useRootNav({
-    title: "Arviointi",
-    items: evaluationSubItems,
-  });
   useRootAside({
     component: <div>Hello Evaluation</div>,
   });
 
   const { asideOpened, toggleAside } = useAppLayout();
   return (
-    <PageLayout title="Arviointi">
+    <PageLayout>
       <Box hiddenFrom="md">
         <Burger
           opened={asideOpened}
@@ -34,6 +29,9 @@ export function Evaluation() {
         </Text>
         <Text mb="xl">This is where you can access evaluation features</Text>
       </Paper>
+
+      {/* Outlet for nested routes, assessment dialog is rendered here */}
+      <Outlet />
     </PageLayout>
   );
 }

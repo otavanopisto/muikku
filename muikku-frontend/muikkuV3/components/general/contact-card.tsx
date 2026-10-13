@@ -30,6 +30,7 @@ interface ContactCardProps {
   id?: number;
   phone?: string;
   studyAdvisor?: boolean;
+  specialEducationTeacher?: boolean;
   vacationStart?: string;
   vacationEnd?: string;
 }
@@ -55,6 +56,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
     phone,
     groupAdvisor,
     studyAdvisor,
+    specialEducationTeacher,
     vacationStart,
     vacationEnd,
   } = props;
@@ -105,6 +107,15 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
             <span className="label">
               <span className="label__text">
                 {t("labels.studyCounselor", {
+                  ns: "users",
+                })}
+              </span>
+            </span>
+          )}
+          {specialEducationTeacher && (
+            <span className="label">
+              <span className="label__text">
+                {t("labels.specialEducationTeacher_one", {
                   ns: "users",
                 })}
               </span>

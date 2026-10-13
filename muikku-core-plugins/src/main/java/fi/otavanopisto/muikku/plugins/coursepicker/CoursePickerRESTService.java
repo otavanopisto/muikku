@@ -590,7 +590,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
+    if (!workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity) || getIsAlreadyEvaluated(workspaceEntity, null)) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
@@ -732,7 +732,9 @@ public class CoursePickerRESTService extends PluginRESTService {
           }  
         }
       }
-      restModel.setAssessmentStates(states);
+      if (restModel != null) {
+        restModel.setAssessmentStates(states);
+      }
     }
     return isEvaluated;
   }

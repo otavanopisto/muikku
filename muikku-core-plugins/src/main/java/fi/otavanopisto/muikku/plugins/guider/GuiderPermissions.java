@@ -19,6 +19,10 @@ public class GuiderPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER } )
   public static final String GUIDER_VIEW = "GUIDER_VIEW";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  public static final String GUIDER_STUDENT_LINK = "GUIDER_STUDENT_LINK";
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER } )

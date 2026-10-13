@@ -27,6 +27,7 @@ import { resetHopsData } from "~/actions/main-function/hops/";
 import PedagogySupport from "~/components/pedagogy-support";
 import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
 import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
+import Absences from "./student/tabs/absences";
 
 export type tabs =
   | "STUDIES"
@@ -34,6 +35,7 @@ export type tabs =
   | "GUIDANCE_RELATIONS"
   | "STUDY_HISTORY"
   | "PEDAGOGICAL_SUPPORT"
+  | "ABSENCES"
   | "LANGUAGE_PROFILE";
 
 /**
@@ -67,11 +69,8 @@ interface StudentDialogProps {
  */
 const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   const { isOpen, student, onClose } = props;
-
   const { guider } = useSelector((state: StateType) => state);
-
   const dispatch = useDispatch();
-
   const { t } = useTranslation(["common"]);
 
   /** Number of contact logs to display per page */
@@ -156,6 +155,12 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       name: t("labels.languageProfile"),
       type: "guider-student",
       component: <LanguageProfile userId={student.basic?.userEntityId} />,
+    },
+    {
+      id: "ABSENCES",
+      name: t("labels.absences", { ns: "events" }),
+      type: "guider-student",
+      component: <Absences />,
     },
   ];
 

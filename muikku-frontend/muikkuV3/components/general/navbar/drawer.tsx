@@ -185,7 +185,6 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     setTimeout(() => {
       this.setState({ visible: true });
     }, 10);
-    $(document.body).css({ overflow: "hidden" });
   }
 
   /**
@@ -204,7 +203,6 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
    * close
    */
   close() {
-    $(document.body).css({ overflow: "" });
     this.setState({ visible: false });
     setTimeout(() => {
       this.setState({ displayed: false, open: false });

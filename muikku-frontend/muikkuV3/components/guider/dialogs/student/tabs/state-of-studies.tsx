@@ -41,6 +41,7 @@ import CommunicatorNewMessage from "~/components/communicator/dialogs/new-messag
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import WallAbsenceEvent from "~/components/index/layouts/panels/wall/walll-event";
 import ContactCard, { ContactState } from "~/components/general/contact-card";
+import Link from "~/components/general/link";
 
 /**
  * StateOfStudiesProps
@@ -146,7 +147,11 @@ class StateOfStudies extends React.Component<
     const defaultEmailAddress = (
       this.props.guider.currentStudent.contactInfos ?? []
     ).find((e) => e.defaultContact)?.email;
-
+    const unexcusedAbsences =
+      this.props.guider.currentStudent.absenceEvents?.filter(
+        (event) =>
+          !event.properties?.find((prop) => prop.name === "ABSENCE_REASON")
+      ) ?? [];
     const avatar = (
       <Avatar
         id={
@@ -252,8 +257,42 @@ class StateOfStudies extends React.Component<
                           ),
                         };
 
+                  const guardianActions = (
+                    <>
+                      {guardian.userEntityId && guardian.state === "ACTIVE" && (
+                        <CommunicatorNewMessage
+                          extraNamespace="guidance-counselor"
+                          initialSelectedItems={[
+                            {
+                              type: "staff",
+                              value: {
+                                id: guardian.userEntityId,
+                                name: getName(guardian, true),
+                              },
+                            },
+                          ]}
+                        >
+                          <ButtonPill
+                            icon="envelope"
+                            aria-label={this.props.i18n.t("labels.send", {
+                              ns: "messaging",
+                            })}
+                            title={this.props.i18n.t("labels.send", {
+                              ns: "messaging",
+                            })}
+                            buttonModifiers={[
+                              "new-message",
+                              "new-message-to-staff",
+                            ]}
+                          ></ButtonPill>
+                        </CommunicatorNewMessage>
+                      )}
+                    </>
+                  );
+
                   return (
                     <ContactCard
+                      actions={guardianActions}
                       key={"guardian" + index}
                       fullName={getName(guardian, true)}
                       state={
@@ -269,19 +308,16 @@ class StateOfStudies extends React.Component<
       </ApplicationSubPanel>
     );
 
-    const absences = (this.props.guider.currentStudent.absenceEvents ?? [])
-      .length > 0 && (
+    const absences = unexcusedAbsences.length > 0 && (
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">
-          {this.props.i18n.t("labels.absences", { ns: "events" })}
+          {this.props.i18n.t("labels.absencesWithoutFeedback", {
+            ns: "events",
+          })}
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-          {this.props.guider.currentStudent.absenceEvents.map((event) => (
-            <WallAbsenceEvent
-              isUnder18={this.props.guider.currentStudent.basic.under18}
-              key={event.id}
-              event={event}
-            />
+          {unexcusedAbsences.map((event) => (
+            <WallAbsenceEvent key={event.id} event={event} />
           ))}
         </div>
       </div>
@@ -459,7 +495,8 @@ class StateOfStudies extends React.Component<
               {(this.props.guider.currentStudent.labels &&
                 this.props.guider.currentStudent.labels.length) ||
               this.props.guider.currentStudent.basic.hasPedagogyForm ||
-              this.props.guider.currentStudent.basic.u18Compulsory ? (
+              this.props.guider.currentStudent.basic.u18Compulsory ||
+              this.props.guider.currentStudent.basic.externalViewLink ? (
                 <ApplicationSubPanel.Body modifier="labels">
                   <div className="labels">
                     {studentLabels}
@@ -524,6 +561,18 @@ class StateOfStudies extends React.Component<
                           </span>
                         </div>
                       </Dropdown>
+                    ) : null}
+
+                    {this.props.guider.currentStudent.basic.externalViewLink ? (
+                      <Link
+                        href={
+                          this.props.guider.currentStudent.basic
+                            .externalViewLink
+                        }
+                        openInNewTab="_blank"
+                      >
+                        Pyramus
+                      </Link>
                     ) : null}
                   </div>
                 </ApplicationSubPanel.Body>
@@ -605,6 +654,7 @@ class StateOfStudies extends React.Component<
                           hasImage,
                           groupAdvisor,
                           studyAdvisor,
+                          specialEducationTeacher,
                           properties,
                         } = counselor;
                         const councelorActions = (
@@ -667,6 +717,7 @@ class StateOfStudies extends React.Component<
                             phone={properties["profile-phone"]}
                             groupAdvisor={groupAdvisor}
                             studyAdvisor={studyAdvisor}
+                            specialEducationTeacher={specialEducationTeacher}
                             vacationStart={properties["profile-vacationStart"]}
                             vacationEnd={properties["profile-vacationEnd"]}
                           />

@@ -11,6 +11,9 @@ import MApi, { isMApiError } from "~/api/api";
 import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
+import { AbsenceEventDateRange } from "~/util/events";
+
+const dates = new AbsenceEventDateRange();
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -89,15 +92,11 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           payload: "LOADING",
         });
         try {
-          // Event range for student absence events
-          const end = new Date();
-          const start = new Date(end);
-          start.setMonth(start.getMonth() - 6);
           const absenceEvents = await eventsApi.listEvents({
             user: studentId,
             type: "ABSENCE",
-            start,
-            end,
+            start: dates.getStartDate(),
+            end: dates.getEndDate(),
             adjustTimes: true,
           });
 

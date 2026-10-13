@@ -28,6 +28,7 @@ import {
   CreateEventPropertyRequest,
   UpdateEventPropertyRequest,
 } from "~/generated/client";
+import { AbsenceEventDateRange } from "~/util/events";
 
 const meApi = MApi.getMeApi();
 const hopsApi = MApi.getHopsApi();
@@ -38,6 +39,7 @@ const workspaceApi = MApi.getWorkspaceApi();
 const evaluationApi = MApi.getEvaluationApi();
 const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 const pedagogyApi = MApi.getPedagogyApi();
+const dates = new AbsenceEventDateRange();
 
 // GUARDIAN DEPENDANTS ACTIONS
 export type GUARDIAN_UPDATE_DEPENDANTS = SpecificActionType<
@@ -1008,17 +1010,14 @@ const loadDependantAbsenceEvents: LoadDependantAbsenceEventsTriggerType =
       ) {
         return;
       }
-
+      const start = dates.getStartDate();
+      const end = dates.getEndDate();
       try {
-        const end = new Date();
-        const start = new Date(end);
-        start.setMonth(start.getMonth() - 6);
-
         const events = await eventsApi.listEvents({
           user: dependantId,
           type: "ABSENCE",
-          start,
-          end,
+          start: dates.getStartDate(),
+          end: dates.getEndDate(),
           adjustTimes: true,
         });
 

@@ -67,6 +67,14 @@ public class WorkspaceMaterial extends WorkspaceNode {
     this.ai = ai;
   }
 
+  public String getExtraInfo() {
+    return extraInfo;
+  }
+
+  public void setExtraInfo(String extraInfo) {
+    this.extraInfo = extraInfo;
+  }
+
   @NotNull
   @Column(nullable = false)
   private Long materialId;
@@ -83,4 +91,6 @@ public class WorkspaceMaterial extends WorkspaceNode {
   @Enumerated (EnumType.STRING)
   private WorkspaceMaterialAI ai;
   
+  @Column
+  private String extraInfo;
 }

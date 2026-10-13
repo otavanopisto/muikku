@@ -3773,6 +3773,84 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+  
+  #EVALUATIONNOTES
+  /rest/evaluationNotes/workspaces/{workspaceEntityId}/students/{userEntityId}:
+    get:
+      operationId: getEvaluationNotes
+      summary: Returns all notes from selected workspace and student
+      tags:
+        - EvaluationNotes
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userEntityId
+          in: path
+          description: Student entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Evaluation notes results list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EvaluationNote"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/evaluationNotes/note:
+    post:
+      operationId: createOrUpdateEvaluationNote
+      summary: Create a new evaluation note or update an existing one by providing id in the request payload.
+      tags:
+        - EvaluationNotes
+      requestBody:
+        $ref: "#/components/requestBodies/EvaluationNoteCreateOrUpdateRequestBody"
+      responses:
+        "200":
+          description: Evaluation note created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationNote"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/evaluationNotes/note/{id}:
+    delete:
+      operationId: archiveEvaluationNote
+      summary: Archives selected evaluation note
+      tags:
+        - EvaluationNotes
+      parameters:
+        - name: id
+          in: path
+          description: Evaluation note id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Evaluation note deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   #MUIKKUEVENTS
   /rest/muikkuEvent/event:
@@ -6029,6 +6107,28 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: pedagogyForm
+          in: query
+          description: List only students who either have or don't have a published pedagogy form
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [PUBLISHED, UNPUBLISHED]
+        - name: decisionOnSpecialEducation
+          in: query
+          description: List only students who either have or don't have a decision on special education. Only available for special education teachers.
+          schema:
+            type: array
+            items:
+              type: boolean
+        - name: u18compulsory
+          in: query
+          description: List only students who either are or aren't under 18 compulsory education students.
+          schema:
+            type: array
+            items:
+              type: boolean
       responses:
         "200":
           description: Students
@@ -7316,6 +7416,32 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/MaterialContentUpdateRequestBody"
       responses:
+        "200":
+          description: Html material content updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                  edited:
+                    type: string
+                    format: date-time
+                  editor:
+                    type: string
+                  contentType:
+                    type: string
+                  html:
+                    type: string
+                  license:
+                    type: string
+                  title:
+                    type: string
+                  viewRestrict:
+                    $ref: "#/components/schemas/MaterialViewRestriction"
+
         "204":
           description: Html material content updated successfully
         "400":
@@ -12729,6 +12855,29 @@ components:
                 type: string
               workspaceSubjectIdentifier:
                 type: string
+    
+    EvaluationNoteCreateOrUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: EvaluationNoteCreateOrUpdateRequestBody object
+            required:
+              - note
+              - userEntityId
+              - workspaceEntityId
+            properties:
+              id:
+                type: integer
+                format: int64
+              note:
+                type: string
+              userEntityId:
+                type: integer
+                format: int64
+              workspaceEntityId:
+                type: integer
+                format: int64
 
     DiscussionAreaCreateRequestBody:
       required: true
@@ -15384,6 +15533,8 @@ components:
           type: boolean
         state:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
+        evaluationNoteCount:
+          type: integer
 
     EvaluationSupplementationRequest:
       type: object
@@ -15415,6 +15566,8 @@ components:
           type: string
         requestText:
           type: string
+        EvaluationNoteCount:
+          type: integer
 
     EvaluationEventType:
       type: string
@@ -15512,6 +15665,52 @@ components:
         - GRADED
         - POINTS
         - SUPPLEMENTATIONREQUEST
+
+    EvaluationNote:
+      type: object
+      description: EvaluationNote object
+      required:
+        - id
+        - userEntityId
+        - workspaceEntityId
+        - note
+      properties:
+        id:
+          type: integer
+          format: int64
+        creator:
+          description: The id of the note creator
+          type: integer
+          format: int64
+        creatorName:
+          description: The name of the creator
+          type: string
+        created:
+          description: Note creation date
+          type: string
+          format: date-time
+        lastModifier:
+          description: The id of the last modifier
+          type: integer
+          format: int64
+        lastModifierName:
+          description: The name of the last modifer
+          type: string
+        lastModified:
+          description: last modified date
+          type: string
+          format: date-time
+        userEntityId:
+          description: The id of the student
+          type: integer
+          format: int64
+        workspaceEntityId:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        note:
+          description: Text content of the note
+          type: string
 
     FeedEntry:
       type: object
@@ -15694,9 +15893,14 @@ components:
         - firstName
         - lastName
         - continuedViewPermission
+        - state
       properties:
         identifier:
           type: string
+        userEntityId:
+          description: May be undefined especially when the guardian doesn't have an account
+          type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -15706,6 +15910,12 @@ components:
         continuedViewPermissionModified:
           type: string
           format: date-time
+        state:
+          type: string
+          enum:
+            - INVITED
+            - ACTIVE
+            - INACTIVE
 
     GuidanceCounselorContact:
       type: object
@@ -15719,6 +15929,7 @@ components:
         - hasImage
         - groupAdvisor
         - studyAdvisor
+        - specialEducationTeacher
         - properties
       properties:
         id:
@@ -15737,6 +15948,8 @@ components:
         groupAdvisor:
           type: boolean
         studyAdvisor:
+          type: boolean
+        specialEducationTeacher:
           type: boolean
         properties:
           $ref: "#/components/schemas/AnyValue"
@@ -15910,7 +16123,6 @@ components:
       description: HopsGoals object
       required:
         - graduationGoal
-        - followUpGoal
       properties:
         graduationGoal:
           nullable: true
@@ -15954,6 +16166,8 @@ components:
           format: date-time
         requestText:
           type: string
+        EvaluationNoteCount:
+          type: integer
         archived:
           type: boolean
 
@@ -16077,6 +16291,7 @@ components:
         - state
         - attendances
         - opintopolkuUrl
+        - flags
       properties:
         id:
           type: integer
@@ -16115,6 +16330,10 @@ components:
           format: date-time
         opintopolkuUrl:
           type: string
+        flags:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatriculationExamEnrollmentFlag"
 
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
@@ -16150,6 +16369,22 @@ components:
         - ENROLLMENT_CREATED
         - ENROLLMENT_UPDATED
         - STATE_CHANGED
+
+    MatriculationExamEnrollmentFlag:
+      description: Matriculation exam term, either autumn or spring
+      type: string
+      enum:
+        - EXTENDED_EXAM_TIME
+        - SEPARATE_GROUP_SPACE
+        - SEPARATE_STUDIO
+        - RESTING_SPACE
+        - VISION_IMPAIRED_SPACE
+        - PERMISSION_ENLARGED_FONT
+        - PERMISSION_BIGGER_MONITOR
+        - AUDIO_RESTRICTED_EXAM
+        - PERMISSION_ASSISTANT
+        - ADJUSTABLE_ERGONOMICS
+        - OTHER_SUPPORTIVE_ELEMENT
 
     MatriculationExam:
       type: object
@@ -16864,6 +17099,13 @@ components:
         contentType:
           description: The content type of the html
           type: string
+        editor:
+          description: Name of the user who last edited the material
+          type: string
+        edited:
+          description: Date of last edit
+          type: string
+          format: "date-time"
 
     MaterialBinary:
       type: object
@@ -16988,6 +17230,15 @@ components:
         exam:
           description: Is this node part of an exam
           type: boolean
+        extraInfo:
+          type: string
+        editor:
+          description: Name of the user who last edited the material
+          type: string
+        edited:
+          description: Date of last edit
+          type: string
+          format: date-time
 
     Message:
       type: object
@@ -18083,6 +18334,7 @@ components:
             - curriculumName
             - matriculationEligibility
             - under18
+            - externalViewLink
           properties:
             curriculumName:
               type: string
@@ -18091,6 +18343,9 @@ components:
               type: boolean
             under18:
               type: boolean
+            externalViewLink:
+              type: string
+              nullable: true
             permissions:
               type: object
               required:
@@ -18858,6 +19113,9 @@ components:
           description: The target user entity id of the event
           type: integer
           format: int64
+        targetUserName:
+          description: The name of the user the event applies to
+          type: string
         creatorEntityId:
           description: Creator entity id
           type: integer
@@ -19099,6 +19357,7 @@ components:
         - emails
         - hasImage
         - roles
+        - specialEducationTeacher
         - permissions
         - curriculumName
         - curriculumIdentifier
@@ -19164,6 +19423,10 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
+        specialEducationTeacher:
+          type: boolean
+          description: Is the user a special education teacher. Null when unspecified (user likely logged off)
+          nullable: true
         permissions:
           type: array
           nullable: true
@@ -20358,6 +20621,8 @@ components:
         exam:
           description: If the material is part of an exam
           type: boolean
+        extraInfo:
+          type: string
 
     WorkspaceFolder:
       type: object

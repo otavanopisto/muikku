@@ -2,6 +2,8 @@ name: Typescript Compiler Check
 on:
   pull_request:
     branches: devel
+permissions:
+  contents: read
 jobs:
   tsc:
     name: tsc
