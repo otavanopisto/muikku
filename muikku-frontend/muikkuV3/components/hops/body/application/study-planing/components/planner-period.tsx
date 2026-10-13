@@ -37,7 +37,7 @@ const periodVariants: Variants = {
 
 /**
  * Checks if the period has movable planned courses.
- * Movable planned courses are planned courses that have no activity or have an ongoing activity.
+ * Movable planned courses are planned courses that have no activity or have an activity that is considered as in progress.
  * @param plannedCourses planned courses
  * @param studyActivity study activity
  * @returns true if the period has movable planned courses
@@ -53,7 +53,14 @@ const hasPlannedCoursesOrOngoingActivities = (
         sa.subject === course.subjectCode
     );
 
-    return activity === undefined || activity.state === "ONGOING";
+    return (
+      activity === undefined ||
+      // Following states are considered as in progress
+      activity.state === "ONGOING" ||
+      activity.state === "INTERIM_EVALUATION_REQUEST" ||
+      activity.state === "INTERIM_EVALUATION" ||
+      activity.state === "PENDING"
+    );
   });
 
 /**

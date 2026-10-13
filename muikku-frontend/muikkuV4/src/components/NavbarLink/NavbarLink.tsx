@@ -1,21 +1,21 @@
-import { useMemo } from "react";
-import { NavLink, Tooltip } from "@mantine/core";
-import { useParams, useResolvedPath, useMatch, Link } from "react-router";
-import type { NavigationLink } from "src/layouts/helpers/navigation";
+import { Indicator, NavLink, Text, Tooltip } from "@mantine/core";
+import { Link } from "react-router";
+import type { NavigationLink } from "~/src/navigation/navigation";
+import { useNavLinkMatch } from "./useNavLinkMatch";
+import { navLinkClassNames } from "./navLinkClassnames";
 
 /**
- * NavbarLinkProps - Interface for navbar link props
+ * Props for the NavbarLink component.
  */
-interface NavbarLinkProps extends Omit<NavigationLink, "type"> {
+interface NavbarLinkProps extends Omit<NavigationLink, "type" | "badgeKey"> {
+  /** main = icon rail (collapsible); secondary = panel links (default) */
+  variant?: "main" | "secondary";
   collapsed?: boolean;
-  onSelect?: () => void;
-  exactMatch?: boolean;
+  badgeCount?: number;
 }
 
 /**
- * NavbarLink - Simple navigation link component
- * @param props - NavbarLinkProps
- * @returns NavbarLink component
+ * Shared sidebar NavLink for main rail and secondary panel.
  */
 export function NavbarLink(props: NavbarLinkProps) {
   const {
@@ -23,39 +23,84 @@ export function NavbarLink(props: NavbarLinkProps) {
     label,
     description,
     link,
+    variant = "secondary",
     collapsed = false,
     exactMatch = false,
+    badgeCount = 0,
   } = props;
 
-  const params = useParams();
+  const { to, isActive } = useNavLinkMatch(link, exactMatch);
+  const isMain = variant === "main";
 
-  const linkValue = useMemo(() => {
-    if (link instanceof Function) {
-      return link(params);
-    }
-    return link;
-  }, [link, params]);
+  /**
+   * Prevent the default behavior of the event.
+   * @param event - The event to prevent.
+   */
+  const preventDefault = (event: React.MouseEvent) => {
+    event.preventDefault();
+  };
 
-  const resolved = useResolvedPath(linkValue);
-  const match = useMatch({ path: resolved.pathname, end: exactMatch });
+  if (isMain && !Icon) {
+    return null;
+  }
 
-  return collapsed ? (
-    <Tooltip label={label} position="right" withArrow>
-      <NavLink
-        component={Link}
-        to={linkValue}
-        leftSection={Icon ? <Icon size={20} /> : null}
-        active={match !== null}
-      />
-    </Tooltip>
-  ) : (
+  const iconNode = Icon ? (
+    <Indicator
+      display="flex"
+      size={16}
+      color="cyan"
+      label={badgeCount}
+      maxValue={99}
+      showZero={false}
+      disabled={!isMain || !collapsed || badgeCount < 1}
+    >
+      <Icon size={20} stroke={1.5} />
+    </Indicator>
+  ) : undefined;
+
+  const leftSection =
+    isMain && collapsed && iconNode ? (
+      <Tooltip
+        label={<Text size="sm">{label}</Text>}
+        position="right"
+        withArrow
+      >
+        {iconNode}
+      </Tooltip>
+    ) : (
+      iconNode
+    );
+
+  const rightSection = isMain ? (
+    <Indicator
+      size={16}
+      color="cyan"
+      label={badgeCount}
+      maxValue={99}
+      showZero={false}
+      disabled={collapsed || badgeCount < 1}
+    />
+  ) : badgeCount > 0 ? (
+    <Indicator
+      size={16}
+      color="cyan"
+      label={badgeCount}
+      maxValue={99}
+      showZero={false}
+    />
+  ) : undefined;
+
+  return (
     <NavLink
       component={Link}
-      to={linkValue}
+      to={to}
       label={label}
-      description={description}
-      leftSection={Icon ? <Icon size={20} /> : null}
-      active={match !== null}
+      description={isMain ? undefined : description}
+      leftSection={leftSection}
+      rightSection={rightSection}
+      active={isActive}
+      classNames={navLinkClassNames}
+      onDragStart={preventDefault}
     />
   );
 }

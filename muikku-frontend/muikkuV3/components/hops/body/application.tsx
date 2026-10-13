@@ -297,16 +297,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
       case "STUDYPLAN":
         return curriculumConfig?.isMatrixAvailable ?? false;
       case "MATRICULATION":
-        return [
-          "Nettilukio",
-          "Aikuislukio",
-          "Nettilukio/yksityisopiskelu (aineopintoina)",
-          "Aineopiskelu/yo-tutkinto",
-          "Aineopiskelu/lukio",
-          "Aineopiskelu/lukio (oppivelvolliset)",
-          "Aineopiskelu/valmistuneet",
-          "Kahden tutkinnon opinnot",
-        ].includes(studyProgrammeName);
+        return hops.studentInfo?.educationTypeCode === "lukio";
       default:
         return false;
     }
@@ -381,6 +372,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
         studentInfo={{
           identifier: status.userSchoolDataIdentifier,
           studyStartDate: new Date(status.profile.studyStartDate),
+          studyProgramName: studyProgrammeName,
         }}
         curriculumConfig={curriculumConfig}
         userStudyActivity={studyActivity}

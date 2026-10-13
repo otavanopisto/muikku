@@ -1,0 +1,68 @@
+.mainNav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.mainNavInner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+
+.mainNavHeader {
+  flex-shrink: 0;
+  height: 60px;
+  overflow: hidden;
+}
+
+.mainNavLinks {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.mainNavFooter {
+  flex-shrink: 0;
+  border-top: 1px solid var(--mantine-color-default-border);
+  overflow: hidden;
+}
+
+.headerContent {
+  width: 100%;
+  padding-inline: calc(var(--mantine-spacing-xs) + var(--mantine-spacing-sm));
+  overflow: hidden;
+}
+
+.headerIconSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.linksInner {
+  list-style: none;
+  margin: 0;
+  padding: var(--mantine-spacing-xs);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.linksInner > li {
+  list-style: none;
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: var(--mantine-spacing-xs);
+}

@@ -1,24 +1,37 @@
 import { atom } from "jotai";
+import { atomWithQuery } from "jotai-tanstack-query";
 import type { LocaleType, LocalizationLocale } from "~/generated/client";
 import { getMeApi } from "~/api";
+import { LOCALE_QUERY_KEY, queryClient } from "src/queryClient";
+
 const meApi = getMeApi();
 
-export const langAtom = atom<LocaleType>("fi");
+const DEFAULT_LANG: LocaleType = "fi";
+
+/** Server cache for locale — do not useAtomValue this in components. */
+export const localeQueryAtom = atomWithQuery(() => ({
+  queryKey: LOCALE_QUERY_KEY,
+  queryFn: async () => {
+    const locale = await meApi.getLocale();
+    return locale.lang;
+  },
+  staleTime: Infinity,
+  retry: false,
+}));
+
+/** App-facing language. */
+export const langAtom = atom(
+  (get) => get(localeQueryAtom).data ?? DEFAULT_LANG
+);
 
 /**
- * Load the locale from the server using atom action
+ * Set the locale on the server and update the query cache.
  */
-export const loadLangAtom = atom(null, async (_, set) => {
-  const locale = await meApi.getLocale();
-
-  set(langAtom, locale.lang);
-});
-
-/**
- * Set the locale on the server and update local state
- */
-export const setLangAtom = atom(null, async (_, set, newLang: LocaleType) => {
-  const locale: LocalizationLocale = { lang: newLang };
-  await meApi.setLocale({ localizationLocale: locale });
-  set(langAtom, newLang);
-});
+export const setLangAtom = atom(
+  null,
+  async (_get, _set, newLang: LocaleType) => {
+    const locale: LocalizationLocale = { lang: newLang };
+    await meApi.setLocale({ localizationLocale: locale });
+    queryClient.setQueryData(LOCALE_QUERY_KEY, newLang);
+  }
+);

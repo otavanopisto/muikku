@@ -231,6 +231,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         currentUserSession.isActive(),
         permissionSet,
         roles,
+        user != null ? user.isSpecialEducationTeacher() : null,
         locale,
         user == null ? null : user.getDisplayName(),
         emails,

@@ -11,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
@@ -42,6 +43,11 @@ public class PedagogyForm {
     this.userEntityId = userEntityId;
   }
 
+  @Transient
+  public boolean isPublished() {
+    return published != null;
+  }
+  
   public Date getPublished() {
     return published;
   }

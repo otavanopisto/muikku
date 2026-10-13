@@ -1,65 +1,21 @@
-import { Outlet, useLocation } from "react-router";
-import { userAtom } from "src/atoms/auth";
-import { useAtomValue } from "jotai";
-import {
-  getNavigationItems,
-  type NavigationItem,
-} from "src/layouts/helpers/navigation";
-import classes from "./RootLayout.module.css";
-import { workspacePermissionsAtom } from "src/atoms/permissions";
-import { useAppLayout } from "src/hooks/useAppLayout";
-import { Box, Burger, Group, ScrollArea, Title } from "@mantine/core";
-import { Drawer } from "@mantine/core";
-import { IconBuilding, IconHome } from "@tabler/icons-react";
-import { UserButton } from "~/src/components/UserButton/UserButton";
-import { asideConfigAtom, secondaryNavConfigAtom } from "~/src/atoms/layout";
-import { NavbarQueryLink } from "~/src/components/NavbarQueryLink/NavbarQueryLink";
-import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { workspaceInfoAtom } from "~/src/atoms/workspace";
+import { Outlet } from "react-router";
+import { AppShell, Box, Burger, Group } from "@mantine/core";
 import { ErrorBoundary } from "~/src/pages";
-import { useMemo } from "react";
+import { useRootLayoutNav } from "./hooks/useRootLayoutNav";
+import { useIsBreakpoint } from "~/src/hooks/use-is-breakpoint";
+import { AppNavigation } from "./components/AppNavigation";
+import { useDisclosure, useDrag, useHeadroom } from "@mantine/hooks";
+import classes from "./RootLayout.module.css";
+import { useRef } from "react";
+import { asideConfigAtom } from "~/src/atoms/layout";
+import { useAtomValue } from "jotai";
+import { useAppLayout } from "~/src/hooks/useAppLayout";
 
-const navigationVariants: Variants = {
-  collapsed: {
-    x: -250,
-    width: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-  expanded: {
-    x: 0,
-    width: 250,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-};
-
-const navigationItemVariants: Variants = {
-  entering: {
-    y: 20,
-    opacity: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-};
+const CLOSE_THRESHOLD = 100;
+const ASIDE_WIDTH = 300;
 
 /**
- * Root layout props
+ * Props for the RootLayout component.
  */
 interface RootLayoutProps {
   title?: string;
@@ -67,322 +23,116 @@ interface RootLayoutProps {
 }
 
 /**
- * Root layout for the application
- * @param props - Root layout props
+ * Root layout component for the application.
+ * @param props - Props for the RootLayout component.
  */
 export function RootLayout(props: RootLayoutProps) {
   const { title = "Muikku V4", isErrorBoundary = false } = props;
 
-  const location = useLocation();
+  // Reference to the navbar element
+  const navbarEl = useRef<HTMLElement | null>(null);
 
-  const user = useAtomValue(userAtom);
-  const workspacePermissions = useAtomValue(workspacePermissionsAtom);
-  const secondaryNavConfig = useAtomValue(secondaryNavConfigAtom);
+  const nav = useRootLayoutNav();
   const asideConfig = useAtomValue(asideConfigAtom);
-  const workspaceInfo = useAtomValue(workspaceInfoAtom);
+  const { asideOpened, toggleAside } = useAppLayout();
+  const isDesktop = useIsBreakpoint("min", 768);
+  const [opened, { toggle, close }] = useDisclosure(false, {
+    onOpen: () => {
+      if (asideOpened) {
+        toggleAside();
+      }
+    },
+  });
+  const { pinned } = useHeadroom({ fixedAt: 120 });
 
-  const { navOpened, toggleNav, asideOpened, toggleAside } = useAppLayout();
-
-  // Memoized primary navigation items
-  const primaryNavItems = useMemo(
-    () => getNavigationItems(user, workspacePermissions, "environment"),
-    [user, workspacePermissions]
+  // Drag the navbar to close it
+  const { ref: dragRef } = useDrag(
+    ({ movement: [mx], velocity: [vx], last }) => {
+      if (!opened || isDesktop) return;
+      const el = navbarEl.current;
+      if (!el) return;
+      const offset = Math.min(0, mx);
+      if (!last) {
+        el.style.transition = "none";
+        el.style.transform = `translateX(${offset}px)`;
+        return;
+      }
+      const shouldClose = Math.abs(offset) > CLOSE_THRESHOLD || vx < -0.5;
+      el.style.transition = "";
+      el.style.transform = "";
+      if (shouldClose) close();
+    },
+    { axis: "x", threshold: 8, enabled: opened && !isDesktop }
   );
-
-  // Memoized workspace navigation items
-  const workspaceNavigationItems = useMemo(
-    () => getNavigationItems(user, workspacePermissions, "workspace"),
-    [user, workspacePermissions]
-  );
-
-  // Memoized is workspace route
-  const isWorkspaceRoute = useMemo(
-    () => location.pathname.startsWith("/workspace"),
-    [location.pathname]
-  );
-
-  // Memoized updated items for main navigation
-  const updatedItems = useMemo(() => {
-    const items = [...primaryNavItems];
-    if (workspaceInfo) {
-      items.push({
-        type: "link",
-        label: "Viimeisin työtila",
-        description: workspaceInfo.name,
-        icon: IconBuilding,
-        link: `/workspace/${workspaceInfo.urlName}/`,
-        canAccess: (_, workspacePermissions) =>
-          workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
-      });
-    }
-    return items;
-  }, [primaryNavItems, workspaceInfo]);
 
   /**
-   * Render navigation item
-   * @param item - Navigation item
-   * @returns Navigation item component
+   * Set the navbar reference and drag the navbar to close it.
+   * @param node - The navbar element.
    */
-  const renderNavItem = (
-    item: NavigationItem,
-    secondaryNav: boolean,
-    collapsed = false
-  ) => {
-    switch (item.type) {
-      case "link":
-        return (
-          <motion.li
-            key={item.label}
-            variants={secondaryNav ? navigationItemVariants : undefined}
-            initial="entering"
-            animate="visible"
-          >
-            <NavbarLink
-              key={item.label}
-              {...item}
-              exactMatch
-              collapsed={collapsed}
-            />
-          </motion.li>
-        );
-      case "queryLink":
-        return (
-          <motion.li
-            key={item.label}
-            variants={secondaryNav ? navigationItemVariants : undefined}
-            initial="entering"
-            animate="visible"
-          >
-            <NavbarQueryLink key={item.label} {...item} />
-          </motion.li>
-        );
-      case "component":
-        return (
-          <motion.li
-            key={item.id}
-            variants={secondaryNav ? navigationItemVariants : undefined}
-            initial="entering"
-            animate="visible"
-          >
-            {item.component}
-          </motion.li>
-        );
-      default:
-        return null;
-    }
+  const setNavbarRef = (node: HTMLElement | null) => {
+    navbarEl.current = node;
+    dragRef(node);
   };
 
-  /**
-   * Render main navigation
-   * @param collapsed - Whether the navigation is collapsed
-   * @returns Main navigation component
-   */
-  const renderMainNav = (collapsed: boolean) => (
-    <Box component="nav" className={classes.mainNav}>
-      <Box
-        className={classes.mainNavHeader}
-        style={{
-          height: "60px",
-        }}
-        data-collapsed={collapsed}
-      >
-        <Group p="sm" className={classes.headerContent}>
-          <Group align="center" className={classes.titleGroup}>
-            <IconHome size={35} />
+  // Does the aside exist?
+  const asideExists = asideConfig !== null;
 
-            {!collapsed && (
-              <Title
-                order={3}
-                className={classes.title}
-                style={{
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                }}
-              >
-                {title}
-              </Title>
-            )}
-          </Group>
-        </Group>
-      </Box>
-
-      <Box
-        className={classes.mainNavLinks}
-        component={ScrollArea}
-        data-collapsed={collapsed}
-      >
-        <ul className={classes.linksInner}>
-          {updatedItems.map((item) => renderNavItem(item, false, collapsed))}
-        </ul>
-      </Box>
-
-      <Box className={classes.mainNavFooter} data-collapsed={collapsed}>
-        <UserButton collapsed={collapsed} />
-      </Box>
-    </Box>
-  );
-
-  /**
-   * Render secondary navigation. Content in workspace route is by default
-   * workspace navigation items. Otherwise it's secondary nav config.
-   * @returns Secondary navigation component
-   */
-  const renderSecondaryNav = () => {
-    const title = isWorkspaceRoute
-      ? workspaceInfo?.name
-      : secondaryNavConfig?.config.title;
-    const items = isWorkspaceRoute
-      ? workspaceNavigationItems
-      : secondaryNavConfig?.config.items;
-
-    return (
-      <Box component="nav" className={classes.secondaryNav}>
-        <Box
-          className={classes.header}
-          style={{
-            height: "60px",
-          }}
-        >
-          <Group p="sm" className={classes.headerContent}>
-            <Group align="center" className={classes.titleGroup}>
-              <motion.div
-                key={title}
-                variants={navigationItemVariants}
-                initial="entering"
-                animate="visible"
-              >
-                <Title order={3} className={classes.title}>
-                  {title ?? ""}
-                </Title>
-              </motion.div>
-            </Group>
-          </Group>
-        </Box>
-
-        <Box className={classes.links} component={ScrollArea}>
-          <ul className={classes.linksInner}>
-            {(items ?? []).map((item) => renderNavItem(item, true))}
-          </ul>
-        </Box>
-      </Box>
-    );
-  };
-
-  // Navigation content component (reusable for both mobile drawer and desktop sidebar)
-  const navigationContent = (
-    <AnimatePresence mode="popLayout">
-      {secondaryNavConfig || isWorkspaceRoute ? (
-        <motion.div
-          key="Nav-with-secondary"
-          className={classes.navWrapper}
-          variants={navigationVariants}
-          initial="collapsed"
-          animate="expanded"
-          exit="collapsed"
-        >
-          {renderMainNav(true)}
-          {renderSecondaryNav()}
-        </motion.div>
-      ) : (
-        <motion.div
-          key="Nav-without-secondary"
-          className={classes.navWrapper}
-          variants={navigationVariants}
-          initial="collapsed"
-          animate="expanded"
-          exit="collapsed"
-        >
-          {renderMainNav(false)}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+  // Is the mobile navigation open?
+  const isMobileNavOpen = opened && !isDesktop;
 
   return (
-    <Box className={classes.appLayout}>
-      {/* Mobile Header with Burger Menu */}
-      <Box hiddenFrom="md" className={classes.mobileHeader}>
-        <Burger
-          opened={navOpened}
-          onClick={toggleNav}
-          size="sm"
-          aria-label="Toggle navigation"
+    <AppShell
+      layout="alt"
+      header={{
+        collapsed: isDesktop || !pinned,
+        height: 60,
+      }}
+      navbar={{
+        width: {
+          // full width on mobile
+          xs: "100%",
+          // 335px on desktop
+          sm: 335,
+        },
+        breakpoint: "sm",
+        collapsed: { mobile: !opened },
+      }}
+      aside={{
+        width: ASIDE_WIDTH,
+        breakpoint: "sm",
+        collapsed: {
+          desktop: !asideExists,
+          mobile: !asideExists || !asideOpened,
+        },
+      }}
+    >
+      <AppShell.Header hiddenFrom="sm">
+        <Group h="100%" px="md">
+          <Burger opened={opened} onClick={toggle} />
+          Header
+        </Group>
+      </AppShell.Header>
+      <AppShell.Navbar ref={setNavbarRef}>
+        <AppNavigation
+          appTitle={title}
+          mainItems={nav.mainItems}
+          hasSecondaryNav={nav.hasSecondaryNav}
+          secondaryTitle={nav.secondaryTitle}
+          secondaryItems={nav.secondaryItems}
         />
-        <span className={classes.headerTitle}>{title}</span>
-      </Box>
-      {/* Mobile: Drawer for Navigation */}
-      <Drawer
-        opened={navOpened}
-        onClose={toggleNav}
-        size="xs"
-        className={classes.mobileDrawer}
-        hiddenFrom="md"
-        classNames={{
-          header: classes.mobileDrawerHeader,
-          content: classes.mobileDrawerContent,
-          body: classes.mobileDrawerBody,
-        }}
-      >
-        {navigationContent}
-      </Drawer>
-
-      {/* Mobile: Drawer for Right Aside */}
-      {asideConfig && (
-        <Drawer
-          opened={asideOpened}
-          onClose={toggleAside}
-          size="xs"
-          className={classes.mobileDrawer}
-          hiddenFrom="md"
-          position="right"
-          classNames={{
-            header: classes.mobileDrawerHeader,
-            content: classes.mobileDrawerContent,
-            body: classes.mobileDrawerBody,
-          }}
-        >
-          {asideConfig.config.component}
-        </Drawer>
-      )}
-
-      {/* Desktop: Navigation */}
-      <Box visibleFrom="md" className={classes.desktopNav}>
-        {navigationContent}
-      </Box>
-      {/* Main content */}
-      <motion.main
-        className={classes.mainContent}
-        animate={{
-          marginRight: asideConfig ? 400 : 0,
-        }}
-        transition={{
-          duration: 0.3,
-          ease: "easeInOut",
-        }}
-      >
+      </AppShell.Navbar>
+      <AppShell.Main>
         {isErrorBoundary ? <ErrorBoundary /> : <Outlet />}
-      </motion.main>
-
-      {/* Desktop: Aside with animation */}
-      <Box visibleFrom="md">
-        <AnimatePresence>
-          {asideConfig && (
-            <motion.aside
-              key="aside"
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 400, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{
-                duration: 0.3,
-                ease: "easeInOut",
-              }}
-              className={classes.desktopAside}
-            >
-              {asideConfig.config.component}
-            </motion.aside>
-          )}
-        </AnimatePresence>
-      </Box>
-    </Box>
+      </AppShell.Main>
+      <Box
+        className={classes.backdrop}
+        data-open={isMobileNavOpen || undefined}
+        onClick={close}
+        aria-hidden
+      />
+      <AppShell.Aside p="md" styles={{ aside: { width: ASIDE_WIDTH } }}>
+        {asideConfig?.config.component}
+      </AppShell.Aside>
+    </AppShell>
   );
 }
