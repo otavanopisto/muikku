@@ -986,9 +986,8 @@ interface ExamSmowlIntegrationTabProps extends EditorTabProps {}
  */
 export const ExamSmowlIntegrationTab = (
   props: ExamSmowlIntegrationTabProps
-  // eslint-disable-next-line arrow-body-style
 ) => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation(["smowl"]);
 
   return (
     <div className="material-editor__content-wrapper">
@@ -998,7 +997,7 @@ export const ExamSmowlIntegrationTab = (
       />
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">
-          Smowl asetukset
+          {t("labels.settings")}
           <Instructions
             modifier="instructions"
             alignSelfVertically="top"
@@ -1006,7 +1005,9 @@ export const ExamSmowlIntegrationTab = (
             closeOnClick={true}
             closeOnOutsideClick={true}
             persistent
-            content="Jotain jotain"
+            content={t("content.settingsInfo", {
+              ns: "smowl",
+            })}
           />
         </h3>
         <div className="material-editor__smowl">

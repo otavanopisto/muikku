@@ -345,7 +345,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
                 dataLoader={smowlDataLoader}
               >
                 <Button className="exam__actions-button">
-                  Näytä rekisteröitymisraportit
+                  {t("actions.showRegistrationReports", { ns: "smowl" })}
                 </Button>
               </SmowlRegistrationReportsDialog>
             )}
@@ -359,7 +359,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
                 dataLoader={smowlDataLoader}
               >
                 <Button className="exam__actions-button">
-                  Näytä proktorointitulokset
+                  {t("actions.showActivityResults", { ns: "smowl" })}
                 </Button>
               </SmowlActivityResultsDialog>
             )}

@@ -240,7 +240,7 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
     ) {
       tabs.push({
         id: "exam-smowl",
-        name: "Smowl asetukset",
+        name: t("labels.settings", { ns: "smowl" }),
         component: (
           <ExamSmowlIntegrationTab
             editorPermissions={permissions}
