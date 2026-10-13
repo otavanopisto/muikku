@@ -21,179 +21,104 @@ import {
   Tr,
 } from "~/components/general/table";
 import { useSmowlExamResults } from "./hooks/useSmowlExamResults";
+import { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 
 /**
  * Get the label for a front camera alarm
  * @param alarmKey - The key of the alarm
+ * @param t - The translation function
  * @returns The label for the alarm
  */
-const getFrontCameraAlarmLabel = (alarmKey: FrontCameraAlarms): string => {
-  const labelMap: Record<FrontCameraAlarms, string> = {
-    INCORRECT_USER: "Väärä henkilö",
-    MORE_THAN_ONE: "Useita henkilöitä",
-    NOBODY: "Kuvassa ei näy ketään",
-    WEBCAM_COVERED: "Kamera peitetty",
-    OTHER_TAB: "Välilehden vaihto",
-    WRONG_LIGHT_POSING: "Huono valaistus tai asento",
-    BANNED_ELEMENTS: "Kielletyt esineet",
-    SUSPICIOUS_BEHAVIOUR: "Epäilyttävä toiminta",
-    MIN_IMAGES_REQUIRED: "Puuttuva kuvamateriaali",
-    WEBCAM_REJECTED: "Kameraoikeudet evätty",
-    CONFIGURATION_PROBLEM: "Virhe kameran asetuksissa",
-    NO_WEBCAM: "Kameraa ei löydy",
-    WEBCAM_BLOCKED: "Kamera varattu",
-    UNSUPPORTED_BROWSER: "Selain ei ole tuettu",
-  };
-  return labelMap[alarmKey] || alarmKey;
-};
+const getFrontCameraAlarmLabel = (
+  alarmKey: FrontCameraAlarms,
+  t: TFunction
+): string =>
+  t("labels.frontCameraAlarm", {
+    ns: "smowl",
+    context: alarmKey,
+    defaultValue: alarmKey,
+  });
 
 /**
  * Get the description for a front camera alarm
  * @param alarmKey - The key of the alarm
+ * @param t - The translation function
  * @returns The description for the alarm
  */
 const getFrontCameraAlarmDescription = (
-  alarmKey: FrontCameraAlarms
-): string => {
-  const labelMap: Record<FrontCameraAlarms, string> = {
-    INCORRECT_USER: "Kuvassa on joku muu kuin rekisteröitynyt käyttäjä.",
-    MORE_THAN_ONE: "Kuvassa näkyy useampi kuin yksi henkilö.",
-    NOBODY: "Kuvassa ei näy yhtään henkilöä.",
-    WEBCAM_COVERED: "Kamera on peitetty tai näkyvyys estetty.",
-    OTHER_TAB: "Käyttäjä poistuu koeikkunasta tai vaihtaa välilehteä.",
-    WRONG_LIGHT_POSING: "Valaistus tai asento estää luotettavan valvonnan.",
-    BANNED_ELEMENTS:
-      "Kuvassa näkyy kiellettyjä esineitä kuten kuulokkeet tai puhelin.",
-    SUSPICIOUS_BEHAVIOUR:
-      "Käyttäjä jatkaa aiemmin havaittua epäilyttävää toimintaa.",
-    MIN_IMAGES_REQUIRED: "Valvonnan vahvistamiseen tarvittavia kuvia puuttuu.",
-    WEBCAM_REJECTED: "Selain ei ole saanut lupaa käyttää kameraa.",
-    CONFIGURATION_PROBLEM: "Kameran asetuksissa havaitaan virhe.",
-    NO_WEBCAM: "Kokeen aikana ei ole kytkettyä kameraa.",
-    WEBCAM_BLOCKED: "Toinen sovellus käyttää kameraa ja estää valvonnan.",
-    UNSUPPORTED_BROWSER: "Selain ei tue SMOWL-valvontaa.",
-  };
-  return labelMap[alarmKey] || alarmKey;
-};
+  alarmKey: FrontCameraAlarms,
+  t: TFunction
+): string =>
+  t("content.frontCameraAlarm", {
+    ns: "smowl",
+    context: alarmKey,
+    defaultValue: alarmKey,
+  });
 
 /**
  * Get the label for a computer monitoring allowed action
  * @param alarmKey - The key of the action
+ * @param t - The translation function
  * @returns The label for the action
  */
 const getComputerMonitoringActionLabel = (
-  alarmKey: ComputerMonitoringAllowedActions
-): string => {
-  const labelMap: Record<ComputerMonitoringAllowedActions, string> = {
-    WEB_NAVIGATION: "Nettisivujen selaus",
-    VIRTUAL_MACHINE: "Virtuaalikone",
-    VIRTUAL_WEBCAM: "Virtuaalikamera",
-    MULTIPLE_SCREENS: "Useat näytöt",
-    COMMANDS: "Komennot",
-    BACKGROUND_PROGRAMS: "Taustaohjelmat",
-    EARLY_CLOSE: "Ennenaikainen sulkeminen",
-  };
-  return labelMap[alarmKey] || alarmKey;
-};
+  alarmKey: ComputerMonitoringAllowedActions,
+  t: TFunction
+): string =>
+  t("labels.computerMonitoringAction", {
+    ns: "smowl",
+    context: alarmKey,
+    defaultValue: alarmKey,
+  });
 
 /**
  * Get the description for a computer monitoring allowed action
  * @param alarmKey - The key of the action
+ * @param t - The translation function
  * @returns The description for the action
  */
 const getComputerMonitoringActionDescription = (
-  alarmKey: ComputerMonitoringAllowedActions
-): string => {
-  const labelMap: Record<ComputerMonitoringAllowedActions, string> = {
-    WEB_NAVIGATION:
-      "Käyttäjä siirtyy kokeen aikana kokeen ulkopuolisille verkkosivuille. Käydyt sivustot tallennetaan raporttiin.",
-    VIRTUAL_MACHINE: "Kokeen suorittamiseen käytetään virtuaalikonetta.",
-    VIRTUAL_WEBCAM:
-      "Järjestelmä havaitsee virtuaalisen kameran käytön fyysisen webkameran sijasta.",
-    MULTIPLE_SCREENS:
-      "Järjestelmä havaitsee useamman kuin yhden näytön käytön.",
-    COMMANDS:
-      "Käyttäjä käyttää kiellettyjä komentoja, kuten kopiointia, liittämistä tai kuvakaappausta.",
-    BACKGROUND_PROGRAMS:
-      "Taustalla on käynnissä kiellettyjä ohjelmia kokeen aikana.",
-    EARLY_CLOSE:
-      "SMOWL-sovellus suljetaan ennen kokeen lopullista palauttamista.",
-  };
-  return labelMap[alarmKey] || alarmKey;
-};
+  alarmKey: ComputerMonitoringAllowedActions,
+  t: TFunction
+): string =>
+  t("content.computerMonitoringAction", {
+    ns: "smowl",
+    context: alarmKey,
+    defaultValue: alarmKey,
+  });
 
 /**
  * Get the label for a computer monitoring allowed program
  * @param alarmKey - The key of the program
+ * @param t - The translation function
  * @returns The label for the program
  */
 const getComputerMonitoringProgramLabel = (
-  alarmKey: ComputerMonitoringAllowedPrograms
-): string => {
-  const labelMap: Record<ComputerMonitoringAllowedPrograms, string> = {
-    TEXT_EDITOR: "Tekstinkäsittely",
-    PDF_READER: "PDF-lukijat",
-    SPREADSHEET: "Taulukkolaskenta",
-    MAIL: "Sähköposti",
-    COMMUNICATION: "Viestintäohjelmat",
-    VIRTUAL_WEBCAM: "Virtuaalikamerat",
-    FILE_SYSTEM: "Tiedostonhallinta",
-    MEDIA_PLAYER: "Mediasoittimet",
-    SLIDE_VIEWER: "Esitysohjelmat",
-    SCREENSHOTER: "Näytöntallennus",
-    REMOTE_CONTROL: "Etähallinta",
-    PENTESTING: "Tietoturvatestaus",
-    CODE_EDITOR: "Koodieditorit",
-    VIRTUAL_MACHINES: "Virtuaalikoneet",
-    DATABASE: "Tietokantasovellukset",
-    OPEN_SOURCE_OFFICE_SUITE: "Vapaat toimisto-ohjelmat",
-  };
-  return labelMap[alarmKey] || alarmKey;
-};
+  alarmKey: ComputerMonitoringAllowedPrograms,
+  t: TFunction
+): string =>
+  t("labels.computerMonitoringProgram", {
+    ns: "smowl",
+    context: alarmKey,
+    defaultValue: alarmKey,
+  });
 
 /**
  * Get the description for a computer monitoring allowed program
  * @param alarmKey - The key of the program
+ * @param t - The translation function
  * @returns The description for the program
  */
 const getComputerMonitoringProgramDescription = (
-  alarmKey: ComputerMonitoringAllowedPrograms
-): string => {
-  const labelMap: Record<ComputerMonitoringAllowedPrograms, string> = {
-    TEXT_EDITOR:
-      "Merkitään poikkeamaksi, jos avoinna on tekstinkäsittelyohjelmia kuten Word.",
-    PDF_READER:
-      "Merkitään poikkeamaksi, jos avoinna on PDF-tiedostojen luku- tai muokkausohjelmia kuten Adobe Reader.",
-    SPREADSHEET:
-      "Merkitään poikkeamaksi, jos avoinna on taulukkolaskentaohjelmia kuten Excel.",
-    MAIL: "Merkitään poikkeamaksi, jos avoinna on sähköpostiohjelmia kuten Outlook.",
-    COMMUNICATION:
-      "Merkitään poikkeamaksi, jos avoinna on viestintä- tai kokoussovelluksia kuten Zoom tai Discord.",
-    VIRTUAL_WEBCAM:
-      "Merkitään poikkeamaksi, jos avoinna on virtuaalikameran käyttöön tarkoitettuja ohjelmia kuten OBS Studio.",
-    FILE_SYSTEM:
-      "Merkitään poikkeamaksi, jos käytetään laitteen tiedostonhallintatyökaluja kuten Resurssienhallinta.",
-    MEDIA_PLAYER:
-      "Merkitään poikkeamaksi, jos avoinna on musiikki- tai videopalveluita kuten Spotify tai iTunes.",
-    SLIDE_VIEWER:
-      "Merkitään poikkeamaksi, jos avoinna on esitysgrafiikkaohjelmia kuten PowerPoint.",
-    SCREENSHOTER:
-      "Merkitään poikkeamaksi, jos avoinna on näytön kaappaamiseen tai live-tallennukseen tarkoitettuja ohjelmia.",
-    REMOTE_CONTROL:
-      "Merkitään poikkeamaksi, jos avoinna on laitteen etähallintaan tarkoitettuja ohjelmia kuten Teamviewer tai Anydesk.",
-    PENTESTING:
-      "Merkitään poikkeamaksi, jos avoinna on tietoturva-analyysiin tarkoitettuja ohjelmia kuten Burp Suite.",
-    CODE_EDITOR:
-      "Merkitään poikkeamaksi, jos avoinna on ohjelmointiin tarkoitettuja koodieditoreita.",
-    VIRTUAL_MACHINES:
-      "Merkitään poikkeamaksi, jos avoinna on virtuaalikoneohjelmistoja kuten Virtualbox tai VMware.",
-    DATABASE:
-      "Merkitään poikkeamaksi, jos avoinna on tietokantojen hallintaan tai lukuun tarkoitettuja ohjelmia.",
-    OPEN_SOURCE_OFFICE_SUITE:
-      "Merkitään poikkeamaksi, jos avoinna on avoimen lähdekoodin toimisto-ohjelmistoja.",
-  };
-  return labelMap[alarmKey] || alarmKey;
-};
+  alarmKey: ComputerMonitoringAllowedPrograms,
+  t: TFunction
+): string =>
+  t("content.computerMonitoringProgram", {
+    ns: "smowl",
+    context: alarmKey,
+    defaultValue: alarmKey,
+  });
 
 /**
  * Smowl activity props
@@ -205,6 +130,8 @@ interface SmowlActivityProps {}
  * @param props - Smowl activity props
  */
 const SmowlActivity = (props: SmowlActivityProps) => {
+  const { t } = useTranslation(["smowl"]);
+
   const editorState = useSelector(
     (state: StateType) => state.workspaces.materialEditor
   );
@@ -430,13 +357,17 @@ const SmowlActivity = (props: SmowlActivityProps) => {
     <div className="material-editor__smowl-item">
       {hasProctoredData && (
         <div className="material-editor__smowl-warning">
-          Kokeen asetuksiin ei voi enää tehdä muutoksia koska kokeesta on jo
-          tallennettu valvottuja suorituksia.
+          {t("content.settingsLocked", {
+            ns: "smowl",
+          })}
         </div>
       )}
       <div className="material-editor__smowl-header">
         <div className="material-editor__smowl-header-title">
-          Kokeen nimi: {smowlActivityDraft?.displayName}
+          {t("labels.examName", {
+            ns: "smowl",
+            name: smowlActivityDraft?.displayName,
+          })}
         </div>
       </div>
       <div
@@ -452,7 +383,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
               htmlFor="computer-monitoring-enabled"
               className="material-editor__smowl-label"
             >
-              Kamera vaaditaan
+              {t("labels.cameraRequired", {
+                ns: "smowl",
+              })}
             </label>
             <button
               type="button"
@@ -495,9 +428,21 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                   <Table className="material-editor__smowl-table">
                     <TableHead>
                       <Tr>
-                        <Th modifiers={["left"]}>Tarkkailtava toiminta</Th>
-                        <Th modifiers={["centered"]}>Tarkkaillaan</Th>
-                        <Th modifiers={["centered"]}>Ei tarkkailla</Th>
+                        <Th modifiers={["left"]}>
+                          {t("labels.monitoredActivity", {
+                            ns: "smowl",
+                          })}
+                        </Th>
+                        <Th modifiers={["centered"]}>
+                          {t("labels.monitored", {
+                            ns: "smowl",
+                          })}
+                        </Th>
+                        <Th modifiers={["centered"]}>
+                          {t("labels.notMonitored", {
+                            ns: "smowl",
+                          })}
+                        </Th>
                       </Tr>
                     </TableHead>
                     <Tbody>
@@ -517,10 +462,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                           <Tr key={alarmKey}>
                             <Td modifiers={["left"]}>
                               <div className="material-editor__smowl-option-title">
-                                {getFrontCameraAlarmLabel(alarmKey)}
+                                {getFrontCameraAlarmLabel(alarmKey, t)}
                               </div>
                               <div className="material-editor__smowl-option-description">
-                                {getFrontCameraAlarmDescription(alarmKey)}
+                                {getFrontCameraAlarmDescription(alarmKey, t)}
                               </div>
                             </Td>
 
@@ -535,7 +480,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                     if (!monitored)
                                       toggleFrontCameraAlarm(alarmKey);
                                   }}
-                                  aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} on`}
+                                  aria-label={`${t("wcag.setAlarmOn", {
+                                    ns: "smowl",
+                                    name: getFrontCameraAlarmLabel(alarmKey, t),
+                                  })}`}
                                 />
                               </span>
                             </Td>
@@ -551,7 +499,10 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                     if (monitored)
                                       toggleFrontCameraAlarm(alarmKey);
                                   }}
-                                  aria-label={`Set ${getFrontCameraAlarmLabel(alarmKey)} off`}
+                                  aria-label={`${t("wcag.setAlarmOff", {
+                                    ns: "smowl",
+                                    name: getFrontCameraAlarmLabel(alarmKey, t),
+                                  })}`}
                                 />
                               </span>
                             </Td>
@@ -563,7 +514,11 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                 </div>
               ) : (
                 <div className="material-editor__smowl-option-placeholder">
-                  <p>No front camera alarms configuration available.</p>
+                  <p>
+                    {t("content.noFrontCameraAlarms", {
+                      ns: "smowl",
+                    })}
+                  </p>
                 </div>
               )}
             </div>
@@ -575,7 +530,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
               htmlFor="computer-monitoring-enabled"
               className="material-editor__smowl-label"
             >
-              Valvontasovellus vaaditaan
+              {t("labels.computerMonitoringRequired", {
+                ns: "smowl",
+              })}
             </label>
             <button
               type="button"
@@ -622,9 +579,21 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                     <Table className="material-editor__smowl-table">
                       <TableHead>
                         <Tr>
-                          <Th modifiers={["left"]}>Tarkkailtava toiminta</Th>
-                          <Th modifiers={["centered"]}>Tarkkaillaan</Th>
-                          <Th modifiers={["centered"]}>Ei tarkkailla</Th>
+                          <Th modifiers={["left"]}>
+                            {t("labels.monitoredActivity", {
+                              ns: "smowl",
+                            })}
+                          </Th>
+                          <Th modifiers={["centered"]}>
+                            {t("labels.monitored", {
+                              ns: "smowl",
+                            })}
+                          </Th>
+                          <Th modifiers={["centered"]}>
+                            {t("labels.notMonitored", {
+                              ns: "smowl",
+                            })}
+                          </Th>
                         </Tr>
                       </TableHead>
 
@@ -648,11 +617,15 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                             <Tr key={alarmKey}>
                               <Td modifiers={["left"]}>
                                 <div className="material-editor__smowl-option-title">
-                                  {getComputerMonitoringActionLabel(alarmKey)}
+                                  {getComputerMonitoringActionLabel(
+                                    alarmKey,
+                                    t
+                                  )}
                                 </div>
                                 <div className="material-editor__smowl-option-description">
                                   {getComputerMonitoringActionDescription(
-                                    alarmKey
+                                    alarmKey,
+                                    t
                                   )}
                                 </div>
                               </Td>
@@ -671,7 +644,13 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                           alarmKey
                                         );
                                     }}
-                                    aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} on`}
+                                    aria-label={`${t("wcag.setAlarmOn", {
+                                      ns: "smowl",
+                                      name: getComputerMonitoringActionLabel(
+                                        alarmKey,
+                                        t
+                                      ),
+                                    })}`}
                                   />
                                 </span>
                               </Td>
@@ -690,7 +669,13 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                           alarmKey
                                         );
                                     }}
-                                    aria-label={`Set ${getComputerMonitoringActionLabel(alarmKey)} off`}
+                                    aria-label={`${t("wcag.setAlarmOff", {
+                                      ns: "smowl",
+                                      name: getComputerMonitoringActionLabel(
+                                        alarmKey,
+                                        t
+                                      ),
+                                    })}`}
                                   />
                                 </span>
                               </Td>
@@ -707,10 +692,20 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                       <TableHead>
                         <Tr>
                           <Th modifiers={["left"]}>
-                            Tarkkailtavat sovellukset
+                            {t("labels.monitoredApplications", {
+                              ns: "smowl",
+                            })}
                           </Th>
-                          <Th modifiers={["centered"]}>Tarkkaillaan</Th>
-                          <Th modifiers={["centered"]}>Ei tarkkailla</Th>
+                          <Th modifiers={["centered"]}>
+                            {t("labels.monitored", {
+                              ns: "smowl",
+                            })}
+                          </Th>
+                          <Th modifiers={["centered"]}>
+                            {t("labels.notMonitored", {
+                              ns: "smowl",
+                            })}
+                          </Th>
                         </Tr>
                       </TableHead>
 
@@ -734,11 +729,15 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                             <Tr key={alarmKey}>
                               <Td modifiers={["left"]}>
                                 <div className="material-editor__smowl-option-title">
-                                  {getComputerMonitoringProgramLabel(alarmKey)}
+                                  {getComputerMonitoringProgramLabel(
+                                    alarmKey,
+                                    t
+                                  )}
                                 </div>
                                 <div className="material-editor__smowl-option-description">
                                   {getComputerMonitoringProgramDescription(
-                                    alarmKey
+                                    alarmKey,
+                                    t
                                   )}
                                 </div>
                               </Td>
@@ -757,7 +756,13 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                           alarmKey
                                         );
                                     }}
-                                    aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} on`}
+                                    aria-label={`${t("wcag.setAlarmOn", {
+                                      ns: "smowl",
+                                      name: getComputerMonitoringProgramLabel(
+                                        alarmKey,
+                                        t
+                                      ),
+                                    })}`}
                                   />
                                 </span>
                               </Td>
@@ -776,7 +781,13 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                                           alarmKey
                                         );
                                     }}
-                                    aria-label={`Set ${getComputerMonitoringProgramLabel(alarmKey)} off`}
+                                    aria-label={`${t("wcag.setAlarmOff", {
+                                      ns: "smowl",
+                                      name: getComputerMonitoringProgramLabel(
+                                        alarmKey,
+                                        t
+                                      ),
+                                    })}`}
                                   />
                                 </span>
                               </Td>
@@ -789,7 +800,11 @@ const SmowlActivity = (props: SmowlActivityProps) => {
                 </>
               ) : (
                 <div className="material-editor__smowl-option-placeholder">
-                  <p>No computer monitoring alarms configuration available.</p>
+                  <p>
+                    {t("content.noComputerMonitoringAlarms", {
+                      ns: "smowl",
+                    })}
+                  </p>
                 </div>
               )}
             </div>
@@ -801,7 +816,9 @@ const SmowlActivity = (props: SmowlActivityProps) => {
               htmlFor="test-exam-mode-enabled"
               className="material-editor__smowl-label"
             >
-              Kokeen testaus tila
+              {t("labels.testExamMode", {
+                ns: "smowl",
+              })}
             </label>
             <button
               type="button"

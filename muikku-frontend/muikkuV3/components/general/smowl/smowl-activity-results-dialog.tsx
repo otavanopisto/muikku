@@ -7,6 +7,7 @@ import {
 } from "~/api_smowl/index";
 import { isMApiError } from "~/api/api";
 import { FetchError, ResponseError } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * SmowlActivityResultsDialogProps
@@ -41,6 +42,8 @@ const SmowlActivityResultsDialog = (props: SmowlActivityResultsDialogProps) => {
     children,
   } = props;
 
+  const { t } = useTranslation(["common", "smowl"]);
+
   const [isOpen, setIsOpen] = React.useState(false);
   const { loading, smowlApiAccountInfo, aNamesJson } =
     useSmowlActivityResultDialog({
@@ -56,15 +59,15 @@ const SmowlActivityResultsDialog = (props: SmowlActivityResultsDialogProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const content = (closeDialog: () => any) => {
     if (loading) {
-      return <div>Loading...</div>;
+      return <div>{t("labels.loading")}</div>;
     }
 
     if (!smowlApiAccountInfo) {
-      return <div>No SMOWL API account info</div>;
+      return <div>{t("content.noAccountInfo", { ns: "smowl" })}</div>;
     }
 
     if (smowlApiAccountInfo.error || aNamesJson.error) {
-      return <div>Error while initializing the dialog</div>;
+      return <div>{t("notifications.dialogInitError", { ns: "smowl" })}</div>;
     }
 
     return (
@@ -82,7 +85,7 @@ const SmowlActivityResultsDialog = (props: SmowlActivityResultsDialogProps) => {
   return (
     <Dialog
       disableScroll={true}
-      title="SMOWL Activity Results"
+      title={t("labels.activityResults", { ns: "smowl" })}
       content={content}
       modifier={["studies"]}
       onOpen={() => {

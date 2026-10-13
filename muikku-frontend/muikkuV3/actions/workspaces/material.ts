@@ -1490,6 +1490,11 @@ async function getSmowlDataFormMaterials(
         }
       })(),
       (async () => {
+        // Smowl API fetch will fail if activityListJson is empty
+        if (activityListJson === "{}") {
+          return {};
+        }
+
         const frontAlarms = await smowlApi.getFrontCameraAlarms({
           // eslint-disable-next-line camelcase
           activityList_json: activityListJson,
@@ -1498,6 +1503,11 @@ async function getSmowlDataFormMaterials(
         return createFrontAlarmHashMap(frontAlarms.ActivityList_alarms);
       })(),
       (async () => {
+        // Same as above, but for computer monitoring alarms
+        if (activityListJson === "{}") {
+          return {};
+        }
+
         const computerMonitoringAlarms =
           await smowlApi.getComputerMonitoringAlarms({
             // eslint-disable-next-line camelcase

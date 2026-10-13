@@ -17,7 +17,7 @@ import Button from "~/components/general/button";
 import SmowlActivityResultsDialog from "~/components/general/smowl/smowl-activity-results-dialog";
 import MApi from "~/api/api";
 import SmowlRegistrationReportsDialog from "~/components/general/smowl/smowl-registration-reports-dialog";
-import { getEnviromentPrefixedId } from "~/api_smowl/helper";
+import { getEnviromentPrefixedId } from "~/api_smowl/index";
 
 const examApi = MApi.getExamApi();
 
@@ -345,7 +345,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
                 dataLoader={smowlDataLoader}
               >
                 <Button className="exam__actions-button">
-                  Näytä rekisteröitymisraportit
+                  {t("actions.showRegistrationReports", { ns: "smowl" })}
                 </Button>
               </SmowlRegistrationReportsDialog>
             )}
@@ -359,7 +359,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
                 dataLoader={smowlDataLoader}
               >
                 <Button className="exam__actions-button">
-                  Näytä proktorointitulokset
+                  {t("actions.showActivityResults", { ns: "smowl" })}
                 </Button>
               </SmowlActivityResultsDialog>
             )}

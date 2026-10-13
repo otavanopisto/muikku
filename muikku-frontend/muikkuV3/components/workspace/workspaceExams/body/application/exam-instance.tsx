@@ -320,7 +320,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
         <DraggableWindow initialPosition={{ x: 0, y: 0 }}>
           <iframe
             src={monitoringLink.link}
-            title="SMOWL Monitoring"
+            title={t("wcag.monitoringIframe", { ns: "smowl" })}
             aria-hidden="true"
             allow="microphone; camera"
             sandbox="allow-top-navigation allow-scripts allow-modals allow-same-origin allow-popups allow-downloads allow-popups-to-escape-sandbox"
@@ -358,7 +358,7 @@ interface PreExamInfoProps {
  * @returns ExamPreInstance
  */
 const PreExamInfo = React.memo((props: PreExamInfoProps) => {
-  const { t } = useTranslation(["exams", "common"]);
+  const { t } = useTranslation(["exams", "common", "smowl"]);
   const { exam, isSmowlActivity, monitoringStatus, onCloseExam, onStartExam } =
     props;
 
@@ -399,7 +399,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
      */
     const renderLink = () => {
       if (loading) {
-        return <span>Luodaan linkkiä...</span>;
+        return <span>{t("content.creatingLink", { ns: "smowl" })}</span>;
       }
 
       if (!link) {
@@ -409,7 +409,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       return (
         <>
           <a href={link} target="_blank" rel="noopener noreferrer">
-            Rekisteröidy SMOWL-palveluun
+            {t("actions.register", { ns: "smowl" })}
           </a>
         </>
       );
@@ -423,7 +423,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       return (
         <div className="exam__content">
           <div className="exam__content-status">
-            Alustetaan SMOWL proktoroitua koetta...
+            {t("content.initializingExam", { ns: "smowl" })}
           </div>
         </div>
       );
@@ -433,10 +433,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       return (
         <div className="exam__content">
           <div className="exam__content-status">
-            SMOWL-palvelu ei ole käytettävissä. Tarkista, että käytät SMOWL:n
-            tukemaa selainta ja että kamera, mikrofoni ja CM sovellus ovat
-            käytettävissä. Varmista myös, että olet rekisteröitynyt
-            SMOWL-järjestelmään.
+            {t("content.serviceUnavailable", { ns: "smowl" })}
             <br />
             {renderLink()}
           </div>
