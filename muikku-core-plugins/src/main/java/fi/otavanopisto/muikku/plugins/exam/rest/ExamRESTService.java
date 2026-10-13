@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -87,9 +86,6 @@ public class ExamRESTService {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-
-  @Inject
-  private SystemSettingsController systemSettingsController; 
   
   @Path("/compositeReplies/{WORKSPACEFOLDERID}")
   @GET
@@ -186,7 +182,7 @@ public class ExamRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     examController.createOrUpdateSettings(workspaceFolderId, settings);
-    smowlController.setActivity(String.format("%s%d", systemSettingsController.getSetting("sys.env"), workspaceFolderId), settings.isProctored());
+    smowlController.setActivity(workspaceFolderId, settings.isProctored());
     return Response.ok().entity(settings).build();
   }
   

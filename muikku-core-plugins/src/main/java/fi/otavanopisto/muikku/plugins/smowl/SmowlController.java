@@ -35,8 +35,9 @@ public class SmowlController {
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
 
-  public void setActivity(String examIdentifier, boolean enabled) {
+  public void setActivity(Long examId, boolean enabled) {
     // Name for this exam folder in Smowl
+    final String examIdentifier = String.format("%s%d", systemSettingsController.getSetting("sys.env"), examId);
     final String fieldName = ACTIVITY_TYPE + examIdentifier;
 
     // Get the activity to get the state in Smowl
@@ -46,7 +47,7 @@ public class SmowlController {
     if (!examExistsInSmowl) {
       // If exam doesn't exist in smowl but it should be enabled, do so
       if (enabled) {
-        addActivity(examIdentifier);
+        addActivity(workspaceMaterialController.findWorkspaceNodeById(examId));
       }
     }
     else {
@@ -109,23 +110,20 @@ public class SmowlController {
     }
   }
   
-  private void addActivity(String examIdentifier) {
-    // Due to Smowl idiocy, we assume this identifier is prefixed with four letters indicating the system environment
-    Long workspaceFolderId = Long.parseLong(StringUtils.substring(examIdentifier, 4));
+  private void addActivity(WorkspaceNode exam) {
     String smowlUrl = SMOWL_BASE_URL + "/configs/activeServices/addActivity";
 
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
     final String apiKey = systemSettingsController.getSetting("smowl.apiKey");
+    final String sysEnv = systemSettingsController.getSetting("sys.env");
 
-    if (StringUtils.isAnyBlank(entityName, apiKey)) {
+    if (StringUtils.isAnyBlank(entityName, apiKey, sysEnv)) {
       throw new IllegalStateException("Smowl credentials are not set.");
     }
-
-    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
-    WorkspaceEntity workspaceEntity = workspaceNode != null ? workspaceMaterialController.findWorkspaceEntityByNode(workspaceNode) : null;
     
+    WorkspaceEntity workspaceEntity = exam != null ? workspaceMaterialController.findWorkspaceEntityByNode(exam) : null;
     if (workspaceEntity == null) {
-      throw new IllegalArgumentException("Smowl credentials are not set.");
+      throw new IllegalArgumentException("Exam not set.");
     }
     
     // Date stuff
@@ -139,12 +137,12 @@ public class SmowlController {
     Form payload = new Form();
     
     payload.param("activityType", ACTIVITY_TYPE);
-    payload.param("activityId", examIdentifier);
-    payload.param("courseId", String.format("%s%d", systemSettingsController.getSetting("sys.env"), workspaceEntity.getId()));
+    payload.param("activityId", String.format("%s%d", sysEnv, exam.getId()));
+    payload.param("courseId", String.format("%s%d", sysEnv, workspaceEntity.getId()));
     payload.param("numberUsers", "999");
     payload.param("startDate", formatter.format(startDateTime));
     payload.param("endDate", formatter.format(endDateTime));
-    payload.param("displayName", workspaceNode.getTitle());
+    payload.param("displayName", exam.getTitle());
     
     // Credentials
     
