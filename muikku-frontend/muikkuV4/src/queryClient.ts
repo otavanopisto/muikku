@@ -13,6 +13,10 @@ export const queryClient = new QueryClient({
 // Shared query keys for the application
 export const WHOAMI_QUERY_KEY = ["auth", "whoami"] as const;
 export const LOCALE_QUERY_KEY = ["locale"] as const;
+export const FRONTPAGE_ANNOUNCEMENTS_QUERY_KEY = [
+  "frontpage",
+  "announcements",
+] as const;
 
 // Shared query keys for the workspace.
 export const workspaceBasicInfoQueryKey = (urlName: string) =>

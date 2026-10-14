@@ -1,9 +1,10 @@
-import { Title, Text, Paper, Button, Group } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageCommunicatorThreadsDataAtom } from "src/atoms/communicator";
 import { Empty } from "src/components/Empty";
-import { Fragment } from "react";
-
+import Panel from "~/src/components/Panel/Panel";
+import { IconMail } from "@tabler/icons-react";
+import { localize } from "~/src/locales/i18n";
 /**
  * Workspaces
  * @returns
@@ -15,16 +16,16 @@ export function Messages() {
     return <Empty title="No messages found" />;
   }
   return (
-    <Paper p="xl" mb="md" withBorder>
-      <Group>
+    <Panel icon={<IconMail />} title="TODO: Localize Messages">
+      <Stack>
         {messages?.map((message) => (
-          <Fragment key={message.id}>
-            <Title order={1} mb="md">
-              {message.caption}
-            </Title>
-          </Fragment>
+          <Panel.Item
+            key={message.id}
+            title={message.caption}
+            date={localize.date(message.created, "DD.MM.YYYY")}
+          />
         ))}
-      </Group>
-    </Paper>
+      </Stack>
+    </Panel>
   );
 }

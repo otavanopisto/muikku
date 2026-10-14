@@ -1,9 +1,10 @@
-import { Title, Text, Paper, Button, Group } from "@mantine/core";
+import { Title, Text, Paper, Button, Stack } from "@mantine/core";
 import { useAtom, useAtomValue } from "jotai";
 import { lastWorkspacesQueryAtom } from "src/atoms/user";
 import { Link } from "react-router";
 import { Empty } from "src/components/Empty";
 import { Fragment } from "react";
+import Panel from "~/src/components/Panel/Panel";
 
 /**
  * Workspaces
@@ -16,11 +17,11 @@ export function Workspaces() {
     return <Empty title="No workspaces found" />;
   }
   return (
-    <Paper p="xl" mb="md" withBorder>
-      <Group>
+    <Panel title="TODO: Localize Studies">
+      <Stack>
         {lastWorkspaces.data?.map((workspace) => (
           <Fragment key={workspace.workspaceId}>
-            <Title order={1} mb="md">
+            <Title order={3} mb="md">
               Jatka opintoja: {workspace.workspaceName} -{" "}
               {workspace.materialName}
             </Title>
@@ -34,7 +35,7 @@ export function Workspaces() {
             </Button>
           </Fragment>
         ))}
-      </Group>
-    </Paper>
+      </Stack>
+    </Panel>
   );
 }

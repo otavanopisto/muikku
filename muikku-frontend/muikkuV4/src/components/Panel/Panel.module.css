@@ -1,6 +1,15 @@
 .panelTitle {
   display: flex;
-  align-items: center;
+}
+
+.panelHeader {
+  display: flex;
   justify-content: space-between;
-  background-color: var(--mantine-color-brand-8);
+  align-items: center;
+}
+
+.panelItemTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

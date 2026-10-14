@@ -1,11 +1,15 @@
-import { Title, Text, Stack, Box } from "@mantine/core";
+import { Stack, Button, Menu } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageAnnouncementsDataAtom } from "src/atoms/announcements";
 import { Empty } from "src/components/Empty";
-import { Panel } from "~/src/components/Panel/Panel";
+import Panel, { type PanelMenuItem } from "~/src/components/Panel/Panel";
 import { IconSpeakerphone } from "@tabler/icons-react";
 import { localize } from "~/src/locales/i18n";
-
+import {
+  toggleAnnouncementRead,
+  toggleAnnouncementPinned,
+} from "src/atoms/announcements";
+import { useSetAtom } from "jotai";
 /**
  * Workspaces
  * @returns
@@ -13,25 +17,50 @@ import { localize } from "~/src/locales/i18n";
 export function Announcements() {
   const announcements = useAtomValue(frontpageAnnouncementsDataAtom);
 
-  if (announcements?.announcements.length === 0) {
+  const setToggleRead = useSetAtom(toggleAnnouncementRead);
+  const setPinned = useSetAtom(toggleAnnouncementPinned);
+
+  if (!announcements?.announcements) {
     return <Empty title="No announcements found" />;
   }
+
+  const handleMarkAsReadToggle = (announcementId: number) => {
+    void setToggleRead(announcementId);
+  };
+
+  const handleSetPinned = (announcementId: number) => {
+    void setPinned(announcementId);
+  };
+
+  const announcementActions: PanelMenuItem[] = [
+    {
+      label: "TODO: Localize pinned",
+      action: (announcementId: number) => handleSetPinned(announcementId),
+    },
+    {
+      label: "TODO: Localize mark as read",
+      action: (announcementId: number) =>
+        handleMarkAsReadToggle(announcementId),
+    },
+  ];
+
   return (
     <Panel
-      unreadCount={announcements?.unreadCount}
+      countIndicator={announcements?.unreadCount}
+      indicatorTooltip="Unread count"
       icon={<IconSpeakerphone />}
       title="Announcements"
     >
       <Stack>
         {announcements?.announcements.map((announcement) => (
-          <Box mt="md" key={announcement.id}>
-            <Title c="brand.3" order={3}>
-              {announcement.caption}
-            </Title>
-            <Text c="brand.1">
-              {localize.date(announcement.created, "DD.MM.YYYY")}
-            </Text>
-          </Box>
+          <Panel.Item
+            itemId={announcement.id}
+            key={announcement.id}
+            title={announcement.caption}
+            date={localize.date(announcement.created, "DD.MM.YYYY")}
+            unseen={announcement.unread}
+            itemActions={announcementActions}
+          />
         ))}
       </Stack>
     </Panel>
