@@ -131,7 +131,6 @@ function SectionPage(props: {
           workspace={workspace}
           folder={folder ?? undefined}
           compositeReplies={reply}
-          config={{}}
         />
       </Box>
     </Paper>

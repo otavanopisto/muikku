@@ -416,7 +416,6 @@ export interface FieldComponentProps<TContent = FieldContent> {
  */
 export interface FieldParameters {
   content: FieldContent | null;
-  readOnly: boolean;
   initialValue?: string;
   invisible?: boolean;
   displayCorrectAnswers?: boolean;
