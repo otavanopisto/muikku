@@ -15,6 +15,7 @@ import {
   resolveMaterialLocation,
   workspaceMaterialsHref,
 } from "./materialLoaction";
+import { SectionView } from "./SectionView";
 
 /**
  * WorkspaceMaterials - Materials dialog content.
@@ -84,27 +85,17 @@ export function WorkspaceMaterials() {
     );
   } else {
     main = (
-      <>
-        <Title order={3} mb="md">
-          {location.section?.title ?? "Materiaalit"}
-        </Title>
-        {location.pages.map((page) => {
-          const active = page.path === location.page?.path;
-          return (
-            <Box
-              key={page.workspaceMaterialId}
-              id={
-                page.workspaceMaterialId != null
-                  ? `p-${page.workspaceMaterialId}`
-                  : undefined
-              }
-              py="sm"
-            >
-              <Text fw={active ? 700 : 500}>{page.title}</Text>
-            </Box>
-          );
-        })}
-      </>
+      <SectionView
+        section={location.section}
+        pages={location.pages}
+        page={location.page}
+        workspace={
+          workspaceInfo
+            ? { id: workspaceInfo.id, urlName: workspaceInfo.urlName }
+            : null
+        }
+        repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
+      />
     );
   }
 

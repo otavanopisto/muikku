@@ -18,7 +18,7 @@ export interface TocItemChrome {
  * Map assignment type to Timeline color and Finnish label.
  * @param assignmentType - Node assignment type
  */
-function assignmentChrome(
+export function getAssignmentChrome(
   assignmentType: MaterialAssigmentType | null
 ): Pick<TocItemChrome, "color" | "kindLabel"> {
   switch (assignmentType) {
@@ -44,7 +44,7 @@ export function getTocItemChrome(
   item: TocItem,
   reply?: MaterialCompositeReply
 ): TocItemChrome {
-  const { color, kindLabel } = assignmentChrome(item.assignmentType);
+  const { color, kindLabel } = getAssignmentChrome(item.assignmentType);
   const done =
     reply?.state === "SUBMITTED" ||
     reply?.state === "PASSED" ||
