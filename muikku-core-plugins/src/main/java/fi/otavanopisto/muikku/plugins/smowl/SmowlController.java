@@ -118,7 +118,7 @@ public class SmowlController {
     final String sysEnv = systemSettingsController.getSetting("sys.env");
 
     if (StringUtils.isAnyBlank(entityName, apiKey, sysEnv)) {
-      throw new IllegalStateException("Smowl credentials are not set.");
+      throw new IllegalStateException("Smowl credentials or system environment not set");
     }
     
     WorkspaceEntity workspaceEntity = exam != null ? workspaceMaterialController.findWorkspaceEntityByNode(exam) : null;

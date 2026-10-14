@@ -76,9 +76,10 @@ public class SmowlRESTService extends AbstractRESTService {
     final String licenseKey = systemSettingsController.getSetting("smowl.licenseKey");
     final String jwtSecret = systemSettingsController.getSetting("smowl.jwtSecret");
     final String entityName = systemSettingsController.getSetting("smowl.entityName");
+    final String sysEnv = systemSettingsController.getSetting("sys.env");
     
-    if (StringUtils.isAnyBlank(issuer, audience, licenseKey, jwtSecret, entityName)) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Smowl credentials are not set.").build();
+    if (StringUtils.isAnyBlank(issuer, audience, licenseKey, jwtSecret, entityName, sysEnv)) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Smowl credentials or system environment not set").build();
     }
     
     Instant now = Instant.now();
@@ -97,7 +98,7 @@ public class SmowlRESTService extends AbstractRESTService {
       }
     }    
     claims.put("entityKey", licenseKey);
-    claims.put("userId", String.format("%s%d", systemSettingsController.getSetting("sys.env"), sessionController.getLoggedUserEntity().getId()));
+    claims.put("userId", String.format("%s%d", sysEnv, sessionController.getLoggedUserEntity().getId()));
 
     try {
       JWTClaimsSet.Builder claimBuilder = new JWTClaimsSet.Builder()
