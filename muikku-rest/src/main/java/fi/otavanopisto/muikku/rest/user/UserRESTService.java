@@ -1484,8 +1484,12 @@ public class UserRESTService extends AbstractRESTService {
       } else {
         fields = new String[] { "firstName", "lastName", "email" };
       }
-      List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
-      nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
+      List<EnvironmentRoleArchetype> staffRoleArchetypes = Arrays.asList(
+          EnvironmentRoleArchetype.ADMINISTRATOR,
+          EnvironmentRoleArchetype.MANAGER,
+          EnvironmentRoleArchetype.STUDY_GUIDER,
+          EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+          EnvironmentRoleArchetype.TEACHER);
 
       // #4917: When listing workspace staff members, search across all organizations (TODO: Would be better via WorkspaceRESTService.listWorkspaceStaffMembers)
       
@@ -1504,7 +1508,7 @@ public class UserRESTService extends AbstractRESTService {
           null, // study programme identifiers
           searchString, 
           fields, 
-          nonStudentArchetypes, 
+          staffRoleArchetypes, 
           userGroupFilters, 
           workspaceFilters, 
           userIdentifiers, 
