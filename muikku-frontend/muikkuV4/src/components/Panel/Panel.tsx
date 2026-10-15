@@ -73,6 +73,7 @@ interface PanelItemProps {
   itemId: number;
   unseen?: boolean;
   itemActions?: PanelMenuItem[];
+  itemState?: React.ReactNode;
 }
 
 /**
@@ -80,7 +81,7 @@ interface PanelItemProps {
  * @returns
  */
 function PanelItem(props: PanelItemProps) {
-  const { unseen, title, date, itemActions, itemId } = props;
+  const { title, date, itemId, unseen, itemActions, itemState } = props;
   const titleColor =
     unseen === undefined
       ? "panelTitleText"
@@ -113,7 +114,11 @@ function PanelItem(props: PanelItemProps) {
   return (
     <Box key={itemId} mt="md">
       <Title c={titleColor} order={3} className={styles.panelItemTitle}>
-        {title} {itemActions && <Group>{actions}</Group>}
+        <Box className={styles.panelItemTitleContent}>
+          {itemState}
+          {title}
+        </Box>
+        {itemActions && <Group>{actions}</Group>}
       </Title>
       <Text c={textColor}>{date}</Text>
     </Box>

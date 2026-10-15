@@ -1,5 +1,22 @@
 {
   "common": {
     "hello": "Terve"
+  },
+
+  "announcements": {
+    "actions": {
+      "pin": "Kiinnitä tiedote",
+      "unpin": "Poista kiinnitys",
+      "setRead": "Aseta luetuksi",
+      "setUnread": "Aseta lukemattomaksi"
+    },
+
+    "labels": {},
+    "state": {
+      "PINNED": "Kiinnitetty",
+      "UNPINNED": "Kiinnittämätön",
+      "READ": "Luettu",
+      "UNREAD": "Lukematon"
+    }
   }
 }

@@ -13,3 +13,9 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.panelItemTitleContent {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}

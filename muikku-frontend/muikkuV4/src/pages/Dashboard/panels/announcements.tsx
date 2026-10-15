@@ -1,22 +1,25 @@
-import { Stack, Button, Menu } from "@mantine/core";
+import { Stack, Tooltip, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageAnnouncementsDataAtom } from "src/atoms/announcements";
 import { Empty } from "src/components/Empty";
-import Panel, { type PanelMenuItem } from "~/src/components/Panel/Panel";
-import { IconSpeakerphone } from "@tabler/icons-react";
+import Panel from "~/src/components/Panel/Panel";
+import { IconSpeakerphone, IconPin } from "@tabler/icons-react";
 import { localize } from "~/src/locales/i18n";
 import {
   toggleAnnouncementRead,
   toggleAnnouncementPinned,
 } from "src/atoms/announcements";
 import { useSetAtom } from "jotai";
+import type { Announcement } from "~/generated/client";
+import { useTranslation } from "react-i18next";
+
 /**
  * Workspaces
  * @returns
  */
 export function Announcements() {
   const announcements = useAtomValue(frontpageAnnouncementsDataAtom);
-
+  const { t } = useTranslation();
   const setToggleRead = useSetAtom(toggleAnnouncementRead);
   const setPinned = useSetAtom(toggleAnnouncementPinned);
 
@@ -32,17 +35,40 @@ export function Announcements() {
     void setPinned(announcementId);
   };
 
-  const announcementActions: PanelMenuItem[] = [
-    {
-      label: "TODO: Localize pinned",
-      action: (announcementId: number) => handleSetPinned(announcementId),
-    },
-    {
-      label: "TODO: Localize mark as read",
-      action: (announcementId: number) =>
-        handleMarkAsReadToggle(announcementId),
-    },
-  ];
+  const generateAnnouncementActions = (announcement: Announcement) => {
+    const pinnedState = announcement.pinnedToSelf ? "unpin" : "pin";
+    const readState = announcement.unread ? "setRead" : "setUnread";
+    return [
+      {
+        label: t(`actions.${pinnedState}`, {
+          ns: "announcements",
+        }),
+        action: (announcementId: number) => handleSetPinned(announcementId),
+      },
+      {
+        label: t(`actions.${readState}`, {
+          ns: "announcements",
+        }),
+        action: (announcementId: number) =>
+          handleMarkAsReadToggle(announcementId),
+      },
+    ];
+  };
+
+  const generateAnnouncementState = (announcement: Announcement) => (
+    <Group gap="0">
+      {announcement.pinned && (
+        <Tooltip label="Pinned">
+          <IconPin color="pink" />
+        </Tooltip>
+      )}
+      {announcement.pinnedToSelf && (
+        <Tooltip label="Pinned to self" mr="xs">
+          <IconPin color="orange" />
+        </Tooltip>
+      )}
+    </Group>
+  );
 
   return (
     <Panel
@@ -59,7 +85,8 @@ export function Announcements() {
             title={announcement.caption}
             date={localize.date(announcement.created, "DD.MM.YYYY")}
             unseen={announcement.unread}
-            itemActions={announcementActions}
+            itemState={generateAnnouncementState(announcement)}
+            itemActions={generateAnnouncementActions(announcement)}
           />
         ))}
       </Stack>

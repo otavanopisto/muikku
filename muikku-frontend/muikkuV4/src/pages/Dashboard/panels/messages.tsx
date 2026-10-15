@@ -20,6 +20,7 @@ export function Messages() {
       <Stack>
         {messages?.map((message) => (
           <Panel.Item
+            itemId={message.id}
             key={message.id}
             title={message.caption}
             date={localize.date(message.created, "DD.MM.YYYY")}

@@ -74,7 +74,7 @@ export const toggleAnnouncementPinned = atom(
   null,
   async (_get, _set, announcementId: number) => {
     try {
-      await announcerApi.pinAnnouncement({
+      const recipient = await announcerApi.pinAnnouncement({
         announcementId,
       });
 
@@ -84,20 +84,13 @@ export const toggleAnnouncementPinned = atom(
         return;
       }
 
-      const announcementIndex = currentAnnouncements.announcements.findIndex(
-        (announcement) => announcement.id === announcementId
-      );
-
-      if (announcementIndex === -1) {
-        return;
-      }
-
-      const newAnnouncements = [...currentAnnouncements.announcements];
-      newAnnouncements[announcementIndex].pinned = true;
-
       queryClient.setQueryData(FRONTPAGE_ANNOUNCEMENTS_QUERY_KEY, {
         ...currentAnnouncements,
-        announcements: newAnnouncements,
+        announcements: currentAnnouncements.announcements.map((announcement) =>
+          announcement.id === announcementId
+            ? { ...announcement, pinnedToSelf: recipient.pinned }
+            : announcement
+        ),
       });
     } catch (error) {
       throw new Error("Failed to set announcement pinned");
