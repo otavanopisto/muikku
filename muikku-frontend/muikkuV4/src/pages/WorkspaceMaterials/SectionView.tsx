@@ -14,6 +14,7 @@ import {
   workspaceCompositeRepliesAsyncStateAtom,
   workspaceCompositeReplyAtomFamily,
 } from "~/src/atoms/workspaceContent";
+import { userAtom } from "~/src/atoms/auth";
 
 /**
  * Props for the section column (one folder + its pages).
@@ -102,6 +103,7 @@ function SectionPage(props: {
 }) {
   const { page, folder, workspace, active, minHeight } = props;
 
+  const user = useAtomValue(userAtom);
   const repliesReady =
     useAtomValue(workspaceCompositeRepliesAsyncStateAtom) === "ready";
   const reply = useAtomValue(
@@ -140,6 +142,10 @@ function SectionPage(props: {
           workspace={workspace}
           folder={folder ?? undefined}
           compositeReplies={reply}
+          config={{
+            enableButtons: true,
+            answerable: user?.loggedIn ?? false,
+          }}
         />
       </Box>
     </Paper>

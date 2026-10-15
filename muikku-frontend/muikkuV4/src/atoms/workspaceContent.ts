@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
-import { getWorkspaceApi, isMApiError } from "~/api";
+import { getEvaluationApi, getWorkspaceApi, isMApiError } from "~/api";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
@@ -14,10 +14,13 @@ import {
   workspaceCompositeRepliesQueryKey,
   workspaceHelpContentNodesQueryKey,
   workspaceMaterialContentNodesQueryKey,
+  workspaceStudentActivityQueryKey,
 } from "src/queryClient";
 import { atomFamily, selectAtom } from "jotai/utils";
+import { userAtom } from "./auth";
 
 const workspaceApi = getWorkspaceApi();
+const evaluationApi = getEvaluationApi();
 
 const EMPTY_NODES: MaterialContentNode[] = [];
 
@@ -335,7 +338,7 @@ export const patchCompositeReplyAtom = atom(
 export const updateWorkspaceAssignmentStateAtom = atom(
   null,
   async (
-    _get,
+    get,
     set,
     params: {
       newState: MaterialCompositeReplyStateType;
@@ -346,16 +349,35 @@ export const updateWorkspaceAssignmentStateAtom = atom(
       callback?: () => void;
     }
   ) => {
+    // Update the workspace material state on the server
     if (!params.localOnly) {
       await workspaceApi.updateWorkspaceMaterialState({
         workspaceMaterialId: params.workspaceMaterialId,
         state: params.newState,
       });
     }
+
+    // Update the composite reply in the cache
     set(patchCompositeReplyAtom, {
       workspaceMaterialId: params.workspaceMaterialId,
       state: params.newState,
     });
+
+    // Update the workspace student activity in the cache
+    const { id, identifier } = get(userAtom) ?? {};
+    if (id != null && identifier != null) {
+      // Get the updated values for the workspace student activity
+      const data = await evaluationApi.getWorkspaceStudentActivity({
+        workspaceId: params.workspaceId,
+        studentEntityId: identifier,
+      });
+
+      //... and update the cache
+      queryClient.setQueryData(
+        workspaceStudentActivityQueryKey(params.workspaceId, id),
+        data
+      );
+    }
     params.callback?.();
   }
 );

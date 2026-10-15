@@ -28,3 +28,8 @@ export const workspaceHelpContentNodesQueryKey = (workspaceId: number) =>
   ["workspace", workspaceId, "helpContentNodes"] as const;
 export const workspaceCompositeRepliesQueryKey = (workspaceId: number) =>
   ["workspace", workspaceId, "compositeReplies"] as const;
+
+export const workspaceStudentActivityQueryKey = (
+  workspaceId: number,
+  studentEntityId: number
+) => ["workspace", workspaceId, "studentActivity", studentEntityId] as const;

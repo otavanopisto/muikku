@@ -22,13 +22,15 @@ export function MaterialButtons() {
     }
   };
 
+  const canSubmit = Boolean(buttonConfig.successState);
+
   return (
     <div className="material-page__buttons">
       <button
         type="button"
         className={`material-page__button ${buttonConfig.className}`}
         onClick={handleButtonClick}
-        disabled={buttonConfig.disabled}
+        disabled={buttonConfig.disabled || !canSubmit}
       >
         {buttonConfig.text}
       </button>
