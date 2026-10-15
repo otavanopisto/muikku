@@ -96,7 +96,7 @@ function PanelItem(props: PanelItemProps) {
         : "panelSeenContentText";
 
   const actions = (
-    <Menu position="bottom-end" closeOnItemClick={false}>
+    <Menu position="bottom-end">
       <Menu.Target>
         <ActionIcon variant="subtle" aria-label="Dashboard actions">
           <IconDotsVertical />
