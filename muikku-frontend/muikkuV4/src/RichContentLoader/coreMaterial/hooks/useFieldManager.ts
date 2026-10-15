@@ -34,7 +34,8 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 export function useFieldManager(
   material: MaterialContentNode,
   workspace: Workspace,
-  onAnswerSynced?: () => void,
+  userEntityId?: number | null,
+  onAnswerSynced?: (info: { fieldName: string; value: string }) => void,
   onModification?: () => void
 ) {
   // Timeout registries for field synchronization
@@ -60,7 +61,15 @@ export function useFieldManager(
    */
   const handleValueChange = useCallback(
     (context: React.Component<any, any>, name: string, newValue: any) => {
+      if (!userEntityId) {
+        return;
+      }
       if (!websocketInstance) {
+        context.setState({
+          modified: true,
+          synced: false,
+          syncError: "Ei yhteyttä",
+        });
         return;
       }
 
@@ -85,11 +94,9 @@ export function useFieldManager(
         // Send message to server
         const messageData = JSON.stringify({
           answer: newValue,
-          materialId: material.materialId,
           fieldName: name,
-          workspaceEntityId: workspace.id,
           workspaceMaterialId: material.workspaceMaterialId,
-          userEntityId: "", // This should come from status
+          userEntityId: userEntityId,
         });
 
         const stackId = `${name}-${workspace.id}-${material.workspaceMaterialId}-${material.materialId}`;
@@ -111,7 +118,7 @@ export function useFieldManager(
         }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
       }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE);
     },
-    [material, onModification, websocketInstance, workspace.id]
+    [material, onModification, websocketInstance, workspace.id, userEntityId]
   );
 
   // Setup websocket listeners
@@ -125,11 +132,7 @@ export function useFieldManager(
       const actualData: any = JSON.parse(data as string);
 
       // Check if this event is for our material
-      if (
-        actualData.materialId === material.materialId &&
-        actualData.workspaceMaterialId === material.workspaceMaterialId &&
-        actualData.workspaceEntityId === workspace.id
-      ) {
+      if (actualData.workspaceMaterialId === material.workspaceMaterialId) {
         // Clear timeout that would mark the field as unsynced
         clearTimeout(
           timeoutConnectionFailedRegistry.current[actualData.fieldName]
@@ -148,7 +151,11 @@ export function useFieldManager(
           return;
         }
 
-        onAnswerSynced?.();
+        const value = String(actualData.value ?? actualData.answer ?? "");
+        onAnswerSynced?.({
+          fieldName: actualData.fieldName,
+          value,
+        });
 
         // Handle success case
         if (nameContextRegistry.current[actualData.fieldName]) {

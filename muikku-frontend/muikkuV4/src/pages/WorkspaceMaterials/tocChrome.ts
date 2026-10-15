@@ -1,8 +1,6 @@
-import type {
-  MaterialAssigmentType,
-  MaterialCompositeReply,
-} from "~/generated/client";
+import type { MaterialAssigmentType } from "~/generated/client";
 import type { TocItem } from "./tocItems";
+import type { TocReplyChrome } from "~/src/atoms/workspaceContent";
 
 /**
  * Chrome for a TOC item.
@@ -42,13 +40,10 @@ export function getAssignmentChrome(
  */
 export function getTocItemChrome(
   item: TocItem,
-  reply?: MaterialCompositeReply
+  reply?: TocReplyChrome
 ): TocItemChrome {
   const { color, kindLabel } = getAssignmentChrome(item.assignmentType);
-  const done =
-    reply?.state === "SUBMITTED" ||
-    reply?.state === "PASSED" ||
-    reply?.state === "FAILED";
+  const done = reply?.done ?? false;
 
   const meta: string[] = [];
   if (reply?.submitted) {

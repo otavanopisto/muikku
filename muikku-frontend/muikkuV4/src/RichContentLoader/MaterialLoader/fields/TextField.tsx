@@ -1,49 +1,17 @@
 import { Text, TextInput } from "@mantine/core";
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   FieldComponentProps,
   TextFieldContent,
 } from "../../coreMaterial/types";
 import { isCorrectTextAnswer } from "../../coreMaterial/utils/createFieldParameters";
+import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
+import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
 
 /**
  * TextFieldProps
  */
 interface TextFieldProps extends FieldComponentProps<TextFieldContent> {}
-
-/**
- * FieldSyncState
- */
-interface FieldSyncState {
-  modified: boolean;
-  synced: boolean;
-  syncError: string | null;
-}
-
-/**
- * Class-component-shaped handle for useFieldManager (synced / modified / error).
- */
-function useFieldSyncHandle() {
-  const syncRef = useRef<FieldSyncState>({
-    modified: false,
-    synced: true,
-    syncError: null,
-  });
-  const [, bump] = useReducer((n: number) => n + 1, 0);
-
-  return useMemo(
-    () => ({
-      get state() {
-        return syncRef.current;
-      },
-      setState(update: Partial<FieldSyncState>) {
-        syncRef.current = { ...syncRef.current, ...update };
-        bump();
-      },
-    }),
-    []
-  );
-}
 
 /**
  * Student materials text field. Evaluation has its own loader field.
@@ -63,10 +31,6 @@ export function MaterialTextField(props: TextFieldProps) {
 
   const [value, setValue] = useState(initialValue ?? "");
   const handle = useFieldSyncHandle();
-
-  useEffect(() => {
-    setValue(initialValue ?? "");
-  }, [initialValue]);
 
   const checkResult =
     content && checkAnswers ? isCorrectTextAnswer(value, content) : null;
@@ -131,7 +95,6 @@ export function MaterialTextField(props: TextFieldProps) {
         autoComplete="off"
         spellCheck={false}
         onChange={(event) => handleChange(event.currentTarget.value)}
-        error={handle.state.syncError ?? undefined}
         styles={{
           root: { display: "inline-block", width: inputWidth },
           input: {
@@ -143,6 +106,11 @@ export function MaterialTextField(props: TextFieldProps) {
                   : undefined,
           },
         }}
+      />
+      <Synchronizer
+        modified={handle.state.modified}
+        synced={handle.state.synced}
+        syncError={handle.state.syncError}
       />
       {displayCorrectAnswers && examples.length > 0 && (
         <Text span size="xs" c="green" ml="xs">

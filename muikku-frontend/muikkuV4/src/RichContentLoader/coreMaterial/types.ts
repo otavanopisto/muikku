@@ -158,17 +158,10 @@ export interface MaterialProcessingContext {
   material: MaterialContentNode;
   workspace: Workspace;
   compositeReplies?: MaterialCompositeReply;
-  assignment?: WorkspaceMaterial;
   invisible: boolean;
 
   // --- optional snapshot capabilities ---
-  snapshots?: MaterialSnapshotCapability;
-
-  onValueChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => void;
+  //snapshots?: MaterialSnapshotCapability;
 }
 
 export type MaterialRichContentContext =
@@ -420,9 +413,6 @@ export interface FieldParameters {
   invisible?: boolean;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => void;
-  onChange?: (context: any, name: string, newValue: any) => void;
-  userId?: number;
 }
 
 /**

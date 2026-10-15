@@ -74,11 +74,9 @@ export function createFieldParameters(
   }
 
   return {
-    content: content,
+    content,
     initialValue,
-    onChange: context.onValueChange,
     invisible: context.invisible,
-    userId: 0,
   };
 }
 

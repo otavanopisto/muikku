@@ -32,9 +32,7 @@ export function createFieldElement(
     content: parameters.content,
     // Structural / initial only — live flags come from FieldWithLiveProps
     initialValue: parameters.initialValue,
-    onChange: parameters.onChange,
     invisible: parameters.invisible,
-    userId: parameters.userId,
   };
   return (
     <FieldWithLiveProps

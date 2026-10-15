@@ -9,6 +9,11 @@ import type { Workspace } from "src/RichContentLoader/coreMaterial/types";
 import { getAssignmentChrome } from "./tocChrome";
 import classes from "./SectionView.module.css";
 import { scrollToElement } from "./scrollElement";
+import { useAtomValue } from "jotai";
+import {
+  workspaceCompositeRepliesAsyncStateAtom,
+  workspaceCompositeReplyAtomFamily,
+} from "~/src/atoms/workspaceContent";
 
 /**
  * Props for the section column (one folder + its pages).
@@ -33,8 +38,7 @@ function pageMinHeight(page: MaterialContentNode, index: number): number {
  * One folder’s pages. Each page is a MaterialLoader with a min-height shell.
  */
 export function SectionView(props: SectionViewProps) {
-  const { section, pages, page, workspace, repliesByWorkspaceMaterialId } =
-    props;
+  const { section, pages, page, workspace } = props;
 
   useEffect(() => {
     const id =
@@ -77,11 +81,6 @@ export function SectionView(props: SectionViewProps) {
             page={item}
             folder={section}
             workspace={workspace}
-            reply={
-              item.workspaceMaterialId != null
-                ? repliesByWorkspaceMaterialId?.[item.workspaceMaterialId]
-                : undefined
-            }
             active={item.path === page?.path}
             minHeight={pageMinHeight(item, index)}
           />
@@ -98,11 +97,21 @@ function SectionPage(props: {
   page: MaterialContentNode;
   folder: MaterialContentNode | null;
   workspace: Workspace;
-  reply?: MaterialCompositeReply;
   active: boolean;
   minHeight: number;
 }) {
-  const { page, folder, workspace, reply, active, minHeight } = props;
+  const { page, folder, workspace, active, minHeight } = props;
+
+  const repliesReady =
+    useAtomValue(workspaceCompositeRepliesAsyncStateAtom) === "ready";
+  const reply = useAtomValue(
+    workspaceCompositeReplyAtomFamily(page.workspaceMaterialId ?? -1)
+  );
+
+  if (!repliesReady) {
+    return /* existing min-height shell */;
+  }
+
   const chrome = getAssignmentChrome(page.assignmentType);
   const stripe = chrome.color
     ? `var(--mantine-color-${chrome.color}-6)`

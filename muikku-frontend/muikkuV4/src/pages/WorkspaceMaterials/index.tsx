@@ -5,7 +5,6 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { workspaceInfoAtom } from "src/atoms/workspace";
 import { WorkspaceContentLayout } from "src/layouts";
 import {
-  workspaceCompositeRepliesByMaterialIdAtom,
   workspaceMaterialContentNodesAsyncStateAtom,
   workspaceMaterialContentNodesAtom,
   workspaceMaterialContentNodesEnabledAtom,
@@ -30,10 +29,6 @@ export function WorkspaceMaterials() {
   );
   const nodes = useAtomValue(workspaceMaterialContentNodesAtom);
   const asyncState = useAtomValue(workspaceMaterialContentNodesAsyncStateAtom);
-
-  const repliesByWorkspaceMaterialId = useAtomValue(
-    workspaceCompositeRepliesByMaterialIdAtom
-  );
 
   const location = useMemo(
     () => resolveMaterialLocation(nodes, splat),
@@ -64,10 +59,7 @@ export function WorkspaceMaterials() {
         Sisällysluettelon lataus epäonnistui.
       </Text>
     ) : (
-      <Toc
-        nodes={nodes}
-        repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
-      />
+      <Toc nodes={nodes} />
     );
 
   let main: React.ReactNode;
@@ -94,7 +86,6 @@ export function WorkspaceMaterials() {
             ? { id: workspaceInfo.id, urlName: workspaceInfo.urlName }
             : null
         }
-        repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
       />
     );
   }

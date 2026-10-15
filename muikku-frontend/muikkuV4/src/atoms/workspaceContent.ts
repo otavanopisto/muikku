@@ -4,14 +4,18 @@ import { getWorkspaceApi, isMApiError } from "~/api";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
+  MaterialCompositeReplyStateType,
+  MaterialAnswer,
 } from "~/generated/client";
 import type { AsyncState } from "src/types/AsyncState";
 import { workspaceIdAtom } from "src/atoms/workspace";
 import {
+  queryClient,
   workspaceCompositeRepliesQueryKey,
   workspaceHelpContentNodesQueryKey,
   workspaceMaterialContentNodesQueryKey,
 } from "src/queryClient";
+import { atomFamily, selectAtom } from "jotai/utils";
 
 const workspaceApi = getWorkspaceApi();
 
@@ -155,6 +159,17 @@ export const workspaceCompositeRepliesQueryAtom = atomWithQuery((get) => {
   };
 });
 
+/** Async state of the workspace composite replies */
+export const workspaceCompositeRepliesAsyncStateAtom = atom<AsyncState>(
+  (get) => {
+    const query = get(workspaceCompositeRepliesQueryAtom);
+    if (query.isLoading) return "loading";
+    if (query.isError) return "error";
+    if (query.data) return "ready";
+    return "idle";
+  }
+);
+
 /** Composite replies for the current user */
 export const workspaceCompositeRepliesAtom = atom(
   (get) => get(workspaceCompositeRepliesQueryAtom).data ?? EMPTY_REPLIES
@@ -171,3 +186,176 @@ export const workspaceCompositeRepliesByMaterialIdAtom = atom((get) => {
   }
   return byId;
 });
+
+/**
+ * Composite reply for a specific workspace material.
+ * @param workspaceMaterialId - Workspace material id
+ * @returns Composite reply
+ */
+export const workspaceCompositeReplyAtomFamily = atomFamily(
+  (workspaceMaterialId: number) =>
+    atom(
+      (get) =>
+        get(workspaceCompositeRepliesByMaterialIdAtom)[workspaceMaterialId]
+    )
+);
+
+/** Fields Toc actually paints. Ignores answers and ANSWERED. */
+export type TocReplyChrome = {
+  done: boolean;
+  submitted: MaterialCompositeReply["submitted"];
+  evaluationInfo: MaterialCompositeReply["evaluationInfo"];
+};
+/**
+ * Converts a MaterialCompositeReply to a TocReplyChrome.
+ * @param reply - MaterialCompositeReply
+ * @returns TocReplyChrome
+ */
+function tocReplyChrome(reply: MaterialCompositeReply): TocReplyChrome {
+  return {
+    done:
+      reply.state === "SUBMITTED" ||
+      reply.state === "PASSED" ||
+      reply.state === "FAILED",
+    submitted: reply.submitted,
+    evaluationInfo: reply.evaluationInfo,
+  };
+}
+
+/**
+ * Compares two TocReplyChrome objects.
+ * @param a - TocReplyChrome
+ * @param b - TocReplyChrome
+ * @returns true if the objects are equal, false otherwise
+ */
+function tocRepliesEqual(
+  a: Record<number, TocReplyChrome>,
+  b: Record<number, TocReplyChrome>
+): boolean {
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+  for (const key of aKeys) {
+    const id = Number(key);
+    const left = a[id];
+    const right = b[id];
+    if (!right) return false;
+    if (left.done !== right.done) return false;
+    if (left.submitted !== right.submitted) return false;
+    if (left.evaluationInfo !== right.evaluationInfo) return false;
+  }
+  return true;
+}
+
+/**
+ * Replies keyed by workspaceMaterialId for TOC lookup.
+ * @param replies - MaterialCompositeReply[]
+ * @returns Record<number, TocReplyChrome>
+ */
+export const tocRepliesByMaterialIdAtom = selectAtom(
+  workspaceCompositeRepliesAtom,
+  (replies) => {
+    const byId: Record<number, TocReplyChrome> = {};
+    for (const reply of replies) {
+      byId[reply.workspaceMaterialId] = tocReplyChrome(reply);
+    }
+    return byId;
+  },
+  tocRepliesEqual
+);
+
+/**
+ * Patch one composite reply in the workspace cache (answers and/or state).
+ */
+export const patchCompositeReplyAtom = atom(
+  null,
+  (
+    get,
+    _set,
+    patch: {
+      workspaceMaterialId: number;
+      state?: MaterialCompositeReplyStateType;
+      answer?: { fieldName: string; value: string };
+    }
+  ) => {
+    const workspaceId = get(workspaceIdAtom);
+    if (workspaceId == null) return;
+    queryClient.setQueryData<MaterialCompositeReply[]>(
+      workspaceCompositeRepliesQueryKey(workspaceId),
+      (old = []) => {
+        const now = new Date();
+        const index = old.findIndex(
+          (row) => row.workspaceMaterialId === patch.workspaceMaterialId
+        );
+        const applyAnswer = (answers: MaterialAnswer[]): MaterialAnswer[] => {
+          if (!patch.answer) return answers;
+          const existing = answers.findIndex(
+            (row) => row.fieldName === patch.answer!.fieldName
+          );
+          const next: MaterialAnswer = {
+            fieldName: patch.answer.fieldName,
+            value: patch.answer.value,
+            workspaceMaterialId: patch.workspaceMaterialId,
+          };
+          if (existing === -1) return [...answers, next];
+          return answers.map((row, i) => (i === existing ? next : row));
+        };
+        if (index === -1) {
+          return [
+            ...old,
+            {
+              answers: applyAnswer([]),
+              state: patch.state ?? "ANSWERED",
+              created: now,
+              lastModified: now,
+              submitted: null,
+              workspaceMaterialId: patch.workspaceMaterialId,
+              workspaceMaterialReplyId: 0,
+              lock: "NONE",
+            },
+          ];
+        }
+        const current = old[index];
+        const next = [...old];
+        next[index] = {
+          ...current,
+          answers: applyAnswer(current.answers),
+          state: patch.state ?? current.state,
+          lastModified: now,
+        };
+        return next;
+      }
+    );
+  }
+);
+
+/**
+ * V3 updateAssignmentState: optional POST, then patch cache.
+ */
+export const updateWorkspaceAssignmentStateAtom = atom(
+  null,
+  async (
+    _get,
+    set,
+    params: {
+      newState: MaterialCompositeReplyStateType;
+      localOnly: boolean;
+      workspaceId: number;
+      workspaceMaterialId: number;
+      successText?: string;
+      callback?: () => void;
+    }
+  ) => {
+    if (!params.localOnly) {
+      await workspaceApi.updateWorkspaceMaterialState({
+        workspaceMaterialId: params.workspaceMaterialId,
+        state: params.newState,
+      });
+    }
+    set(patchCompositeReplyAtom, {
+      workspaceMaterialId: params.workspaceMaterialId,
+      state: params.newState,
+    });
+    params.callback?.();
+  }
+);

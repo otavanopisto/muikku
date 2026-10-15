@@ -2,10 +2,7 @@ import { Box, Collapse, Group, Text, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconCheck, IconChevronDown } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router";
-import type {
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import type { MaterialContentNode } from "~/generated/client";
 import { useWorkspaceContentLayout } from "src/layouts/WorkspaceContentLayout/WorkspaceContentLayoutContext";
 import { getTocItemChrome } from "./tocChrome";
 import {
@@ -19,13 +16,17 @@ import {
   type TocItem,
 } from "./tocItems";
 import { Rail } from "~/src/components/Rail/Rail";
+import { useAtomValue } from "jotai";
+import {
+  tocRepliesByMaterialIdAtom,
+  type TocReplyChrome,
+} from "~/src/atoms/workspaceContent";
 
 /**
  * Props for the materials TOC.
  */
 interface TocProps {
   nodes: MaterialContentNode[];
-  repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
 }
 
 /**
@@ -51,8 +52,9 @@ function useMaterialsNavigate() {
  * Must render inside WorkspaceContentLayout.
  */
 export function Toc(props: TocProps) {
-  const { nodes, repliesByWorkspaceMaterialId } = props;
+  const { nodes } = props;
   const { "*": splat = "" } = useParams();
+  const repliesByWorkspaceMaterialId = useAtomValue(tocRepliesByMaterialIdAtom);
   const activePath = normalizeMaterialPath(splat);
   const items = buildTocItems(nodes);
 
@@ -78,7 +80,7 @@ export function Toc(props: TocProps) {
  */
 function TocGroupList(props: {
   groups: TocChildGroup[];
-  repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
+  repliesByWorkspaceMaterialId?: Record<number, TocReplyChrome>;
   activePath: string;
 }) {
   const { groups, repliesByWorkspaceMaterialId, activePath } = props;
@@ -111,7 +113,7 @@ function TocGroupList(props: {
  */
 function TocFolder(props: {
   item: TocItem;
-  repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
+  repliesByWorkspaceMaterialId?: Record<number, TocReplyChrome>;
   activePath: string;
 }) {
   const { item, repliesByWorkspaceMaterialId, activePath } = props;
@@ -160,7 +162,7 @@ function TocFolder(props: {
  */
 export function TocPageRail(props: {
   items: TocItem[];
-  repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
+  repliesByWorkspaceMaterialId?: Record<number, TocReplyChrome>;
   activePath: string;
 }) {
   const { items, repliesByWorkspaceMaterialId, activePath } = props;
