@@ -10,6 +10,7 @@ export function MaterialButtons() {
     onPushAnswer,
     config,
     answersVisible,
+    fieldManager,
   } = useMaterialContentContext();
 
   if (!config.enableButtons || !buttonConfig || !onPushAnswer) {
@@ -23,17 +24,20 @@ export function MaterialButtons() {
   };
 
   const canSubmit = Boolean(buttonConfig.successState);
+  const fieldsAllSynced = fieldManager?.fieldAllSynced ?? true;
 
   return (
     <div className="material-page__buttons">
-      <button
-        type="button"
-        className={`material-page__button ${buttonConfig.className}`}
-        onClick={handleButtonClick}
-        disabled={buttonConfig.disabled || !canSubmit}
-      >
-        {buttonConfig.text}
-      </button>
+      {!buttonConfig.disabled && (
+        <button
+          type="button"
+          className={`material-page__button ${buttonConfig.className}`}
+          onClick={handleButtonClick}
+          disabled={!fieldsAllSynced || !canSubmit}
+        >
+          {buttonConfig.text}
+        </button>
+      )}
 
       {buttonConfig.displaysHideShowAnswersOnRequestButtonIfAllowed && (
         <button

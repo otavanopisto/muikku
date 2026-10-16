@@ -490,6 +490,7 @@ export interface AnswerManagerReturn {
  * FieldManagerReturn
  */
 export interface FieldManagerReturn {
+  fieldAllSynced: boolean;
   handleValueChange: (
     context: any,
     name: string,

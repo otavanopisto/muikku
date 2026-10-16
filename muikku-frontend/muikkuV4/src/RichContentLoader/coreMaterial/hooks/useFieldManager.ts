@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useRef, useEffect, useMemo } from "react";
+import { useCallback, useRef, useEffect, useMemo, useState } from "react";
 import type { Workspace } from "../types";
 import { MuikkuWebsocket } from "src/utils/websocket";
 import type { MaterialContentNode } from "~/generated/client";
@@ -51,6 +51,36 @@ export function useFieldManager(
     {}
   );
 
+  const [unsyncedFields, setUnsyncedFields] = useState<ReadonlySet<string>>(
+    () => new Set()
+  );
+
+  /**
+   * Mark a field as unsynced
+   * @param name - The name of the field
+   */
+  const markUnsynced = useCallback((name: string) => {
+    setUnsyncedFields((prev) => {
+      if (prev.has(name)) return prev;
+      const next = new Set(prev);
+      next.add(name);
+      return next;
+    });
+  }, []);
+
+  /**
+   * Mark a field as synced
+   * @param name - The name of the field
+   */
+  const markSynced = useCallback((name: string) => {
+    setUnsyncedFields((prev) => {
+      if (!prev.has(name)) return prev;
+      const next = new Set(prev);
+      next.delete(name);
+      return next;
+    });
+  }, []);
+
   const websocketInstance = MuikkuWebsocket.getInstance();
 
   /**
@@ -70,6 +100,7 @@ export function useFieldManager(
           synced: false,
           syncError: "Ei yhteyttä",
         });
+        markUnsynced(name);
         return;
       }
 
@@ -79,6 +110,9 @@ export function useFieldManager(
       }
 
       context.setState({ synced: false });
+
+      // Mark as unsynced
+      markUnsynced(name);
 
       // Call modification callback
       onModification?.();
@@ -118,7 +152,14 @@ export function useFieldManager(
         }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
       }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE);
     },
-    [material, onModification, websocketInstance, workspace.id, userEntityId]
+    [
+      material,
+      onModification,
+      websocketInstance,
+      workspace.id,
+      userEntityId,
+      markUnsynced,
+    ]
   );
 
   // Setup websocket listeners
@@ -156,6 +197,9 @@ export function useFieldManager(
           fieldName: actualData.fieldName,
           value,
         });
+
+        // Mark as synced
+        markSynced(actualData.fieldName as string);
 
         // Handle success case
         if (nameContextRegistry.current[actualData.fieldName]) {
@@ -196,7 +240,7 @@ export function useFieldManager(
         );
       }
     };
-  }, [material, onAnswerSynced, websocketInstance, workspace.id]);
+  }, [material, onAnswerSynced, websocketInstance, workspace.id, markSynced]);
 
   // Cleanup timeouts on unmount
   useEffect(
@@ -213,7 +257,8 @@ export function useFieldManager(
     () => ({
       handleValueChange,
       nameContextRegistry: nameContextRegistry.current,
+      fieldAllSynced: unsyncedFields.size === 0,
     }),
-    [handleValueChange]
+    [handleValueChange, unsyncedFields.size]
   );
 }
