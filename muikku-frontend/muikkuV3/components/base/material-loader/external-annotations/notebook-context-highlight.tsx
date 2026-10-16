@@ -8,14 +8,14 @@ import {
 } from "~/actions/notebook/notebookV2";
 import { isNotebookContextHighlight } from "~/helper-functions/notebook";
 import { StateType } from "~/reducers";
-import MaterialHighlightShell from "./material-highlight-shell";
+import NotebookAnnotationShell from "./notebook-annotation-shell";
 import Button from "~/components/general/button";
 
 /**
- * MaterialContextHighlightProps
+ * NotebookContextHighlightProps
  */
-export interface MaterialContextHighlightProps {
-  highlightId: number;
+export interface NotebookContextHighlightProps {
+  notebookAnnotationId: number;
   children: React.ReactNode;
 }
 
@@ -23,13 +23,13 @@ export interface MaterialContextHighlightProps {
  * Saved context highlight with activate + actions menu.
  * @param props props
  */
-const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
-  const { highlightId, children } = props;
+const NotebookContextHighlight = (props: NotebookContextHighlightProps) => {
+  const { notebookAnnotationId, children } = props;
   const dispatch = useDispatch();
   const { t } = useTranslation("notebook");
 
   const note = useSelector((state: StateType) =>
-    state.notebookV2.notes?.find((n) => n.id === highlightId)
+    state.notebookV2.notes?.find((n) => n.id === notebookAnnotationId)
   );
 
   const highlightNote = note && isNotebookContextHighlight(note) ? note : null;
@@ -40,7 +40,7 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
    */
   const handleDelete = (closeDropdown: () => void) => {
     closeDropdown();
-    dispatch(beginNotebookV2NoteDeleteFromMaterial(highlightId));
+    dispatch(beginNotebookV2NoteDeleteFromMaterial(notebookAnnotationId));
   };
 
   /**
@@ -54,7 +54,7 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
     if (!highlightNote) {
       return;
     }
-    dispatch(beginNotebookV2ContextHighlightUpgrade(highlightId));
+    dispatch(beginNotebookV2ContextHighlightUpgrade(notebookAnnotationId));
   };
 
   const menuItems = highlightNote
@@ -85,9 +85,12 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
   // No note found (stale/orphan) → still activate, no menu
   if (!menuItems) {
     return (
-      <MaterialHighlightShell highlightId={highlightId} kind="highlight">
+      <NotebookAnnotationShell
+        notebookAnnotationId={notebookAnnotationId}
+        kind="highlight"
+      >
         {children}
-      </MaterialHighlightShell>
+      </NotebookAnnotationShell>
     );
   }
 
@@ -98,11 +101,14 @@ const MaterialContextHighlight = (props: MaterialContextHighlightProps) => {
       openByHover={false}
       closeOnClick={true}
     >
-      <MaterialHighlightShell highlightId={highlightId} kind="highlight">
+      <NotebookAnnotationShell
+        notebookAnnotationId={notebookAnnotationId}
+        kind="highlight"
+      >
         {children}
-      </MaterialHighlightShell>
+      </NotebookAnnotationShell>
     </Dropdown>
   );
 };
 
-export default MaterialContextHighlight;
+export default NotebookContextHighlight;

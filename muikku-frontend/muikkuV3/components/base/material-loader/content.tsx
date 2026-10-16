@@ -153,10 +153,11 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             readOnly={props.readOnly}
             answerable={props.answerable}
             answerRegistry={props.answerRegistry}
-            fieldSnapshotCapabilities={props.fieldSnapshotCapabilities}
+            fieldFeaturesCapabilities={props.fieldFeaturesCapabilities}
             onTakeFieldSnapshot={props.onTakeFieldSnapshot}
             onDeleteFieldSnapshot={props.onDeleteFieldSnapshot}
             onFieldsSyncStatusChange={props.onFieldsSyncStatusChange}
+            onUpdateFieldWithComments={props.onUpdateFieldWithComments}
             highlights={props.highlights}
           />
         )}
