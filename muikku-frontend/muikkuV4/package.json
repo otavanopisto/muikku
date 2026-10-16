@@ -12,6 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.5.1",
+    "@dnd-kit/react": "^0.5.1",
     "@floating-ui/react": "0.27.19",
     "@mantine/carousel": "9.4.2",
     "@mantine/charts": "9.4.2",

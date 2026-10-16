@@ -260,9 +260,9 @@ export interface FileFieldContent extends BaseFieldContent {
 }
 
 /**
- * FieldType
+ * Connect field term or counterpart
  */
-interface FieldType {
+export interface ConnectFieldItem {
   name: string;
   text: string;
 }
@@ -273,8 +273,8 @@ interface FieldType {
 export interface ConnectFieldContent extends BaseFieldContent {
   fieldName: "connect";
   name: string;
-  fields: FieldType[];
-  counterparts: FieldType[];
+  fields: ConnectFieldItem[];
+  counterparts: ConnectFieldItem[];
   connections: {
     field: string;
     counterpart: string;
