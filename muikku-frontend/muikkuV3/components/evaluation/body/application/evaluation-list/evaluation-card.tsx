@@ -32,6 +32,8 @@ import {
 import Dropdown from "~/components/general/dropdown";
 import { localize } from "~/locales/i18n";
 import EvaluationNoteDialog from "~/components/evaluation/dialogs/evaluation-note";
+import EditDeadlineDateDialog from "~/components/evaluation/dialogs/edit-deadline-date";
+import { getDaysUntilDeadline } from "~/components/evaluation/helper";
 
 /**
  * EvaluationCardProps
@@ -292,6 +294,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     transferred: "",
   };
 
+  const canEditDeadline =
+    state === "pending" ||
+    state === "pending_fail" ||
+    state === "pending_pass" ||
+    state === "interim_evaluation_request";
+
   return (
     <div className={`evaluation-card ${cardModifierMap[state]}`}>
       <EvaluationCardLabel
@@ -341,6 +349,25 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
               ) : null}
             </IconButton>
           </EvaluationNoteDialog>
+
+          {canEditDeadline ? (
+            <EditDeadlineDateDialog
+              evaluationAssessmentRequest={evaluationAssessmentRequest}
+            >
+              <Dropdown
+                openByHover
+                content={t("actions.editDeadline", { ns: "evaluation" })}
+              >
+                <IconButton
+                  aria-label={t("labels.editEvaluationDeadline", {
+                    ns: "evaluation",
+                  })}
+                  buttonModifiers="evaluation-deadline"
+                  icon="clock"
+                />
+              </Dropdown>
+            </EditDeadlineDateDialog>
+          ) : null}
         </div>
 
         <div className="evaluation-card__button-set">
@@ -541,6 +568,11 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       ? localize.date(evaluationAssessmentRequest.assessmentRequestDate)
       : "-";
 
+  const evaluationDeadlineLocalized =
+    evaluationAssessmentRequest.deadline !== null
+      ? localize.date(evaluationAssessmentRequest.deadline)
+      : "-";
+
   const enrollmentDateRow = (
     <EvaluationCardContentRow
       hightlight={evaluationAssessmentRequest.state === "unassessed"}
@@ -573,6 +605,27 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       </span>
     </EvaluationCardContentRow>
   );
+
+  const daysUntilDeadline = getDaysUntilDeadline(evaluationAssessmentRequest);
+  const isDeadlineReached =
+    daysUntilDeadline !== null && daysUntilDeadline <= 0;
+
+  const evaluationDeadlineRow =
+    evaluationAssessmentRequest.state !== "incomplete" ? (
+      <EvaluationCardContentRow
+        hightlight={isDeadlineReached}
+        color={isDeadlineReached ? "fatal" : undefined}
+      >
+        <span className="evaluation-card__content-label">
+          {evaluationAssessmentRequest.state === "interim_evaluation_request"
+            ? t("labels.mustGiveFeedbackBy", { ns: "evaluation" })
+            : t("labels.mustBeEvaluatedBy", { ns: "evaluation" })}
+        </span>
+        <span className="evaluation-card__content-data">
+          {evaluationDeadlineLocalized}
+        </span>
+      </EvaluationCardContentRow>
+    ) : null;
 
   const evaluatedRow = (
     <EvaluationCardContentRow
@@ -614,6 +667,7 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       {enrollmentDateRow}
       {evaluationRequestRow}
       {evaluatedRow}
+      {evaluationDeadlineRow}
       {tasksDonwRow}
     </div>
   );
@@ -637,11 +691,16 @@ const EvaluationCardFooter = (props: EvaluationCardFooterProps) => {
   return <div className="evaluation-card__footer">{children}</div>;
 };
 
+// Evaluation card content row color types. Can be expanded in the future if
+// more colors are needed.
+type EvaluationCardContentRowColor = "fatal";
+
 /**
  * EvaluationCardContentRowProps
  */
 interface EvaluationCardContentRowProps {
   hightlight?: boolean;
+  color?: EvaluationCardContentRowColor;
   children: React.ReactNode;
 }
 
@@ -656,13 +715,13 @@ const defaultProps: Partial<EvaluationCardContentRowProps> = {
 const EvaluationCardContentRow = (props: EvaluationCardContentRowProps) => {
   props = { ...defaultProps, ...props };
 
-  const { hightlight, children } = props;
+  const { hightlight, children, color } = props;
 
   return (
     <div
       className={`evaluation-card__content-row ${
         hightlight ? "evaluation-card__content-row--highlight" : ""
-      }`}
+      } ${color ? `evaluation-card__content-row--${color}` : ""}`}
     >
       {children}
     </div>

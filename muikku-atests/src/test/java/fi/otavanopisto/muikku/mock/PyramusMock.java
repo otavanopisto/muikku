@@ -925,11 +925,11 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
+      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date, OffsetDateTime deadline) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
         
         if (courseStudentId != null && requestText != null) {
-          CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
+          CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, deadline, requestText, archived, handled);
           assessmentRequests.add(assessmentRequest);
           
           stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
@@ -968,8 +968,8 @@ public class PyramusMock {
         return this;
       }
 
-      public Builder mockAssessmentRequestLocking(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
-        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
+      public Builder mockAssessmentRequestLocking(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date, OffsetDateTime deadline) throws JsonProcessingException {
+        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, deadline, requestText, archived, handled);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId)))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
@@ -1012,9 +1012,9 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder addCompositeCourseAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, OffsetDateTime date, boolean passing) {
+      public Builder addCompositeCourseAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, OffsetDateTime date, OffsetDateTime deadline, boolean passing) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
+        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, deadline, requestText, archived, handled);
 
         CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
         assessmentRequest.setId(Long.parseLong(courseId + "" + studentId));
@@ -1072,9 +1072,9 @@ public class PyramusMock {
       }
       
       public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled,
-          Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date, boolean passing) {
+          Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date, OffsetDateTime deadline, boolean passing) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
+        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, deadline, requestText, archived, handled);
         CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
         assessmentRequest.setId(Long.parseLong(courseId + "" + studentId));
         assessmentRequest.setCourseStudentId(courseStudentId);
