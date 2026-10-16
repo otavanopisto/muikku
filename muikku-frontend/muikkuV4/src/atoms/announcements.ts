@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { atomWithQuery, atomWithMutation } from "jotai-tanstack-query";
-import { getAnnouncerApi } from "~/api";
+import { getAnnouncerApi, isMApiError, isResponseError } from "~/api";
 import type { GetAnnouncementsRequest } from "~/generated/client";
 import {
   queryClient,
@@ -20,6 +20,8 @@ export const frontpageAnnouncementsQueryAtom = atomWithQuery(() => {
       try {
         return await announcerApi.getAnnouncements(params);
       } catch (error) {
+        if (!isMApiError(error)) throw error;
+        if (isResponseError(error)) throw new Error(error.message);
         throw new Error("Failed to get announcements");
       }
     },
@@ -65,6 +67,8 @@ export const toggleAnnouncementRead = atom(
           currentAnnouncements.unreadCount + (announcementUnreadState ? -1 : 1),
       });
     } catch (error) {
+      if (!isMApiError(error)) throw error;
+      if (isResponseError(error)) throw new Error(error.message);
       throw new Error("Failed to toggle announcement read");
     }
   }
@@ -93,6 +97,8 @@ export const toggleAnnouncementPinned = atom(
         ),
       });
     } catch (error) {
+      if (!isMApiError(error)) throw error;
+      if (isResponseError(error)) throw new Error(error.message);
       throw new Error("Failed to set announcement pinned");
     }
   }

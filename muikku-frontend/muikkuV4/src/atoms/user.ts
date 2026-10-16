@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { getUserApi, isMApiError } from "~/api";
 
@@ -59,3 +60,9 @@ export const lastWorkspacesQueryAtom = atomWithQuery(() => ({
   },
   staleTime: Infinity,
 }));
+
+export const lastWorkspacesDataAtom = atom(
+  (get) =>
+    get(lastWorkspacesQueryAtom).data ??
+    ([] as WorkspaceMaterialReferenceType[])
+);

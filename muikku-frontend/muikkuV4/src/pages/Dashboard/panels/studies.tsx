@@ -1,6 +1,6 @@
-import { Title, Text, Paper, Button, Stack } from "@mantine/core";
-import { useAtom, useAtomValue } from "jotai";
-import { lastWorkspacesQueryAtom } from "src/atoms/user";
+import { Title, Button, Stack } from "@mantine/core";
+import { useAtomValue } from "jotai";
+import { lastWorkspacesDataAtom } from "src/atoms/user";
 import { Link } from "react-router";
 import { Empty } from "src/components/Empty";
 import { Fragment } from "react";
@@ -11,15 +11,15 @@ import Panel from "~/src/components/Panel/Panel";
  * @returns
  */
 export function Workspaces() {
-  const lastWorkspaces = useAtomValue(lastWorkspacesQueryAtom);
+  const lastWorkspaces = useAtomValue(lastWorkspacesDataAtom);
 
-  if (lastWorkspaces.data?.length === 0) {
+  if (lastWorkspaces.length === 0) {
     return <Empty title="No workspaces found" />;
   }
   return (
     <Panel title="TODO: Localize Studies">
       <Stack>
-        {lastWorkspaces.data?.map((workspace) => (
+        {lastWorkspaces.map((workspace) => (
           <Fragment key={workspace.workspaceId}>
             <Title order={3} mb="md">
               Jatka opintoja: {workspace.workspaceName} -{" "}

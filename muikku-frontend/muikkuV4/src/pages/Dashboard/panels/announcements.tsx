@@ -55,7 +55,7 @@ export function Announcements() {
     ];
   };
 
-  const generateAnnouncementState = (announcement: Announcement) => (
+  const generateAnnouncementIcons = (announcement: Announcement) => (
     <Group gap="0">
       {announcement.pinned && (
         <Tooltip label="Pinned">
@@ -80,12 +80,13 @@ export function Announcements() {
       <Stack>
         {announcements?.announcements.map((announcement) => (
           <Panel.Item
+            variant="warning"
             itemId={announcement.id}
             key={announcement.id}
             title={announcement.caption}
             date={localize.date(announcement.created, "DD.MM.YYYY")}
             unseen={announcement.unread}
-            itemState={generateAnnouncementState(announcement)}
+            icons={generateAnnouncementIcons(announcement)}
             itemActions={generateAnnouncementActions(announcement)}
           />
         ))}

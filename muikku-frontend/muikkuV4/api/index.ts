@@ -7,6 +7,7 @@ import {
   CredentialsApi,
   DiscussionApi,
   EvaluationApi,
+  EventsApi,
   FeedsApi,
   GuiderApi,
   HopsApi,
@@ -116,6 +117,7 @@ let coursepickerApi: CoursepickerApi;
 let credentialsApi: CredentialsApi;
 let discussionApi: DiscussionApi;
 let evaluationApi: EvaluationApi;
+let eventsApi: EventsApi;
 let feedsApi: FeedsApi;
 let guiderApi: GuiderApi;
 let hopsApi: HopsApi;
@@ -135,6 +137,17 @@ let workspaceApi: WorkspaceApi;
 let workspaceDiscussionApi: WorkspaceDiscussionApi;
 let workspaceNotesApi: WorkspaceNotesApi;
 let studentCardApi: StudentCardsApi;
+
+/**
+ * Gets initialized EventsApi
+ * @returns EventsApi
+ */
+export function getEventsApi() {
+  if (!eventsApi) {
+    eventsApi = new EventsApi(configuration);
+  }
+  return eventsApi;
+}
 
 /**
  * Gets initialized WorkspaceApi

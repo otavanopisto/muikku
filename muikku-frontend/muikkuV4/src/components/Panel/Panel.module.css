@@ -19,3 +19,15 @@
   align-items: center;
   gap: 0.15rem;
 }
+
+.panelItemImportant {
+  background-color: var(--mantine-color-important);
+}
+
+.panelItemWarning {
+  background-color: var(--mantine-color-warning);
+}
+
+.panelItemSuccess {
+  background-color: var(--mantine-color-success);
+}

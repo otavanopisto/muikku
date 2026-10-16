@@ -17,6 +17,7 @@ export const FRONTPAGE_ANNOUNCEMENTS_QUERY_KEY = [
   "frontpage",
   "announcements",
 ] as const;
+export const FRONTPAGE_ABSENCES_QUERY_KEY = ["frontpage", "absences"] as const;
 
 // Shared query keys for the workspace.
 export const workspaceBasicInfoQueryKey = (urlName: string) =>

@@ -1,6 +1,7 @@
 import { Workspaces } from "../panels/studies";
 import { Announcements } from "../panels/announcements";
 import { Messages } from "../panels/messages";
+import { Absences } from "../panels/absences";
 
 export interface Panel {
   id: number;
@@ -58,5 +59,14 @@ export const panels: Panel[] = [
     mandatory: true,
     color: "cyan",
     component: Announcements,
+  },
+  {
+    id: 6,
+    title: "Poissaolot",
+    description: "",
+    icon: null,
+    mandatory: false,
+    color: "teal",
+    component: Absences,
   },
 ];

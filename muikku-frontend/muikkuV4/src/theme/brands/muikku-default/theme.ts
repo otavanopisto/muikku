@@ -1,5 +1,5 @@
 import { colorsTuple, createTheme, virtualColor } from "@mantine/core";
-import { brand /* , dark */ } from "./colors";
+import { aborted, brand, error, info, success, warning } from "./colors";
 import { muikkuTokens } from "./tokens";
 
 export const muikkuDefaultTheme = createTheme({
@@ -8,6 +8,11 @@ export const muikkuDefaultTheme = createTheme({
 
   colors: {
     brand,
+    warning,
+    error,
+    info,
+    success,
+    aborted,
     darkPanel: colorsTuple("oklch(27.6% 0.0233 248.68)"),
     lightPanel: colorsTuple("oklch(1 0 0)"),
     // Panel title text colors

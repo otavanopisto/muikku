@@ -8,6 +8,7 @@ import {
   Tooltip,
   Menu,
   ActionIcon,
+  Badge,
   Group,
 } from "@mantine/core";
 import { IconDotsVertical } from "@tabler/icons-react";
@@ -64,16 +65,24 @@ export interface PanelMenuItem {
   icon?: React.ReactNode;
 }
 
+export type PanelItemVariant = "important" | "warning" | "success";
+
+export type PanelItemState = {
+  label: string;
+  state: PanelItemVariant;
+};
 /**
  * PanelItem component
  */
 interface PanelItemProps {
   title: string;
-  date: string;
+  date: string | React.ReactNode;
   itemId: number;
+  variant?: "important" | "warning" | "success";
   unseen?: boolean;
   itemActions?: PanelMenuItem[];
-  itemState?: React.ReactNode;
+  icons?: React.ReactNode;
+  states?: PanelItemState | PanelItemState[];
 }
 
 /**
@@ -81,7 +90,8 @@ interface PanelItemProps {
  * @returns
  */
 function PanelItem(props: PanelItemProps) {
-  const { title, date, itemId, unseen, itemActions, itemState } = props;
+  const { title, date, itemId, unseen, itemActions, states, icons, variant } =
+    props;
   const titleColor =
     unseen === undefined
       ? "panelTitleText"
@@ -113,13 +123,34 @@ function PanelItem(props: PanelItemProps) {
   );
   return (
     <Box key={itemId} mt="md">
-      <Title c={titleColor} order={3} className={styles.panelItemTitle}>
+      <Title c={titleColor} order={4} className={styles.panelItemTitle}>
         <Box className={styles.panelItemTitleContent}>
-          {itemState}
+          {icons}
           {title}
         </Box>
         {itemActions && <Group>{actions}</Group>}
       </Title>
+      {states && (
+        <Box bg={variant} className={styles.panelItemVariant}>
+          {Array.isArray(states) ? (
+            states.map((state) => (
+              <Badge
+                tt="none"
+                key={state.label + state.state}
+                variant="outline
+                "
+                color={state.state}
+              >
+                {state.label}
+              </Badge>
+            ))
+          ) : (
+            <Badge tt="none" variant="outline" color={states.state}>
+              {states.label}
+            </Badge>
+          )}
+        </Box>
+      )}
       <Text c={textColor}>{date}</Text>
     </Box>
   );
