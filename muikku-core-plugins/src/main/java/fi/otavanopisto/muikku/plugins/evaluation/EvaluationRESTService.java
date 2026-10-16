@@ -1841,6 +1841,7 @@ public class EvaluationRESTService extends PluginRESTService {
           workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
           request.getRequestText(),
           request.getDate(),
+          request.getDeadline(),
           Boolean.TRUE, // archived
           request.getHandled());
       }

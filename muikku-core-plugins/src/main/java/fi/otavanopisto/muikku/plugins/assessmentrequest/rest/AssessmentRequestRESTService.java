@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -108,6 +109,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   
   @Inject
   private EvaluationController evaluationController;
+  
+  @Inject
+  private GradingController gradingController;
   
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentPrice")
@@ -275,7 +279,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("The deadline may be no later than 14 days after the submission of the assessment request").build();
       }
       
-      assessmentRequest = assessmentRequestController.updateWorkspaceAssessmentRequestDeadline(workspaceEntity, student.getDefaultIdentifier(), Long.valueOf(assessmentRequest.getIdentifier()), deadline);
+      gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), student.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), deadline, true , assessmentRequest.getHandled());      
+      
       return Response.ok(assessmentRequestController.restModel(assessmentRequest)).build();
     }
     catch (Exception e) {

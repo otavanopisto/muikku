@@ -947,6 +947,7 @@ public class EvaluationController {
           userEntity.getDefaultIdentifier(),
           assessmentRequest.getRequestText(),
           assessmentRequest.getDate(),
+          assessmentRequest.getDeadline(),
           assessmentRequest.getArchived(),
           Boolean.TRUE); // handled
     }

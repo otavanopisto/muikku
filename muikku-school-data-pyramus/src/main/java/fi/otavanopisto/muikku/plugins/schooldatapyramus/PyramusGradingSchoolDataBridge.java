@@ -26,7 +26,6 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingS
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
-import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.GradingSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -354,46 +353,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null;
     }
     else {
-      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
+      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), null, requestText, Boolean.FALSE, Boolean.FALSE);
       return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
     }
-  }
-  
-  @Override
-  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestDeadline(
-      Long assessmentRequestId,
-      String workspaceIdentifier,
-      String studentIdentifier,
-      Date deadline) {
-
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-
-    if (courseId == null || studentId == null) {
-      logger.severe(String.format(
-          "Unable to resolve workspace %s or student %s",
-          workspaceIdentifier,
-          studentIdentifier));
-      return null;
-    }
-
-    String deadlineParam = deadline != null
-        ? deadline.toInstant().toString()
-        : "";
-    
-    String path = String.format(
-        "/students/students/%d/courses/%d/assessmentRequests/%d/deadline?deadline=%s",
-        studentId,
-        courseId,
-        assessmentRequestId,
-        deadlineParam);
-
-    BridgeResponse<CourseAssessmentRequest> response =
-        pyramusClient.responsePut(path, null, CourseAssessmentRequest.class);
-    
-    CourseAssessmentRequest request = response.getEntity();
-    
-    return request == null ? null : entityFactory.createEntity(request);
   }
 
   @Override
@@ -621,7 +583,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
-      String requestText, Date date, Boolean archived, Boolean handled) {
+      String requestText, Date date, Date deadline, Boolean archived, Boolean handled) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -647,7 +609,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, archived, handled);
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), deadline != null ? fromDateToOffsetDateTime(deadline) : null, requestText, archived, handled);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
 
