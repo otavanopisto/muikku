@@ -316,9 +316,9 @@ export interface OrganizerFieldContent extends BaseFieldContent {
 }
 
 /**
- * SorterFieldItemType
+ * Sorter field item
  */
-interface SorterFieldItemType {
+export interface SorterFieldItem {
   id: string;
   name: string;
 }
@@ -331,7 +331,7 @@ export interface SorterFieldContent extends BaseFieldContent {
   name: string;
   orientation: "vertical" | "horizontal";
   capitalize: boolean;
-  items: SorterFieldItemType[];
+  items: SorterFieldItem[];
 }
 
 /**
