@@ -282,25 +282,23 @@ export interface ConnectFieldContent extends BaseFieldContent {
 }
 
 /**
- * TermType
+ * Organizer field term
  */
-interface TermType {
+export interface OrganizerTerm {
   id: string;
   name: string;
 }
-
 /**
- * CategoryType
+ * Organizer field category
  */
-interface CategoryType {
+export interface OrganizerCategory {
   id: string;
   name: string;
 }
-
 /**
- * CategoryTerm
+ * Correct terms for one category
  */
-interface CategoryTerm {
+export interface OrganizerCategoryTerms {
   category: string;
   terms: string[];
 }
@@ -312,9 +310,9 @@ export interface OrganizerFieldContent extends BaseFieldContent {
   fieldName: "organizer";
   name: string;
   termTitle: string;
-  terms: TermType[];
-  categories: CategoryType[];
-  categoryTerms: CategoryTerm[];
+  terms: OrganizerTerm[];
+  categories: OrganizerCategory[];
+  categoryTerms: OrganizerCategoryTerms[];
 }
 
 /**
