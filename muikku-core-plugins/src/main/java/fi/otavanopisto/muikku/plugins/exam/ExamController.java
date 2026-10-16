@@ -394,6 +394,7 @@ public class ExamController {
     attendance.setMinutes(settingsJson.getMinutes());
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
     attendance.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntityId, workspaceFolderId));
+    attendance.setProctored(settingsJson.isProctored());
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
       // If exam has been evaluated, include a summary of points per assignment

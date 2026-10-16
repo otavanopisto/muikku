@@ -241,6 +241,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
+        systemSettingsController.getSetting("sys.env"),
         services); 
 
     return Response.ok(whoamiInfo).build();
