@@ -1,0 +1,37 @@
+.wrapper {
+  display: inline-flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 8px;
+  vertical-align: middle;
+}
+
+.select {
+  margin: 4px 0;
+  min-width: 8rem;
+}
+
+.select[data-state="correct"] {
+  border-color: var(--mantine-color-green-6);
+}
+
+.select[data-state="incorrect"] {
+  border-color: var(--mantine-color-red-6);
+}
+
+.list {
+  min-width: 12rem;
+}
+
+.radios[data-state="correct"] :global(.mantine-Radio-radio) {
+  border-color: var(--mantine-color-green-6);
+}
+
+.radios[data-state="incorrect"] :global(.mantine-Radio-radio) {
+  border-color: var(--mantine-color-red-6);
+}
+
+.examples {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-green-7);
+}

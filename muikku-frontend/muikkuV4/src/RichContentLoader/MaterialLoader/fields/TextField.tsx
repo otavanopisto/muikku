@@ -4,7 +4,7 @@ import type {
   FieldComponentProps,
   TextFieldContent,
 } from "../../coreMaterial/types";
-import { isCorrectTextAnswer } from "../../coreMaterial/utils/createFieldParameters";
+import { isCorrectTextAnswer } from "../../coreMaterial/utils/textField";
 import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
 import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
 

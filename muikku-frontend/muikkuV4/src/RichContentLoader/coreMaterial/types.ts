@@ -208,6 +208,15 @@ export interface TextFieldContent extends BaseFieldContent {
 }
 
 /**
+ * Select / multiselect option
+ */
+export interface SelectFieldOption {
+  name: string;
+  text: string;
+  correct: boolean;
+}
+
+/**
  * Select field content interface
  */
 export interface SelectFieldContent extends BaseFieldContent {
@@ -215,11 +224,7 @@ export interface SelectFieldContent extends BaseFieldContent {
   name: string;
   explanation: string;
   listType: "dropdown" | "list" | "radio-horizontal" | "radio-vertical";
-  options: {
-    correct: boolean;
-    text: string;
-    value: string;
-  }[];
+  options: SelectFieldOption[];
 }
 
 /**
@@ -230,11 +235,7 @@ export interface MultiSelectFieldContent extends BaseFieldContent {
   name: string;
   explanation: string;
   listType: "checkbox-horizontal" | "checkbox-vertical";
-  options: {
-    correct: boolean;
-    text: string;
-    value: string;
-  }[];
+  options: SelectFieldOption[];
 }
 
 /**
@@ -396,7 +397,7 @@ export interface FieldComponentProps<TContent = FieldContent> {
   invisible?: boolean;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => void;
+  onAnswerChange?: (name: string, value: boolean | null) => void;
   onChange?: (context: any, name: string, newValue: any) => void;
   userId?: number;
   status?: any;
