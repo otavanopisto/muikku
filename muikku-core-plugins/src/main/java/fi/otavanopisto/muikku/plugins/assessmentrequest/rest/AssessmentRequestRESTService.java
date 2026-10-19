@@ -259,6 +259,11 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     if (assessmentRequestIdentifierStr == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing assessment request id").build();
     }
+    
+    if (!sessionController.hasPermission(AssessmentRequestPermissions.UPDATE_ASSESSMENT_REQUEST_DEADLINE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     try {
       SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestIdentifierStr);
       UserEntity student = userEntityController.findUserEntityById(studentEntityId);

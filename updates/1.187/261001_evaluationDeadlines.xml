@@ -2,6 +2,6 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
    <sql>
-     alter table interimevaluationrequest add column deadline datetime;
+     alter table InterimEvaluationRequest add column deadline datetime;
    </sql>
 </update>

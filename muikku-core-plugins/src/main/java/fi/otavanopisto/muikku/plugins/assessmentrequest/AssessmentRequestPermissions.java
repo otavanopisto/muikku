@@ -25,6 +25,11 @@ public class AssessmentRequestPermissions extends AbstractMuikkuPermissionCollec
   @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_WORKSPACE_ASSESSMENTREQUESTS = "LIST_WORKSPACE_ASSESSMENTREQUESTS";
   
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER })
+  public static final String UPDATE_ASSESSMENT_REQUEST_DEADLINE = "UPDATE_ASSESSMENT_REQUEST_DEADLINE";
+  
   @Override
   public List<String> listPermissions() {
     return listPermissions(AssessmentRequestPermissions.class);
