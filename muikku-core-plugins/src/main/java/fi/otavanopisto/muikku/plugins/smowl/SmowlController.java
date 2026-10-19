@@ -41,10 +41,11 @@ public class SmowlController {
   public boolean isSmowlAvailable() {
     return
         StringUtils.isNotBlank(systemSettingsController.getSetting("sys.env")) &&
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.apiKey")) &&
         StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.audience")) &&
         StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.entityName")) &&
-        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.licenseKey")) &&
-        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.jwtSecret"));
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.jwtSecret")) &&
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.licenseKey"));
   }
 
   public void setActivity(Long examId, boolean enabled) {
