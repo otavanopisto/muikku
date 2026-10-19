@@ -8,7 +8,7 @@ import { MaterialLoader } from "src/RichContentLoader/";
 import type { Workspace } from "src/RichContentLoader/coreMaterial/types";
 import { getAssignmentChrome } from "./tocChrome";
 import classes from "./SectionView.module.css";
-import { scrollToElement } from "./scrollElement";
+import { scrollToElementWhenSettled } from "./scrollElement";
 import { useAtomValue } from "jotai";
 import {
   workspaceCompositeRepliesAsyncStateAtom,
@@ -40,8 +40,11 @@ function pageMinHeight(page: MaterialContentNode, index: number): number {
  */
 export function SectionView(props: SectionViewProps) {
   const { section, pages, page, workspace } = props;
+  const repliesReady =
+    useAtomValue(workspaceCompositeRepliesAsyncStateAtom) === "ready";
 
   useEffect(() => {
+    if (!workspace || !repliesReady) return;
     const id =
       page?.workspaceMaterialId != null
         ? `p-${page.workspaceMaterialId}`
@@ -49,10 +52,13 @@ export function SectionView(props: SectionViewProps) {
           ? `s-${section.workspaceMaterialId}`
           : undefined;
     if (!id) return;
-    const el = document.getElementById(id);
-    if (!el) return;
-    scrollToElement(el);
-  }, [page?.workspaceMaterialId, section?.workspaceMaterialId]);
+    return scrollToElementWhenSettled(() => document.getElementById(id));
+  }, [
+    page?.workspaceMaterialId,
+    section?.workspaceMaterialId,
+    workspace,
+    repliesReady,
+  ]);
 
   return (
     <Stack gap="md">
@@ -110,10 +116,6 @@ function SectionPage(props: {
     workspaceCompositeReplyAtomFamily(page.workspaceMaterialId ?? -1)
   );
 
-  if (!repliesReady) {
-    return /* existing min-height shell */;
-  }
-
   const chrome = getAssignmentChrome(page.assignmentType);
   const stripe = chrome.color
     ? `var(--mantine-color-${chrome.color}-6)`
@@ -137,16 +139,18 @@ function SectionPage(props: {
       }}
     >
       <Box mih={minHeight - 48}>
-        <MaterialLoader
-          material={page}
-          workspace={workspace}
-          folder={folder ?? undefined}
-          compositeReplies={reply}
-          config={{
-            enableButtons: true,
-            answerable: user?.loggedIn ?? false,
-          }}
-        />
+        {repliesReady ? (
+          <MaterialLoader
+            material={page}
+            workspace={workspace}
+            folder={folder ?? undefined}
+            compositeReplies={reply}
+            config={{
+              enableButtons: true,
+              answerable: user?.loggedIn ?? false,
+            }}
+          />
+        ) : null}
       </Box>
     </Paper>
   );
