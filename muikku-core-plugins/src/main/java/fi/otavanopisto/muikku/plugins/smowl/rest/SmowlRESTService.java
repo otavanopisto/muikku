@@ -56,11 +56,6 @@ public class SmowlRESTService extends AbstractRESTService {
   @Inject
   private SystemSettingsController systemSettingsController; 
 
-  /*
-  insert into SystemSetting (settingKey, settingValue) values ('smowl.entityName', ''), ('smowl.apiKey', ''), 
-    ('smowl.audience', ''), ('smowl.licenseKey', ''), ('smowl.jwtSecret', ''), ('sys.env', '');
-  */
-  
   @POST
   @Path("/signjwt")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
