@@ -33,6 +33,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.plugins.smowl.SmowlController;
 import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.model.UserWhoAmIInfo;
@@ -107,6 +108,9 @@ public class WhoAmIRESTService extends AbstractRESTService {
 
   @Inject
   private ForumController forumController;
+  
+  @Inject
+  private SmowlController smowlController;
   
   @Inject
   private WorklistController worklistController;
@@ -204,11 +208,14 @@ public class WhoAmIRESTService extends AbstractRESTService {
      */
     boolean hopsAvailable = user != null && (StringUtils.equals("lukio", user.getEducationTypeCode()) || StringUtils.equals("peruskoulu", user.getEducationTypeCode()));
     
+    boolean smowlAvailable = smowlController.isSmowlAvailable();
+    
     UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
         chatAvailable,
         worklistAvailable,
         environmentForumAvailable,
-        hopsAvailable
+        hopsAvailable,
+        smowlAvailable
     );
     
     // Result object

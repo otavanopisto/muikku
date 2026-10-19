@@ -35,6 +35,18 @@ public class SmowlController {
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
 
+  /**
+   * @return true if Smowl variables are set up.
+   */
+  public boolean isSmowlAvailable() {
+    return
+        StringUtils.isNotBlank(systemSettingsController.getSetting("sys.env")) &&
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.audience")) &&
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.entityName")) &&
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.licenseKey")) &&
+        StringUtils.isNotBlank(systemSettingsController.getSetting("smowl.jwtSecret"));
+  }
+
   public void setActivity(Long examId, boolean enabled) {
     // Name for this exam folder in Smowl
     final String examIdentifier = String.format("%s%d", systemSettingsController.getSetting("sys.env"), examId);
