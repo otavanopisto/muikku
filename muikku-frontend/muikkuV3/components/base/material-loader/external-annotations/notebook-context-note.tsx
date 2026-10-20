@@ -5,14 +5,14 @@ import Dropdown from "~/components/general/dropdown";
 import { beginNotebookV2NoteDeleteFromMaterial } from "~/actions/notebook/notebookV2";
 import { isNotebookContextNote } from "~/helper-functions/notebook";
 import { StateType } from "~/reducers";
-import MaterialHighlightShell from "./material-highlight-shell";
+import NotebookAnnotationShell from "./notebook-annotation-shell";
 import Button from "~/components/general/button";
 
 /**
- * MaterialContextNoteProps
+ * NotebookContextNoteProps
  */
-export interface MaterialContextNoteProps {
-  highlightId: number;
+export interface NotebookContextNoteProps {
+  notebookAnnotationId: number;
   children: React.ReactNode;
 }
 
@@ -20,13 +20,13 @@ export interface MaterialContextNoteProps {
  * Saved context note annotation with activate + delete.
  * @param props props
  */
-const MaterialContextNote = (props: MaterialContextNoteProps) => {
-  const { highlightId, children } = props;
+const NotebookContextNote = (props: NotebookContextNoteProps) => {
+  const { notebookAnnotationId, children } = props;
   const dispatch = useDispatch();
   const { t } = useTranslation("notebook");
 
   const note = useSelector((state: StateType) =>
-    state.notebookV2.notes?.find((n) => n.id === highlightId)
+    state.notebookV2.notes?.find((n) => n.id === notebookAnnotationId)
   );
 
   const contextNote = note && isNotebookContextNote(note) ? note : null;
@@ -37,7 +37,7 @@ const MaterialContextNote = (props: MaterialContextNoteProps) => {
    */
   const handleDelete = (closeDropdown: () => void) => {
     closeDropdown();
-    dispatch(beginNotebookV2NoteDeleteFromMaterial(highlightId));
+    dispatch(beginNotebookV2NoteDeleteFromMaterial(notebookAnnotationId));
   };
 
   const menuItems = contextNote
@@ -57,9 +57,12 @@ const MaterialContextNote = (props: MaterialContextNoteProps) => {
 
   if (!menuItems) {
     return (
-      <MaterialHighlightShell highlightId={highlightId} kind="note">
+      <NotebookAnnotationShell
+        notebookAnnotationId={notebookAnnotationId}
+        kind="note"
+      >
         {children}
-      </MaterialHighlightShell>
+      </NotebookAnnotationShell>
     );
   }
 
@@ -70,11 +73,14 @@ const MaterialContextNote = (props: MaterialContextNoteProps) => {
       openByHover={false}
       closeOnClick={true}
     >
-      <MaterialHighlightShell highlightId={highlightId} kind="note">
+      <NotebookAnnotationShell
+        notebookAnnotationId={notebookAnnotationId}
+        kind="note"
+      >
         {children}
-      </MaterialHighlightShell>
+      </NotebookAnnotationShell>
     </Dropdown>
   );
 };
 
-export default MaterialContextNote;
+export default NotebookContextNote;

@@ -1,0 +1,101 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// Defaults
+.slide-drawer {
+  background: $color-default;
+  box-shadow: 0 25px 20px $color-evaluation-drawer-shadow;
+  font-family: $system-font-family;
+  height: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 9991; // above .dialog (9990); this component always portals to body
+
+  @include breakpoint($breakpoint-pad) {
+    width: 75%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }
+}
+
+.slide-drawer__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.slide-drawer__header {
+  align-items: center;
+  background: $color-default;
+  display: flex;
+  justify-content: space-between;
+  min-height: 30px;
+  padding: 12px 0;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.slide-drawer__header-title {
+  flex-grow: 1;
+  font-size: 1.25rem;
+  line-height: 2rem;
+  padding: 0 10px;
+}
+
+.slide-drawer__content {
+  flex-grow: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 10px;
+}
+
+.slide-drawer__footer {
+  flex-shrink: 0;
+  padding: 10px;
+}
+
+.slide-drawer__button-set {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+  }
+
+  .button {
+    margin: 0 0 0 10px;
+
+    @include breakpoint($breakpoint-desktop) {
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+// Feature-specific modifiers (same file, after defaults)
+
+.slide-drawer--make-comments {
+  // first consumer; override width/z-index here if needed
+}
+
+.slide-drawer__content--make-comments {
+  .cke {
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}

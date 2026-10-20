@@ -19,9 +19,10 @@ import {
 import {
   createFieldSnapshot,
   deleteFieldSnapshot,
+  updateAnswerWithComments,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { resolveEvaluationFieldSnapshotCapabilities } from "~/components/base/material-loader/helpers";
-import { FieldSnapshotCapabilities } from "~/components/base/material-loader/types";
+import { resolveEvaluationFieldFeatures } from "~/components/base/material-loader/helpers";
+import { FieldActionCapabilities } from "~/components/base/material-loader/types";
 
 /**
  * EvaluationMaterialProps
@@ -90,9 +91,9 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
    */
   const handleTakeFieldSnapshot = (
     fieldName: string,
-    cap: FieldSnapshotCapabilities
+    cap: FieldActionCapabilities
   ) => {
-    if (!cap.snapshotCanTake) {
+    if (!cap.canCreate) {
       return;
     }
 
@@ -114,9 +115,9 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
   const handleDeleteFieldSnapshot = (
     fieldName: string,
     snapshotId: number,
-    cap: FieldSnapshotCapabilities
+    cap: FieldActionCapabilities
   ) => {
-    if (!cap.snapshotCanDelete) {
+    if (!cap.canDelete) {
       return;
     }
 
@@ -125,6 +126,31 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
         snapshotId: snapshotId,
         workspaceMaterialId: compositeReply.workspaceMaterialId,
         fieldName: fieldName,
+      })
+    );
+  };
+
+  /**
+   * Handles updating a field with comments
+   * @param fieldName fieldName
+   * @param content content
+   * @param onSuccess onSuccess
+   * @param onFail onFail
+   */
+  const handleUpdateFieldWithComments = (
+    fieldName: string,
+    content: string,
+    onSuccess: () => void,
+    onFail: () => void
+  ) => {
+    dispatch(
+      updateAnswerWithComments({
+        userEntityId: userEntityId,
+        workspaceMaterialId: compositeReply.workspaceMaterialId,
+        fieldName,
+        content,
+        onSuccess,
+        onFail,
       })
     );
   };
@@ -141,9 +167,10 @@ const EvaluationMaterial = (props: EvaluationMaterialProps) => {
       userEntityId={userEntityId}
       answerable={true}
       status={status}
-      fieldSnapshotPolicy={resolveEvaluationFieldSnapshotCapabilities}
+      fieldFeaturesPolicy={resolveEvaluationFieldFeatures}
       onTakeFieldSnapshot={handleTakeFieldSnapshot}
       onDeleteFieldSnapshot={handleDeleteFieldSnapshot}
+      onUpdateFieldWithComments={handleUpdateFieldWithComments}
       websocket={websocket}
     >
       {(props, state, stateConfiguration) => (

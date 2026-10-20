@@ -60,6 +60,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestInterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestTextFieldAnswer;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
@@ -72,6 +73,8 @@ import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
+import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QueryFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
@@ -79,6 +82,8 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -86,6 +91,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
@@ -192,6 +198,18 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
+  @Inject
+  private WorkspaceMaterialTextFieldAnswerDAO workspaceMaterialTextFieldAnswerDAO;
+  
+  @Inject
+  private QueryFieldDAO queryFieldDAO;
+
+  @Inject
+  private MaterialDAO materialDAO;
+
+  @Inject
+  private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
+
   @Inject
   private EvaluationDeleteController evaluationDeleteController;
   
@@ -773,6 +791,45 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @PUT
+  @Path("/user/{USERENTITYID}/workspaceMaterial/{WORKSPACEMATERIALID}/field/{FIELDNAME}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceMaterialFieldAnswer(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("FIELDNAME") String fieldName, RestTextFieldAnswer payload) {
+    if (payload == null || StringUtils.isEmpty(payload.getText()) || !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing userEntity").build();
+    }
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterial").build();
+    }
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    if (reply == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialReply").build();
+    }
+    Material material = materialDAO.findById(workspaceMaterial.getMaterialId());
+    if (material == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing material").build();
+    }
+    QueryField queryField = queryFieldDAO.findByMaterialAndName(material, fieldName);
+    if (queryField == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing queryField").build();
+    }
+    WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.findByWorkspaceMaterialAndQueryField(workspaceMaterial, queryField);
+    if (workspaceMaterialField == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialField").build();
+    }
+    WorkspaceMaterialTextFieldAnswer answer = workspaceMaterialTextFieldAnswerDAO.findByFieldAndReply(workspaceMaterialField, reply);
+    if (answer == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialTextFieldAnswer").build();
+    }
+    workspaceMaterialTextFieldAnswerDAO.updateValue(answer, payload.getText());
+    return Response.ok(payload).build(); 
+  }
+  
+  @PUT
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/node/{WORKSPACENODEID}/assessment/{ASSESSMENTID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceNodeAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @PathParam("ASSESSMENTID") Long assessmentId, RestAssessmentWithAudio payload) {
@@ -780,9 +837,6 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
