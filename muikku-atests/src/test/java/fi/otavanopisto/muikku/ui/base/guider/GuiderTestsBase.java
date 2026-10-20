@@ -293,11 +293,11 @@ public class GuiderTestsBase extends AbstractUITest {
         .build();
         
         mockBuilder
-          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
+          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date, date.plusDays(14))
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
+          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, date.plusDays(14), false)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
+          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, date.plusDays(14), false)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockIAmCounselor();
         
@@ -332,9 +332,9 @@ public class GuiderTestsBase extends AbstractUITest {
         sairmList.add(sairm);
         
         mockBuilder
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, date.plusDays(14), true)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date)
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date, date.plusDays(14))
         .mockStudyActivity(sairmList);
         // First test the course listing in the "situation"-tab
         mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          

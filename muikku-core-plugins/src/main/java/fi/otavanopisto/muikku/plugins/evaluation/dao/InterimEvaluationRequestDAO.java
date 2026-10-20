@@ -23,6 +23,7 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
       Long workspaceEntityId,
       Long workspaceMaterialId,
       Date requestDate,
+      Date deadline,
       String requestText) {
     InterimEvaluationRequest interimEvaluationRequest = new InterimEvaluationRequest();
     
@@ -30,6 +31,7 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
     interimEvaluationRequest.setWorkspaceEntityId(workspaceEntityId);
     interimEvaluationRequest.setWorkspaceMaterialId(workspaceMaterialId);
     interimEvaluationRequest.setRequestDate(requestDate);
+    interimEvaluationRequest.setDeadline(deadline);
     interimEvaluationRequest.setRequestText(requestText);
     interimEvaluationRequest.setCancellationDate(null);
     interimEvaluationRequest.setArchived(Boolean.FALSE);
@@ -45,6 +47,12 @@ public class InterimEvaluationRequestDAO extends CorePluginsDAO<InterimEvaluatio
     interimEvaluationRequest.setCancellationDate(cancellationDate);
     interimEvaluationRequest.setRequestText(requestText);
     interimEvaluationRequest.setArchived(archived);
+    
+    return persist(interimEvaluationRequest);
+  }
+  
+  public InterimEvaluationRequest updateInterimEvaluationRequestDeadline(InterimEvaluationRequest interimEvaluationRequest, Date deadline) {
+    interimEvaluationRequest.setDeadline(deadline);
     
     return persist(interimEvaluationRequest);
   }
