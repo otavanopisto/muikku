@@ -19441,7 +19441,7 @@ components:
         sysEnv:
           type: string
           nullable: true
-          description: System environment the code is running on, e.g. dev-mynane
+          description: System environment the code is running on, e.g. demo. Alphanumeric characters only, preferably four characters in length. 
 
     UserWhoAmIServices:
       type: object
