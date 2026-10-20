@@ -3024,17 +3024,23 @@ const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
           studentEntityId: studentEntityId,
         });
 
-        const smowlApiAccountInfo = await getSmowlApiAccountInfo();
+        let smowlApiAccountInfo = null;
+        // Smowl is gated by the service availability
+        if (getState().status.services.smowl?.isAvailable ?? false) {
+          smowlApiAccountInfo = await getSmowlApiAccountInfo();
+        }
 
         dispatch({
           type: "EVALUATION_EXAMS_LOAD",
           payload: exams,
         });
 
-        dispatch({
-          type: "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD",
-          payload: smowlApiAccountInfo,
-        });
+        if (smowlApiAccountInfo) {
+          dispatch({
+            type: "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD",
+            payload: smowlApiAccountInfo,
+          });
+        }
 
         dispatch({
           type: "EVALUATION_EXAMS_STATE_UPDATE",

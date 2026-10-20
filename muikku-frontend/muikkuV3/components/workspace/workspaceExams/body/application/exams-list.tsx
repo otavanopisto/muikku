@@ -34,7 +34,7 @@ interface ExamsListProps {}
 const ExamsList = (props: ExamsListProps) => {
   const { t } = useTranslation(["exams", "evaluation", "common"]);
   const { exams, examsStatus } = useSelector((state: StateType) => state.exams);
-  const { isStudent, sysEnvironment } = useSelector(
+  const { isStudent, sysEnvironment, services } = useSelector(
     (state: StateType) => state.status
   );
   const currentWorkspace = useSelector(
@@ -67,6 +67,7 @@ const ExamsList = (props: ExamsListProps) => {
           exam={exam}
           isStudent={isStudent}
           sysEnvironment={sysEnvironment}
+          isSmowlAvailable={services.smowl?.isAvailable ?? false}
         />
       ))}
     </div>
@@ -80,6 +81,7 @@ interface ExamsListItemProps {
   exam: ExamAttendance;
   isStudent: boolean;
   sysEnvironment: string;
+  isSmowlAvailable: boolean;
 }
 
 /**
@@ -88,7 +90,7 @@ interface ExamsListItemProps {
  * @returns ExamsListItem
  */
 const ExamsListItem = (props: ExamsListItemProps) => {
-  const { exam, isStudent, sysEnvironment } = props;
+  const { exam, isStudent, sysEnvironment, isSmowlAvailable } = props;
   const { workspaceUrl } = useParams<{ workspaceUrl: string }>();
   const { t } = useTranslation(["evaluation", "common"]);
 
@@ -338,7 +340,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
               </Link>
             )}
 
-            {!isStudent && exam.proctored && (
+            {!isStudent && exam.proctored && isSmowlAvailable && (
               <SmowlRegistrationReportsDialog
                 activityId={exam.folderId}
                 lang="fi"
@@ -350,7 +352,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
               </SmowlRegistrationReportsDialog>
             )}
 
-            {!isStudent && exam.proctored && (
+            {!isStudent && exam.proctored && isSmowlAvailable && (
               <SmowlActivityResultsDialog
                 activityId={exam.folderId}
                 sysEnvironment={sysEnvironment}

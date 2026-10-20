@@ -14,6 +14,7 @@ const smowlApi = getSmowlApi({});
 interface UseSmowlExamResultsProps {
   examId: number | string | null | undefined;
   sysEnvironment: string;
+  isAvailable: boolean;
 }
 
 /**
@@ -22,7 +23,7 @@ interface UseSmowlExamResultsProps {
  * @returns The results of the exam
  */
 export const useSmowlExamResults = (props: UseSmowlExamResultsProps) => {
-  const { examId, sysEnvironment } = props;
+  const { examId, sysEnvironment, isAvailable } = props;
 
   const [state, setState] = React.useState<{
     loadingExamResults: boolean;
@@ -42,6 +43,12 @@ export const useSmowlExamResults = (props: UseSmowlExamResultsProps) => {
      * @returns Promise resolving to the IP Analysis results status response
      */
     const run = async () => {
+      // Smowl is gated by the service availability
+      if (!isAvailable) {
+        setState({ loadingExamResults: false, error: null, results: null });
+        return;
+      }
+
       if (examId === null || examId === undefined || examId === "") {
         setState({ loadingExamResults: false, error: null, results: null });
         return;
@@ -78,7 +85,7 @@ export const useSmowlExamResults = (props: UseSmowlExamResultsProps) => {
     return () => {
       cancelled = true;
     };
-  }, [examId, sysEnvironment]);
+  }, [examId, sysEnvironment, isAvailable]);
 
   const hasProctoredData = (state.results?.users?.length ?? 0) > 0;
 
