@@ -46,7 +46,6 @@ export default class MathJAX extends React.Component<
     if (disableMathjax) {
       return null;
     }
-    //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible) {
       return (
         <>

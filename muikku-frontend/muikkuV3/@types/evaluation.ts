@@ -51,7 +51,9 @@ export type SortBy =
   | "sort-alpha-desc"
   | "sort-workspace-alpha-asc"
   | "sort-workspace-alpha-desc"
-  | "no-sort";
+  | "no-sort"
+  | "sort-deadline-asc"
+  | "sort-deadline-desc";
 
 /**
  * EvaluationSort

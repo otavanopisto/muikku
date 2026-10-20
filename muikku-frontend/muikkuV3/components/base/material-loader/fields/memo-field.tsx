@@ -25,9 +25,44 @@ import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { FieldSnapshotList } from "./field-snapshot/field-snapshot-list";
 import { MemoSnapshotContent } from "./field-snapshot/memo-snapshot-content";
+import AddEvaluationCommentsDrawer from "./add-evaluation-comments-drawer";
 import { htmlToPlainText, toMemoDisplayHtml } from "~/util/html";
 import { getMemoFieldContentFormatSync } from "~/util/memo-content-format";
 import { MATHJAXSRC } from "~/lib/mathjax";
+import $ from "~/lib/jquery";
+import CkeditorLoaderContent from "../../ckeditor-loader/content";
+
+/**
+ * MemoComment
+ */
+interface MemoComment {
+  text: string;
+  id: string;
+}
+
+/**
+ * Collect evaluation comments from richedit memo HTML.
+ * Comments are identified only by data-text.
+ * @param html html
+ * @returns comment texts in document order
+ */
+function getMemoComments(html: string): MemoComment[] {
+  if (!html) {
+    return [];
+  }
+  const comments: MemoComment[] = [];
+  $("<div/>")
+    .html(html)
+    .find('mark[data-type="comment"]')
+    .each(function () {
+      const text = $(this).attr("data-text");
+      const id = $(this).attr("data-id");
+      if (text) {
+        comments.push({ text, id });
+      }
+    });
+  return comments;
+}
 
 /**
  * parseLimit - Parses the limit
@@ -120,7 +155,8 @@ const MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG = {
     { name: "tools", items: ["Maximize"] },
   ],
   removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins:
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
   resize_enabled: true,
 };
 
@@ -131,7 +167,8 @@ const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents' html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [{}, {}, { name: "tools", items: ["Maximize"] }],
   removePlugins: "image,exportpdf",
-  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins:
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
   resize_enabled: true,
 };
 
@@ -237,6 +274,37 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.notifyLimit = this.notifyLimit.bind(this);
     this.renderField = this.renderField.bind(this);
     this.renderAnswerExample = this.renderAnswerExample.bind(this);
+    this.renderFieldFeatures = this.renderFieldFeatures.bind(this);
+  }
+
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate(prevProps: MemoFieldProps) {
+    if (
+      this.props.initialValue === prevProps.initialValue ||
+      this.state.modified
+    ) {
+      return;
+    }
+
+    // Only update the value if the field is read only or used as an evaluation tool
+    // In evaluation tool, the answer value is updated by the parent component
+    if (this.props.readOnly || this.props.usedAs === "evaluationTool") {
+      const storedValue = this.props.initialValue || "";
+      const html = toMemoDisplayHtml(
+        storedValue,
+        getMemoFieldContentFormatSync(storedValue),
+        replaceNewlinesWithBreaks
+      );
+      const rawText = htmlToPlainText(html);
+      this.setState({
+        value: html,
+        words: getWords(rawText).length,
+        characters: getCharacters(rawText).length,
+      });
+    }
   }
 
   /**
@@ -267,9 +335,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       nextProps.invisible !== this.props.invisible ||
       !equals(nextProps.snapshots, this.props.snapshots) ||
       !equals(
-        nextProps.fieldSnapshotCapabilities,
-        this.props.fieldSnapshotCapabilities
-      )
+        nextProps.fieldFeaturesCapabilities,
+        this.props.fieldFeaturesCapabilities
+      ) ||
+      nextProps.initialValue !== this.props.initialValue
     );
   }
 
@@ -399,10 +468,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     if (this.props.usedAs === "default") {
       if (this.props.readOnly) {
         return (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
-          />
+          <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly">
+            <CkeditorLoaderContent html={this.state.value} />
+          </div>
         );
       } else {
         return (
@@ -436,10 +504,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     } else if (this.props.usedAs === "evaluationTool") {
       if (this.props.readOnly) {
         return (
-          <div
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
-          />
+          <div className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation">
+            <CkeditorLoaderContent html={this.state.value} />
+          </div>
         );
       }
     }
@@ -476,11 +543,69 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   }
 
   /**
+   * Renders the field features
+   * @returns JSX.Element
+   */
+  renderFieldFeatures() {
+    const { t, fieldFeaturesCapabilities } = this.props;
+    const { comments, snapshot } = fieldFeaturesCapabilities;
+    if (!comments.canCreate && !snapshot.canCreate) {
+      return null;
+    }
+
+    return (
+      <span className="memofield__field-features">
+        {snapshot.canCreate && this.props.onTakeFieldSnapshot && (
+          <Dropdown
+            content={t("labels.takeSnapshot", { ns: "materials" })}
+            openByHover
+          >
+            <IconButton
+              buttonModifiers="snapshot"
+              icon="plus"
+              disabled={!this.state.value}
+              onClick={() =>
+                this.props.onTakeFieldSnapshot(this.props.content.name)
+              }
+            />
+          </Dropdown>
+        )}
+
+        {comments.canCreate && this.props.onUpdateFieldWithComments && (
+          <AddEvaluationCommentsDrawer
+            html={this.state.value}
+            fieldName={this.props.content.name}
+            onUpdateFieldWithComments={this.props.onUpdateFieldWithComments}
+            defaultCkeditorConfig={memofieldCkeditorConfig(
+              this.props.content.richedit,
+              this.props.content.rows !== "" &&
+                !isNaN(Number(this.props.content.rows))
+                ? Number(this.props.content.rows)
+                : 3
+            )}
+          >
+            <IconButton
+              buttonModifiers="snapshot"
+              icon="bubbles"
+              disabled={
+                !this.state.value ||
+                !this.props.fieldFeaturesCapabilities?.comments.canCreate
+              }
+            />
+          </AddEvaluationCommentsDrawer>
+        )}
+      </span>
+    );
+  }
+
+  /**
    * render
    * @returns JSX.Element
    */
   render() {
     const { t } = this.props;
+
+    const comments = getMemoComments(this.state.value);
 
     // we have a right answer example for when
     // we are asked for displaying right answer
@@ -514,6 +639,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           ref={this.baseRef}
           className={`memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
+          {this.renderFieldFeatures()}
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
@@ -557,29 +683,23 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             </span>
           </span>
           {answerExampleComponent}
-          {this.props.fieldSnapshotCapabilities?.snapshotCanTake &&
-            this.props.onTakeFieldSnapshot && (
-              <Dropdown
-                content={t("labels.takeSnapshot", { ns: "materials" })}
-                openByHover
-              >
-                <IconButton
-                  buttonModifiers="snapshot"
-                  icon="plus"
-                  disabled={!this.state.value}
-                  onClick={() =>
-                    this.props.onTakeFieldSnapshot(this.props.content.name)
-                  }
-                />
-              </Dropdown>
+          {this.props.fieldFeaturesCapabilities?.comments.canView &&
+            comments.length > 0 && (
+              <ul className="memofield__comment-list">
+                {comments.map((comment) => (
+                  <li key={comment.id} className="memofield__comment-list-item">
+                    {comment.text}
+                  </li>
+                ))}
+              </ul>
             )}
 
-          {this.props.fieldSnapshotCapabilities?.snapshotCanView && (
+          {this.props.fieldFeaturesCapabilities?.snapshot.canView && (
             <FieldSnapshotList
               snapshots={this.props.snapshots}
               fieldName={this.props.content.name}
               onDeleteFieldSnapshot={
-                this.props.fieldSnapshotCapabilities?.snapshotCanDelete
+                this.props.fieldFeaturesCapabilities?.snapshot.canDelete
                   ? this.props.onDeleteFieldSnapshot
                   : undefined
               }

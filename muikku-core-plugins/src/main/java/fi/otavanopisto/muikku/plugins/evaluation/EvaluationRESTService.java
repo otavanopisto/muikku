@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,6 +60,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestInterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestTextFieldAnswer;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
@@ -70,6 +73,8 @@ import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
+import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
+import fi.otavanopisto.muikku.plugins.material.dao.QueryFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
@@ -77,6 +82,8 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -84,6 +91,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswerSnapshot;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
@@ -190,6 +198,18 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
+  @Inject
+  private WorkspaceMaterialTextFieldAnswerDAO workspaceMaterialTextFieldAnswerDAO;
+  
+  @Inject
+  private QueryFieldDAO queryFieldDAO;
+
+  @Inject
+  private MaterialDAO materialDAO;
+
+  @Inject
+  private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
+
   @Inject
   private EvaluationDeleteController evaluationDeleteController;
   
@@ -771,6 +791,45 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @PUT
+  @Path("/user/{USERENTITYID}/workspaceMaterial/{WORKSPACEMATERIALID}/field/{FIELDNAME}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceMaterialFieldAnswer(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("FIELDNAME") String fieldName, RestTextFieldAnswer payload) {
+    if (payload == null || StringUtils.isEmpty(payload.getText()) || !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing userEntity").build();
+    }
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterial").build();
+    }
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    if (reply == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialReply").build();
+    }
+    Material material = materialDAO.findById(workspaceMaterial.getMaterialId());
+    if (material == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing material").build();
+    }
+    QueryField queryField = queryFieldDAO.findByMaterialAndName(material, fieldName);
+    if (queryField == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing queryField").build();
+    }
+    WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.findByWorkspaceMaterialAndQueryField(workspaceMaterial, queryField);
+    if (workspaceMaterialField == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialField").build();
+    }
+    WorkspaceMaterialTextFieldAnswer answer = workspaceMaterialTextFieldAnswerDAO.findByFieldAndReply(workspaceMaterialField, reply);
+    if (answer == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceMaterialTextFieldAnswer").build();
+    }
+    workspaceMaterialTextFieldAnswerDAO.updateValue(answer, payload.getText());
+    return Response.ok(payload).build(); 
+  }
+  
+  @PUT
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/node/{WORKSPACENODEID}/assessment/{ASSESSMENTID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceNodeAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @PathParam("ASSESSMENTID") Long assessmentId, RestAssessmentWithAudio payload) {
@@ -778,9 +837,6 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -1090,6 +1146,42 @@ public class EvaluationRESTService extends PluginRESTService {
     // Interim evaluation request creation
     
     InterimEvaluationRequest interimEvaluationRequest = evaluationController.createInterimEvaluationRequest(payload.getWorkspaceMaterialId(), payload.getRequestText());
+    return Response.ok(toRestModel(interimEvaluationRequest)).build();
+  }
+  
+  @PUT
+  @Path("/interimEvaluationRequest/{INTERIMEVALUATIONREQUESTID}/deadline")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response UpdateInterimEvaluationRequestDeadline(@PathParam("INTERIMEVALUATIONREQUESTID") Long ierId, @QueryParam("deadline") String deadlineStr) {
+    
+    // Access
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_INTERIM_EVALUATION_REQUESTS)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Find interim evaluation request
+    
+    InterimEvaluationRequest interimEvaluationRequest = evaluationController.findInterimEvaluationRequestById(ierId);
+    
+    if (interimEvaluationRequest == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Interin evaluation request %d not found", ierId)).build();
+    }
+    
+    Date deadline = deadlineStr != null && !deadlineStr.isEmpty()
+        ? Date.from(Instant.parse(deadlineStr))
+        : null;
+    
+    Date maxDeadline = Date.from(
+        interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+    );
+    
+    if (deadline != null && (deadline.before(interimEvaluationRequest.getRequestDate()) || deadline.after(maxDeadline))) {
+      return Response.status(Status.BAD_REQUEST).entity("The deadline may be no later than 5 days after the submission of the interim evaluation request").build();
+    }
+    
+    evaluationController.updateInterimEvaluationRequestDeadline(interimEvaluationRequest, deadline);
+    
     return Response.ok(toRestModel(interimEvaluationRequest)).build();
   }
   
@@ -1803,6 +1895,7 @@ public class EvaluationRESTService extends PluginRESTService {
           workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
           request.getRequestText(),
           request.getDate(),
+          request.getDeadline(),
           Boolean.TRUE, // archived
           request.getHandled());
       }
@@ -2097,6 +2190,15 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
+    
+    Date deadline = compositeAssessmentRequest.getDeadline();
+    
+    if (deadline == null) {
+      deadline = Date.from(
+         requestDate.toInstant().plus(Duration.ofDays(14))
+      );
+    }
+    restAssessmentRequest.setDeadline(deadline);
     restAssessmentRequest.setEvaluationNoteCount(evaluationNoteCount);
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
@@ -2180,6 +2282,15 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
     restAssessmentRequest.setEvaluationDate(null);
+    
+    Date deadline = interimEvaluationRequest.getDeadline();
+    
+    if (deadline == null) {
+      deadline = Date.from(
+          interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+      );
+    }
+    restAssessmentRequest.setDeadline(deadline);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     if (workspaceUser != null && workspaceUser.getEnrolmentTime() != null) {
@@ -2297,12 +2408,20 @@ public class EvaluationRESTService extends PluginRESTService {
   }
 
   private RestInterimEvaluationRequest toRestModel(InterimEvaluationRequest interimEvaluationRequest) {
+    Date deadline = interimEvaluationRequest.getDeadline();
+    
+    if (deadline == null) {
+      deadline = Date.from(
+          interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+      );
+    }
     return new RestInterimEvaluationRequest(
         interimEvaluationRequest.getId(),
         interimEvaluationRequest.getUserEntityId(),
         interimEvaluationRequest.getWorkspaceMaterialId(),
         interimEvaluationRequest.getRequestDate(),
         interimEvaluationRequest.getCancellationDate(),
+        deadline,
         interimEvaluationRequest.getRequestText(),
         evaluationController.countByStudentAndWorkspace(interimEvaluationRequest.getUserEntityId(), interimEvaluationRequest.getWorkspaceEntityId()),
         interimEvaluationRequest.getArchived());

@@ -39,8 +39,9 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import { getSmowlApiAccountInfo } from "~/api_smowl/index";
 
-//////State update interfaces
+///////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
   "EVALUATION_BASE_PRICE_STATE_UPDATE",
   EvaluationStateType
@@ -77,6 +78,11 @@ export type EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE = SpecificActionType<
     workspaceUserEntityId: number;
     delta: 1 | -1;
   }
+>;
+
+export type EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE = SpecificActionType<
+  "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE",
+  EvaluationAssessmentRequest
 >;
 
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
@@ -171,6 +177,16 @@ export type EVALUATION_COMPOSITE_REPLIES_SNAPSHOT_DELETE = SpecificActionType<
     workspaceMaterialId: number;
   }
 >;
+
+export type EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS =
+  SpecificActionType<
+    "EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS",
+    {
+      fieldName: string;
+      content: string;
+      workspaceMaterialId: number;
+    }
+  >;
 
 export type EVALUATION_IMPORTANCE_UPDATE = SpecificActionType<
   "EVALUATION_IMPORTANCE_UPDATE",
@@ -292,6 +308,15 @@ export type EVALUATION_EXAMS_LOAD = SpecificActionType<
 export type EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO = SpecificActionType<
   "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
   ExamAttendance
+>;
+
+// SMOWL PROCTORING
+export type EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD = SpecificActionType<
+  "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD",
+  {
+    swlAPIKey: string;
+    entityName: string;
+  }
 >;
 
 // EVALUATION NOTES
@@ -749,6 +774,20 @@ export interface DeleteFieldSnapshotTriggerType {
 }
 
 /**
+ * UpdateAnswerWithCommentsTriggerType
+ */
+export interface UpdateAnswerWithCommentsTriggerType {
+  (data: {
+    userEntityId: number;
+    fieldName: string;
+    content: string;
+    workspaceMaterialId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * Load Evaluation Notes Trigger Type
  */
 export interface LoadEvaluationNotesTriggerType {
@@ -799,8 +838,33 @@ export interface DeleteEvaluationNoteTriggerType {
   }): AnyActionType;
 }
 
+/**
+ * Update Assessment Request Deadline Trigger Type
+ */
+export interface UpdateAssessmentRequestDeadlineTriggerType {
+  (data: {
+    evaluationAssessmentRequest: EvaluationAssessmentRequest;
+    deadline?: Date;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Update Interim Evaluation Request Deadline Trigger Type
+ */
+export interface UpdateInterimEvaluationRequestDeadlineTriggerType {
+  (data: {
+    evaluationAssessmentRequest: EvaluationAssessmentRequest;
+    deadline?: Date;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
 const evaluationApi = MApi.getEvaluationApi();
 const evaluationNotesApi = MApi.getEvaluationNotesApi();
+const assessmentApi = MApi.getAssessmentApi();
 const workspaceApi = MApi.getWorkspaceApi();
 const userApi = MApi.getUserApi();
 const worklistApi = MApi.getWorklistApi();
@@ -3014,10 +3078,23 @@ const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
           studentEntityId: studentEntityId,
         });
 
+        let smowlApiAccountInfo = null;
+        // Smowl is gated by the service availability
+        if (getState().status.services.smowl?.isAvailable ?? false) {
+          smowlApiAccountInfo = await getSmowlApiAccountInfo();
+        }
+
         dispatch({
           type: "EVALUATION_EXAMS_LOAD",
           payload: exams,
         });
+
+        if (smowlApiAccountInfo) {
+          dispatch({
+            type: "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD",
+            payload: smowlApiAccountInfo,
+          });
+        }
 
         dispatch({
           type: "EVALUATION_EXAMS_STATE_UPDATE",
@@ -3388,6 +3465,146 @@ const deleteEvaluationNote: DeleteEvaluationNoteTriggerType =
     };
   };
 
+/**
+ * Update Assessment Request Deadline
+ * @param data data
+ */
+const updateAssessmentRequestDeadline: UpdateAssessmentRequestDeadlineTriggerType =
+  function updateAssessmentRequestDeadline(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      const { evaluationAssessmentRequest, deadline, onSuccess, onFail } = data;
+
+      try {
+        const updated = await assessmentApi.updateAssessmentRequestDeadline({
+          workspaceEntityId: evaluationAssessmentRequest.workspaceEntityId,
+          studentEntityId: evaluationAssessmentRequest.userEntityId,
+          assessmentRequestIdentifier: evaluationAssessmentRequest.identifier,
+          deadline,
+        });
+
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE",
+          payload: {
+            ...evaluationAssessmentRequest,
+            deadline: updated.deadline,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "deadline",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Update Interim Evaluation Request Deadline
+ * @param data data
+ */
+const updateInterimEvaluationRequestDeadline: UpdateInterimEvaluationRequestDeadlineTriggerType =
+  function updateInterimEvaluationRequestDeadline(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      const { evaluationAssessmentRequest, deadline, onSuccess, onFail } = data;
+
+      try {
+        const updated =
+          await evaluationApi.updateInterimEvaluationRequestDeadline({
+            interimEvaluationRequestId: evaluationAssessmentRequest.id,
+            deadline,
+          });
+        dispatch({
+          type: "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE",
+          payload: {
+            ...evaluationAssessmentRequest,
+            deadline: updated.deadline,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "deadline",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+        onFail?.();
+      }
+    };
+  };
+
+/**
+ * Updates an answer with comments
+ * @param data data
+ */
+const updateAnswerWithComments: UpdateAnswerWithCommentsTriggerType =
+  function updateAnswerWithComments(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const {
+        userEntityId,
+        fieldName,
+        content,
+        workspaceMaterialId,
+        onSuccess,
+        onFail,
+      } = data;
+
+      try {
+        await evaluationApi.updateWorkspaceMaterialTextFieldAnswer({
+          userEntityId: userEntityId,
+          workspaceMaterialId: workspaceMaterialId,
+          fieldName: fieldName,
+          updateWorkspaceMaterialTextFieldAnswerRequest: {
+            text: content,
+          },
+        });
+
+        dispatch({
+          type: "EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS",
+          payload: {
+            fieldName: fieldName,
+            content: content,
+            workspaceMaterialId: workspaceMaterialId,
+          },
+        });
+
+        onSuccess?.();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        onFail?.();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -3433,4 +3650,7 @@ export {
   createEvaluationNote,
   updateEvaluationNote,
   deleteEvaluationNote,
+  updateAssessmentRequestDeadline,
+  updateInterimEvaluationRequestDeadline,
+  updateAnswerWithComments,
 };
