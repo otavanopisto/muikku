@@ -15311,6 +15311,7 @@ components:
         - random
         - allowMultipleAttempts
         - openForAll
+        - proctored
       properties:
         examId:
           description: Exam folder id
@@ -15339,6 +15340,9 @@ components:
         description:
           description: Exam description
           type: string
+        proctored:
+          description: Is this a proctored exam
+          type: boolean
 
     ExamAttendance:
       type: object
@@ -15379,6 +15383,9 @@ components:
         evaluationInfo:
           description: Exam evaluation info
           $ref: "#/components/schemas/NodeEvaluationInfo"
+        proctored:
+          description: Is this a proctored exam
+          type: boolean
         assignmentInfos:
           description: Points summary for each assignment in the page, if the exam has been evaluated
           type: array
@@ -19420,6 +19427,7 @@ components:
         - isDefaultOrganization
         - services
         - educationTypeCode
+        - sysEnv
       properties:
         id:
           type: integer
@@ -19527,6 +19535,10 @@ components:
           type: string
           nullable: true
           description: Student's education type code, e.g. lukio or peruskoulu
+        sysEnv:
+          type: string
+          nullable: true
+          description: System environment the code is running on, e.g. demo. Alphanumeric characters only, preferably four characters in length. 
 
     UserWhoAmIServices:
       type: object
@@ -19559,6 +19571,13 @@ components:
             isAvailable:
               type: boolean
         worklist:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        smowl:
           type: object
           required:
             - isAvailable

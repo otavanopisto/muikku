@@ -29,6 +29,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
+import fi.otavanopisto.muikku.plugins.smowl.SmowlController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -61,6 +62,9 @@ public class ExamRESTService {
   
   @Inject
   private ExamController examController;
+
+  @Inject
+  private SmowlController smowlController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -171,10 +175,19 @@ public class ExamRESTService {
   public Response createOrUpdateSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, ExamSettingsRestModel settings) {
     WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
     WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (settings == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Settings payload not defined").build();
+    }
+    if (settings.isProctored() && !smowlController.isSmowlAvailable()) {
+      return Response.status(Status.BAD_REQUEST).entity("Cannot set node as proctored when proctoring system is not available.").build();
+    }
     if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     examController.createOrUpdateSettings(workspaceFolderId, settings);
+    if (smowlController.isSmowlAvailable()) {
+      smowlController.setActivity(workspaceFolderId, settings.isProctored());
+    }
     return Response.ok().entity(settings).build();
   }
   
