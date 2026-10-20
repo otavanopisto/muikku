@@ -40,7 +40,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 
-//////State update interfaces
+///////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
   "EVALUATION_BASE_PRICE_STATE_UPDATE",
   EvaluationStateType
