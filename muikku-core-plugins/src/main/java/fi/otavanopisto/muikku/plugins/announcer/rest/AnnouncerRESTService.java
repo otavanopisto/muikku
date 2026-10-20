@@ -418,13 +418,18 @@ public class AnnouncerRESTService extends PluginRESTService {
       List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
       
       AnnouncementRecipient ar = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, currentUserEntity.getId());
+
       boolean isRecipientPinned = false;
-      // Count unread announcements      
-      if (ar == null) {
+
+      // Count unread announcements
+      if (ar == null || ar.getReadDate() == null) {
         unreadAnnouncements++;
-      } else {
+      }
+
+      if (ar != null) {
         isRecipientPinned = ar.isPinned();
       }
+      
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces, isRecipientPinned);
       restModels.add(restModel);
       
@@ -793,8 +798,10 @@ public class AnnouncerRESTService extends PluginRESTService {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
     }
     
-    boolean unread = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId()) == null;
-    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
+
+    boolean unread = announcementRecipient == null || announcementRecipient.getReadDate() == null;
+
     restModel.setUnread(unread);
     
     // categories
