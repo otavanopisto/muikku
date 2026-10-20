@@ -36,6 +36,10 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
 
   const dispatch = useDispatch();
 
+  const { services } = useSelector((state: StateType) => state.status);
+
+  const isSmowlAvailable = services.smowl?.isAvailable ?? false;
+
   const editorState = useSelector(
     (state: StateType) => state.workspaces.materialEditor
   );
@@ -58,7 +62,7 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
   // Get tabs from strategy
   const editorTabs = strategy.getTabs(
     examEnabled,
-    proctored,
+    proctored && isSmowlAvailable,
     {
       canSetLicense: editorState.canSetLicense,
       canSetProducers: editorState.canSetProducers,

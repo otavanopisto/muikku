@@ -154,6 +154,7 @@ const SmowlActivity = (props: SmowlActivityProps) => {
   const { hasProctoredData, loadingExamResults } = useSmowlExamResults({
     examId: currentDraftNodeValue.workspaceMaterialId,
     sysEnvironment: status.sysEnvironment,
+    isAvailable: status.services.smowl?.isAvailable ?? false,
   });
 
   const dispatch = useDispatch();

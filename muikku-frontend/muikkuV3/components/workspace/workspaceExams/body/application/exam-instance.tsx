@@ -89,6 +89,8 @@ const ExamInstance = (props: ExamInstanceProps) => {
 
   const dispatch = useDispatch();
 
+  const { services } = useSelector((state: StateType) => state.status);
+
   const { initializeStatus, currentExamStatusInfo, exams, currentExam } =
     useSelector((state: StateType) => state.exams);
 
@@ -97,10 +99,12 @@ const ExamInstance = (props: ExamInstanceProps) => {
     [exams, examId]
   );
 
+  const isSmowlAvailable = services.smowl?.isAvailable ?? false;
+
   // Get SMOWL monitoring status (hook listens for messages)
   const { monitoringStatus, monitoringLink } = useSmowlMonitoringStatus({
     examId,
-    proctored: preExamInfo?.proctored || false,
+    proctored: (preExamInfo?.proctored || false) && isSmowlAvailable,
     isMonitoring,
   });
 
@@ -216,7 +220,9 @@ const ExamInstance = (props: ExamInstanceProps) => {
         >
           <PreExamInfo
             exam={preExamInfo}
-            isSmowlActivity={true}
+            isSmowlActivity={
+              (preExamInfo?.proctored ?? false) && isSmowlAvailable
+            }
             monitoringStatus={monitoringStatus}
             onStartExam={() => setIsMonitoring(true)}
             onCloseExam={props.onCloseExam}

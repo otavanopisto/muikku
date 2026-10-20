@@ -230,34 +230,35 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
         )}
         {isEnded ? (
           <>
-            {exam.proctored && (
-              <div className="evaluation-modal__item-meta-item">
-                <span className="evaluation-modal__item-meta-item-label">
-                  {t("labels.proctoringResults", { ns: "exams" })}:
-                </span>
-                <span className="evaluation-modal__item-meta-item-data">
-                  <SmowlActivityResultsDialog
-                    activityId={exam.folderId}
-                    activityType="exam"
-                    sysEnvironment={status.sysEnvironment}
-                    lang="fi"
-                    dataLoader={() =>
-                      Promise.resolve({
-                        aNamesJson: JSON.stringify({
-                          [getEnviromentPrefixedId(
-                            evaluationSelectedAssessmentId.userEntityId,
-                            status.sysEnvironment
-                          )]:
-                            `${evaluationSelectedAssessmentId.firstName} ${evaluationSelectedAssessmentId.lastName}`,
-                        }),
-                      })
-                    }
-                  >
-                    <Link>{t("actions.showResults", { ns: "exams" })}</Link>
-                  </SmowlActivityResultsDialog>
-                </span>
-              </div>
-            )}
+            {exam.proctored &&
+              (status.services.smowl?.isAvailable ?? false) && (
+                <div className="evaluation-modal__item-meta-item">
+                  <span className="evaluation-modal__item-meta-item-label">
+                    {t("labels.proctoringResults", { ns: "exams" })}:
+                  </span>
+                  <span className="evaluation-modal__item-meta-item-data">
+                    <SmowlActivityResultsDialog
+                      activityId={exam.folderId}
+                      activityType="exam"
+                      sysEnvironment={status.sysEnvironment}
+                      lang="fi"
+                      dataLoader={() =>
+                        Promise.resolve({
+                          aNamesJson: JSON.stringify({
+                            [getEnviromentPrefixedId(
+                              evaluationSelectedAssessmentId.userEntityId,
+                              status.sysEnvironment
+                            )]:
+                              `${evaluationSelectedAssessmentId.firstName} ${evaluationSelectedAssessmentId.lastName}`,
+                          }),
+                        })
+                      }
+                    >
+                      <Link>{t("actions.showResults", { ns: "exams" })}</Link>
+                    </SmowlActivityResultsDialog>
+                  </span>
+                </div>
+              )}
 
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">

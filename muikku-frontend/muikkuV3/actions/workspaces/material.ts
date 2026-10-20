@@ -894,6 +894,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 update: data.update,
               },
               getState().status.sysEnvironment,
+              getState().status.services.smowl?.isAvailable ?? false,
               dispatch
             );
           }
@@ -905,6 +906,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               update: data.update,
             },
             getState().status.sysEnvironment,
+            getState().status.services.smowl?.isAvailable ?? false,
             dispatch
           );
 
@@ -1089,7 +1091,8 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
             } = await getSmowlDataFormMaterials(
               workspaceId,
               materialContentNodes,
-              state.status.sysEnvironment
+              state.status.sysEnvironment,
+              state.status.services.smowl?.isAvailable ?? false
             );
 
             // Update the material content nodes with the exam settings and smowl data
@@ -1453,13 +1456,24 @@ const materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType =
  * @param workspaceId workspaceId
  * @param materials materials
  * @param sysEnvironment sysEnvironment
+ * @param isAvailable isAvailable
  * @returns smowl activities (hash map), front alarms hash map, computer alarms hash map
  */
 async function getSmowlDataFormMaterials(
   workspaceId: number,
   materials: MaterialContentNodeWithIdAndLogic[],
-  sysEnvironment: string
+  sysEnvironment: string,
+  isAvailable: boolean
 ) {
+  // Smowl is gated by the service availability
+  if (!isAvailable) {
+    return {
+      smowlActivities: {},
+      frontAlarmsHashMap: {},
+      computerAlarmsHashMap: {},
+    };
+  }
+
   const activityListJson = createActivityListJson(
     materials.map((node) =>
       getEnviromentPrefixedId(node.workspaceMaterialId, sysEnvironment)
@@ -1533,6 +1547,7 @@ async function getSmowlDataFormMaterials(
  * @param data.material material
  * @param data.update update
  * @param sysEnvironment sysEnvironment
+ * @param isAvailable isAvailable
  * @param dispatch dispatch
  */
 async function getSmowlDataForExam(
@@ -1541,8 +1556,14 @@ async function getSmowlDataForExam(
     update: Partial<MaterialContentNodeWithIdAndLogic>;
   },
   sysEnvironment: string,
+  isAvailable: boolean,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>
 ) {
+  // Smowl is gated by the service availability
+  if (!isAvailable) {
+    return;
+  }
+
   // If proctoring is enabled first time, we need to fetch the smowl activity
   // after the exam settings are created
   const noPreviousSmowlActivity = !data.material.smowlActivity;
@@ -1635,6 +1656,7 @@ async function getSmowlDataForExam(
  * @param data.material material
  * @param data.update update
  * @param sysEnvironment sysEnvironment
+ * @param isAvailable isAvailable
  * @param dispatch dispatch
  */
 async function updateSmowlData(
@@ -1643,8 +1665,14 @@ async function updateSmowlData(
     update: Partial<MaterialContentNodeWithIdAndLogic>;
   },
   sysEnvironment: string,
+  isAvailable: boolean,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>
 ) {
+  // Smowl is gated by the service availability
+  if (!isAvailable) {
+    return;
+  }
+
   const promises = [];
 
   // If the smowl activity changed, we need to update the smowl activity

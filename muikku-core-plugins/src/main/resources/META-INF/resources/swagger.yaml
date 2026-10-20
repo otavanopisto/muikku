@@ -3724,7 +3724,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
-  
+
   #EVALUATIONNOTES
   /rest/evaluationNotes/workspaces/{workspaceEntityId}/students/{userEntityId}:
     get:
@@ -12806,7 +12806,7 @@ components:
                 type: string
               workspaceSubjectIdentifier:
                 type: string
-    
+
     EvaluationNoteCreateOrUpdateRequestBody:
       content:
         application/json:
@@ -19474,6 +19474,13 @@ components:
             isAvailable:
               type: boolean
         worklist:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        smowl:
           type: object
           required:
             - isAvailable
