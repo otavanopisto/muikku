@@ -4,6 +4,7 @@ import { MultiSelectField } from "../fields/MultiSelectField";
 import { ConnectField } from "../fields/ConnectField";
 import { OrganizerField } from "../fields/OrganizerField";
 import { SorterField } from "../fields/SorterField";
+import { AudioField } from "../fields/AudioField/AudioField";
 import {
   canCheckSelectAnswers,
   createFieldParameters,
@@ -36,6 +37,11 @@ export const sharedFieldRegistry: FieldRegistry = {
   },
   "application/vnd.muikku.field.sorter": {
     component: SorterField,
+    processor: createFieldParameters,
+    canCheckAnswers: () => true,
+  },
+  "application/vnd.muikku.field.audio": {
+    component: AudioField,
     processor: createFieldParameters,
     canCheckAnswers: () => true,
   },
