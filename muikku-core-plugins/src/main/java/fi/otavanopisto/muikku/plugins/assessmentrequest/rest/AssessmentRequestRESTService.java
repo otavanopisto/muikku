@@ -284,7 +284,21 @@ public class AssessmentRequestRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("The deadline may be no later than 14 days after the submission of the assessment request").build();
       }    
       
-      return Response.ok(assessmentRequestController.restModel(gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), student.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), deadline, false, assessmentRequest.getHandled()))).build();
+      assessmentRequest = gradingController.updateWorkspaceAssessmentRequest(
+          assessmentRequest.getSchoolDataSource(),
+          assessmentRequest.getIdentifier(),
+          assessmentRequest.getWorkspaceUserIdentifier(),
+          assessmentRequest.getWorkspaceUserSchoolDataSource(),
+          workspaceEntity.getIdentifier(),
+          student.getDefaultIdentifier(),
+          assessmentRequest.getRequestText(),
+          assessmentRequest.getDate(),
+          deadline,
+          false,
+          assessmentRequest.getHandled()
+      );
+
+      return Response.ok(assessmentRequestController.restModel(assessmentRequest)).build();
     }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Couldn't create workspace assessment request.", e);
