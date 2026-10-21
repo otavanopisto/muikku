@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1172,8 +1173,14 @@ public class EvaluationRESTService extends PluginRESTService {
         ? Date.from(Instant.parse(deadlineStr))
         : null;
     
-    Date maxDeadline = Date.from(
-        interimEvaluationRequest.getRequestDate().toInstant().plus(Duration.ofDays(5))
+    Date maxDeadline = Date.from(interimEvaluationRequest.getRequestDate().toInstant()
+        .plus(Duration.ofDays(5))
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+        .plusDays(1)
+        .atStartOfDay(ZoneId.systemDefault())
+        .toInstant()
+        .minusMillis(1)
     );
     
     if (deadline != null && (deadline.before(interimEvaluationRequest.getRequestDate()) || deadline.after(maxDeadline))) {

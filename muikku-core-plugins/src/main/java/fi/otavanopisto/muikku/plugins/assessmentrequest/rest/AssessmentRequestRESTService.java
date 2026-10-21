@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.assessmentrequest.rest;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -276,8 +277,14 @@ public class AssessmentRequestRESTService extends PluginRESTService {
           ? Date.from(Instant.parse(deadlineStr))
           : null;
       
-      Date maxDeadline = Date.from(
-          assessmentRequest.getDate().toInstant().plus(Duration.ofDays(14))
+      Date maxDeadline = Date.from(assessmentRequest.getDate().toInstant()
+          .plus(Duration.ofDays(14))
+          .atZone(ZoneId.systemDefault())
+          .toLocalDate()
+          .plusDays(1)
+          .atStartOfDay(ZoneId.systemDefault())
+          .toInstant()
+          .minusMillis(1)
       );
       
       if (deadline != null && (deadline.before(assessmentRequest.getDate()) || deadline.after(maxDeadline))) {
