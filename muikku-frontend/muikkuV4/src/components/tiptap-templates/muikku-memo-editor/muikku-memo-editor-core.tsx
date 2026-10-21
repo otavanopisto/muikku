@@ -117,11 +117,13 @@ export function MuikkuMemoEditorCore(props: MuikkuMemoEditorCoreProps) {
       {toolbar}
       {editor && richedit ? <TableBubbleMenu editor={editor} /> : null}
       <EditorContent editor={editor} />
-      <MuikkuMemoEditorCounters
-        editor={editor}
-        characterLimit={characterCount?.characterLimit}
-        wordLimit={characterCount?.wordLimit}
-      />
+      {characterCount && (
+        <MuikkuMemoEditorCounters
+          editor={editor}
+          characterLimit={characterCount?.characterLimit}
+          wordLimit={characterCount?.wordLimit}
+        />
+      )}
     </EditorContext.Provider>
   );
 }

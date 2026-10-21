@@ -2,6 +2,8 @@ import type {
   FieldComponentProps,
   JournalFieldContent,
 } from "../../coreMaterial/types";
+import { MemoReadonly } from "../../coreMaterial/fields/MemoField/MemoReadonly";
+import classes from "../../coreMaterial/fields/JournalField/JournalField.module.css";
 
 /**
  * JournalFieldProps
@@ -9,10 +11,28 @@ import type {
 interface JournalFieldProps extends FieldComponentProps<JournalFieldContent> {}
 
 /**
- * JournalField component
- * @param props - The props for the JournalField component
- * @returns The JournalField component
+ * Evaluation journal field: HTML view only.
+ * @param props - Live field props
  */
 export function EvaluationJournalField(props: JournalFieldProps) {
-  return <div>{props.content?.name}</div>;
+  const { content, initialValue, invisible } = props;
+  const value = initialValue ?? "";
+
+  if (!content) {
+    return null;
+  }
+
+  if (invisible) {
+    return (
+      <span className={classes.wrapper} aria-hidden>
+        <MemoReadonly value="" />
+      </span>
+    );
+  }
+
+  return (
+    <span className={classes.wrapper}>
+      <MemoReadonly value={value} />
+    </span>
+  );
 }

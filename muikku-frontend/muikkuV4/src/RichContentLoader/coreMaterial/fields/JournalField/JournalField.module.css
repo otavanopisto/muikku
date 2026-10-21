@@ -1,0 +1,15 @@
+.wrapper {
+  display: block;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-weight: 600;
+}
