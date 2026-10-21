@@ -1101,10 +1101,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         mockBuilder
-          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
-          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, dateNow, false)
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow, dateNow)
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, dateNow, dateNow, false)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
+          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, dateNow, false)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockWorkspaceBilledPriceUpdate(String.valueOf(price))
           .addCourseStudent(course1.getId(), courseStudent)
