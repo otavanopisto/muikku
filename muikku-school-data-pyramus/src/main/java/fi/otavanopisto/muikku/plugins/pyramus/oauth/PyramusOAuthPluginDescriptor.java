@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.oauth;
+package fi.otavanopisto.muikku.plugins.pyramus.oauth;
 
 import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
