@@ -2,11 +2,32 @@ import { Button, Group, Text } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
 import { IconDownload, IconFile, IconUpload, IconX } from "@tabler/icons-react";
 import { useRef } from "react";
-import type { FileUploaderProps, UploadedFileItem } from "./types";
+import type {
+  FileUploaderLabels,
+  FileUploaderProps,
+  UploadedFileItem,
+} from "./types";
 import { FileList } from "./FileList";
 import classes from "./FileUploader.module.css";
 
 const DEFAULT_MAX_BYTES = 10_000_000;
+const DEFAULT_LABELS: FileUploaderLabels = {
+  dropzoneTitle:
+    "Lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän kenttään.",
+  dropzoneHint:
+    "Voit palauttaa kenttään useamman tiedoston. Suurin sallittu tiedostokoko on 10 Mt.",
+  empty: "Ei tiedostoja",
+  download: "Lataa",
+  downloadAll: "Lataa kaikki",
+  remove: "Poista",
+  cancel: "Peru",
+  deleteTitle: "Tiedoston poisto",
+  deleteConfirm:
+    "Oletko varma, että haluat poistaa tehtävään liitetyn tiedoston?",
+  tooLarge:
+    "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10 Mt.",
+  uploadFailed: "Tiedoston lähetys epäonnistui.",
+};
 
 /**
  * Local key before a server fileId exists.
@@ -24,10 +45,12 @@ export function FileUploader(props: FileUploaderProps) {
     readOnly,
     accept,
     maxBytes = DEFAULT_MAX_BYTES,
+    labels = DEFAULT_LABELS,
     onChange,
     upload,
     getFileUrl,
     getDownloadAllUrl,
+    getUploadingText,
   } = props;
 
   const valuesRef = useRef(values);
@@ -170,12 +193,10 @@ export function FileUploader(props: FileUploaderProps) {
 
             <div>
               <Text size="md" inline>
-                Lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän
-                kenttään.
+                {labels.dropzoneTitle}
               </Text>
               <Text size="sm" c="dimmed" inline mt={7}>
-                Voit palauttaa kenttään useamman tiedoston. Suurin sallittu
-                tiedostokoko on 10 Mt.
+                {labels.dropzoneHint}
               </Text>
             </div>
           </Group>
@@ -186,7 +207,8 @@ export function FileUploader(props: FileUploaderProps) {
         files={values}
         getFileUrl={getFileUrl}
         onDelete={readOnly ? undefined : removeAt}
-        emptyLabel={readOnly ? "Ei tiedostoja" : undefined}
+        labels={labels}
+        getUploadingText={getUploadingText}
       />
 
       {downloadAllUrl ? (

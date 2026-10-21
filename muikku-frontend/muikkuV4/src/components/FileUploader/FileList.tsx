@@ -1,7 +1,7 @@
 import { Button, Group, Modal, Progress, Text } from "@mantine/core";
 import { IconDownload, IconFile, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
-import type { UploadedFileItem } from "./types";
+import type { FileUploaderLabels, UploadedFileItem } from "./types";
 import classes from "./FileUploader.module.css";
 
 /**
@@ -9,21 +9,22 @@ import classes from "./FileUploader.module.css";
  */
 export interface FileListProps {
   files: UploadedFileItem[];
+  labels?: Partial<FileUploaderLabels>;
+  getUploadingText?: (file: UploadedFileItem) => string;
   getFileUrl?: (file: UploadedFileItem) => string | undefined;
   onDelete?: (index: number) => void;
-  emptyLabel?: string;
 }
 
 /**
  * File list. Pass onDelete only when removal is allowed.
  */
 export function FileList(props: FileListProps) {
-  const { files, getFileUrl, onDelete, emptyLabel } = props;
+  const { files, labels, getUploadingText, getFileUrl, onDelete } = props;
   const [pendingDelete, setPendingDelete] = useState<number | null>(null);
 
   if (files.length === 0) {
-    return emptyLabel ? (
-      <Text className={classes.empty}>{emptyLabel}</Text>
+    return labels?.empty ? (
+      <Text className={classes.empty}>{labels.empty}</Text>
     ) : null;
   }
 
@@ -42,8 +43,8 @@ export function FileList(props: FileListProps) {
                 </Text>
                 <Text c="red" size="sm">
                   {file.failReason === "too-large"
-                    ? "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10 Mt."
-                    : "Tiedoston lähetys epäonnistui."}
+                    ? labels?.tooLarge
+                    : labels?.uploadFailed}
                 </Text>
                 {onDelete ? (
                   <Button
@@ -52,7 +53,7 @@ export function FileList(props: FileListProps) {
                     variant="subtle"
                     onClick={() => setPendingDelete(index)}
                   >
-                    Poista
+                    {labels?.remove}
                   </Button>
                 ) : null}
               </div>
@@ -72,8 +73,9 @@ export function FileList(props: FileListProps) {
                   transitionDuration={200}
                 />
                 <Text size="sm">
-                  Ladataan palvelimelle {Math.round((file.progress ?? 0) * 100)}{" "}
-                  %
+                  {getUploadingText
+                    ? getUploadingText(file)
+                    : `${Math.round((file.progress ?? 0) * 100)} %`}
                 </Text>
               </div>
             );
@@ -96,7 +98,7 @@ export function FileList(props: FileListProps) {
                   variant="subtle"
                   leftSection={<IconDownload size={14} />}
                 >
-                  Lataa
+                  {labels?.download}
                 </Button>
               ) : null}
               {onDelete ? (
@@ -107,7 +109,7 @@ export function FileList(props: FileListProps) {
                   leftSection={<IconTrash size={14} />}
                   onClick={() => setPendingDelete(index)}
                 >
-                  Poista
+                  {labels?.remove}
                 </Button>
               ) : null}
             </div>
@@ -117,14 +119,14 @@ export function FileList(props: FileListProps) {
       <Modal
         opened={pendingDelete !== null}
         onClose={() => setPendingDelete(null)}
-        title="Tiedoston poisto"
+        title={labels?.deleteTitle}
       >
         <Text size="sm" mb="md">
-          Oletko varma, että haluat poistaa tehtävään liitetyn tiedoston?
+          {labels?.deleteConfirm}
         </Text>
         <Group justify="flex-end">
           <Button variant="default" onClick={() => setPendingDelete(null)}>
-            Peruuta
+            {labels?.cancel}
           </Button>
           <Button
             color="red"
@@ -135,7 +137,7 @@ export function FileList(props: FileListProps) {
               setPendingDelete(null);
             }}
           >
-            Poista
+            {labels?.remove}
           </Button>
         </Group>
       </Modal>

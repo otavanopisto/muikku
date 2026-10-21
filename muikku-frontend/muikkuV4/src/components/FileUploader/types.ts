@@ -24,6 +24,23 @@ export interface FileUploadResult {
 }
 
 /**
+ * Labels for the FileUploader.
+ */
+export interface FileUploaderLabels {
+  dropzoneTitle: string;
+  dropzoneHint: string;
+  empty: string;
+  download: string;
+  downloadAll: string;
+  remove: string;
+  cancel: string;
+  deleteTitle: string;
+  deleteConfirm: string;
+  tooLarge: string;
+  uploadFailed: string;
+}
+
+/**
  * FileUploaderProps
  */
 export interface FileUploaderProps {
@@ -31,6 +48,7 @@ export interface FileUploaderProps {
   readOnly?: boolean;
   accept?: string[] | DropzoneProps["accept"];
   maxBytes?: number;
+  labels?: Partial<FileUploaderLabels>;
   onChange: (files: UploadedFileItem[]) => void;
   upload?: (
     file: File,
@@ -38,4 +56,5 @@ export interface FileUploaderProps {
   ) => Promise<FileUploadResult>;
   getFileUrl?: (file: UploadedFileItem) => string | undefined;
   getDownloadAllUrl?: (files: UploadedFileItem[]) => string | undefined;
+  getUploadingText?: (file: UploadedFileItem) => string;
 }
