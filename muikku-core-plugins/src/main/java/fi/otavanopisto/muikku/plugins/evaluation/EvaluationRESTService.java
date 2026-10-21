@@ -2190,13 +2190,9 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
-    
     Date deadline = compositeAssessmentRequest.getDeadline();
-    
-    if (deadline == null) {
-      deadline = Date.from(
-         requestDate.toInstant().plus(Duration.ofDays(14))
-      );
+    if (deadline == null && requestDate != null) {
+      deadline = Date.from(requestDate.toInstant().plus(Duration.ofDays(14)));
     }
     restAssessmentRequest.setDeadline(deadline);
     restAssessmentRequest.setEvaluationNoteCount(evaluationNoteCount);
