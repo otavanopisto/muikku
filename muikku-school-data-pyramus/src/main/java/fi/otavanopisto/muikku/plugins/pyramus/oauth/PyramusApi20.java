@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.oauth.scribe;
+package fi.otavanopisto.muikku.plugins.pyramus.oauth;
 
 import com.github.scribejava.core.builder.api.DefaultApi20;
 

@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.oauth;
+package fi.otavanopisto.muikku.plugins.pyramus.oauth;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -26,7 +26,6 @@ import fi.otavanopisto.muikku.auth.AuthenticationResult.Status;
 import fi.otavanopisto.muikku.auth.OAuthAuthenticationStrategy;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.security.AuthSource;
-import fi.otavanopisto.muikku.plugins.oauth.scribe.PyramusApi20;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.pyramus.rest.model.WhoAmI;
