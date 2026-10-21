@@ -1,9 +1,6 @@
 import { useState } from "react";
-import {
-  AudioRecorder,
-  uploadTempFile,
-  type AudioClip,
-} from "~/src/components/AudioRecorder";
+import { AudioRecorder, type AudioClip } from "~/src/components/AudioRecorder";
+import { uploadTempFile } from "~/src/utils/uploadTempFile";
 import type { AudioFieldContent, FieldComponentProps } from "../../types";
 import { useFieldSyncHandle } from "../../hooks/useFieldSyncHandle";
 import { Synchronizer } from "../Synchronizer";

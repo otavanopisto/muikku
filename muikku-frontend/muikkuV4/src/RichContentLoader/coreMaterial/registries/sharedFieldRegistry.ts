@@ -5,6 +5,7 @@ import { ConnectField } from "../fields/ConnectField";
 import { OrganizerField } from "../fields/OrganizerField";
 import { SorterField } from "../fields/SorterField";
 import { AudioField } from "../fields/AudioField/AudioField";
+import { FileField } from "../fields/FileField";
 import {
   canCheckSelectAnswers,
   createFieldParameters,
@@ -44,5 +45,10 @@ export const sharedFieldRegistry: FieldRegistry = {
     component: AudioField,
     processor: createFieldParameters,
     canCheckAnswers: () => true,
+  },
+  "application/vnd.muikku.field.file": {
+    component: FileField,
+    processor: createFieldParameters,
+    canCheckAnswers: () => false,
   },
 };

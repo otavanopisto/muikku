@@ -1,0 +1,38 @@
+.root {
+  display: block;
+}
+
+.dropzone {
+  margin-bottom: 8px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.name {
+  flex: 1 1 10rem;
+  min-width: 8rem;
+}
+
+.progress {
+  flex: 1 1 12rem;
+}
+
+.empty {
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dimmed);
+}
+
+.downloadAll {
+  margin-top: 8px;
+}
