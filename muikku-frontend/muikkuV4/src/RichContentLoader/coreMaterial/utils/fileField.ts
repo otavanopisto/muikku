@@ -37,17 +37,12 @@ export function parseFileFieldValue(
 }
 
 /**
- * JSON for websocket save, or null while an upload is in flight.
+ * JSON for websocket save. Uploading / failed items are omitted.
  * @param files - Current UI files
  */
-export function serializeFileFieldValue(
-  files: UploadedFileItem[]
-): string | null {
-  if (files.some((file) => file.uploading)) {
-    return null;
-  }
+export function serializeFileFieldValue(files: UploadedFileItem[]): string {
   const ready: FileFieldJson[] = files
-    .filter((file) => !file.failed && file.fileId)
+    .filter((file) => !file.failed && !file.uploading && file.fileId)
     .map((file) => ({
       fileId: file.fileId!,
       name: file.name,

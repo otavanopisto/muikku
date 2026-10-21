@@ -102,11 +102,17 @@ export function FileUploader(props: FileUploaderProps) {
             : item
         )
       );
-    } catch {
+    } catch (error) {
+      const tooLarge = error instanceof Error && error.message === "too-large";
       updateFiles((prev) =>
         prev.map((item) =>
           item.clientId === clientId
-            ? { ...item, uploading: false, failed: true, failReason: "upload" }
+            ? {
+                ...item,
+                uploading: false,
+                failed: true,
+                failReason: tooLarge ? "too-large" : "upload",
+              }
             : item
         )
       );
@@ -121,9 +127,11 @@ export function FileUploader(props: FileUploaderProps) {
     updateFiles((prev) => prev.filter((_, itemIndex) => itemIndex !== index));
   }
 
-  const downloadAllUrl = getDownloadAllUrl?.(
-    values.filter((item) => item.fileId && !item.failed && !item.uploading)
+  const savedFiles = values.filter(
+    (item) => item.fileId && !item.failed && !item.uploading
   );
+  const downloadAllUrl =
+    savedFiles.length > 1 ? getDownloadAllUrl?.(savedFiles) : undefined;
 
   return (
     <div className={classes.root}>
@@ -146,27 +154,28 @@ export function FileUploader(props: FileUploaderProps) {
         >
           <Group
             justify="center"
-            gap="xl"
-            mih={150}
+            gap="sm"
+            mih={120}
             style={{ pointerEvents: "none" }}
           >
             <Dropzone.Accept>
-              <IconUpload size={52} color="var(--mantine-color-blue-6)" />
+              <IconUpload size={40} color="var(--mantine-color-blue-6)" />
             </Dropzone.Accept>
             <Dropzone.Reject>
-              <IconX size={52} color="var(--mantine-color-red-6)" />
+              <IconX size={40} color="var(--mantine-color-red-6)" />
             </Dropzone.Reject>
             <Dropzone.Idle>
-              <IconFile size={52} color="var(--mantine-color-dimmed)" />
+              <IconFile size={40} color="var(--mantine-color-dimmed)" />
             </Dropzone.Idle>
 
             <div>
-              <Text size="xl" inline>
-                Drag images/files here or click to select files
+              <Text size="md" inline>
+                Lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän
+                kenttään.
               </Text>
               <Text size="sm" c="dimmed" inline mt={7}>
-                Attach as many files as you like, each file should not exceed
-                5mb
+                Voit palauttaa kenttään useamman tiedoston. Suurin sallittu
+                tiedostokoko on 10 Mt.
               </Text>
             </div>
           </Group>
@@ -180,11 +189,13 @@ export function FileUploader(props: FileUploaderProps) {
         emptyLabel={readOnly ? "Ei tiedostoja" : undefined}
       />
 
-      {downloadAllUrl && values.some((item) => item.fileId) ? (
+      {downloadAllUrl ? (
         <Button
           className={classes.downloadAll}
           component="a"
           href={downloadAllUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           size="xs"
           variant="subtle"
           leftSection={<IconDownload size={14} />}

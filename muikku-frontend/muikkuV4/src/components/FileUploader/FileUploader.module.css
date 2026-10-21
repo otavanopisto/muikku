@@ -4,6 +4,9 @@
 
 .dropzone {
   margin-bottom: 8px;
+  border: 1px dashed var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-sm);
+  padding: var(--mantine-spacing-md);
 }
 
 .list {

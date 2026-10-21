@@ -18,7 +18,7 @@ export interface FileListProps {
  * File list. Pass onDelete only when removal is allowed.
  */
 export function FileList(props: FileListProps) {
-  const { files, getFileUrl, onDelete, emptyLabel = "Ei tiedostoja" } = props;
+  const { files, getFileUrl, onDelete, emptyLabel } = props;
   const [pendingDelete, setPendingDelete] = useState<number | null>(null);
 
   if (files.length === 0) {
@@ -37,9 +37,12 @@ export function FileList(props: FileListProps) {
           if (file.failed) {
             return (
               <div className={classes.row} key={key}>
+                <Text className={classes.name} size="sm">
+                  {file.name}
+                </Text>
                 <Text c="red" size="sm">
                   {file.failReason === "too-large"
-                    ? "Tiedosto on liian suuri (max 10 Mt)."
+                    ? "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10 Mt."
                     : "Tiedoston lähetys epäonnistui."}
                 </Text>
                 {onDelete ? (
@@ -63,11 +66,14 @@ export function FileList(props: FileListProps) {
                   {file.name}
                 </Text>
                 <Progress
+                  animated
                   className={classes.progress}
                   value={(file.progress ?? 0) * 100}
+                  transitionDuration={200}
                 />
                 <Text size="sm">
-                  Lähetetään {Math.round((file.progress ?? 0) * 100)} %
+                  Ladataan palvelimelle {Math.round((file.progress ?? 0) * 100)}{" "}
+                  %
                 </Text>
               </div>
             );
@@ -83,6 +89,8 @@ export function FileList(props: FileListProps) {
                 <Button
                   component="a"
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   download={file.name}
                   size="compact-xs"
                   variant="subtle"
@@ -109,10 +117,10 @@ export function FileList(props: FileListProps) {
       <Modal
         opened={pendingDelete !== null}
         onClose={() => setPendingDelete(null)}
-        title="Poista tiedosto?"
+        title="Tiedoston poisto"
       >
         <Text size="sm" mb="md">
-          Tiedostoa ei voi palauttaa.
+          Oletko varma, että haluat poistaa tehtävään liitetyn tiedoston?
         </Text>
         <Group justify="flex-end">
           <Button variant="default" onClick={() => setPendingDelete(null)}>

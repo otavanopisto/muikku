@@ -63,8 +63,10 @@ export function AudioRecordingsList(props: AudioRecordingsListProps) {
             return (
               <div className={classes.clip} key={key}>
                 <Progress
+                  animated
                   className={classes.progress}
                   value={(clip.progress ?? 0) * 100}
+                  transitionDuration={200}
                 />
                 <Text size="sm">
                   Lähetetään {Math.round((clip.progress ?? 0) * 100)} %

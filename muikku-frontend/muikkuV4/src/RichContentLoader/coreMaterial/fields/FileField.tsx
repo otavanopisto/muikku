@@ -63,11 +63,7 @@ export function FileField(props: FileFieldProps) {
       return;
     }
     setFiles(next);
-    const json = serializeFileFieldValue(next);
-    if (json === null) {
-      return;
-    }
-    onChange?.(handle, content.name, json);
+    onChange?.(handle, content.name, serializeFileFieldValue(next));
   }
 
   if (invisible) {
