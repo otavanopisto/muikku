@@ -1884,6 +1884,7 @@
       "exercises": "Harjoitustehtävät",
       "exercises_donePercent": "Harjoitustehtäviä tehty ({{percent}}%)",
       "geometryAndVectors": "Geometria ja vektorit",
+      "giveFeedbackComment": "Kommentoi vastausta",
       "guidance": "Opiskelijaksi kurssille",
       "hide": "Aseta piilotetuksi",
       "incomplete": "$t(common:labels.incomplete)",
@@ -2677,7 +2678,7 @@
       "maxQuestionCount": "Max: {{count}} tehtävää",
       "noQuestionRandomization": "Ei satunnaisuutta",
       "openToAllStudents": "Avoin kaikille kurssin opiskelijoille",
-      "proctored_student": "Koe on proktoroitu",
+      "proctored_student": "SMOWL-valvottu koe",
       "proctored": "Proktorointi",
       "proctoringResults": "Proktorointitulokset",
       "questionRandomization": "Tehtävien satunnaisuus",
@@ -3688,8 +3689,8 @@
       "monitoredApplications": "Tarkkailtavat sovellukset",
       "notMonitored": "Ei tarkkailla",
       "registrationReports": "SMOWL-rekisteröintiraportit",
-      "settings": "Smowl asetukset",
-      "testExamMode": "Kokeen testaus tila"
+      "settings": "Smowl-asetukset",
+      "testExamMode": "Kokeen testitila (harjoituskoe)"
     },
     "content": {
       "computerMonitoringAction_BACKGROUND_PROGRAMS": "Taustalla on käynnissä kiellettyjä ohjelmia kokeen aikana.",
