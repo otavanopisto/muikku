@@ -156,7 +156,7 @@ const MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG = {
   ],
   removePlugins: "image,exportpdf",
   extraPlugins:
-    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove,muikku-comment-popup",
   resize_enabled: true,
 };
 
@@ -168,7 +168,7 @@ const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
   toolbar: [{}, {}, { name: "tools", items: ["Maximize"] }],
   removePlugins: "image,exportpdf",
   extraPlugins:
-    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove,muikku-comment-popup",
   resize_enabled: true,
 };
 
