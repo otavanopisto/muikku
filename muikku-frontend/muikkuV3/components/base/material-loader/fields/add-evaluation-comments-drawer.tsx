@@ -153,9 +153,8 @@ export const AddEvaluationCommentsDrawer = (
 
   return (
     <SlideDrawer
-      title={t("labels.addComments", {
-        ns: "evaluation",
-        defaultValue: "Add comments",
+      title={t("labels.giveFeedbackComment", {
+        ns: "materials",
       })}
       closeIconModifiers={["evaluation"]}
       modifiers={["make-comments"]}

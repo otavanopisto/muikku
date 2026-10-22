@@ -1884,6 +1884,7 @@
       "exercises": "Harjoitustehtävät",
       "exercises_donePercent": "Harjoitustehtäviä tehty ({{percent}}%)",
       "geometryAndVectors": "Geometria ja vektorit",
+      "giveFeedbackComment": "Kommentoi vastausta",
       "guidance": "Opiskelijaksi kurssille",
       "hide": "Aseta piilotetuksi",
       "incomplete": "$t(common:labels.incomplete)",

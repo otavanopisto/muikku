@@ -1884,6 +1884,7 @@
       "exercises": "Exercises",
       "exercises_donePercent": "Exercises done ({{percent}}%)",
       "geometryAndVectors": "Geometry and vectors",
+      "giveFeedbackComment": "Add comments",
       "guidance": "Sign up to this course",
       "hide": "Set hidden",
       "incomplete": "$t(common:labels.incomplete)",

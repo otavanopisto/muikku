@@ -584,14 +584,19 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 : 3
             )}
           >
-            <IconButton
-              buttonModifiers="snapshot"
-              icon="bubbles"
-              disabled={
-                !this.state.value ||
-                !this.props.fieldFeaturesCapabilities?.comments.canCreate
-              }
-            />
+            <Dropdown
+              content={t("labels.giveFeedbackComment", { ns: "materials" })}
+              openByHover
+            >
+              <IconButton
+                buttonModifiers="snapshot"
+                icon="bubbles"
+                disabled={
+                  !this.state.value ||
+                  !this.props.fieldFeaturesCapabilities?.comments.canCreate
+                }
+              />
+            </Dropdown>
           </AddEvaluationCommentsDrawer>
         )}
       </span>
