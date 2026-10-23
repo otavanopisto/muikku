@@ -26,7 +26,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeForbiddenException;
 
 @Dependent
 class PyramusRestClient implements Serializable {
@@ -193,7 +193,7 @@ class PyramusRestClient implements Serializable {
         break;
         case 403:
           logger.warning(String.format("Pyramus DELETE for path %s unauthorized (%d)", path, response.getStatus()));
-          throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
+          throw new SchoolDataBridgeForbiddenException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
         default:
           logger.warning(String.format("Pyramus DELETE for path %s failed (%d)", path, response.getStatus()));
           throw new SchoolDataBridgeException(response.getStatus(), String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
@@ -250,7 +250,7 @@ class PyramusRestClient implements Serializable {
         }
       case 403:
         logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, statusCode));
-        throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", statusCode, response.getEntity(), path));
+        throw new SchoolDataBridgeForbiddenException(String.format("Received http error %d (%s) when requesting %s", statusCode, response.getEntity(), path));
       case 404:
         return null;
       default:
