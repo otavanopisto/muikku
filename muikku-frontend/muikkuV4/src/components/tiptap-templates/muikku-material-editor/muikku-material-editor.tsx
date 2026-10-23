@@ -1,16 +1,6 @@
 "use client";
 
-import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
-import "@/components/tiptap-node/code-block-node/code-block-node.scss";
-import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
-import "@/components/tiptap-node/list-node/list-node.scss";
-import "@/components/tiptap-node/image-node/image-node.scss";
-import "@/components/tiptap-node/heading-node/heading-node.scss";
-import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
-import "@/components/tiptap-node/muikku-anchor/anchor-node.scss";
-import "@/components/tiptap-templates/muikku-material-editor/muikku-material-editor.scss";
-import MuikkuMaterialEditorCore from "./muikku-material-editor-core";
-import MuikkuMaterialEditorToolbar from "./muikku-material-editor-toolbar";
+import { MATERIAL_AUTHOR, MuikkuEditor } from "../muikku-editor";
 
 /**
  * MuikkuMaterialEditorProps is the props for the MuikkuMaterialEditor component.
@@ -26,12 +16,13 @@ interface MuikkuMaterialEditorProps {
  */
 export function MuikkuMaterialEditor({ onChange }: MuikkuMaterialEditorProps) {
   return (
-    <div className="muikkuTiptap simple-editor-wrapper">
-      <MuikkuMaterialEditorCore
-        toolbar={<MuikkuMaterialEditorToolbar />}
-        onChange={onChange}
-      />
-    </div>
+    <MuikkuEditor
+      className="muikku-editor--material-editor"
+      content=""
+      features={MATERIAL_AUTHOR}
+      minRows={16}
+      onChange={onChange}
+    />
   );
 }
 

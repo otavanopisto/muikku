@@ -3,7 +3,6 @@ import type { AnyExtension } from "@tiptap/core";
 import type { Editor } from "@tiptap/react";
 import { StarterKit, type StarterKitOptions } from "@tiptap/starter-kit";
 import {
-  Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
 } from "@/components/tiptap-ui-primitive/toolbar";
@@ -17,22 +16,29 @@ import type {
   ResolvedMuikkuEditorFeatures,
   ToolbarGroupId,
 } from "./types";
+import { MuikkuEditorToolbar } from "./muikku-editor-toolbar";
+import { Spacer } from "../../tiptap-ui-primitive/spacer";
 
 const TOOLBAR_GROUP_ORDER: ToolbarGroupId[] = [
+  "document",
   "history",
   "blocks",
+  "lang",
   "marks",
+  "script",
   "align",
   "indent",
+  "direction",
   "insert",
+  "boxes",
+  "fields",
+  "theme",
 ];
 
 /**
  * StarterKit keys that this editor never uses (replaced or not offered yet).
  */
 const STARTER_KIT_ALWAYS_OFF: Partial<StarterKitOptions> = {
-  code: false,
-  codeBlock: false,
   horizontalRule: false,
   link: false,
 };
@@ -129,14 +135,20 @@ export function createEditorParts(
 
   const toolbar =
     visibleGroups.length === 0 ? null : (
-      <Toolbar variant="fixed">
+      <MuikkuEditorToolbar>
         {visibleGroups.map((group, index) => (
           <Fragment key={group}>
-            {index > 0 ? <ToolbarSeparator /> : null}
-            <ToolbarGroup>{toolbarGroups.get(group)}</ToolbarGroup>
+            {group === "theme" ? (
+              <Spacer />
+            ) : index > 0 ? (
+              <ToolbarSeparator />
+            ) : null}
+            <ToolbarGroup data-group={group}>
+              {toolbarGroups.get(group)}
+            </ToolbarGroup>
           </Fragment>
         ))}
-      </Toolbar>
+      </MuikkuEditorToolbar>
     );
 
   return {

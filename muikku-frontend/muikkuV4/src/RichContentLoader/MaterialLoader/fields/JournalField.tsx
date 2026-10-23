@@ -60,6 +60,7 @@ export function MaterialJournalField(props: JournalFieldProps) {
         <MemoReadonly value={value} />
       ) : (
         <MuikkuEditor
+          className="muikku-editor"
           content={value}
           features={STUDENT_RICH}
           minRows={8}

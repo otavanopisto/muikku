@@ -2,6 +2,7 @@ import { Container, Title, Text, Paper } from "@mantine/core";
 import { useParams } from "react-router";
 import { useAtomValue } from "jotai";
 import { workspaceInfoAtom } from "src/atoms/workspace";
+import { MuikkuMaterialEditor } from "~/src/components/tiptap-templates/muikku-material-editor/muikku-material-editor";
 
 /**
  * WorkspaceHome - Workspace home page
@@ -22,6 +23,8 @@ export function WorkspaceHome() {
           <b>Workspace:</b> {workspaceInfo?.name ?? workspaceUrlName}
         </Text>
       </Paper>
+
+      <MuikkuMaterialEditor />
     </Container>
   );
 }

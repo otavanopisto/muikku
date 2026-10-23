@@ -1,5 +1,5 @@
 /* eslint-disable react-x/no-context-provider */
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
 import "@/components/tiptap-node/heading-node/heading-node.scss";
@@ -7,10 +7,16 @@ import "@/components/tiptap-node/list-node/list-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import "@/components/tiptap-node/image-node/image-node.scss";
 import "@/components/tiptap-templates/muikku-editor/muikku-editor.scss";
+import "@/components/tiptap-node/code-block-node/code-block-node.scss";
+import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
+import "@/components/tiptap-node/muikku-anchor/anchor-node.scss";
 import { createEditorParts } from "./create-editor-parts";
 import { resolveFeatures } from "./features";
 import { MuikkuEditorCounters } from "./muikku-editor-counters";
 import type { MuikkuEditorCharacterCount, MuikkuEditorFeatures } from "./types";
+import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
+import { sourceModePluginKey } from "@/components/tiptap-extension-custom/source-mode";
+import { isOn } from "./features";
 
 /**
  * MuikkuEditorProps
@@ -84,6 +90,7 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
     content,
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
+    textDirection: isOn(resolved.textDirection) ? "ltr" : undefined,
     editorProps: {
       attributes: {
         class: "muikku-editor__content",
@@ -96,14 +103,47 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
       onChangeRef.current?.(instance.getText().trim() ? html : "");
     },
   });
+  const sourceModeOn = isOn(resolved.sourceMode);
+  const { selected: isSourceMode } = useTiptapEditorV2({
+    editor,
+    selector: ({ editor: instance }) =>
+      !!sourceModePluginKey.getState(instance.state)?.enabled,
+  });
+
+  const [htmlDraft, setHtmlDraft] = useState("");
+  const prevSourceMode = useRef(false);
+
+  useEffect(() => {
+    if (!editor || !sourceModeOn || isSourceMode === undefined) {
+      return;
+    }
+    if (!prevSourceMode.current && isSourceMode) {
+      setHtmlDraft(editor.getHTML());
+    }
+    if (prevSourceMode.current && !isSourceMode) {
+      editor.commands.setContent(htmlDraft);
+    }
+    prevSourceMode.current = isSourceMode;
+  }, [editor, sourceModeOn, isSourceMode, htmlDraft]);
 
   const ctxValue = useMemo(() => ({ editor }), [editor]);
 
   return (
     <EditorContext.Provider value={ctxValue}>
       {parts.toolbar}
-      {editor ? parts.renderBubbleMenus(editor) : null}
-      <EditorContent editor={editor} />
+      {editor && !(sourceModeOn && isSourceMode)
+        ? parts.renderBubbleMenus(editor)
+        : null}
+      {sourceModeOn && isSourceMode ? (
+        <textarea
+          value={htmlDraft}
+          onChange={(event) => setHtmlDraft(event.target.value)}
+          spellCheck={false}
+          className="muikku-editor__source"
+        />
+      ) : (
+        <EditorContent editor={editor} className="muikku-editor__surface" />
+      )}
       {characterCount ? (
         <MuikkuEditorCounters
           editor={editor}

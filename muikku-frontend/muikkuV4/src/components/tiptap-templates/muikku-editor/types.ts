@@ -21,10 +21,10 @@ export interface HeadingFeatureOptions {
 }
 
 /**
- * List feature options. Task lists are not wired yet.
+ * List feature options.
  */
 export interface ListFeatureOptions {
-  types?: ("bulletList" | "orderedList")[];
+  types?: ("bulletList" | "orderedList" | "taskList")[];
 }
 
 /**
@@ -49,7 +49,7 @@ export interface TableFeatureOptions {
 }
 
 /**
- * Image feature options.
+ * Image feature options (student Image node).
  */
 export interface ImageFeatureOptions {
   inline?: boolean;
@@ -57,8 +57,31 @@ export interface ImageFeatureOptions {
 }
 
 /**
+ * Iframe feature options.
+ */
+export interface IframeFeatureOptions {
+  allowedProtocols?: string[];
+  srcAllowlist?: string[];
+}
+
+/**
+ * Muikku exercise field flags. Omitted keys follow MuikkuFieldsKit (all on).
+ */
+export interface MuikkuFieldsFeatureOptions {
+  text?: boolean;
+  memo?: boolean;
+  connect?: boolean;
+  organizer?: boolean;
+  sorter?: boolean;
+  journal?: boolean;
+  audio?: boolean;
+  select?: boolean;
+  file?: boolean;
+  mathexercise?: boolean;
+}
+
+/**
  * Editor capabilities. Omitted keys use MuikkuEditor defaults.
- * `false` removes schema, toolbar, and bubble menus together.
  */
 export interface MuikkuEditorFeatures {
   history?: Feature;
@@ -66,9 +89,11 @@ export interface MuikkuEditorFeatures {
   italic?: Feature;
   underline?: Feature;
   strike?: Feature;
+  code?: Feature;
   heading?: Feature<HeadingFeatureOptions>;
   list?: Feature<ListFeatureOptions>;
   blockquote?: Feature;
+  codeBlock?: Feature;
   link?: Feature;
   highlight?: Feature;
   textColor?: Feature;
@@ -78,6 +103,23 @@ export interface MuikkuEditorFeatures {
   image?: Feature<ImageFeatureOptions>;
   math?: Feature;
   specialChar?: Feature;
+  superscript?: Feature;
+  subscript?: Feature;
+  horizontalRule?: Feature;
+  anchor?: Feature;
+  lang?: Feature;
+  details?: Feature;
+  iframe?: Feature<IframeFeatureOptions>;
+  divBox?: Feature;
+  sourceMode?: Feature;
+  emoji?: Feature;
+  muikkuImage?: Feature;
+  imageUpload?: Feature;
+  muikkuFields?: Feature<MuikkuFieldsFeatureOptions>;
+  textDirection?: Feature;
+  typography?: Feature;
+  selection?: Feature;
+  themeToggle?: Feature;
 }
 
 /**
@@ -94,12 +136,19 @@ export type ResolvedMuikkuEditorFeatures = {
  * Toolbar group ids. Render order is fixed in the factory.
  */
 export type ToolbarGroupId =
+  | "document"
   | "history"
   | "blocks"
+  | "lang"
   | "marks"
+  | "script"
   | "align"
   | "indent"
-  | "insert";
+  | "direction"
+  | "insert"
+  | "boxes"
+  | "fields"
+  | "theme";
 
 /**
  * Limits forwarded to CharAndWordLimitExtension.

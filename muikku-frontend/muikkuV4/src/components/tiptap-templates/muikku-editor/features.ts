@@ -12,9 +12,11 @@ export const MUIKKU_EDITOR_DEFAULTS: ResolvedMuikkuEditorFeatures = {
   italic: false,
   underline: false,
   strike: false,
+  code: false,
   heading: false,
   list: false,
   blockquote: false,
+  codeBlock: false,
   link: false,
   highlight: false,
   textColor: false,
@@ -24,6 +26,23 @@ export const MUIKKU_EDITOR_DEFAULTS: ResolvedMuikkuEditorFeatures = {
   image: false,
   math: false,
   specialChar: false,
+  superscript: false,
+  subscript: false,
+  horizontalRule: false,
+  anchor: false,
+  lang: false,
+  details: false,
+  iframe: false,
+  divBox: false,
+  sourceMode: false,
+  emoji: false,
+  muikkuImage: false,
+  imageUpload: false,
+  muikkuFields: false,
+  textDirection: false,
+  typography: false,
+  selection: false,
+  themeToggle: false,
 };
 
 /**
@@ -54,6 +73,37 @@ export const STUDENT_RICH: MuikkuEditorFeatures = {
   table: true,
   math: true,
   specialChar: true,
+};
+
+/**
+ * Workspace material authoring. Same idea as STUDENT_RICH: a mergeable default.
+ */
+export const MATERIAL_AUTHOR: MuikkuEditorFeatures = {
+  ...STUDENT_RICH,
+  list: { types: ["bulletList", "orderedList", "taskList"] },
+  align: { types: ["left", "center", "right", "justify"] },
+  code: true,
+  codeBlock: true,
+  superscript: true,
+  subscript: true,
+  horizontalRule: true,
+  anchor: true,
+  lang: true,
+  details: true,
+  iframe: {
+    allowedProtocols: ["https:"],
+    srcAllowlist: ["*.youtube.com"],
+  },
+  divBox: true,
+  sourceMode: true,
+  emoji: true,
+  muikkuImage: true,
+  imageUpload: true,
+  muikkuFields: true,
+  textDirection: true,
+  typography: true,
+  selection: true,
+  themeToggle: true,
 };
 
 /**

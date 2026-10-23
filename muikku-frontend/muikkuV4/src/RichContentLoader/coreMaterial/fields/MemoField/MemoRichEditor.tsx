@@ -26,6 +26,7 @@ export function MemoRichEditor(props: {
 
   return (
     <MuikkuEditor
+      className="muikku-editor"
       content={toMemoDisplayHtml(value)}
       features={richedit ? STUDENT_RICH : STUDENT_PLAIN}
       minRows={memoRowCount(rows)}
