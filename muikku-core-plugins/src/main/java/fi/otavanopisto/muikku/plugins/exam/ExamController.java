@@ -372,7 +372,7 @@ public class ExamController {
           // Strip hidden pages (nobody should ever put a page into a category and then hide it, though)
           for (int i = categoryIds.size() - 1; i >= 0; i--) {
             WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(categoryIds.get(i));
-            if (workspaceMaterial != null && workspaceMaterial.getHidden()) {
+            if (workspaceMaterial == null || workspaceMaterial.getHidden()) {
               categoryIds.remove(i);
             }
           }
