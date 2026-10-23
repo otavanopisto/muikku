@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MuikkuMemoEditor } from "@/components/tiptap-templates/muikku-memo-editor";
 import type {
   FieldComponentProps,
   JournalFieldContent,
@@ -7,8 +6,11 @@ import type {
 import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
 import { MemoReadonly } from "../../coreMaterial/fields/MemoField/MemoReadonly";
 import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
-import { toMemoDisplayHtml } from "../../coreMaterial/utils/memoField";
 import classes from "../../coreMaterial/fields/JournalField/JournalField.module.css";
+import {
+  MuikkuEditor,
+  STUDENT_RICH,
+} from "~/src/components/tiptap-templates/muikku-editor";
 
 /**
  * JournalFieldProps
@@ -57,10 +59,10 @@ export function MaterialJournalField(props: JournalFieldProps) {
       {readOnly ? (
         <MemoReadonly value={value} />
       ) : (
-        <MuikkuMemoEditor
-          content={toMemoDisplayHtml(value)}
+        <MuikkuEditor
+          content={value}
+          features={STUDENT_RICH}
           minRows={8}
-          richedit
           onChange={handleChange}
         />
       )}

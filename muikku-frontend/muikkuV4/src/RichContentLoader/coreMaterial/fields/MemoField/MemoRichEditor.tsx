@@ -1,4 +1,3 @@
-import { MuikkuMemoEditor } from "@/components/tiptap-templates/muikku-memo-editor";
 import {
   getMemoCharacters,
   getMemoWords,
@@ -6,6 +5,11 @@ import {
   parseMemoLimit,
   toMemoDisplayHtml,
 } from "../../utils/memoField";
+import {
+  MuikkuEditor,
+  STUDENT_PLAIN,
+  STUDENT_RICH,
+} from "~/src/components/tiptap-templates/muikku-editor";
 
 /**
  * Memo field adapter around the memo Tiptap template.
@@ -21,17 +25,17 @@ export function MemoRichEditor(props: {
   const { value, rows, richedit, maxChars, maxWords, onChange } = props;
 
   return (
-    <MuikkuMemoEditor
+    <MuikkuEditor
       content={toMemoDisplayHtml(value)}
+      features={richedit ? STUDENT_RICH : STUDENT_PLAIN}
       minRows={memoRowCount(rows)}
-      richedit={richedit}
+      onChange={onChange}
       characterCount={{
         characterLimit: parseMemoLimit(maxChars) ?? null,
         wordLimit: parseMemoLimit(maxWords) ?? null,
         textCounter: (text) => getMemoCharacters(text).length,
         wordCounter: (text) => getMemoWords(text).length,
       }}
-      onChange={onChange}
     />
   );
 }
