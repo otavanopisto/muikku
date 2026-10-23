@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -40,27 +42,37 @@ import fi.otavanopisto.pyramus.rest.model.Subject;
 
 public class TestUtilities {
   
-  public static Boolean webhookCall(String url, String payload) throws Exception {
+  public static void webhookCall(String url, String payload) throws IOException {
     String signature = "38c6cbd28bf165070d070980dd1fb595";
-    CloseableHttpClient client = HttpClients.createDefault();
-    try {
-      HttpPost httpPost = new HttpPost(url);
-      try {
-        StringEntity dataEntity = new StringEntity(payload);
-        try {
-          httpPost.addHeader("X-Pyramus-Signature", signature);
-          httpPost.setEntity(dataEntity);
-          client.execute(httpPost);
-          return true;
-        } finally {
-          EntityUtils.consume(dataEntity);
-        }
-      } finally {
-        httpPost.releaseConnection();
-      }
-    } finally {
-      client.close();
+
+    try (CloseableHttpClient client = HttpClients.createDefault();
+         CloseableHttpResponse response = client.execute(createWebhookRequest(url, payload, signature))) {
+      EntityUtils.consume(response.getEntity());
     }
+  }
+
+  public static void sendPyramusWebhook(String payload) throws IOException {
+    webhookCall(getAppUrl() + "/pyramus/webhook", payload);
+  }
+
+  public static String getAppUrl() {
+    return getAppUrl(false);
+  }
+
+  public static String getAppUrl(boolean secure) {
+    String host = System.getProperty("it.host");
+    if (host == null || host.isBlank()) {
+      host = "dev.muikku.fi";
+    }
+    String port = System.getProperty(secure ? "it.port.https" : "it.port.http");
+    return (secure ? "https://" : "http://") + host + ":" + port;
+  }
+
+  private static HttpPost createWebhookRequest(String url, String payload, String signature) throws UnsupportedEncodingException {
+    HttpPost httpPost = new HttpPost(url);
+    httpPost.addHeader("X-Pyramus-Signature", signature);
+    httpPost.setEntity(new StringEntity(payload));
+    return httpPost;
   }
 
   public static int sendHttpPOSTRequest(String url, String json) throws ClientProtocolException, IOException, URISyntaxException {

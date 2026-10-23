@@ -99,7 +99,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             .withStatus(200)));
         
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
-        TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        TestUtilities.sendPyramusWebhook(payload);
 
         scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
@@ -228,7 +228,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             .withBody(courseJson)
             .withStatus(200)));
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
-        TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        TestUtilities.sendPyramusWebhook(payload);
         
 
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -303,7 +303,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             .withStatus(200)));
         
         String payload = objectMapper.writeValueAsString(new WebhookCourseUpdatePayload(course.getId()));
-        TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
+        TestUtilities.sendPyramusWebhook(payload);
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".meta--workspace .meta__item:nth-child(3) .meta__item-description");

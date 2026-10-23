@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,11 +20,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.After;
@@ -125,72 +121,52 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
-  protected long getUserIdByEmail(String email) throws SQLException, ClassNotFoundException{
-    Connection connection = getConnection();
-    try {
-      Statement statement = connection.createStatement();
-      statement.execute(
-          String.format(
-              "SELECT usdi.userEntity_id AS result "
-                  + "FROM UserEmailEntity uee "
-                  + "INNER JOIN UserSchoolDataIdentifier usdi "
-                  + "ON uee.userSchoolDataIdentifier_id = usdi.id "
-                  + "WHERE uee.address = '%s'",
-                  email));
-      ResultSet results = statement.getResultSet();
-      long user_id = 0;
-      while (results.next()) {              
-        user_id = results.getLong("result");
-      }
-      return user_id;
-    } finally {
-      connection.close();
+protected long getUserIdByEmail(String email) throws SQLException, ClassNotFoundException {
+  String sql = "SELECT usdi.userEntity_id AS result "
+      + "FROM UserEmailEntity uee "
+      + "INNER JOIN UserSchoolDataIdentifier usdi "
+      + "ON uee.userSchoolDataIdentifier_id = usdi.id "
+      + "WHERE uee.address = ?";
+
+  try (Connection connection = getConnection();
+       PreparedStatement statement = connection.prepareStatement(sql)) {
+    statement.setString(1, email);
+    try (ResultSet results = statement.executeQuery()) {
+      return results.next() ? results.getLong("result") : 0L;
     }
   }
+}
   
-  protected String getWorkspaceUserEntityIdByPyramusId(String pyramusId) throws SQLException, ClassNotFoundException{
-    Connection connection = getConnection();
-    try {
-      Statement statement = connection.createStatement();
-      statement.execute(
-          String.format(
-              "SELECT id AS result "
-                  + "FROM workspaceUserEntity "
-                  + "WHERE identifier = '%s'",
-                  pyramusId));
-      ResultSet results = statement.getResultSet();
-      String user_id = "";
-      while (results.next()) {              
-        user_id = results.getString("result");
+  protected String getWorkspaceUserEntityIdByPyramusId(String pyramusId) throws SQLException, ClassNotFoundException {
+    String sql = "SELECT id AS result "
+        + "FROM workspaceUserEntity "
+        + "WHERE identifier = ?";
+
+    try (Connection connection = getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setString(1, pyramusId);
+      try (ResultSet results = statement.executeQuery()) {
+        return results.next() ? results.getString("result") : "";
       }
-      return user_id;
-    } finally {
-      connection.close();
     }
   }
   
   protected String getLatestCeeposOrderId() throws SQLException, ClassNotFoundException {
-    Connection connection = getConnection();
-    try {
-      Statement statement = connection.createStatement();
-      statement.execute("SELECT id AS result "
-                  + "FROM CeeposOrder "
-                  + "ORDER BY id DESC "
-                  + "LIMIT 1");
-      ResultSet results = statement.getResultSet();
-      String orderId = "";
-      while (results.next()) {              
-        orderId = results.getString("result");
-      }
-      return orderId;
-    } finally {
-      connection.close();
+    String sql = "SELECT id AS result "
+        + "FROM CeeposOrder "
+        + "ORDER BY id DESC "
+        + "LIMIT 1";
+
+    try (Connection connection = getConnection();
+         Statement statement = connection.createStatement();
+         ResultSet results = statement.executeQuery(sql)) {
+      return results.next() ? results.getString("result") : "";
     }
   }
   
   protected String getNextCeeposOrderId() throws ClassNotFoundException, SQLException {
     String orderId = getLatestCeeposOrderId();
-    if (orderId == "") {
+    if (orderId.isEmpty()) {
       orderId = "1";
     } else {
       orderId = String.valueOf(Long.parseLong(orderId) + 1);
@@ -198,41 +174,16 @@ public abstract class AbstractIntegrationTest {
     return orderId;  
   }
   
-  protected void updateWorkspaceAccess(WorkspaceAccess access, String urlName) throws SQLException, ClassNotFoundException{
-    Connection connection = getConnection();
-    try {
-      Statement statement = connection.createStatement();
-      statement.execute(
-          String.format(
-              "UPDATE WorkspaceEntity "
-                  + "SET access = '%s'"
-                  + "WHERE urlName = '%s'",
-                  access, urlName));
-    } finally {
-      connection.close();
-    }
-  }
-  
-  protected Boolean webhookCall(String url, String payload) throws Exception {
-    String signature = "38c6cbd28bf165070d070980dd1fb595";
-    CloseableHttpClient client = HttpClients.createDefault();
-    try {
-      HttpPost httpPost = new HttpPost(url);
-      try {
-        StringEntity dataEntity = new StringEntity(payload);
-        try {
-          httpPost.addHeader("X-Pyramus-Signature", signature);
-          httpPost.setEntity(dataEntity);
-          client.execute(httpPost);
-          return true;
-        } finally {
-          EntityUtils.consume(dataEntity);
-        }
-      } finally {
-        httpPost.releaseConnection();
-      }
-    } finally {
-      client.close();
+  protected void updateWorkspaceAccess(WorkspaceAccess access, String urlName) throws SQLException, ClassNotFoundException {
+    String sql = "UPDATE WorkspaceEntity "
+        + "SET access = ? "
+        + "WHERE urlName = ?";
+
+    try (Connection connection = getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setString(1, access.name());
+      statement.setString(2, urlName);
+      statement.executeUpdate();
     }
   }
   
