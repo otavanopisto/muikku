@@ -1,6 +1,17 @@
-import { colorsTuple, createTheme, virtualColor } from "@mantine/core";
-import { aborted, brand, error, info, success, warning } from "./colors";
+import { colorsTuple, createTheme, Paper, virtualColor } from "@mantine/core";
+import {
+  aborted,
+  brand,
+  error,
+  high,
+  info,
+  low,
+  medium,
+  success,
+  warning,
+} from "./colors";
 import { muikkuTokens } from "./tokens";
+import classes from "./theme.module.css";
 
 export const muikkuDefaultTheme = createTheme({
   primaryColor: "brand",
@@ -13,6 +24,9 @@ export const muikkuDefaultTheme = createTheme({
     info,
     success,
     aborted,
+    high,
+    medium,
+    low,
     darkPanel: colorsTuple("oklch(27.6% 0.0233 248.68)"),
     lightPanel: colorsTuple("oklch(1 0 0)"),
     // Panel title text colors
@@ -56,5 +70,10 @@ export const muikkuDefaultTheme = createTheme({
   },
   other: {
     ...muikkuTokens, // or pick fields you need in the resolver
+  },
+  components: {
+    Paper: Paper.extend({
+      classNames: classes,
+    }),
   },
 });

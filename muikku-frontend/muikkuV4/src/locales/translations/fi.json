@@ -1,16 +1,18 @@
 {
   "common": {
-    "hello": "Terve"
+    "labels": {
+      "studies": "Opinnot"
+    }
   },
 
   "announcements": {
+    "label": "Tiedotteet",
     "actions": {
       "pin": "Kiinnitä tiedote",
       "unpin": "Poista kiinnitys",
       "setRead": "Aseta luetuksi",
       "setUnread": "Aseta lukemattomaksi"
     },
-
     "labels": {},
     "state": {
       "PINNED": "Kiinnitetty",
@@ -19,7 +21,11 @@
       "UNREAD": "Lukematon"
     }
   },
+
   "events": {
+    "label": "Tapahtumat",
+    "label_absences": "Poissaolot",
+    "labels": {},
     "types": {
       "ASSIGNMENTS_UNDONE": "Tehtävät tekemättä",
       "EXAM": "Koe",
@@ -35,7 +41,20 @@
       "MEDICAL_REASON": "Terveydellinen syy",
       "OTHER_AUTHORIZED_REASON": "Muu luvallinen syy",
       "UNAUTHORIZED_ABSENCE_EXPLAINED": "Poissaololle ei ollut lupaa (selvitetty)"
-    },
+    }
+  },
+
+  "messages": {
+    "label": "Viestit",
     "labels": {}
+  },
+
+  "tasks": {
+    "label": "Opintotehtävät",
+    "states": {
+      "APPROVED": "Valmis",
+      "APPROVAL_PENDING": "Odottaa hyväksyntää",
+      "ONGOING": "Kesken"
+    }
   }
 }

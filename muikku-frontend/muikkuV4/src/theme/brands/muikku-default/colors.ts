@@ -96,3 +96,47 @@ export const dark: MantineColorsTuple = [
   "#F1F5F9",
   "#F8FAFC",
 ];
+
+// priority colors
+
+/** High priority.  Shade 6 is Okabe–Ito vermillion (#D55E00), which stays distinct from green for red–green color blindness. */
+export const high: MantineColorsTuple = [
+  "oklch(96.50% 0.0191 47.51)",
+  "oklch(93.00% 0.0391 47.51)",
+  "oklch(88.00% 0.0697 47.51)",
+  "oklch(82.00% 0.1101 47.51)",
+  "oklch(75.00% 0.1500 47.51)",
+  "oklch(68.50% 0.1650 47.51)",
+  "oklch(62.13% 0.1705 47.51)", // 6
+  "oklch(54.00% 0.1496 47.51)",
+  "oklch(46.00% 0.1281 47.51)",
+  "oklch(38.00% 0.1071 47.51)",
+];
+/** Medium priority.Shade 6 is Okabe–Ito blue (#0072B2), distinct from high-priority blue and green for red–green color blindness. */
+
+export const medium: MantineColorsTuple = [
+  "oklch(96.50% 0.0179 244.05)",
+  "oklch(93.00% 0.0363 244.05)",
+  "oklch(87.50% 0.0650 244.05)",
+  "oklch(80.00% 0.0900 244.05)",
+  "oklch(71.00% 0.1150 244.05)",
+  "oklch(62.00% 0.1300 244.05)",
+  "oklch(53.19% 0.1313 244.05)", // 6
+  "oklch(46.00% 0.1137 244.05)",
+  "oklch(39.00% 0.0965 244.05)",
+  "oklch(32.00% 0.0793 244.05)",
+];
+
+/** Low priority. Shade 6 is violet (#938AF9), distinct from high-priority blue and medium-priority vermillion for red–green color blindness. */
+export const low: MantineColorsTuple = [
+  "oklch(96.50% 0.0173 285.00)",
+  "oklch(93.00% 0.0350 285.00)",
+  "oklch(88.50% 0.0585 285.00)",
+  "oklch(84.00% 0.0828 285.00)",
+  "oklch(79.00% 0.1109 285.00)",
+  "oklch(74.00% 0.1401 285.00)",
+  "oklch(69.00% 0.1600 285.00)", // 6
+  "oklch(60.00% 0.1450 285.00)",
+  "oklch(51.00% 0.1250 285.00)",
+  "oklch(42.00% 0.1050 285.00)",
+];

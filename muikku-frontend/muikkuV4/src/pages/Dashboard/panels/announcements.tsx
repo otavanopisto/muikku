@@ -80,7 +80,6 @@ export function Announcements() {
       <Stack>
         {announcements?.announcements.map((announcement) => (
           <Panel.Item
-            variant="warning"
             itemId={announcement.id}
             key={announcement.id}
             title={announcement.caption}

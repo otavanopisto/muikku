@@ -1,0 +1,18 @@
+.root[data-variant="panel-item"] {
+  background-color: var(--muikku-surface);
+}
+
+.root[data-variant="high"] {
+  border-color: var(--mantine-color-high-4);
+  background-color: var(--muikku-color-priority-high-bg);
+}
+
+.root[data-variant="medium"] {
+  border-color: var(--mantine-color-medium-4);
+  background-color: var(--muikku-color-priority-medium-bg);
+}
+
+.root[data-variant="low"] {
+  border-color: var(--mantine-color-low-4);
+  background-color: var(--muikku-color-priority-low-bg);
+}

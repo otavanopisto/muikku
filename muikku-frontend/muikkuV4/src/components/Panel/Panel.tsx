@@ -10,6 +10,7 @@ import {
   ActionIcon,
   Badge,
   Group,
+  Accordion,
 } from "@mantine/core";
 import { IconDotsVertical } from "@tabler/icons-react";
 import styles from "./Panel.module.css";
@@ -33,8 +34,8 @@ interface PanelProps {
 export default function Panel(props: PanelProps) {
   const { title, icon, countIndicator, indicatorTooltip, children } = props;
   return (
-    <Paper className={styles.panel} bg="panels" withBorder shadow="sm">
-      <Box p="md" className={styles.panelHeader}>
+    <Paper className={styles.panel}>
+      <Box pb="md" className={styles.panelHeader}>
         <Box className={styles.panelTitle}>
           {icon && (
             <ThemeIcon variant="filled" mr="sm" size="lg">
@@ -51,7 +52,7 @@ export default function Panel(props: PanelProps) {
           </Tooltip>
         )}
       </Box>
-      <Box p="md">{children}</Box>
+      <Box>{children}</Box>
     </Paper>
   );
 }
@@ -65,46 +66,48 @@ export interface PanelMenuItem {
   icon?: React.ReactNode;
 }
 
-export type PanelItemVariant = "important" | "warning" | "success";
+export type PanelItemVariant = "high" | "medium" | "low";
+export type PanelItemState = "warning" | "success" | "info";
 
-export type PanelItemState = {
+export type PanelItemBadge = {
   label: string;
-  state: PanelItemVariant;
+  state: PanelItemState;
 };
+
 /**
- * PanelItem component
+ * Text color function for the PanelItem components
+ * @param unseen - Whether the item is unseen
+ * @returns - The text colors for the item
  */
-interface PanelItemProps {
-  title: string;
-  date: string | React.ReactNode;
-  itemId: number;
-  variant?: "important" | "warning" | "success";
-  unseen?: boolean;
-  itemActions?: PanelMenuItem[];
-  icons?: React.ReactNode;
-  states?: PanelItemState | PanelItemState[];
+function panelItemTextColors(unseen: boolean | undefined) {
+  const seen = unseen === false;
+  return {
+    titleColor: seen ? "panelSeenTitleText" : "panelTitleText",
+    textColor: seen ? "panelSeenContentText" : "panelContentText",
+  } as const;
 }
 
 /**
- * Workspaces
- * @returns
+ * Panel item header component
+ * @param props - PanelItemHeaderProps
+ * @returns - PanelItemHeader component
  */
-function PanelItem(props: PanelItemProps) {
-  const { title, date, itemId, unseen, itemActions, states, icons, variant } =
-    props;
-  const titleColor =
-    unseen === undefined
-      ? "panelTitleText"
-      : unseen
-        ? "panelTitleText"
-        : "panelSeenTitleText";
-  const textColor =
-    unseen === undefined
-      ? "panelContentText"
-      : unseen
-        ? "panelContentText"
-        : "panelSeenContentText";
+interface PanelItemHeaderProps {
+  title: string;
+  unseen?: boolean;
+  itemActions?: PanelMenuItem[];
+  badges?: PanelItemBadge | PanelItemBadge[];
+  icons?: React.ReactNode;
+  itemId: number;
+}
 
+/**
+ * Panel item header component
+ * @param props - PanelItemHeaderProps
+ * @returns - PanelItemHeader component
+ */
+function PanelItemHeader(props: PanelItemHeaderProps) {
+  const { title, itemId, unseen, itemActions, badges, icons } = props;
   const actions = (
     <Menu position="bottom-end">
       <Menu.Target>
@@ -122,38 +125,117 @@ function PanelItem(props: PanelItemProps) {
     </Menu>
   );
   return (
-    <Box key={itemId} mt="md">
-      <Title c={titleColor} order={4} className={styles.panelItemTitle}>
+    <>
+      <Title
+        c={panelItemTextColors(unseen).titleColor}
+        order={4}
+        className={styles.panelItemTitle}
+      >
         <Box className={styles.panelItemTitleContent}>
           {icons}
           {title}
         </Box>
         {itemActions && <Group>{actions}</Group>}
       </Title>
-      {states && (
-        <Box bg={variant} className={styles.panelItemVariant}>
-          {Array.isArray(states) ? (
-            states.map((state) => (
+      {badges && (
+        <Box className={styles.panelItemVariant}>
+          {Array.isArray(badges) ? (
+            badges.map((badge) => (
               <Badge
                 tt="none"
-                key={state.label + state.state}
+                key={badge.label + badge.state}
                 variant="outline
-                "
-                color={state.state}
+            "
+                color={badge.state}
               >
-                {state.label}
+                {badge.label}
               </Badge>
             ))
           ) : (
-            <Badge tt="none" variant="outline" color={states.state}>
-              {states.label}
+            <Badge tt="none" variant="outline" color={badges.state}>
+              {badges.label}
             </Badge>
           )}
         </Box>
       )}
-      <Text c={textColor}>{date}</Text>
-    </Box>
+    </>
+  );
+}
+
+/**
+ * PanelItem component
+ */
+interface PanelItemProps {
+  title: string;
+  date: string | React.ReactNode;
+  itemId: number;
+  variant?: PanelItemVariant;
+  unseen?: boolean;
+  itemActions?: PanelMenuItem[];
+  icons?: React.ReactNode;
+  badges?: PanelItemBadge | PanelItemBadge[];
+  children?: React.ReactNode;
+}
+
+/**
+ * Workspaces
+ * @returns
+ */
+function PanelItem(props: PanelItemProps) {
+  const {
+    children,
+    title,
+    date,
+    itemId,
+    unseen,
+    itemActions,
+    badges,
+    icons,
+    variant,
+  } = props;
+
+  return (
+    <Paper variant={variant ?? "panel-item"} p="sm" key={itemId} withBorder>
+      <PanelItemHeader
+        title={title}
+        itemId={itemId}
+        unseen={unseen}
+        itemActions={itemActions}
+        badges={badges}
+        icons={icons}
+      />
+      {children && <Box>{children}</Box>}
+      <Text c={panelItemTextColors(unseen).textColor}>{date}</Text>
+    </Paper>
+  );
+}
+
+/**
+ * Panel item for accordion container
+ * @param props - PanelItemProps
+ * @returns - PanelAccordionItem component
+ */
+function PanelAccordionItem(props: PanelItemProps) {
+  const { title, date, variant, itemId, unseen, badges, icons, children } =
+    props;
+  return (
+    <Accordion.Item value={title}>
+      <Paper variant={variant ?? "panel-item"} key={itemId} mb="md" withBorder>
+        <Accordion.Control>
+          <PanelItemHeader
+            title={title}
+            itemId={itemId}
+            unseen={unseen}
+            badges={badges}
+            icons={icons}
+          />
+          <Text c={panelItemTextColors(unseen).textColor}>{date}</Text>
+        </Accordion.Control>
+        <Accordion.Panel>{children}</Accordion.Panel>
+      </Paper>
+    </Accordion.Item>
   );
 }
 
 Panel.Item = PanelItem;
+Panel.AccordionItem = PanelAccordionItem;

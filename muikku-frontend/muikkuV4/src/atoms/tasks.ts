@@ -1,41 +1,104 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { userAtom } from "./auth";
-import { getEventsApi, isMApiError, isResponseError } from "~/api";
-import { ListEventsTypeEnum } from "~/generated/client";
-import { FRONTPAGE_ABSENCES_QUERY_KEY } from "~/src/queryClient";
+import { getNotesApi, isMApiError, isResponseError } from "~/api";
+import type {
+  UpdateNoteReceiverRequest,
+  NoteStatusType,
+  Note,
+} from "~/generated/client";
+import { FRONTPAGE_TASKS_QUERY_KEY, queryClient } from "~/src/queryClient";
 
-const eventsApi = getEventsApi();
+const notesApi = getNotesApi();
 
-const absencesStartDate = new Date();
-absencesStartDate.setMonth(absencesStartDate.getMonth() - 12);
-const absencesEndDate = new Date();
-absencesEndDate.setMonth(absencesStartDate.getMonth() + 6);
+const recipientQueryFunction = async (
+  userId: number,
+  status?: NoteStatusType
+) => {
+  try {
+    const notes = await notesApi.getNotesByRecipient({
+      recipientId: userId,
+    });
+    if (status) {
+      return notes.filter(
+        (note) =>
+          note.recipients.find((recipient) => recipient.recipientId === userId)
+            ?.status === status
+      );
+    }
+    return notes;
+  } catch (error) {
+    if (!isMApiError(error)) throw error;
+    if (isResponseError(error)) throw new Error(error.message);
+    throw new Error("Failed to load notes ");
+  }
+};
 
-export const absencesQueryAtom = atomWithQuery((get) => {
+export const frontpageTasksRecipientQueryAtom = atomWithQuery((get) => {
   const userId = get(userAtom)?.id;
 
   if (!userId) {
     throw new Error("User ID is required");
   }
   return {
-    queryKey: [...FRONTPAGE_ABSENCES_QUERY_KEY, userId],
-    enabled: typeof userId === "number",
-    queryFn: async () => {
-      try {
-        return await eventsApi.listEvents({
-          type: ListEventsTypeEnum.Absence,
-          user: userId,
-          start: absencesStartDate,
-          end: absencesEndDate,
-        });
-      } catch (error) {
-        if (!isMApiError(error)) throw error;
-        if (isResponseError(error)) throw new Error(error.message);
-        throw new Error("Failed to load absences");
-      }
-    },
+    queryKey: [...FRONTPAGE_TASKS_QUERY_KEY, userId],
+    queryFn: () => recipientQueryFunction(userId, "ONGOING"),
   };
 });
 
-export const absencesDataAtom = atom((get) => get(absencesQueryAtom).data);
+export const updateFrontpageTaskStatusAtom = atom(
+  null,
+  async (_get, _set, userId: number, task: Note, status: NoteStatusType) => {
+    try {
+      const updateRequest: UpdateNoteReceiverRequest = {
+        status,
+        pinned:
+          task.recipients.find((recipient) => recipient.recipientId === userId)
+            ?.pinned ?? false,
+      };
+
+      if (!task.id) {
+        throw new Error("Task ID is required");
+      }
+
+      const recipient = await notesApi.updateNoteReceiver({
+        noteId: task.id,
+        recipientId: userId,
+        updateNoteReceiverRequest: updateRequest,
+      });
+
+      queryClient.setQueryData(
+        [...FRONTPAGE_TASKS_QUERY_KEY, userId],
+        (tasks: Note[] | undefined) => {
+          if (!tasks) return tasks;
+          return tasks
+            .map((t) =>
+              t.id === task.id
+                ? {
+                    ...t,
+                    recipients: t.recipients.map((item) =>
+                      item.recipientId === userId ? recipient : item
+                    ),
+                  }
+                : t
+            )
+            .filter(
+              (ft) =>
+                ft.recipients.find((item) => item.recipientId === userId)
+                  ?.status === "ONGOING"
+            );
+        }
+      );
+    } catch (error) {
+      if (!isMApiError(error)) throw error;
+      if (isResponseError(error)) throw new Error(error.message);
+      throw new Error("Failed to update task status");
+    }
+  }
+);
+
+// DATA ATOMS
+
+export const frontpageTasksRecipientDataAtom = atom(
+  (get) => get(frontpageTasksRecipientQueryAtom).data
+);

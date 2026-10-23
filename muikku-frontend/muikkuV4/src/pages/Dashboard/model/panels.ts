@@ -2,7 +2,7 @@ import { Workspaces } from "../panels/studies";
 import { Announcements } from "../panels/announcements";
 import { Messages } from "../panels/messages";
 import { Absences } from "../panels/absences";
-
+import Tasks from "../panels/tasks";
 export interface Panel {
   id: number;
   title: string;
@@ -68,5 +68,14 @@ export const panels: Panel[] = [
     mandatory: false,
     color: "teal",
     component: Absences,
+  },
+  {
+    id: 7,
+    title: "Opintotehtävät",
+    description: "",
+    icon: null,
+    mandatory: false,
+    color: "teal",
+    component: Tasks,
   },
 ];
