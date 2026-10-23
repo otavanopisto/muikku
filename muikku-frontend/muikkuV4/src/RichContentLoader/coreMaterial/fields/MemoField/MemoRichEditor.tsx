@@ -28,15 +28,17 @@ export function MemoRichEditor(props: {
     <MuikkuEditor
       className="muikku-editor"
       content={toMemoDisplayHtml(value)}
-      features={richedit ? STUDENT_RICH : STUDENT_PLAIN}
+      features={{
+        ...(richedit ? STUDENT_RICH : STUDENT_PLAIN),
+        characterCount: {
+          characterLimit: parseMemoLimit(maxChars) ?? null,
+          wordLimit: parseMemoLimit(maxWords) ?? null,
+          textCounter: (text) => getMemoCharacters(text).length,
+          wordCounter: (text) => getMemoWords(text).length,
+        },
+      }}
       minRows={memoRowCount(rows)}
       onChange={onChange}
-      characterCount={{
-        characterLimit: parseMemoLimit(maxChars) ?? null,
-        wordLimit: parseMemoLimit(maxWords) ?? null,
-        textCounter: (text) => getMemoCharacters(text).length,
-        wordCounter: (text) => getMemoWords(text).length,
-      }}
     />
   );
 }

@@ -11,7 +11,7 @@ import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
 import "@/components/tiptap-node/muikku-anchor/anchor-node.scss";
 import { createEditorParts } from "./create-editor-parts";
-import { resolveFeatures } from "./features";
+import { optionsOf, resolveFeatures } from "./features";
 import { MuikkuEditorCounters } from "./muikku-editor-counters";
 import type { MuikkuEditorCharacterCount, MuikkuEditorFeatures } from "./types";
 import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
@@ -26,7 +26,6 @@ export interface MuikkuEditorProps {
   features?: MuikkuEditorFeatures;
   minRows?: number;
   className?: string;
-  characterCount?: MuikkuEditorCharacterCount;
   onChange?: (html: string) => void;
 }
 
@@ -35,14 +34,7 @@ export interface MuikkuEditorProps {
  * @param props - Content, feature map, optional chrome
  */
 export function MuikkuEditor(props: MuikkuEditorProps) {
-  const {
-    content,
-    features,
-    minRows = 3,
-    className,
-    characterCount,
-    onChange,
-  } = props;
+  const { content, features, minRows = 3, className, onChange } = props;
   const resolved = resolveFeatures(features);
   const featureKey = JSON.stringify(resolved);
 
@@ -55,7 +47,6 @@ export function MuikkuEditor(props: MuikkuEditorProps) {
         key={featureKey}
         content={content}
         resolved={resolved}
-        characterCount={characterCount}
         onChange={onChange}
       />
     </div>
@@ -68,7 +59,6 @@ export function MuikkuEditor(props: MuikkuEditorProps) {
 interface MuikkuEditorInstanceProps {
   content: string;
   resolved: ReturnType<typeof resolveFeatures>;
-  characterCount?: MuikkuEditorCharacterCount;
   onChange?: (html: string) => void;
 }
 
@@ -77,14 +67,11 @@ interface MuikkuEditorInstanceProps {
  * @param props - Resolved features and instance extras
  */
 function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
-  const { content, resolved, characterCount, onChange } = props;
+  const { content, resolved, onChange } = props;
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
-  const parts = useMemo(
-    () => createEditorParts(resolved, characterCount),
-    [resolved, characterCount]
-  );
+  const parts = useMemo(() => createEditorParts(resolved), [resolved]);
 
   const editor = useEditor({
     content,
@@ -104,6 +91,10 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
     },
   });
   const sourceModeOn = isOn(resolved.sourceMode);
+  const resolvedCharacterCount = isOn(resolved.characterCount)
+    ? (optionsOf(resolved.characterCount) as MuikkuEditorCharacterCount)
+    : null;
+
   const { selected: isSourceMode } = useTiptapEditorV2({
     editor,
     selector: ({ editor: instance }) =>
@@ -144,11 +135,11 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
       ) : (
         <EditorContent editor={editor} className="muikku-editor__surface" />
       )}
-      {characterCount ? (
+      {resolvedCharacterCount ? (
         <MuikkuEditorCounters
           editor={editor}
-          characterLimit={characterCount.characterLimit}
-          wordLimit={characterCount.wordLimit}
+          characterLimit={resolvedCharacterCount.characterLimit}
+          wordLimit={resolvedCharacterCount.wordLimit}
         />
       ) : null}
     </EditorContext.Provider>

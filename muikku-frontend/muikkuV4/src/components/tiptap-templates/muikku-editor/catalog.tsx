@@ -31,6 +31,7 @@ import type {
   ImageFeatureOptions,
   IndentFeatureOptions,
   ListFeatureOptions,
+  MuikkuEditorCharacterCount,
   MuikkuEditorFeatures,
   MuikkuFieldsFeatureOptions,
   TableFeatureOptions,
@@ -87,6 +88,7 @@ import {
   MuikkuMathFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
 import { ThemeToggle } from "./theme-toggle";
+import { CharAndWordLimitExtension } from "../../tiptap-extension-custom/char-and-word-limit";
 
 /**
  * Default heading levels for student rich editing.
@@ -124,21 +126,51 @@ const LEGACY_MATH_RULES = [
 ];
 
 /**
- * One catalog row: schema + toolbar + optional bubble menu.
+ * One feature’s mapping onto Tiptap + UI.
+ *
+ * The factory walks FEATURE_NAMES and, for each enabled feature, uses
+ * these fields:
+ *
+ * - starterKitKeys / starterKit → StarterKit.configure(...)
+ *   StarterKit is a bundle. Listing a key means “this feature owns that
+ *   bundled extension”. Off → set the key to false (strip from schema).
+ *   On + starterKit() → merge those options. On without starterKit() →
+ *   leave StarterKit’s default (the extension stays registered).
+ *
+ * - extensions → extra Tiptap extensions (Table, Math, Muikku fields…).
+ *   Anything that is not part of StarterKit belongs here. Some rows use
+ *   both: e.g. horizontalRule disables StarterKit’s HR and adds ours.
+ *
+ * - toolbar → button(s) in a named group. Groups are laid out by
+ *   TOOLBAR_GROUP_ORDER in create-editor-parts. A row with no toolbar
+ *   is schema-only (e.g. student image, typography).
+ *
+ * - bubbleMenu → floating UI bound to the live editor instance.
+ *
+ * A feature that is false/omitted skips extensions, toolbar, and menus
+ * together. That is what keeps paste/shortcuts in sync with the tools.
  */
 export interface CatalogEntry {
+  /** StarterKit option names this feature turns off when disabled. */
   starterKitKeys?: (keyof StarterKitOptions)[];
+  /** Extra StarterKit.configure values when the feature is on. */
   starterKit?: (options: object) => Partial<StarterKitOptions>;
+  /** Extensions to register besides StarterKit. */
   extensions?: (options: object) => AnyExtension[];
+  /** Toolbar controls; `group` picks the slot in TOOLBAR_GROUP_ORDER. */
   toolbar?: {
     group: ToolbarGroupId;
     render: (options: object) => React.ReactNode;
   };
+  /** Optional bubble menu; called with the mounted editor. */
   bubbleMenu?: (editor: Editor, options: object) => React.ReactNode;
 }
 
 /**
- * Insertion order is toolbar order within a group.
+ * Features the factory actually visits. Must list every catalog key you
+ * want wired; a row missing here never gets extensions or toolbar
+ * (themeToggle was a live example). Prefer keeping this in sync with
+ * keyof MuikkuEditorFeatures.
  */
 export const FEATURE_NAMES = [
   "sourceMode",
@@ -177,6 +209,7 @@ export const FEATURE_NAMES = [
   "selection",
   "image",
   "themeToggle",
+  "characterCount",
 ] as const satisfies readonly (keyof MuikkuEditorFeatures)[];
 
 /**
@@ -573,6 +606,22 @@ export const FEATURE_CATALOG: Record<keyof MuikkuEditorFeatures, CatalogEntry> =
       toolbar: {
         group: "theme",
         render: () => <ThemeToggle />,
+      },
+    },
+    characterCount: {
+      extensions: (options) => {
+        const count = options as MuikkuEditorCharacterCount;
+        return [
+          CharAndWordLimitExtension.configure({
+            limit: count.wordLimit ?? null,
+            characterCount: {
+              limit: count.characterLimit ?? null,
+              mode: "textSize",
+              ...(count.textCounter ? { textCounter: count.textCounter } : {}),
+              ...(count.wordCounter ? { wordCounter: count.wordCounter } : {}),
+            },
+          }),
+        ];
       },
     },
   };

@@ -120,6 +120,7 @@ export interface MuikkuEditorFeatures {
   typography?: Feature;
   selection?: Feature;
   themeToggle?: Feature;
+  characterCount?: Feature<MuikkuEditorCharacterCount>;
 }
 
 /**

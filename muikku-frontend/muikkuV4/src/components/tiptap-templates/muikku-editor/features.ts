@@ -42,7 +42,8 @@ export const MUIKKU_EDITOR_DEFAULTS: ResolvedMuikkuEditorFeatures = {
   textDirection: false,
   typography: false,
   selection: false,
-  themeToggle: false,
+  themeToggle: true,
+  characterCount: false,
 };
 
 /**
@@ -50,6 +51,7 @@ export const MUIKKU_EDITOR_DEFAULTS: ResolvedMuikkuEditorFeatures = {
  */
 export const STUDENT_PLAIN: MuikkuEditorFeatures = {
   history: true,
+  characterCount: true,
 };
 
 /**
@@ -73,6 +75,7 @@ export const STUDENT_RICH: MuikkuEditorFeatures = {
   table: true,
   math: true,
   specialChar: true,
+  characterCount: true,
 };
 
 /**
