@@ -430,20 +430,14 @@ public class PyramusMock {
       }
       
       public Builder mockCourseEducationTypes() throws JsonProcessingException {
-        
         mockResponseWithUrlMatching("/1/courses/\\d+/educationTypes", Collections.emptyList());
-
-        
         mockResponseWithUrlMatching("/1/courses/\\d+/educationTypes/\\d+/subtypes", Collections.emptyList());
-        
         return this;
       }
       
       public Builder mockCourseTypes() throws JsonProcessingException {
         mockResponseWithUrlEqualTo("/1/courses/courseTypes/", pmock.courseTypes);
-        
         mockResponseWithUrlEqualTo("/1/courses/courseTypes", pmock.courseTypes);
-        
         for (CourseType courseType : pmock.courseTypes) {
           mockResponseWithUrlEqualTo(String.format("/1/courses/courseTypes/%d", courseType.getId()), courseType);          
         }
@@ -458,11 +452,9 @@ public class PyramusMock {
       public Builder mockSubjects() throws JsonProcessingException {
         for (Subject subject : pmock.subjects) {
           mockResponseWithUrlEqualTo(String.format("/1/common/subjects/%d", subject.getId()), subject);
-          
           mockResponseWithUrlEqualTo(String.format("/1/common/subjectByCode/%s", subject.getCode()), subject);
         }
         mockResponseWithUrlEqualTo("/1/common/subjects", pmock.subjects);
-
 //      Following is a hack I'm not terribly proud of, but it silences records view errors for now.
 //      Could mock subjects like in prod. but waiting for dynamically working system to this.
         List<String> codes = new ArrayList<>();
@@ -471,7 +463,6 @@ public class PyramusMock {
             Subject subject = pmock.getSubjects().get(0);
             mockResponseWithUrlEqualTo(String.format("/1/common/subjectByCode/%s", code), subject);            
         }
-
         return this;
       }
       
@@ -698,10 +689,7 @@ public class PyramusMock {
           Email[] emails = { email };
 
           mockResponseWithUrlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", staffMember.getId()), email);
-
-          
           mockResponseWithUrlEqualTo(String.format("/1/staff/members/%d/emails", staffMember.getId()), emails);
-          
           mockResponseWithUrlMatching(String.format("/1/persons/persons/%d/staffMembers", staffMember.getPersonId()), staffMemberArray);
           
           staffs.add(staffMember);
