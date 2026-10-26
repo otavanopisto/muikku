@@ -68,6 +68,14 @@ public class ExamSettingsRestModel {
     this.examId = examId;
   }
 
+  public boolean isProctored() {
+    return proctored;
+  }
+
+  public void setProctored(boolean proctored) {
+    this.proctored = proctored;
+  }
+
   // Exam id 
   private Long examId;
 
@@ -91,5 +99,8 @@ public class ExamSettingsRestModel {
   
   // Number of minutes the exam is available once started; 0 if no time limit
   private int minutes;
+  
+  // Is this a proctored exam
+  private boolean proctored;
 
 }

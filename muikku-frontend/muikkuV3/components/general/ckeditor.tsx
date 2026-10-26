@@ -32,6 +32,9 @@ const PLUGINS = {
   scayt: `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/scayt/${CKEDITOR_VERSION}/`,
 
   // CONTEXTPATHREMOVED
+  "muikku-comment": "/scripts/ckplugins/muikku-comment/",
+  "muikku-comment-remove": "/scripts/ckplugins/muikku-comment-remove/",
+  "muikku-comment-popup": "/scripts/ckplugins/muikku-comment-popup/",
   "muikku-mathjax": "/scripts/ckplugins/muikku-mathjax/",
   "muikku-fields": "/scripts/ckplugins/muikku-fields/",
   "muikku-selection": "/scripts/ckplugins/muikku-selection/",

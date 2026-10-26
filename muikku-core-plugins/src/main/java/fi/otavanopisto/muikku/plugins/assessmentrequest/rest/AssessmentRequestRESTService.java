@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest.rest;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -42,6 +46,7 @@ import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -105,6 +110,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   
   @Inject
   private EvaluationController evaluationController;
+  
+  @Inject
+  private GradingController gradingController;
   
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentPrice")
@@ -240,6 +248,71 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     return Response.ok(new CeeposRedirectRestModel(paymentUrl.toString())).build();
   }
 
+  @PUT
+  @Path("/workspace/{WORKSPACEENTITYID}/student/{STUDENTENTITYID}/assessmentRequest/{IDENTIFIER}/deadline")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateAssessmentRequestDeadline(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId, @PathParam("IDENTIFIER") String assessmentRequestIdentifierStr, @QueryParam("deadline") String deadlineStr) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Course not found").build();
+    }
+    
+    if (assessmentRequestIdentifierStr == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing assessment request id").build();
+    }
+    
+    if (!sessionController.hasPermission(AssessmentRequestPermissions.UPDATE_ASSESSMENT_REQUEST_DEADLINE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    try {
+      SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestIdentifierStr);
+      UserEntity student = userEntityController.findUserEntityById(studentEntityId);
+      WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), student.defaultSchoolDataIdentifier());
+      
+      if (assessmentRequest == null) {
+        return Response.status(Status.NOT_FOUND).entity("Assessment request not found").build();
+      }
+      Date deadline = deadlineStr != null && !deadlineStr.isEmpty()
+          ? Date.from(Instant.parse(deadlineStr))
+          : null;
+      
+      Date maxDeadline = Date.from(assessmentRequest.getDate().toInstant()
+          .plus(Duration.ofDays(14))
+          .atZone(ZoneId.systemDefault())
+          .toLocalDate()
+          .plusDays(1)
+          .atStartOfDay(ZoneId.systemDefault())
+          .toInstant()
+          .minusMillis(1)
+      );
+      
+      if (deadline != null && (deadline.before(assessmentRequest.getDate()) || deadline.after(maxDeadline))) {
+        return Response.status(Status.BAD_REQUEST).entity("The deadline may be no later than 14 days after the submission of the assessment request").build();
+      }    
+      
+      assessmentRequest = gradingController.updateWorkspaceAssessmentRequest(
+          assessmentRequest.getSchoolDataSource(),
+          assessmentRequest.getIdentifier(),
+          assessmentRequest.getWorkspaceUserIdentifier(),
+          assessmentRequest.getWorkspaceUserSchoolDataSource(),
+          workspaceEntity.getIdentifier(),
+          student.getDefaultIdentifier(),
+          assessmentRequest.getRequestText(),
+          assessmentRequest.getDate(),
+          deadline,
+          false,
+          assessmentRequest.getHandled()
+      );
+
+      return Response.ok(assessmentRequestController.restModel(assessmentRequest)).build();
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Couldn't create workspace assessment request.", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    } 
+  }
+  
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentRequests")
   @RESTPermit(handling = Handling.INLINE)
