@@ -341,37 +341,31 @@ protected long getUserIdByEmail(String email) throws SQLException, ClassNotFound
   }
   
   protected Long getUserEntityIdForIdentifier(String identifier) throws SQLException, ClassNotFoundException {
-    Connection connection = getConnection();
-    try {
-      Statement statement = connection.createStatement();
-      statement.execute(String.format("select userEntity_id from UserSchoolDataIdentifier where identifier = '%s'", identifier));
-      ResultSet results = statement.getResultSet();
-      if (results.next()) {              
-        Long id = results.getLong(1);
-        return id;
+    String sql = "SELECT userEntity_id AS result "
+        + "FROM UserSchoolDataIdentifier "
+        + "WHERE identifier = ?";
+
+    try (Connection connection = getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setString(1, identifier);
+      try (ResultSet results = statement.executeQuery()) {
+        return results.next() ? results.getLong("result") : null;
       }
-    } finally {
-      connection.close();
     }
-    
-    return null;
   }
   
   protected Long getWorkspaceEntityIdForIdentifier(String identifier) throws SQLException, ClassNotFoundException {
-    Connection connection = getConnection();
-    try {
-      Statement statement = connection.createStatement();
-      statement.execute(String.format("select id from WorkspaceEntity where identifier = '%s'", identifier));
-      ResultSet results = statement.getResultSet();
-      if (results.next()) {              
-        Long id = results.getLong(1);
-        return id;
+    String sql = "SELECT id AS result "
+        + "FROM WorkspaceEntity "
+        + "WHERE identifier = ?";
+
+    try (Connection connection = getConnection();
+         PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setString(1, identifier);
+      try (ResultSet results = statement.executeQuery()) {
+        return results.next() ? results.getLong("result") : null;
       }
-    } finally {
-      connection.close();
     }
-    
-    return null;
   }
   
   protected void dumpWorkspaceUsers() throws SQLException, ClassNotFoundException {

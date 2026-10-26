@@ -406,18 +406,31 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return firefoxDriver;
   }
   
-  protected WebDriver createChromeHeadlessDriver() {
-    ChromeOptions chromeOptions = new ChromeOptions();
-    chromeOptions.addArguments("--headless");
-    chromeOptions.addArguments("--disable-gpu");
-    chromeOptions.addArguments("--remote-allow-origins=*");
-    
-    WebDriver driver = new ChromeDriver(chromeOptions);
+  private Dimension getBrowserDimension() {
     if(getBrowserDimensions() != null) {
-      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
-    }else {
-      driver.manage().window().setSize(new Dimension(1280, 1024));
+      return new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height")));
+    } else {
+      return new Dimension(1280, 1024);
     }
+  }
+  
+  private ChromeOptions createChromeOptions() {
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--headless");
+    options.addArguments("--disable-gpu");
+    options.addArguments("--remote-allow-origins=*");
+    return options;
+  }
+  
+  private void configureDriver(WebDriver driver) {
+    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+  }
+  
+  protected WebDriver createChromeHeadlessDriver() {
+    ChromeOptions options = createChromeOptions();
+    WebDriver driver = new ChromeDriver(options);
+    configureDriver(driver);
+    driver.manage().window().setSize(getBrowserDimension());
     return driver;
   }
   
