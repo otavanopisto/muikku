@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { ChainedCommands } from "@tiptap/react";
 import { type Editor } from "@tiptap/react";
 
@@ -201,28 +201,14 @@ export function useTextAlign(config: UseTextAlignConfig) {
     selector: ({ editor }) => ({
       canAlign: canSetTextAlign(editor, align),
       isActive: isTextAlignActive(editor, align),
+      isVisible: shouldShowButton({ editor, align, hideWhenUnavailable }),
     }),
   });
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const canAlign = selected?.canAlign ?? false;
-  const isActive = selected?.isActive ?? false;
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, align, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable, align]);
-
+  /**
+   * handleTextAlign handles the text align action
+   * @returns true if the text align is set, false otherwise
+   */
   const handleTextAlign = useCallback(() => {
     if (!editor) return false;
 
@@ -234,10 +220,10 @@ export function useTextAlign(config: UseTextAlignConfig) {
   }, [editor, align, onAligned]);
 
   return {
-    isVisible,
-    isActive,
+    isVisible: selected?.isVisible ?? false,
+    isActive: selected?.isActive ?? false,
+    canAlign: selected?.canAlign ?? false,
     handleTextAlign,
-    canAlign,
     label: textAlignLabels[align],
     shortcutKeys: TEXT_ALIGN_SHORTCUT_KEYS[align],
     Icon: textAlignIcons[align],

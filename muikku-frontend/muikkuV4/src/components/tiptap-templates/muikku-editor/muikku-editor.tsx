@@ -19,13 +19,14 @@ import { sourceModePluginKey } from "@/components/tiptap-extension-custom/source
 import { isOn } from "./features";
 
 /**
- * MuikkuEditorProps
+ * Props for the MuikkuEditor component.
  */
 export interface MuikkuEditorProps {
   content: string;
   features?: MuikkuEditorFeatures;
   minRows?: number;
   className?: string;
+  editable?: boolean;
   onChange?: (html: string) => void;
 }
 
@@ -34,10 +35,16 @@ export interface MuikkuEditorProps {
  * @param props - Content, feature map, optional chrome
  */
 export function MuikkuEditor(props: MuikkuEditorProps) {
-  const { content, features, minRows = 3, className, onChange } = props;
+  const {
+    content,
+    features,
+    minRows = 3,
+    className,
+    editable = true,
+    onChange,
+  } = props;
   const resolved = resolveFeatures(features);
   const featureKey = JSON.stringify(resolved);
-
   return (
     <div
       className={["muikku-editor", className].filter(Boolean).join(" ")}
@@ -47,6 +54,7 @@ export function MuikkuEditor(props: MuikkuEditorProps) {
         key={featureKey}
         content={content}
         resolved={resolved}
+        editable={editable}
         onChange={onChange}
       />
     </div>
@@ -54,11 +62,12 @@ export function MuikkuEditor(props: MuikkuEditorProps) {
 }
 
 /**
- * MuikkuEditorInstanceProps
+ * Props for the MuikkuEditorInstance component.
  */
 interface MuikkuEditorInstanceProps {
   content: string;
   resolved: ReturnType<typeof resolveFeatures>;
+  editable?: boolean;
   onChange?: (html: string) => void;
 }
 
@@ -67,14 +76,17 @@ interface MuikkuEditorInstanceProps {
  * @param props - Resolved features and instance extras
  */
 function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
-  const { content, resolved, onChange } = props;
+  const { content, resolved, editable, onChange } = props;
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
+  // Create the editor parts: toolbar, renderBubbleMenus, extensions
   const parts = useMemo(() => createEditorParts(resolved), [resolved]);
 
+  // Create the editor
   const editor = useEditor({
     content,
+    editable,
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
     textDirection: isOn(resolved.textDirection) ? "ltr" : undefined,
@@ -86,10 +98,26 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
     },
     extensions: parts.extensions,
     onUpdate: ({ editor: instance }) => {
+      // If the editor is not editable, don't update the content
+      // changing editable causes the editor onUpdate to be called with the current content
+      if (!editor?.isEditable) return;
       const html = instance.getHTML();
       onChangeRef.current?.(instance.getText().trim() ? html : "");
     },
   });
+
+  // Set the editable state of the editor when the editable prop changes
+  useEffect(() => {
+    if (!editor) return;
+    if (editor.isEditable !== editable) {
+      editor.setEditable(editable ?? false, false);
+    }
+    editor.view.dispatch(
+      editor.state.tr.setMeta("muikkuEditable", editable ?? false)
+    );
+  }, [editor, editable]);
+
+  // Resolve the source mode and character count features
   const sourceModeOn = isOn(resolved.sourceMode);
   const resolvedCharacterCount = isOn(resolved.characterCount)
     ? (optionsOf(resolved.characterCount) as MuikkuEditorCharacterCount)
@@ -104,6 +132,7 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
   const [htmlDraft, setHtmlDraft] = useState("");
   const prevSourceMode = useRef(false);
 
+  // Handle the source mode
   useEffect(() => {
     if (!editor || !sourceModeOn || isSourceMode === undefined) {
       return;
@@ -117,12 +146,14 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
     prevSourceMode.current = isSourceMode;
   }, [editor, sourceModeOn, isSourceMode, htmlDraft]);
 
+  // Create the context value for the EditorContext.Provider
   const ctxValue = useMemo(() => ({ editor }), [editor]);
 
   return (
     <EditorContext.Provider value={ctxValue}>
       {parts.toolbar}
-      {editor && !(sourceModeOn && isSourceMode)
+
+      {editor && editable && !(sourceModeOn && isSourceMode)
         ? parts.renderBubbleMenus(editor)
         : null}
       {sourceModeOn && isSourceMode ? (
@@ -130,6 +161,8 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
           value={htmlDraft}
           onChange={(event) => setHtmlDraft(event.target.value)}
           spellCheck={false}
+          readOnly={!editable}
+          disabled={!editable}
           className="muikku-editor__source"
         />
       ) : (

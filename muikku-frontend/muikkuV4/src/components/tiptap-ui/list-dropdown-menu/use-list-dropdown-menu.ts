@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { Editor } from "@tiptap/react";
 
 // --- Hooks ---
@@ -199,17 +199,25 @@ export function useListDropdownMenu(config?: UseListDropdownMenuConfig) {
     hideWhenUnavailable = false,
   } = config ?? {};
 
-  const { editor, selected } = useTiptapEditorV2({
+  const { selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      activeType: getActiveListType(editor, types),
-      isAnyActive: isAnyListActive(editor, types),
-      canToggleAny: canToggleAnyList(editor, types),
-    }),
+    selector: ({ editor: instance }) => {
+      const canToggleAny = canToggleAnyList(instance, types);
+      const listInSchema = types.some((type) => isNodeInSchema(type, instance));
+      return {
+        activeType: getActiveListType(instance, types),
+        isAnyActive: isAnyListActive(instance, types),
+        canToggleAny,
+        isVisible: shouldShowListDropdown({
+          editor: instance,
+          listTypes: types,
+          hideWhenUnavailable,
+          listInSchema,
+          canToggleAny,
+        }),
+      };
+    },
   });
-  const [isVisible, setIsVisible] = useState(true);
-
-  const listInSchema = types.some((type) => isNodeInSchema(type, editor));
 
   const filteredLists = useMemo(() => getFilteredListOptions(types), [types]);
   const activeList = useMemo(
@@ -217,38 +225,8 @@ export function useListDropdownMenu(config?: UseListDropdownMenuConfig) {
     [filteredLists, selected?.activeType]
   );
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(
-        shouldShowListDropdown({
-          editor,
-          listTypes: types,
-          hideWhenUnavailable,
-          listInSchema,
-          canToggleAny: selected?.canToggleAny ?? false,
-        })
-      );
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [
-    editor,
-    hideWhenUnavailable,
-    listInSchema,
-    selected?.canToggleAny,
-    types,
-  ]);
-
   return {
-    isVisible,
+    isVisible: selected?.isVisible ?? false,
     activeType: selected?.activeType,
     isActive: selected?.isAnyActive ?? false,
     canToggle: selected?.canToggleAny ?? false,

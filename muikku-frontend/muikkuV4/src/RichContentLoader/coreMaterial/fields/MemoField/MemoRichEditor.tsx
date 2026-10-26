@@ -16,17 +16,20 @@ import {
  */
 export function MemoRichEditor(props: {
   value: string;
+  readOnly?: boolean;
   rows?: string;
   richedit?: boolean;
   maxChars?: string;
   maxWords?: string;
   onChange: (next: string) => void;
 }) {
-  const { value, rows, richedit, maxChars, maxWords, onChange } = props;
+  const { value, readOnly, rows, richedit, maxChars, maxWords, onChange } =
+    props;
 
   return (
     <MuikkuEditor
       className="muikku-editor"
+      editable={!readOnly}
       content={toMemoDisplayHtml(value)}
       features={{
         ...(richedit ? STUDENT_RICH : STUDENT_PLAIN),

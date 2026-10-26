@@ -1,4 +1,3 @@
-import { MemoReadonly } from "./MemoReadonly";
 import { MemoRichEditor } from "./MemoRichEditor";
 
 /**
@@ -16,12 +15,9 @@ export function MemoInput(props: {
   const { value, richedit, rows, maxChars, maxWords, readOnly, onChange } =
     props;
 
-  if (readOnly) {
-    return <MemoReadonly value={value} />;
-  }
-
   return (
     <MemoRichEditor
+      readOnly={readOnly}
       value={value}
       rows={rows}
       richedit={richedit}

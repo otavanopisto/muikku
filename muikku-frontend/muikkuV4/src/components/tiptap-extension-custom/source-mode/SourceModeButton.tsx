@@ -26,15 +26,17 @@ export const SourceModeButton = forwardRef<
 >(({ editor: providedEditor, onClick, children, ...props }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) =>
-      sourceModePluginKey.getState(editor.state)?.enabled,
+    selector: ({ editor: instance }) => ({
+      canToggle:
+        !!instance.isEditable &&
+        typeof instance.commands?.toggleSourceMode === "function",
+      isEnabled: sourceModePluginKey.getState(instance.state)?.enabled,
+    }),
   });
 
-  const enabled = !!selected;
+  const enabled = selected?.isEnabled ?? false;
 
-  const canToggle =
-    !!editor?.isEditable &&
-    typeof editor?.commands?.toggleSourceMode === "function";
+  const canToggle = selected?.canToggle ?? false;
 
   /**
    * The handleClick function.
@@ -44,10 +46,9 @@ export const SourceModeButton = forwardRef<
     onClick?.(e);
     if (e.defaultPrevented) return;
     if (!canToggle) return;
+    if (!editor) return;
     editor.commands.toggleSourceMode();
   };
-
-  if (!editor?.isEditable) return null;
 
   return (
     <Button

@@ -27,11 +27,13 @@ export const MuikkuAudioFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuAudioField"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("muikkuAudioField"),
+      isDisabled: !instance.isEditable,
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
 
   /**
    * The handleSetAudioFieldClick function.
@@ -40,8 +42,6 @@ export const MuikkuAudioFieldButton = forwardRef<
     if (!editor) return;
     editor.commands.setMuikkuAudioField();
   };
-
-  if (!editor?.isEditable) return null;
 
   return (
     <Button
@@ -53,6 +53,8 @@ export const MuikkuAudioFieldButton = forwardRef<
       tabIndex={-1}
       role="button"
       ref={ref}
+      disabled={isDisabled}
+      data-disabled={isDisabled}
       {...buttonProps}
     >
       Äänikenttä

@@ -26,8 +26,15 @@ export const SpecialCharButton = forwardRef<
   HTMLButtonElement,
   SpecialCharButtonProps
 >(({ editor: providedEditor, children, ...buttonProps }, ref) => {
-  const { editor } = useTiptapEditorV2({ editor: providedEditor });
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canUse: !!instance.isEditable,
+    }),
+  });
   const [open, setOpen] = useState(false);
+
+  const canUse = selected?.canUse ?? false;
 
   /**
    * The handleClick function.
@@ -45,8 +52,6 @@ export const SpecialCharButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -58,6 +63,8 @@ export const SpecialCharButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={!canUse}
+        data-disabled={!canUse}
         {...buttonProps}
       >
         {children ?? (

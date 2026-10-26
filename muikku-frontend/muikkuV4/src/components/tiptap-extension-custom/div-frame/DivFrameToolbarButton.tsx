@@ -27,14 +27,16 @@ export const DivFrameToolbarButton = forwardRef<
   DivFrameToolbarButtonProps
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const [open, setOpen] = useState(false);
-  const { editor } = useTiptapEditorV2({
+  const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => editor.isActive("divFrame"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("divFrame"),
+      isDisabled: !instance.isEditable,
+    }),
   });
 
-  if (!editor?.isEditable) {
-    return null;
-  }
+  const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
 
   return (
     <>
@@ -43,6 +45,10 @@ export const DivFrameToolbarButton = forwardRef<
         variant="ghost"
         onClick={() => setOpen(true)}
         ref={ref}
+        aria-pressed={isActive}
+        data-active-state={isActive ? "on" : "off"}
+        data-disabled={isDisabled}
+        disabled={isDisabled}
         {...buttonProps}
       >
         Div

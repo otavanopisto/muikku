@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { type Editor } from "@tiptap/react";
 import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 
@@ -312,31 +312,21 @@ export function useList(config: UseListConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canToggle: canToggleList(editor, type),
-      isActive: isListActive(editor, type),
+    selector: ({ editor: instance }) => ({
+      canToggle: canToggleList(instance, type),
+      isActive: isListActive(instance, type),
+      isVisible: shouldShowButton({
+        editor: instance,
+        type,
+        hideWhenUnavailable,
+      }),
     }),
   });
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const canToggle = selected?.canToggle ?? false;
-  const isActive = selected?.isActive ?? false;
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, type, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, type, hideWhenUnavailable]);
-
+  /**
+   * handleToggle handles the toggle list action
+   * @returns true if the list is toggled, false otherwise
+   */
   const handleToggle = useCallback(() => {
     if (!editor) return false;
 
@@ -348,10 +338,10 @@ export function useList(config: UseListConfig) {
   }, [editor, type, onToggled]);
 
   return {
-    isVisible,
-    isActive,
+    isVisible: selected?.isVisible ?? false,
+    isActive: selected?.isActive ?? false,
+    canToggle: selected?.canToggle ?? false,
     handleToggle,
-    canToggle,
     label: listLabels[type],
     shortcutKeys: LIST_SHORTCUT_KEYS[type],
     Icon: listIcons[type],
