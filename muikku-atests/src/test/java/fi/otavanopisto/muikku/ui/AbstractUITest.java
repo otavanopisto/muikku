@@ -400,7 +400,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(getBrowserDimensions() != null) {
       firefoxDriver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height"))));
     }else {
-      firefoxDriver.manage().window().setSize(new Dimension(1280, 1024));
+      firefoxDriver.manage().window().setSize(new Dimension(1920, 1080));
     }
     
     return firefoxDriver;
