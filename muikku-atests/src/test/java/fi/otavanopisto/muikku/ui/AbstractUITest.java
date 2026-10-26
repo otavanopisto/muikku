@@ -1319,14 +1319,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertElementCount(String cssSelector, int countToExpect) {
     assertEquals(countToExpect, countElements(cssSelector));
   }
-  
-  protected void loginAdmin() throws JsonProcessingException, Exception {
-    PyramusMocks.adminLoginMock();
-    PyramusMocks.personsPyramusMocks();
-    navigate("/login?authSourceId=1", false);
-    waitForVisible(".navbar .button-pill--profile");
-  }
-  
+    
   protected void login() {
     navigate("/login?authSourceId=1", false);
     waitForVisible(".navbar .button-pill--profile");
