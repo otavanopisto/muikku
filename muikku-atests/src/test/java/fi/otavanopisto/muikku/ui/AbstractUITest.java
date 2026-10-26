@@ -410,7 +410,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if(getBrowserDimensions() != null) {
       return new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("height")));
     } else {
-      return new Dimension(1280, 1024);
+      return new Dimension(1920, 1080);
     }
   }
   
