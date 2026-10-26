@@ -421,15 +421,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     options.addArguments("--remote-allow-origins=*");
     return options;
   }
-  
-  private void configureDriver(WebDriver driver) {
-    driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-  }
-  
+    
   protected WebDriver createChromeHeadlessDriver() {
     ChromeOptions options = createChromeOptions();
     WebDriver driver = new ChromeDriver(options);
-    configureDriver(driver);
     driver.manage().window().setSize(getBrowserDimension());
     return driver;
   }
