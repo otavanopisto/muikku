@@ -3,13 +3,17 @@
   --rail-line-width: 2px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .item {
   display: grid;
   grid-template-columns: var(--rail-bullet-size) minmax(0, 1fr);
   column-gap: var(--mantine-spacing-sm);
+  align-items: start;
   position: relative;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .item:not(:last-child)::before {
@@ -47,8 +51,21 @@
 .body {
   min-width: 0;
   padding-bottom: var(--mantine-spacing-sm);
+  padding-inline: 8px;
+  border-radius: var(--mantine-radius-sm);
+}
+
+.body > :first-child {
+  line-height: var(--rail-bullet-size);
 }
 
 .item:last-child .body {
   padding-bottom: 0;
+}
+
+.item[data-active] .body {
+  background: light-dark(
+    var(--mantine-color-gray-1),
+    var(--mantine-color-dark-6)
+  );
 }

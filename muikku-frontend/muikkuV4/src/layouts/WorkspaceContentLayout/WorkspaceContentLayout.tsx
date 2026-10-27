@@ -23,8 +23,8 @@ import {
 } from "./WorkspaceContentLayoutContext";
 import classes from "./WorkspaceContentLayout.module.css";
 
-const TOC_WIDTH = 335;
-const ASIDE_WIDTH = 300;
+const TOC_WIDTH = 340;
+const ASIDE_WIDTH = 340;
 const PANEL_TRANSITION_MS = 200;
 
 const MEDIA_QUERY_OPTIONS = { getInitialValueInEffect: false } as const;

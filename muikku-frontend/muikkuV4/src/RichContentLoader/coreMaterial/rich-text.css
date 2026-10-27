@@ -1,0 +1,58 @@
+.rich-text {
+  line-height: 1.55;
+  word-wrap: break-word;
+}
+
+.rich-text p {
+  margin: 0.75em 0;
+}
+
+.rich-text h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 1.5em 0 0.5em;
+}
+
+.rich-text h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.25em 0 0.5em;
+}
+
+.rich-text b,
+.rich-text strong {
+  font-weight: 600;
+}
+
+.rich-text a {
+  color: var(--mantine-color-anchor);
+  text-decoration: underline;
+}
+
+.rich-text img,
+.rich-text iframe {
+  max-width: 100%;
+}
+
+.rich-text blockquote {
+  margin: 0.75em 0;
+  padding: 0.25em 0.75em;
+  border-inline-start: 4px solid var(--mantine-color-default-border);
+}
+
+.rich-text ul,
+.rich-text ol {
+  margin: 0.75em 0;
+  padding-inline-start: 1.75em;
+}
+
+.rich-text table {
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+.rich-text th,
+.rich-text td {
+  border: 1px solid var(--mantine-color-default-border);
+  padding: 0.35em 0.6em;
+}

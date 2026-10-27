@@ -179,6 +179,7 @@ export function TocPageRail(props: {
             key={item.id}
             color={chrome.color}
             filled={chrome.done}
+            active={isActive}
             bullet={
               chrome.done ? <IconCheck size={12} stroke={3} /> : undefined
             }
@@ -193,7 +194,7 @@ export function TocPageRail(props: {
                 wrap="nowrap"
                 align="center"
                 mt={8}
-                bg="gray.1"
+                bg="var(--mantine-color-default-hover)"
                 w="fit-content"
                 pr={4}
               >

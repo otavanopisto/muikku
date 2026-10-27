@@ -29,7 +29,7 @@ export function getAssignmentChrome(
     case "INTERIM_EVALUATION":
       return { color: "orange", kindLabel: "Välipalautetehtävä" };
     default:
-      return {};
+      return { color: "teal" };
   }
 }
 

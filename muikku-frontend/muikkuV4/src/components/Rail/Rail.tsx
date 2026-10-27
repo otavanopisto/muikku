@@ -3,6 +3,7 @@ import classes from "./Rail.module.css";
 
 const COLOR_VARS: Record<string, string> = {
   teal: "var(--mantine-color-teal-6)",
+  pink: "var(--mantine-color-pink-6)",
   violet: "var(--mantine-color-violet-6)",
   blue: "var(--mantine-color-blue-6)",
   orange: "var(--mantine-color-orange-6)",
@@ -17,6 +18,8 @@ export interface RailItemProps {
   color?: string;
   /** Fill the bullet (e.g. completed) */
   filled?: boolean;
+  /** Highlight the row (e.g. the open page) */
+  active?: boolean;
   /** Content inside the bullet; defaults to empty */
   bullet?: React.ReactNode;
   onClick?: () => void;
@@ -34,7 +37,14 @@ export function Rail(props: { children: React.ReactNode }) {
  * One row on the rail.
  */
 function RailItem(props: RailItemProps) {
-  const { color, filled = false, bullet, onClick, children } = props;
+  const {
+    color,
+    filled = false,
+    active = false,
+    bullet,
+    onClick,
+    children,
+  } = props;
   const itemColor =
     color && COLOR_VARS[color] ? COLOR_VARS[color] : (color ?? undefined);
 
@@ -53,6 +63,7 @@ function RailItem(props: RailItemProps) {
     return (
       <UnstyledButton
         className={classes.item}
+        data-active={active || undefined}
         onClick={onClick}
         ta="left"
         w="100%"
@@ -64,7 +75,11 @@ function RailItem(props: RailItemProps) {
   }
 
   return (
-    <div className={classes.item} style={style}>
+    <div
+      className={classes.item}
+      data-active={active || undefined}
+      style={style}
+    >
       {content}
     </div>
   );

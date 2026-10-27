@@ -1,12 +1,17 @@
-import { Box, Paper, Stack, Text, Title } from "@mantine/core";
-import { useEffect } from "react";
-import type {
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import {
+  Avatar,
+  Box,
+  Group,
+  Image,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+import { useEffect, useState } from "react";
+import type { MaterialContentNode } from "~/generated/client";
 import { MaterialLoader } from "src/RichContentLoader/";
 import type { Workspace } from "src/RichContentLoader/coreMaterial/types";
-import { getAssignmentChrome } from "./tocChrome";
 import classes from "./SectionView.module.css";
 import { scrollToElementWhenSettled } from "./scrollElement";
 import { useAtomValue } from "jotai";
@@ -15,6 +20,7 @@ import {
   workspaceCompositeReplyAtomFamily,
 } from "~/src/atoms/workspaceContent";
 import { userAtom } from "~/src/atoms/auth";
+import { workspaceInfoAtom } from "src/atoms/workspace";
 
 /**
  * Props for the section column (one folder + its pages).
@@ -24,7 +30,6 @@ interface SectionViewProps {
   pages: MaterialContentNode[];
   page: MaterialContentNode | null;
   workspace: Workspace | null;
-  repliesByWorkspaceMaterialId?: Record<number, MaterialCompositeReply>;
 }
 
 /**
@@ -61,17 +66,21 @@ export function SectionView(props: SectionViewProps) {
   ]);
 
   return (
-    <Stack gap="md">
-      <Title
-        order={2}
-        id={
-          section?.workspaceMaterialId != null
-            ? `s-${section.workspaceMaterialId}`
-            : undefined
-        }
-      >
-        {section?.title ?? "Materiaalit"}
-      </Title>
+    <Stack gap="lg">
+      <Stack gap="xs">
+        <WorkspaceIdentity />
+        <Title
+          order={1}
+          size="h2"
+          id={
+            section?.workspaceMaterialId != null
+              ? `s-${section.workspaceMaterialId}`
+              : undefined
+          }
+        >
+          {section?.title ?? "Materiaalit"}
+        </Title>
+      </Stack>
 
       {!workspace ? (
         <Text size="sm" c="dimmed">
@@ -98,6 +107,51 @@ export function SectionView(props: SectionViewProps) {
 }
 
 /**
+ * Compact workspace thumbnail + name at the top of the reading column.
+ */
+function WorkspaceIdentity() {
+  const info = useAtomValue(workspaceInfoAtom);
+  const [coverFailed, setCoverFailed] = useState(false);
+
+  useEffect(() => {
+    setCoverFailed(false);
+  }, [info?.id]);
+
+  if (!info?.name) {
+    return null;
+  }
+
+  const title = info.nameExtension
+    ? `${info.name} (${info.nameExtension})`
+    : info.name;
+  const coverSrc = `/rest/workspace/workspaces/${info.id}/workspacefile/workspace-frontpage-image-cropped`;
+  const initials = info.name.slice(0, 2);
+
+  return (
+    <Group gap="sm" wrap="nowrap" className={classes.workspace}>
+      {coverFailed ? (
+        <Avatar size={36} radius="sm" color="gray">
+          {initials}
+        </Avatar>
+      ) : (
+        <Image
+          src={coverSrc}
+          w={36}
+          h={36}
+          radius="sm"
+          fit="cover"
+          alt=""
+          onError={() => setCoverFailed(true)}
+        />
+      )}
+      <Title order={3} size="h4" fw={600} lineClamp={2}>
+        {title}
+      </Title>
+    </Group>
+  );
+}
+
+/**
  * Scroll target + min-height shell around MaterialLoader.
  */
 function SectionPage(props: {
@@ -116,11 +170,6 @@ function SectionPage(props: {
     workspaceCompositeReplyAtomFamily(page.workspaceMaterialId ?? -1)
   );
 
-  const chrome = getAssignmentChrome(page.assignmentType);
-  const stripe = chrome.color
-    ? `var(--mantine-color-${chrome.color}-6)`
-    : undefined;
-
   return (
     <Paper
       id={
@@ -130,13 +179,11 @@ function SectionPage(props: {
       }
       className={classes.page}
       data-flash={active || undefined}
-      p="md"
+      p="lg"
+      radius="md"
       withBorder
       shadow="xs"
       mih={minHeight}
-      style={{
-        borderInlineStart: stripe ? `4px solid ${stripe}` : undefined,
-      }}
     >
       <Box mih={minHeight - 48}>
         {repliesReady ? (
