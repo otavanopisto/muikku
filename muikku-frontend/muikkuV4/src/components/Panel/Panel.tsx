@@ -11,10 +11,11 @@ import {
   Badge,
   Group,
   Accordion,
+  Timeline,
 } from "@mantine/core";
 import { IconDotsVertical } from "@tabler/icons-react";
 import styles from "./Panel.module.css";
-
+import { localize } from "~/src/locales/i18n";
 /**
  * A basic Panel component used mainly in the dashboard
  * Contains a title and children
@@ -237,5 +238,54 @@ function PanelAccordionItem(props: PanelItemProps) {
   );
 }
 
+type PanelTimelineItem = {
+  type: string;
+  timestamp: Date;
+};
+
+/**
+ * Panel timeline props
+ * @param items - Panel timeline items
+ */
+interface PanelTimelineProps {
+  items: PanelTimelineItem[];
+}
+
+const isToday = (timestamp: Date) =>
+  localize
+    .getLocalizedDayjs(timestamp)
+    .isSame(localize.getLocalizedDayjs(), "day");
+
+/**
+ * Panel timeline component
+ * @param props - PanelItemProps
+ * @returns - PanelTimeline component
+ */
+function PanelTimeline(props: PanelTimelineProps) {
+  const { items } = props;
+
+  return (
+    <Timeline>
+      {items.map((item, index) => {
+        const nextItem = items[index + 1];
+        const activeProps = {
+          active: isToday(item.timestamp),
+          lineActive: nextItem !== undefined && isToday(nextItem.timestamp),
+        };
+
+        return (
+          <Timeline.Item
+            key={`${item.type}-${item.timestamp.toISOString()}`}
+            title={item.type}
+            {...activeProps}
+          >
+            <Text>{localize.date(item.timestamp, "DD.MM.YYYY HH:mm")}</Text>
+          </Timeline.Item>
+        );
+      })}
+    </Timeline>
+  );
+}
 Panel.Item = PanelItem;
 Panel.AccordionItem = PanelAccordionItem;
+Panel.Timeline = PanelTimeline;

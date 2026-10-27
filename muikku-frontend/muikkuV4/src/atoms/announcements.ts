@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { atomWithQuery, atomWithMutation } from "jotai-tanstack-query";
+import { atomWithQuery } from "jotai-tanstack-query";
 import { getAnnouncerApi, isMApiError, isResponseError } from "~/api";
 import type { GetAnnouncementsRequest } from "~/generated/client";
 import {

@@ -3,6 +3,7 @@ import { Announcements } from "../panels/announcements";
 import { Messages } from "../panels/messages";
 import { Absences } from "../panels/absences";
 import Tasks from "../panels/tasks";
+import Activities from "../panels/activities";
 export interface Panel {
   id: number;
   title: string;
@@ -77,5 +78,14 @@ export const panels: Panel[] = [
     mandatory: false,
     color: "teal",
     component: Tasks,
+  },
+  {
+    id: 8,
+    title: "Tapahtumat",
+    description: "",
+    icon: null,
+    mandatory: false,
+    color: "teal",
+    component: Activities,
   },
 ];

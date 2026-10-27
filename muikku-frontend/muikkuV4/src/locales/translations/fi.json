@@ -21,7 +21,28 @@
       "UNREAD": "Lukematon"
     }
   },
-
+  "activities": {
+    "label": "Viimeisimmät tapahtumat",
+    "types": {
+      "EVALUATION_REQUESTED": "Arviointipyyntö lähetetty",
+      "EVALUATION_GOTINCOMPLETED": "Arvioitu täydennettäväksi",
+      "EVALUATION_GOTFAILED": "Arvioitu hylätyksi",
+      "EVALUATION_GOTPASSED": "Arvioitu hyväksytyksi",
+      "SESSION_LOGGEDIN": "Sisäänkirjautuminen",
+      "WORKSPACE_VISIT": "Käynti kurssilla",
+      "MATERIAL_EXERCISEDONE": "Harjoitustehtävä tehty",
+      "MATERIAL_ASSIGNMENTDONE": "Arvioitava tehtävä tehty",
+      "FORUM_NEWMESSAGE": "Uusi keskusteluviesti",
+      "FORUM_NEWTHREAD": "Uusi keskusteluketju",
+      "NOTIFICATION_ASSESMENTREQUEST": "Ei suorituksia kolmen kuukauden aikana",
+      "NOTIFICATION_NOPASSEDCOURSES": "Liian vähän suorituksia vuoden aikana",
+      "NOTIFICATION_SUPPLEMENTATIONREQUEST": "Täydennyspyyntö kurssista",
+      "NOTIFICATION_STUDYTIME": "Opiskeluaika päättymässä",
+      "NOTIFICATION_NEVERLOGGEDIN": "Et ole vielä kirjautunut Muikkuun",
+      "NOTIFICATION_NOLOGGEDINFORTWOMONTHS": "Et ole kirjautunut Muikkuun kahteen kuukauteen",
+      "EVALUATION_REQUEST_CANCELLED": "Arviointipyyntö peruttu"
+    }
+  },
   "events": {
     "label": "Tapahtumat",
     "label_absences": "Poissaolot",

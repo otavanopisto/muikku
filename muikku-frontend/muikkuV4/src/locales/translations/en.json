@@ -1,5 +1,27 @@
 {
   "common": {
     "hello": "Hello"
+  },
+  "activities": {
+    "label": "Latest activities",
+    "types": {
+      "EVALUATION_REQUESTED": "Evaluation request sent",
+      "EVALUATION_GOTINCOMPLETED": "Evaluated as incomplete",
+      "EVALUATION_GOTFAILED": "Evaluated as failed",
+      "EVALUATION_GOTPASSED": "Evaluated as passed",
+      "SESSION_LOGGEDIN": "Logged in",
+      "WORKSPACE_VISIT": "Course visit",
+      "MATERIAL_EXERCISEDONE": "Exercise done",
+      "MATERIAL_ASSIGNMENTDONE": "Assignment done",
+      "FORUM_NEWMESSAGE": "New discussion message",
+      "FORUM_NEWTHREAD": "New discussion thread",
+      "NOTIFICATION_ASSESMENTREQUEST": "No credits after three months",
+      "NOTIFICATION_NOPASSEDCOURSES": "Too few credits in a year",
+      "NOTIFICATION_SUPPLEMENTATIONREQUEST": "Supplementation request for a course",
+      "NOTIFICATION_STUDYTIME": "Right to study is ending",
+      "NOTIFICATION_NEVERLOGGEDIN": "You have not logged in to Muikku yet",
+      "NOTIFICATION_NOLOGGEDINFORTWOMONTHS": "You have not logged in to Muikku for two months",
+      "EVALUATION_REQUEST_CANCELLED": "Evaluation request cancelled"
+    }
   }
 }

@@ -1,8 +1,8 @@
-import { Title, Text, Paper, Button, Stack } from "@mantine/core";
-import { useAtom, useAtomValue } from "jotai";
+import { Text, Stack } from "@mantine/core";
+import { useAtomValue } from "jotai";
 import { absencesDataAtom } from "~/src/atoms/events";
 import { Empty } from "src/components/Empty";
-import Panel, { type PanelItemState } from "~/src/components/Panel/Panel";
+import Panel, { type PanelItemBadge } from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
 import type { MuikkuEvent } from "~/generated/client";
 import { localize } from "~/src/locales/i18n";
@@ -26,7 +26,7 @@ export function Absences() {
     </Group>
   );
 
-  const getAbsenceState = (absence: MuikkuEvent): PanelItemState => {
+  const getAbsenceState = (absence: MuikkuEvent): PanelItemBadge => {
     const reason =
       absence.properties?.find((property) => property.name === "ABSENCE_REASON")
         ?.value ?? "NO_REASON";
@@ -49,7 +49,7 @@ export function Absences() {
             date={generateAbsenceDates(absence)}
             itemId={absence.id ?? 0}
             key={absence.id}
-            states={getAbsenceState(absence)}
+            badges={getAbsenceState(absence)}
           />
         ))}
       </Stack>
