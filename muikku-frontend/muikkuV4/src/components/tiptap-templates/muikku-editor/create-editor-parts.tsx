@@ -15,7 +15,6 @@ import type {
   ToolbarGroupId,
 } from "./types";
 import { MuikkuEditorToolbar } from "./muikku-editor-toolbar";
-import { Spacer } from "../../tiptap-ui-primitive/spacer";
 
 // Projects a resolved feature map into Tiptap parts.
 //
@@ -44,7 +43,6 @@ const TOOLBAR_GROUP_ORDER: ToolbarGroupId[] = [
   "insert",
   "boxes",
   "fields",
-  "theme",
 ];
 
 /**
@@ -179,11 +177,7 @@ export function createEditorParts(
       <MuikkuEditorToolbar>
         {visibleGroups.map((group, index) => (
           <Fragment key={group}>
-            {group === "theme" ? (
-              <Spacer />
-            ) : index > 0 ? (
-              <ToolbarSeparator />
-            ) : null}
+            {index > 0 ? <ToolbarSeparator /> : null}
             <ToolbarGroup data-group={group}>
               {toolbarGroups.get(group)}
             </ToolbarGroup>

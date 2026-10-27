@@ -42,7 +42,6 @@ export const MUIKKU_EDITOR_DEFAULTS: ResolvedMuikkuEditorFeatures = {
   textDirection: false,
   typography: false,
   selection: false,
-  themeToggle: true,
   characterCount: false,
 };
 
@@ -106,7 +105,6 @@ export const MATERIAL_AUTHOR: MuikkuEditorFeatures = {
   textDirection: true,
   typography: true,
   selection: true,
-  themeToggle: true,
 };
 
 /**

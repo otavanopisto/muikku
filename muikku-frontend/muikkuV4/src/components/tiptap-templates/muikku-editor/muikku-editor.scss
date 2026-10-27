@@ -41,7 +41,7 @@
   }
 
   .tiptap-toolbar[data-source-mode="true"] {
-    [data-group]:not([data-group="document"]):not([data-group="theme"]) {
+    [data-group]:not([data-group="document"]) {
       pointer-events: none;
       opacity: 0.45;
     }

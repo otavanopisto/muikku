@@ -119,7 +119,6 @@ export interface MuikkuEditorFeatures {
   textDirection?: Feature;
   typography?: Feature;
   selection?: Feature;
-  themeToggle?: Feature;
   characterCount?: Feature<MuikkuEditorCharacterCount>;
 }
 
@@ -148,8 +147,7 @@ export type ToolbarGroupId =
   | "direction"
   | "insert"
   | "boxes"
-  | "fields"
-  | "theme";
+  | "fields";
 
 /**
  * Limits forwarded to CharAndWordLimitExtension.

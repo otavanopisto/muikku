@@ -87,7 +87,6 @@ import {
   MuikkuFileFieldButton,
   MuikkuMathFieldButton,
 } from "@/components/tiptap-extension-custom/muikku-fields-kit";
-import { ThemeToggle } from "./theme-toggle";
 import { CharAndWordLimitExtension } from "../../tiptap-extension-custom/char-and-word-limit";
 
 /**
@@ -208,7 +207,6 @@ export const FEATURE_NAMES = [
   "typography",
   "selection",
   "image",
-  "themeToggle",
   "characterCount",
 ] as const satisfies readonly (keyof MuikkuEditorFeatures)[];
 
@@ -601,12 +599,6 @@ export const FEATURE_CATALOG: Record<keyof MuikkuEditorFeatures, CatalogEntry> =
     },
     selection: {
       extensions: () => [Selection],
-    },
-    themeToggle: {
-      toolbar: {
-        group: "theme",
-        render: () => <ThemeToggle />,
-      },
     },
     characterCount: {
       extensions: (options) => {
