@@ -1,10 +1,12 @@
 import { createContext, use } from "react";
 
+export type WorkspaceContentPanelMode = "drawer" | "overlay" | "docked";
+
 /**
  * Controls for the workspace content layout (TOC + optional aside).
- * On desktop the columns stay visible; these flags drive mobile drawers.
  */
 export interface WorkspaceContentLayoutContextValue {
+  panelMode: WorkspaceContentPanelMode;
   tocOpened: boolean;
   asideOpened: boolean;
   hasAside: boolean;
@@ -23,7 +25,7 @@ export const WorkspaceContentLayoutProvider =
   WorkspaceContentLayoutContext.Provider;
 
 /**
- * Access TOC/aside drawer controls from nested content.
+ * Access TOC/aside controls from nested content.
  * Must be used under WorkspaceContentLayout.
  */
 // eslint-disable-next-line react-refresh/only-export-components

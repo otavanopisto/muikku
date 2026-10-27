@@ -1,4 +1,4 @@
-import { Box, Text, Textarea, Title } from "@mantine/core";
+import { Box, Text, Textarea } from "@mantine/core";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -15,6 +15,7 @@ import {
   workspaceMaterialsHref,
 } from "./materialLoaction";
 import { SectionView } from "./SectionView";
+import { MaterialsHeaderEnd, MaterialsHeaderStart } from "./MaterialsHeader";
 
 /**
  * WorkspaceMaterials - Materials dialog content.
@@ -93,20 +94,17 @@ export function WorkspaceMaterials() {
   return (
     <WorkspaceContentLayout
       title={`${workspaceInfo?.name ?? workspaceUrlName} – Materiaalit`}
-      closeLabel="Poistu materiaaleista"
+      closeLabel="Takaisin"
       onClose={onClose}
+      headerStart={<MaterialsHeaderStart />}
+      headerEnd={<MaterialsHeaderEnd />}
       toc={toc}
       aside={
-        <>
-          <Title order={5} mb="sm">
-            Muistiinpanot
-          </Title>
-          <Textarea
-            placeholder="Kirjoita muistiinpanoja..."
-            minRows={8}
-            autosize
-          />
-        </>
+        <Textarea
+          placeholder="Kirjoita muistiinpanoja..."
+          minRows={8}
+          autosize
+        />
       }
     >
       <Box p="md">{main}</Box>
