@@ -21,3 +21,17 @@ export function getUserImageUrl(
     type ?? 96
   }?v=${version ?? 1}`;
 }
+
+/**
+ * htmlToPlainText - Convert HTML to plain text
+ * @param html - HTML string
+ * @returns Plain text
+ */
+export function htmlToPlainText(html: string) {
+  const withBreaks = html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n");
+  const text = new DOMParser().parseFromString(withBreaks, "text/html").body
+    .textContent;
+  return (text ?? "").replace(/\n{3,}/g, "\n\n").trim();
+}

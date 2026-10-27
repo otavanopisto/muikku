@@ -4,6 +4,7 @@ import { userAtom } from "./auth";
 import { getNotesApi, isMApiError, isResponseError } from "~/api";
 import type {
   UpdateNoteReceiverRequest,
+  UpdateNoteRequest,
   NoteStatusType,
   Note,
 } from "~/generated/client";
@@ -93,6 +94,36 @@ export const updateFrontpageTaskStatusAtom = atom(
       if (!isMApiError(error)) throw error;
       if (isResponseError(error)) throw new Error(error.message);
       throw new Error("Failed to update task status");
+    }
+  }
+);
+
+export const updateFrontpageTaskAtom = atom(
+  null,
+  async (_get, _set, taskId: number, request: UpdateNoteRequest) => {
+    try {
+      const userId = _get(userAtom)?.id;
+
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+
+      const task = await notesApi.updateNote({
+        noteId: taskId,
+        updateNoteRequest: request,
+      });
+
+      queryClient.setQueryData(
+        [...FRONTPAGE_TASKS_QUERY_KEY, userId],
+        (tasks: Note[] | undefined) => {
+          if (!tasks) return tasks;
+          return tasks.map((t) => (t.id === taskId ? task : t));
+        }
+      );
+    } catch (error) {
+      if (!isMApiError(error)) throw error;
+      if (isResponseError(error)) throw new Error(error.message);
+      throw new Error("Failed to update task");
     }
   }
 );

@@ -1,18 +1,30 @@
-import { Title, Accordion, Text, Paper, Button, Stack } from "@mantine/core";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { Accordion, Text, Button } from "@mantine/core";
+
+import { useAtomValue, useSetAtom } from "jotai";
 import { Empty } from "src/components/Empty";
 import Panel, {
   type PanelItemBadge,
   type PanelItemVariant,
 } from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
-import type { NoteStatusType, Note } from "~/generated/client";
+import type {
+  NoteStatusType,
+  Note,
+  UpdateNoteRequest,
+} from "~/generated/client";
 import { localize } from "~/src/locales/i18n";
 import { Group } from "@mantine/core";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
-import { frontpageTasksRecipientDataAtom } from "~/src/atoms/tasks";
+import {} from "~/src/atoms/tasks";
 import { userAtom } from "~/src/atoms/auth";
-import { updateFrontpageTaskStatusAtom } from "~/src/atoms/tasks";
+import {
+  frontpageTasksRecipientDataAtom,
+  updateFrontpageTaskStatusAtom,
+  updateFrontpageTaskAtom,
+} from "~/src/atoms/tasks";
+import { useState } from "react";
+import { EditTask } from "../modals/EditTask";
+import { htmlToPlainText } from "src/utils/helpers";
 
 /**
  * Workspaces
@@ -22,6 +34,8 @@ export default function Tasks() {
   const tasks = useAtomValue(frontpageTasksRecipientDataAtom);
   const user = useAtomValue(userAtom);
   const setUpdateTaskStatus = useSetAtom(updateFrontpageTaskStatusAtom);
+  const updateTask = useSetAtom(updateFrontpageTaskAtom);
+  const [editingTask, setEditingTask] = useState<Note | null>(null);
   const { t } = useTranslation("tasks");
 
   if (tasks === undefined || tasks.length === 0) {
@@ -36,8 +50,12 @@ export default function Tasks() {
   const generateTaskDates = (task: Note) => (
     <Group>
       <Text>{localize.date(task.created, "DD.MM.YYYY")}</Text>
-      <IconArrowNarrowRight color="gray" />
-      <Text>{localize.date(task.dueDate, "DD.MM.YYYY")}</Text>
+      {task.dueDate && (
+        <>
+          <IconArrowNarrowRight color="gray" />
+          <Text>{localize.date(task.dueDate, "DD.MM.YYYY")}</Text>
+        </>
+      )}
     </Group>
   );
 
@@ -76,6 +94,10 @@ export default function Tasks() {
     }
   };
 
+  const handleEditTask = (taskId: number, request: UpdateNoteRequest) => {
+    void updateTask(taskId, request);
+  };
+
   const getTaskVariant = (task: Note): PanelItemVariant | undefined => {
     switch (task.priority) {
       case "HIGH":
@@ -101,14 +123,24 @@ export default function Tasks() {
             key={task.id ?? index}
             badges={getTaskStates(task)}
           >
-            <Text
-              dangerouslySetInnerHTML={{ __html: task.description ?? "" }}
-            />
+            <Text>{htmlToPlainText(task.description ?? "")}</Text>
+
             <Group>
               <Button onClick={() => handleUpdateTaskStatus(task)}>
                 {getStatusUpdateLocale(task)}
               </Button>
-              <Button>Edit</Button>
+              {isCreator(task.creator) && (
+                <>
+                  <Button onClick={() => setEditingTask(task)}>Edit</Button>
+
+                  <EditTask
+                    task={editingTask}
+                    opened={editingTask !== null}
+                    onClose={() => setEditingTask(null)}
+                    onSave={handleEditTask}
+                  />
+                </>
+              )}
             </Group>
           </Panel.AccordionItem>
         ))}
