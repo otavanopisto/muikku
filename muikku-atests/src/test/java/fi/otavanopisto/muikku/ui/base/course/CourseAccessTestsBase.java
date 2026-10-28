@@ -54,8 +54,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       .build();
       try{
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForElementToAppear(".hero__workspace-title", 10, 1000);
-        waitForExpectedText(".hero__workspace-title", "Test", 10, 1000 );
+        assertTextIgnoreCase(".hero__workspace-title", "Test");
         updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         logout();

@@ -148,7 +148,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
         
         waitAndClick(".application-list__item-header--course");
-        waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
+        waitUntilHasText(".workspace-assessment__literal .workspace-assessment__literal-data");
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         archiveUserByEmail(student.getEmail());

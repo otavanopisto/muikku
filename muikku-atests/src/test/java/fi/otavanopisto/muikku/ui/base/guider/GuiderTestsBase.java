@@ -656,7 +656,7 @@ public class GuiderTestsBase extends AbstractUITest {
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
-        waitUntilElementGoesAway(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order", (long) 10);
+        waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order", 10);
         assertPresent(".icon-cart-plus");
       }finally {
         deleteUserGroupUsers();
