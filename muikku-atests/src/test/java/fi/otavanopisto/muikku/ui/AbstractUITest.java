@@ -965,6 +965,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertText(String selector, String text, int timeOut) {
     try {
       waitForText(selector, actual -> text.equals(actual), timeOut);
+      String sdf = "";
     } catch (TimeoutException e) {
       assertEquals(String.format("Text in %s", selector), text, getElementTextOrNotFound(selector));
     }
