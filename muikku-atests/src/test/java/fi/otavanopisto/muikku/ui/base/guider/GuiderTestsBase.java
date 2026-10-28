@@ -130,9 +130,8 @@ public class GuiderTestsBase extends AbstractUITest {
         .build();
     try {
       navigate("/guider", false);
-      waitAndClick(".application-panel__content-aside a.menu__item-link");
+      waitAndClick(".application-panel__content-aside a.menu__item-link.menu__item-link--aside-navigation-guider-course");
       waitUntilAnimationIsDone(".application-panel__content-main");
-      clickAndConfirmElementCount(".application-panel__content-aside a.menu__item-link", ".application-list .user--guider", 1);
       waitUntilElementCount(".application-list .user--guider", 1);
       waitForPresent(".application-list__item-header .application-list__header-primary span");
       assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Second User");
@@ -293,11 +292,11 @@ public class GuiderTestsBase extends AbstractUITest {
         .build();
         
         mockBuilder
-          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
+          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date, date.plusDays(14))
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
+          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, date.plusDays(14), false)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
+          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, date.plusDays(14), false)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockIAmCounselor();
         
@@ -332,9 +331,9 @@ public class GuiderTestsBase extends AbstractUITest {
         sairmList.add(sairm);
         
         mockBuilder
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, date.plusDays(14), true)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date)
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date, date.plusDays(14))
         .mockStudyActivity(sairmList);
         // First test the course listing in the "situation"-tab
         mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
@@ -956,7 +955,7 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       waitAndClick(".dialog--visible .dialog__header--guider-student .button-icon--dialog-close");
       waitForNotVisible(".dialog--visible");
-      
+      waitForNotVisible(".notification-queue__items .notification-queue__item--success");
       waitAndClick(".application-panel__actions-aside .form-element--main-action");
       waitAndClick("#react-select-2-option-1");
       waitForPresent(".notes__item-body");
@@ -972,6 +971,7 @@ public class GuiderTestsBase extends AbstractUITest {
       assertTextIgnoreCase("#dialogTitle--note-information", "Tehtävän tiedot");
       waitAndClick(".dialog .notes__item-actions .button-icon--notes-edit");
       addTextToCKEditor(" Do additional stuff!");
+      sleep(1500);
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       sleep(2500);

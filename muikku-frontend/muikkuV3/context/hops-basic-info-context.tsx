@@ -13,6 +13,8 @@ interface StudentBasicInfo {
   identifier: string;
   /** Student's study start date */
   studyStartDate: Date;
+  /** Student's study program name */
+  studyProgramName: string;
 }
 
 /**

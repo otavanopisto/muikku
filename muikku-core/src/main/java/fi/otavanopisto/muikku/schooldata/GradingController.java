@@ -189,6 +189,7 @@ public class GradingController {
           studentIdentifier.getIdentifier(),
           latestRequest.getRequestText(),
           latestRequest.getDate(),
+          latestRequest.getDeadline(),
           latestRequest.getArchived(),
           Boolean.FALSE); // not handled
     }
@@ -252,7 +253,7 @@ public class GradingController {
   }
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled) {
+      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Date deadline, Boolean archived, Boolean handled) {
     return gradingSchoolDataController.updateWorkspaceAssessmentRequest(
         schoolDataSource,
         identifier,
@@ -262,6 +263,7 @@ public class GradingController {
         studentIdentifier,
         requestText,
         date,
+        deadline,
         archived,
         handled);
   }

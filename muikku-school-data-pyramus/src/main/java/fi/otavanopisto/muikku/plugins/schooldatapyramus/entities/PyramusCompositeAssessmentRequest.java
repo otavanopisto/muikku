@@ -10,7 +10,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   
   public PyramusCompositeAssessmentRequest(String identifier, String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
       String studyProgramme, String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate,
-      Date assessmentRequestDate, Date evaluationDate, boolean passing, boolean locked) {
+      Date assessmentRequestDate, Date evaluationDate, Date deadline, boolean passing, boolean locked) {
     this.identifier = identifier == null ? null : new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.courseStudentIdentifier = new SchoolDataIdentifier(courseStudentIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.userIdentifier = new SchoolDataIdentifier(userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
@@ -23,6 +23,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     this.courseEnrollmentDate = courseEnrollmentDate;
     this.assessmentRequestDate = assessmentRequestDate;
     this.evaluationDate = evaluationDate;
+    this.deadline = deadline;
     this.passing = passing;
     this.locked = locked;
   }
@@ -92,6 +93,10 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     return evaluationDate;
   }
 
+  public Date getDeadline() {
+    return deadline;
+  }
+
   @Override
   public boolean getPassing() {
     return passing;
@@ -114,6 +119,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   private final Date courseEnrollmentDate;
   private final Date assessmentRequestDate;
   private final Date evaluationDate;
+  private final Date deadline;
   private final boolean passing;
   private final boolean locked;
 

@@ -125,7 +125,7 @@ public class ExamController {
   
   public void removeAttendance(ExamAttendance attendance, boolean permanent) {
     if (permanent) {
-      List<Long> assignmentIds = listExamAssignmentIds(attendance.getWorkspaceFolderId());
+      List<Long> assignmentIds = listExamAssignmentIds(attendance.getWorkspaceFolderId(), true);
       for (Long assignmentId : assignmentIds) {
         UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
         WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentId);
@@ -213,7 +213,7 @@ public class ExamController {
       UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
       if (userEntity != null && folder != null) {
-        List<Long> assignmentIds = workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
+        List<Long> assignmentIds = workspaceMaterialController.listWorkspaceAssignmentIds(folder, false);
         for (Long assignmentId : assignmentIds) {
           // Skip assignments that aren't part of the user's exam
           if (chosenAssignmentIds != null && !chosenAssignmentIds.contains(assignmentId)) {
@@ -331,9 +331,9 @@ public class ExamController {
    * 
    * @return Assignment ids of the given exam
    */
-  public List<Long> listExamAssignmentIds(Long workspaceFolderId) {
+  public List<Long> listExamAssignmentIds(Long workspaceFolderId, boolean includeHidden) {
     WorkspaceFolder folder = workspaceFolderDAO.findById(workspaceFolderId);
-    return workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
+    return workspaceMaterialController.listWorkspaceAssignmentIds(folder, includeHidden);
   }
 
   /**
@@ -353,7 +353,7 @@ public class ExamController {
     if (settingsJson.getRandom() == ExamSettingsRandom.GLOBAL) {
       // List all assignment ids and remove random ids until we're down to desired random count
       int count = settingsJson.getRandomCount();
-      List<Long> ids = listExamAssignmentIds(workspaceFolderId);
+      List<Long> ids = listExamAssignmentIds(workspaceFolderId, false);
       if (count > 0) {
         Random r = new Random();
         while (ids.size() > count) {
@@ -369,6 +369,13 @@ public class ExamController {
       if (categories != null) {
         for (ExamSettingsCategory category : categories) {
           List<Long> categoryIds = category.getWorkspaceMaterialIds();
+          // Strip hidden pages (nobody should ever put a page into a category and then hide it, though)
+          for (int i = categoryIds.size() - 1; i >= 0; i--) {
+            WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(categoryIds.get(i));
+            if (workspaceMaterial == null || workspaceMaterial.getHidden()) {
+              categoryIds.remove(i);
+            }
+          }
           if (category.getRandomCount() > 0 ) {
             Random r = new Random();
             while (categoryIds.size() > category.getRandomCount()) {
@@ -394,6 +401,7 @@ public class ExamController {
     attendance.setMinutes(settingsJson.getMinutes());
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
     attendance.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntityId, workspaceFolderId));
+    attendance.setProctored(settingsJson.isProctored());
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
       // If exam has been evaluated, include a summary of points per assignment
@@ -408,7 +416,7 @@ public class ExamController {
           );
         }
         else {
-          assignmentIds.addAll(workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder));
+          assignmentIds.addAll(workspaceMaterialController.listWorkspaceAssignmentIds(folder, false));
         }
         for (Long id : assignmentIds) {
           WorkspaceMaterial assignment = workspaceMaterialController.findWorkspaceMaterialById(id);

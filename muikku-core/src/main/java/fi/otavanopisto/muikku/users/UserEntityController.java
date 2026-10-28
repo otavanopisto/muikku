@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
+import fi.otavanopisto.muikku.search.IndexedUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -359,15 +360,7 @@ public class UserEntityController implements Serializable {
       }
     }
     
-    EnvironmentRoleArchetype[] staffRoles = {
-        EnvironmentRoleArchetype.ADMINISTRATOR, 
-        EnvironmentRoleArchetype.MANAGER, 
-        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-        EnvironmentRoleArchetype.STUDY_GUIDER,
-        EnvironmentRoleArchetype.TEACHER
-    };
-    
-    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
+    if (!userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.STAFF_ROLES)) {
       SearchProvider searchProvider = getProvider("elastic-search");
       if (searchProvider != null) {
         SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
@@ -555,7 +548,7 @@ public class UserEntityController implements Serializable {
             }
 
             @SuppressWarnings("unchecked")
-            List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) match.get("studyPeriods");
+            List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) match.get(IndexedUser.FIELD_STUDYPERIODS);
 
             if (CollectionUtils.isNotEmpty(studyPeriods)) {
               EnumSet<UserStudyPeriodType> states = EnumSet.of(
@@ -612,6 +605,26 @@ public class UserEntityController implements Serializable {
     }
 
     return false;
+  }
+
+  /**
+   * Returns the biggest id of all UserEntity's
+   * @return
+   */
+  public Long getMaximumUserEntityId() {
+    return userEntityDAO.getMaximumUserEntityId();
+  }
+
+  /**
+   * Returns batchSize count of UserEntities starting and including
+   * the UserEntity with startId.
+   * 
+   * @param startId
+   * @param batchSize
+   * @return
+   */
+  public List<UserEntity> listUserEntitiesInReverseOrder(long startId, int batchSize) {
+    return userEntityDAO.listInReverseOrder(startId, batchSize);
   }
 
 }

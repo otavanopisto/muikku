@@ -42,11 +42,22 @@ public class UserWhoAmIInfoServices {
     public final boolean isAvailable;
   }
   
-  public UserWhoAmIInfoServices(boolean chatAvailable, boolean worklistAvailable, boolean environmentForumAvailable, boolean hopsAvailable) {
+  /**
+   * Hops service status for WhoAmI
+   */
+  public class SmowlService {
+    public SmowlService(boolean isAvailable) {
+      this.isAvailable = isAvailable;
+    }
+    public final boolean isAvailable;
+  }
+  
+  public UserWhoAmIInfoServices(boolean chatAvailable, boolean worklistAvailable, boolean environmentForumAvailable, boolean hopsAvailable, boolean smowlAvailable) {
     this.chat = new ChatService(chatAvailable);
     this.worklist = new WorklistService(worklistAvailable);
     this.environmentForum = new EnvironmentForumService(environmentForumAvailable);
     this.hops = new HopsService(hopsAvailable);
+    this.smowl = new SmowlService(smowlAvailable);
   }
   
   public ChatService getChat() {
@@ -65,8 +76,13 @@ public class UserWhoAmIInfoServices {
     return hops;
   }
 
+  public SmowlService getSmowl() {
+    return smowl;
+  }
+
   private final ChatService chat;
   private final WorklistService worklist;
   private final EnvironmentForumService environmentForum;
   private final HopsService hops;
+  private final SmowlService smowl;
 }

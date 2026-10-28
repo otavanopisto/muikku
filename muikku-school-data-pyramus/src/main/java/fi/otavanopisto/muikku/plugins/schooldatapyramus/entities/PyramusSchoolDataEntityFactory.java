@@ -108,7 +108,9 @@ public class PyramusSchoolDataEntityFactory {
         false, // evaluationFees
         false, // hidden
         false, // matriculationEligibility
-        studyProgrammeIdentifiers);
+        studyProgrammeIdentifiers,
+        staffMember.isSpecialEducationTeacher()
+    );
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StudentParent studentParent) {
@@ -134,7 +136,9 @@ public class PyramusSchoolDataEntityFactory {
         false, // evaluationFees
         false, // hidden
         false, // matriculationEligibility
-        new HashSet<>());
+        new HashSet<>(),
+        false // specialEducationTeacher
+    );
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
@@ -207,7 +211,9 @@ public class PyramusSchoolDataEntityFactory {
         evaluationFees,
         hidden, 
         matriculationEligibility,
-        new HashSet<>());
+        new HashSet<>(),
+        false // specialEducationTeacher
+    );
   }
   
   public StudyProgramme createEntity(fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme) {
@@ -470,6 +476,7 @@ public class PyramusSchoolDataEntityFactory {
       assessmentRequest.getCourseEnrollmentDate(),
       assessmentRequest.getAssessmentRequestDate(),
       assessmentRequest.getEvaluationDate(),
+      assessmentRequest.getDeadline(), 
       assessmentRequest.getPassing(),
       assessmentRequest.getLocked());
   }
@@ -485,9 +492,14 @@ public class PyramusSchoolDataEntityFactory {
       created = Date.from(courseAssessmentRequest.getCreated().toInstant());
     }
     
+    Date deadline = null;
+    if (courseAssessmentRequest.getDeadline() != null) {
+      deadline = Date.from(courseAssessmentRequest.getDeadline().toInstant());
+    }
+    
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(),
+        courseAssessmentRequest.getRequestText(), created, deadline, courseAssessmentRequest.getArchived(),
         courseAssessmentRequest.getHandled());
   }
 
@@ -534,6 +546,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier(),
         studentGroupUser.isGroupAdvisor(),
         studentGroupUser.isStudyAdvisor(),
+        studentGroupUser.isSpecialEducationTeacher(),
         studentGroupUser.isMessageReceiver());
   }
   

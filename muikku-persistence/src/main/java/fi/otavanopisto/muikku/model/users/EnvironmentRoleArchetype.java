@@ -16,6 +16,8 @@ public enum EnvironmentRoleArchetype {
   
   STUDENT_PARENT,
   
-  CUSTOM
+  CUSTOM;
+  
+  public static final EnvironmentRoleArchetype[] STAFF_ROLES = { TEACHER, ADMINISTRATOR, MANAGER, STUDY_PROGRAMME_LEADER, STUDY_GUIDER };
   
 }

@@ -474,6 +474,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           
           waitAndClick(".material-editor__buttonset-primary .button-pill--material-editor-change-page-type");
           //waitAndClickAndConfirm(".icon-puzzle", ".button-pill--material-editor-assignment", 5, 2000);
+          waitForVisible(".dropdown--material-editor-page-type");
           assertVisible(".dropdown--material-editor-page-type");
           waitAndClickAndConfirm(".dropdown--material-editor-page-type .link--material-editor-dropdown-assignment", ".button-pill--material-editor-assignment", 5, 2000);
           

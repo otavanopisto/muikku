@@ -4,7 +4,7 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>parent</artifactId>
-  <version>1.1.289-SNAPSHOT</version>
+  <version>1.1.292-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku Parent</name>
 
@@ -56,7 +56,6 @@
     <module>muikku-forum-plugin-rest-model</module>
     <module>muikku-hsqldb-plugin</module>
     <module>muikku-google-oauth</module>
-    <module>muikku-pyramus-oauth</module>
     <!-- 		<module>muikku-h2db-plugin</module> -->
     <module>muikku-persistence</module>
     <module>muikku-plugin</module>
@@ -89,7 +88,7 @@
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>bom</artifactId>
-        <version>1.1.289-SNAPSHOT</version>
+        <version>1.1.292-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

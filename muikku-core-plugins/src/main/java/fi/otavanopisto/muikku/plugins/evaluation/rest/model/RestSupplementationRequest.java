@@ -7,7 +7,7 @@ public class RestSupplementationRequest {
   public RestSupplementationRequest() {
   }
 
-  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Date requestDate, String requestText) {
+  public RestSupplementationRequest(Long id, Long userEntityId, Long studentEntityId, Long workspaceEntityId, String workspaceSubjectIdentifier, Date requestDate, String requestText, Long evaluationNoteCount) {
     this.id = id;
     this.userEntityId = userEntityId;
     this.studentEntityId = studentEntityId;
@@ -15,6 +15,7 @@ public class RestSupplementationRequest {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
     this.requestDate = requestDate;
     this.requestText = requestText;
+    this.evaluationNoteCount = evaluationNoteCount;
   }
   
   public Long getId() {
@@ -73,6 +74,14 @@ public class RestSupplementationRequest {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
 
+  public Long getEvaluationNoteCount() {
+    return evaluationNoteCount;
+  }
+
+  public void setEvaluationNoteCount(Long evaluationNoteCount) {
+    this.evaluationNoteCount = evaluationNoteCount;
+  }
+
   private Long id;
   private Long userEntityId;
   private Long studentEntityId;
@@ -80,5 +89,6 @@ public class RestSupplementationRequest {
   private String workspaceSubjectIdentifier;
   private Date requestDate;
   private String requestText;
+  private Long evaluationNoteCount;
 
 }
