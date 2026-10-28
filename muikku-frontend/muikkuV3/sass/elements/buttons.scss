@@ -2378,7 +2378,7 @@
     width: 2.5rem;
   }
 }
-.button-pill--delete-vacation-period,
+
 .button-pill--save-worklist-entry {
   background: $color-execute;
   border-radius: 3px;
@@ -2832,4 +2832,12 @@
   height: 1.5rem;
   text-decoration: none;
   width: 1.5rem;
+}
+
+// Vacation period related
+.button-icon--delete-vacation-period {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-fatal;
+  margin: 0 0 0 5px;
 }

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import { localize } from "~/locales/i18n";
-import { ButtonPill } from "~/components/general/button";
+import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {
@@ -102,13 +102,12 @@ const VacationPeriodItem: React.FC<VacationPeriodItemProps> = (props) => {
         <div className="application-sub-panel__item-data">
           <DatePicker
             id={`profileVacationStart-${period.id}`}
-            className="form-element__input form-element__input--vacation-period"
+            className="form-element__input"
             onChange={onDateChange.bind(null, period.id, "start")}
             maxDate={period.end || undefined}
             locale={outputCorrectDatePickerLocale(localize.language)}
             selected={period.start}
             dateFormat="P"
-            isClearable
           />
         </div>
       </div>
@@ -122,13 +121,12 @@ const VacationPeriodItem: React.FC<VacationPeriodItemProps> = (props) => {
         <div className="application-sub-panel__item-data">
           <DatePicker
             id={`profileVacationEnd-${period.id}`}
-            className="form-element__input form-element__input--vacation-period"
+            className="form-element__input"
             onChange={onDateChange.bind(null, period.id, "end")}
             minDate={period.start || undefined}
             locale={outputCorrectDatePickerLocale(localize.language)}
             selected={period.end}
             dateFormat="P"
-            isClearable
           />
         </div>
       </div>
@@ -140,7 +138,7 @@ const VacationPeriodItem: React.FC<VacationPeriodItemProps> = (props) => {
             context: "vacationPeriod",
           })}
         >
-          <ButtonPill
+          <IconButton
             icon="trash"
             buttonModifiers="delete-vacation-period"
             onClick={onRemovePeriod.bind(null, period.id)}
@@ -175,20 +173,17 @@ const VacationPeriods: React.FC<VacationPeriodsProps> = (props) => {
       ))}
       <div className="application-sub-panel__multiple-items">
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--vacation-submit">
-          <Dropdown
-            openByHover
-            content={t("actions.add", {
+          <Button
+            icon="plus"
+            onClick={onAddPeriod}
+            disabled={periods.length >= MAX_VACATION_PERIODS}
+          >
+            {" "}
+            {t("actions.add", {
               ns: "profile",
               context: "vacationPeriod",
-            })}
-          >
-            <ButtonPill
-              icon="plus"
-              buttonModifiers="add-vacation-period"
-              onClick={onAddPeriod}
-              disabled={periods.length >= MAX_VACATION_PERIODS}
-            />
-          </Dropdown>
+            })}{" "}
+          </Button>
         </div>
       </div>
     </>
