@@ -278,16 +278,6 @@ class VacationSettings extends React.Component<
       (this.props.profile.properties["communicator-auto-reply-msg"] || "") !==
         this.state.vacationAutoReplyMsg;
 
-    if (
-      !startChanged &&
-      !endChanged &&
-      !autoReplyChanged &&
-      !autoReplySubjectChanged &&
-      !autoReplyMsgChanged
-    ) {
-      return;
-    }
-
     this.setState({
       locked: true,
     });
