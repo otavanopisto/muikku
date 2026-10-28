@@ -192,12 +192,19 @@
               iframe,
               editor,
             );
-            this.frameWrapper.setValue(this.data.math);
+            if (!CKEDITOR.plugins.muikkuMathjax.isInsideClosedDetails(this)) {
+              this.frameWrapper.setValue(this.data.math);
+            }
           });
         },
 
         data: function () {
-          if (this.frameWrapper) this.frameWrapper.setValue(this.data.math);
+          if (
+            this.frameWrapper &&
+            !CKEDITOR.plugins.muikkuMathjax.isInsideClosedDetails(this)
+          ) {
+            this.frameWrapper.setValue(this.data.math);
+          }
         },
 
         upcast: function (el, data) {
@@ -373,7 +380,7 @@
     return value
       ? value
           .replaceAll("&", "&amp;")
-          .replaceAll(`"`, "&quot;")
+          .replaceAll('"', "&quot;")
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
       : value;
@@ -383,7 +390,7 @@
     return value
       ? value
           .replaceAll(/&amp;/gi, "&")
-          .replaceAll(/&quot;/gi, `"`)
+          .replaceAll(/&quot;/gi, '"')
           .replaceAll(/&lt;/gi, "<")
           .replaceAll(/&gt;/gi, ">")
       : value;
@@ -615,6 +622,49 @@
       };
     };
   }
+
+  CKEDITOR.plugins.muikkuMathjax.isInsideClosedDetails = function (widget) {
+    var node = widget && widget.wrapper && widget.wrapper.$;
+    while (node) {
+      if (
+        node.tagName &&
+        String(node.tagName).toLowerCase() === "details" &&
+        !node.open
+      ) {
+        return true;
+      }
+      node = node.parentElement;
+    }
+    return false;
+  };
+
+  CKEDITOR.plugins.muikkuMathjax.reinitWidget = function (widget) {
+    var editor = widget.editor;
+    var span = widget.parts && widget.parts.span;
+    if (!editor || !span) {
+      return;
+    }
+    editor.fire("lockSnapshot");
+    var oldIframe = span.getChild(0);
+    if (oldIframe) {
+      oldIframe.remove();
+    }
+    var iframe = new CKEDITOR.dom.element("iframe");
+    iframe.setAttributes({
+      style: "border:0;width:0;height:0",
+      scrolling: "no",
+      frameborder: 0,
+      allowTransparency: true,
+      src: CKEDITOR.plugins.muikkuMathjax.fixSrc,
+    });
+    span.append(iframe);
+    widget.frameWrapper = new CKEDITOR.plugins.muikkuMathjax.frameWrapper(
+      iframe,
+      editor,
+    );
+    widget.frameWrapper.setValue(widget.data.math);
+    editor.fire("unlockSnapshot");
+  };
 })();
 
 /**
