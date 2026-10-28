@@ -63,7 +63,8 @@ public class CleanerAnswersController extends CleanerController {
           // No student found to process this cycle
           return;
         }
-        // Collect reply ids of the student
+        // Collect reply ids of the student. Snapshot of all needed because if the student returns
+        // while cleanup is in progress, as unlikely as it is, the new entries remain intact. 
         replyIds = workspaceMaterialReplyDAO.listIdsByUserEntityId(userEntityId);
         logger.info(String.format("UserEntity %d has %d replies", userEntityId, replyIds.size()));
         if (replyIds.size() == 0) {
