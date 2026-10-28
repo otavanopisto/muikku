@@ -403,6 +403,8 @@
   },
   "profile": {
     "actions": {
+      "add_vacationPeriod": "Add vacation period",
+      "remove_vacationPeriod": "Delete vacation period",
       "test": "Test URL"
     },
     "content": {
@@ -435,6 +437,7 @@
       "profileImage": "Profile picture",
       "remove": "Delete profile picture",
       "studentCardAuthorizationTitle": "Digital student card",
+      "vacationPeriod": "Vacation period {{index}}",
       "vacationSettings": "Vacation settings",
       "vacationAutoReply": "Vacation responder is on",
       "whatsappIntegration_off": "WhatsApp integration on",
@@ -443,7 +446,9 @@
       "worklist": "Worklist"
     },
     "notifications": {
-      "loadError": "Loading profile picture failed"
+      "invalidVacationPeriod": "Vacation end date cannot be before the start date",
+      "loadError": "Loading profile picture failed",
+      "overlappingVacationPeriods": "Vacation periods cannot overlap"
     }
   },
   "worklist": {

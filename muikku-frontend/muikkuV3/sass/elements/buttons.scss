@@ -2366,6 +2366,7 @@
   }
 }
 
+.button-pill--add-worklist-entry,
 .button-pill--add-worklist-entry {
   border-radius: 3px;
   color: $color-default;
@@ -2377,7 +2378,7 @@
     width: 2.5rem;
   }
 }
-
+.button-pill--delete-vacation-period,
 .button-pill--save-worklist-entry {
   background: $color-execute;
   border-radius: 3px;

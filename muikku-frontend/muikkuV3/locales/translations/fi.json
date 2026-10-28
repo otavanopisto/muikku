@@ -403,6 +403,8 @@
   },
   "profile": {
     "actions": {
+      "add_vacationPeriod": "Lisää lomajakso",
+      "remove_vacationPeriod": "Poista lomajakso",
       "test": "Testaa URL"
     },
     "content": {
@@ -413,7 +415,7 @@
       "sliceAuthorization1": "Käytössä on Slice.fi, joka digitaalinen opiskelijakortti ja opiskelijaetupalvelu. Vastaamalla kyllä, annat meille luvan toimittaa palvelulle seuraavat tiedot: nimi, sähköpostiosoite, syntymäaika, opinto-oikeuden tai opintojen päättymispäivä.",
       "sliceAuthorization2": "Saat kortin käyttöösi lataamalla puhelimeesi Slice.fi-sovelluksen. Palvelun käyttö vaatii vahvan tunnistautumisen esimerkiksi pankkitunnuksien avulla.",
       "nick": "Henkilökunnan jäsenet näkevät oikean nimesi. Muut opiskelijat näkevät vain asettamasi nimimerkin.",
-      "vacationAutoReply": " Automaattinen lomaviesti on aktiivisena vain, jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle yhteydenottajalle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
+      "vacationAutoReply": "Automaattinen lomaviesti on aktiivisena vain, jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle yhteydenottajalle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
       "whatsAppIntegration": "Saat Whatsapp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa (esim. +358 40 123 4567). Yhteystietoihisi ilmestyy Whatsapp-painike, jota klikkaamalla Whatsapp Web -sovellus aukeaa."
     },
     "labels": {
@@ -435,6 +437,7 @@
       "profileImage": "Profiilikuva",
       "remove": "Poista profiilin kuva",
       "studentCardAuthorizationTitle": "Digitaalinen opiskelijakortti",
+      "vacationPeriod": "Loma-aika {{index}}",
       "vacationSettings": "Loma-asetukset",
       "vacationAutoReply": "Lomaviesti käytössä",
       "whatsappIntegration_off": "Whatsapp-integraatio pois päältä",
@@ -443,7 +446,9 @@
       "worklist": "Työlista"
     },
     "notifications": {
-      "loadError": "Profiilikuvan lataus epäonnistui"
+      "invalidVacationPeriod": "Loman loppupäivä ei voi olla ennen alkupäivää",
+      "loadError": "Profiilikuvan lataus epäonnistui",
+      "overlappingVacationPeriods": "Loma-ajat eivät voi olla päällekkäin"
     }
   },
   "worklist": {

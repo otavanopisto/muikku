@@ -782,6 +782,35 @@
   }
 }
 
+.application-sub-panel__multiple-item-container--vacation-start,
+.application-sub-panel__multiple-item-container--vacation-end {
+  flex-basis: 160px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  .react-datepicker-wrapper,
+  .react-datepicker__input-container {
+    display: block;
+    width: 100%;
+  }
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 0;
+  }
+}
+.application-sub-panel__multiple-item-container--vacation-actions {
+  align-items: center;
+  align-self: flex-end;
+  display: flex;
+  flex-basis: 45px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  margin: 0 0 2px;
+}
+.application-sub-panel__multiple-item-container--vacation-submit {
+  align-self: flex-end;
+  margin: 0 0 2px;
+}
+
 // Profile product
 .application-sub-panel__multiple-item-container--product-details {
   align-items: flex-start;
