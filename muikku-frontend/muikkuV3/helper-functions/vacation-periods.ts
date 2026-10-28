@@ -108,7 +108,9 @@ export const parseVacationPeriods = (
 export const serializeVacationPeriods = (
   periods: VacationPeriod[]
 ): { start: string | null; end: string | null } => {
-  const toSave = sortVacationPeriods(periods.filter((period) => period.start));
+  const toSave = sortVacationPeriods(
+    periods.filter((period) => period.start && period.end)
+  );
 
   if (toSave.length === 0) {
     return { start: null, end: null };
@@ -116,9 +118,7 @@ export const serializeVacationPeriods = (
 
   return {
     start: toSave.map((period) => period.start.toISOString()).join(","),
-    end: toSave
-      .map((period) => (period.end ? period.end.toISOString() : ""))
-      .join(","),
+    end: toSave.map((period) => period.end.toISOString()).join(","),
   };
 };
 
@@ -130,6 +130,28 @@ export const serializeVacationPeriods = (
  */
 export const hasCompleteVacationPeriod = (periods: VacationPeriod[]): boolean =>
   periods.some((period) => period.start && period.end);
+
+/**
+ * Formats a vacation period for display. Same-day periods render as one date.
+ *
+ * @param period period
+ * @param formatDate formatDate
+ * @returns formatted date or date range
+ */
+export const formatVacationPeriodDates = (
+  period: VacationPeriod,
+  formatDate: (value: Date) => string
+): string => {
+  if (!period.start) {
+    return "";
+  }
+
+  if (!period.end || moment(period.start).isSame(period.end, "day")) {
+    return formatDate(period.start);
+  }
+
+  return `${formatDate(period.start)}–${formatDate(period.end)}`;
+};
 
 /**
  * Returns true when any two complete periods overlap, including sharing a day.
@@ -169,12 +191,10 @@ export const getRelevantVacationPeriods = (
   const today = moment().startOf("day");
   return sortVacationPeriods(
     periods.filter((period) => {
-      if (!period.start) {
+      if (!period.start || !period.end) {
         return false;
       }
-      if (!period.end) {
-        return true;
-      }
+
       return (
         moment(period.end).isAfter(today, "day") ||
         moment(period.end).isSame(today, "day")
@@ -200,8 +220,7 @@ export const getDisplayVacationPeriod = (
       today,
       "day"
     );
-    const endsTodayOrLater =
-      !period.end || moment(period.end).isSameOrAfter(today, "day");
+    const endsTodayOrLater = moment(period.end).isSameOrAfter(today, "day");
     return startsTodayOrEarlier && endsTodayOrLater;
   });
   return ongoing || relevant[0] || null;

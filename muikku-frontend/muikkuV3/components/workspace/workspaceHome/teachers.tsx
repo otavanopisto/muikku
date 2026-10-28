@@ -15,7 +15,10 @@ import "~/sass/elements/glyph.scss";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
-import { getRelevantVacationPeriodsFromProperties } from "~/helper-functions/vacation-periods";
+import {
+  formatVacationPeriodDates,
+  getRelevantVacationPeriodsFromProperties,
+} from "~/helper-functions/vacation-periods";
 
 /**
  * WorkspaceTeachersProps
@@ -120,8 +123,9 @@ class WorkspaceTeachers extends React.Component<
                         >
                           {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {localize.date(period.start)}
-                          {period.end ? "–" + localize.date(period.end) : null}
+                          {formatVacationPeriodDates(period, (date) =>
+                            localize.date(date)
+                          )}
                         </div>
                       ))}
 

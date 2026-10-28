@@ -446,6 +446,7 @@
       "worklist": "Worklist"
     },
     "notifications": {
+      "incompleteVacationPeriod": "Vacation start and end dates are both required",
       "invalidVacationPeriod": "Vacation end date cannot be before the start date",
       "loadError": "Loading profile picture failed",
       "overlappingVacationPeriods": "Vacation periods cannot overlap"

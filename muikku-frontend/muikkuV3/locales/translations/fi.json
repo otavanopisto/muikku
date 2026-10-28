@@ -446,6 +446,7 @@
       "worklist": "Työlista"
     },
     "notifications": {
+      "incompleteVacationPeriod": "Loman alku- ja loppupäivämäärä ovat molemmat pakollisia",
       "invalidVacationPeriod": "Loman loppupäivä ei voi olla ennen alkupäivää",
       "loadError": "Profiilikuvan lataus epäonnistui",
       "overlappingVacationPeriods": "Loma-ajat eivät voi olla päällekkäin"

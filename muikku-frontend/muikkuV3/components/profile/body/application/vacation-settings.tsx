@@ -14,7 +14,6 @@ import {
 } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import { SimpleActionExecutor } from "~/actions/executor";
-import moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import {
   doVacationPeriodsOverlap,
@@ -231,16 +230,15 @@ class VacationSettings extends React.Component<
       (period) => period.start || period.end
     );
 
-    const hasInvalidRange = periodsToSave.some(
-      (period) =>
-        period.start &&
-        period.end &&
-        moment(period.end).isBefore(moment(period.start), "day")
+    const hasIncompletePeriod = periodsToSave.some(
+      (period) => !period.start || !period.end
     );
 
-    if (hasInvalidRange) {
+    if (hasIncompletePeriod) {
       this.props.displayNotification(
-        this.props.t("notifications.invalidVacationPeriod", { ns: "profile" }),
+        this.props.t("notifications.incompleteVacationPeriod", {
+          ns: "profile",
+        }),
         "error"
       );
       return;
