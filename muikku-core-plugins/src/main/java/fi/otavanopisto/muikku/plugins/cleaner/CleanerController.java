@@ -25,6 +25,7 @@ public abstract class CleanerController {
   // TODO CleanerJournalController (WorkspaceJournalEntry + WorkspaceJournalComment)
   // TODO CleanerJournalFeedbackController (WorkspaceJournalFeedback)
   // TODO CleanerEvaluationController (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
+  // TODO CleanerActivityController (ActivityLog)
 
   @Inject
   private UserEntityDAO userEntityDAO;
