@@ -14,6 +14,7 @@ import {
   EvaluationEvent,
   EvaluationGradeScale,
   EvaluationJournalFeedback,
+  EvaluationNote,
   ExamAttendance,
   MaterialCompositeReply,
   WorkspaceJournalEntry,
@@ -50,9 +51,14 @@ export interface EvaluationState {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];
   };
+  evaluationNotes?: EvaluationStateAndData<EvaluationNote[]>;
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
   evaluationExams?: EvaluationStateAndData<ExamAttendance[]>;
+  evaluationExamsSmowlProctoringInfo?: {
+    swlAPIKey: string;
+    entityName: string;
+  };
   openedAssigmentOrExamId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
@@ -97,10 +103,15 @@ export const initialState: EvaluationState = {
     state: "LOADING",
     data: undefined,
   },
+  evaluationNotes: {
+    state: "LOADING",
+    data: undefined,
+  },
   evaluationExams: {
     state: "LOADING",
     data: undefined,
   },
+  evaluationExamsSmowlProctoringInfo: undefined,
   evaluationCompositeReplies: { state: "LOADING", data: undefined },
   needsReloadEvaluationRequests: false,
   basePrice: {
@@ -474,6 +485,12 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
+    case "EVALUATION_EXAMS_SMOWL_PROCTORING_INFO_LOAD":
+      return {
+        ...state,
+        evaluationExamsSmowlProctoringInfo: action.payload,
+      };
+
     case "EVALUATION_EXAMS_STATE_UPDATE":
       return {
         ...state,
@@ -552,6 +569,129 @@ export const evaluations: Reducer<EvaluationState> = (
               answers: nextAnswers,
             };
           }),
+        },
+      };
+    }
+
+    case "EVALUATION_COMPOSITE_REPLIES_UPDATE_ANSWER_WITH_COMMENTS": {
+      const { fieldName, content, workspaceMaterialId } = action.payload;
+      return {
+        ...state,
+        evaluationCompositeReplies: {
+          ...state.evaluationCompositeReplies,
+          data: state.evaluationCompositeReplies.data?.map((compositeReply) => {
+            if (compositeReply.workspaceMaterialId !== workspaceMaterialId) {
+              return compositeReply;
+            }
+            const nextAnswers = compositeReply.answers.map((answer) => {
+              if (answer.fieldName !== fieldName) {
+                return answer;
+              }
+
+              return {
+                ...answer,
+                value: content,
+              };
+            });
+            return {
+              ...compositeReply,
+              answers: nextAnswers,
+            };
+          }),
+        },
+      };
+    }
+    case "EVALUATION_NOTES_STATE_UPDATE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: action.payload,
+          data: state.evaluationNotes.data,
+        },
+      };
+
+    case "EVALUATION_NOTES_LOAD":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: action.payload,
+        },
+      };
+
+    case "EVALUATION_NOTES_CREATE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: [...(state.evaluationNotes.data ?? []), action.payload],
+        },
+      };
+
+    case "EVALUATION_NOTES_UPDATE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: state.evaluationNotes.data?.map((note) =>
+            note.id === action.payload.id ? action.payload : note
+          ),
+        },
+      };
+
+    case "EVALUATION_NOTES_DELETE":
+      return {
+        ...state,
+        evaluationNotes: {
+          state: state.evaluationNotes.state,
+          data: state.evaluationNotes.data?.filter(
+            (note) => note.id !== action.payload
+          ),
+        },
+      };
+
+    case "EVALUATION_ASSESSMENT_NOTE_COUNT_UPDATE":
+      return {
+        ...state,
+        evaluationRequests: {
+          ...state.evaluationRequests,
+          data: state.evaluationRequests.data?.map((request) =>
+            request.workspaceUserEntityId ===
+            action.payload.workspaceUserEntityId
+              ? {
+                  ...request,
+                  evaluationNoteCount: Math.max(
+                    0,
+                    (request.evaluationNoteCount ?? 0) + action.payload.delta
+                  ),
+                }
+              : request
+          ),
+        },
+      };
+
+    case "EVALUATION_ASSESSMENT_REQUEST_DEADLINE_UPDATE": {
+      const updatedRequest = action.payload;
+
+      /**
+       * Helper function to check if the request matches the updated request
+       * If id matches then its interim evaluation request
+       * If identifier matches then its assessment request
+       * @param request request
+       * @returns true if the request matches the updated request
+       */
+      const matches = (request: EvaluationAssessmentRequest) =>
+        (request.id !== null && request.id === updatedRequest.id) ||
+        (request.identifier !== null &&
+          request.identifier === updatedRequest.identifier);
+
+      return {
+        ...state,
+        evaluationRequests: {
+          ...state.evaluationRequests,
+          data: state.evaluationRequests.data?.map((request) =>
+            matches(request) ? updatedRequest : request
+          ),
         },
       };
     }

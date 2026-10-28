@@ -11,7 +11,7 @@ public abstract class AbstractUser implements User {
       String studyProgrammeName, String educationTypeCode, SchoolDataIdentifier studyProgrammeIdentifier, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
       boolean evaluationFees, SchoolDataIdentifier curriculumIdentifier, SchoolDataIdentifier organizationIdentifier, boolean matriculationEligibility,
-      Set<SchoolDataIdentifier> studyProgrammeIdentifiers) {
+      Set<SchoolDataIdentifier> studyProgrammeIdentifiers, boolean specialEducationTeacher) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -33,6 +33,7 @@ public abstract class AbstractUser implements User {
     this.curriculumIdentifier = curriculumIdentifier;
     this.organizationIdentifier = organizationIdentifier;
     this.matriculationEligibility = matriculationEligibility;
+    this.specialEducationTeacher = specialEducationTeacher;
     this.setStudyProgrammeIdentifiers(studyProgrammeIdentifiers);
   }
 
@@ -200,6 +201,15 @@ public abstract class AbstractUser implements User {
     this.studyProgrammeIdentifiers = studyProgrammeIdentifiers;
   }
 
+  @Override
+  public boolean isSpecialEducationTeacher() {
+    return specialEducationTeacher;
+  }
+
+  public void setSpecialEducationTeacher(boolean specialEducationTeacher) {
+    this.specialEducationTeacher = specialEducationTeacher;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -221,4 +231,5 @@ public abstract class AbstractUser implements User {
   private String nickName;
   private boolean matriculationEligibility;
   private Set<SchoolDataIdentifier> studyProgrammeIdentifiers;
+  private boolean specialEducationTeacher;
 }

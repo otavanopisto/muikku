@@ -29,6 +29,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               boolean isActive,
               Set<String> permissions,
               Set<EnvironmentRoleArchetype> roles,
+              Boolean specialEducationTeacher,
               String locale,
               String displayName,
               List<String> emails,
@@ -38,6 +39,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               OffsetDateTime studyStartDate,
               OffsetDateTime studyEndDate,
               OffsetDateTime studyTimeEnd,
+              String sysEnv,
               UserWhoAmIInfoServices services) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
@@ -50,6 +52,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.isDefaultOrganization = isDefaultOrganization;
     this.isActive = isActive;
     this.roles = roles;
+    this.specialEducationTeacher = specialEducationTeacher;
     this.locale = locale;
     this.setPermissions(permissions);
     this.displayName = displayName;
@@ -62,6 +65,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.setStudyTimeEnd(studyTimeEnd);
     this.setServices(services);
     this.educationTypeCode = educationTypeCode;
+    this.sysEnv = sysEnv;
   }
 
   public String getStudyProgrammeName() {
@@ -240,6 +244,22 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.under18 = under18;
   }
 
+  public String getSysEnv() {
+    return sysEnv;
+  }
+
+  public void setSysEnv(String sysEnv) {
+    this.sysEnv = sysEnv;
+  }
+
+  public Boolean isSpecialEducationTeacher() {
+    return specialEducationTeacher;
+  }
+
+  public void setSpecialEducationTeacher(Boolean specialEducationTeacher) {
+    this.specialEducationTeacher = specialEducationTeacher;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -259,7 +279,9 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyTimeEnd;
   private String locale;
   private Set<EnvironmentRoleArchetype> roles;
+  private Boolean specialEducationTeacher;
   private UserWhoAmIInfoServices services;
   private String educationTypeCode; // is the user elementary, high school, etc. (studyProgramme.getCategory().getEducationType().getCode()) 
   private Boolean under18;
+  private String sysEnv;
 }

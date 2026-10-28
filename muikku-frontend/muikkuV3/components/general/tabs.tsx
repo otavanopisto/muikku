@@ -101,10 +101,12 @@ export const SimpleTabs: React.FC<TabsProps> = (props) => {
    * @param e e
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-      e.preventDefault();
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") {
+      return;
     }
+
+    e.preventDefault();
+    e.stopPropagation();
 
     // Set the previous focused tab to -1
     getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "-1");
@@ -218,10 +220,12 @@ export const Tabs: React.FC<TabsProps> = (props) => {
    * @param e e
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-      e.preventDefault();
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") {
+      return;
     }
+
+    e.preventDefault();
+    e.stopPropagation();
 
     // Set the previous focused tab to -1
     getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "-1");

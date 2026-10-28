@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
@@ -714,9 +713,12 @@ public class WorkspaceMaterialController {
     return workspaceMaterialDAO.sortIds(ids);
   }
 
-  public List<Long> listVisibleWorkspaceAssignmentIds(WorkspaceFolder workspaceFolder) {
+  public List<Long> listWorkspaceAssignmentIds(WorkspaceFolder workspaceFolder, boolean includeHidden) {
     Set<WorkspaceMaterialAssignmentType> types = Set.of(WorkspaceMaterialAssignmentType.EVALUATED, WorkspaceMaterialAssignmentType.EXERCISE); 
-    return workspaceMaterialDAO.listIdsByParentAndAssignmentTypesAndHidden(workspaceFolder, types, false);
+    return includeHidden
+        ? workspaceMaterialDAO.listIdsByParentAndAssignmentTypes(workspaceFolder, types)
+        : workspaceMaterialDAO.listIdsByParentAndAssignmentTypesAndHidden(workspaceFolder, types, !includeHidden);
+        
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity,

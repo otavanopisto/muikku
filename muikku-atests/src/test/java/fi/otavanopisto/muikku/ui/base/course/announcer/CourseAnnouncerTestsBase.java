@@ -41,14 +41,19 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     try{
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".button--primary-function");
+      waitAndClick(".env-dialog__header");
+      waitForNotVisible(".react-datepicker-popper");
+      sleep(1500);
       waitForPresent(".cke_contents");
+      addTextToCKEditor("Announcer test announcement");
+      waitForPresent(".env-dialog__form-element-container--title>input#announcementTitle");
+      sendKeys(".env-dialog__form-element-container--title>input#announcementTitle", "Test title");
+      sleep(1500);
       waitForPresent(".env-dialog__input--date-picker");
       click(".env-dialog__input--date-picker");
       waitForPresent(".react-datepicker-popper");
       click(".env-dialog__header");
       waitForNotVisible(".react-datepicker-popper");
-      sendKeys(".env-dialog__form-element-container--title>input", "Test title");
-      addTextToCKEditor("Announcer test announcement");
       waitAndClick(".button--dialog-execute");
       
       waitForPresent(".application-list__item-content-header");

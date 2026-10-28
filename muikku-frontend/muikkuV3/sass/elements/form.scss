@@ -147,6 +147,14 @@
   }
 }
 
+.form__buttons--evaluation-note {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  padding: 5px 0 0;
+}
+
 .form__subdivision {
   flex-basis: 100%;
   margin: 5px 0;
@@ -313,6 +321,16 @@ legend {
     content: "\e639";
     font-family: "muikku";
     font-size: 0.875rem;
+  }
+}
+
+.form-element--smowl {
+  display: flex;
+  justify-content: center;
+
+  input[type="radio"] {
+    height: 1.25rem;
+    width: 1.25rem;
   }
 }
 

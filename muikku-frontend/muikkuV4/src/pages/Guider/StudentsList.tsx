@@ -13,21 +13,23 @@ import {
 } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import {
-  guiderStudents,
+  guiderStudentsAsyncStateAtom,
+  guiderStudentsDataAtom,
+  guiderStudentsErrorAtom,
+  guiderStudentsHasNextPageAtom,
+  guiderStudentsIsFetchingNextPageAtom,
+  guiderStudentsIsLoadingAtom,
   guiderStudentsQueryAtom,
   loadMoreGuiderStudentsAtom,
+  refetchGuiderStudentsAtom,
 } from "../../atoms/guider";
 import { Link, useSearchParams } from "react-router";
 import { AsyncState } from "src/components/AsyncState/AsyncState";
-import {
-  createAsyncError,
-  parseAsyncStateFromQuery,
-} from "src/utils/AtomHelpers";
+import { createAsyncError } from "src/utils/AtomHelpers";
 
 /**
- * StudentsListProps
+ * Students list props
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface StudentsListProps {
   //onStudentSelect?: (student: FlaggedStudent) => void;
 }
@@ -36,19 +38,25 @@ interface StudentsListProps {
  * StudentsList
  */
 export default function StudentsList(_props: StudentsListProps) {
-  const studentsQuery = useAtomValue(guiderStudents);
+  const students = useAtomValue(guiderStudentsDataAtom);
+  const hasNextPage = useAtomValue(guiderStudentsHasNextPageAtom);
+  const isFetchingNextPage = useAtomValue(guiderStudentsIsFetchingNextPageAtom);
+  const isLoading = useAtomValue(guiderStudentsIsLoadingAtom);
+  const asyncState = useAtomValue(guiderStudentsAsyncStateAtom);
+  const error = useAtomValue(guiderStudentsErrorAtom);
   const [query, setQuery] = useAtom(guiderStudentsQueryAtom);
   const loadMoreStudents = useSetAtom(loadMoreGuiderStudentsAtom);
+  const refetch = useSetAtom(refetchGuiderStudentsAtom);
   const [searchParams, setSearchParams] = useSearchParams();
 
   /**
    * Load more students when scrolling near bottom
    */
   const handleBottomReachedScroll = useCallback(() => {
-    if (studentsQuery.hasNextPage && !studentsQuery.isFetchingNextPage) {
+    if (hasNextPage && !isFetchingNextPage) {
       loadMoreStudents();
     }
-  }, [studentsQuery, loadMoreStudents]);
+  }, [hasNextPage, isFetchingNextPage, loadMoreStudents]);
 
   /**
    * Handles query change
@@ -77,14 +85,11 @@ export default function StudentsList(_props: StudentsListProps) {
     setSearchParams(newSearchParams, { replace: true });
   };
 
-  const studentsData =
-    studentsQuery.data?.pages.flatMap((page) => page.data) ?? [];
-
   return (
     <AsyncState
-      state={parseAsyncStateFromQuery(studentsQuery)}
-      error={createAsyncError(studentsQuery.error) ?? undefined}
-      onRetry={() => void studentsQuery.refetch()}
+      state={asyncState}
+      error={createAsyncError(error) ?? undefined}
+      onRetry={() => refetch()}
       showRetryButton
     >
       <Box h="100%" style={{ display: "flex", flexDirection: "column" }}>
@@ -119,23 +124,23 @@ export default function StudentsList(_props: StudentsListProps) {
           onBottomReached={handleBottomReachedScroll}
         >
           <Stack gap={0}>
-            {studentsQuery.isLoading ? (
+            {isLoading ? (
               <Center py="xl">
                 <Loader size="md" />
               </Center>
-            ) : studentsData.length === 0 ? (
+            ) : students.length === 0 ? (
               <Center py="xl">
                 <Text c="dimmed">No students found</Text>
               </Center>
             ) : (
-              studentsData.map((student, index) => (
+              students.map((student, index) => (
                 <Box
                   key={student.id}
                   p="md"
                   style={{
                     cursor: "pointer",
                     borderBottom:
-                      index < studentsData.length - 1
+                      index < students.length - 1
                         ? "1px solid var(--mantine-color-gray-2)"
                         : "none",
                   }}
@@ -150,7 +155,7 @@ export default function StudentsList(_props: StudentsListProps) {
             )}
 
             {/* Loading More Indicator */}
-            {studentsQuery.isFetchingNextPage && (
+            {isFetchingNextPage && (
               <Center py="md">
                 <Group gap="xs">
                   <Loader size="sm" />

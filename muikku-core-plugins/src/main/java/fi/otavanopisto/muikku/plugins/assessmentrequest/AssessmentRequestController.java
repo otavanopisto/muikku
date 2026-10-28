@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -136,7 +137,7 @@ public class AssessmentRequestController {
     
     // Archive assessment request
     
-    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled());
+    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), assessmentRequest.getDeadline(), true , assessmentRequest.getHandled());
   }
 
   public CommunicatorMessageId findCommunicatorMessageId(WorkspaceUserEntity workspaceUserEntity) {
@@ -180,6 +181,14 @@ public class AssessmentRequestController {
       WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
       UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
       
+      Date deadline = workspaceAssessmentRequest.getDeadline();
+      
+      if (deadline == null) {
+        deadline = Date.from(
+            workspaceAssessmentRequest.getDate().toInstant().plus(Duration.ofDays(14))
+        );
+      }
+      
       AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
           workspaceAssessmentRequestIdentifier.toId(), 
           userIdentifier.toId(),
@@ -187,7 +196,8 @@ public class AssessmentRequestController {
           workspaceEntity.getId(), 
           userEntity.getId(), 
           workspaceAssessmentRequest.getRequestText(), 
-          workspaceAssessmentRequest.getDate());
+          workspaceAssessmentRequest.getDate(),
+          deadline);
   
       return restAssessmentRequest;
     }

@@ -23,6 +23,7 @@ export interface StatusType {
   isUnder18: boolean;
   roles: Role[];
   isStudent: boolean;
+  isSpecialEducationTeacher: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
   services: UserWhoAmIServices | null;
@@ -49,12 +50,15 @@ export interface StatusType {
   hopsEnabled: boolean;
   currentWorkspaceId: number;
   chatSettings: ChatUser;
+  sysEnvironment: string;
 }
 
 /**
  * ProfileStatusType
  */
 export interface ProfileStatusType {
+  firstName: string;
+  lastName: string;
   displayName: string;
   loggedUserName: string;
   emails: Array<string>;
@@ -90,6 +94,7 @@ export default function status(
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: false, // check if role is STUDENT
+    isSpecialEducationTeacher: false, // check if whoami contains value
     isUnder18: false, // lets assume adult first
     currentWorkspaceInfo: null,
     hasImage: false,
@@ -99,6 +104,7 @@ export default function status(
     hopsEnabled: false, // /user/property/hops.enabled
     services: null,
     chatSettings: null,
+    sysEnvironment: null,
   },
   action: ActionType
 ): StatusType {

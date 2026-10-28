@@ -7,13 +7,15 @@ public class RestInterimEvaluationRequest {
   public RestInterimEvaluationRequest() {
   }
 
-  public RestInterimEvaluationRequest(Long id, Long userEntityId, Long workspaceMaterialId, Date requestDate, Date cancellationDate, String requestText, Boolean archived) {
+  public RestInterimEvaluationRequest(Long id, Long userEntityId, Long workspaceMaterialId, Date requestDate, Date cancellationDate, Date deadline, String requestText, Long evaluationNoteCount, Boolean archived) {
     this.id = id;
     this.userEntityId = userEntityId;
     this.workspaceMaterialId = workspaceMaterialId;
     this.requestDate = requestDate;
     this.cancellationDate = cancellationDate;
+    this.deadline = deadline;
     this.requestText = requestText;
+    this.evaluationNoteCount = evaluationNoteCount;
     this.archived = archived;
   }
 
@@ -57,12 +59,28 @@ public class RestInterimEvaluationRequest {
     this.cancellationDate = cancellationDate;
   }
 
+  public Date getDeadline() {
+    return deadline;
+  }
+
+  public void setDeadline(Date deadline) {
+    this.deadline = deadline;
+  }
+
   public String getRequestText() {
     return requestText;
   }
 
   public void setRequestText(String requestText) {
     this.requestText = requestText;
+  }
+
+  public Long getEvaluationNoteCount() {
+    return evaluationNoteCount;
+  }
+
+  public void setEvaluationNoteCount(Long evaluationNoteCount) {
+    this.evaluationNoteCount = evaluationNoteCount;
   }
 
   public Boolean getArchived() {
@@ -87,7 +105,9 @@ public class RestInterimEvaluationRequest {
   private Long workspaceMaterialId;
   private Date requestDate;
   private Date cancellationDate;
+  private Date deadline;
   private String requestText;
+  private Long evaluationNoteCount;
   private Boolean archived;
   
 }
