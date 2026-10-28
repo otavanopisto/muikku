@@ -158,8 +158,34 @@ export const doVacationPeriodsOverlap = (
 };
 
 /**
- * Picks the period to show on contact cards: currently ongoing, otherwise
- * the next upcoming one. Past-only periods are ignored.
+ * Returns current and upcoming periods. Past-only periods are ignored.
+ *
+ * @param periods periods
+ * @returns relevant periods
+ */
+export const getRelevantVacationPeriods = (
+  periods: VacationPeriod[]
+): VacationPeriod[] => {
+  const today = moment().startOf("day");
+  return sortVacationPeriods(
+    periods.filter((period) => {
+      if (!period.start) {
+        return false;
+      }
+      if (!period.end) {
+        return true;
+      }
+      return (
+        moment(period.end).isAfter(today, "day") ||
+        moment(period.end).isSame(today, "day")
+      );
+    })
+  );
+};
+
+/**
+ * Picks the period to show on compact cards: currently ongoing, otherwise
+ * the next upcoming one.
  *
  * @param periods periods
  * @returns display period or null
@@ -168,24 +194,7 @@ export const getDisplayVacationPeriod = (
   periods: VacationPeriod[]
 ): VacationPeriod | null => {
   const today = moment().startOf("day");
-
-  const relevant = sortVacationPeriods(
-    periods.filter((period) => {
-      if (!period.start) {
-        return false;
-      }
-
-      if (!period.end) {
-        return true;
-      }
-
-      return (
-        moment(period.end).isAfter(today, "day") ||
-        moment(period.end).isSame(today, "day")
-      );
-    })
-  );
-
+  const relevant = getRelevantVacationPeriods(periods);
   const ongoing = relevant.find((period) => {
     const startsTodayOrEarlier = moment(period.start).isSameOrBefore(
       today,
@@ -193,15 +202,26 @@ export const getDisplayVacationPeriod = (
     );
     const endsTodayOrLater =
       !period.end || moment(period.end).isSameOrAfter(today, "day");
-
     return startsTodayOrEarlier && endsTodayOrLater;
   });
-
   return ongoing || relevant[0] || null;
 };
 
 /**
  * Convenience wrapper for display consumers that still receive raw properties.
+ *
+ * @param startValue startValue
+ * @param endValue endValue
+ * @returns relevant periods
+ */
+export const getRelevantVacationPeriodsFromProperties = (
+  startValue?: string | null,
+  endValue?: string | null
+): VacationPeriod[] =>
+  getRelevantVacationPeriods(parseVacationPeriods(startValue, endValue));
+
+/**
+ * Convenience wrapper for compact cards that still receive raw properties.
  *
  * @param startValue startValue
  * @param endValue endValue

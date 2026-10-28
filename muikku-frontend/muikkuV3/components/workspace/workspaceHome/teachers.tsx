@@ -7,7 +7,6 @@ import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
-import moment from "moment";
 import { localize } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
@@ -16,6 +15,7 @@ import "~/sass/elements/glyph.scss";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
+import { getRelevantVacationPeriodsFromProperties } from "~/helper-functions/vacation-periods";
 
 /**
  * WorkspaceTeachersProps
@@ -77,20 +77,11 @@ class WorkspaceTeachers extends React.Component<
             <div className="item-list item-list--panel-teachers">
               {this.props.workspace.staffMembers.results.map((teacher) => {
                 // by default wether we display the vacation period depends on whether the vacation starts at all
-                let displayVacationPeriod =
-                  !!teacher.properties["profile-vacation-start"];
-                // however if we have a range
-                if (teacher.properties["profile-vacation-end"]) {
-                  // we must check for the ending
-                  const vacationEndsAt = moment(
+                const vacationPeriods =
+                  getRelevantVacationPeriodsFromProperties(
+                    teacher.properties["profile-vacation-start"],
                     teacher.properties["profile-vacation-end"]
                   );
-                  const today = moment();
-                  // if it's before or it's today then we display, otherwise nope
-                  displayVacationPeriod =
-                    vacationEndsAt.isAfter(today, "day") ||
-                    vacationEndsAt.isSame(today, "day");
-                }
 
                 return (
                   <div
@@ -122,21 +113,17 @@ class WorkspaceTeachers extends React.Component<
                           </>
                         ) : null}
                       </div>
-                      {displayVacationPeriod ? (
-                        <div className="item-list__user-vacation-period">
+                      {vacationPeriods.map((period) => (
+                        <div
+                          className="item-list__user-vacation-period"
+                          key={period.start.toISOString()}
+                        >
                           {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {localize.date(
-                            teacher.properties["profile-vacation-start"]
-                          )}
-                          {teacher.properties["profile-vacation-end"]
-                            ? "–" +
-                              localize.date(
-                                teacher.properties["profile-vacation-end"]
-                              )
-                            : null}
+                          {localize.date(period.start)}
+                          {period.end ? "–" + localize.date(period.end) : null}
                         </div>
-                      ) : null}
+                      ))}
 
                       {teacher.properties["profile-extraInfo"] !== undefined &&
                         teacher.properties["profile-extraInfo"] !== null && (
