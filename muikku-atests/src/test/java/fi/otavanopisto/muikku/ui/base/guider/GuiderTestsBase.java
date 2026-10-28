@@ -883,8 +883,8 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".notes .notes__item .notes__item-header", "Task from guider.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       assertText(".notes .notes__item .notes__item-author", "Admin Person");
-      waitAndClick(".notes .notes__item .icon-more_vert");
-      waitAndClick(".dropdown__container-item");
+      waitAndClickAndConfirm(".notes .notes__item .icon-more_vert", ".dropdown.visible .dropdown__container-item", 3, 1000);
+      waitAndClick(".dropdown.visible .dropdown__container-item");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       logout();
       mockBuilder.mockLogin(admin);
@@ -893,8 +893,8 @@ public class GuiderTestsBase extends AbstractUITest {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
       assertText(".notes .notes__item .notes__item-status.notes__item-status--pending", "Pending");
-      waitAndClick(".notes .notes__item .icon-more_vert");
-      waitAndClick(".dropdown__container-item:first-child");
+      waitAndClickAndConfirm(".notes .notes__item .icon-more_vert", ".dropdown.visible .dropdown__container-item", 3, 1000);
+      waitAndClick(".dropdown.visible .dropdown__container-item:first-child");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
       waitAndClick(".notes .notes__item .icon-trash");

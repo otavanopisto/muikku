@@ -785,21 +785,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
-    String text = findElement(elementWithText).getText();
-    int i = 0;
-    while(!StringUtils.equalsIgnoreCase(text, newText)) {
-      if (i > timesToTry) {
+    for (int attempt = 0; ; attempt++) {
+      waitAndClick(clickSelector, 10);
+      sleep(interval);
+      if (StringUtils.equalsIgnoreCase(getElementText(elementWithText), newText)) {
+        return;
+      }
+      if (attempt >= timesToTry) {
         break;
       }
-      i++;
-      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
-      wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
-      sleep(interval);
-      waitForPresent(elementWithText);
-      text = findElement(elementWithText).getText();
     }
-    if(!StringUtils.equalsIgnoreCase(text, newText))
-      throw new TimeoutException("Element to have new text content failed to have it in a given timeout period.");
+    throw new TimeoutException(String.format("Element %s did not get expected text <%s> in a given timeout period.", elementWithText, newText));
   }
   
   protected void clickAndConfirmElementCount(String clickSelector, String elementToCountSelector, int expectedCount) {
