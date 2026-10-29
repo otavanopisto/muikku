@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
-   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleaner.answers.userEntityId','0');</sql>
-   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleaner.answers.enabled','true');</sql>
-   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleaner.answers.batch','10');</sql>
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.answers.userEntityId','0');</sql>
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.answers.enabled','true');</sql>
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.answers.batch','10');</sql>
 
 </update>

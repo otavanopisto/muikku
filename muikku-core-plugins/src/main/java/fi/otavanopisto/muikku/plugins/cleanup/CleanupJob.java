@@ -22,10 +22,10 @@ import fi.otavanopisto.muikku.search.SearchResult;
 
 public abstract class CleanupJob {
   
-  // TODO CleanerJournalJob (WorkspaceJournalEntry + WorkspaceJournalComment)
-  // TODO CleanerJournalFeedbackJob (WorkspaceJournalFeedback)
-  // TODO CleanerEvaluationJob (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
-  // TODO CleanerActivityJob (ActivityLog)
+  // TODO CleanupJournalJob (WorkspaceJournalEntry + WorkspaceJournalComment)
+  // TODO CleanupJournalFeedbackJob (WorkspaceJournalFeedback)
+  // TODO CleanupEvaluationJob (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
+  // TODO CleanupActivityJob (ActivityLog)
 
   @Inject
   private UserEntityDAO userEntityDAO;

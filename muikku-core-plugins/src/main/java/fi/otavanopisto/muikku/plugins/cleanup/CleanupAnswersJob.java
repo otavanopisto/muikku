@@ -23,10 +23,10 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 @Stateless
 public class CleanupAnswersJob extends CleanupJob {
 
-  public static final String SETTING_USER = "cleaner.answers.userEntityId";
-  public static final String SETTING_REPLIES = "cleaner.answers.replyIds";
-  public static final String SETTING_ENABLED = "cleaner.answers.enabled";
-  public static final String SETTING_BATCH = "cleaner.answers.batch";
+  public static final String SETTING_USER = "cleanup.answers.userEntityId";
+  public static final String SETTING_REPLIES = "cleanup.answers.replyIds";
+  public static final String SETTING_ENABLED = "cleanup.answers.enabled";
+  public static final String SETTING_BATCH = "cleanup.answers.batch";
   
   @Inject
   private Logger logger;
