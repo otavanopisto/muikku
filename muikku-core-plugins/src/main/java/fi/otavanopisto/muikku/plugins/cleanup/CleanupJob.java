@@ -44,11 +44,7 @@ public abstract class CleanupJob {
   protected abstract void log(Level level, String message, Throwable t);
   
   protected void shutdown(Level level, String message) {
-    shutdown(level, message, null);
-  }
-
-  protected void shutdown(Level level, String message, Throwable t) {
-    log(level, String.format("Shutting down - %s",  message), t);
+    shutdown(level, message);
     toggleEnabled(false);
   }
 

@@ -57,79 +57,74 @@ public class CleanupAnswersJob extends CleanupJob {
     
     logger.info("Running answers cleanup");
     long ms1 = System.currentTimeMillis();
-    try {
-      List<Long> replyIds;
-      int batchSize = Integer.parseInt(systemSettingsController.getSetting(SETTING_BATCH));
-      Long userEntityId = Long.parseLong(systemSettingsController.getSetting(SETTING_USER));
-      String replyIdsStr = systemSettingsController.getSetting(SETTING_REPLIES);
-      if (StringUtils.isBlank(replyIdsStr)) {
-        // We have no replies to process, prepare the next student and their replies
-        userEntityId = prepareNextUser(userEntityId);
-        if (userEntityId == null) {
-          // No student found to process this cycle
-          return;
-        }
-        // Collect reply ids of the student. Snapshot of all needed because if the student returns
-        // while cleanup is in progress, as unlikely as it is, the new entries remain intact. 
-        replyIds = workspaceMaterialReplyDAO.listIdsByUserEntityId(userEntityId);
-        logger.info(String.format("UserEntity %d has %d replies", userEntityId, replyIds.size()));
-        if (replyIds.size() == 0) {
-          // Student has no replies to clean, next cycle will proceed to someone else
-          systemSettingsController.setSetting(SETTING_REPLIES, "");
-          return;
-        }
-        else {
-          replyIdsStr = replyIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-          systemSettingsController.setSetting(SETTING_REPLIES, replyIdsStr);
-        }
+    List<Long> replyIds;
+    int batchSize = Integer.parseInt(systemSettingsController.getSetting(SETTING_BATCH));
+    Long userEntityId = Long.parseLong(systemSettingsController.getSetting(SETTING_USER));
+    String replyIdsStr = systemSettingsController.getSetting(SETTING_REPLIES);
+    if (StringUtils.isBlank(replyIdsStr)) {
+      // We have no replies to process, prepare the next student and their replies
+      userEntityId = prepareNextUser(userEntityId);
+      if (userEntityId == null) {
+        // No student found to process this cycle
+        return;
+      }
+      // Collect reply ids of the student. Snapshot of all needed because if the student returns
+      // while cleanup is in progress, as unlikely as it is, the new entries remain intact. 
+      replyIds = workspaceMaterialReplyDAO.listIdsByUserEntityId(userEntityId);
+      logger.info(String.format("UserEntity %d has %d replies", userEntityId, replyIds.size()));
+      if (replyIds.size() == 0) {
+        // Student has no replies to clean, next cycle will proceed to someone else
+        systemSettingsController.setSetting(SETTING_REPLIES, null);
+        return;
       }
       else {
-        // We have previously stored reply ids of some user still to process
-        replyIds = Arrays.stream(replyIdsStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+        replyIdsStr = replyIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        systemSettingsController.setSetting(SETTING_REPLIES, replyIdsStr);
       }
-      
-      // The big scary cleanup
-      
-      int deletedReplies = 0;
-      int deletedAnswers = 0;
-      for (int i = 0; i < batchSize; i++) {
-        if (replyIds.size() == 0) {
-          break;
-        }
-        WorkspaceMaterialReply reply = workspaceMaterialReplyDAO.findById(replyIds.get(0));
-        if (reply != null) {
-          if (reply.getUserEntityId().longValue() != userEntityId.longValue()) {
-            shutdown(Level.SEVERE, String.format("reply %d has user %d mismatch", reply.getId(), userEntityId));
-            return;
-          }
-          List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerDAO.listByReply(reply); 
-          for (WorkspaceMaterialFieldAnswer answer : answers) {
-            materialDeleteController.deleteWorkspaceMaterialFieldAnswer(answer);
-            deletedAnswers++;
-          }
-          materialDeleteController.deleteWorkspaceMaterialReply(reply);
-          deletedReplies++;
-        }
-        replyIds.remove(0);
+    }
+    else {
+      // We have previously stored reply ids of some user still to process
+      replyIds = Arrays.stream(replyIdsStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+    }
+
+    // The big scary cleanup
+
+    int deletedReplies = 0;
+    int deletedAnswers = 0;
+    for (int i = 0; i < batchSize; i++) {
+      if (replyIds.size() == 0) {
+        break;
       }
-      
-      // Store remaining reply ids to be cleaned in the next cycle
-      
-      replyIdsStr = replyIds.stream().map(String::valueOf).collect(Collectors.joining(","));
-      systemSettingsController.setSetting(SETTING_REPLIES, replyIdsStr);
-      
-      // Statistics logging
-      
-      long ms2 = System.currentTimeMillis();
-      logger.info(String.format("Deleted %d replies (%d answers) of UserEntity %d in %dms",
-          deletedReplies,
-          deletedAnswers,
-          userEntityId,
-          (ms2 - ms1)));
+      WorkspaceMaterialReply reply = workspaceMaterialReplyDAO.findById(replyIds.get(0));
+      if (reply != null) {
+        if (reply.getUserEntityId().longValue() != userEntityId.longValue()) {
+          shutdown(Level.SEVERE, String.format("reply %d has user %d mismatch", reply.getId(), userEntityId));
+          return;
+        }
+        List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerDAO.listByReply(reply); 
+        for (WorkspaceMaterialFieldAnswer answer : answers) {
+          materialDeleteController.deleteWorkspaceMaterialFieldAnswer(answer);
+          deletedAnswers++;
+        }
+        materialDeleteController.deleteWorkspaceMaterialReply(reply);
+        deletedReplies++;
+      }
+      replyIds.remove(0);
     }
-    catch (Exception e) {
-      shutdown(Level.SEVERE, "exception running cleanup", e);
-    }
+
+    // Store remaining reply ids to be cleaned in the next cycle
+
+    replyIdsStr = replyIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+    systemSettingsController.setSetting(SETTING_REPLIES, replyIdsStr);
+
+    // Statistics logging
+
+    long ms2 = System.currentTimeMillis();
+    logger.info(String.format("Deleted %d replies (%d answers) of UserEntity %d in %dms",
+        deletedReplies,
+        deletedAnswers,
+        userEntityId,
+        (ms2 - ms1)));
   }
   
   public void changeBatchSize(int batchSize) {

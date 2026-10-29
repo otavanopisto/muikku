@@ -1,15 +1,22 @@
 package fi.otavanopisto.muikku.plugins.cleanup;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 @Startup
 @Singleton
 public class CleanupAnswersScheduler {
+  
+  @Inject
+  private Logger logger;
   
   // Scheduler acts only as an orchestrator. It does not have a transaction of its own.
   // The two injected stateless EJBs will have their own separate transactions. Job
@@ -31,6 +38,7 @@ public class CleanupAnswersScheduler {
       job.cleanup();
     }
     catch (Throwable t) {
+      logger.log(Level.SEVERE, "Scheduler emergency shutdown", t);
       shutdown.disable(CleanupAnswersJob.SETTING_ENABLED);
     }
   }
