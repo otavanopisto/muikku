@@ -8,7 +8,6 @@ import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {
-  MAX_VACATION_PERIODS,
   parseVacationPeriods,
   VacationPeriod,
 } from "~/helper-functions/vacation-periods";
@@ -173,11 +172,7 @@ const VacationPeriods: React.FC<VacationPeriodsProps> = (props) => {
       ))}
       <div className="application-sub-panel__multiple-items">
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--vacation-submit">
-          <Button
-            icon="plus"
-            onClick={onAddPeriod}
-            disabled={periods.length >= MAX_VACATION_PERIODS}
-          >
+          <Button icon="plus" onClick={onAddPeriod}>
             {" "}
             {t("actions.add", {
               ns: "profile",

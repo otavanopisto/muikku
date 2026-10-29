@@ -1,13 +1,6 @@
 import moment from "moment";
 
 /**
- * Maximum number of vacation periods that can be stored in the
- * comma-separated profile properties. An ISO timestamp is 24 characters,
- * so 10 periods plus commas stay under a typical 255-character limit.
- */
-export const MAX_VACATION_PERIODS = 10;
-
-/**
  * VacationPeriod
  */
 export interface VacationPeriod {

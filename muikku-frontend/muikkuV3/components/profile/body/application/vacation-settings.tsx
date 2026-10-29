@@ -18,7 +18,6 @@ import { AnyActionType } from "~/actions/index";
 import {
   doVacationPeriodsOverlap,
   hasCompleteVacationPeriod,
-  MAX_VACATION_PERIODS,
   serializeVacationPeriods,
 } from "~/helper-functions/vacation-periods";
 import VacationPeriods, {
@@ -169,10 +168,6 @@ class VacationSettings extends React.Component<
    * addPeriod
    */
   addPeriod() {
-    if (this.state.periods.length >= MAX_VACATION_PERIODS) {
-      return;
-    }
-
     this.setState((prevState) => ({
       periods: [...prevState.periods, createVacationPeriodRow()],
     }));
