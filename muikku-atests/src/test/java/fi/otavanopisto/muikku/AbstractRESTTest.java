@@ -35,7 +35,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
     PyramusMocksRest.mockDefaults(payloads);
     
     for (String s : payloads) {
-      webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", s);
+      TestUtilities.sendPyramusWebhook(s);
     }
   }
   

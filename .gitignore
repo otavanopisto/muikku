@@ -4,3 +4,4 @@
 /target/
 travis-encrypted.tar
 *~
+.vscode/settings.json
