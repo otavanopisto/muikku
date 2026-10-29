@@ -1065,32 +1065,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void waitForAttributeToHaveValue(final String selector, final String attribute) {
-    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        try {
-          String attributeValue = getAttributeValue(selector, attribute);
-          if (!attributeValue.isEmpty()) {
-            return true;
-          }
-        } catch (Exception e) {
-        }
-        
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(driver -> {
+      try {
+        String attributeValue = getAttributeValue(selector, attribute);
+        return !attributeValue.isEmpty();
+      } catch (Exception e) {
         return false;
       }
     });
   }
   
   protected boolean waitForMoreThanSize(final String selector, final int size) {
-    WebDriver driver = getWebDriver();
-    return new WebDriverWait(driver, Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        int elementCount = countElements(selector);
-        if (elementCount > size) {
-          return true;
-        }
-        return false;
-      }
-    });
+    return new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(driver -> countElements(selector) > size);
   }
 
   protected void tabOutOfElement(String elementToTabOutOf) {
@@ -1098,16 +1084,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForValue(String selector) {
-    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        try {
-          String value = getAttributeValue(selector, "value");
-          if (!value.isEmpty()) {
-            return true;
-          }
-        } catch (Exception e) {
-        }
-        
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(driver -> {
+      try {
+        return !getAttributeValue(selector, "value").isEmpty();
+      } catch (Exception e) {
         return false;
       }
     });
@@ -1119,22 +1099,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   
-  protected boolean waitUntilElementCount(final String selector, final int count) {
-    WebDriver driver = getWebDriver();
-    return new WebDriverWait(driver, Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        int elementCount = countElements(selector);
-        if (elementCount == count) {
-          return true;
-        }
-        return false;
-      }
-    });
+  protected void waitUntilElementCount(final String selector, final int count) {
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20))
+        .until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(selector), count));
   }
   
   protected int countElements(String selector) {
-    List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
-    return elements.size();
+    return getWebDriver().findElements(By.cssSelector(selector)).size();
   }
   
   protected void hoverOverElement(String selector) {
@@ -1750,14 +1721,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitUntilValueChanges(String selector, String attribute, String originalValue){
-    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getAttribute(attribute));
-        if (!actual.equalsIgnoreCase(originalValue)) {
-          return true;
-        }
-        return false;
-      }
+    new WebDriverWait(getWebDriver(), Duration.ofSeconds(20)).until(driver -> {
+      String actual = getAttributeValue(selector, attribute);
+      return !actual.equalsIgnoreCase(originalValue);
     });
   }
   
