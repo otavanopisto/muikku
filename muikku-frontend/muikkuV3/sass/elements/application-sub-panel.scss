@@ -787,11 +787,7 @@
   flex-basis: 160px;
   flex-grow: 1;
   flex-shrink: 0;
-  .react-datepicker-wrapper,
-  .react-datepicker__input-container {
-    display: block;
-    width: 100%;
-  }
+  
   @include breakpoint($breakpoint-desktop) {
     flex-grow: 0;
   }
