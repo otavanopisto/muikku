@@ -41,10 +41,12 @@ public abstract class CleanupJob {
   
   protected abstract void toggleEnabled(boolean enabled);
   
-  protected abstract void log(Level level, String message, Throwable t);
+  // Only needed because this abstract class logs and we are more
+  // interested to see which extending class made the log entry
+  protected abstract void log(Level level, String message);
   
   protected void shutdown(Level level, String message) {
-    shutdown(level, message);
+    log(level, String.format("Shutting down - %s", message));
     toggleEnabled(false);
   }
 
@@ -64,11 +66,6 @@ public abstract class CleanupJob {
     if (userEntities.isEmpty()) {
       log(Level.INFO, "End of users reached, restarting from beginning");
       systemSettingsController.setSetting(getUserEntityIdSystemSettingKey(), "0");
-      userEntities = userEntityDAO.listByGreaterThanId(0L, 50);
-      if (userEntities.isEmpty()) {
-        shutdown(Level.SEVERE, "not finding users to process");
-        return null;
-      }
     }
     
     // Sort, just in case
@@ -113,10 +110,10 @@ public abstract class CleanupJob {
         }
       }
       else if (result.getTotalHitCount() > 1) {
-        log(Level.WARNING, String.format("Skipping userEntity %d (%s) - multiple Elastic hits", userEntity.getId(), userEntity.getDefaultIdentifier()));
+        log(Level.WARNING, String.format("Skipping student %d (%s) - multiple Elastic hits", userEntity.getId(), userEntity.getDefaultIdentifier()));
       }
       else if (result.getTotalHitCount() == 0) {
-        log(Level.WARNING, String.format("Skipping userEntity %d (%s) - not found in Elastic", userEntity.getId(), userEntity.getDefaultIdentifier()));
+        log(Level.WARNING, String.format("Skipping student %d (%s) - not found in Elastic", userEntity.getId(), userEntity.getDefaultIdentifier()));
       }
     }
     
@@ -126,7 +123,7 @@ public abstract class CleanupJob {
       systemSettingsController.setSetting(getUserEntityIdSystemSettingKey(), lastUserId.toString());
     }
     else {
-      log(Level.INFO, String.format("UserEntity %d selected for cleanup, studies ended %s", nextUserId, studyEndDate.toString()));
+      log(Level.INFO, String.format("Student %d selected for cleanup, studies ended %s", nextUserId, studyEndDate.toString()));
       systemSettingsController.setSetting(getUserEntityIdSystemSettingKey(), nextUserId.toString());
     }
     
@@ -147,10 +144,6 @@ public abstract class CleanupJob {
       date = new Date(((Double) value).longValue() * 1000);
     }
     return date;
-  }
-  
-  private void log(Level level, String message) {
-    log(level, message, null);
   }
 
 }

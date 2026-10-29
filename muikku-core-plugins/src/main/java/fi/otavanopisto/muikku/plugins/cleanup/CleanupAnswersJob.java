@@ -71,7 +71,7 @@ public class CleanupAnswersJob extends CleanupJob {
       // Collect reply ids of the student. Snapshot of all needed because if the student returns
       // while cleanup is in progress, as unlikely as it is, the new entries remain intact. 
       replyIds = workspaceMaterialReplyDAO.listIdsByUserEntityId(userEntityId);
-      logger.info(String.format("UserEntity %d has %d replies", userEntityId, replyIds.size()));
+      logger.info(String.format("Student %d has %d replies", userEntityId, replyIds.size()));
       if (replyIds.size() == 0) {
         // Student has no replies to clean, next cycle will proceed to someone else
         systemSettingsController.setSetting(SETTING_REPLIES, null);
@@ -98,7 +98,7 @@ public class CleanupAnswersJob extends CleanupJob {
       WorkspaceMaterialReply reply = workspaceMaterialReplyDAO.findById(replyIds.get(0));
       if (reply != null) {
         if (reply.getUserEntityId().longValue() != userEntityId.longValue()) {
-          shutdown(Level.SEVERE, String.format("reply %d has user %d mismatch", reply.getId(), userEntityId));
+          shutdown(Level.SEVERE, String.format("reply %d does not belong to student %d", reply.getId(), userEntityId));
           return;
         }
         List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerDAO.listByReply(reply); 
@@ -120,7 +120,7 @@ public class CleanupAnswersJob extends CleanupJob {
     // Statistics logging
 
     long ms2 = System.currentTimeMillis();
-    logger.info(String.format("Deleted %d replies (%d answers) of UserEntity %d in %dms",
+    logger.info(String.format("Deleted %d replies (%d answers) of student %d in %dms",
         deletedReplies,
         deletedAnswers,
         userEntityId,
@@ -142,13 +142,8 @@ public class CleanupAnswersJob extends CleanupJob {
   }
 
   @Override
-  protected void log(Level level, String message, Throwable t) {
-    if (t == null) {
-      logger.log(level, message);
-    }
-    else {
-      logger.log(level, message, t);
-    }
+  protected void log(Level level, String message) {
+    logger.log(level, message);
   }
 
   private boolean isEnabled() {
