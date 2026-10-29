@@ -87,7 +87,7 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     return entityManager.createQuery(criteria).getSingleResult();
   }
   
-  public List<UserEntity> listByLargerThanId(Long id, int maxResults) {
+  public List<UserEntity> listByGreaterThanId(Long id, int maxResults) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

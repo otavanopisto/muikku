@@ -61,14 +61,14 @@ public abstract class CleanupJob {
 
     // Get a batch of 50 users in id order, larger than the given id
     
-    List<UserEntity> userEntities = userEntityDAO.listByLargerThanId(userEntityId, 50);
+    List<UserEntity> userEntities = userEntityDAO.listByGreaterThanId(userEntityId, 50);
     
     // Start from the beginning one fine day
     
     if (userEntities.isEmpty()) {
       log(Level.INFO, "End of users reached, restarting from beginning");
       systemSettingsController.setSetting(getUserEntityIdSystemSettingKey(), "0");
-      userEntities = userEntityDAO.listByLargerThanId(0L, 50);
+      userEntities = userEntityDAO.listByGreaterThanId(0L, 50);
       if (userEntities.isEmpty()) {
         shutdown(Level.SEVERE, "not finding users to process");
         return null;
