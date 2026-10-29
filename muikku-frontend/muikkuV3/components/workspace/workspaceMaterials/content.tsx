@@ -399,7 +399,7 @@ class ContentComponent extends SessionStateComponent<
     (type: "close" | "open") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       for (const ref of this.topicRefs) {
-        ref.toggleOpen(type);
+        ref?.toggleOpen(type);
       }
     };
 
@@ -413,7 +413,7 @@ class ContentComponent extends SessionStateComponent<
         e.preventDefault();
         e.stopPropagation();
         for (const ref of this.topicRefs) {
-          ref.toggleOpen(type);
+          ref?.toggleOpen(type);
         }
       }
     };
