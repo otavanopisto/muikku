@@ -24,8 +24,7 @@ public class CleanupAnswersScheduler {
   private CleanupShutdown shutdown;
 
   // Every five minutes but a minute later than other schedulers firing at */5
-  //@Schedule(hour = "*", minute = "1/5", persistent = false)
-  @Schedule(hour = "*", minute = "*/1", persistent = false)
+  @Schedule(hour = "*", minute = "1/5", persistent = false)
   @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
   public void cleanup() {
     try {
