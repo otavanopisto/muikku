@@ -32,7 +32,7 @@ public class CleanupAnswersScheduler {
       job.cleanup();
     }
     catch (Throwable t) {
-      shutdown.toggle(CleanupAnswersJob.SETTING_ENABLED, false);
+      shutdown.disable(CleanupAnswersJob.SETTING_ENABLED);
     }
   }
   
