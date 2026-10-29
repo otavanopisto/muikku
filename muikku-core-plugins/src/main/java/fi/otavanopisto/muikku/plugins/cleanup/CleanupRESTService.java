@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.cleaner;
+package fi.otavanopisto.muikku.plugins.cleanup;
 
 import java.util.logging.Logger;
 
@@ -18,8 +18,8 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Stateful
-@Path("/cleaner")
-public class CleanerRESTService {
+@Path("/cleanup")
+public class CleanupRESTService {
   
   @Inject
   private Logger logger;
@@ -28,7 +28,7 @@ public class CleanerRESTService {
   private SessionController sessionController;
 
   @Inject
-  private CleanerAnswersController answersCleaner;
+  private CleanupAnswersJob answersJob;
   
   @GET
   @Path("/answers")
@@ -38,12 +38,12 @@ public class CleanerRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     if (batchSize != null && batchSize > 0) {
-      logger.info(String.format("User %d changing answer cleaner batch size %d", batchSize));
-      answersCleaner.changeBatchSize(batchSize);
+      logger.info(String.format("User %d changing answer cleanup batch size %d", batchSize));
+      answersJob.changeBatchSize(batchSize);
     }
     if (enabled != null) {
-      logger.info(String.format("User %d changing answer cleaner enabled %s", enabled));
-      answersCleaner.toggleEnabled(enabled);
+      logger.info(String.format("User %d changing answer cleanup enabled %s", enabled));
+      answersJob.toggleEnabled(enabled);
     }
     return Response.noContent().build();
   }

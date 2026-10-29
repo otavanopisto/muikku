@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.cleaner;
+package fi.otavanopisto.muikku.plugins.cleanup;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -20,12 +20,12 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 
-public abstract class CleanerController {
+public abstract class CleanupJob {
   
-  // TODO CleanerJournalController (WorkspaceJournalEntry + WorkspaceJournalComment)
-  // TODO CleanerJournalFeedbackController (WorkspaceJournalFeedback)
-  // TODO CleanerEvaluationController (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
-  // TODO CleanerActivityController (ActivityLog)
+  // TODO CleanerJournalJob (WorkspaceJournalEntry + WorkspaceJournalComment)
+  // TODO CleanerJournalFeedbackJob (WorkspaceJournalFeedback)
+  // TODO CleanerEvaluationJob (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
+  // TODO CleanerActivityJob (ActivityLog)
 
   @Inject
   private UserEntityDAO userEntityDAO;
@@ -94,6 +94,12 @@ public abstract class CleanerController {
       
       if (!StringUtils.startsWith(userEntity.getDefaultIdentifier(), "STUDENT-")) {
         continue;
+      }
+      
+      // Archived students (removed from Pyramus) are always fair game
+      
+      if (userEntity.getArchived()) {
+        return userEntity.getId();
       }
       
       // Study end date 

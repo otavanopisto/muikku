@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.cleaner;
+package fi.otavanopisto.muikku.plugins.cleanup;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,8 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
-public class CleanerAnswersController extends CleanerController {
+@Stateless
+public class CleanupAnswersJob extends CleanupJob {
 
   public static final String SETTING_USER = "cleaner.answers.userEntityId";
   public static final String SETTING_REPLIES = "cleaner.answers.replyIds";
@@ -39,7 +41,7 @@ public class CleanerAnswersController extends CleanerController {
   @Inject
   private MaterialDeleteController materialDeleteController;
   
-  public void runCleanup() {
+  public void cleanup() {
     
     // Simple master switch check
     
@@ -69,7 +71,7 @@ public class CleanerAnswersController extends CleanerController {
         logger.info(String.format("UserEntity %d has %d replies", userEntityId, replyIds.size()));
         if (replyIds.size() == 0) {
           // Student has no replies to clean, next cycle will proceed to someone else
-          systemSettingsController.setSetting(SETTING_REPLIES, null);
+          systemSettingsController.setSetting(SETTING_REPLIES, "");
           return;
         }
         else {
