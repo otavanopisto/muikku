@@ -411,6 +411,7 @@
       "appointmentCalendar": "Voit laittaa tähän linkin ajanvarauskalenteriisi. Linkki näkyy yhteystiedoissasi kursseilla ja opiskelijan Opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testauspainikkeesta.",
       "changePassword": "Ole hyvä ja syötä alla olevat tiedot",
       "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
+      "instructions": "<p>Voit lisätä yhden tai useamman loma-ajan. Merkitse jokaiseen lomaan alku- ja loppupäivä. Valitse yhden päivän poissaoloissa molempiin kenttiin sama päivä. Harkitse kuitenkin, onko yhden päivän poissaoloja tarpeen ilmoittaa.</p>",
       "removing": "Oletko varma, että haluat poistaa kuvan profiilistasi?",
       "sliceAuthorization1": "Käytössä on Slice.fi, joka digitaalinen opiskelijakortti ja opiskelijaetupalvelu. Vastaamalla kyllä, annat meille luvan toimittaa palvelulle seuraavat tiedot: nimi, sähköpostiosoite, syntymäaika, opinto-oikeuden tai opintojen päättymispäivä.",
       "sliceAuthorization2": "Saat kortin käyttöösi lataamalla puhelimeesi Slice.fi-sovelluksen. Palvelun käyttö vaatii vahvan tunnistautumisen esimerkiksi pankkitunnuksien avulla.",
@@ -446,8 +447,6 @@
       "worklist": "Työlista"
     },
     "notifications": {
-      "incompleteVacationPeriod": "Loman alku- ja loppupäivämäärä ovat molemmat pakollisia",
-      "invalidVacationPeriod": "Loman loppupäivä ei voi olla ennen alkupäivää",
       "loadError": "Profiilikuvan lataus epäonnistui",
       "overlappingVacationPeriods": "Loma-ajat eivät voi olla päällekkäin"
     }

@@ -27,6 +27,7 @@ import VacationPeriods, {
   vacationPeriodsFromProperties,
 } from "./components/vacation-periods";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Instructions } from "~/components/general/instructions";
 
 /**
  * VacationSettingsProps
@@ -86,6 +87,8 @@ class VacationSettings extends React.Component<
     this.onVacationAutoReplyMsgChange =
       this.onVacationAutoReplyMsgChange.bind(this);
     this.save = this.save.bind(this);
+    this.getPendingChanges = this.getPendingChanges.bind(this);
+    this.hasUnsavedChanges = this.hasUnsavedChanges.bind(this);
   }
 
   /**
@@ -223,26 +226,65 @@ class VacationSettings extends React.Component<
   }
 
   /**
-   * save
+   * Returns which profile properties would change on save.
    */
-  save() {
+  getPendingChanges() {
     const periodsToSave = this.state.periods.filter(
       (period) => period.start || period.end
     );
+    const serialized = serializeVacationPeriods(periodsToSave);
+    const currentStart =
+      this.props.profile.properties["profile-vacation-start"] || "";
+    const currentEnd =
+      this.props.profile.properties["profile-vacation-end"] || "";
+    const isStaff = !this.props.status.isStudent;
+    return {
+      periodsToSave,
+      serialized,
+      startChanged: isStaff && currentStart !== (serialized.start || ""),
+      endChanged: isStaff && currentEnd !== (serialized.end || ""),
+      autoReplyChanged:
+        isStaff &&
+        (this.props.profile.properties["communicator-auto-reply"] || "") !==
+          this.state.vacationAutoReply,
+      autoReplySubjectChanged:
+        isStaff &&
+        (this.props.profile.properties["communicator-auto-reply-subject"] ||
+          "") !== this.state.vacationAutoReplySubject,
+      autoReplyMsgChanged:
+        isStaff &&
+        (this.props.profile.properties["communicator-auto-reply-msg"] || "") !==
+          this.state.vacationAutoReplyMsg,
+    };
+  }
 
-    const hasIncompletePeriod = periodsToSave.some(
-      (period) => !period.start || !period.end
+  /**
+   * Has form changes that are not saved.
+   */
+  hasUnsavedChanges() {
+    const changes = this.getPendingChanges();
+    return (
+      changes.startChanged ||
+      changes.endChanged ||
+      changes.autoReplyChanged ||
+      changes.autoReplySubjectChanged ||
+      changes.autoReplyMsgChanged
     );
+  }
 
-    if (hasIncompletePeriod) {
-      this.props.displayNotification(
-        this.props.t("notifications.incompleteVacationPeriod", {
-          ns: "profile",
-        }),
-        "error"
-      );
-      return;
-    }
+  /**
+   * save
+   */
+  save() {
+    const {
+      periodsToSave,
+      serialized,
+      startChanged,
+      endChanged,
+      autoReplyChanged,
+      autoReplySubjectChanged,
+      autoReplyMsgChanged,
+    } = this.getPendingChanges();
 
     if (doVacationPeriodsOverlap(periodsToSave)) {
       this.props.displayNotification(
@@ -254,27 +296,15 @@ class VacationSettings extends React.Component<
       return;
     }
 
-    const serialized = serializeVacationPeriods(periodsToSave);
-    const currentStart =
-      this.props.profile.properties["profile-vacation-start"] || "";
-    const currentEnd =
-      this.props.profile.properties["profile-vacation-end"] || "";
-    const isStaff = !this.props.status.isStudent;
-
-    const startChanged = isStaff && currentStart !== (serialized.start || "");
-    const endChanged = isStaff && currentEnd !== (serialized.end || "");
-    const autoReplyChanged =
-      isStaff &&
-      (this.props.profile.properties["communicator-auto-reply"] || "") !==
-        this.state.vacationAutoReply;
-    const autoReplySubjectChanged =
-      isStaff &&
-      (this.props.profile.properties["communicator-auto-reply-subject"] ||
-        "") !== this.state.vacationAutoReplySubject;
-    const autoReplyMsgChanged =
-      isStaff &&
-      (this.props.profile.properties["communicator-auto-reply-msg"] || "") !==
-        this.state.vacationAutoReplyMsg;
+    if (
+      !startChanged &&
+      !endChanged &&
+      !autoReplyChanged &&
+      !autoReplySubjectChanged &&
+      !autoReplyMsgChanged
+    ) {
+      return;
+    }
 
     this.setState({
       locked: true,
@@ -360,7 +390,25 @@ class VacationSettings extends React.Component<
         <form className="form">
           <h2 className="application-panel__content-header">
             {this.props.t("labels.vacationSettings", { ns: "profile" })}
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: this.props.t("content.instructions", {
+                      ns: "profile",
+                    }),
+                  }}
+                />
+              }
+            />
           </h2>
+
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <VacationPeriods
@@ -454,7 +502,7 @@ class VacationSettings extends React.Component<
                   <Button
                     buttonModifiers="primary-function-save"
                     onClick={this.save}
-                    disabled={this.state.locked}
+                    disabled={this.state.locked || !this.hasUnsavedChanges()}
                   >
                     {this.props.t("actions.save")}
                   </Button>

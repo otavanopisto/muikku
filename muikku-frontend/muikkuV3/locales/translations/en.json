@@ -412,6 +412,7 @@
       "changePassword": "Please enter the old and new password",
       "changeAddressMunicipality": "Enter your new address and municipality",
       "removing": "Are you sure you want to delete your profile picture?",
+      "instructions": "<p>You can add one or more time-off periods. Select a start and end date for each period. For one-day absences, choose the same date in both fields. However, please consider whether it is necessary to report single-day absences.</p>",
       "sliceAuthorization1": "We use Slice.fi, which is a digital student card and student benefit service. By answering yes, you give us permission to provide the service with the following information: name, email address, date of birth, and the end date of your study right or studies.",
       "sliceAuthorization2": "You can access the card by downloading the Slice.fi app to your phone. Using the service requires strong authentication, such as bank credentials.",
       "nick": "Staff will see your real name but other students can only see your nickname",
@@ -446,8 +447,6 @@
       "worklist": "Worklist"
     },
     "notifications": {
-      "incompleteVacationPeriod": "Vacation start and end dates are both required",
-      "invalidVacationPeriod": "Vacation end date cannot be before the start date",
       "loadError": "Loading profile picture failed",
       "overlappingVacationPeriods": "Vacation periods cannot overlap"
     }
