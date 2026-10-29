@@ -16,6 +16,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,6 +28,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginD
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeForbiddenException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 
 @Dependent
 class PyramusRestClient implements Serializable {
@@ -191,8 +193,12 @@ class PyramusRestClient implements Serializable {
         case 204:
         case 404:
         break;
+        case 401:
+          // 401 is either not logged in or invalid token
+          logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, response.getStatus()));
+          throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
         case 403:
-          logger.warning(String.format("Pyramus DELETE for path %s unauthorized (%d)", path, response.getStatus()));
+          logger.warning(String.format("Pyramus DELETE for path %s forbidden (%d)", path, response.getStatus()));
           throw new SchoolDataBridgeForbiddenException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
         default:
           logger.warning(String.format("Pyramus DELETE for path %s failed (%d)", path, response.getStatus()));
@@ -220,7 +226,7 @@ class PyramusRestClient implements Serializable {
     return request.post(Entity.form(form), AccessToken.class);
   }
   
-  public AccessToken refreshAccessToken(Client client, String refreshToken){
+  public AccessToken refreshAccessToken(Client client, String refreshToken) throws OAuthTokenException {
     Form form = new Form()
       .param("grant_type", "refresh_token")
       .param("refresh_token", refreshToken)
@@ -230,9 +236,25 @@ class PyramusRestClient implements Serializable {
 
     WebTarget target = client.target(url + "/oauth/token");
 
-    Builder request = target.request();
+    Response response = target.request().post(Entity.form(form));
 
-    return request.post(Entity.form(form), AccessToken.class);
+    if (response.getStatus() == Status.OK.getStatusCode()) {
+      return response.readEntity(AccessToken.class);
+    }
+    else if (response.getStatus() == Status.BAD_REQUEST.getStatusCode() || response.getStatus() == Status.UNAUTHORIZED.getStatusCode()) {
+      String reason = null;
+      try {
+        OAuthErrorResponse errorResponse = response.readEntity(OAuthErrorResponse.class);
+        if (errorResponse != null) {
+          reason = errorResponse.getError();
+        }
+      } catch (Exception e) {
+      }
+      
+      throw new OAuthTokenException(reason);
+    }
+
+    return null;
   }
 
   @SuppressWarnings("unchecked")
@@ -248,8 +270,13 @@ class PyramusRestClient implements Serializable {
         else {
           return null;
         }
-      case 403:
+      case 401:
+        // 401 is either not logged in or invalid token
         logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, statusCode));
+        throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", statusCode, response.getEntity(), path));
+      case 403:
+        // Technically 403 can come from insufficient scope which should be indicated in the WWW-Authenticate header. It might make sense to handle it separately.
+        logger.warning(String.format("Pyramus call for path %s forbidden (%d)", path, statusCode));
         throw new SchoolDataBridgeForbiddenException(String.format("Received http error %d (%s) when requesting %s", statusCode, response.getEntity(), path));
       case 404:
         return null;
@@ -283,7 +310,13 @@ class PyramusRestClient implements Serializable {
       // no content response for arrays (empty array)
       entity = (T) Array.newInstance(type.getComponentType(), 0);
     }
+    else if (statusCode == 401) {
+      // 401 is either not logged in or invalid token
+      logger.warning(String.format("Pyramus call for path %s unauthorized (%d)", path, statusCode));
+      throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", statusCode, response.getEntity(), path));
+    }
     else if (responseContent != null) {
+      // Technically 403 can come from insufficient scope which should be indicated in the WWW-Authenticate header. It might make sense to handle it separately.
       // error response, assume content to be message
       message = responseContent;
       if (statusCode != 403 && statusCode != 404) {
