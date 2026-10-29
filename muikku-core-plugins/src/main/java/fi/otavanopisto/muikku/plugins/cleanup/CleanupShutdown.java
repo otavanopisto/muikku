@@ -14,7 +14,7 @@ public class CleanupShutdown {
   private SystemSettingsController systemSettingsController;
   
   // Shouldn't ever get mixed up with any other transaction but just for the
-  // heck of it, let's implicitly state that this needs to run in its own
+  // heck of it, let's explicitly state that this needs to run in its own
   @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void toggle(String key, boolean enabled) {
     systemSettingsController.setSetting(key, Boolean.toString(enabled));

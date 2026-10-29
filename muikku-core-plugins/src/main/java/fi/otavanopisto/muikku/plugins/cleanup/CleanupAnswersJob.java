@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +43,8 @@ public class CleanupAnswersJob extends CleanupJob {
   @Inject
   private MaterialDeleteController materialDeleteController;
   
+  // Explicitly stated transaction type, just in case
+  @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void cleanup() {
     
     // Simple master switch check
@@ -117,7 +121,7 @@ public class CleanupAnswersJob extends CleanupJob {
       // Statistics logging
       
       long ms2 = System.currentTimeMillis();
-      logger.info(String.format("Deleted %d replies (%d answers) of userEntity %d in %dms",
+      logger.info(String.format("Deleted %d replies (%d answers) of UserEntity %d in %dms",
           deletedReplies,
           deletedAnswers,
           userEntityId,

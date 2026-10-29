@@ -38,11 +38,11 @@ public class CleanupRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     if (batchSize != null && batchSize > 0) {
-      logger.info(String.format("User %d changing answer cleanup batch size %d", batchSize));
+      logger.info(String.format("User %d changing answer cleanup batch size %d", sessionController.getLoggedUserEntity().getId(), batchSize));
       answersJob.changeBatchSize(batchSize);
     }
     if (enabled != null) {
-      logger.info(String.format("User %d changing answer cleanup enabled %s", enabled));
+      logger.info(String.format("User %d changing answer cleanup enabled %s", sessionController.getLoggedUserEntity().getId(), enabled));
       answersJob.toggleEnabled(enabled);
     }
     return Response.noContent().build();
