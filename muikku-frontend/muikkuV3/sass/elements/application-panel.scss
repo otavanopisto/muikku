@@ -258,6 +258,8 @@
 
 // Component's content header (h2 level header)
 .application-panel__content-header {
+  align-items: center;
+  display: flex;
   font-size: 1.25rem;
   font-weight: 300;
   margin-bottom: 20px;

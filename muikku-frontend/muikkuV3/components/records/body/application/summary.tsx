@@ -297,8 +297,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       phone={properties["profile-phone"]}
                       groupAdvisor={groupAdvisor}
                       studyAdvisor={studyAdvisor}
-                      vacationStart={properties["profile-vacationStart"]}
-                      vacationEnd={properties["profile-vacationEnd"]}
+                      vacationStart={properties["profile-vacation-start"]}
+                      vacationEnd={properties["profile-vacation-end"]}
                     />
                   );
                 })

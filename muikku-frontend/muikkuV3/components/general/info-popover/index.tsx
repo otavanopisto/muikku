@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
-import { localize } from "~/locales/i18n";
 import "~/sass/elements/popover.scss";
 import {
   displayNotification,
@@ -14,7 +13,6 @@ import { ButtonPill } from "~/components/general/button";
 import { fetchUserInfo, useInfoPopperContext } from "./context";
 import { WhatsappButtonLink } from "../whatsapp-link";
 import { GuiderStudentLink } from "../guider-link";
-import moment from "moment";
 import {
   Popover,
   PopoverArrow,
@@ -23,6 +21,7 @@ import {
 } from "../popover";
 import "~/sass/elements/item-list.scss";
 import { UserInfo } from "~/generated/client";
+import VacationPeriodList from "../vacation-period-list";
 
 /**
  * InfoPopoverProps
@@ -239,29 +238,13 @@ interface ContactVacationProps {
 function ContactVacation(props: ContactVacationProps) {
   const { info } = props;
   const { t } = useTranslation("workspace");
-  let displayVacationPeriod = !!info.vacationStart;
-  // however if we have a range
-  if (info.vacationEnd) {
-    // we must check for the ending
-    const vacationEndsAt = moment(info.vacationEnd);
-    const today = moment();
-    // if it's before or it's today then we display, otherwise nope
-    displayVacationPeriod =
-      vacationEndsAt.isAfter(today, "day") ||
-      vacationEndsAt.isSame(today, "day");
-  }
-
-  if (!displayVacationPeriod) {
-    return null;
-  }
 
   return (
-    <div className="item-list__user-vacation-period">
-      {t("labels.away")}
-      &nbsp;
-      {localize.date(info.vacationStart)}
-      {info.vacationEnd ? `- ${localize.date(info.vacationEnd)}` : null}
-    </div>
+    <VacationPeriodList
+      startValue={info.vacationStart}
+      endValue={info.vacationEnd}
+      label={t("labels.away")}
+    />
   );
 }
 
