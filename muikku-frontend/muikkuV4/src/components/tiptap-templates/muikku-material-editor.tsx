@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@mantine/core";
-import { MATERIAL_AUTHOR, MuikkuEditor } from "../muikku-editor";
+import { MATERIAL_AUTHOR, MuikkuEditor } from "./muikku-editor";
 import { useState } from "react";
 
 /**
