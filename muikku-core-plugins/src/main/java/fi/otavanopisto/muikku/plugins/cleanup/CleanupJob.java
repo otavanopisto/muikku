@@ -83,6 +83,13 @@ public abstract class CleanupJob {
     
     for (UserEntity userEntity : userEntities) {
       
+      // Paranoia check
+      
+      if (StringUtils.isBlank(userEntity.getDefaultIdentifier())) {
+        log(Level.WARNING, String.format("Skipping user %d - no default identifier set", userEntity.getId()));
+        continue;
+      }
+
       // Ignore non-students
       
       if (!StringUtils.startsWith(userEntity.getDefaultIdentifier(), "STUDENT-")) {
