@@ -156,7 +156,7 @@ const MEMOFIELD_CKEDITOR_RICHEDIT_CONFIG = {
   ],
   removePlugins: "image,exportpdf",
   extraPlugins:
-    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove,muikku-comment-popup",
   resize_enabled: true,
 };
 
@@ -168,7 +168,7 @@ const MEMOFIELD_CKEDITOR_PLAINTEXT_CONFIG = {
   toolbar: [{}, {}, { name: "tools", items: ["Maximize"] }],
   removePlugins: "image,exportpdf",
   extraPlugins:
-    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove",
+    "image2,widget,lineutils,autogrow,muikku-mathjax,divarea,muikku-comment-remove,muikku-comment-popup",
   resize_enabled: true,
 };
 
@@ -584,14 +584,19 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 : 3
             )}
           >
-            <IconButton
-              buttonModifiers="snapshot"
-              icon="bubbles"
-              disabled={
-                !this.state.value ||
-                !this.props.fieldFeaturesCapabilities?.comments.canCreate
-              }
-            />
+            <Dropdown
+              content={t("labels.giveFeedbackComment", { ns: "materials" })}
+              openByHover
+            >
+              <IconButton
+                buttonModifiers="snapshot"
+                icon="bubbles"
+                disabled={
+                  !this.state.value ||
+                  !this.props.fieldFeaturesCapabilities?.comments.canCreate
+                }
+              />
+            </Dropdown>
           </AddEvaluationCommentsDrawer>
         )}
       </span>

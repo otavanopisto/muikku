@@ -1889,6 +1889,7 @@
       "exercises": "Exercises",
       "exercises_donePercent": "Exercises done ({{percent}}%)",
       "geometryAndVectors": "Geometry and vectors",
+      "giveFeedbackComment": "Add comments",
       "guidance": "Sign up to this course",
       "hide": "Set hidden",
       "incomplete": "$t(common:labels.incomplete)",
@@ -2683,7 +2684,7 @@
       "maxQuestionCount": "Max: {{count}} questions",
       "noQuestionRandomization": "No randomization",
       "openToAllStudents": "Open to all students on the course",
-      "proctored_student": "The exam is proctored",
+      "proctored_student": "SMOWL-proctored exam",
       "proctored": "Proctoring",
       "proctoringResults": "Proctoring results",
       "questionRandomization": "Question randomization",
@@ -3695,7 +3696,7 @@
       "notMonitored": "Not monitored",
       "registrationReports": "SMOWL-rekisteröintiraportit",
       "settings": "SMOWL settings",
-      "testExamMode": "Exam test mode"
+      "testExamMode": "Practice exam mode"
     },
     "content": {
       "computerMonitoringAction_BACKGROUND_PROGRAMS": "Forbidden programs are running in the background during the exam.",
