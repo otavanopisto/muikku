@@ -55,7 +55,6 @@ public class CleanupAnswersJob extends CleanupJob {
     
     // Let's run one cycle
     
-    logger.info("Running answers cleanup");
     long ms1 = System.currentTimeMillis();
     List<Long> replyIds;
     int batchSize = Integer.parseInt(systemSettingsController.getSetting(SETTING_BATCH));
