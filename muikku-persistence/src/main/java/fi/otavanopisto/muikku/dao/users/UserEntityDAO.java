@@ -86,6 +86,22 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     criteria.select(criteriaBuilder.max(root.get(UserEntity_.id)));
     return entityManager.createQuery(criteria).getSingleResult();
   }
+  
+  public List<UserEntity> listByGreaterThanId(Long id, int maxResults) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserEntity> criteria = criteriaBuilder.createQuery(UserEntity.class);
+    Root<UserEntity> root = criteria.from(UserEntity.class);
+    
+    criteria.select(root).orderBy(criteriaBuilder.asc(root.get(UserEntity_.id)));
+
+    criteria.where(
+        criteriaBuilder.greaterThan(root.get(UserEntity_.id), id)
+    );
+    
+    return entityManager.createQuery(criteria).setMaxResults(maxResults).getResultList();
+  }
 
   public List<UserEntity> listInReverseOrder(long highestId, int maxResults) {
     EntityManager entityManager = getEntityManager();
