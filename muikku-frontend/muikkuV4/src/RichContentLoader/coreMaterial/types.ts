@@ -158,17 +158,10 @@ export interface MaterialProcessingContext {
   material: MaterialContentNode;
   workspace: Workspace;
   compositeReplies?: MaterialCompositeReply;
-  assignment?: WorkspaceMaterial;
   invisible: boolean;
 
   // --- optional snapshot capabilities ---
-  snapshots?: MaterialSnapshotCapability;
-
-  onValueChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => void;
+  //snapshots?: MaterialSnapshotCapability;
 }
 
 export type MaterialRichContentContext =
@@ -215,6 +208,15 @@ export interface TextFieldContent extends BaseFieldContent {
 }
 
 /**
+ * Select / multiselect option
+ */
+export interface SelectFieldOption {
+  name: string;
+  text: string;
+  correct: boolean;
+}
+
+/**
  * Select field content interface
  */
 export interface SelectFieldContent extends BaseFieldContent {
@@ -222,11 +224,7 @@ export interface SelectFieldContent extends BaseFieldContent {
   name: string;
   explanation: string;
   listType: "dropdown" | "list" | "radio-horizontal" | "radio-vertical";
-  options: {
-    correct: boolean;
-    text: string;
-    value: string;
-  }[];
+  options: SelectFieldOption[];
 }
 
 /**
@@ -237,11 +235,7 @@ export interface MultiSelectFieldContent extends BaseFieldContent {
   name: string;
   explanation: string;
   listType: "checkbox-horizontal" | "checkbox-vertical";
-  options: {
-    correct: boolean;
-    text: string;
-    value: string;
-  }[];
+  options: SelectFieldOption[];
 }
 
 /**
@@ -267,9 +261,9 @@ export interface FileFieldContent extends BaseFieldContent {
 }
 
 /**
- * FieldType
+ * Connect field term or counterpart
  */
-interface FieldType {
+export interface ConnectFieldItem {
   name: string;
   text: string;
 }
@@ -280,8 +274,8 @@ interface FieldType {
 export interface ConnectFieldContent extends BaseFieldContent {
   fieldName: "connect";
   name: string;
-  fields: FieldType[];
-  counterparts: FieldType[];
+  fields: ConnectFieldItem[];
+  counterparts: ConnectFieldItem[];
   connections: {
     field: string;
     counterpart: string;
@@ -289,25 +283,23 @@ export interface ConnectFieldContent extends BaseFieldContent {
 }
 
 /**
- * TermType
+ * Organizer field term
  */
-interface TermType {
+export interface OrganizerTerm {
   id: string;
   name: string;
 }
-
 /**
- * CategoryType
+ * Organizer field category
  */
-interface CategoryType {
+export interface OrganizerCategory {
   id: string;
   name: string;
 }
-
 /**
- * CategoryTerm
+ * Correct terms for one category
  */
-interface CategoryTerm {
+export interface OrganizerCategoryTerms {
   category: string;
   terms: string[];
 }
@@ -319,15 +311,15 @@ export interface OrganizerFieldContent extends BaseFieldContent {
   fieldName: "organizer";
   name: string;
   termTitle: string;
-  terms: TermType[];
-  categories: CategoryType[];
-  categoryTerms: CategoryTerm[];
+  terms: OrganizerTerm[];
+  categories: OrganizerCategory[];
+  categoryTerms: OrganizerCategoryTerms[];
 }
 
 /**
- * SorterFieldItemType
+ * Sorter field item
  */
-interface SorterFieldItemType {
+export interface SorterFieldItem {
   id: string;
   name: string;
 }
@@ -340,7 +332,7 @@ export interface SorterFieldContent extends BaseFieldContent {
   name: string;
   orientation: "vertical" | "horizontal";
   capitalize: boolean;
-  items: SorterFieldItemType[];
+  items: SorterFieldItem[];
 }
 
 /**
@@ -405,7 +397,7 @@ export interface FieldComponentProps<TContent = FieldContent> {
   invisible?: boolean;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => void;
+  onAnswerChange?: (name: string, value: boolean | null) => void;
   onChange?: (context: any, name: string, newValue: any) => void;
   userId?: number;
   status?: any;
@@ -416,14 +408,10 @@ export interface FieldComponentProps<TContent = FieldContent> {
  */
 export interface FieldParameters {
   content: FieldContent | null;
-  readOnly: boolean;
   initialValue?: string;
   invisible?: boolean;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => void;
-  onChange?: (context: any, name: string, newValue: any) => void;
-  userId?: number;
 }
 
 /**
@@ -501,6 +489,7 @@ export interface AnswerManagerReturn {
  * FieldManagerReturn
  */
 export interface FieldManagerReturn {
+  fieldAllSynced: boolean;
   handleValueChange: (
     context: any,
     name: string,

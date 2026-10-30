@@ -1,7 +1,17 @@
+import { useState } from "react";
 import type {
   FieldComponentProps,
   JournalFieldContent,
 } from "../../coreMaterial/types";
+import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
+import { JournalHeader } from "../../coreMaterial/fields/JournalField/JournalHeader";
+import { JournalReadonly } from "../../coreMaterial/fields/JournalField/JournalReadonly";
+import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
+import classes from "../../coreMaterial/fields/JournalField/JournalField.module.css";
+import {
+  MuikkuEditor,
+  STUDENT_RICH,
+} from "~/src/components/tiptap-templates/muikku-editor";
 
 /**
  * JournalFieldProps
@@ -9,10 +19,58 @@ import type {
 interface JournalFieldProps extends FieldComponentProps<JournalFieldContent> {}
 
 /**
- * JournalField component
- * @param props - The props for the JournalField component
- * @returns The JournalField component
+ * Student materials journal field. Always Tiptap (V3 was always CKEditor).
+ * @param props - Live field props from FieldWithLiveProps
  */
 export function MaterialJournalField(props: JournalFieldProps) {
-  return <div>{props.content?.name}</div>;
+  const { content, readOnly, initialValue, invisible, onChange } = props;
+  const [value, setValue] = useState(initialValue ?? "");
+  const handle = useFieldSyncHandle();
+
+  if (!content) {
+    return null;
+  }
+
+  /**
+   * Persist HTML on each editor update; field manager debounces the save.
+   * @param next - Next HTML value
+   */
+  function handleChange(next: string) {
+    if (!content) {
+      return;
+    }
+    setValue(next);
+    onChange?.(handle, content.name, next);
+  }
+
+  if (invisible) {
+    return (
+      <span className={classes.wrapper} aria-hidden>
+        <JournalHeader />
+        <JournalReadonly value={value} />
+      </span>
+    );
+  }
+
+  return (
+    <span className={classes.wrapper}>
+      <JournalHeader />
+      {readOnly ? (
+        <JournalReadonly value={value} />
+      ) : (
+        <MuikkuEditor
+          className="muikku-editor"
+          content={value}
+          features={STUDENT_RICH}
+          minRows={8}
+          onChange={handleChange}
+        />
+      )}
+      <Synchronizer
+        modified={handle.state.modified}
+        synced={handle.state.synced}
+        syncError={handle.state.syncError}
+      />
+    </span>
+  );
 }

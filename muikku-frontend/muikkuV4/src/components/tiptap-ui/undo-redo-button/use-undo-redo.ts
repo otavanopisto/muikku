@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { type Editor } from "@tiptap/react";
 
 // --- Hooks ---
@@ -147,32 +147,21 @@ export function useUndoRedo(config: UseUndoRedoConfig) {
     onExecuted,
   } = config;
 
-  const { editor } = useTiptapEditorV2({
+  const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canUndo: editor.can().undo(),
-      canRedo: editor.can().redo(),
+    selector: ({ editor: instance }) => ({
+      canExecute: canExecuteUndoRedoAction(instance, action),
+      isVisible: shouldShowButton({
+        editor: instance,
+        hideWhenUnavailable,
+        action,
+      }),
     }),
   });
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const canExecute = canExecuteUndoRedoAction(editor, action);
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable, action }));
-    };
-
-    handleUpdate();
-
-    editor.on("transaction", handleUpdate);
-
-    return () => {
-      editor.off("transaction", handleUpdate);
-    };
-  }, [editor, hideWhenUnavailable, action]);
-
+  /**
+   * The handleAction function.
+   */
   const handleAction = useCallback(() => {
     if (!editor) return false;
 
@@ -184,9 +173,9 @@ export function useUndoRedo(config: UseUndoRedoConfig) {
   }, [editor, action, onExecuted]);
 
   return {
-    isVisible,
+    isVisible: selected?.isVisible ?? false,
+    canExecute: selected?.canExecute ?? false,
     handleAction,
-    canExecute,
     label: historyActionLabels[action],
     shortcutKeys: UNDO_REDO_SHORTCUT_KEYS[action],
     Icon: historyIcons[action],

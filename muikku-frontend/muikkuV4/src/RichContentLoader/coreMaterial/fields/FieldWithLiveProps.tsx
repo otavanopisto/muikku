@@ -15,8 +15,13 @@ export function FieldWithLiveProps<
   Field: ComponentType<FieldComponentProps<TContent>>;
   fieldProps: FieldComponentProps<TContent>;
 }) {
-  const { readOnly, answersVisible, answersChecked, onAnswerChange } =
-    useMaterialContentContext();
+  const {
+    readOnly,
+    answersVisible,
+    answersChecked,
+    onAnswerChange,
+    fieldManager,
+  } = useMaterialContentContext();
 
   return (
     <Field
@@ -24,6 +29,7 @@ export function FieldWithLiveProps<
       readOnly={readOnly}
       displayCorrectAnswers={answersVisible}
       checkAnswers={answersChecked}
+      onChange={fieldManager?.handleValueChange}
       onAnswerChange={onAnswerChange}
     />
   );

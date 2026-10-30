@@ -12,6 +12,34 @@ import type {
 import _ from "lodash";
 
 /**
+ * Derive answer flags from material and state config
+ * @param material - Material content node
+ * @param stateConfig - Assignment state config
+ * @param config - Material loader config
+ * @returns Answer flags
+ */
+function deriveAnswerFlags(
+  material: MaterialContentNode,
+  stateConfig: AssignmentStateConfig | null | undefined,
+  config?: MaterialLoaderConfig
+) {
+  // First check if the answers should be checked
+  const shouldCheck =
+    Boolean(config?.checkAnswers) || Boolean(stateConfig?.checksAnswers);
+
+  // If not then...
+  if (!shouldCheck) {
+    return { answersVisible: false, answersChecked: false };
+  }
+
+  // If so then...
+  return {
+    answersChecked: (material.correctAnswers ?? "NEVER") !== "NEVER",
+    answersVisible: (material.correctAnswers ?? "ALWAYS") === "ALWAYS",
+  };
+}
+
+/**
  * Tracks interactive answer-checking UI state for fields.
  *
  * Owns:
@@ -41,21 +69,17 @@ export function useAnswerManager(
     stateConfig
   );
 
+  const initialAnswerFlags = deriveAnswerFlags(material, stateConfig, config);
+
   // Answer visibility state
-  const [answersVisible, setAnswersVisible] = useState<boolean>(() => {
-    if (config?.checkAnswers) {
-      return (material.correctAnswers ?? "ALWAYS") === "ALWAYS";
-    }
-    return false;
-  });
+  const [answersVisible, setAnswersVisible] = useState<boolean>(
+    initialAnswerFlags.answersVisible
+  );
 
   // Answer checked state
-  const [answersChecked, setAnswersChecked] = useState<boolean>(() => {
-    if (config?.checkAnswers) {
-      return (material.correctAnswers ?? "NEVER") !== "NEVER";
-    }
-    return false;
-  });
+  const [answersChecked, setAnswersChecked] = useState<boolean>(
+    initialAnswerFlags.answersChecked
+  );
 
   // Answer checkable state
   const [answerCheckable, setAnswerCheckable] = useState<boolean>(true);

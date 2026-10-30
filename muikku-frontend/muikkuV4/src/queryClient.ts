@@ -21,3 +21,15 @@ export const workspacePermissionsQueryKey = (workspaceId: number) =>
   ["workspace", "permissions", workspaceId] as const;
 export const workspaceCanSignupQueryKey = (workspaceId: number) =>
   ["workspace", "canSignup", workspaceId] as const;
+
+export const workspaceMaterialContentNodesQueryKey = (workspaceId: number) =>
+  ["workspace", workspaceId, "materialContentNodes"] as const;
+export const workspaceHelpContentNodesQueryKey = (workspaceId: number) =>
+  ["workspace", workspaceId, "helpContentNodes"] as const;
+export const workspaceCompositeRepliesQueryKey = (workspaceId: number) =>
+  ["workspace", workspaceId, "compositeReplies"] as const;
+
+export const workspaceStudentActivityQueryKey = (
+  workspaceId: number,
+  studentEntityId: number
+) => ["workspace", workspaceId, "studentActivity", studentEntityId] as const;

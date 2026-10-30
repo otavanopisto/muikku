@@ -59,14 +59,14 @@ export function useAssignmentState(
   );
 
   const readOnly = useMemo(() => {
-    if (compositeReplies?.lock !== "NONE") return true;
+    if (compositeReplies && compositeReplies.lock !== "NONE") return true;
     return stateConfig?.fieldsReadOnly ?? false;
-  }, [compositeReplies?.lock, stateConfig]);
+  }, [compositeReplies, stateConfig]);
 
   const answerable = useMemo(() => {
-    if (compositeReplies?.lock !== "NONE") return false;
+    if (compositeReplies && compositeReplies.lock !== "NONE") return false;
     return material.assignmentType !== null;
-  }, [compositeReplies?.lock, material.assignmentType]);
+  }, [compositeReplies, material.assignmentType]);
 
   const buttonConfig = useMemo((): ButtonConfig | null => {
     if (!stateConfig) return null;

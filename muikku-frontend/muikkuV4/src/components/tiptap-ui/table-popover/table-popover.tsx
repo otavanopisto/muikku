@@ -1,7 +1,7 @@
 /* eslint-disable react-x/no-forward-ref */
 "use client";
 
-import { forwardRef, useMemo, useState } from "react";
+import { forwardRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
 
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
@@ -73,23 +73,27 @@ export function TablePopover({
   editor: providedEditor,
   ...props
 }: TablePopoverProps) {
-  const { editor } = useTiptapEditorV2({
+  const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canInsert:
+        !!instance.isEditable &&
+        instance.can().insertTable({ rows: 1, cols: 1, withHeaderRow: false }),
+    }),
   });
   const [open, setOpen] = useState(false);
 
   const [rowsInput, setRowsInput] = useState("3");
   const [colsInput, setColsInput] = useState("3");
 
-  const canInsert = useMemo(() => {
-    if (!editor?.isEditable) return false;
-    // `insertTable` exists when TableKit is enabled
-    return editor.can().insertTable({ rows: 1, cols: 1, withHeaderRow: false });
-  }, [editor]);
+  const canInsert = selected?.canInsert ?? false;
 
   const rows = clampInt(Number(rowsInput || 0), 1, 20);
   const cols = clampInt(Number(colsInput || 0), 1, 20);
 
+  /**
+   * Handles table insertion.
+   */
   const handleInsert = () => {
     if (!editor?.isEditable) return;
     editor
@@ -99,8 +103,6 @@ export function TablePopover({
       .run();
     setOpen(false);
   };
-
-  if (!editor) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

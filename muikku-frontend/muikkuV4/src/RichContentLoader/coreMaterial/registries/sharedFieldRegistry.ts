@@ -1,9 +1,11 @@
 import type { FieldRegistry } from "../types";
-import { SelectField } from "../fields/SelectField";
-import { MultiSelectField } from "../fields/MultiSelectField";
-import { ConnectField } from "../fields/ConnectField";
-import { OrganizerField } from "../fields/OrganizerField";
-import { SorterField } from "../fields/SorterField";
+import { SelectField } from "../fields/SelectField/SelectField";
+import { MultiSelectField } from "../fields/MultiSelectField/MultiSelectField";
+import { ConnectField } from "../fields/ConnectField/ConnectField";
+import { OrganizerField } from "../fields/OrganizerField/OrganizerField";
+import { SorterField } from "../fields/SorterField/SorterField";
+import { AudioField } from "../fields/AudioField/AudioField";
+import { FileField } from "../fields/FileField";
 import {
   canCheckSelectAnswers,
   createFieldParameters,
@@ -38,5 +40,15 @@ export const sharedFieldRegistry: FieldRegistry = {
     component: SorterField,
     processor: createFieldParameters,
     canCheckAnswers: () => true,
+  },
+  "application/vnd.muikku.field.audio": {
+    component: AudioField,
+    processor: createFieldParameters,
+    canCheckAnswers: () => true,
+  },
+  "application/vnd.muikku.field.file": {
+    component: FileField,
+    processor: createFieldParameters,
+    canCheckAnswers: () => false,
   },
 };
