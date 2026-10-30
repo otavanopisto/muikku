@@ -74,7 +74,7 @@ public class CleanupAnswersJob extends CleanupJob {
       logger.info(String.format("Student %d has %d replies", userEntityId, replyIds.size()));
       if (replyIds.size() == 0) {
         // Student has no replies to clean, next cycle will proceed to someone else
-        systemSettingsController.setSetting(SETTING_REPLIES, null);
+        systemSettingsController.setSetting(SETTING_REPLIES, "");
         return;
       }
       else {

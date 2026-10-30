@@ -38,7 +38,8 @@ public class CleanupAnswersScheduler {
       job.cleanup();
     }
     catch (Throwable t) {
-      logger.log(Level.SEVERE, "Scheduler emergency shutdown", t);
+      // Only logging message as Wildfly has already logged stack trace
+      logger.log(Level.SEVERE, String.format("Scheduler emergency shutdown: %s", t.getMessage()));
       shutdown.disable(CleanupAnswersJob.SETTING_ENABLED);
     }
   }
