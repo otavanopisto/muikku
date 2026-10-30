@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { Checkbox, Group, Stack, Tooltip } from "@mantine/core";
 import { IconQuestionMark } from "@tabler/icons-react";
 import { MathJax } from "better-react-mathjax";
-import type { FieldComponentProps, MultiSelectFieldContent } from "../types";
+import type { FieldComponentProps, MultiSelectFieldContent } from "../../types";
 import {
   checkMultiSelectAnswers,
   isCorrectMultiSelectAnswer,
   parseMultiSelectAnswer,
   toggleMultiSelectValue,
-} from "../utils/selectField";
-import { useFieldSyncHandle } from "../hooks/useFieldSyncHandle";
-import { Synchronizer } from "./Synchronizer";
+} from "../../utils/selectField";
+import { useFieldSyncHandle } from "../../hooks/useFieldSyncHandle";
+import { Synchronizer } from "../Synchronizer";
 import classes from "./MultiSelectField.module.css";
 
 /**

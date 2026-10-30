@@ -3,11 +3,11 @@ import type {
   FieldComponentProps,
   MemoFieldContent,
 } from "../../coreMaterial/types";
+import { MemoReadonly } from "../../coreMaterial/fields/MemoField/MemoReadonly";
 import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
 import { MemoCounters } from "../../coreMaterial/fields/MemoField/MemoCounters";
-import { MemoExample } from "../../coreMaterial/fields/MemoField/MemoExample";
+import { MemoAnswerExample } from "../../coreMaterial/fields/MemoField/MemoAnswerExample";
 import { MemoInput } from "../../coreMaterial/fields/MemoField/MemoInput";
-import { MemoSnapshots } from "../../coreMaterial/fields/MemoField/MemoSnapshots";
 import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
 import {
   countMemoText,
@@ -68,7 +68,7 @@ export function MaterialMemoField(props: MemoFieldProps) {
   if (invisible) {
     return (
       <span className={classes.wrapper} aria-hidden>
-        <span className={classes.readonly} />
+        <MemoReadonly value="" />
         <MemoCounters
           words={counts.words}
           characters={counts.characters}
@@ -96,12 +96,9 @@ export function MaterialMemoField(props: MemoFieldProps) {
         syncError={handle.state.syncError}
       />
 
-      <MemoExample example={content.example} visible={displayCorrectAnswers} />
-      <MemoSnapshots
-        fieldName={content.name}
-        value={value}
-        maxWords={content.maxWords}
-        maxChars={content.maxChars}
+      <MemoAnswerExample
+        example={content.example}
+        visible={displayCorrectAnswers}
       />
     </span>
   );

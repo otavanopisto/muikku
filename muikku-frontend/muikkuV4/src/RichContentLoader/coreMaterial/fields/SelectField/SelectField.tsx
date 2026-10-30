@@ -2,10 +2,10 @@ import { useEffect, useId, useState } from "react";
 import { Group, NativeSelect, Radio, Stack, Tooltip } from "@mantine/core";
 import { IconQuestionMark } from "@tabler/icons-react";
 import { MathJax } from "better-react-mathjax";
-import type { FieldComponentProps, SelectFieldContent } from "../types";
-import { isCorrectSelectAnswer } from "../utils/selectField";
-import { useFieldSyncHandle } from "../hooks/useFieldSyncHandle";
-import { Synchronizer } from "./Synchronizer";
+import type { FieldComponentProps, SelectFieldContent } from "../../types";
+import { isCorrectSelectAnswer } from "../../utils/selectField";
+import { useFieldSyncHandle } from "../../hooks/useFieldSyncHandle";
+import { Synchronizer } from "../Synchronizer";
 import classes from "./SelectField.module.css";
 
 /**

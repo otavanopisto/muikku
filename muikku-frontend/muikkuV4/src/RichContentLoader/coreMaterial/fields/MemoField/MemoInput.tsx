@@ -10,7 +10,7 @@ export function MemoInput(props: {
   maxChars?: string;
   maxWords?: string;
   readOnly?: boolean;
-  onChange: (next: string) => void;
+  onChange?: (next: string) => void;
 }) {
   const { value, richedit, rows, maxChars, maxWords, readOnly, onChange } =
     props;

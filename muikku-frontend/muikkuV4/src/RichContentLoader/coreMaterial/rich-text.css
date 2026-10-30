@@ -43,7 +43,6 @@
 .rich-text ul,
 .rich-text ol {
   margin: 0.75em 0;
-  padding-inline-start: 1.75em;
 }
 
 .rich-text table {

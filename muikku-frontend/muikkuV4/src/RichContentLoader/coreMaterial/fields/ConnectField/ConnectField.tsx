@@ -6,12 +6,12 @@ import type {
   ConnectFieldContent,
   ConnectFieldItem,
   FieldComponentProps,
-} from "../types";
-import { DndFieldProvider } from "../dnd/DndFieldProvider";
-import { useConnectField } from "../hooks/useConnectField";
-import { useFieldSyncHandle } from "../hooks/useFieldSyncHandle";
-import { correctTermNumber } from "../utils/connectField";
-import { Synchronizer } from "./Synchronizer";
+} from "../../types";
+import { DndFieldProvider } from "../../dnd/DndFieldProvider";
+import { useConnectField } from "../../hooks/useConnectField";
+import { useFieldSyncHandle } from "../../hooks/useFieldSyncHandle";
+import { correctTermNumber } from "../../utils/connectField";
+import { Synchronizer } from "../Synchronizer";
 import classes from "./ConnectField.module.css";
 
 const COUNTERPART_TYPE = "connect-counterpart";

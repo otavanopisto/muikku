@@ -2,7 +2,7 @@ import type {
   FieldComponentProps,
   JournalFieldContent,
 } from "../../coreMaterial/types";
-import { MemoReadonly } from "../../coreMaterial/fields/MemoField/MemoReadonly";
+import { JournalReadonly } from "../../coreMaterial/fields/JournalField/JournalReadonly";
 import classes from "../../coreMaterial/fields/JournalField/JournalField.module.css";
 
 /**
@@ -25,14 +25,14 @@ export function EvaluationJournalField(props: JournalFieldProps) {
   if (invisible) {
     return (
       <span className={classes.wrapper} aria-hidden>
-        <MemoReadonly value="" />
+        <JournalReadonly value="" />
       </span>
     );
   }
 
   return (
     <span className={classes.wrapper}>
-      <MemoReadonly value={value} />
+      <JournalReadonly value={value} />
     </span>
   );
 }

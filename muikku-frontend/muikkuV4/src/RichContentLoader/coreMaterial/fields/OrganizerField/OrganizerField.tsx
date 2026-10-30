@@ -6,12 +6,12 @@ import type {
   FieldComponentProps,
   OrganizerCategory,
   OrganizerFieldContent,
-} from "../types";
-import { DndFieldProvider } from "../dnd/DndFieldProvider";
-import { useFieldSyncHandle } from "../hooks/useFieldSyncHandle";
-import { useOrganizerField } from "../hooks/useOrganizerField";
-import { termLabel } from "../utils/organizerField";
-import { Synchronizer } from "./Synchronizer";
+} from "../../types";
+import { DndFieldProvider } from "../../dnd/DndFieldProvider";
+import { useFieldSyncHandle } from "../../hooks/useFieldSyncHandle";
+import { useOrganizerField } from "../../hooks/useOrganizerField";
+import { termLabel } from "../../utils/organizerField";
+import { Synchronizer } from "../Synchronizer";
 import classes from "./OrganizerField.module.css";
 
 const TERM_TYPE = "organizer-term";

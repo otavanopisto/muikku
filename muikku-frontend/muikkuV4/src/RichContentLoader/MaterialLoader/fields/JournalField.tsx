@@ -4,7 +4,8 @@ import type {
   JournalFieldContent,
 } from "../../coreMaterial/types";
 import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
-import { MemoReadonly } from "../../coreMaterial/fields/MemoField/MemoReadonly";
+import { JournalHeader } from "../../coreMaterial/fields/JournalField/JournalHeader";
+import { JournalReadonly } from "../../coreMaterial/fields/JournalField/JournalReadonly";
 import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
 import classes from "../../coreMaterial/fields/JournalField/JournalField.module.css";
 import {
@@ -45,19 +46,17 @@ export function MaterialJournalField(props: JournalFieldProps) {
   if (invisible) {
     return (
       <span className={classes.wrapper} aria-hidden>
-        <span className={classes.header} />
-        <MemoReadonly value={value} />
+        <JournalHeader />
+        <JournalReadonly value={value} />
       </span>
     );
   }
 
   return (
     <span className={classes.wrapper}>
-      <span className={classes.header}>
-        <span className={classes.title}>Päiväkirjamerkintä</span>
-      </span>
+      <JournalHeader />
       {readOnly ? (
-        <MemoReadonly value={value} />
+        <JournalReadonly value={value} />
       ) : (
         <MuikkuEditor
           className="muikku-editor"

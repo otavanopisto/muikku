@@ -1,10 +1,12 @@
-import { Text, TextInput } from "@mantine/core";
+import { TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type {
   FieldComponentProps,
   TextFieldContent,
 } from "../../coreMaterial/types";
 import { isCorrectTextAnswer } from "../../coreMaterial/utils/textField";
+import { TextAnswerSummary } from "../../coreMaterial/fields/TextField/TextAnswerSummary";
+import { TextFieldInvisible } from "../../coreMaterial/fields/TextField/TextFieldInvisible";
 import { Synchronizer } from "../../coreMaterial/fields/Synchronizer";
 import { useFieldSyncHandle } from "../../coreMaterial/hooks/useFieldSyncHandle";
 
@@ -55,10 +57,6 @@ export function MaterialTextField(props: TextFieldProps) {
     ? `${Math.max(widthCh, value.length + 1)}ch`
     : `${widthCh}ch`;
 
-  const examples =
-    content.rightAnswers?.filter((row) => row.correct).map((row) => row.text) ??
-    [];
-
   /**
    * Persist on each keystroke; field manager debounces the websocket save.
    */
@@ -69,17 +67,12 @@ export function MaterialTextField(props: TextFieldProps) {
 
   if (invisible) {
     return (
-      <span className="material-page__textfield-wrapper" aria-hidden>
-        <span
-          style={{
-            visibility: "hidden",
-            display: "inline-block",
-            width: inputWidth,
-          }}
-        >
-          {value || " ".repeat(widthCh)}
-        </span>
-      </span>
+      <TextFieldInvisible
+        inputWidth={inputWidth}
+        content={content}
+        displayCorrectAnswers={displayCorrectAnswers}
+        checkResult={checkResult}
+      />
     );
   }
 
@@ -112,11 +105,11 @@ export function MaterialTextField(props: TextFieldProps) {
         synced={handle.state.synced}
         syncError={handle.state.syncError}
       />
-      {displayCorrectAnswers && examples.length > 0 && (
-        <Text span size="xs" c="green" ml="xs">
-          {examples.join(" / ")}
-        </Text>
-      )}
+      <TextAnswerSummary
+        content={content}
+        visible={displayCorrectAnswers}
+        checkResult={checkResult}
+      />
     </span>
   );
 }

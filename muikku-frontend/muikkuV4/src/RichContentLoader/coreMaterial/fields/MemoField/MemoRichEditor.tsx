@@ -21,7 +21,7 @@ export function MemoRichEditor(props: {
   richedit?: boolean;
   maxChars?: string;
   maxWords?: string;
-  onChange: (next: string) => void;
+  onChange?: (next: string) => void;
 }) {
   const { value, readOnly, rows, richedit, maxChars, maxWords, onChange } =
     props;

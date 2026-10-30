@@ -19,17 +19,53 @@ function matchesRightAnswer(
   }
   return got === expected;
 }
+
 /**
- * Whether the value matches any correct right-answer.
+ * Whether the value matches any actually-correct right-answer.
  * `null` = field is not checkable (no correct answers).
  */
 export function isCorrectTextAnswer(
   value: string,
   content: TextFieldContent
 ): boolean | null {
-  const keys = content.rightAnswers?.filter((row) => row.correct) ?? [];
-  if (keys.length === 0) {
+  const actuallyCorrectAnswers =
+    content.rightAnswers?.filter((row) => row.correct) ?? [];
+  if (actuallyCorrectAnswers.length === 0) {
     return null;
   }
-  return keys.some((row) => matchesRightAnswer(value, row));
+  return actuallyCorrectAnswers.some((row) => matchesRightAnswer(value, row));
+}
+
+export type TextAnswerSummaryKind = "correct" | "example";
+
+/**
+ * Text answer summary data.
+ */
+export interface TextAnswerSummaryData {
+  kind: TextAnswerSummaryKind;
+  answers: string[];
+}
+
+/**
+ * Answers shown next to the field when displayCorrectAnswers is on.
+ * Correct rows if any are flagged; otherwise all rightAnswers as examples (V3).
+ */
+export function getTextAnswerSummary(
+  content: TextFieldContent
+): TextAnswerSummaryData | null {
+  const rightAnswers = content.rightAnswers ?? [];
+  if (rightAnswers.length === 0) {
+    return null;
+  }
+  const actuallyCorrectAnswers = rightAnswers.filter((row) => row.correct);
+  if (actuallyCorrectAnswers.length > 0) {
+    return {
+      kind: "correct",
+      answers: actuallyCorrectAnswers.map((row) => row.text),
+    };
+  }
+  return {
+    kind: "example",
+    answers: rightAnswers.map((row) => row.text),
+  };
 }

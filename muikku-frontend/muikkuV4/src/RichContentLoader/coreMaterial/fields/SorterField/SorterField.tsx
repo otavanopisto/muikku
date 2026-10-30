@@ -10,12 +10,12 @@ import type {
   FieldComponentProps,
   SorterFieldContent,
   SorterFieldItem,
-} from "../types";
-import { DndFieldProvider } from "../dnd/DndFieldProvider";
-import { useSorterField } from "../hooks/useSorterField";
-import { useFieldSyncHandle } from "../hooks/useFieldSyncHandle";
-import { sorterItemLabel } from "../utils/sorterField";
-import { Synchronizer } from "./Synchronizer";
+} from "../../types";
+import { DndFieldProvider } from "../../dnd/DndFieldProvider";
+import { useSorterField } from "../../hooks/useSorterField";
+import { useFieldSyncHandle } from "../../hooks/useFieldSyncHandle";
+import { sorterItemLabel } from "../../utils/sorterField";
+import { Synchronizer } from "../Synchronizer";
 import classes from "./SorterField.module.css";
 
 const ITEM_TYPE = "sorter-item";
