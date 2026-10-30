@@ -47,7 +47,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeForbiddenException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -1074,7 +1074,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       pyramusClient.put("/persons/persons/" + personId + "/credentials", change);
     } catch (PyramusRestClientUnauthorizedException purr) {
-      throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
+      throw new SchoolDataBridgeForbiddenException(purr.getMessage());
     }
   }
 
@@ -1201,7 +1201,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       return userCredentials.getUsername();
     } catch (PyramusRestClientUnauthorizedException purr) {
-      throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
+      throw new SchoolDataBridgeForbiddenException(purr.getMessage());
     }
   }
 
@@ -1236,7 +1236,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       address.setCountry(country);
       pyramusClient.put(String.format("/students/students/%d/addresses/%s", studentId, addressId), address);
     } catch (PyramusRestClientUnauthorizedException purr) {
-      throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
+      throw new SchoolDataBridgeForbiddenException(purr.getMessage());
     }
   }
 
