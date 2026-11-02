@@ -146,7 +146,7 @@ public class CleanupAnswersJob extends CleanupJob {
   }
 
   private boolean isEnabled() {
-    return StringUtils.equals(systemSettingsController.getSetting(SETTING_ENABLED), "true");
+    return StringUtils.equals(systemSettingsController.getSetting(SETTING_ENABLED), Boolean.toString(true));
   }
   
 }
