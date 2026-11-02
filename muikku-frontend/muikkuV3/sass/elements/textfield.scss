@@ -31,8 +31,8 @@
     @include taskfield-defaults;
 
     display: inline-flex;
-    margin: 4px;
-    max-width: calc(100% - 8px);
+    margin: 4px 0;
+    max-width: calc(100% - 16px);
     padding: 4px 6px;
 
     @include form-focus;
