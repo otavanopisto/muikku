@@ -103,6 +103,7 @@ public abstract class CleanupJob {
       // Archived students (removed from Pyramus) are always fair game
       
       if (userEntity.getArchived()) {
+        systemSettingsController.setSetting(getUserEntityIdSystemSettingKey(), userEntity.getId().toString());
         return userEntity.getId();
       }
       
