@@ -33,17 +33,21 @@ public class CleanupRESTService {
   @GET
   @Path("/answers")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response answers(@QueryParam("batch") Integer batchSize, @QueryParam("enabled") Boolean enabled) {
+  public Response answers(@QueryParam("batch") Integer batchSize, @QueryParam("enabled") Boolean enabled, @QueryParam("userEntityId") Long userEntityId) {
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     if (batchSize != null && batchSize > 0) {
-      logger.info(String.format("User %d changing answer cleanup batch size %d", sessionController.getLoggedUserEntity().getId(), batchSize));
+      logger.info(String.format("Answer cleanup batch size changed to %d", batchSize));
       answersJob.changeBatchSize(batchSize);
     }
     if (enabled != null) {
-      logger.info(String.format("User %d changing answer cleanup enabled %s", sessionController.getLoggedUserEntity().getId(), enabled));
+      logger.info(String.format("Answer cleanup enabled changed to %s", enabled));
       answersJob.toggleEnabled(enabled);
+    }
+    if (userEntityId != null && userEntityId >= 0) {
+      logger.info(String.format("Answer cleanup userEntityId changed to %d", userEntityId));
+      answersJob.changeUserEntityId(userEntityId);
     }
     return Response.noContent().build();
   }

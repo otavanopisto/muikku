@@ -126,6 +126,10 @@ public class CleanupAnswersJob extends CleanupJob {
         (ms2 - ms1)));
   }
   
+  public void changeUserEntityId(Long userEntityId) {
+    systemSettingsController.setSetting(SETTING_USER, Long.toString(userEntityId));   
+  }
+  
   public void changeBatchSize(int batchSize) {
     systemSettingsController.setSetting(SETTING_BATCH, Integer.toString(batchSize));   
   }
