@@ -20,6 +20,10 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 
+/**
+ * Base class for any cleanup job. Only responsible of determining which UserEntity each actual
+ * job should tackle next. Each job handles them in the way and at the pace they see fit.
+ */
 public abstract class CleanupJob {
   
   // TODO CleanupJournalJob (WorkspaceJournalEntry + WorkspaceJournalComment)
