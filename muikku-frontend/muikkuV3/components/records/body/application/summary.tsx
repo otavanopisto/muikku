@@ -97,7 +97,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       const absences = (
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">
-            {t("labels.absences", { ns: "events" })}
+            {t("labels.absencesWithoutFeedback", { ns: "events" })}
           </div>
           <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
             {absenceEventsWithoutReason.map((event) => {

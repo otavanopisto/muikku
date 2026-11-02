@@ -72,7 +72,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
       {absenceEventsWithoutReason.length > 0 && (
         <>
           <Panel.BodyTitle>
-            {t("labels.absences", { ns: "events" })}
+            {t("labels.absencesWithoutFeedback", { ns: "events" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
             {absenceEventsWithoutReason.map((event) => {
