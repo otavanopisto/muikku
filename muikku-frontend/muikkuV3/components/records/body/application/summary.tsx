@@ -41,6 +41,7 @@ import {
 } from "~/actions/base/muikku-events";
 import AbsenceFeedbackDialog from "~/components/general/events/dialogs/absence-feedback-dialog";
 import Button from "~/components/general/button";
+import { filterAbsenceEventsWithoutReason } from "~/helper-functions/events";
 
 /**
  * SummaryProps
@@ -86,6 +87,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       defaultUserStudyData,
       displayNotification,
     } = this.props;
+
+    const absenceEventsWithoutReason =
+      filterAbsenceEventsWithoutReason(absenceEvents);
+
     if (records.location !== "summary" || summary.status !== "READY") {
       return null;
     } else {
@@ -95,7 +100,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             {t("labels.absences", { ns: "events" })}
           </div>
           <div className="application-sub-panel__body application-sub-panel__body--studies-summary-info">
-            {absenceEvents.events.map((event) => {
+            {absenceEventsWithoutReason.map((event) => {
               const hasFeedback = event.properties?.find(
                 (property) =>
                   property.name == "ABSENCE_REASON" && property.value !== ""
@@ -342,7 +347,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
-          {absenceEvents && absenceEvents.events.length > 0 && absences}
+          {absenceEventsWithoutReason.length > 0 && absences}
           {studentBasicInfo}
           {studentCounselors}
           {contacts.others.list.length > 0 && studentContacts}
