@@ -103,6 +103,7 @@ public abstract class CleanupJob {
       // Archived students (removed from Pyramus) are always fair game
       
       if (userEntity.getArchived()) {
+        log(Level.INFO, String.format("Student %d selected for cleanup, is archived", userEntity.getId()));
         systemSettingsController.setSetting(getUserEntityIdSystemSettingKey(), userEntity.getId().toString());
         return userEntity.getId();
       }
