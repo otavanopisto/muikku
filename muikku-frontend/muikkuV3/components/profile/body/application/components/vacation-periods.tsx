@@ -13,41 +13,18 @@ import {
 } from "~/helper-functions/vacation-periods";
 
 /**
- * VacationPeriodRow
- */
-export interface VacationPeriodRow extends VacationPeriod {
-  id: number;
-}
-
-/**
  * VacationPeriodsProps
  */
 interface VacationPeriodsProps {
-  periods: VacationPeriodRow[];
+  periods: VacationPeriod[];
   onDateChange: (
-    periodId: number,
+    index: number,
     field: "start" | "end",
     newDate: Date | null
   ) => void;
   onAddPeriod: () => void;
-  onRemovePeriod: (periodId: number) => void;
+  onRemovePeriod: (index: number) => void;
 }
-
-let nextPeriodId = 1;
-
-/**
- * Creates a period row with a stable local id.
- *
- * @param period period
- * @returns period row
- */
-export const createVacationPeriodRow = (
-  period: VacationPeriod = { start: null, end: null }
-): VacationPeriodRow => ({
-  id: nextPeriodId++,
-  start: period.start,
-  end: period.end,
-});
 
 /**
  * Parses profile properties into editable rows. Always keeps at least one row.
@@ -59,21 +36,17 @@ export const createVacationPeriodRow = (
 export const vacationPeriodsFromProperties = (
   startValue?: string,
   endValue?: string
-): VacationPeriodRow[] => {
+): VacationPeriod[] => {
   const parsed = parseVacationPeriods(startValue, endValue);
-
-  if (parsed.length === 0) {
-    return [createVacationPeriodRow()];
-  }
-
-  return parsed.map((period) => createVacationPeriodRow(period));
+  return parsed.length > 0 ? parsed : [{ start: null, end: null }];
 };
 
 /**
  * VacationPeriodItemProps
  */
 interface VacationPeriodItemProps {
-  period: VacationPeriodRow;
+  index: number;
+  period: VacationPeriod;
   canRemove: boolean;
   onDateChange: VacationPeriodsProps["onDateChange"];
   onRemovePeriod: VacationPeriodsProps["onRemovePeriod"];
@@ -86,23 +59,23 @@ interface VacationPeriodItemProps {
  * @returns JSX.Element
  */
 const VacationPeriodItem: React.FC<VacationPeriodItemProps> = (props) => {
-  const { period, canRemove, onDateChange, onRemovePeriod } = props;
+  const { index, period, canRemove, onDateChange, onRemovePeriod } = props;
   const { t } = useTranslation();
 
   return (
     <div className="application-sub-panel__multiple-items">
       <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--vacation-start form-element">
         <label
-          htmlFor={`profileVacationStart-${period.id}`}
+          htmlFor={`profileVacationStart-${index}`}
           className="application-sub-panel__item-title"
         >
           {t("labels.beginDate", { ns: "profile" })}
         </label>
         <div className="application-sub-panel__item-data">
           <DatePicker
-            id={`profileVacationStart-${period.id}`}
+            id={`profileVacationStart-${index}`}
             className="form-element__input"
-            onChange={onDateChange.bind(null, period.id, "start")}
+            onChange={(newDate) => onDateChange(index, "start", newDate)}
             maxDate={period.end || undefined}
             locale={outputCorrectDatePickerLocale(localize.language)}
             selected={period.start}
@@ -112,16 +85,16 @@ const VacationPeriodItem: React.FC<VacationPeriodItemProps> = (props) => {
       </div>
       <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--vacation-end form-element">
         <label
-          htmlFor={`profileVacationEnd-${period.id}`}
+          htmlFor={`profileVacationEnd-${index}`}
           className="application-sub-panel__item-title"
         >
           {t("labels.endDate", { ns: "profile" })}
         </label>
         <div className="application-sub-panel__item-data">
           <DatePicker
-            id={`profileVacationEnd-${period.id}`}
+            id={`profileVacationEnd-${index}`}
             className="form-element__input"
-            onChange={onDateChange.bind(null, period.id, "end")}
+            onChange={(newDate) => onDateChange(index, "end", newDate)}
             minDate={period.start || undefined}
             locale={outputCorrectDatePickerLocale(localize.language)}
             selected={period.end}
@@ -140,7 +113,7 @@ const VacationPeriodItem: React.FC<VacationPeriodItemProps> = (props) => {
           <IconButton
             icon="trash"
             buttonModifiers="delete-vacation-period"
-            onClick={onRemovePeriod.bind(null, period.id)}
+            onClick={() => onRemovePeriod(index)}
             disabled={!canRemove}
           />
         </Dropdown>
@@ -161,9 +134,10 @@ const VacationPeriods: React.FC<VacationPeriodsProps> = (props) => {
 
   return (
     <>
-      {periods.map((period) => (
+      {periods.map((period, index) => (
         <VacationPeriodItem
-          key={period.id}
+          key={index}
+          index={index}
           period={period}
           canRemove={periods.length > 1}
           onDateChange={onDateChange}

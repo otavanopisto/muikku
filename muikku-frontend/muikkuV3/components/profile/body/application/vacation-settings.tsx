@@ -19,10 +19,9 @@ import {
   doVacationPeriodsOverlap,
   hasCompleteVacationPeriod,
   serializeVacationPeriods,
+  VacationPeriod,
 } from "~/helper-functions/vacation-periods";
 import VacationPeriods, {
-  createVacationPeriodRow,
-  VacationPeriodRow,
   vacationPeriodsFromProperties,
 } from "./components/vacation-periods";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -42,7 +41,7 @@ interface VacationSettingsProps extends WithTranslation {
  * VacationSettingsState
  */
 interface VacationSettingsState {
-  periods: VacationPeriodRow[];
+  periods: VacationPeriod[];
   vacationAutoReply: string;
   vacationAutoReplySubject: string;
   vacationAutoReplyMsg: string;
@@ -148,18 +147,18 @@ class VacationSettings extends React.Component<
 
   /**
    * handleDateChange
-   * @param periodId periodId
+   * @param index index
    * @param field field
    * @param newDate newDate
    */
   handleDateChange(
-    periodId: number,
+    index: number,
     field: "start" | "end",
     newDate: Date | null
   ) {
     this.setState((prevState) => ({
-      periods: prevState.periods.map((period) =>
-        period.id === periodId ? { ...period, [field]: newDate } : period
+      periods: prevState.periods.map((period, periodIndex) =>
+        periodIndex === index ? { ...period, [field]: newDate } : period
       ),
     }));
   }
@@ -169,23 +168,22 @@ class VacationSettings extends React.Component<
    */
   addPeriod() {
     this.setState((prevState) => ({
-      periods: [...prevState.periods, createVacationPeriodRow()],
+      periods: [...prevState.periods, { start: null, end: null }],
     }));
   }
 
   /**
    * removePeriod
-   * @param periodId periodId
+   * @param index index
    */
-  removePeriod(periodId: number) {
+  removePeriod(index: number) {
     this.setState((prevState) => {
       const nextPeriods = prevState.periods.filter(
-        (period) => period.id !== periodId
+        (_, periodIndex) => periodIndex !== index
       );
-
       return {
         periods:
-          nextPeriods.length > 0 ? nextPeriods : [createVacationPeriodRow()],
+          nextPeriods.length > 0 ? nextPeriods : [{ start: null, end: null }],
       };
     });
   }
