@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import CKEditor from "~/components/general/ckeditor";
@@ -38,25 +38,118 @@ interface NewContactEventProps {
 }
 
 /**
- * NewContactEventState
+ * Persisted draft. Recipients from props are not stored;
+ * only extras added in the dialog are.
  */
-interface NewContactEventState {
-  recipients: ContactRecipientType[];
+interface ContactEventDraft {
+  text: string;
+  type: ContactType;
+  entryDate: string;
+  extras: ContactRecipientType[];
+}
+
+/**
+ * In-memory form state
+ */
+interface ContactEventForm {
   text: string;
   type: ContactType;
   entryDate: Date;
-  draft: boolean;
-  locked: boolean;
 }
 
-const initialState: NewContactEventState = {
-  recipients: [],
+/**
+ * createDefaultForm
+ */
+const createDefaultForm = (): ContactEventForm => ({
   text: "",
   type: "OTHER",
   entryDate: new Date(),
-  draft: false,
-  locked: false,
+});
+
+/**
+ * isSameCalendarDay
+ * @param a a
+ * @param b b
+ */
+const isSameCalendarDay = (a: Date, b: Date) =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
+
+/**
+ * isDefaultForm
+ * @param form form
+ */
+const isDefaultForm = (form: ContactEventForm) =>
+  form.text === "" &&
+  form.type === "OTHER" &&
+  isSameCalendarDay(form.entryDate, new Date());
+
+/**
+ * uniqueById
+ * @param items items
+ */
+const uniqueById = (items: ContactRecipientType[]) => {
+  const seen = new Set<number>();
+
+  return items.filter((item) => {
+    if (seen.has(item.value.id)) {
+      return false;
+    }
+
+    seen.add(item.value.id);
+    return true;
+  });
 };
+
+/**
+ * Recipients that are not part of the current props selection.
+ * @param items items
+ * @param selectedItems selectedItems
+ */
+const getExtras = (
+  items: ContactRecipientType[],
+  selectedItems: ContactRecipientType[]
+) => {
+  const selectedIds = new Set(selectedItems.map((item) => item.value.id));
+
+  return items.filter((item) => !selectedIds.has(item.value.id));
+};
+
+/**
+ * combineRecipients
+ * @param selectedItems selectedItems
+ * @param extras extras
+ */
+const combineRecipients = (
+  selectedItems: ContactRecipientType[],
+  extras: ContactRecipientType[]
+) => uniqueById([...selectedItems, ...getExtras(extras, selectedItems)]);
+
+/**
+ * toDraft
+ * @param form form
+ * @param extras extras
+ */
+const toDraft = (
+  form: ContactEventForm,
+  extras: ContactRecipientType[]
+): ContactEventDraft => ({
+  text: form.text,
+  type: form.type,
+  entryDate: form.entryDate.toISOString(),
+  extras,
+});
+
+/**
+ * fromDraft
+ * @param draft draft
+ */
+const fromDraft = (draft: ContactEventDraft): ContactEventForm => ({
+  text: draft.text || "",
+  type: draft.type || "OTHER",
+  entryDate: draft.entryDate ? new Date(draft.entryDate) : new Date(),
+});
 
 /**
  * NewContactEvent
@@ -64,68 +157,129 @@ const initialState: NewContactEventState = {
  * @returns a React component
  */
 const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
-  const [draft, setDraft] = useState(false);
-  const [locked, setLocked] = useState(false);
-
-  // const { draft, locked } = state;
-  const { isOpen, status, selectedItems, children, displayNotification } =
-    props;
+  const {
+    isOpen,
+    status,
+    selectedItems,
+    children,
+    displayNotification,
+    onClose,
+  } = props;
 
   const { t } = useTranslation(["common", "messaging"]);
 
-  const [
-    newContactEventState,
-    setNewContactEventState,
-    removeContactEventState,
-  ] = useLocalStorage<NewContactEventState>("new-contact-event", initialState);
+  const [locked, setLocked] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [recipients, setRecipients] =
+    useState<ContactRecipientType[]>(selectedItems);
+  const [form, setForm] = useState<ContactEventForm>(createDefaultForm);
+  const [hasDraft, setHasDraft] = useState(false);
 
-  const { text, type, entryDate, recipients } = newContactEventState;
+  const [storedDraft, setStoredDraft, removeStoredDraft] =
+    useLocalStorage<ContactEventDraft | null>("new-contact-event", null);
 
-  const prevSelectedItemsCountRef = useRef(selectedItems.length);
+  const [recipientsInputKey, setRecipientsInputKey] = useState(0);
 
+  const skipCkEditorChangeRef = useRef(false);
+
+  // While the dialog is closed, keep recipients in sync with current props
+  // plus any stored extras. Also prune extras that have become selected in
+  // the toolbar, so localStorage matches the new selection.
   useEffect(() => {
-    // If there's a local storage state this is a draft
-    if (localStorage.getItem("new-contact-event")) {
-      setDraft(true);
+    if (isDialogOpen) {
+      return;
     }
-    // Check if the selectedItems have changed
-    if (selectedItems.length !== prevSelectedItemsCountRef.current) {
-      // Update the previous selected items count
-      prevSelectedItemsCountRef.current = selectedItems.length;
-      const existing = [...recipients];
 
-      // If there are recipients in the local storage, check is the selected recipients overlap
-      // then combine them
-      if (existing.length > 0) {
-        const newItems = selectedItems.filter(
-          (selectedItem) =>
-            !existing.find(
-              (existingItem) => existingItem.value.id === selectedItem.value.id
-            )
-        );
-        setNewContactEventState((prevState) => ({
-          ...prevState,
-          recipients: [...newItems, ...existing],
-        }));
-      } else {
-        setNewContactEventState((prevState) => ({
-          ...prevState,
-          recipients: selectedItems,
-        }));
-      }
+    const extras = storedDraft?.extras || [];
+    const nextRecipients = combineRecipients(selectedItems, extras);
+    const nextExtras = getExtras(nextRecipients, selectedItems);
+
+    setRecipients(nextRecipients);
+
+    if (!storedDraft) {
+      return;
     }
-  }, [selectedItems, recipients, setNewContactEventState]);
+
+    const extrasChanged =
+      nextExtras.length !== extras.length ||
+      nextExtras.some(
+        (extra, index) => extra.value.id !== extras[index]?.value.id
+      );
+
+    if (extrasChanged) {
+      setStoredDraft({
+        ...storedDraft,
+        extras: nextExtras,
+      });
+    }
+  }, [selectedItems, isDialogOpen, storedDraft, setStoredDraft]);
+
+  /**
+   * persistDraft
+   * @param nextForm nextForm
+   * @param extras extras
+   */
+  const persistDraft = (
+    nextForm: ContactEventForm,
+    extras: ContactRecipientType[]
+  ) => {
+    setForm(nextForm);
+
+    if (isDefaultForm(nextForm) && extras.length === 0) {
+      removeStoredDraft();
+    } else {
+      setStoredDraft(toDraft(nextForm, extras));
+    }
+  };
+
+  /**
+   * handleOpen
+   */
+  const handleOpen = () => {
+    const extras = storedDraft?.extras || [];
+    const nextForm = storedDraft ? fromDraft(storedDraft) : createDefaultForm();
+    const nextRecipients = combineRecipients(selectedItems, extras);
+
+    setIsDialogOpen(true);
+    setRecipients(nextRecipients);
+    setForm(nextForm);
+    setHasDraft(
+      !!storedDraft && (!isDefaultForm(nextForm) || extras.length > 0)
+    );
+    setLocked(false);
+  };
+
+  /**
+   * handleClose
+   */
+  const handleClose = () => {
+    setIsDialogOpen(false);
+    onClose && onClose();
+  };
+
+  /**
+   * handleReset
+   */
+  const handleReset = () => {
+    skipCkEditorChangeRef.current = true;
+    setTimeout(() => {
+      skipCkEditorChangeRef.current = false;
+    }, 100);
+
+    setRecipients(selectedItems);
+    persistDraft(createDefaultForm(), []);
+    removeStoredDraft();
+    setHasDraft(false);
+    setRecipientsInputKey((key) => key + 1);
+  };
 
   /**
    * handleRecipientsChange
-   * @param recipients recipients
+   * @param nextRecipients nextRecipients
    */
-  const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    setNewContactEventState((prevState) => ({
-      ...prevState,
-      recipients,
-    }));
-    setDraft(true);
+  const handleRecipientsChange = (nextRecipients: ContactRecipientType[]) => {
+    setRecipients(nextRecipients);
+    persistDraft(form, getExtras(nextRecipients, selectedItems));
   };
 
   /**
@@ -133,11 +287,13 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param date date
    */
   const handleDateChange = (date: Date) => {
-    setNewContactEventState((prevState) => ({
-      ...prevState,
-      entryDate: date,
-    }));
-    setDraft(true);
+    persistDraft(
+      {
+        ...form,
+        entryDate: date,
+      },
+      getExtras(recipients, selectedItems)
+    );
   };
 
   /**
@@ -145,11 +301,13 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param e event
    */
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setNewContactEventState((prevState) => ({
-      ...prevState,
-      type: e.target.value as ContactType,
-    }));
-    setDraft(true);
+    persistDraft(
+      {
+        ...form,
+        type: e.target.value as ContactType,
+      },
+      getExtras(recipients, selectedItems)
+    );
   };
 
   /**
@@ -157,21 +315,18 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param text text
    */
   const handleCkEditorChange = (text: string) => {
-    setNewContactEventState((prevState) => ({
-      ...prevState,
-      text,
-    }));
+    if (skipCkEditorChangeRef.current) {
+      skipCkEditorChangeRef.current = false;
+      return;
+    }
 
-    setDraft(true);
-  };
-
-  /**
-   * handleReset
-   */
-  const handleReset = () => {
-    setNewContactEventState(initialState);
-    removeContactEventState();
-    setDraft(false);
+    persistDraft(
+      {
+        ...form,
+        text,
+      },
+      getExtras(recipients, selectedItems)
+    );
   };
 
   const contactTypesArray = Object.values(ContactType);
@@ -221,9 +376,9 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         recipientStudentsWorkspaceIds,
       },
       contactLogEntry: {
-        text,
-        entryDate: moment(entryDate).format(),
-        type,
+        text: form.text,
+        entryDate: moment(form.entryDate).format(),
+        type: form.type,
       },
     };
 
@@ -243,6 +398,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         );
       })
       .catch((error: unknown) => {
+        setLocked(false);
         if (!isMApiError(error)) {
           throw error;
         }
@@ -263,9 +419,13 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     <>
       <div className="env-dialog__row env-dialog__row--new-contact-event">
         <InputContactsAutofill
+          // Because component is re-rendered when key changes.
+          // InputContactsAutofill only reads selectedItems on mount, so this
+          // ensures that the component is re-rendered when the selectedItems
+          // change.
+          key={`contact-event-recipients-${recipientsInputKey}`}
           identifier="communicatorRecipients"
           modifier="new-message"
-          key="new-message-1"
           showFullNames={true}
           loaders={inputContactsAutofillLoaders()}
           hasGroupPermission={status.permissions.COMMUNICATOR_GROUP_MESSAGING}
@@ -279,7 +439,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           })}
           selectedItems={recipients}
           onChange={handleRecipientsChange}
-          // autofocus={!this.props.initialSelectedItems}
         />
       </div>
       <div className="env-dialog__row env-dialog__row--new-contact-event">
@@ -295,7 +454,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
             id="contactEventdate"
             onChange={handleDateChange}
             locale={outputCorrectDatePickerLocale(localize.language)}
-            selected={new Date(entryDate)}
+            selected={form.entryDate}
             dateFormat="P"
           ></DatePicker>
         </div>
@@ -307,7 +466,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
             id="contactEventTypes"
             className="env-dialog__select"
             onChange={handleTypeChange}
-            value={type}
+            value={form.type}
           >
             {contactTypesArray.map((contactType) => (
               <option key={contactType} value={contactType}>
@@ -333,11 +492,10 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
             })}
             onChange={handleCkEditorChange}
           >
-            {text}
+            {form.text}
           </CKEditor>
         </div>
       </div>
-      ,
     </>
   );
 
@@ -361,7 +519,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       >
         {t("actions.cancel")}
       </Button>
-      {draft && (
+      {hasDraft && (
         <Button
           buttonModifiers="dialog-clear"
           onClick={handleReset}
@@ -382,7 +540,8 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       })}
       content={content}
       footer={footer}
-      //   onClose={this.props.onClose}
+      onOpen={handleOpen}
+      onClose={handleClose}
       isOpen={isOpen}
     >
       {children}
