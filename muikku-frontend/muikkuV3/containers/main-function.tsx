@@ -83,6 +83,7 @@ import {
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
   setLocationToPedagogyFormInTranscriptOfRecords,
+  setLocationToAbsencesInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
@@ -368,21 +369,28 @@ export default class MainFunction extends React.Component<
    */
   loadRecordsData(tab: string, userId?: string) {
     const givenLocation = tab;
-
     if (givenLocation === "summary" || !givenLocation) {
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
       // Counselors, Guardians and other contact types are loaded in summary view
       this.props.store.dispatch(loadAllContactGroups(userId) as Action);
-
       this.props.store.dispatch(updateSummary(userId) as Action);
-
       this.props.store.dispatch(loadStudyPlanData({}) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords(userId) as Action
       );
+    } else if (givenLocation === "absences") {
+      this.props.store.dispatch(
+        setLocationToAbsencesInTranscriptOfRecords() as Action
+      );
+      const state = this.props.store.getState();
+      if (state.muikkuEvents.absenceEvents.state !== "READY") {
+        this.props.store.dispatch(
+          loadUserAbsenceEvents(state.status.userId) as Action
+        );
+      }
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
