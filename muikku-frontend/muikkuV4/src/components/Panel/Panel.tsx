@@ -63,7 +63,7 @@ export default function Panel(props: PanelProps) {
  */
 export interface PanelMenuItem {
   label: string;
-  action: (announcementId: number) => void;
+  action: (id: number | string) => void;
   icon?: React.ReactNode;
 }
 
@@ -99,7 +99,7 @@ interface PanelItemHeaderProps {
   itemActions?: PanelMenuItem[];
   badges?: PanelItemBadge | PanelItemBadge[];
   icons?: React.ReactNode;
-  itemId: number;
+  itemId: number | string;
 }
 
 /**
@@ -168,8 +168,8 @@ function PanelItemHeader(props: PanelItemHeaderProps) {
  */
 interface PanelItemProps {
   title: string;
-  date: string | React.ReactNode;
-  itemId: number;
+  date?: string | React.ReactNode;
+  itemId: number | string;
   variant?: PanelItemVariant;
   unseen?: boolean;
   itemActions?: PanelMenuItem[];
@@ -206,7 +206,7 @@ function PanelItem(props: PanelItemProps) {
         icons={icons}
       />
       {children && <Box>{children}</Box>}
-      <Text c={panelItemTextColors(unseen).textColor}>{date}</Text>
+      {date && <Text c={panelItemTextColors(unseen).textColor}>{date}</Text>}
     </Paper>
   );
 }
@@ -239,8 +239,10 @@ function PanelAccordionItem(props: PanelItemProps) {
 }
 
 type PanelTimelineItem = {
+  label: string;
   type: string;
   timestamp: Date;
+  bullet?: React.ReactNode;
 };
 
 /**
@@ -276,7 +278,8 @@ function PanelTimeline(props: PanelTimelineProps) {
         return (
           <Timeline.Item
             key={`${item.type}-${item.timestamp.toISOString()}`}
-            title={item.type}
+            title={item.label}
+            bullet={item.bullet}
             {...activeProps}
           >
             <Text>{localize.date(item.timestamp, "DD.MM.YYYY HH:mm")}</Text>

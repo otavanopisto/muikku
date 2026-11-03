@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
  */
 export function Announcements() {
   const announcements = useAtomValue(frontpageAnnouncementsDataAtom);
-  const { t } = useTranslation();
+  const { t } = useTranslation(["announcements", "common"]);
   const setToggleRead = useSetAtom(toggleAnnouncementRead);
   const setPinned = useSetAtom(toggleAnnouncementPinned);
 
@@ -75,7 +75,7 @@ export function Announcements() {
       countIndicator={announcements?.unreadCount}
       indicatorTooltip="Unread count"
       icon={<IconSpeakerphone />}
-      title="Announcements"
+      title={t("label")}
     >
       <Stack>
         {announcements?.announcements.map((announcement) => (

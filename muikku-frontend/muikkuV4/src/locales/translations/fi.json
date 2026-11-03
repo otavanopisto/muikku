@@ -71,11 +71,20 @@
   },
 
   "tasks": {
+    "actions": {
+      "approve": "Hyväksy",
+      "send": "Lähetä"
+    },
     "label": "Opintotehtävät",
     "states": {
       "APPROVED": "Valmis",
       "APPROVAL_PENDING": "Odottaa hyväksyntää",
       "ONGOING": "Kesken"
     }
+  },
+  "workspaces": {
+    "label": "Kurssit",
+    "label_suggestions": "Ehdotetut kurssit",
+    "labels": {}
   }
 }

@@ -4,6 +4,7 @@ import { Messages } from "../panels/messages";
 import { Absences } from "../panels/absences";
 import Tasks from "../panels/tasks";
 import Activities from "../panels/activities";
+import { Suggestions } from "../panels/suggestions";
 export interface Panel {
   id: number;
   title: string;
@@ -34,7 +35,7 @@ export const panels: Panel[] = [
     color: "cyan",
     component: Messages,
   },
-  {
+  /*   {
     id: 3,
     title: "Seinämä",
     description: "",
@@ -42,15 +43,15 @@ export const panels: Panel[] = [
     mandatory: false,
     color: "grape",
     component: null,
-  },
+  }, */
   {
     id: 4,
-    title: "Kurssipoimuri",
+    title: "Ehdotukset",
     description: "",
     icon: null,
     mandatory: false,
     color: "teal",
-    component: null,
+    component: Suggestions,
   },
   {
     id: 5,

@@ -37,7 +37,7 @@ export function Absences() {
     };
   };
   return (
-    <Panel title="TODO: Localize Absences">
+    <Panel title={t("label", { ns: "events", context: "absences" })}>
       <Stack>
         {absences.map((absence) => (
           <Panel.Item

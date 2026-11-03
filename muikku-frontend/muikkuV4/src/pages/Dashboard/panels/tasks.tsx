@@ -94,8 +94,13 @@ export default function Tasks() {
     }
   };
 
-  const handleEditTask = (taskId: number, request: UpdateNoteRequest) => {
+  const handleEditTask = (
+    taskId: number,
+    request: UpdateNoteRequest,
+    onClose: () => void
+  ) => {
     void updateTask(taskId, request);
+    onClose();
   };
 
   const getTaskVariant = (task: Note): PanelItemVariant | undefined => {

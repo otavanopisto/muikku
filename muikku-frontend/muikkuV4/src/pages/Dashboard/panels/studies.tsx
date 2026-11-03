@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { Empty } from "src/components/Empty";
 import { Fragment } from "react";
 import Panel from "~/src/components/Panel/Panel";
+import { useTranslation } from "react-i18next";
 
 /**
  * Workspaces
@@ -12,12 +13,12 @@ import Panel from "~/src/components/Panel/Panel";
  */
 export function Workspaces() {
   const lastWorkspaces = useAtomValue(lastWorkspacesDataAtom);
-
+  const { t } = useTranslation(["common", "studies"]);
   if (lastWorkspaces.length === 0) {
     return <Empty title="No workspaces found" />;
   }
   return (
-    <Panel title="TODO: Localize Studies">
+    <Panel title={t("labels.studies")}>
       <Stack>
         {lastWorkspaces.map((workspace) => (
           <Fragment key={workspace.workspaceId}>

@@ -72,7 +72,11 @@ const isPriority = (value: string | null): value is NotePriorityType =>
 type EditTaskProps = {
   task: Note | null;
   opened: boolean;
-  onSave: (taskId: number, request: UpdateNoteRequest) => void;
+  onSave: (
+    taskId: number,
+    request: UpdateNoteRequest,
+    onClose: () => void
+  ) => void;
   onClose: () => void;
 };
 
@@ -108,7 +112,11 @@ function EditTaskForm({
 }: {
   task: Note;
   onClose: () => void;
-  onSave: (taskId: number, request: UpdateNoteRequest) => void;
+  onSave: (
+    taskId: number,
+    request: UpdateNoteRequest,
+    onClose: () => void
+  ) => void;
 }) {
   const [form, dispatch] = useReducer(editTaskReducer, task, formFromTask);
   const taskId = task.id;
@@ -169,24 +177,28 @@ function EditTaskForm({
 
       <Button
         onClick={() =>
-          onSave(taskId, {
-            note: {
-              title: form.title,
-              description: form.description,
-              type: form.type,
-              priority: form.priority,
-              startDate,
-              dueDate,
+          onSave(
+            taskId,
+            {
+              note: {
+                title: form.title,
+                description: form.description,
+                type: form.type,
+                priority: form.priority,
+                startDate,
+                dueDate,
+              },
+              // A non-empty list is a recipient change. The backend only
+              // accepts students there and returns 400 otherwise. Empty
+              // lists update the note and leave current recipients in place.
+              recipients: {
+                recipientIds: [],
+                recipientGroupIds: [],
+                recipientStudentsWorkspaceIds: [],
+              },
             },
-            // A non-empty list is a recipient change. The backend only
-            // accepts students there and returns 400 otherwise. Empty
-            // lists update the note and leave current recipients in place.
-            recipients: {
-              recipientIds: [],
-              recipientGroupIds: [],
-              recipientStudentsWorkspaceIds: [],
-            },
-          })
+            onClose
+          )
         }
       >
         Save Changes

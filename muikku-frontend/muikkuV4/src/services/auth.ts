@@ -24,6 +24,7 @@ export interface User {
     studyTimeLeftStr: UserWhoAmI["studyTimeLeftStr"];
     studyProgrammeName: UserWhoAmI["studyProgrammeName"];
     curriculumName: UserWhoAmI["curriculumName"];
+    educationTypeCode: UserWhoAmI["educationTypeCode"];
   };
 }
 
@@ -85,6 +86,7 @@ export class AuthService {
         studyTimeLeftStr: whoAmI.studyTimeLeftStr,
         studyProgrammeName: whoAmI.studyProgrammeName,
         curriculumName: whoAmI.curriculumName,
+        educationTypeCode: whoAmI.educationTypeCode,
       },
     };
   }
