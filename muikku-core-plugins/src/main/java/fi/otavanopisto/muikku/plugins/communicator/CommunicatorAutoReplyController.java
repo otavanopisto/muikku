@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +21,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
+import fi.otavanopisto.muikku.rest.VacationPeriod;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -48,50 +46,41 @@ public class CommunicatorAutoReplyController {
   public void createCommunicatorAutoReply(CommunicatorMessage communicatorMessage, UserEntity recipient) {
     UserEntity sender = userEntityController.findUserEntityById(communicatorMessage.getSender());
     UserEntityProperty autoReply = userEntityController.getUserEntityPropertyByKey(recipient, "communicator-auto-reply");
-
+  
     if (autoReply == null) {
       logger.log(Level.SEVERE, String.format("Communicator couldn't send automatic reply as user entity property 'communicator-auto-reply' was not found"));
       return;
     }
-    
+  
     if (sender == null || recipient == null) {
       logger.log(Level.SEVERE, String.format("Communicator couldn't send automatic reply as user entity was not found"));
       return;
     }
     if (!Objects.equals(sender.getId(), recipient.getId())) {
-
+  
       if (StringUtils.equals(autoReply.getValue(), "ENABLED")) {
-        UserEntityProperty startProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-start");
-        UserEntityProperty endProperty = userEntityController.getUserEntityPropertyByKey(recipient, "profile-vacation-end");
-    
-        LocalDate start = null;
-        LocalDate end = null;
-        
-        if (startProperty == null || endProperty == null) {
-          // #5629: Simply don't send message if start/end properties aren't present
+        VacationPeriod vacationDates = userEntityController.getCurrentVacationDates(recipient.getId());
+  
+        if (vacationDates == null) {
+          // #5629: Simply don't send message if start/end dates cannot be parsed or no active vacation exists
           return;
         }
-
-        start = Instant.parse(startProperty.getValue()).atZone(ZoneId.systemDefault()).toLocalDate();
-        end = Instant.parse(endProperty.getValue()).atZone(ZoneId.systemDefault()).toLocalDate();
-        
-        if (start == null || end == null) {
-          // #5629: Simply don't send message if start/end dates cannot be parsed
-          return;
-        }
-        
-        LocalDate now = LocalDate.now();
+  
+        LocalDate start = vacationDates.getStart();
+        LocalDate end = vacationDates.getEnd();
+  
         Date notificationDate = new Date();
-        if (start.equals(now) || (now.isAfter(start) && now.isBefore(end)) || end.equals(now)) {
-          DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyy", Locale.ENGLISH);
+  
+        if (start != null && end != null) {
+          DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.ENGLISH);
           String startDate = outputFormatter.format(start);
           String endDate = outputFormatter.format(end);
-          
-          String replyMessage = "";    
+  
+          String replyMessage = "";
           String replySubject = "";
           UserEntityProperty autoReplyMsg = userEntityController.getUserEntityPropertyByKey(recipient, "communicator-auto-reply-msg");
           UserEntityProperty autoReplySubject = userEntityController.getUserEntityPropertyByKey(recipient, "communicator-auto-reply-subject");
-          
+  
           if (autoReplyMsg != null) {
             replyMessage = autoReplyMsg.getValue();
           }
@@ -104,15 +93,15 @@ public class CommunicatorAutoReplyController {
           else {
             replySubject = localeController.getText(sessionController.getLocale(), "plugin.communicator.autoreply", new String[] { startDate,endDate});
           }
-
+  
           UserRecipientList recipientsList = new UserRecipientList();
           recipientsList.addRecipient(sender);
-
+  
           VacationNotifications vacationNotification = communicatorController.findVacationNotification(sender, recipient);
-          
+  
           if (vacationNotification != null) {
             Date lastNotification = vacationNotification.getNotificationDate();
-            
+  
             Date today = new Date();
             Calendar c = Calendar.getInstance();
             c.setTime(lastNotification);
@@ -133,4 +122,5 @@ public class CommunicatorAutoReplyController {
       }
     }
   }
+
 }
