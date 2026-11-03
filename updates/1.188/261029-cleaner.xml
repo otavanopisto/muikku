@@ -5,4 +5,7 @@
    <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.answers.enabled','false');</sql>
    <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.answers.batch','10');</sql>
 
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.journal.userEntityId','0');</sql>
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.journal.enabled','false');</sql>
+
 </update>

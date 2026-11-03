@@ -30,7 +30,7 @@ public class CleanupAnswersScheduler {
   @EJB
   private CleanupShutdown shutdown;
 
-  // Every five minutes but a minute later than other schedulers firing at */5
+  // Every five minutes, e.g. 9.01, 9.06, 9.11, etc.
   @Schedule(hour = "*", minute = "1/5", persistent = false)
   @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
   public void cleanup() {

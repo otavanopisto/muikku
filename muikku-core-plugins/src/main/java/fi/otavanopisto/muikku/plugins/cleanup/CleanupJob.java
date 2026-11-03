@@ -26,8 +26,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
  */
 public abstract class CleanupJob {
   
-  // TODO CleanupJournalJob (WorkspaceJournalEntry + WorkspaceJournalComment)
-  // TODO CleanupJournalFeedbackJob (WorkspaceJournalFeedback)
   // TODO CleanupEvaluationJob (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
   // TODO CleanupActivityJob (ActivityLog)
 

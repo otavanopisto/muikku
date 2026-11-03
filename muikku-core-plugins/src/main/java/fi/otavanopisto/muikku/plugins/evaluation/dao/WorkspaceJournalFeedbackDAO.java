@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -47,6 +48,18 @@ public class WorkspaceJournalFeedbackDAO extends CorePluginsDAO<WorkspaceJournal
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<WorkspaceJournalFeedback> listByUserEntityId(Long userEntityId) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalFeedback> criteria = criteriaBuilder.createQuery(WorkspaceJournalFeedback.class);
+    Root<WorkspaceJournalFeedback> root = criteria.from(WorkspaceJournalFeedback.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceJournalFeedback_.student), userEntityId)
+    );
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public void delete(WorkspaceJournalFeedback e) {
