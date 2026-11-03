@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
+import fi.otavanopisto.muikku.rest.VacationPeriod;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -58,15 +59,15 @@ public class CommunicatorAutoReplyController {
     if (!Objects.equals(sender.getId(), recipient.getId())) {
   
       if (StringUtils.equals(autoReply.getValue(), "ENABLED")) {
-        LocalDate[] vacationDates = userEntityController.getCurrentVacationDates(recipient.getId());
+        VacationPeriod vacationDates = userEntityController.getCurrentVacationDates(recipient.getId());
   
         if (vacationDates == null) {
           // #5629: Simply don't send message if start/end dates cannot be parsed or no active vacation exists
           return;
         }
   
-        LocalDate start = vacationDates[0];
-        LocalDate end = vacationDates[1];
+        LocalDate start = vacationDates.getStart();
+        LocalDate end = vacationDates.getEnd();
   
         Date notificationDate = new Date();
   

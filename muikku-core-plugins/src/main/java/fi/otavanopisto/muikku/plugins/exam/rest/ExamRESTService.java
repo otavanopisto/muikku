@@ -100,7 +100,7 @@ public class ExamRESTService {
         chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
       }
       else {
-        chosenAssignmentIds = examController.listExamAssignmentIds(workspaceFolderId);
+        chosenAssignmentIds = examController.listExamAssignmentIds(workspaceFolderId, true);
       }
       for (Long id : chosenAssignmentIds) {
         WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(id);

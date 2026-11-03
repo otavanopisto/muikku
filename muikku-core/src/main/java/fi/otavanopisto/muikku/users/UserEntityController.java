@@ -41,6 +41,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.rest.VacationPeriod;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -629,7 +630,7 @@ public class UserEntityController implements Serializable {
     return userEntityDAO.listInReverseOrder(startId, batchSize);
   }
 
-  public LocalDate[] getCurrentVacationDates(Long userEntityId) {
+  public VacationPeriod getCurrentVacationDates(Long userEntityId) {
     UserEntity userEntity = findUserEntityById(userEntityId);
 
     if (userEntity == null) {
@@ -639,12 +640,12 @@ public class UserEntityController implements Serializable {
     UserEntityProperty startProperty = getUserEntityPropertyByKey(userEntity, "profile-vacation-start");
     UserEntityProperty endProperty = getUserEntityPropertyByKey(userEntity, "profile-vacation-end");
 
-    if (startProperty == null || endProperty == null || startProperty.getValue() == null || endProperty.getValue() == null) {
+    if (startProperty == null || endProperty == null || StringUtils.isAnyBlank(startProperty.getValue(), endProperty.getValue())) {
       return null;
     }
 
-    String[] starts = startProperty.getValue().split(",", -1);
-    String[] ends = endProperty.getValue().split(",", -1);
+    String[] starts = startProperty.getValue().split(",");
+    String[] ends = endProperty.getValue().split(",");
 
     if (starts.length != ends.length) {
       return null;
@@ -664,7 +665,7 @@ public class UserEntityController implements Serializable {
         }
 
         if (!today.isBefore(start) && !today.isAfter(end)) {
-          return new LocalDate[] { start, end };
+          return new VacationPeriod(start, end);
         }
       } catch (DateTimeParseException e) {
         // Skip invalid vacation periods.
