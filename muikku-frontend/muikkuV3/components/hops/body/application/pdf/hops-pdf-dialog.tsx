@@ -168,6 +168,7 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
             educationTypeCode={hops.studentInfo.educationTypeCode}
             counselors={hops.studentInfo.counselorList || []}
             hopsForm={hops.hopsForm}
+            matriculationPlan={hops.hopsMatriculation.plan}
           />
         </PDFViewer>
       );

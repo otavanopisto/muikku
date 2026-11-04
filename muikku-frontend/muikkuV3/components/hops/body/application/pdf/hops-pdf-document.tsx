@@ -8,6 +8,8 @@ import { HopsForm } from "~/@types/hops";
 import { PdfInfoField } from "./hops-pdf-info-field";
 import HopsPdfBackground from "./hops-pdf-background";
 import HopsPdfPostgraduate from "./hops-pdf-postgraduate";
+import HopsPdfMatriculation from "./hops-pdf-matriculation";
+import { MatriculationPlan } from "~/generated/client";
 
 /**
  * HopsPdfDocumentProps
@@ -19,6 +21,7 @@ interface HopsPdfDocumentProps {
   educationTypeCode: string;
   counselors: string[];
   hopsForm: HopsForm | null;
+  matriculationPlan: MatriculationPlan | null;
 }
 
 /**
@@ -36,6 +39,7 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
     educationTypeCode,
     counselors,
     hopsForm,
+    matriculationPlan,
   } = props;
   const { t } = useTranslation(["hops_new", "common", "users"]);
 
@@ -121,12 +125,10 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
       )}
 
       {selectedSections.MATRICULATION && (
-        <Page style={styles.body} size="A4">
-          {pageHeader}
-          <Text style={styles.pageTitle}>
-            {t("labels.hopsMatriculation", { ns: "hops_new" })}
-          </Text>
-        </Page>
+        <HopsPdfMatriculation
+          pageHeader={pageHeader}
+          plan={matriculationPlan}
+        />
       )}
 
       {selectedSections.POSTGRADUATE && (

@@ -307,3 +307,48 @@ export const formatVocationalStudySector = (
       return displayText(value);
   }
 };
+
+/**
+ * Formats a matriculation subject name from its YTL code.
+ *
+ * @param t t
+ * @param code YTL subject code stored on the plan
+ * @returns display string
+ */
+export const formatMatriculationSubjectName = (
+  t: TFunction,
+  code?: string
+): string => {
+  if (!code) {
+    return "-";
+  }
+
+  return t(`matriculationSubjectsYTL.${code}`, {
+    ns: "hops_new",
+    defaultValue: code,
+  });
+};
+
+/**
+ * Formats a matriculation exam term.
+ *
+ * @param t t
+ * @param term AUTUMN or SPRING
+ * @param year year
+ * @returns display string
+ */
+export const formatMatriculationTerm = (
+  t: TFunction,
+  term?: string,
+  year?: number
+): string => {
+  if (!term || !year) {
+    return "-";
+  }
+
+  return t(`matriculationTerms.${term}`, {
+    ns: "hops_new",
+    year,
+    defaultValue: term,
+  });
+};
