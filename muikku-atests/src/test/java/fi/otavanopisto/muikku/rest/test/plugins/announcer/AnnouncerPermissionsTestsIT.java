@@ -34,8 +34,8 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
         "Test Announcement",            // caption, 
         "Lorem Ipsum",                  // content, 
         new Date(),                     // created, 
-        date(100, 1, 1),                // startDate,
-        date(150, 12, 31),              // endDate, 
+        date(2000, 1, 1),                // startDate,
+        date(2050, 12, 31),              // endDate, 
         false,                          // archived, 
         true                            // publiclyVisible
     );
@@ -61,8 +61,8 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
         "Test Announcement",            // caption, 
         "Lorem Ipsum",                  // content, 
         new Date(),                     // created, 
-        date(100, 1, 1),                // startDate,
-        date(150, 12, 31),              // endDate, 
+        date(2000, 1, 1),                // startDate,
+        date(2050, 12, 31),              // endDate, 
         false,                          // archived, 
         true                            // publiclyVisible
     );
@@ -86,8 +86,8 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
         "Test Announcement",            // caption, 
         "Lorem Ipsum",                  // content, 
         new Date(),                     // created, 
-        date(100, 1, 1),                // startDate,
-        date(150, 12, 31),              // endDate, 
+        date(2000, 1, 1),                // startDate,
+        date(2050, 12, 31),              // endDate, 
         false,                          // archived, 
         true                            // publiclyVisible
     );
@@ -113,8 +113,8 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
         "Test Announcement",            // caption, 
         "Lorem Ipsum",                  // content, 
         new Date(),                     // created, 
-        date(100, 1, 1),                // startDate,
-        date(150, 12, 31),              // endDate, 
+        date(2000, 1, 1),                // startDate,
+        date(2050, 12, 31),              // endDate, 
         false,                          // archived, 
         false                           // publiclyVisible
     );

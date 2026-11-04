@@ -35,7 +35,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         click(".link--main-functions-settings-dropdown");
         addTextToCKEditor("Best Regards from your teacher.");
         waitAndClick(".button--dialog-execute");
-        waitUntilElementGoesAway("#dialog-title-update-signature", 10);        
+        waitForNotPresent("#dialog-title-update-signature", 10);        
         
         waitAndClick("a.button.button--primary-function");
         waitForPresent(".env-dialog__body .autocomplete--new-message .tag-input .tag-input__input");
@@ -45,7 +45,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
 
         waitForVisible(".env-dialog__input--new-message-title");
         waitAndClickWithAction(".env-dialog__input--new-message-title");
-        waitUntilElementGoesAway(".autocomplete__list", 5);
+        waitForNotPresent(".autocomplete__list", 5);
         waitAndClickWithAction(".env-dialog__input--new-message-title");
         sendKeys(".env-dialog__input--new-message-title", "Test message");
         
