@@ -6,12 +6,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.junit.Test;
-
-import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
-import fi.otavanopisto.muikku.atests.DiscussionThread;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
@@ -48,7 +45,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       .build();
     
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
-    Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+    createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     try {
       navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
       waitAndClick(".application-panel__actions-aside .button--primary-function");
@@ -82,7 +79,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
-    Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+    createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     try {
       logout();
       MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
@@ -124,7 +121,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
-    Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+    createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     try {
       navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
       waitAndClick(".application-panel__toolbar .button-pill__icon.icon-plus");
@@ -160,7 +157,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
-    DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
+    createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
     try {
       navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
       waitAndClick("div.button-icon--discussion-action");

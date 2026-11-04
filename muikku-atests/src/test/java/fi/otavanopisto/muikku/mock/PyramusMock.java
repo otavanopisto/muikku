@@ -390,10 +390,8 @@ public class PyramusMock {
                 String.format("/1/courses/courses/%d/students?studentId=%d", cs.getCourseId(), cs.getStudentId()),
                 courseStudentArray);
             
-            pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(cs.getId(), 
-              cs.getCourseId(), cs.getStudentId())));
-            payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(cs.getId(), 
-                cs.getCourseId(), cs.getStudentId())));
+            queueWebhookPayload(new WebhookCourseStudentCreatePayload(cs.getId(),
+                cs.getCourseId(), cs.getStudentId()), payloads);
           }
         
 //          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students", courseId))).withQueryParam("activeStudents", containing("true"))
@@ -416,10 +414,8 @@ public class PyramusMock {
           List<CourseStaffMember> courseStaffMembers = pmock.courseStaffMembers.get(courseId);
           for (CourseStaffMember cs : courseStaffMembers) {
             mockResponseWithUrlEqualTo(String.format("/1/courses/courses/%d/staffMembers/%d", cs.getCourseId(), cs.getId()), cs);
-            payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(cs.getId(), 
-                cs.getCourseId(), cs.getStaffMemberId())));
-            pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(cs.getId(), 
-              cs.getCourseId(), cs.getStaffMemberId())));
+            queueWebhookPayload(new WebhookCourseStaffMemberCreatePayload(cs.getId(),
+                cs.getCourseId(), cs.getStaffMemberId()), payloads);
           }
           mockResponseWithUrlEqualTo(String.format("/1/courses/courses/%d/staffMembers", courseId), pmock.courseStaffMembers.get(courseId));
         }
@@ -583,8 +579,7 @@ public class PyramusMock {
           mockResponseWithUrlMatching(String.format("/1/students/students/%d/subjectChoices", student.getId()), new ArrayList<>());
           
           studentsList.add(student);
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
-          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));
+          queueWebhookPayload(new WebhookStudentCreatePayload(student.getId()), payloads);
         }
         
         stubFor(get(urlPathEqualTo("/1/students/students"))
@@ -618,8 +613,7 @@ public class PyramusMock {
           UserCredentials userCredentials = new UserCredentials(null, "test", null);
           
           mockResponseWithUrlEqualTo(String.format("/1/persons/persons/%d/credentials", person.getId()), userCredentials);
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));          
-          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookPersonCreatePayload(person.getId())));
+          queueWebhookPayload(new WebhookPersonCreatePayload(person.getId()), payloads);
         }
         
         stubFor(get(urlPathEqualTo("/1/persons/persons"))
@@ -643,8 +637,7 @@ public class PyramusMock {
         
         for (StudyProgramme sp : pmock.studyProgrammes) {
           mockResponseWithUrlEqualTo(String.format("/1/students/studyProgrammes/%d", sp.getId()), sp);
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudyProgrammeCreatePayload(sp.getId())));
-          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudyProgrammeCreatePayload(sp.getId())));
+          queueWebhookPayload(new WebhookStudyProgrammeCreatePayload(sp.getId()), payloads);
         }
 
         mockResponseWithUrlEqualTo("/1/students/studyProgrammeCategories", pmock.studyProgrammeCategories);
@@ -693,8 +686,7 @@ public class PyramusMock {
           mockResponseWithUrlMatching(String.format("/1/persons/persons/%d/staffMembers", staffMember.getPersonId()), staffMemberArray);
           
           staffs.add(staffMember);
-          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload(staffMember.getId())));
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload(staffMember.getId())));
+          queueWebhookPayload(new WebhookStaffMemberCreatePayload(staffMember.getId()), payloads);
         }
         
         mockResponseWithUrlEqualTo("/1/staff/members", staffs);
@@ -948,8 +940,7 @@ public class PyramusMock {
                 .withStatus(200)));
           
           mockCourseSignupGroups(course.getId());
-          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId())));
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId())));
+          queueWebhookPayload(new WebhookCourseCreatePayload(course.getId()), payloads);
         }
 
         mockResponseWithUrlEqualTo("/1/courses/courses", pmock.courses);
@@ -1011,8 +1002,7 @@ public class PyramusMock {
         mockResponseWithUrlEqualTo("/1/organizations", organizations);
         for (Organization organization2 : pmock.organizations) {
           mockResponseWithUrlEqualTo(String.format("/1/organizations/%d", organization2.getId()), organization2);
-          payloads.add(pmock.objectMapper.writeValueAsString(new WebhookOrganizationCreatePayload(organization2.getId(), organization2.getName())));
-          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookOrganizationCreatePayload(organization2.getId(), organization2.getName())));
+          queueWebhookPayload(new WebhookOrganizationCreatePayload(organization2.getId(), organization2.getName()), payloads);
         }
         for (String payload : payloads) {
           TestUtilities.sendPyramusWebhook(payload);

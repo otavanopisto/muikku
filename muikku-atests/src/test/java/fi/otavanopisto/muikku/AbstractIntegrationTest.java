@@ -67,7 +67,7 @@ public abstract class AbstractIntegrationTest {
   
   public Date date(int year, int month, int date) {
     Calendar calendar = Calendar.getInstance();
-    calendar.set(1900 + year, month, date, 0, 0, 0);
+    calendar.set(year, month, date, 0, 0, 0);
     return calendar.getTime();
   }
   
@@ -102,7 +102,7 @@ public abstract class AbstractIntegrationTest {
     InputStream sqlStream = classLoader.getResourceAsStream(file);
     if (sqlStream != null) {
       try {
-        String sqlString = IOUtils.toString(sqlStream);
+        String sqlString = IOUtils.toString(sqlStream, StandardCharsets.UTF_8);
         Pattern commentPattern = Pattern.compile("--.*$", Pattern.MULTILINE);
         sqlString = commentPattern.matcher(sqlString).replaceAll("");
         String[] sqls = sqlString.split(";(?=([^\']*\'[^\']*\')*[^\']*$)"); // Quote-aware split on ';'
@@ -414,7 +414,7 @@ protected long getUserIdByEmail(String email) throws SQLException, ClassNotFound
   protected String getResourceContents(String file) throws IOException {
     ClassLoader classLoader = getClass().getClassLoader();
     InputStream inputStream = classLoader.getResourceAsStream(file);
-    String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+    String content = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     return content;
  }
   
