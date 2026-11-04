@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.plugins.cleanup;
 
-import java.util.logging.Logger;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -22,9 +20,6 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Stateful
 @Path("/cleanup")
 public class CleanupRESTService {
-  
-  @Inject
-  private Logger logger;
 
   @Inject
   private SessionController sessionController;
@@ -48,9 +43,10 @@ public class CleanupRESTService {
     }
     StringBuffer sb = new StringBuffer();
 
-    sb.append(String.format("Answers enabled %s userEntityId %s\n",
+    sb.append(String.format("Answers enabled %s userEntityId %s batch size %s\n",
         systemSettingsController.getSetting(CleanupAnswersJob.SETTING_ENABLED),
-        systemSettingsController.getSetting(CleanupAnswersJob.SETTING_USER)));
+        systemSettingsController.getSetting(CleanupAnswersJob.SETTING_USER),
+        systemSettingsController.getSetting(CleanupAnswersJob.SETTING_BATCH)));
 
     sb.append(String.format("Journal enabled %s userEntityId %s\n",
         systemSettingsController.getSetting(CleanupJournalJob.SETTING_ENABLED),
@@ -66,15 +62,16 @@ public class CleanupRESTService {
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    StringBuffer sb = new StringBuffer();
     if (enabled != null) {
-      logger.info(String.format("Journal cleanup enabled changed to %s", enabled));
+      sb.append(String.format("Journal cleanup enabled changed to %b\n", enabled));
       journalJob.toggleEnabled(enabled);
     }
     if (userEntityId != null && userEntityId >= 0) {
-      logger.info(String.format("Journal cleanup userEntityId changed to %d", userEntityId));
+      sb.append(String.format("Journal cleanup userEntityId changed to %d\n", userEntityId));
       journalJob.changeUserEntityId(userEntityId);
     }
-    return Response.noContent().build();
+    return Response.ok(sb.toString()).build();
   }
 
   @GET
@@ -84,19 +81,20 @@ public class CleanupRESTService {
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    StringBuffer sb = new StringBuffer();
     if (batchSize != null && batchSize > 0) {
-      logger.info(String.format("Answer cleanup batch size changed to %d", batchSize));
+      sb.append(String.format("Answers cleanup batch size changed to %d\n", batchSize));
       answersJob.changeBatchSize(batchSize);
     }
     if (enabled != null) {
-      logger.info(String.format("Answer cleanup enabled changed to %s", enabled));
+      sb.append(String.format("Answers cleanup enabled changed to %b\n", enabled));
       answersJob.toggleEnabled(enabled);
     }
     if (userEntityId != null && userEntityId >= 0) {
-      logger.info(String.format("Answer cleanup userEntityId changed to %d", userEntityId));
+      sb.append(String.format("Answers cleanup userEntityId changed to %d\n", userEntityId));
       answersJob.changeUserEntityId(userEntityId);
     }
-    return Response.noContent().build();
+    return Response.ok(sb.toString()).build();
   }
 
 }
