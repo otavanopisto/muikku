@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "~/components/general/avatar";
-import moment from "moment";
-import { localize } from "~/locales/i18n";
+import VacationPeriodList from "./vacation-period-list";
 
 export type ContactState = {
   text: string;
@@ -62,17 +61,7 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
   } = props;
 
   const { t } = useTranslation();
-  let displayVacationPeriod = !!vacationStart;
 
-  if (vacationEnd) {
-    // we must check for the ending
-    const vacationEndsAt = moment(vacationEnd);
-    const today = moment();
-    // if it's before or it's today then we display, otherwise nope
-    displayVacationPeriod =
-      vacationEndsAt.isAfter(today, "day") ||
-      vacationEndsAt.isSame(today, "day");
-  }
   // This prevents the avatar from changing color on every render when there's no id
   const numericId = React.useMemo(
     () => (id ? id : Math.floor(Math.random() * 1000)),
@@ -147,16 +136,11 @@ const ContactCard: React.FC<ContactCardProps> = (props) => {
           )}
           {country && <div className="item-list__user-country">{country}</div>}
         </div>
-        {displayVacationPeriod && (
-          <div className="item-list__user-vacation-period">
-            {t("labels.status", {
-              context: "xa",
-            })}
-
-            {localize.date(vacationStart)}
-            {vacationEnd ? "-" + localize.date(vacationEnd) : null}
-          </div>
-        )}
+        <VacationPeriodList
+          startValue={vacationStart}
+          endValue={vacationEnd}
+          label={t("labels.status", { context: "xa" })}
+        />
         {state && (
           <div
             className={`item-list__user-state ${state.modifier ? "item-list__user-state--" + state.modifier : ""}`}

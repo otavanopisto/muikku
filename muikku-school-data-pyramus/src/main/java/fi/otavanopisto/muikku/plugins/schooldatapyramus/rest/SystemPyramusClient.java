@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache.SystemEntityCache;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 
 @ApplicationScoped
 @PyramusSystem
@@ -42,7 +43,14 @@ class SystemPyramusClient implements PyramusClient {
     Client client = obtainClient();
     try {
       return restClient.post(client, getAccessToken(client), path, entity, type);
-    } finally {
+    } 
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      return restClient.post(client, getAccessToken(client), path, entity, type);
+    }
+    finally {
       releaseClient(client);
     }
   }
@@ -52,7 +60,14 @@ class SystemPyramusClient implements PyramusClient {
     Client client = obtainClient();
     try {
       return restClient.post(client, getAccessToken(client), path, entity);
-    } finally {
+    } 
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      return restClient.post(client, getAccessToken(client), path, entity);
+    }
+    finally {
       releaseClient(client);
     }
   }
@@ -62,7 +77,14 @@ class SystemPyramusClient implements PyramusClient {
     Client client = obtainClient();
     try {
       return restClient.put(client, getAccessToken(client), path, entity, type);
-    } finally {
+    } 
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      return restClient.put(client, getAccessToken(client), path, entity, type);
+    }
+    finally {
       releaseClient(client);
     }
   }
@@ -72,7 +94,14 @@ class SystemPyramusClient implements PyramusClient {
     Client client = obtainClient();
     try {
       return restClient.put(client, getAccessToken(client), path, entity);
-    } finally {
+    } 
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      return restClient.put(client, getAccessToken(client), path, entity);
+    }
+    finally {
       releaseClient(client);
     }
   }
@@ -93,7 +122,19 @@ class SystemPyramusClient implements PyramusClient {
       }
       
       return result;
-    } finally {
+    }
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      T result = restClient.get(client, getAccessToken(client), path, type);
+      if (result != null) {
+        entityCache.put(path, result);
+      }
+      
+      return result;
+    }
+    finally {
       releaseClient(client);
     }
   }
@@ -103,7 +144,14 @@ class SystemPyramusClient implements PyramusClient {
     Client client = obtainClient();
     try {
       restClient.delete(client, getAccessToken(client), path);      
-    } finally {
+    } 
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      restClient.delete(client, getAccessToken(client), path);      
+    }
+    finally {
       releaseClient(client);
     }
   }
@@ -112,6 +160,12 @@ class SystemPyramusClient implements PyramusClient {
   public <T> BridgeResponse<T> responseGet(String path, Class<T> type) {
     Client client = obtainClient();
     try {
+      return restClient.responseGet(client, getAccessToken(client), path, type);
+    }
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
       return restClient.responseGet(client, getAccessToken(client), path, type);
     }
     finally {
@@ -125,6 +179,12 @@ class SystemPyramusClient implements PyramusClient {
     try {
       return restClient.responsePut(client, getAccessToken(client), path, entity, type);
     }
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
+      return restClient.responsePut(client, getAccessToken(client), path, entity, type);
+    }
     finally {
       releaseClient(client);
     }
@@ -134,6 +194,12 @@ class SystemPyramusClient implements PyramusClient {
   public <T> BridgeResponse<T> responsePost(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
+      return restClient.responsePost(client, getAccessToken(client), path, entity, type);
+    }
+    catch (SchoolDataBridgeUnauthorizedException http401) {
+      // 401: Token expired or invalid, refresh token
+      systemAccessTokenProvider.refreshAccessToken(restClient, client);
+      // Try again
       return restClient.responsePost(client, getAccessToken(client), path, entity, type);
     }
     finally {

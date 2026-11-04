@@ -416,7 +416,7 @@ public class ExamController {
           );
         }
         else {
-          assignmentIds.addAll(workspaceMaterialController.listWorkspaceAssignmentIds(folder, false));
+          assignmentIds.addAll(workspaceMaterialController.listWorkspaceAssignmentIds(folder, true));
         }
         for (Long id : assignmentIds) {
           WorkspaceMaterial assignment = workspaceMaterialController.findWorkspaceMaterialById(id);

@@ -1,8 +1,10 @@
 package fi.otavanopisto.muikku.users;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -39,6 +41,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.rest.VacationPeriod;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -625,6 +628,51 @@ public class UserEntityController implements Serializable {
    */
   public List<UserEntity> listUserEntitiesInReverseOrder(long startId, int batchSize) {
     return userEntityDAO.listInReverseOrder(startId, batchSize);
+  }
+
+  public VacationPeriod getCurrentVacationDates(Long userEntityId) {
+    UserEntity userEntity = findUserEntityById(userEntityId);
+
+    if (userEntity == null) {
+      return null;
+    }
+
+    UserEntityProperty startProperty = getUserEntityPropertyByKey(userEntity, "profile-vacation-start");
+    UserEntityProperty endProperty = getUserEntityPropertyByKey(userEntity, "profile-vacation-end");
+
+    if (startProperty == null || endProperty == null || StringUtils.isAnyBlank(startProperty.getValue(), endProperty.getValue())) {
+      return null;
+    }
+
+    String[] starts = startProperty.getValue().split(",");
+    String[] ends = endProperty.getValue().split(",");
+
+    if (starts.length != ends.length) {
+      return null;
+    }
+
+    ZoneId zone = ZoneId.systemDefault();
+    LocalDate today = LocalDate.now(zone);
+
+    for (int i = 0; i < starts.length; i++) {
+      try {
+        LocalDate start = Instant.parse(starts[i].trim()).atZone(zone).toLocalDate();
+
+        LocalDate end = Instant.parse(ends[i].trim()).atZone(zone).toLocalDate();
+
+        if (end.isBefore(start)) {
+          continue;
+        }
+
+        if (!today.isBefore(start) && !today.isAfter(end)) {
+          return new VacationPeriod(start, end);
+        }
+      } catch (DateTimeParseException e) {
+        // Skip invalid vacation periods.
+      }
+    }
+
+    return null;
   }
 
 }

@@ -718,8 +718,8 @@ class StateOfStudies extends React.Component<
                             groupAdvisor={groupAdvisor}
                             studyAdvisor={studyAdvisor}
                             specialEducationTeacher={specialEducationTeacher}
-                            vacationStart={properties["profile-vacationStart"]}
-                            vacationEnd={properties["profile-vacationEnd"]}
+                            vacationStart={properties["profile-vacation-start"]}
+                            vacationEnd={properties["profile-vacation-end"]}
                           />
                         );
                       }

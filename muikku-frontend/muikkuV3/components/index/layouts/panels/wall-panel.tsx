@@ -20,6 +20,7 @@ import {
   createAbsenceEventProperty,
   updateAbsenceEventProperty,
 } from "~/actions/base/muikku-events";
+import { filterAbsenceEventsWithoutReason } from "~/helper-functions/events";
 
 /**
  * Wall properties
@@ -40,6 +41,9 @@ const WallPanel: React.FC<WallProps> = (props) => {
     status,
     displayNotification
   );
+
+  const absenceEventsWithoutReason =
+    filterAbsenceEventsWithoutReason(absenceEvents);
 
   return (
     <Panel
@@ -65,13 +69,13 @@ const WallPanel: React.FC<WallProps> = (props) => {
           </div>
         )}
       </Panel.BodyContent>
-      {absenceEvents.events.length > 0 && (
+      {absenceEventsWithoutReason.length > 0 && (
         <>
           <Panel.BodyTitle>
-            {t("labels.absences", { ns: "events" })}
+            {t("labels.absencesWithoutFeedback", { ns: "events" })}
           </Panel.BodyTitle>
           <Panel.BodyContent>
-            {absenceEvents.events.map((event) => {
+            {absenceEventsWithoutReason.map((event) => {
               const hasFeedback = event.properties?.find(
                 (property) =>
                   property.name == "ABSENCE_REASON" && property.value !== ""
