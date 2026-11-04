@@ -1,5 +1,20 @@
 import { TFunction } from "i18next";
 import { Education, LanguageGradeEnum } from "~/@types/shared";
+import { StudyActivityItem } from "~/generated/client";
+import {
+  PlannedCourseWithIdentifier,
+  PlannedPeriod,
+  StudentDateInfo,
+  StudyPlannerNoteWithIdentifier,
+} from "~/reducers/hops";
+import { CurriculumStrategy } from "~/util/curriculum-config";
+import { PeriodCourseItem } from "~/reducers/hops";
+import {
+  createAndAllocateCoursesToPeriods,
+  isPeriodCourseItemActivityCourse,
+  isPeriodCourseItemPlannedCourse,
+  isPeriodCourseItemStudyPlannerNote,
+} from "~/components/hops/body/application/study-planing/helper";
 
 /**
  * Formats an optional scalar as PDF text.
@@ -351,4 +366,92 @@ export const formatMatriculationTerm = (
     year,
     defaultValue: term,
   });
+};
+
+/**
+ * Params for building study-plan periods for the HOPS PDF.
+ */
+export interface GetHopsPdfStudyPlanPeriodsParams {
+  studyProgramName: string;
+  studentDateInfo: StudentDateInfo;
+  studyActivities: StudyActivityItem[];
+  plannedCourses: PlannedCourseWithIdentifier[];
+  planNotes: StudyPlannerNoteWithIdentifier[];
+  curriculumStrategy: CurriculumStrategy;
+}
+
+/**
+ * Builds planner periods and keeps only those that have courses or notes.
+ * Past periods are included when they have content.
+ *
+ * @param params params
+ * @returns periods with content
+ */
+export const getHopsPdfStudyPlanPeriods = (
+  params: GetHopsPdfStudyPlanPeriodsParams
+): PlannedPeriod[] => {
+  const {
+    studyProgramName,
+    studentDateInfo,
+    studyActivities,
+    plannedCourses,
+    planNotes,
+    curriculumStrategy,
+  } = params;
+
+  if (
+    !studentDateInfo.studyStartDate ||
+    Number.isNaN(studentDateInfo.studyStartDate.getTime())
+  ) {
+    return [];
+  }
+
+  return createAndAllocateCoursesToPeriods(
+    studyProgramName,
+    studentDateInfo,
+    studyActivities,
+    plannedCourses,
+    planNotes,
+    curriculumStrategy
+  ).filter((period) => period.items.length > 0);
+};
+
+/**
+ * Date used to place a planner item in a period month.
+ * Matches study-plan-tool: graded/supplementation activity date
+ * overrides a planned course start date.
+ *
+ * @param item period item
+ * @param studyActivities student study activity
+ * @returns date
+ */
+export const getHopsPdfPeriodItemDate = (
+  item: PeriodCourseItem,
+  studyActivities: StudyActivityItem[]
+): Date => {
+  if (isPeriodCourseItemPlannedCourse(item)) {
+    const studyActivity = studyActivities.find(
+      (activity) =>
+        activity.courseNumber === item.courseNumber &&
+        activity.subject === item.subjectCode
+    );
+    const useStudyActivityDate =
+      studyActivity &&
+      (studyActivity.state === "GRADED" ||
+        studyActivity.state === "SUPPLEMENTATIONREQUEST");
+
+    return useStudyActivityDate
+      ? new Date(studyActivity.date)
+      : new Date(item.startDate);
+  }
+
+  if (isPeriodCourseItemActivityCourse(item)) {
+    return new Date(item.studyActivity.date);
+  }
+
+  if (isPeriodCourseItemStudyPlannerNote(item)) {
+    return new Date(item.startDate);
+  }
+
+  return new Date(0);
 };

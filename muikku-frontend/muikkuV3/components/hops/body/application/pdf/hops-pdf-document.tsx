@@ -9,7 +9,9 @@ import { PdfInfoField } from "./hops-pdf-info-field";
 import HopsPdfBackground from "./hops-pdf-background";
 import HopsPdfPostgraduate from "./hops-pdf-postgraduate";
 import HopsPdfMatriculation from "./hops-pdf-matriculation";
-import { MatriculationPlan } from "~/generated/client";
+import { MatriculationPlan, StudyActivityItem } from "~/generated/client";
+import HopsPdfStudyPlan from "./hops-pdf-studyplan";
+import { PlannedPeriod } from "~/reducers/hops";
 
 /**
  * HopsPdfDocumentProps
@@ -22,6 +24,9 @@ interface HopsPdfDocumentProps {
   counselors: string[];
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
+  studyPlanPeriods: PlannedPeriod[];
+  studyActivities: StudyActivityItem[];
+  formatCourseLength: (courseLength: number) => string;
 }
 
 /**
@@ -40,6 +45,9 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
     counselors,
     hopsForm,
     matriculationPlan,
+    studyPlanPeriods,
+    studyActivities,
+    formatCourseLength,
   } = props;
   const { t } = useTranslation(["hops_new", "common", "users"]);
 
@@ -116,12 +124,12 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
       )}
 
       {selectedSections.STUDYPLAN && (
-        <Page style={styles.body} size="A4">
-          {pageHeader}
-          <Text style={styles.pageTitle}>
-            {t("labels.hopsStudyPlanning", { ns: "hops_new" })}
-          </Text>
-        </Page>
+        <HopsPdfStudyPlan
+          pageHeader={pageHeader}
+          periods={studyPlanPeriods}
+          studyActivities={studyActivities}
+          formatCourseLength={formatCourseLength}
+        />
       )}
 
       {selectedSections.MATRICULATION && (

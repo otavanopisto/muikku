@@ -179,4 +179,27 @@ export const styles = StyleSheet.create({
     paddingBottom: 8,
     borderBottom: "1px solid #000",
   },
+  periodBlock: {
+    marginTop: 10,
+    paddingBottom: 8,
+    borderBottom: "1px solid #000",
+  },
+  periodMonthTitle: {
+    fontSize: 12,
+    fontFamily: "Helvetica-Bold",
+    marginTop: 8,
+    marginBottom: 2,
+  },
+  periodItem: {
+    fontSize: 12,
+    fontFamily: "Helvetica",
+    marginLeft: 16,
+    marginVertical: 2,
+  },
+  periodItemSecondary: {
+    fontSize: 11,
+    fontFamily: "Helvetica",
+    marginLeft: 32,
+    marginBottom: 4,
+  },
 });

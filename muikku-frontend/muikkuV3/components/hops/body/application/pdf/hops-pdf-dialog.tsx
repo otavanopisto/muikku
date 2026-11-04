@@ -12,6 +12,7 @@ import {
   HopsPdfSectionId,
   HopsPdfSectionSelection,
 } from "./hops-pdf-types";
+import { getHopsPdfStudyPlanPeriods } from "./hops-pdf-helpers";
 
 /**
  * Section option.
@@ -39,7 +40,8 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
   const { isOpen, onClose } = props;
   const { t } = useTranslation(["hops_new", "common"]);
   const hops = useSelector((state: StateType) => state.hopsNew);
-  const { curriculumConfig, studentInfo } = useHopsBasicInfo();
+  const { curriculumConfig, studentInfo, userStudyActivity } =
+    useHopsBasicInfo();
 
   const [step, setStep] = React.useState<"select" | "preview">("select");
   const [selection, setSelection] = React.useState<HopsPdfSectionSelection>(
@@ -53,6 +55,35 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
   const isPostgraduateAvailable = curriculumConfig?.isMatrixAvailable ?? false;
   const isMatriculationAvailable =
     hops.studentInfo?.educationTypeCode === "lukio";
+
+  const studyPlanPeriods = React.useMemo(() => {
+    if (!curriculumConfig || !studentInfo || !hops.studentInfo) {
+      return [];
+    }
+
+    return getHopsPdfStudyPlanPeriods({
+      studyProgramName: studentInfo.studyProgramName,
+      studentDateInfo: {
+        studyStartDate: hops.studentInfo.studyStartDate
+          ? new Date(hops.studentInfo.studyStartDate)
+          : new Date(NaN),
+        studyTimeEnd: hops.studentInfo.studyTimeEnd
+          ? new Date(hops.studentInfo.studyTimeEnd)
+          : null,
+        graduationGoal: hops.hopsStudyPlanState.goals.graduationGoal,
+      },
+      studyActivities: userStudyActivity?.items ?? [],
+      plannedCourses: hops.hopsStudyPlanState.plannedCourses,
+      planNotes: hops.hopsStudyPlanState.planNotes,
+      curriculumStrategy: curriculumConfig.strategy,
+    });
+  }, [
+    curriculumConfig,
+    hops.studentInfo,
+    hops.hopsStudyPlanState,
+    studentInfo,
+    userStudyActivity,
+  ]);
 
   React.useEffect(() => {
     if (!isOpen) {
@@ -169,6 +200,12 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
             counselors={hops.studentInfo.counselorList || []}
             hopsForm={hops.hopsForm}
             matriculationPlan={hops.hopsMatriculation.plan}
+            studyPlanPeriods={studyPlanPeriods}
+            studyActivities={userStudyActivity?.items ?? []}
+            formatCourseLength={
+              curriculumConfig?.strategy.getCourseDisplayedLength ??
+              ((courseLength: number) => String(courseLength))
+            }
           />
         </PDFViewer>
       );
