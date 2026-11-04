@@ -50,6 +50,7 @@ import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-ev
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 import Dropdown from "~/components/general/dropdown";
 import { CurriculumConfig } from "~/util/curriculum-config";
+import HopsPdfDialog from "~/components/hops/body/application/pdf/hops-pdf-dialog";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -118,6 +119,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     isPendingChangesDetailsDialogOpen,
     setIsPendingChangesDetailsDialogOpen,
   ] = React.useState(false);
+  const [isHopsPdfDialogOpen, setIsHopsPdfDialogOpen] = React.useState(false);
   const [pendingDetailsContent, setPendingDetailsContent] = React.useState("");
 
   const { t } = useTranslation(["studies", "common", "hops_new"]);
@@ -411,6 +413,13 @@ const HopsApplication = (props: HopsApplicationProps) => {
       >
         {studentInfo.permissions.canEdit && (
           <div className="hops-edit__button-row">
+            <Button
+              onClick={() => setIsHopsPdfDialogOpen(true)}
+              disabled={!studentInfo}
+              buttonModifiers={["info"]}
+            >
+              {t("actions.openPDF", { ns: "common" })}
+            </Button>
             {hops.hopsMode === "READ" ? (
               <Dropdown
                 openByHover
@@ -468,6 +477,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
           onTabChange={onTabChange}
           activeTab={activeTab}
           panelTabs={panelTabs.filter((tab) => isVisible(tab.id))}
+        />
+        <HopsPdfDialog
+          isOpen={isHopsPdfDialogOpen}
+          onClose={() => setIsHopsPdfDialogOpen(false)}
         />
         <PendingChangesWarningDialog
           isOpen={isPendingChangesWarningDialogOpen}

@@ -673,6 +673,9 @@
       "hopsStudyPlanning": "Opintojen suunnittelu",
       "hopsMatriculation": "Ylioppilastutkinto",
       "hopsPostgraduate": "Jatko-opinto- ja urasuunnitelma",
+      "hopsPdfDialogTitle": "Henkilökohtainen opetussuunnitelma (HOPS)",
+      "hopsPdfSelectParts": "Valitse mukaan otettavat osiot",
+      "hopsPdfConfidential": "Salassa pidettävä",
       "hopsFormWarningTitle": "Varoitus",
       "hopsFormBasicInfoName": "Nimi:",
       "hopsFormBasicInfoEducationLevel": "Koulutusaste:",
@@ -934,6 +937,7 @@
       "unblockPastPeriod": "Avaa lukitus muokataksesi"
     },
     "content": {
+      "hopsPdfSelectPartsHelp": "PDF muodostetaan valituista HOPS-osioista. Tyhjät osiot näkyvät tyhjinä.",
       "hopsFormUnsavedChanges": "Olet muokkannut HOPS:ia. Jos siirryt pois sivulta menetät kaikki tekemäsi tallentamattomat muutokset.",
       "hopsSecondaryPostgraduateSubTitle2Content": "Tulevaisuuden suunnitelmasi rakentuvat sekä kiinnostustesi että osaamisesi pohjalta. Kirjaa tähän taitosi ja kokemuksesi, jotka voivat auttaa suunnitelmiesi selkeyttämisessä.",
       "hopsSecondaryPostgraduateSubTitle4Content": "Kirjaa ajatuksiasi siitä, mitä kohti haluat suunnata. Näiden pohdintojen avulla voit hahmottaa, millaiset opinnot ja työtehtävät sopisivat sinulle.",

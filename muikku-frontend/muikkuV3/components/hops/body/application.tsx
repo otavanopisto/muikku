@@ -40,6 +40,7 @@ import { Textarea } from "~/components/hops/body/application/wizard/components/t
 import { isCompulsoryStudiesHops } from "~/@types/hops";
 import "~/sass/elements/react-datepicker-override.scss";
 import Dropdown from "~/components/general/dropdown";
+import HopsPdfDialog from "./application/pdf/hops-pdf-dialog";
 
 /**
  * Represents the available tabs in the HOPS application.
@@ -79,6 +80,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     isPendingChangesDetailsDialogOpen,
     setIsPendingChangesDetailsDialogOpen,
   ] = React.useState(false);
+  const [isHopsPdfDialogOpen, setIsHopsPdfDialogOpen] = useState(false);
   const [pendingDetailsContent, setPendingDetailsContent] = useState("");
 
   const dispatch = useDispatch();
@@ -381,6 +383,13 @@ const HopsApplication = (props: HopsApplicationProps) => {
           title={showTitle ? "HOPS" : undefined}
           panelOptions={
             <div className="hops-edit__button-row">
+              <Button
+                onClick={() => setIsHopsPdfDialogOpen(true)}
+                disabled={!hops.studentInfo}
+                buttonModifiers={["info"]}
+              >
+                {t("actions.openPDF", { ns: "common" })}
+              </Button>
               {hops.hopsMode === "READ" ? (
                 <Dropdown
                   openByHover
@@ -429,6 +438,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
           onTabChange={onTabChange}
           activeTab={activeTab}
           panelTabs={panelTabs.filter((tab) => isVisible(tab.id))}
+        />
+        <HopsPdfDialog
+          isOpen={isHopsPdfDialogOpen}
+          onClose={() => setIsHopsPdfDialogOpen(false)}
         />
         <PendingChangesWarningDialog
           isOpen={isPendingChangesWarningDialogOpen}

@@ -144,6 +144,7 @@
   width: 100%;
 }
 
+.dialog__window--hops-pdf-dialog,
 .dialog__window--notebook-pdf-dialog, 
 .dialog__window--cv-pdf-dialog {
   @include breakpoint($breakpoint-pad) {
@@ -622,6 +623,7 @@
   width: 100%;
 }
 
+.dialog__content--hops-pdf-dialog,
 .dialog__content--notebook-pdf-dialog {
   max-height: 100%;
 }
