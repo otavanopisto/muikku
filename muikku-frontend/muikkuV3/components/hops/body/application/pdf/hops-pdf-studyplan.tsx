@@ -8,16 +8,18 @@ import {
   PeriodCourseItem,
   PlannedCourseWithIdentifier,
   PlannedPeriod,
+  PlannerActivityItem,
+  StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
 import { styles } from "./hops-pdf-styles";
 import { PdfSectionTitle } from "./hops-pdf-info-field";
 import {
   getPeriodMonthNames,
-  isPeriodCourseItemActivityCourse,
   isPeriodCourseItemPlannedCourse,
   isPeriodCourseItemStudyPlannerNote,
 } from "~/components/hops/body/application/study-planing/helper";
 import { getHopsPdfPeriodItemDate } from "./hops-pdf-helpers";
+import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
  * HopsPdfStudyPlanProps
@@ -135,54 +137,89 @@ const groupPeriodItemsByMonth = (
 };
 
 /**
- * Formats one period item as PDF text.
- *
- * @param item period item
- * @param formatCourseLength length formatter from curriculum strategy
- * @param studyActivities student study activity
- * @param t t
- * @returns primary and optional secondary lines
+ * HopsPdfStudyPlanCourseCardProps
  */
-const getPeriodItemLines = (
-  item: PeriodCourseItem,
-  formatCourseLength: (courseLength: number) => string,
-  studyActivities: StudyActivityItem[],
-  t: TFunction
-): { primary: string; dates?: string[]; secondary?: string } => {
-  const dateStr = formatItemDate(
-    getHopsPdfPeriodItemDate(item, studyActivities)
-  );
+interface HopsPdfStudyPlanCourseCardProps {
+  item: PlannedCourseWithIdentifier | PlannerActivityItem;
+  studyActivities: StudyActivityItem[];
+  formatCourseLength: (courseLength: number) => string;
+}
+
+/**
+ * Course card in the study-plan PDF (planned or activity-only).
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+const HopsPdfStudyPlanCourseCard = (props: HopsPdfStudyPlanCourseCardProps) => {
+  const { item, studyActivities, formatCourseLength } = props;
+  const { t } = useTranslation(["hops_new", "common"]);
+
+  let title: string;
+  let dates: string[] = [];
+  let isMandatory: boolean;
   if (isPeriodCourseItemPlannedCourse(item)) {
     const studyActivity = studyActivities.find(
       (activity) =>
         activity.courseNumber === item.courseNumber &&
         activity.subject === item.subjectCode
     );
-    const dates = [
+    title = `${item.subjectCode}${item.courseNumber}  ${item.name}, ${formatCourseLength(item.length)}`;
+    isMandatory = item.mandatory;
+    dates = [
       formatPlannedCourseDate(item, t),
       formatStudyActivityDate(t, studyActivity),
     ].filter((line): line is string => Boolean(line));
-    return {
-      primary: `${item.subjectCode}${item.courseNumber}  ${item.name}, ${formatCourseLength(item.length)}`,
-      dates,
-    };
-  }
-  if (isPeriodCourseItemActivityCourse(item)) {
+  } else {
     const { course, studyActivity } = item;
     const activityDate = formatStudyActivityDate(t, studyActivity);
-    return {
-      primary: `${course.subjectCode}${course.courseNumber}  ${course.name}, ${formatCourseLength(course.length)}`,
-      dates: activityDate ? [activityDate] : undefined,
-    };
+    title = `${course.subjectCode}${course.courseNumber}  ${course.name}, ${formatCourseLength(course.length)}`;
+    isMandatory = MANDATORITY_MANDATORY_VALUES.includes(course.mandatority);
+    dates = activityDate ? [activityDate] : [];
   }
-  if (isPeriodCourseItemStudyPlannerNote(item)) {
-    return {
-      primary: item.title,
-      dates: [dateStr],
-      secondary: item.content?.trim() ? item.content : "-",
-    };
-  }
-  return { primary: "-" };
+  const typeLabel = t(isMandatory ? "labels.mandatory" : "labels.optional", {
+    ns: "common",
+  });
+  return (
+    <View wrap={false}>
+      <Text style={styles.periodItem}>{title}</Text>
+      <Text style={styles.periodItemSecondary}>{typeLabel}</Text>
+      {dates.map((dateLine) => (
+        <Text key={dateLine} style={styles.periodItemSecondary}>
+          {dateLine}
+        </Text>
+      ))}
+    </View>
+  );
+};
+
+/**
+ * HopsPdfStudyPlanNoteCardProps
+ */
+interface HopsPdfStudyPlanNoteCardProps {
+  item: StudyPlannerNoteWithIdentifier;
+}
+
+/**
+ * Note card in the study-plan PDF.
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+const HopsPdfStudyPlanNoteCard = (props: HopsPdfStudyPlanNoteCardProps) => {
+  const { item } = props;
+  const dateStr = formatItemDate(new Date(item.startDate));
+
+  return (
+    <View wrap={false}>
+      <Text style={styles.periodItem}>{item.title}</Text>
+
+      <Text style={styles.periodItemSecondary}>
+        {item.content?.trim() ? item.content : "-"}
+      </Text>
+      <Text style={styles.periodItemSecondary}>{dateStr}</Text>
+    </View>
+  );
 };
 
 /**
@@ -234,32 +271,21 @@ const HopsPdfStudyPlan = (props: HopsPdfStudyPlanProps) => {
               ).map((month) => (
                 <View key={`${period.type}-${period.year}-${month.monthName}`}>
                   <Text style={styles.periodMonthTitle}>{month.monthName}</Text>
-                  {month.items.map((item, index) => {
-                    const lines = getPeriodItemLines(
-                      item,
-                      formatCourseLength,
-                      studyActivities,
-                      t
-                    );
-                    return (
-                      <View key={`${item.identifier}-${index}`} wrap={false}>
-                        <Text style={styles.periodItem}>{lines.primary}</Text>
-                        {lines.dates?.map((dateLine) => (
-                          <Text
-                            key={dateLine}
-                            style={styles.periodItemSecondary}
-                          >
-                            {dateLine}
-                          </Text>
-                        ))}
-                        {lines.secondary ? (
-                          <Text style={styles.periodItemSecondary}>
-                            {lines.secondary}
-                          </Text>
-                        ) : null}
-                      </View>
-                    );
-                  })}
+                  {month.items.map((item, index) =>
+                    isPeriodCourseItemStudyPlannerNote(item) ? (
+                      <HopsPdfStudyPlanNoteCard
+                        key={`${item.identifier}-${index}`}
+                        item={item}
+                      />
+                    ) : (
+                      <HopsPdfStudyPlanCourseCard
+                        key={`${item.identifier}-${index}`}
+                        item={item}
+                        studyActivities={studyActivities}
+                        formatCourseLength={formatCourseLength}
+                      />
+                    )
+                  )}
                 </View>
               ))}
             </View>

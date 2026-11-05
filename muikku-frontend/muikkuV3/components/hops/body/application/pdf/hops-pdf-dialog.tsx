@@ -200,6 +200,13 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
             counselors={hops.studentInfo.counselorList || []}
             hopsForm={hops.hopsForm}
             matriculationPlan={hops.hopsMatriculation.plan}
+            eligibility={hops.hopsMatriculation.eligibility}
+            subjectsWithEligibility={
+              hops.hopsMatriculation.subjectsWithEligibility
+            }
+            exams={hops.hopsMatriculation.exams}
+            pastExams={hops.hopsMatriculation.pastExams}
+            results={hops.hopsMatriculation.results}
             studyPlanPeriods={studyPlanPeriods}
             studyActivities={userStudyActivity?.items ?? []}
             formatCourseLength={

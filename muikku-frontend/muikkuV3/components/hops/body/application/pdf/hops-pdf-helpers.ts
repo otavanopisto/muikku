@@ -1,6 +1,10 @@
 import { TFunction } from "i18next";
 import { Education, LanguageGradeEnum } from "~/@types/shared";
-import { StudyActivityItem } from "~/generated/client";
+import {
+  MatriculationExamGrade,
+  MatriculationExamStudentStatus,
+  StudyActivityItem,
+} from "~/generated/client";
 import {
   PlannedCourseWithIdentifier,
   PlannedPeriod,
@@ -454,4 +458,92 @@ export const getHopsPdfPeriodItemDate = (
   }
 
   return new Date(0);
+};
+
+/**
+ * Strips simple HTML from translation strings for react-pdf Text.
+ *
+ * @param value value
+ * @returns plain text
+ */
+export const stripHtml = (value: string): string =>
+  value
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+
+/**
+ * Formats a matriculation enrollment student status.
+ *
+ * @param t t
+ * @param status exam student status
+ * @returns display string
+ */
+export const formatMatriculationEnrollmentStatus = (
+  t: TFunction,
+  status?: MatriculationExamStudentStatus
+): string => {
+  switch (status) {
+    case MatriculationExamStudentStatus.Pending:
+      return t("matriculationEnrollmentStatuses.pending", { ns: "hops_new" });
+    case MatriculationExamStudentStatus.SupplementationRequest:
+      return t("matriculationEnrollmentStatuses.supplementationRequest", {
+        ns: "hops_new",
+      });
+    case MatriculationExamStudentStatus.Supplemented:
+      return t("matriculationEnrollmentStatuses.supplemented", {
+        ns: "hops_new",
+      });
+    case MatriculationExamStudentStatus.Approved:
+      return t("matriculationEnrollmentStatuses.Approved", { ns: "hops_new" });
+    case MatriculationExamStudentStatus.Rejected:
+      return t("matriculationEnrollmentStatuses.rejected", { ns: "hops_new" });
+    case MatriculationExamStudentStatus.Confirmed:
+      return t("matriculationEnrollmentStatuses.confirmed", { ns: "hops_new" });
+    case MatriculationExamStudentStatus.FilledOnBehalf:
+      return t("matriculationEnrollmentStatuses.filledOnBehalf", {
+        ns: "hops_new",
+      });
+    default:
+      return "-";
+  }
+};
+
+/**
+ * Formats a matriculation exam grade for display.
+ *
+ * @param t t
+ * @param grade exam grade
+ * @returns display string
+ */
+export const formatMatriculationExamGrade = (
+  t: TFunction,
+  grade?: MatriculationExamGrade
+): string => {
+  switch (grade) {
+    case MatriculationExamGrade.Laudatur:
+      return "L";
+    case MatriculationExamGrade.EximiaCumLaudeApprobatur:
+      return "E";
+    case MatriculationExamGrade.MagnaCumLaudeApprobatur:
+      return "M";
+    case MatriculationExamGrade.CumLaudeApprobatur:
+      return "C";
+    case MatriculationExamGrade.LubenterApprobatur:
+      return "B";
+    case MatriculationExamGrade.Approbatur:
+      return "A";
+    case MatriculationExamGrade.Improbatur:
+      return "I";
+    case MatriculationExamGrade.K:
+      return "K";
+    case MatriculationExamGrade.NoRightToParticipate:
+      return "EO";
+    case MatriculationExamGrade.Invalidated:
+      return t("matriculationGrades.INVALIDATED", { ns: "hops_new" });
+    case MatriculationExamGrade.Unknown:
+      return t("matriculationGrades.UNKNOWN", { ns: "hops_new" });
+    default:
+      return "-";
+  }
 };

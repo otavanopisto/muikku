@@ -2,7 +2,7 @@ import * as React from "react";
 import { Text, View } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { styles } from "./hops-pdf-styles";
-import { formatScaleValue } from "./hops-pdf-helpers";
+import { formatScaleValue, stripHtml } from "./hops-pdf-helpers";
 
 /**
  * PdfInfoFieldProps
@@ -73,3 +73,53 @@ export const PdfScaleRow = (props: PdfScaleRowProps) => {
     </View>
   );
 };
+
+/**
+ * PdfEligibilityRowProps
+ */
+interface PdfEligibilityRowProps {
+  eligible: boolean;
+  label?: string;
+  description: string;
+}
+/**
+ * One eligibility check: Yes/No, optional subject, description.
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+export const PdfEligibilityRow = (props: PdfEligibilityRowProps) => {
+  const { eligible, label, description } = props;
+  const { t } = useTranslation(["common"]);
+  return (
+    <View style={styles.eligibilityRow} wrap={false}>
+      <Text style={styles.eligibilityStatus}>
+        {eligible
+          ? t("labels.yes", { ns: "common" })
+          : t("labels.no", { ns: "common" })}
+      </Text>
+      <View style={styles.eligibilityContent}>
+        {label ? <Text style={styles.eligibilityLabel}>{label}</Text> : null}
+        <Text style={styles.eligibilityDescription}>
+          {stripHtml(description)}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+/**
+ * PdfGuideTextProps
+ */
+interface PdfGuideTextProps {
+  children: string;
+}
+/**
+ * Instructional paragraph. Strips HTML from translation strings.
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+export const PdfGuideText = (props: PdfGuideTextProps) => (
+  <Text style={styles.guideText}>{stripHtml(props.children)}</Text>
+);

@@ -9,9 +9,18 @@ import { PdfInfoField } from "./hops-pdf-info-field";
 import HopsPdfBackground from "./hops-pdf-background";
 import HopsPdfPostgraduate from "./hops-pdf-postgraduate";
 import HopsPdfMatriculation from "./hops-pdf-matriculation";
-import { MatriculationPlan, StudyActivityItem } from "~/generated/client";
+import {
+  MatriculationPlan,
+  MatriculationResults,
+  StudyActivityItem,
+} from "~/generated/client";
 import HopsPdfStudyPlan from "./hops-pdf-studyplan";
-import { PlannedPeriod } from "~/reducers/hops";
+import {
+  MatriculationEligibilityWithAbistatus,
+  MatriculationExamWithHistory,
+  MatriculationSubjectWithEligibility,
+  PlannedPeriod,
+} from "~/reducers/hops";
 
 /**
  * HopsPdfDocumentProps
@@ -24,6 +33,11 @@ interface HopsPdfDocumentProps {
   counselors: string[];
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
+  eligibility: MatriculationEligibilityWithAbistatus | null;
+  subjectsWithEligibility: MatriculationSubjectWithEligibility[];
+  exams: MatriculationExamWithHistory[];
+  pastExams: MatriculationExamWithHistory[];
+  results: MatriculationResults[];
   studyPlanPeriods: PlannedPeriod[];
   studyActivities: StudyActivityItem[];
   formatCourseLength: (courseLength: number) => string;
@@ -45,6 +59,11 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
     counselors,
     hopsForm,
     matriculationPlan,
+    eligibility,
+    subjectsWithEligibility,
+    exams,
+    pastExams,
+    results,
     studyPlanPeriods,
     studyActivities,
     formatCourseLength,
@@ -136,6 +155,11 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
         <HopsPdfMatriculation
           pageHeader={pageHeader}
           plan={matriculationPlan}
+          eligibility={eligibility}
+          subjectsWithEligibility={subjectsWithEligibility}
+          exams={exams}
+          pastExams={pastExams}
+          results={results}
         />
       )}
 
