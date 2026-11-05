@@ -234,7 +234,7 @@ const HopsPdfStudyPlan = (props: HopsPdfStudyPlanProps) => {
   const { t } = useTranslation(["hops_new", "common"]);
 
   return (
-    <Page size="A4" orientation="landscape" style={styles.body}>
+    <Page size="A4" style={styles.body}>
       {pageHeader}
       <Text style={styles.pageTitle}>
         {t("labels.hopsStudyPlanning", { ns: "hops_new" })}
