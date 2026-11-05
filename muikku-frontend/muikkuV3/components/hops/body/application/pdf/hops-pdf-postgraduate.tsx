@@ -3,8 +3,8 @@ import { Page, Text } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { HopsForm, isCompulsoryStudiesHops } from "~/@types/hops";
 import { styles } from "./hops-pdf-styles";
-import HopsPdfPostgraduateCompulsory from "./hops-pdf-postgraduate-compulsory";
-import HopsPdfPostgraduateSecondary from "./hops-pdf-postgraduate-secondary";
+import HopsPdfPostgraduateCompulsory from "./postgraduate/hops-pdf-postgraduate-compulsory";
+import HopsPdfPostgraduateSecondary from "./postgraduate/hops-pdf-postgraduate-secondary";
 
 /**
  * HopsPdfPostgraduateProps

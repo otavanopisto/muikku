@@ -6,9 +6,9 @@ import {
   SecondaryStudiesHops,
   WhatNext,
 } from "~/@types/hops";
-import { styles } from "./hops-pdf-styles";
-import { PdfInfoField, PdfSectionTitle } from "./hops-pdf-info-field";
-import { formatPostGraduateStudies, formatWhatNext } from "./hops-pdf-helpers";
+import { styles } from "../hops-pdf-styles";
+import { PdfInfoField, PdfSectionTitle } from "../hops-pdf-info-field";
+import { formatPostGraduateStudies, formatWhatNext } from "../hops-pdf-helpers";
 
 const WHAT_NEXT_ORDER: WhatNext[] = [
   "POSTGRADUATE_STUDIES",

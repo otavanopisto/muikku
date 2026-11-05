@@ -2,16 +2,16 @@ import * as React from "react";
 import { Text, View } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { SecondaryStudiesHops } from "~/@types/hops";
-import { styles } from "./hops-pdf-styles";
+import { styles } from "../hops-pdf-styles";
 import {
   PdfInfoField,
   PdfScaleRow,
   PdfSectionTitle,
-} from "./hops-pdf-info-field";
+} from "../hops-pdf-info-field";
 import {
   formatPreviousStudyDuration,
   formatPreviousStudyType,
-} from "./hops-pdf-helpers";
+} from "../hops-pdf-helpers";
 
 /**
  * HopsPdfBackgroundSecondaryProps

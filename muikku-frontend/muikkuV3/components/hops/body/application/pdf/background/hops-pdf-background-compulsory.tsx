@@ -3,18 +3,18 @@ import { Text, View } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import { Education } from "~/@types/shared";
-import { styles } from "./hops-pdf-styles";
+import { styles } from "../hops-pdf-styles";
 import {
   PdfInfoField,
   PdfScaleRow,
   PdfSectionTitle,
-} from "./hops-pdf-info-field";
+} from "../hops-pdf-info-field";
 import {
   displayText,
   formatLanguageGrade,
   formatPreviousEducation,
   formatWorkExperience,
-} from "./hops-pdf-helpers";
+} from "../hops-pdf-helpers";
 
 /**
  * HopsPdfBackgroundCompulsoryProps

@@ -2,12 +2,12 @@ import * as React from "react";
 import { View } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { CompulsoryStudiesHops } from "~/@types/hops";
-import { PdfInfoField, PdfSectionTitle } from "./hops-pdf-info-field";
+import { PdfInfoField, PdfSectionTitle } from "../hops-pdf-info-field";
 import {
   formatPostGraduateStudies,
   formatVocationalStudySector,
   formatWhatNext,
-} from "./hops-pdf-helpers";
+} from "../hops-pdf-helpers";
 
 /**
  * HopsPdfPostgraduateCompulsoryProps

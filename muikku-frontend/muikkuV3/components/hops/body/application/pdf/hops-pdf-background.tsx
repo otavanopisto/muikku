@@ -3,8 +3,8 @@ import { Page, Text } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import { HopsForm, isCompulsoryStudiesHops } from "~/@types/hops";
 import { styles } from "./hops-pdf-styles";
-import HopsPdfBackgroundCompulsory from "./hops-pdf-background-compulsory";
-import HopsPdfBackgroundSecondary from "./hops-pdf-background-secondary";
+import HopsPdfBackgroundCompulsory from "./background/hops-pdf-background-compulsory";
+import HopsPdfBackgroundSecondary from "./background/hops-pdf-background-secondary";
 
 /**
  * HopsPdfBackgroundProps
