@@ -6,15 +6,15 @@ import { styles } from "./hops-pdf-styles";
 import { HopsPdfSectionSelection } from "./hops-pdf-types";
 import { HopsForm } from "~/@types/hops";
 import { PdfInfoField } from "./hops-pdf-info-field";
-import HopsPdfBackground from "./hops-pdf-background";
-import HopsPdfPostgraduate from "./hops-pdf-postgraduate";
-import HopsPdfMatriculation from "./hops-pdf-matriculation";
+import HopsPdfBackground from "./background/hops-pdf-background";
+import HopsPdfPostgraduate from "./postgraduate/hops-pdf-postgraduate";
+import HopsPdfMatriculation from "./matriculation/hops-pdf-matriculation";
 import {
   MatriculationPlan,
   MatriculationResults,
   StudyActivityItem,
 } from "~/generated/client";
-import HopsPdfStudyPlan from "./hops-pdf-studyplan";
+import HopsPdfStudyPlan from "./studyplan/hops-pdf-studyplan";
 import {
   MatriculationEligibilityWithAbistatus,
   MatriculationExamWithHistory,

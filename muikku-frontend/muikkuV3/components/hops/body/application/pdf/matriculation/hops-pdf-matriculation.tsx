@@ -5,10 +5,10 @@ import {
   MatriculationExamWithHistory,
   MatriculationSubjectWithEligibility,
 } from "~/reducers/hops";
-import HopsPdfMatriculationPlan from "./matriculation/hops-pdf-matriculation-plan";
-import HopsPdfMatriculationEligibility from "./matriculation/hops-pdf-matriculation-eligibility";
-import HopsPdfMatriculationEnrollment from "./matriculation/hops-pdf-matriculation-enrollment";
-import HopsPdfMatriculationHistory from "./matriculation/hops-pdf-matriculation-history";
+import HopsPdfMatriculationPlan from "./hops-pdf-matriculation-plan";
+import HopsPdfMatriculationEligibility from "./hops-pdf-matriculation-eligibility";
+import HopsPdfMatriculationEnrollment from "./hops-pdf-matriculation-enrollment";
+import HopsPdfMatriculationHistory from "./hops-pdf-matriculation-history";
 
 /**
  * HopsPdfMatriculationProps

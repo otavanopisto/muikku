@@ -6,13 +6,13 @@ import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
-import HopsPdfDocument from "./hops-pdf-document";
+import HopsPdfDocument from "../body/application/pdf/hops-pdf-document";
 import {
   EMPTY_HOPS_PDF_SELECTION,
   HopsPdfSectionId,
   HopsPdfSectionSelection,
-} from "./hops-pdf-types";
-import { getHopsPdfStudyPlanPeriods } from "./hops-pdf-helpers";
+} from "../body/application/pdf/hops-pdf-types";
+import { getHopsPdfStudyPlanPeriods } from "../body/application/pdf/hops-pdf-helpers";
 import {
   loadMatriculationData,
   loadStudyPlanData,

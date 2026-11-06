@@ -50,7 +50,7 @@ import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-ev
 import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 import Dropdown from "~/components/general/dropdown";
 import { CurriculumConfig } from "~/util/curriculum-config";
-import HopsPdfDialog from "~/components/hops/body/application/pdf/hops-pdf-dialog";
+import HopsPdfDialog from "~/components/hops/dialogs/hops-pdf-dialog";
 
 /**
  * Represents the available tabs in the HOPS application

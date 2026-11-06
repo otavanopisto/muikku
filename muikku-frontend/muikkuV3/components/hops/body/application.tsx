@@ -40,7 +40,7 @@ import { Textarea } from "~/components/hops/body/application/wizard/components/t
 import { isCompulsoryStudiesHops } from "~/@types/hops";
 import "~/sass/elements/react-datepicker-override.scss";
 import Dropdown from "~/components/general/dropdown";
-import HopsPdfDialog from "./application/pdf/hops-pdf-dialog";
+import HopsPdfDialog from "../dialogs/hops-pdf-dialog";
 
 /**
  * Represents the available tabs in the HOPS application.

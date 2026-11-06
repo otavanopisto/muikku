@@ -11,14 +11,14 @@ import {
   PlannerActivityItem,
   StudyPlannerNoteWithIdentifier,
 } from "~/reducers/hops";
-import { styles } from "./hops-pdf-styles";
-import { PdfSectionTitle } from "./hops-pdf-info-field";
+import { styles } from "../hops-pdf-styles";
+import { PdfSectionTitle } from "../hops-pdf-info-field";
 import {
   getPeriodMonthNames,
   isPeriodCourseItemPlannedCourse,
   isPeriodCourseItemStudyPlannerNote,
 } from "~/components/hops/body/application/study-planing/helper";
-import { getHopsPdfPeriodItemDate } from "./hops-pdf-helpers";
+import { getHopsPdfPeriodItemDate } from "../hops-pdf-helpers";
 import { MANDATORITY_MANDATORY_VALUES } from "~/helper-functions/study-matrix";
 
 /**
