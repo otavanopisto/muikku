@@ -6,6 +6,7 @@ import { Education } from "~/@types/shared";
 import { styles } from "../hops-pdf-styles";
 import {
   PdfInfoField,
+  PdfScaleLegend,
   PdfScaleRow,
   PdfSectionTitle,
 } from "../hops-pdf-info-field";
@@ -161,6 +162,8 @@ const HopsPdfBackgroundCompulsory = (
         })}
         value={form.byWatchingOrDoingExamples}
       />
+
+      <PdfScaleLegend />
       <PdfInfoField
         label={t("labels.hopsCompulsorySomeOtherWay", { ns: "hops_new" })}
         value={form.someOtherWay}
@@ -242,6 +245,8 @@ const HopsPdfBackgroundCompulsory = (
         })}
         value={form.canUseBasicComputerFunctionalities}
       />
+
+      <PdfScaleLegend />
       <PdfInfoField
         label={t("labels.hopsCompulsorySelfImageSomethingElse", {
           ns: "hops_new",

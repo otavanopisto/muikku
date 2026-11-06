@@ -64,12 +64,10 @@ interface PdfScaleRowProps {
  */
 export const PdfScaleRow = (props: PdfScaleRowProps) => {
   const { label, value } = props;
-  const { t } = useTranslation(["hops_new"]);
-
   return (
     <View style={styles.scaleRow} wrap={false}>
       <Text style={styles.scaleLabel}>{label}</Text>
-      <Text style={styles.scaleValue}>{formatScaleValue(t, value)}</Text>
+      <Text style={styles.scaleValue}>{formatScaleValue(value)}</Text>
     </View>
   );
 };
@@ -123,3 +121,28 @@ interface PdfGuideTextProps {
 export const PdfGuideText = (props: PdfGuideTextProps) => (
   <Text style={styles.guideText}>{stripHtml(props.children)}</Text>
 );
+
+/**
+ * 1–5 self-assessment legend.
+ *
+ * @returns JSX.Element
+ */
+export const PdfScaleLegend = () => {
+  const { t } = useTranslation(["hops_new"]);
+  const levels = [1, 2, 3, 4, 5];
+  return (
+    <View wrap={false} style={styles.gradeLegend}>
+      {levels.map((level) => (
+        <View key={level} style={styles.gradeLegendRow}>
+          <Text style={styles.gradeLegendCode}>{level}</Text>
+          <Text style={styles.gradeLegendName}>
+            {t(`labels.hopsFormSelfAssessmentLevel${level}`, {
+              ns: "hops_new",
+              defaultValue: "",
+            })}
+          </Text>
+        </View>
+      ))}
+    </View>
+  );
+};

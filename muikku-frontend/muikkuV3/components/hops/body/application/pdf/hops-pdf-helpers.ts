@@ -37,23 +37,14 @@ export const displayText = (value?: string | number | null): string => {
 /**
  * Formats a 1-5 self-assessment scale value.
  *
- * @param t t
  * @param value value
  * @returns display string
  */
-export const formatScaleValue = (t: TFunction, value?: number): string => {
+export const formatScaleValue = (value?: number): string => {
   if (value === undefined || value === null || Number.isNaN(Number(value))) {
     return "-";
   }
-
-  if (value < 1 || value > 5) {
-    return String(value);
-  }
-
-  return t(`labels.hopsFormSelfAssessmentLevel${value}_description`, {
-    ns: "hops_new",
-    defaultValue: String(value),
-  });
+  return String(value);
 };
 
 /**

@@ -5,6 +5,7 @@ import { SecondaryStudiesHops } from "~/@types/hops";
 import { styles } from "../hops-pdf-styles";
 import {
   PdfInfoField,
+  PdfScaleLegend,
   PdfScaleRow,
   PdfSectionTitle,
 } from "../hops-pdf-info-field";
@@ -143,6 +144,8 @@ const HopsPdfBackgroundSecondary = (props: HopsPdfBackgroundSecondaryProps) => {
         })}
         value={form.independentLearningSkills}
       />
+
+      <PdfScaleLegend />
       <PdfInfoField
         label={t("labels.hopsSecondaryMoreAboutSelfAssessment", {
           ns: "hops_new",
