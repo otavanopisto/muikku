@@ -80,6 +80,20 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     
     return query.getResultList();
   }
+  
+  public List<WorkspaceJournalEntry> listByUserEntityId(Long userEntityId) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalEntry> criteria = criteriaBuilder.createQuery(WorkspaceJournalEntry.class);
+    Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId)
+    );
+      
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   public List<WorkspaceJournalEntry> listByWorkspaceEntityAndUserEntities(WorkspaceEntity workspaceEntity,
       Collection<UserEntity> userEntities, int firstResult, int maxResults) {
