@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PDFViewer } from "@react-pdf/renderer";
 import { useTranslation } from "react-i18next";
 import Dialog from "~/components/general/dialog";
@@ -13,6 +13,12 @@ import {
   HopsPdfSectionSelection,
 } from "./hops-pdf-types";
 import { getHopsPdfStudyPlanPeriods } from "./hops-pdf-helpers";
+import {
+  loadMatriculationData,
+  loadStudyPlanData,
+} from "~/actions/main-function/hops";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * Section option.
@@ -50,12 +56,16 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
   const [previewSelection, setPreviewSelection] =
     React.useState<HopsPdfSectionSelection | null>(null);
 
+  const dispatch = useDispatch();
+
+  // Check if background, study plan, postgraduate, and matriculation data is available to use
   const isBackgroundAvailable = curriculumConfig?.isMatrixAvailable ?? false;
   const isStudyPlanAvailable = curriculumConfig?.isMatrixAvailable ?? false;
   const isPostgraduateAvailable = curriculumConfig?.isMatrixAvailable ?? false;
   const isMatriculationAvailable =
     hops.studentInfo?.educationTypeCode === "lukio";
 
+  // Calculate study plan periods
   const studyPlanPeriods = React.useMemo(() => {
     if (!curriculumConfig || !studentInfo || !hops.studentInfo) {
       return [];
@@ -85,18 +95,21 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
     userStudyActivity,
   ]);
 
+  // Reset state when dialog is opened
   React.useEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    setStep("select");
-    setPreviewSelection(null);
-    setSelection({
-      BACKGROUND: isBackgroundAvailable,
-      STUDYPLAN: isStudyPlanAvailable,
-      MATRICULATION: isMatriculationAvailable,
-      POSTGRADUATE: isPostgraduateAvailable,
+    unstable_batchedUpdates(() => {
+      setStep("select");
+      setPreviewSelection(null);
+      setSelection({
+        BACKGROUND: isBackgroundAvailable,
+        STUDYPLAN: isStudyPlanAvailable,
+        MATRICULATION: isMatriculationAvailable,
+        POSTGRADUATE: isPostgraduateAvailable,
+      });
     });
   }, [
     isOpen,
@@ -104,6 +117,35 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
     isStudyPlanAvailable,
     isMatriculationAvailable,
     isPostgraduateAvailable,
+  ]);
+
+  // Load data if loading it is permitted and data doesn't not already exist
+  React.useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    if (isStudyPlanAvailable && hops.hopsStudyPlanStatus === "IDLE") {
+      dispatch(
+        loadStudyPlanData({
+          userIdentifier: hops.currentStudentIdentifier,
+        })
+      );
+    }
+    if (isMatriculationAvailable && hops.hopsMatriculationStatus === "IDLE") {
+      dispatch(
+        loadMatriculationData({
+          userIdentifier: hops.currentStudentIdentifier,
+        })
+      );
+    }
+  }, [
+    dispatch,
+    hops.currentStudentIdentifier,
+    hops.hopsMatriculationStatus,
+    hops.hopsStudyPlanStatus,
+    isMatriculationAvailable,
+    isOpen,
+    isStudyPlanAvailable,
   ]);
 
   const sectionOptions: SectionOption[] = [
@@ -125,6 +167,7 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
     },
   ];
 
+  // Filter section options based on availability
   const filteredSectionOptions = sectionOptions.filter((section) => {
     switch (section.id) {
       case "BACKGROUND":
@@ -140,8 +183,62 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
     }
   });
 
+  // Check if any section is selected
   const hasSelectedSection = filteredSectionOptions.some(
     (section) => selection[section.id]
+  );
+
+  /**
+   * Checks if a section is ready.
+   *
+   * @param id section id
+   * @returns true if section is ready, false otherwise
+   */
+  const isSectionReady = (id: HopsPdfSectionId): boolean => {
+    switch (id) {
+      case "BACKGROUND":
+      case "POSTGRADUATE":
+        return hops.hopsFormStatus === "READY";
+      case "STUDYPLAN":
+        return hops.hopsStudyPlanStatus === "READY";
+      case "MATRICULATION":
+        return hops.hopsMatriculationStatus === "READY";
+      default:
+        return false;
+    }
+  };
+
+  /**
+   * Checks if a section is loading.
+   *
+   * @param id section id
+   * @returns true if section is loading, false otherwise
+   */
+  const isSectionLoading = (id: HopsPdfSectionId): boolean => {
+    switch (id) {
+      case "BACKGROUND":
+      case "POSTGRADUATE":
+        return (
+          hops.hopsFormStatus === "IDLE" || hops.hopsFormStatus === "LOADING"
+        );
+      case "STUDYPLAN":
+        return (
+          hops.hopsStudyPlanStatus === "IDLE" ||
+          hops.hopsStudyPlanStatus === "LOADING"
+        );
+      case "MATRICULATION":
+        return (
+          hops.hopsMatriculationStatus === "IDLE" ||
+          hops.hopsMatriculationStatus === "LOADING"
+        );
+      default:
+        return false;
+    }
+  };
+
+  // Check if any selected section is not ready
+  const hasSelectedUnreadySection = filteredSectionOptions.some(
+    (section) => selection[section.id] && !isSectionReady(section.id)
   );
 
   /**
@@ -178,8 +275,10 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
    * Closes the dialog and resets the preview step.
    */
   const handleDialogClose = () => {
-    setStep("select");
-    setPreviewSelection(null);
+    unstable_batchedUpdates(() => {
+      setStep("select");
+      setPreviewSelection(null);
+    });
     onClose();
   };
 
@@ -234,6 +333,7 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
                 className="hops__input"
                 checked={selection[section.id]}
                 onChange={handleSectionToggle(section.id)}
+                disabled={!isSectionReady(section.id)}
               />
               <label
                 htmlFor={`hops-pdf-section-${section.id}`}
@@ -241,6 +341,10 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
               >
                 {section.label}
               </label>
+
+              {isSectionLoading(section.id) ? (
+                <span className="hops__pdf-section-loader" />
+              ) : null}
             </div>
           </div>
         ))}
@@ -266,7 +370,11 @@ const HopsPdfDialog = (props: HopsPdfDialogProps) => {
         <Button
           buttonModifiers={["execute", "standard-ok"]}
           onClick={handleOpenPreview}
-          disabled={!hasSelectedSection || !hops.studentInfo}
+          disabled={
+            !hasSelectedSection ||
+            hasSelectedUnreadySection ||
+            !hops.studentInfo
+          }
         >
           {t("actions.openPDF", { ns: "common" })}
         </Button>

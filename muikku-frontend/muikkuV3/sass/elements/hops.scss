@@ -1026,3 +1026,15 @@
   height: 100%;
   transition: width 0.3s ease;
 }
+
+.hops__pdf-section-loader {
+  flex-shrink: 0;
+  height: 16px;
+  margin-left: 6px;
+  position: relative;
+  width: 16px;
+  
+  &::after {
+    @include load-animation(16px);
+  }
+}
