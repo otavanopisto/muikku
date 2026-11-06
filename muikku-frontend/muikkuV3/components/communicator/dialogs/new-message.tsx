@@ -18,6 +18,8 @@ import MApi from "~/api/api";
 import { useTranslation } from "react-i18next";
 import { CommunicatorSignature } from "~/generated/client";
 import { useLocalStorage } from "usehooks-ts";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * CommunicatorNewMessageProps
@@ -126,6 +128,8 @@ const combineRecipients = (
   extras: ContactRecipientType[]
 ) => uniqueById([...selectedItems, ...getExtras(extras, selectedItems)]);
 
+const EMPTY_RECIPIENTS: ContactRecipientType[] = [];
+
 /**
  * CommunicatorNewMessage
  * @param props props
@@ -139,7 +143,7 @@ const CommunicatorNewMessage: React.FC<CommunicatorNewMessageProps> = (
     replyToAll,
     messageId,
     extraNamespace,
-    initialSelectedItems = [],
+    initialSelectedItems = EMPTY_RECIPIENTS,
     signature,
     sendMessage: dispatchSendMessage,
     initialSubject = "",
@@ -214,30 +218,37 @@ const CommunicatorNewMessage: React.FC<CommunicatorNewMessageProps> = (
     if (isDialogOpen) {
       return;
     }
-
     const extras = storedDraft?.extras || [];
     const nextRecipients = combineRecipients(initialSelectedItems, extras);
     const nextExtras = getExtras(nextRecipients, initialSelectedItems);
-
-    setRecipients(nextRecipients);
-
-    if (!storedDraft) {
-      return;
-    }
-
-    const extrasChanged =
-      nextExtras.length !== extras.length ||
-      nextExtras.some(
-        (extra, index) => extra.value.id !== extras[index]?.value.id
-      );
-
-    if (extrasChanged) {
-      setStoredDraft({
-        ...storedDraft,
-        extras: nextExtras,
-      });
-    }
-  }, [initialSelectedItems, isDialogOpen, storedDraft, setStoredDraft]);
+    const nextIds = nextRecipients.map((item) => item.value.id).join(",");
+    const currentIds = recipients.map((item) => item.value.id).join(",");
+    unstable_batchedUpdates(() => {
+      if (nextIds !== currentIds) {
+        setRecipients(nextRecipients);
+      }
+      if (!storedDraft) {
+        return;
+      }
+      const extrasChanged =
+        nextExtras.length !== extras.length ||
+        nextExtras.some(
+          (extra, index) => extra.value.id !== extras[index]?.value.id
+        );
+      if (extrasChanged) {
+        setStoredDraft({
+          ...storedDraft,
+          extras: nextExtras,
+        });
+      }
+    });
+  }, [
+    initialSelectedItems,
+    isDialogOpen,
+    storedDraft,
+    recipients,
+    setStoredDraft,
+  ]);
 
   /**
    * persistDraft
@@ -265,15 +276,17 @@ const CommunicatorNewMessage: React.FC<CommunicatorNewMessageProps> = (
     const nextForm = storedDraft ? fromDraft(storedDraft) : createDefaultForm();
     const nextRecipients = combineRecipients(initialSelectedItems, extras);
 
-    setIsDialogOpen(true);
-    setRecipients(nextRecipients);
-    setForm(nextForm);
-    setHasDraft(
-      !!storedDraft && (!isDefaultForm(nextForm) || extras.length > 0)
-    );
-    setLocked(false);
-    setIncludesSignature(true);
-    onOpen && onOpen();
+    unstable_batchedUpdates(() => {
+      setIsDialogOpen(true);
+      setRecipients(nextRecipients);
+      setForm(nextForm);
+      setHasDraft(
+        !!storedDraft && (!isDefaultForm(nextForm) || extras.length > 0)
+      );
+      setLocked(false);
+      setIncludesSignature(true);
+      onOpen && onOpen();
+    });
   };
 
   /**
@@ -293,11 +306,13 @@ const CommunicatorNewMessage: React.FC<CommunicatorNewMessageProps> = (
       skipCkEditorChangeRef.current = false;
     }, 100);
 
-    setRecipients(initialSelectedItems);
-    persistDraft(createDefaultForm(), []);
-    removeStoredDraft();
-    setHasDraft(false);
-    setRecipientsInputKey((key) => key + 1);
+    unstable_batchedUpdates(() => {
+      setRecipients(initialSelectedItems);
+      persistDraft(createDefaultForm(), []);
+      removeStoredDraft();
+      setHasDraft(false);
+      setRecipientsInputKey((key) => key + 1);
+    });
   };
 
   /**
