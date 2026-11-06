@@ -31,11 +31,13 @@ export const MuikkuTextFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuTextField"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("muikkuTextField"),
+      isDisabled: !instance.isEditable,
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
   const [open, setOpen] = useState(false);
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
@@ -54,8 +56,6 @@ export const MuikkuTextFieldButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -67,6 +67,8 @@ export const MuikkuTextFieldButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={isDisabled}
+        data-disabled={isDisabled}
         {...buttonProps}
       >
         Tekstikenttä

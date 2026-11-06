@@ -6,8 +6,9 @@ import {
   getWorkspaceApi,
   getCoursepickerApi,
   isMApiError,
+  getEvaluationApi,
 } from "~/api";
-import { executeAtomAction, setAtomValue } from "../jotaiStore";
+import { executeAtomAction, getAtomValue, setAtomValue } from "../jotaiStore";
 import {
   globalInitializedAtom,
   workspaceInitializedAtom,
@@ -19,13 +20,16 @@ import {
   workspaceBasicInfoQueryKey,
   workspaceCanSignupQueryKey,
   workspacePermissionsQueryKey,
+  workspaceStudentActivityQueryKey,
 } from "../queryClient";
 import { PermissionsService } from "./permissions";
 import type { WorkspaceBasicInfo } from "~/generated/client";
+import { userAtom } from "../atoms/auth";
 
 const meApi = getMeApi();
 const workspaceApi = getWorkspaceApi();
 const coursepickerApi = getCoursepickerApi();
+const evaluationApi = getEvaluationApi();
 
 //// GLOBAL INITIALIZATION ////
 
@@ -148,6 +152,26 @@ async function ensureWorkspaceCanSignup(workspaceId: number) {
 }
 
 /**
+ * Fill workspace student activity cache (same key as workspaceStudentActivityQueryAtom).
+ * @param workspaceId - The workspace ID
+ */
+async function ensureWorkspaceStudentActivity(workspaceId: number) {
+  const { id, identifier } = getAtomValue(userAtom) ?? {};
+  if (id == null || identifier == null) return;
+
+  await queryClient.ensureQueryData({
+    queryKey: workspaceStudentActivityQueryKey(workspaceId, id),
+    queryFn: () =>
+      evaluationApi.getWorkspaceStudentActivity({
+        workspaceId,
+        studentEntityId: identifier,
+      }),
+    staleTime: Infinity,
+    retry: false,
+  });
+}
+
+/**
  * Workspace initialization for loaders / middleware.
  * @param workspaceUrlName - The workspace URL name
  */
@@ -162,6 +186,7 @@ export async function workspaceInit(workspaceUrlName: string) {
   await Promise.all([
     ensureWorkspacePermissions(basicInfo.id),
     ensureWorkspaceCanSignup(basicInfo.id),
+    ensureWorkspaceStudentActivity(basicInfo.id),
     // ... other workspace initialization tasks ...
   ]);
 

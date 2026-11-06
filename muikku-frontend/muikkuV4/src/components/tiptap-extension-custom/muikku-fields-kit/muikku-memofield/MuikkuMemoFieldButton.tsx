@@ -30,11 +30,13 @@ export const MuikkuMemoFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuMemoField"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("muikkuMemoField"),
+      isDisabled: !instance.isEditable,
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
   const [open, setOpen] = useState(false);
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
@@ -53,8 +55,6 @@ export const MuikkuMemoFieldButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -66,6 +66,8 @@ export const MuikkuMemoFieldButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={isDisabled}
+        data-disabled={isDisabled}
         {...buttonProps}
       >
         Muistiokenttä

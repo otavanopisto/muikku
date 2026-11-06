@@ -1,4 +1,5 @@
 import { useMaterialContentContext } from "./MaterialContentProvider";
+import "./rich-text.css";
 
 /**
  * Shared processed rich content

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { type Editor } from "@tiptap/react";
 
@@ -90,7 +90,7 @@ export function shouldShowButton(props: {
 }): boolean {
   const { editor, hideWhenUnavailable } = props;
 
-  if (!editor?.isEditable) return false;
+  if (!editor) return false;
 
   if (!hideWhenUnavailable) {
     return true;
@@ -153,29 +153,18 @@ export function useImageUpload(config?: UseImageUploadConfig) {
     selector: ({ editor }) => ({
       canInsert: canInsertImage(editor),
       isActive: isImageActive(editor),
+      isVisible: shouldShowButton({ editor, hideWhenUnavailable }),
     }),
   });
   const isMobile = useIsBreakpoint();
-  const [isVisible, setIsVisible] = useState<boolean>(true);
   const canInsert = selected?.canInsert ?? false;
   const isActive = selected?.isActive ?? false;
+  const isVisible = selected?.isVisible ?? false;
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable]);
-
+  /**
+   * handleImage handles the image action
+   * @returns true if the image is inserted, false otherwise
+   */
   const handleImage = useCallback(() => {
     if (!editor) return false;
 

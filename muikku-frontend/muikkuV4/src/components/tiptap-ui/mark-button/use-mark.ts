@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
 // --- Hooks ---
@@ -178,31 +178,21 @@ export function useMark(config: UseMarkConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canToggle: canToggleMark(editor, type),
-      isActive: isMarkActive(editor, type),
+    selector: ({ editor: instance }) => ({
+      canToggle: canToggleMark(instance, type),
+      isActive: isMarkActive(instance, type),
+      isVisible: shouldShowButton({
+        editor: instance,
+        type,
+        hideWhenUnavailable,
+      }),
     }),
   });
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  // const canToggle = canToggleMark(editor, type);
-  // const isActive = isMarkActive(editor, type);
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, type, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, type, hideWhenUnavailable]);
-
+  /**
+   * handleMark handles the mark action
+   * @returns true if the mark is toggled, false otherwise
+   */
   const handleMark = useCallback(() => {
     if (!editor) return false;
 
@@ -214,7 +204,7 @@ export function useMark(config: UseMarkConfig) {
   }, [editor, type, onToggled]);
 
   return {
-    isVisible,
+    isVisible: selected?.isVisible ?? false,
     isActive: selected?.isActive ?? false,
     handleMark,
     canToggle: selected?.canToggle ?? false,
