@@ -587,6 +587,15 @@ export const getEditedFields = (
       }
     );
 
+    const hasSupportActionsChanged = !_.isEqual(
+      newData.supportActions,
+      oldData.supportActions
+    );
+
+    if (hasSupportActionsChanged) {
+      changedValuesComparedToPrevious.push("supportActions");
+    }
+
     const hasStudentOpinionChanged = !_.isEqual(
       newData.studentOpinionOfSupport,
       oldData.studentOpinionOfSupport
@@ -612,6 +621,24 @@ export const getEditedFields = (
         }
       }
     );
+
+    const hasSupportActionsChanged = !_.isEqual(
+      newData.supportActions,
+      oldData.supportActions
+    );
+
+    if (hasSupportActionsChanged) {
+      changedValuesComparedToPrevious.push("supportActions");
+    }
+
+    const hasMatriculationSupportActionsChanged = !_.isEqual(
+      newData.matriculationExaminationSupport,
+      oldData.matriculationExaminationSupport
+    );
+
+    if (hasMatriculationSupportActionsChanged) {
+      changedValuesComparedToPrevious.push("matriculationExaminationSupport");
+    }
 
     const hasStudentOpinionChanged = !_.isEqual(
       newData.studentOpinionOfSupport,
