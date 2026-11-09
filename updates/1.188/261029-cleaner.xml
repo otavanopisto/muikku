@@ -8,4 +8,8 @@
    <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.journal.userEntityId','0');</sql>
    <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.journal.enabled','false');</sql>
 
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.evaluations.userEntityId','0');</sql>
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.evaluations.enabled','false');</sql>
+   <sql>insert into SystemSetting (settingKey,settingValue) values ('cleanup.evaluations.batch','50');</sql>
+
 </update>

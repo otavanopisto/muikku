@@ -87,6 +87,20 @@ public class WorkspaceNodeEvaluationDAO extends CorePluginsDAO<WorkspaceNodeEval
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public List<Long> listIdsByUserEntityId(Long userEntityId) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceNodeEvaluation> root = criteria.from(WorkspaceNodeEvaluation.class);
+    criteria.select(root.get(WorkspaceNodeEvaluation_.id));
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceNodeEvaluation_.studentEntityId), userEntityId)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   // Only used by acceptance testing 
   public List<WorkspaceNodeEvaluation> listByWorkspaceNodeId(Long workspaceNodeId) {
     EntityManager entityManager = getEntityManager(); 
