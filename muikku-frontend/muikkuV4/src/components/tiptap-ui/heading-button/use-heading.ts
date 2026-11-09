@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { type Editor } from "@tiptap/react";
 import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 
@@ -74,9 +74,9 @@ export const HEADING_SHORTCUT_KEYS: Record<Level, string> = {
 export function canToggle(
   editor: Editor | null,
   level?: Level,
-  turnInto: boolean = true
+  turnInto = true
 ): boolean {
-  if (!editor || !editor.isEditable) return false;
+  if (!editor?.isEditable) return false;
   if (
     !isNodeInSchema("heading", editor) ||
     isNodeTypeSelected(editor, ["image"])
@@ -117,7 +117,7 @@ export function isHeadingActive(
   editor: Editor | null,
   level?: Level | Level[]
 ): boolean {
-  if (!editor || !editor.isEditable) return false;
+  if (!editor?.isEditable) return false;
 
   if (Array.isArray(level)) {
     return level.some((l) => editor.isActive("heading", { level: l }));
@@ -135,7 +135,7 @@ export function toggleHeading(
   editor: Editor | null,
   level: Level | Level[]
 ): boolean {
-  if (!editor || !editor.isEditable) return false;
+  if (!editor?.isEditable) return false;
 
   const levels = Array.isArray(level) ? level : [level];
   const toggleLevel = levels.find((l) => canToggle(editor, l));
@@ -305,28 +305,21 @@ export function useHeading(config: UseHeadingConfig) {
     onToggled,
   } = config;
 
-  const { editor } = useTiptapEditorV2({
+  const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canToggle: canToggle(instance, level),
+      isActive: isHeadingActive(instance, level),
+      isVisible: shouldShowButton({
+        editor: instance,
+        level,
+        hideWhenUnavailable,
+      }),
+    }),
   });
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const canToggleState = canToggle(editor, level);
-  const isActive = isHeadingActive(editor, level);
-
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, level, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, level, hideWhenUnavailable]);
+  const canToggleState = selected?.canToggle ?? false;
+  const isActive = selected?.isActive ?? false;
+  const isVisible = selected?.isVisible ?? false;
 
   const handleToggle = useCallback(() => {
     if (!editor) return false;
@@ -341,8 +334,8 @@ export function useHeading(config: UseHeadingConfig) {
   return {
     isVisible,
     isActive,
-    handleToggle,
     canToggle: canToggleState,
+    handleToggle,
     label: `Heading ${level}`,
     shortcutKeys: HEADING_SHORTCUT_KEYS[level],
     Icon: headingIcons[level],

@@ -35,15 +35,17 @@ export const DetailsButton = forwardRef<HTMLButtonElement, DetailsButtonProps>(
     { editor: providedEditor, summary, open, onClick, children, ...props },
     ref
   ) => {
-    const { editor } = useTiptapEditorV2({
+    const { editor, selected } = useTiptapEditorV2({
       editor: providedEditor,
-      selector: ({ editor }) => editor.isActive("details"),
+      selector: ({ editor: instance }) => ({
+        canInsert:
+          !!instance.isEditable &&
+          typeof instance.commands?.insertDetails === "function",
+        isActive: instance.isActive("details"),
+      }),
     });
 
-    const canInsert =
-      !!editor?.isEditable &&
-      // guard: only enable if command exists (extension loaded)
-      typeof editor?.commands?.insertDetails === "function";
+    const canInsert = selected?.canInsert ?? false;
 
     /**
      * The handleClick function.
@@ -70,8 +72,6 @@ export const DetailsButton = forwardRef<HTMLButtonElement, DetailsButtonProps>(
         })
         .run();
     };
-
-    if (!editor?.isEditable) return null;
 
     return (
       <Button

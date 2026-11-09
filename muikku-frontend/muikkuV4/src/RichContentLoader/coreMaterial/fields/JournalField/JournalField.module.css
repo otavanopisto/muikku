@@ -1,0 +1,23 @@
+.wrapper {
+  display: block;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.readonly {
+  min-height: 4.5rem;
+  padding: 8px 12px;
+  border: 1px solid var(--mantine-color-gray-4);
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-body);
+}

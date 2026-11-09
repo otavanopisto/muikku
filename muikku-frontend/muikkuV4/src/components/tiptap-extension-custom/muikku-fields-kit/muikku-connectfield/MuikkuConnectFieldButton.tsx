@@ -15,8 +15,10 @@ import { OPEN_EVENT } from "./MuikkuConnectFieldExtension";
 /**
  * The Muikku connect field button props interface.
  */
-export interface MuikkuConnectFieldButtonProps
-  extends Omit<ButtonProps, "type"> {
+export interface MuikkuConnectFieldButtonProps extends Omit<
+  ButtonProps,
+  "type"
+> {
   editor?: Editor | null;
 }
 
@@ -26,11 +28,13 @@ export const MuikkuConnectFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuConnectField"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("muikkuConnectField"),
+      isDisabled: !instance.isEditable,
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
   const [open, setOpen] = useState(false);
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
@@ -49,8 +53,6 @@ export const MuikkuConnectFieldButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -62,6 +64,8 @@ export const MuikkuConnectFieldButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={isDisabled}
+        data-disabled={isDisabled}
         {...buttonProps}
       >
         Yhdistelykenttä

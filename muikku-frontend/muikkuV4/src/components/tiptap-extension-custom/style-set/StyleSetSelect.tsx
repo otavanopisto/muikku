@@ -33,15 +33,16 @@ export const StyleSetSelect = React.forwardRef<
   HTMLDivElement,
   StyleSetSelectProps
 >(({ editor: providedEditor, ...buttonProps }, _ref) => {
-  const { editor } = useTiptapEditorV2({ editor: providedEditor });
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      isDisabled: !canApplyStyle(instance),
+    }),
+  });
   const [open, setOpen] = React.useState(false);
 
-  if (!editor?.isEditable) {
-    return null;
-  }
-
   const currentStyle = getCurrentStyle(editor);
-  const isDisabled = !canApplyStyle(editor);
+  const isDisabled = selected?.isDisabled ?? false;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -57,6 +58,7 @@ export const StyleSetSelect = React.forwardRef<
           aria-haspopup="true"
           tooltip="Select style"
           disabled={isDisabled}
+          data-disabled={isDisabled}
           {...buttonProps}
         >
           {currentStyle ?? "Style"}

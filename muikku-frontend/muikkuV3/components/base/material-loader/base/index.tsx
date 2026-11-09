@@ -167,7 +167,11 @@ function buildElementsFromHtml(html: string, highlights: NotebookAnnotation[]) {
   // IMPORTANT: use ALL top-level nodes, not just $dom[0].
   const roots = $dom.toArray() as HTMLElement[];
   injectHtmlAnnotations(roots, highlights || []);
-  return preprocessor($dom).toArray() as HTMLElement[];
+  return preprocessor($dom)
+    .toArray()
+    .filter(
+      (node: Node) => node.nodeType === Node.ELEMENT_NODE
+    ) as HTMLElement[];
 }
 
 /**

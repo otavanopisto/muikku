@@ -22,11 +22,13 @@ export const MuikkuMathFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuMathField"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("muikkuMathField"),
+      isDisabled: !instance.isEditable,
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
 
   /**
    * The handleOpenClick function.
@@ -35,8 +37,6 @@ export const MuikkuMathFieldButton = forwardRef<
     if (!editor) return;
     editor.commands.setMuikkuMathField();
   };
-
-  if (!editor?.isEditable) return null;
 
   return (
     <Button
@@ -48,6 +48,8 @@ export const MuikkuMathFieldButton = forwardRef<
       tabIndex={-1}
       role="button"
       ref={ref}
+      disabled={isDisabled}
+      data-disabled={isDisabled}
       {...buttonProps}
     >
       Matematiikkatehtäväkenttä

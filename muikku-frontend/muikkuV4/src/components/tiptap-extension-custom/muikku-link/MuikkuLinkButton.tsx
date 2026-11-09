@@ -29,12 +29,19 @@ export const MuikkuLinkButton = forwardRef<
   HTMLButtonElement,
   MuikkuLinkButtonProps
 >(({ editor: providedEditor, children, ...buttonProps }, ref) => {
-  const { editor } = useTiptapEditorV2({ editor: providedEditor });
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canUse: !!instance.isEditable,
+    }),
+  });
   const [open, setOpen] = useState(false);
 
   useCallbackOnEvent(OPEN_MUIKKU_LINK_SETTINGS_MODAL_EVENT, () =>
     setOpen(true)
   );
+
+  const canUse = selected?.canUse ?? false;
 
   /**
    * The handleClick function.
@@ -52,8 +59,6 @@ export const MuikkuLinkButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -65,6 +70,8 @@ export const MuikkuLinkButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={!canUse}
+        data-disabled={!canUse}
         {...buttonProps}
       >
         {children ?? <LinkIcon className="tiptap-button-icon" />}

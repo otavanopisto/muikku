@@ -23,11 +23,13 @@ export const MuikkuFileFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuFileField"),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("muikkuFileField"),
+      isDisabled: !instance.isEditable,
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
 
   /**
    * The handleSetFileFieldClick function.
@@ -36,8 +38,6 @@ export const MuikkuFileFieldButton = forwardRef<
     if (!editor) return;
     editor.commands.setMuikkuFileField();
   };
-
-  if (!editor?.isEditable) return null;
 
   return (
     <Button
@@ -49,6 +49,8 @@ export const MuikkuFileFieldButton = forwardRef<
       tabIndex={-1}
       role="button"
       ref={ref}
+      disabled={isDisabled}
+      data-disabled={isDisabled}
       {...buttonProps}
     >
       Tiedostokenttä

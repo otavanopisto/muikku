@@ -2832,3 +2832,11 @@
   text-decoration: none;
   width: 1.5rem;
 }
+
+// Vacation period related
+.button-icon--delete-vacation-period {
+  background: transparent;
+  border-radius: 3px;
+  color: $color-fatal;
+  margin: 0 0 0 5px;
+}

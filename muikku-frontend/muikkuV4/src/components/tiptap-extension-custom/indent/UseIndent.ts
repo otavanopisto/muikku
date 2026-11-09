@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
 import { isExtensionAvailable, isNodeTypeSelected } from "@/lib/tiptap-utils";
@@ -86,28 +86,17 @@ export function useIndent(config: UseIndentConfig) {
   } = config;
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canIndent: canIndent(editor, action),
+    selector: ({ editor: instance }) => ({
+      canIndent: canIndent(instance, action),
+      isVisible: shouldShowButton({
+        editor: instance,
+        hideWhenUnavailable,
+      }),
     }),
   });
 
-  const [isVisible, setIsVisible] = useState(true);
   const canRun = selected?.canIndent ?? false;
-
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable]);
+  const isVisible = selected?.isVisible ?? false;
 
   /**
    * The handleIndent function.

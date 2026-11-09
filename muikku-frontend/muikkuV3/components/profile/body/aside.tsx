@@ -45,12 +45,16 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
    * @returns whether section with given hash should be visible or not
    */
   isVisible(hash: string) {
+    const isStaff = !this.props.status.isStudent;
+
     const isOnlyStudentParent =
       this.props.status.roles.includes("STUDENT_PARENT") &&
       this.props.status.roles.length === 1;
     switch (hash) {
       case "contact":
+        return this.props.status.isStudent;
       case "vacation":
+        return isStaff;
       case "chat":
         return !isOnlyStudentParent;
       case "contacts":
@@ -92,7 +96,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       },
       {
         name: this.props.t("labels.contacts", { ns: "users" }),
-        hash: "guardians",
+        hash: "contacts",
       },
       {
         name: this.props.t("labels.signIn"),

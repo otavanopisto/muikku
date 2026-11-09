@@ -12,8 +12,10 @@ import { useTiptapEditorV2 } from "~/src/hooks/use-tiptap-editor-v2";
 /**
  * The Muikku journal field button props interface.
  */
-export interface MuikkuJournalFieldButtonProps
-  extends Omit<ButtonProps, "type"> {
+export interface MuikkuJournalFieldButtonProps extends Omit<
+  ButtonProps,
+  "type"
+> {
   editor?: Editor | null;
 }
 
@@ -23,11 +25,13 @@ export const MuikkuJournalFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuJournalField"),
+    selector: ({ editor: instance }) => ({
+      isDisabled: !instance.isEditable,
+      isActive: instance.isActive("muikkuJournalField"),
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
 
   /**
    * The handleSetJournalFieldClick function.
@@ -36,8 +40,6 @@ export const MuikkuJournalFieldButton = forwardRef<
     if (!editor) return;
     editor.commands.setMuikkuJournalField();
   };
-
-  if (!editor?.isEditable) return null;
 
   return (
     <Button
@@ -49,6 +51,8 @@ export const MuikkuJournalFieldButton = forwardRef<
       tabIndex={-1}
       role="button"
       ref={ref}
+      disabled={isDisabled}
+      data-disabled={isDisabled}
       {...buttonProps}
     >
       Oppimispäiväkirjakenttä

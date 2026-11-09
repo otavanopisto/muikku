@@ -1,0 +1,152 @@
+.shell {
+  --z-rail: 2;
+  --z-reopen: 10;
+  --z-drawer: 20;
+  --z-toggle: 21;
+  --panel-duration: 200ms;
+
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+
+.header {
+  flex-shrink: 0;
+  min-height: 56px;
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.railShell {
+  position: relative;
+  flex-shrink: 0;
+  height: 100%;
+  z-index: var(--z-rail);
+}
+
+.railShell[data-collapsed] {
+  z-index: 0;
+}
+
+.rail {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--mantine-color-body);
+  transition: width var(--panel-duration) ease;
+}
+
+.rail[data-side="toc"] {
+  width: var(--toc-width);
+  border-inline-end: 1px solid var(--mantine-color-default-border);
+}
+
+.rail[data-side="aside"] {
+  width: var(--aside-width);
+  border-inline-start: 1px solid var(--mantine-color-default-border);
+}
+
+.rail[data-collapsed] {
+  width: 0;
+  border-inline-end-width: 0;
+  border-inline-start-width: 0;
+}
+
+.railInner {
+  height: 100%;
+}
+
+.rail[data-side="toc"] .railInner {
+  min-width: var(--toc-width);
+}
+
+.rail[data-side="aside"] .railInner {
+  min-width: var(--aside-width);
+}
+
+.panelToggle,
+.reopenToggle,
+.overlayClose {
+  position: absolute;
+  top: var(--mantine-spacing-xs);
+}
+
+.panelToggle {
+  z-index: var(--z-toggle);
+}
+
+.panelToggle[data-side="toc"] {
+  right: 0;
+  transform: translateX(50%);
+}
+
+.panelToggle[data-side="aside"] {
+  left: 0;
+  transform: translateX(-50%);
+}
+
+.reopenToggle {
+  z-index: var(--z-reopen);
+}
+
+.reopenToggle[data-side="toc"] {
+  inset-inline-start: var(--mantine-spacing-xs);
+}
+
+.reopenToggle[data-side="aside"] {
+  inset-inline-end: var(--mantine-spacing-xs);
+}
+
+.overlayClose {
+  z-index: var(--z-toggle);
+}
+
+.overlayClose[data-side="toc"] {
+  inset-inline-end: var(--mantine-spacing-xs);
+}
+
+.overlayClose[data-side="aside"] {
+  inset-inline-start: var(--mantine-spacing-xs);
+}
+
+.localDrawer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-drawer);
+  pointer-events: none;
+}
+
+.drawerInner {
+  pointer-events: none;
+}
+
+.drawerOverlay,
+.drawerContent {
+  pointer-events: auto;
+}
+
+.drawerContent {
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail {
+    transition: none;
+  }
+}
