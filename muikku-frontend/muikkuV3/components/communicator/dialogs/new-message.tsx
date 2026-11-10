@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
@@ -12,269 +12,363 @@ import { AnyActionType } from "~/actions";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import MApi from "~/api/api";
-import { WithTranslation, withTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { CommunicatorSignature } from "~/generated/client";
+import { useLocalStorage } from "usehooks-ts";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * CommunicatorNewMessageProps
  */
-interface CommunicatorNewMessageProps extends WithTranslation {
+interface CommunicatorNewMessageProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   replyThreadId?: number;
   replyToAll?: boolean;
   messageId?: number;
   extraNamespace?: string;
-  initialSelectedItems?: Array<ContactRecipientType>;
-  refreshInitialSelectedItemsOnOpen?: boolean;
+  initialSelectedItems?: ContactRecipientType[];
   signature: CommunicatorSignature;
   sendMessage: SendMessageTriggerType;
   initialSubject?: string;
   initialMessage?: string;
   status: StatusType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpen?: () => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClose?: () => any;
+  onOpen?: () => void;
+  onClose?: () => void;
   onRecipientChange?: (selectedItems: ContactRecipientType[]) => void;
   isOpen?: boolean;
 }
 
 /**
- * CommunicatorNewMessageState
+ * Persisted draft. Recipients from props are not stored;
+ * only extras added in the dialog are.
  */
-interface CommunicatorNewMessageState {
+interface NewMessageDraft {
   text: string;
-  selectedItems: Array<ContactRecipientType>;
   subject: string;
-  locked: boolean;
-  includesSignature: boolean;
-  receivedSelectedItems?: boolean;
+  extras: ContactRecipientType[];
 }
 
 /**
- * getStateIdentifier
- * @param props props
- * @returns string
+ * In-memory form state
  */
-function getStateIdentifier(props: CommunicatorNewMessageProps) {
-  if (!props.replyThreadId) {
-    return;
+interface NewMessageForm {
+  text: string;
+  subject: string;
+}
+
+/**
+ * getDraftStorageKey
+ * @param extraNamespace extraNamespace
+ * @param replyThreadId replyThreadId
+ * @param replyToAll replyToAll
+ * @param messageId messageId
+ */
+const getDraftStorageKey = (
+  extraNamespace?: string,
+  replyThreadId?: number,
+  replyToAll?: boolean,
+  messageId?: number
+) => {
+  let key = "new-message";
+
+  if (extraNamespace) {
+    key += `-${extraNamespace}`;
   }
 
-  return props.replyThreadId + (props.replyToAll ? "a" : "b") + props.messageId;
-}
+  if (replyThreadId) {
+    key += `-${replyThreadId}${replyToAll ? "a" : "b"}-${messageId ?? ""}`;
+  }
+
+  return key;
+};
+
+/**
+ * uniqueById
+ * @param items items
+ */
+const uniqueById = (items: ContactRecipientType[]) => {
+  const seen = new Set<number>();
+
+  return items.filter((item) => {
+    if (seen.has(item.value.id)) {
+      return false;
+    }
+
+    seen.add(item.value.id);
+    return true;
+  });
+};
+
+/**
+ * getExtras
+ * @param items items
+ * @param selectedItems selectedItems
+ */
+const getExtras = (
+  items: ContactRecipientType[],
+  selectedItems: ContactRecipientType[]
+) => {
+  const selectedIds = new Set(selectedItems.map((item) => item.value.id));
+
+  return items.filter((item) => !selectedIds.has(item.value.id));
+};
+
+/**
+ * combineRecipients
+ * @param selectedItems selectedItems
+ * @param extras extras
+ */
+const combineRecipients = (
+  selectedItems: ContactRecipientType[],
+  extras: ContactRecipientType[]
+) => uniqueById([...selectedItems, ...getExtras(extras, selectedItems)]);
+
+const EMPTY_RECIPIENTS: ContactRecipientType[] = [];
 
 /**
  * CommunicatorNewMessage
+ * @param props props
  */
-class CommunicatorNewMessage extends SessionStateComponent<
-  CommunicatorNewMessageProps,
-  CommunicatorNewMessageState
-> {
-  private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: CommunicatorNewMessageProps) {
-    super(
-      props,
-      "communicator-new-message" +
-        (props.extraNamespace ? "-" + props.extraNamespace : "")
-    );
+const CommunicatorNewMessage: React.FC<CommunicatorNewMessageProps> = (
+  props
+) => {
+  const {
+    children,
+    replyThreadId,
+    replyToAll,
+    messageId,
+    extraNamespace,
+    initialSelectedItems = EMPTY_RECIPIENTS,
+    signature,
+    sendMessage: dispatchSendMessage,
+    initialSubject = "",
+    initialMessage = "",
+    status,
+    onOpen,
+    onClose,
+    onRecipientChange,
+    isOpen,
+  } = props;
 
-    this.onCKEditorChange = this.onCKEditorChange.bind(this);
-    this.setSelectedItems = this.setSelectedItems.bind(this);
-    this.onSubjectChange = this.onSubjectChange.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
-    this.onSignatureToggleClick = this.onSignatureToggleClick.bind(this);
-    this.clearUp = this.clearUp.bind(this);
-    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-
-    this.state = this.getRecoverStoredState(
-      {
-        text: props.initialMessage || "",
-        selectedItems: props.initialSelectedItems || [],
-        subject: props.initialSubject || "",
-        locked: false,
-        includesSignature: true,
-      },
-      getStateIdentifier(props)
-    );
-  }
+  const { t } = useTranslation(["common", "messaging"]);
 
   /**
-   * checkAgainstStoredState
+   * createDefaultForm
    */
-  checkAgainstStoredState() {
-    this.checkStoredAgainstThisState(
-      {
-        text: this.props.initialMessage || "",
-        selectedItems: this.props.initialSelectedItems || [],
-        subject: this.props.initialSubject || "",
-        locked: false,
-        includesSignature: true,
-      },
-      getStateIdentifier(this.props)
-    );
-
-    if (this.props.refreshInitialSelectedItemsOnOpen) {
-      // Get selectedItems from the stored state
-      const storedSelectedItemsState = this.getRecoverStoredState(
-        { selectedItems: [] },
-        getStateIdentifier(this.props)
-      );
-
-      // Combine stored items with the newly selected
-      const combinedSelectedItems = [
-        ...storedSelectedItemsState.selectedItems,
-        ...this.props.initialSelectedItems,
-      ];
-
-      // Remove duplicates through Set
-      const combinedSelectedUniqueIds = new Set(
-        combinedSelectedItems.map((item) => item.value.id)
-      );
-
-      // Convert the Set to an Array
-      const newCombinedSelectedIds = Array.from(combinedSelectedUniqueIds);
-
-      const newSelectedItems = [];
-
-      // Iterate through the ids and find a counterpart from the combined selected items
-
-      for (let i = 0; i < newCombinedSelectedIds.length; i++) {
-        newSelectedItems.push(
-          combinedSelectedItems.find(
-            (item) => item.value.id === newCombinedSelectedIds[i]
-          )
-        );
-      }
-
-      // Boom! New selected items to state
-      this.setState({ selectedItems: newSelectedItems });
-    }
-
-    this.props.onOpen && this.props.onOpen();
-  }
+  const createDefaultForm = (): NewMessageForm => ({
+    text: initialMessage,
+    subject: initialSubject,
+  });
 
   /**
-   * onCKEditorChange
-   * @param text text
+   * isDefaultForm
+   * @param form form
    */
-  onCKEditorChange(text: string) {
-    if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll) {
-      this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+  const isDefaultForm = (form: NewMessageForm) =>
+    form.text === initialMessage && form.subject === initialSubject;
+
+  /**
+   * toDraft
+   * @param form form
+   * @param extras extras
+   */
+  const toDraft = (
+    form: NewMessageForm,
+    extras: ContactRecipientType[]
+  ): NewMessageDraft => ({
+    text: form.text,
+    subject: form.subject,
+    extras,
+  });
+
+  /**
+   * fromDraft
+   * @param draft draft
+   */
+  const fromDraft = (draft: NewMessageDraft): NewMessageForm => ({
+    text: draft.text || initialMessage,
+    subject: draft.subject || initialSubject,
+  });
+
+  const [locked, setLocked] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [recipients, setRecipients] =
+    useState<ContactRecipientType[]>(initialSelectedItems);
+  const [form, setForm] = useState<NewMessageForm>(createDefaultForm);
+  const [hasDraft, setHasDraft] = useState(false);
+  const [includesSignature, setIncludesSignature] = useState(true);
+  const [recipientsInputKey, setRecipientsInputKey] = useState(0);
+
+  const [storedDraft, setStoredDraft, removeStoredDraft] =
+    useLocalStorage<NewMessageDraft | null>(
+      getDraftStorageKey(extraNamespace, replyThreadId, replyToAll, messageId),
+      null
+    );
+
+  const skipCkEditorChangeRef = useRef(false);
+
+  // While the dialog is closed, keep recipients in sync with current props
+  // plus any stored extras. Also prune extras that have become selected.
+  useEffect(() => {
+    if (isDialogOpen) {
       return;
     }
-    this.setStateAndStore({ text }, getStateIdentifier(this.props));
-  }
+    const extras = storedDraft?.extras || [];
+    const nextRecipients = combineRecipients(initialSelectedItems, extras);
+    const nextExtras = getExtras(nextRecipients, initialSelectedItems);
+    const nextIds = nextRecipients.map((item) => item.value.id).join(",");
+    const currentIds = recipients.map((item) => item.value.id).join(",");
+    unstable_batchedUpdates(() => {
+      if (nextIds !== currentIds) {
+        setRecipients(nextRecipients);
+      }
+      if (!storedDraft) {
+        return;
+      }
+      const extrasChanged =
+        nextExtras.length !== extras.length ||
+        nextExtras.some(
+          (extra, index) => extra.value.id !== extras[index]?.value.id
+        );
+      if (extrasChanged) {
+        setStoredDraft({
+          ...storedDraft,
+          extras: nextExtras,
+        });
+      }
+    });
+  }, [
+    initialSelectedItems,
+    isDialogOpen,
+    storedDraft,
+    recipients,
+    setStoredDraft,
+  ]);
 
   /**
-   * setSelectedItems
-   * @param selectedItems selectedItems
+   * persistDraft
+   * @param nextForm nextForm
+   * @param extras extras
    */
-  setSelectedItems(selectedItems: Array<ContactRecipientType>) {
-    this.setStateAndStore({ selectedItems }, getStateIdentifier(this.props));
-    this.props.onRecipientChange && this.props.onRecipientChange(selectedItems);
-  }
+  const persistDraft = (
+    nextForm: NewMessageForm,
+    extras: ContactRecipientType[]
+  ) => {
+    setForm(nextForm);
+
+    if (isDefaultForm(nextForm) && extras.length === 0) {
+      removeStoredDraft();
+    } else {
+      setStoredDraft(toDraft(nextForm, extras));
+    }
+  };
 
   /**
-   * onSubjectChange
+   * handleOpen
+   */
+  const handleOpen = () => {
+    const extras = storedDraft?.extras || [];
+    const nextForm = storedDraft ? fromDraft(storedDraft) : createDefaultForm();
+    const nextRecipients = combineRecipients(initialSelectedItems, extras);
+
+    unstable_batchedUpdates(() => {
+      setIsDialogOpen(true);
+      setRecipients(nextRecipients);
+      setForm(nextForm);
+      setHasDraft(
+        !!storedDraft && (!isDefaultForm(nextForm) || extras.length > 0)
+      );
+      setLocked(false);
+      setIncludesSignature(true);
+      onOpen && onOpen();
+    });
+  };
+
+  /**
+   * handleClose
+   */
+  const handleClose = () => {
+    setIsDialogOpen(false);
+    onClose && onClose();
+  };
+
+  /**
+   * handleReset
+   */
+  const handleReset = () => {
+    skipCkEditorChangeRef.current = true;
+    setTimeout(() => {
+      skipCkEditorChangeRef.current = false;
+    }, 100);
+
+    unstable_batchedUpdates(() => {
+      setRecipients(initialSelectedItems);
+      persistDraft(createDefaultForm(), []);
+      removeStoredDraft();
+      setHasDraft(false);
+      setRecipientsInputKey((key) => key + 1);
+    });
+  };
+
+  /**
+   * handleRecipientsChange
+   * @param nextRecipients nextRecipients
+   */
+  const handleRecipientsChange = (nextRecipients: ContactRecipientType[]) => {
+    setRecipients(nextRecipients);
+    persistDraft(form, getExtras(nextRecipients, initialSelectedItems));
+    onRecipientChange && onRecipientChange(nextRecipients);
+  };
+
+  /**
+   * handleSubjectChange
    * @param e e
    */
-  onSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setStateAndStore(
-      { subject: e.target.value },
-      getStateIdentifier(this.props)
-    );
-  }
-
-  /**
-   * sendMessage
-   * @param closeDialog closeDialog
-   */
-  sendMessage(closeDialog: () => void) {
-    this.setState({
-      locked: true,
-    });
-    this.props.sendMessage({
-      to: this.state.selectedItems,
-      subject: this.state.subject,
-      text:
-        this.props.signature && this.state.includesSignature
-          ? this.state.text +
-            '<i class="mf-signature">' +
-            this.props.signature.signature +
-            "</i>"
-          : this.state.text,
-      /**
-       * success
-       */
-      success: () => {
-        closeDialog();
-        this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
-        setTimeout(() => {
-          this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
-        }, 100);
-        this.setStateAndClear(
-          {
-            text: this.props.initialMessage || "",
-            selectedItems: this.props.initialSelectedItems || [],
-            subject: this.props.initialSubject || "",
-            locked: false,
-          },
-          getStateIdentifier(this.props)
-        );
-      },
-      /**
-       * fail
-       */
-      fail: () => {
-        this.setState({
-          locked: false,
-        });
-      },
-      replyThreadId: this.props.replyThreadId,
-    });
-  }
-
-  /**
-   * onSignatureToggleClick
-   */
-  onSignatureToggleClick() {
-    this.setState({ includesSignature: !this.state.includesSignature });
-  }
-
-  /**
-   * clearUp
-   */
-  clearUp() {
-    this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
-    setTimeout(() => {
-      this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
-    }, 100);
-    this.setStateAndClear(
+  const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    persistDraft(
       {
-        text: this.props.initialMessage || "",
-        selectedItems: this.props.initialSelectedItems || [],
-        subject: this.props.initialSubject || "",
-        locked: false,
-        receivedSelectedItems: false,
+        ...form,
+        subject: e.target.value,
       },
-      getStateIdentifier(this.props)
+      getExtras(recipients, initialSelectedItems)
     );
-  }
+  };
+
+  /**
+   * handleCkEditorChange
+   * @param text text
+   */
+  const handleCkEditorChange = (text: string) => {
+    if (skipCkEditorChangeRef.current) {
+      skipCkEditorChangeRef.current = false;
+      return;
+    }
+
+    persistDraft(
+      {
+        ...form,
+        text,
+      },
+      getExtras(recipients, initialSelectedItems)
+    );
+  };
+
+  /**
+   * handleSignatureToggleClick
+   */
+  const handleSignatureToggleClick = () => {
+    setIncludesSignature(!includesSignature);
+  };
 
   /**
    * inputContactsAutofillLoaders
    */
-  inputContactsAutofillLoaders() {
+  const inputContactsAutofillLoaders = () => {
     const communicatorApi = MApi.getCommunicatorApi();
 
     return {
@@ -297,151 +391,177 @@ class CommunicatorNewMessage extends SessionStateComponent<
           maxResults: 20,
         }),
     };
-  }
+  };
 
   /**
-   * render
-   * @returns JSX.Element
+   * handleSendMessage
+   * @param closeDialog closeDialog
    */
-  render() {
-    const editorTitle =
-      this.props.t("labels.create", { ns: "messaging", context: "message" }) +
-      " - " +
-      this.props.t("labels.content");
+  const handleSendMessage = (closeDialog: () => void) => {
+    setLocked(true);
 
-    /**
-     * content
-     * @param closeDialog closeDialog
-     */
-    const content = (closeDialog: () => void) => [
-      <InputContactsAutofill
-        identifier="communicatorRecipients"
-        modifier="new-message"
-        key="new-message-1"
-        showFullNames={!this.props.status.isStudent}
-        loaders={this.inputContactsAutofillLoaders()}
-        hasGroupPermission={
-          this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-        }
-        hasWorkspacePermission={
-          this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-        }
-        placeholder={this.props.t("labels.search", { context: "recipients" })}
-        label={this.props.t("labels.recipients", {
-          ns: "messaging",
-          count: this.state.selectedItems.length,
-        })}
-        selectedItems={this.state.selectedItems}
-        onChange={this.setSelectedItems}
-        autofocus={!this.props.initialSelectedItems}
-      />,
-      <div className="env-dialog__row" key="new-message-2">
-        <div className="env-dialog__form-element-container">
-          <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.t("labels.title", {
-              ns: "messaging",
-              context: "message",
-            })}
-          </label>
-          <input
-            id="messageTitle"
-            type="text"
-            className="env-dialog__input env-dialog__input--new-message-title"
-            value={this.state.subject}
-            onChange={this.onSubjectChange}
-            autoFocus={!!this.props.initialSelectedItems}
-          />
-        </div>
-      </div>,
-      <div
-        className="env-dialog__row env-dialog__row--ckeditor"
-        key="new-message-3"
-      >
-        <div className="env-dialog__form-element-container">
-          <label className="env-dialog__label">
-            {this.props.t("labels.content")}
-          </label>
-          <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
-            {this.state.text}
-          </CKEditor>
-        </div>
-      </div>,
-      this.props.signature ? (
-        <div
-          key="new-message-4"
-          className="env-dialog__row env-dialog__row--options"
-        >
-          <input
-            id="messageSignature"
-            className="env-dialog__input"
-            type="checkbox"
-            checked={this.state.includesSignature}
-            onChange={this.onSignatureToggleClick}
-          />
-          <label htmlFor="messageSignature" className="env-dialog__input-label">
-            {this.props.t("labels.addSignature", { ns: "messaging" })}
-          </label>
-          <span className="env-dialog__input-description">
-            <i
-              className="mf-signature"
-              dangerouslySetInnerHTML={{
-                __html: this.props.signature.signature,
-              }}
-            />
-          </span>
-        </div>
-      ) : null,
-    ];
-    /**
-     * footer
-     * @param closeDialog closeDialog
-     */
-    const footer = (closeDialog: () => void) => (
-      <div className="env-dialog__actions">
-        <Button
-          buttonModifiers="dialog-execute"
-          onClick={this.sendMessage.bind(this, closeDialog)}
-          disabled={this.state.locked}
-        >
-          {this.props.t("actions.send")}
-        </Button>
-        <Button
-          buttonModifiers="dialog-cancel"
-          onClick={closeDialog}
-          disabled={this.state.locked}
-        >
-          {this.props.t("actions.cancel")}
-        </Button>
-        {this.recovered ? (
-          <Button
-            buttonModifiers="dialog-clear"
-            onClick={this.clearUp}
-            disabled={this.state.locked}
-          >
-            {this.props.t("actions.remove", { context: "draft" })}
-          </Button>
-        ) : null}
+    dispatchSendMessage({
+      to: recipients,
+      subject: form.subject,
+      text:
+        signature && includesSignature
+          ? form.text +
+            '<i class="mf-signature">' +
+            signature.signature +
+            "</i>"
+          : form.text,
+      /**
+       * success
+       */
+      success: () => {
+        closeDialog();
+        handleReset();
+      },
+      /**
+       * fail
+       */
+      fail: () => {
+        setLocked(false);
+      },
+      replyThreadId: replyThreadId,
+    });
+  };
+
+  const editorTitle =
+    t("labels.create", { ns: "messaging", context: "message" }) +
+    " - " +
+    t("labels.content");
+
+  /**
+   * content
+   */
+  const content = () => [
+    <InputContactsAutofill
+      identifier="communicatorRecipients"
+      modifier="new-message"
+      // Because component is re-rendered when key changes.
+      // InputContactsAutofill only reads selectedItems on mount, so this
+      // ensures that the component is re-rendered when the selectedItems
+      // change.
+      key={`new-message-recipients-${recipientsInputKey}`}
+      showFullNames={!status.isStudent}
+      loaders={inputContactsAutofillLoaders()}
+      hasGroupPermission={status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+      hasWorkspacePermission={status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+      placeholder={t("labels.search", { context: "recipients" })}
+      label={t("labels.recipients", {
+        ns: "messaging",
+        count: recipients.length,
+      })}
+      selectedItems={recipients}
+      onChange={handleRecipientsChange}
+      autofocus={!initialSelectedItems.length}
+    />,
+    <div className="env-dialog__row" key="new-message-2">
+      <div className="env-dialog__form-element-container">
+        <label htmlFor="messageTitle" className="env-dialog__label">
+          {t("labels.title", {
+            ns: "messaging",
+            context: "message",
+          })}
+        </label>
+        <input
+          id="messageTitle"
+          type="text"
+          className="env-dialog__input env-dialog__input--new-message-title"
+          value={form.subject}
+          onChange={handleSubjectChange}
+          autoFocus={!!initialSelectedItems.length}
+        />
       </div>
-    );
-
-    return (
-      <EnvironmentDialog
-        modifier="new-message"
-        title={this.props.t("labels.create", {
-          ns: "messaging",
-          context: "message",
-        })}
-        content={content}
-        footer={footer}
-        onOpen={this.checkAgainstStoredState}
-        onClose={this.props.onClose}
-        isOpen={this.props.isOpen}
+    </div>,
+    <div
+      className="env-dialog__row env-dialog__row--ckeditor"
+      key="new-message-3"
+    >
+      <div className="env-dialog__form-element-container">
+        <label className="env-dialog__label">{t("labels.content")}</label>
+        <CKEditor editorTitle={editorTitle} onChange={handleCkEditorChange}>
+          {form.text}
+        </CKEditor>
+      </div>
+    </div>,
+    signature ? (
+      <div
+        key="new-message-4"
+        className="env-dialog__row env-dialog__row--options"
       >
-        {this.props.children}
-      </EnvironmentDialog>
-    );
-  }
-}
+        <input
+          id="messageSignature"
+          className="env-dialog__input"
+          type="checkbox"
+          checked={includesSignature}
+          onChange={handleSignatureToggleClick}
+        />
+        <label htmlFor="messageSignature" className="env-dialog__input-label">
+          {t("labels.addSignature", { ns: "messaging" })}
+        </label>
+        <span className="env-dialog__input-description">
+          <i
+            className="mf-signature"
+            dangerouslySetInnerHTML={{
+              __html: signature.signature,
+            }}
+          />
+        </span>
+      </div>
+    ) : null,
+  ];
+
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="env-dialog__actions">
+      <Button
+        buttonModifiers="dialog-execute"
+        onClick={() => handleSendMessage(closeDialog)}
+        disabled={locked}
+      >
+        {t("actions.send")}
+      </Button>
+      <Button
+        buttonModifiers="dialog-cancel"
+        onClick={closeDialog}
+        disabled={locked}
+      >
+        {t("actions.cancel")}
+      </Button>
+      {hasDraft && (
+        <Button
+          buttonModifiers="dialog-clear"
+          onClick={handleReset}
+          disabled={locked}
+        >
+          {t("actions.remove", { context: "draft" })}
+        </Button>
+      )}
+    </div>
+  );
+
+  return (
+    <EnvironmentDialog
+      modifier="new-message"
+      title={t("labels.create", {
+        ns: "messaging",
+        context: "message",
+      })}
+      content={content}
+      footer={footer}
+      onOpen={handleOpen}
+      onClose={handleClose}
+      isOpen={isOpen}
+    >
+      {children}
+    </EnvironmentDialog>
+  );
+};
 
 /**
  * mapStateToProps
@@ -462,6 +582,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ sendMessage }, dispatch);
 }
 
-export default withTranslation(["messaging"])(
-  connect(mapStateToProps, mapDispatchToProps)(CommunicatorNewMessage)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CommunicatorNewMessage);
