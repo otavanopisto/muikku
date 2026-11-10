@@ -11,6 +11,7 @@ import ImplementedSupportActions from "./implemented-support-form";
 import { usePedagogyRedux } from "./hooks/usePedagogyRedux";
 import { PedagogyFormAccess } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import PedagogyPDFImplementedActions from "./pedagogy-PDF-implemented-actions";
 
 /**
  * LearningSupportProps
@@ -138,31 +139,34 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   // 1. Study programme is eligible for pedagogy form
   // 2. Pedagogy form is created
   // 3. Show PDF is toggled on
-  const showPdf =
+  const showFullFormPdf =
     studentIsEligibleForPedagogyForm &&
     usePedagogyValues?.pedagogyForm?.created &&
     showPDF;
+
+  // Show implemented actions PDF if PDF is toggled on but full form PDF
+  // is not available for this user/student
+  const showImplementedActionsPdf = showPDF && !showFullFormPdf;
 
   /**
    * Content
    * @returns JSX.Element
    */
   const pedagogySupportContent = () => {
+    if (showFullFormPdf) {
+      if (studentIsUppersecondary) {
+        return <PedagogyPDFUpperSecondary />;
+      }
+      return <PedagogyPDFCompulsory />;
+    }
+    if (showImplementedActionsPdf) {
+      return <PedagogyPDFImplementedActions />;
+    }
     // Check if pedagogy form is included in tabs
     const pedagogyFormExists =
       pedagogySupportTabs.find((tab) => tab.id === "PEDAGOGY_FORM") !==
       undefined;
-
-    // If pedagogy form exists, show PDF or tabs
     if (pedagogyFormExists) {
-      if (showPdf) {
-        if (studentIsUppersecondary) {
-          return <PedagogyPDFUpperSecondary />;
-        }
-
-        return <PedagogyPDFCompulsory />;
-      }
-
       return (
         <SimpleTabs
           modifier="pedagogy-support"
@@ -172,7 +176,6 @@ const PedagogySupport = (props: PedagogySupportProps) => {
         />
       );
     }
-
     // If pedagogy form does not exist, show implemented support actions
     return <ImplementedSupportActions />;
   };
