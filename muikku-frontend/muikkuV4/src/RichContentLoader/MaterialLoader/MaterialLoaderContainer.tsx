@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type {
   MaterialCompositeReply,
+  MaterialCompositeReplyStateType,
   MaterialContentNode,
   WorkspaceMaterial,
 } from "~/generated/client";
@@ -31,6 +32,15 @@ export interface MaterialLoaderContainerProps {
     handlers?: MaterialEditingHandlers;
   };
   children: ReactNode;
+  updateAssignmentState?: (
+    newState: MaterialCompositeReplyStateType,
+    localOnly: boolean,
+    workspaceId: number,
+    workspaceMaterialId: number,
+    successText?: string,
+    callback?: () => void
+  ) => void;
+  onFieldAnswerSaved?: (fieldName: string, value: string) => void;
 }
 
 /**

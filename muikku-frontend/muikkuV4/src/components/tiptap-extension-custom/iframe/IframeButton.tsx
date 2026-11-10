@@ -29,9 +29,13 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
   ({ editor: providedEditor, ...buttonProps }, ref) => {
     const { editor, selected } = useTiptapEditorV2({
       editor: providedEditor,
-      selector: ({ editor }) => editor.isActive("iframe"),
+      selector: ({ editor: instance }) => ({
+        isActive: instance.isActive("iframe"),
+        isDisabled: !instance.isEditable,
+      }),
     });
-    const isActive = !!selected;
+    const isActive = selected?.isActive ?? false;
+    const isDisabled = selected?.isDisabled ?? false;
     const [open, setOpen] = useState(false);
 
     useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
@@ -50,14 +54,14 @@ export const IframeButton = forwardRef<HTMLButtonElement, IframeButtonProps>(
       setOpen(false);
     };
 
-    if (!editor?.isEditable) return null;
-
     return (
       <>
         <Button
           type="button"
           variant="ghost"
           data-active-state={isActive ? "on" : "off"}
+          data-disabled={isDisabled}
+          disabled={isDisabled}
           tooltip="Iframe"
           onClick={handleOpenClick}
           tabIndex={-1}

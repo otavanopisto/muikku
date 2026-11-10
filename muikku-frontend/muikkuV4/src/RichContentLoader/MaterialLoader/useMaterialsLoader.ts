@@ -62,7 +62,9 @@ export function useMaterialsLoader(
   ) => void,
   onAssignmentStateModified?: () => void,
   editingConfig?: Partial<MaterialEditingConfig>,
-  editingHandlers?: MaterialEditingHandlers
+  editingHandlers?: MaterialEditingHandlers,
+  userEntityId?: number | null,
+  onFieldAnswerSaved?: (fieldName: string, value: string) => void
 ): MaterialContentLoaderValue {
   // Create assignment state
   const assignmentState = useAssignmentState(
@@ -85,23 +87,31 @@ export function useMaterialsLoader(
    * After a field answer is confirmed saved: bump UNANSWERED → ANSWERED locally
    * (server already has the answer; no state API call).
    */
-  const handleAnswerSynced = useCallback(() => {
-    if (!compositeReplies || compositeReplies.state === "UNANSWERED") {
-      updateAssignmentState?.(
-        "ANSWERED",
-        true, // localOnly — no server call (answer already saved)
-        workspace.id,
-        material.workspaceMaterialId ?? 0,
-        assignmentState.stateConfig?.successText
-      );
-    }
-  }, [
-    assignmentState.stateConfig?.successText,
-    compositeReplies,
-    material.workspaceMaterialId,
-    updateAssignmentState,
-    workspace.id,
-  ]);
+  const handleAnswerSynced = useCallback(
+    (info: { fieldName: string; value: string }) => {
+      if (!compositeReplies || compositeReplies.state === "UNANSWERED") {
+        updateAssignmentState?.(
+          "ANSWERED",
+          true, // localOnly — no server call (answer already saved)
+          workspace.id,
+          material.workspaceMaterialId ?? 0,
+          assignmentState.stateConfig?.successText
+        );
+      }
+
+      if (info) {
+        onFieldAnswerSaved?.(info.fieldName, info.value);
+      }
+    },
+    [
+      assignmentState.stateConfig?.successText,
+      compositeReplies,
+      material.workspaceMaterialId,
+      onFieldAnswerSaved,
+      updateAssignmentState,
+      workspace.id,
+    ]
+  );
 
   /**
    * When the student edits a field: if stateConfig.modifyState is set and
@@ -133,6 +143,7 @@ export function useMaterialsLoader(
   const fieldManager = useFieldManager(
     material,
     workspace,
+    userEntityId,
     handleAnswerSynced,
     handleModification
   );
@@ -144,9 +155,8 @@ export function useMaterialsLoader(
       workspace,
       compositeReplies,
       invisible: false,
-      onValueChange: fieldManager.handleValueChange,
     }),
-    [material, workspace, compositeReplies, fieldManager.handleValueChange]
+    [material, workspace, compositeReplies]
   );
 
   // Create editing capability

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
 import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
@@ -107,27 +107,19 @@ export function useImageCaption(config: UseImageCaptionConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canToggle: canToggleImageCaption(editor),
-      isActive: isImageCaptionActive(editor),
+    selector: ({ editor: instance }) => ({
+      canToggle: canToggleImageCaption(instance),
+      isActive: isImageCaptionActive(instance),
+      isVisible: shouldShowButton({
+        editor: instance,
+        hideWhenUnavailable,
+      }),
     }),
   });
 
-  const [isVisible, setIsVisible] = useState(true);
   const canToggle = selected?.canToggle ?? false;
   const isActive = selected?.isActive ?? false;
-
-  useEffect(() => {
-    if (!editor) return;
-    const tick = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
-    };
-    tick();
-    editor.on("selectionUpdate", tick);
-    return () => {
-      editor.off("selectionUpdate", tick);
-    };
-  }, [editor, hideWhenUnavailable]);
+  const isVisible = selected?.isVisible ?? false;
 
   /**
    * The handleToggle function.

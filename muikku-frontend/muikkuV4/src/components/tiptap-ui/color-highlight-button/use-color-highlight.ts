@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { type Editor } from "@tiptap/react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -306,41 +306,33 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => {
+    selector: ({ editor: instance }) => {
       const actualColor = highlightColor
         ? getHighlightColorValue(highlightColor, useColorValue)
         : highlightColor;
 
       return {
-        canColorHighlight: canColorHighlight(editor, mode),
-        isActive: isColorHighlightActive(editor, actualColor, mode),
+        canColorHighlight: canColorHighlight(instance, mode),
+        isActive: isColorHighlightActive(instance, actualColor, mode),
         actualColor,
+        isVisible: shouldShowButton({
+          editor: instance,
+          hideWhenUnavailable,
+          mode,
+        }),
       };
     },
   });
   const isMobile = useIsBreakpoint();
-  const [isVisible, setIsVisible] = useState<boolean>(true);
 
   const canColorHighlightState = selected?.canColorHighlight ?? false;
   const isActiveState = selected?.isActive ?? false;
   const actualColorState = selected?.actualColor;
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable, mode }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable, mode]);
-
+  /**
+   * handleColorHighlight handles the color highlight action
+   * @returns true if the color highlight is applied, false otherwise
+   */
   const handleColorHighlight = useCallback(() => {
     if (!editor || !canColorHighlightState || !actualColorState || !label)
       return false;
@@ -389,6 +381,10 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
     onApplied,
   ]);
 
+  /**
+   * handleRemoveHighlight handles the remove highlight action
+   * @returns true if the highlight is removed, false otherwise
+   */
   const handleRemoveHighlight = useCallback(() => {
     const success = removeHighlight(editor, mode);
     if (success) {
@@ -404,14 +400,16 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
       handleColorHighlight();
     },
     {
-      enabled: isVisible && (selected?.canColorHighlight ?? false),
+      enabled:
+        (selected?.isVisible ?? false) &&
+        (selected?.canColorHighlight ?? false),
       enableOnContentEditable: !isMobile,
       enableOnFormTags: true,
     }
   );
 
   return {
-    isVisible,
+    isVisible: selected?.isVisible ?? false,
     isActive: isActiveState,
     handleColorHighlight,
     handleRemoveHighlight,

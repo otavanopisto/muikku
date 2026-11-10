@@ -2,6 +2,8 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { devtools } from "@tanstack/devtools-vite";
+// Enable if you want to use https settings for the dev server certs
+//import fs from "fs";
 
 // https://vite.dev/config/
 
@@ -89,6 +91,17 @@ export default defineConfig(({ mode }) => {
       host: "dev.muikkuverkko.fi",
       strictPort: true,
       port: 8000,
+      // Enable if you want to use https settings for the dev server certs
+      // certs are needed for the dev server to work with any kind of file
+      // uploads, etc.
+      // https: {
+      //   key: fs.readFileSync(
+      //     path.resolve(__dirname, "certs/yourkey.key")
+      //   ),
+      //   cert: fs.readFileSync(
+      //     path.resolve(__dirname, "certs/yourcert.cer")
+      //   ),
+      // },
       proxy: {
         "/gfx": {
           target: "https://dev.muikkuverkko.fi:8443/gfx",

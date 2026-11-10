@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
 import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
@@ -134,39 +134,27 @@ export function useTextColor(config: UseTextColorConfig) {
     selector: ({ editor }) => ({
       canTextColor: canSetTextColor(editor),
       isActive: isTextColorActive(editor, color),
+      isVisible: shouldShowButton({ editor, hideWhenUnavailable }),
     }),
   });
 
   const isMobile = useIsBreakpoint();
-  const [isVisible, setIsVisible] = useState(true);
 
-  const canTextColorState = selected?.canTextColor ?? false;
-  const isActiveState = selected?.isActive ?? false;
-
-  useEffect(() => {
-    if (!editor) return;
-
-    /**
-     * handleSelectionUpdate handles the selection update
-     */
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-    editor.on("selectionUpdate", handleSelectionUpdate);
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable]);
-
+  /**
+   * handleSetColor handles the set color action
+   * @returns true if the color is set, false otherwise
+   */
   const handleSetColor = useCallback(() => {
-    if (!editor || !canTextColorState || !color || !label) return false;
+    if (!editor || !selected?.canTextColor || !color || !label) return false;
     const ok = setTextColor(editor, color);
     if (ok) onApplied?.({ color, label });
     return ok;
-  }, [editor, canTextColorState, color, label, onApplied]);
+  }, [editor, selected?.canTextColor, color, label, onApplied]);
 
+  /**
+   * handleUnsetColor handles the unset color action
+   * @returns true if the color is unset, false otherwise
+   */
   const handleUnsetColor = useCallback(() => {
     const ok = unsetTextColor(editor);
     if (ok) onApplied?.({ color: "", label: "Default text color" });
@@ -174,9 +162,9 @@ export function useTextColor(config: UseTextColorConfig) {
   }, [editor, onApplied]);
 
   return {
-    isVisible,
-    isActive: isActiveState,
-    canTextColor: canTextColorState,
+    isVisible: selected?.isVisible ?? false,
+    isActive: selected?.isActive ?? false,
+    canTextColor: selected?.canTextColor ?? false,
     handleSetColor,
     handleUnsetColor,
     label: label ?? "Text color",
