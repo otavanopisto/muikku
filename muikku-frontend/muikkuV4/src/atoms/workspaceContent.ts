@@ -24,6 +24,29 @@ const evaluationApi = getEvaluationApi();
 
 const EMPTY_NODES: MaterialContentNode[] = [];
 
+/**
+ * Drop hidden nodes for the student / Luku näkymä tree.
+ * Exception rules (specific hidden pages a student may see) land here later.
+ * @param nodes - Full material tree
+ */
+export function filterVisibleContentNodes(
+  nodes: MaterialContentNode[]
+): MaterialContentNode[] {
+  const visible: MaterialContentNode[] = [];
+  for (const node of nodes) {
+    if (node.hidden) {
+      continue;
+    }
+    visible.push({
+      ...node,
+      children: node.children
+        ? filterVisibleContentNodes(node.children)
+        : node.children,
+    });
+  }
+  return visible;
+}
+
 /** Set true when the materials view mounts. Do not useAtomValue in components. */
 export const workspaceMaterialContentNodesEnabledAtom = atom(false);
 
@@ -45,7 +68,7 @@ export const workspaceMaterialContentNodesQueryAtom = atomWithQuery((get) => {
       try {
         return await workspaceApi.getWorkspaceMaterialContentNodes({
           workspaceEntityId: workspaceId,
-          includeHidden: false,
+          includeHidden: true,
         });
       } catch (err) {
         if (!isMApiError(err)) throw err;
@@ -91,6 +114,11 @@ export const workspaceHelpContentNodesQueryAtom = atomWithQuery((get) => {
 /** Materials content nodes */
 export const workspaceMaterialContentNodesAtom = atom(
   (get) => get(workspaceMaterialContentNodesQueryAtom).data ?? EMPTY_NODES
+);
+
+/** Materials the reader may see. Production uses the unfiltered atom. */
+export const workspaceVisibleMaterialContentNodesAtom = atom((get) =>
+  filterVisibleContentNodes(get(workspaceMaterialContentNodesAtom))
 );
 
 export const workspaceMaterialContentNodesIsLoadingAtom = atom(

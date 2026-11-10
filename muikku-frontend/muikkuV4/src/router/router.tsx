@@ -48,6 +48,10 @@ import {
 } from "../navigation/navigation";
 import { Calendar } from "../pages/Calendar";
 import { WorkspaceOverlayLayout } from "../layouts/WorkspaceOverlayLayout";
+import { redirect } from "react-router";
+import { ContentProductionLayout } from "src/layouts/ContentProductionLayout/ContentProductionLayout";
+import { ContentProductionMaterials } from "src/pages/ContentProduction/Materials";
+import { ContentProductionPlaceholder } from "src/pages/ContentProduction/Placeholder";
 
 // Router
 export const router = createBrowserRouter([
@@ -330,6 +334,36 @@ export const router = createBrowserRouter([
                 element: <WorkspaceUsers />,
                 //loader: workspaceUsersLoader,
                 middleware: [permissionMiddlewares.workspaceUsersView],
+              },
+              {
+                path: "contentProduction",
+                element: <ContentProductionLayout />,
+                middleware: [permissionMiddlewares.contentProductionView],
+                children: [
+                  {
+                    index: true,
+                    loader: ({ params }) =>
+                      redirect(
+                        `/workspace/${params.workspaceUrlName}/contentProduction/materials`
+                      ),
+                  },
+                  {
+                    path: "materials/*",
+                    element: <ContentProductionMaterials />,
+                  },
+                  {
+                    path: "exams/*",
+                    element: <ContentProductionPlaceholder />,
+                  },
+                  {
+                    path: "description",
+                    element: <ContentProductionPlaceholder />,
+                  },
+                  {
+                    path: "help/*",
+                    element: <ContentProductionPlaceholder />,
+                  },
+                ],
               },
               {
                 path: "*",

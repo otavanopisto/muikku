@@ -6,8 +6,8 @@ import { workspaceInfoAtom } from "src/atoms/workspace";
 import { WorkspaceContentLayout } from "src/layouts";
 import {
   workspaceMaterialContentNodesAsyncStateAtom,
-  workspaceMaterialContentNodesAtom,
   workspaceMaterialContentNodesEnabledAtom,
+  workspaceVisibleMaterialContentNodesAtom,
 } from "src/atoms/workspaceContent";
 import { Toc } from "./Toc";
 import {
@@ -15,7 +15,7 @@ import {
   workspaceMaterialsHref,
 } from "./materialLoaction";
 import { SectionView } from "./SectionView";
-import { MaterialsHeaderEnd, MaterialsHeaderStart } from "./MaterialsHeader";
+import { MaterialsHeaderStart, MaterialsHeaderEnd } from "./MaterialsHeader";
 
 /**
  * WorkspaceMaterials - Materials dialog content.
@@ -28,7 +28,7 @@ export function WorkspaceMaterials() {
   const setMaterialsEnabled = useSetAtom(
     workspaceMaterialContentNodesEnabledAtom
   );
-  const nodes = useAtomValue(workspaceMaterialContentNodesAtom);
+  const nodes = useAtomValue(workspaceVisibleMaterialContentNodesAtom);
   const asyncState = useAtomValue(workspaceMaterialContentNodesAsyncStateAtom);
 
   const location = useMemo(

@@ -7,20 +7,17 @@ import { WorkspaceHome } from "src/pages/WorkspaceHome";
  * True when the current workspace child should render in the overlay modal.
  */
 function useIsWorkspaceOverlayRoute() {
-  const materials = useMatch({
-    path: "/workspace/:workspaceUrlName/workspaceMaterials",
+  const nested = useMatch("/workspace/:workspaceUrlName/:section/*");
+  const exact = useMatch({
+    path: "/workspace/:workspaceUrlName/:section",
     end: true,
   });
-  const materialsNested = useMatch(
-    "/workspace/:workspaceUrlName/workspaceMaterials/*"
+  const section = nested?.params.section ?? exact?.params.section;
+  return (
+    section === "workspaceMaterials" ||
+    section === "workspaceHelp" ||
+    section === "contentProduction"
   );
-  const help = useMatch({
-    path: "/workspace/:workspaceUrlName/workspaceHelp",
-    end: true,
-  });
-  const helpNested = useMatch("/workspace/:workspaceUrlName/workspaceHelp/*");
-
-  return Boolean(materials ?? materialsNested ?? help ?? helpNested);
 }
 
 /**

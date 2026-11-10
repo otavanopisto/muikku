@@ -20,6 +20,8 @@ export interface PermissionConfig {
   userPermissions?: (keyof UserPermissions)[];
   /** Workspace permissions to check */
   workspacePermissions?: (keyof WorkspacePermissions)[];
+  /** Workspace permissions to check (any one is enough) */
+  workspacePermissionsAny?: (keyof WorkspacePermissions)[];
   /** Redirect path if permission denied */
   redirectPath?: string;
   /** Login path if not authenticated */
@@ -48,6 +50,7 @@ export function createPermissionMiddleware(
       requireAuth = false,
       userPermissions: requiredUserPermissions = [],
       workspacePermissions: requiredWorkspacePermissions = [],
+      workspacePermissionsAny: requiredWorkspacePermissionsAny = [],
       customCheck,
       redirectPath = "/",
       loginPath = `/login?redirectUrl=${request.url}`,
@@ -81,6 +84,20 @@ export function createPermissionMiddleware(
         ));
 
     if (!hasWorkspacePermissions) {
+      throw new Response("Not found", {
+        status: 404,
+      });
+    }
+
+    // Check workspace permissions (any one is enough)
+    const hasAnyWorkspacePermission =
+      requiredWorkspacePermissionsAny.length === 0 ||
+      (workspacePermissions &&
+        requiredWorkspacePermissionsAny.some(
+          (permission) => workspacePermissions[permission] === true
+        ));
+
+    if (!hasAnyWorkspacePermission) {
       throw new Response("Not found", {
         status: 404,
       });
@@ -248,6 +265,15 @@ export const permissionMiddlewares = {
   workspaceUsersView: createPermissionMiddleware({
     requireAuth: true,
     workspacePermissions: ["WORKSPACE_USERS_VISIBLE"],
+  }),
+
+  contentProductionView: createPermissionMiddleware({
+    requireAuth: true,
+    workspacePermissionsAny: [
+      "WORKSPACE_MANAGE_WORKSPACE_MATERIALS",
+      "WORKSPACE_MANAGE_WORKSPACE_HELP",
+      "WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE",
+    ],
   }),
 
   // Custom permission checker

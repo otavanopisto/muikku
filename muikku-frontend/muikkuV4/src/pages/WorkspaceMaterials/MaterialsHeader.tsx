@@ -15,12 +15,21 @@ import {
   workspaceMaterialContentNodesAtom,
 } from "src/atoms/workspaceContent";
 import { isFolderNode } from "./tocItems";
+import { useNavigate, useParams } from "react-router";
+import { contentProductionHref } from "~/src/layouts/ContentProductionLayout/kinds";
+import { hasWorkspacePermission } from "~/src/services/access";
+import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 
 /**
  * Back is rendered by the layout. This is the rest of the header left cluster.
  */
 export function MaterialsHeaderStart() {
-  return <AskEvaluationButton />;
+  const permissions = useAtomValue(workspacePermissionsAtom);
+  const canEdit = hasWorkspacePermission(
+    "WORKSPACE_MANAGE_WORKSPACE_MATERIALS",
+    permissions
+  );
+  return canEdit ? <EditViewButton /> : <AskEvaluationButton />;
 }
 
 /**
@@ -28,6 +37,30 @@ export function MaterialsHeaderStart() {
  */
 export function MaterialsHeaderEnd() {
   return <ProgressMeters />;
+}
+
+/**
+ * Button to navigate to the edit view.
+ * @returns The edit view button.
+ */
+function EditViewButton() {
+  const navigate = useNavigate();
+  const { workspaceUrlName, "*": splat = "" } = useParams();
+  return (
+    <Button
+      color="blue"
+      w={{ base: "100%", sm: "auto" }}
+      onClick={() => {
+        if (!workspaceUrlName) return;
+        void navigate(
+          contentProductionHref(workspaceUrlName, "materials", splat),
+          { replace: true }
+        );
+      }}
+    >
+      Muokkaus näkymä
+    </Button>
+  );
 }
 
 /**
