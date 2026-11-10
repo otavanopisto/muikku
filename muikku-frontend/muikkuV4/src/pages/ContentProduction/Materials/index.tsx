@@ -1,4 +1,4 @@
-import { Box, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router";
@@ -18,8 +18,8 @@ import {
 } from "src/layouts/ContentProductionLayout/kinds";
 import { WorkspaceContentLayout } from "src/layouts";
 import { resolveMaterialLocation } from "src/pages/WorkspaceMaterials/materialLoaction";
-import { SectionView } from "src/pages/WorkspaceMaterials/SectionView";
 import { ProductionMaterialsToc } from "./Toc";
+import { SectionGrid } from "./SectionGrid";
 
 /**
  * Content-production materials kind. Editor/preview come in a later slice;
@@ -72,6 +72,10 @@ export function ContentProductionMaterials() {
       <ProductionMaterialsToc nodes={nodes} />
     );
 
+  const workspace = workspaceInfo
+    ? { id: workspaceInfo.id, urlName: workspaceInfo.urlName }
+    : null;
+
   let main: React.ReactNode;
   if (asyncState === "loading" || location.status === "empty") {
     main = (
@@ -79,23 +83,19 @@ export function ContentProductionMaterials() {
         Ladataan...
       </Text>
     );
-  } else if (location.status === "not-found") {
+  } else if (!workspace) {
     main = (
-      <Text size="sm" c="red">
-        Sivua ei löytynyt.
+      <Text size="sm" c="dimmed">
+        Ladataan...
       </Text>
     );
   } else {
     main = (
-      <SectionView
+      <SectionGrid
         section={location.section}
         pages={location.pages}
         page={location.page}
-        workspace={
-          workspaceInfo
-            ? { id: workspaceInfo.id, urlName: workspaceInfo.urlName }
-            : null
-        }
+        workspace={workspace}
       />
     );
   }
@@ -109,13 +109,8 @@ export function ContentProductionMaterials() {
       headerEnd={<ContentProductionHeaderEnd />}
       toc={toc}
       asideTitle="Esikatselu"
-      aside={
-        <Text size="sm" c="dimmed">
-          Esikatselu tulee tähän. Editori kytketään seuraavaksi.
-        </Text>
-      }
     >
-      <Box p="md">{main}</Box>
+      {main}
     </WorkspaceContentLayout>
   );
 }
