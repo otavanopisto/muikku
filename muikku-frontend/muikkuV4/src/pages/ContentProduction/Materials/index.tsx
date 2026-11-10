@@ -19,7 +19,7 @@ import {
 import { WorkspaceContentLayout } from "src/layouts";
 import { resolveMaterialLocation } from "src/pages/WorkspaceMaterials/materialLoaction";
 import { SectionView } from "src/pages/WorkspaceMaterials/SectionView";
-import { Toc } from "src/pages/WorkspaceMaterials/Toc";
+import { ProductionMaterialsToc } from "./Toc";
 
 /**
  * Content-production materials kind. Editor/preview come in a later slice;
@@ -69,12 +69,7 @@ export function ContentProductionMaterials() {
         Sisällysluettelon lataus epäonnistui.
       </Text>
     ) : (
-      <Toc
-        nodes={nodes}
-        hrefForPath={(urlName, path) =>
-          contentProductionHref(urlName, "materials", path)
-        }
-      />
+      <ProductionMaterialsToc nodes={nodes} />
     );
 
   let main: React.ReactNode;

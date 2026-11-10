@@ -27,23 +27,20 @@ import {
  */
 interface TocProps {
   nodes: MaterialContentNode[];
-  /** Defaults to the student materials route. */
-  hrefForPath?: (workspaceUrlName: string, path: string) => string;
 }
 
 /**
  * Navigate to a path without stacking history inside the overlay.
- * @param hrefForPath - Function to get the href for a path
  */
-function useTocNavigate(
-  hrefForPath: (workspaceUrlName: string, path: string) => string
-) {
+function useTocNavigate() {
   const navigate = useNavigate();
   const { workspaceUrlName } = useParams();
   const { closeToc } = useWorkspaceContentLayout();
   return (path: string) => {
     if (!workspaceUrlName || !path) return;
-    void navigate(hrefForPath(workspaceUrlName, path), { replace: true });
+    void navigate(workspaceMaterialsHref(workspaceUrlName, path), {
+      replace: true,
+    });
     closeToc();
   };
 }
@@ -54,7 +51,7 @@ function useTocNavigate(
  * Must render inside WorkspaceContentLayout.
  */
 export function Toc(props: TocProps) {
-  const { nodes, hrefForPath = workspaceMaterialsHref } = props;
+  const { nodes } = props;
   const { "*": splat = "" } = useParams();
   const repliesByWorkspaceMaterialId = useAtomValue(tocRepliesByMaterialIdAtom);
   const activePath = normalizeMaterialPath(splat);
@@ -73,7 +70,6 @@ export function Toc(props: TocProps) {
       groups={groupTocChildren(items)}
       repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
       activePath={activePath}
-      hrefForPath={hrefForPath}
     />
   );
 }
@@ -85,10 +81,8 @@ function TocGroupList(props: {
   groups: TocChildGroup[];
   repliesByWorkspaceMaterialId?: Record<number, TocReplyChrome>;
   activePath: string;
-  hrefForPath: (workspaceUrlName: string, path: string) => string;
 }) {
-  const { groups, repliesByWorkspaceMaterialId, activePath, hrefForPath } =
-    props;
+  const { groups, repliesByWorkspaceMaterialId, activePath } = props;
 
   return (
     <>
@@ -99,7 +93,6 @@ function TocGroupList(props: {
             item={group.item}
             repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
             activePath={activePath}
-            hrefForPath={hrefForPath}
           />
         ) : (
           <TocPageRail
@@ -107,7 +100,6 @@ function TocGroupList(props: {
             items={group.items}
             repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
             activePath={activePath}
-            hrefForPath={hrefForPath}
           />
         )
       )}
@@ -122,11 +114,10 @@ function TocFolder(props: {
   item: TocItem;
   repliesByWorkspaceMaterialId?: Record<number, TocReplyChrome>;
   activePath: string;
-  hrefForPath: (workspaceUrlName: string, path: string) => string;
 }) {
-  const { item, repliesByWorkspaceMaterialId, activePath, hrefForPath } = props;
+  const { item, repliesByWorkspaceMaterialId, activePath } = props;
   const [opened, { toggle }] = useDisclosure(true);
-  const go = useTocNavigate(hrefForPath);
+  const go = useTocNavigate();
   const isActive =
     activePath === item.path || activePath.startsWith(`${item.path}/`);
 
@@ -158,7 +149,6 @@ function TocFolder(props: {
             groups={groupTocChildren(item.children)}
             repliesByWorkspaceMaterialId={repliesByWorkspaceMaterialId}
             activePath={activePath}
-            hrefForPath={hrefForPath}
           />
         </Box>
       </Collapse>
@@ -173,11 +163,9 @@ export function TocPageRail(props: {
   items: TocItem[];
   repliesByWorkspaceMaterialId?: Record<number, TocReplyChrome>;
   activePath: string;
-  hrefForPath: (workspaceUrlName: string, path: string) => string;
 }) {
-  const { items, repliesByWorkspaceMaterialId, activePath, hrefForPath } =
-    props;
-  const go = useTocNavigate(hrefForPath);
+  const { items, repliesByWorkspaceMaterialId, activePath } = props;
+  const go = useTocNavigate();
 
   return (
     <Rail>
