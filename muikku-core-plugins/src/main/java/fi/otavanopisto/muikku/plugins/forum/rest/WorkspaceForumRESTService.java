@@ -451,12 +451,12 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
     }
 
-    if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      forumController.archiveThread(thread);
-      return Response.noContent().build();
-    } else {
+    if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity) && !thread.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
+
+    forumController.archiveThread(thread);
+    return Response.noContent().build();
   }
   
   @POST
