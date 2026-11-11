@@ -33,3 +33,9 @@ export const workspaceStudentActivityQueryKey = (
   workspaceId: number,
   studentEntityId: number
 ) => ["workspace", workspaceId, "studentActivity", studentEntityId] as const;
+
+// Shared query keys for material attachments.
+export const workspaceMaterialAttachmentsQueryKey = (
+  workspaceId: number,
+  parentId: number
+) => ["workspace", workspaceId, "materialAttachments", parentId] as const;

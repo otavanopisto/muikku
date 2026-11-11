@@ -61,7 +61,7 @@ function PageRow(props: {
   return (
     <>
       <div className={classes.cell}>
-        <PageEditor page={page} expanded={active} />
+        <PageEditor page={page} folder={folder} workspace={workspace} />
       </div>
       <div className={`${classes.cell} ${classes.saved}`}>
         <PagePreview

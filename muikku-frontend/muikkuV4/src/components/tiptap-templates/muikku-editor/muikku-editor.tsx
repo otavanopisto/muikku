@@ -1,6 +1,6 @@
 /* eslint-disable react-x/no-context-provider */
 import { useMemo, useRef, useEffect, useState } from "react";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
 import "@/components/tiptap-node/heading-node/heading-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
@@ -28,8 +28,8 @@ export interface MuikkuEditorProps {
   className?: string;
   editable?: boolean;
   onChange?: (html: string) => void;
+  onEditorReady?: (editor: Editor | null) => void;
 }
-
 /**
  * Feature-driven Tiptap instance. Remounts when `features` change.
  * @param props - Content, feature map, optional chrome
@@ -42,6 +42,7 @@ export function MuikkuEditor(props: MuikkuEditorProps) {
     className,
     editable = true,
     onChange,
+    onEditorReady,
   } = props;
   const resolved = resolveFeatures(features);
   const featureKey = JSON.stringify(resolved);
@@ -56,11 +57,11 @@ export function MuikkuEditor(props: MuikkuEditorProps) {
         resolved={resolved}
         editable={editable}
         onChange={onChange}
+        onEditorReady={onEditorReady}
       />
     </div>
   );
 }
-
 /**
  * Props for the MuikkuEditorInstance component.
  */
@@ -69,20 +70,21 @@ interface MuikkuEditorInstanceProps {
   resolved: ReturnType<typeof resolveFeatures>;
   editable?: boolean;
   onChange?: (html: string) => void;
+  onEditorReady?: (editor: Editor | null) => void;
 }
-
 /**
  * Isolated useEditor so a feature-key change destroys the previous schema.
  * @param props - Resolved features and instance extras
  */
 function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
-  const { content, resolved, editable, onChange } = props;
+  const { content, resolved, editable, onChange, onEditorReady } = props;
+  const lastAppliedContentRef = useRef(content);
   const onChangeRef = useRef(onChange);
+  const onEditorReadyRef = useRef(onEditorReady);
   onChangeRef.current = onChange;
-
+  onEditorReadyRef.current = onEditorReady;
   // Create the editor parts: toolbar, renderBubbleMenus, extensions
   const parts = useMemo(() => createEditorParts(resolved), [resolved]);
-
   // Create the editor
   const editor = useEditor({
     content,
@@ -100,11 +102,19 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
     onUpdate: ({ editor: instance }) => {
       // If the editor is not editable, don't update the content
       // changing editable causes the editor onUpdate to be called with the current content
-      if (!editor?.isEditable) return;
+      if (!instance.isEditable || instance.isDestroyed) return;
       const html = instance.getHTML();
-      onChangeRef.current?.(instance.getText().trim() ? html : "");
+      const next = instance.getText().trim() ? html : "";
+      lastAppliedContentRef.current = next;
+      onChangeRef.current?.(next);
     },
   });
+
+  // Hand the live instance to the parent (ref there, not state).
+  useEffect(() => {
+    onEditorReadyRef.current?.(editor ?? null);
+    return () => onEditorReadyRef.current?.(null);
+  }, [editor]);
 
   // Set the editable state of the editor when the editable prop changes
   useEffect(() => {
@@ -122,7 +132,6 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
   const resolvedCharacterCount = isOn(resolved.characterCount)
     ? (optionsOf(resolved.characterCount) as MuikkuEditorCharacterCount)
     : null;
-
   const { selected: isSourceMode } = useTiptapEditorV2({
     editor,
     selector: ({ editor: instance }) =>
@@ -152,7 +161,6 @@ function MuikkuEditorInstance(props: MuikkuEditorInstanceProps) {
   return (
     <EditorContext.Provider value={ctxValue}>
       {parts.toolbar}
-
       {editor && editable && !(sourceModeOn && isSourceMode)
         ? parts.renderBubbleMenus(editor)
         : null}

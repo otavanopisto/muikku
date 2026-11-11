@@ -1,41 +1,90 @@
 import { atom } from "jotai";
+import { selectAtom } from "jotai/utils";
+import type { Language, MaterialContentNode } from "~/generated/client";
 
 /**
- * Unsaved HTML keyed by workspaceMaterialId.
- * Production editor/preview read this; the query cache stays static until save.
+ * Unsaved page fields. Missing keys mean “use the static node”.
  */
-export const materialHtmlDraftsAtom = atom<Record<number, string>>({});
+export type MaterialPageDraft = Partial<{
+  html: string;
+  title: string;
+  extraInfo: string;
+  titleLanguage: Language;
+  license: string;
+  ai: MaterialContentNode["ai"];
+  maxPoints: number;
+}>;
 
 /**
- * Write one page's HTML draft. No-op if the value is unchanged.
+ * Unsaved patches keyed by workspaceMaterialId.
  */
-export const setMaterialHtmlDraftAtom = atom(
+export const materialPageDraftsAtom = atom<Record<number, MaterialPageDraft>>(
+  {}
+);
+
+/**
+ * Merge a patch into one page's draft.
+ */
+export const patchMaterialPageDraftAtom = atom(
   null,
-  (get, set, payload: { workspaceMaterialId: number; html: string }) => {
-    const drafts = get(materialHtmlDraftsAtom);
-    if (drafts[payload.workspaceMaterialId] === payload.html) {
-      return;
-    }
-    set(materialHtmlDraftsAtom, {
+  (
+    get,
+    set,
+    payload: { workspaceMaterialId: number; patch: MaterialPageDraft }
+  ) => {
+    const drafts = get(materialPageDraftsAtom);
+    const current = drafts[payload.workspaceMaterialId] ?? {};
+    set(materialPageDraftsAtom, {
       ...drafts,
-      [payload.workspaceMaterialId]: payload.html,
+      [payload.workspaceMaterialId]: { ...current, ...payload.patch },
     });
   }
 );
 
 /**
- * Effective HTML for a page: draft if present, otherwise static html.
- * @param drafts - Draft map
- * @param workspaceMaterialId - Page id
- * @param fallbackHtml - Static node html
+ * Drop the in-memory draft for one page (revert to static).
  */
-export function resolvedMaterialHtml(
-  drafts: Record<number, string>,
-  workspaceMaterialId: number | null | undefined,
-  fallbackHtml: string | null | undefined
-): string {
-  if (workspaceMaterialId == null) {
-    return fallbackHtml ?? "";
+export const clearMaterialPageDraftAtom = atom(
+  null,
+  (get, set, workspaceMaterialId: number) => {
+    const drafts = get(materialPageDraftsAtom);
+    if (!(workspaceMaterialId in drafts)) return;
+    const next = { ...drafts };
+    delete next[workspaceMaterialId];
+    set(materialPageDraftsAtom, next);
   }
-  return drafts[workspaceMaterialId] ?? fallbackHtml ?? "";
+);
+
+/**
+ * Static node with the unsaved patch overlaid.
+ * @param page - Query-cache node
+ * @param draft - In-memory patch
+ */
+export function resolvedPageDraft(
+  page: MaterialContentNode,
+  draft: MaterialPageDraft | undefined
+): MaterialContentNode {
+  if (!draft) return page;
+  return { ...page, ...draft };
+}
+
+/**
+ * Draft for one page. Html changes do not count as a UI update.
+ */
+export function materialPageDraftUiAtom(
+  workspaceMaterialId: number | undefined
+) {
+  return selectAtom(
+    materialPageDraftsAtom,
+    (drafts) =>
+      workspaceMaterialId != null ? drafts[workspaceMaterialId] : undefined,
+    (a, b) =>
+      a === b ||
+      (a?.title === b?.title &&
+        a?.extraInfo === b?.extraInfo &&
+        a?.titleLanguage === b?.titleLanguage &&
+        a?.license === b?.license &&
+        a?.ai === b?.ai &&
+        a?.maxPoints === b?.maxPoints)
+  );
 }

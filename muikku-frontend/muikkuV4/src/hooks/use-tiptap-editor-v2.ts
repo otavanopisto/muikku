@@ -91,25 +91,31 @@ export function useTiptapEditorV2<TSelected = never>(
   }, [storageEditor]);
 
   const effectiveEditor = resolveActivePageEditor
-    ? storageEditor ?? mainEditor
+    ? (storageEditor ?? mainEditor)
     : mainEditor;
 
   // No subscription mode: return stable shape, no useEditorState
 
+  const liveEditor =
+    effectiveEditor && !effectiveEditor.isDestroyed ? effectiveEditor : null;
+
   // Always call useEditorState (hook order stable).
   // If no selector is provided, select `undefined` so callers can ignore it.
   const selectedState = useEditorState({
-    editor: effectiveEditor ?? null,
+    editor: liveEditor,
     selector: (ctx) => {
-      if (!ctx.editor) return undefined as unknown as TSelected | undefined;
+      const instance = ctx.editor;
+      if (!instance || instance.isDestroyed) {
+        return undefined as unknown as TSelected | undefined;
+      }
       if (!options?.selector) {
         return undefined;
       }
-      return options.selector({ editor: ctx.editor });
+      return options.selector({ editor: instance });
     },
   });
   return {
-    editor: effectiveEditor ?? null,
+    editor: liveEditor,
     selected: options?.selector ? (selectedState as TSelected) : undefined,
   };
 }

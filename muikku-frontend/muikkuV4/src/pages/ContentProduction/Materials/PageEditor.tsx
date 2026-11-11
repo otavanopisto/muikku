@@ -1,80 +1,245 @@
-import { Group, Paper, Tabs, Title } from "@mantine/core";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { ActionIcon, Group, Paper, Tabs, Text, Tooltip } from "@mantine/core";
+import {
+  IconArrowBackUp,
+  IconEye,
+  IconLock,
+  IconPencil,
+  IconTrash,
+  IconUpload,
+} from "@tabler/icons-react";
 import { useAtomValue, useSetAtom } from "jotai";
-import type { MaterialContentNode } from "~/generated/client";
 import {
-  materialHtmlDraftsAtom,
-  resolvedMaterialHtml,
-  setMaterialHtmlDraftAtom,
-} from "src/atoms/WorkspaceContentDrafts";
+  MaterialViewRestriction,
+  type MaterialContentNode,
+} from "~/generated/client";
 import {
-  MATERIAL_AUTHOR,
-  MuikkuEditor,
-} from "src/components/tiptap-templates/muikku-editor";
+  clearMaterialPageDraftAtom,
+  materialPageDraftUiAtom,
+  patchMaterialPageDraftAtom,
+  resolvedPageDraft,
+  type MaterialPageDraft,
+} from "~/src/atoms/workspaceContentDrafts";
+import type { Workspace } from "~/src/RichContentLoader/coreMaterial";
+import { SavedPageContent } from "./PagePreview";
+import { PageContentTab } from "./PageContentTab";
+import { PageMetadataTab } from "./PageMetadataTab";
+import { PageAttachmentsTab } from "./PageAttachmentsTab";
+import type { Editor } from "@tiptap/core";
 
 /**
- * Props for the selected-page editor.
+ * Props for one page on the authoring column.
  */
 interface PageEditorProps {
   page: MaterialContentNode;
-  expanded: boolean;
+  folder: MaterialContentNode | null;
+  workspace: Workspace;
 }
 
 /**
- * Content tab for one material page. Tiedot / Liitteet stay disabled until later.
+ * One material page. Starts idle; pen opens the editor.
  */
 export function PageEditor(props: PageEditorProps) {
-  const { page, expanded } = props;
-  const drafts = useAtomValue(materialHtmlDraftsAtom);
-  const setDraft = useSetAtom(setMaterialHtmlDraftAtom);
-  const html = resolvedMaterialHtml(
-    drafts,
-    page.workspaceMaterialId,
-    page.html
+  const { page, folder, workspace } = props;
+  const [editing, setEditing] = useState(false);
+  const editorRef = useRef<Editor | null>(null);
+  const draftAtom = useMemo(
+    () => materialPageDraftUiAtom(page.workspaceMaterialId),
+    [page.workspaceMaterialId]
   );
+  const draft = useAtomValue(draftAtom);
+  const patchDraft = useSetAtom(patchMaterialPageDraftAtom);
+  const clearDraft = useSetAtom(clearMaterialPageDraftAtom);
+  const draftPage = resolvedPageDraft(page, draft);
 
-  if (!expanded) {
-    return (
-      <Paper p="sm" radius="md" withBorder>
-        <Group gap="sm" wrap="nowrap">
-          {/* icon stubs later: edit, copy, restrict, type, delete */}
-          <Title order={3} size="h4" lineClamp={1}>
-            {page.title}
-          </Title>
-        </Group>
-      </Paper>
-    );
+  /**
+   * Restore saved html on the live editor, then drop the in-memory draft.
+   */
+  function handleRevert() {
+    if (page.workspaceMaterialId == null) return;
+    const instance = editorRef.current;
+    if (instance && !instance.isDestroyed) {
+      instance.commands.disableSourceMode();
+      instance.commands.setContent(page.html ?? "", { emitUpdate: false });
+    }
+    clearDraft(page.workspaceMaterialId);
   }
 
+  /**
+   * Handle editor ready.
+   * @param instance - Editor instance
+   */
+  const handleEditorReady = useCallback((instance: Editor | null) => {
+    editorRef.current = instance;
+  }, []);
+
+  /**
+   * Handle patch.
+   * @param patch - Patch
+   */
+  const handlePatch = useCallback(
+    (patch: MaterialPageDraft) => {
+      if (page.workspaceMaterialId == null) return;
+      patchDraft({ workspaceMaterialId: page.workspaceMaterialId, patch });
+    },
+    [page.workspaceMaterialId, patchDraft]
+  );
+
+  /**
+   * Handle html change.
+   * @param html - New html
+   */
+  const handleHtmlChange = useCallback(
+    (html: string) => handlePatch({ html }),
+    [handlePatch]
+  );
+
+  /**
+   * Handle title change.
+   * @param title - New title
+   */
+  const handleTitleChange = useCallback(
+    (title: string) => handlePatch({ title }),
+    [handlePatch]
+  );
+
   return (
-    <Paper p="md" radius="md" withBorder shadow="xs">
-      <Tabs defaultValue="content">
-        <Tabs.List>
-          <Tabs.Tab value="content">Sisältö</Tabs.Tab>
-          <Tabs.Tab value="info" disabled>
-            Tiedot
-          </Tabs.Tab>
-          <Tabs.Tab value="attachments" disabled>
-            Liitteet
-          </Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="content" pt="md">
-          <MuikkuEditor
-            key={page.workspaceMaterialId}
-            className="muikku-editor--material-editor"
-            content={html}
-            features={MATERIAL_AUTHOR}
-            minRows={16}
-            editable
-            onChange={(next) => {
-              if (page.workspaceMaterialId == null) return;
-              setDraft({
-                workspaceMaterialId: page.workspaceMaterialId,
-                html: next,
-              });
-            }}
-          />
-        </Tabs.Panel>
-      </Tabs>
+    <Paper p="md" radius="md" withBorder shadow={editing ? "xs" : undefined}>
+      <PageToolbar
+        page={page}
+        editing={editing}
+        onStartEditing={() => setEditing(true)}
+        onRevert={handleRevert}
+      />
+      {editing ? (
+        <Tabs defaultValue="content" mt="sm">
+          <Tabs.List grow>
+            <Tabs.Tab value="content">Sisältö</Tabs.Tab>
+            <Tabs.Tab value="info">Tiedot</Tabs.Tab>
+            <Tabs.Tab value="attachments">Liitteet</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="content" pt="md">
+            <PageContentTab
+              page={draftPage}
+              savedHtml={page.html ?? ""}
+              onEditorReady={handleEditorReady}
+              onTitleChange={handleTitleChange}
+              onHtmlChange={handleHtmlChange}
+            />
+          </Tabs.Panel>
+          <Tabs.Panel value="info" pt="md">
+            <PageMetadataTab page={draftPage} onPatch={handlePatch} />
+          </Tabs.Panel>
+          <Tabs.Panel value="attachments" pt="md">
+            <PageAttachmentsTab
+              workspaceMaterialId={page.workspaceMaterialId}
+              workspaceUrlName={workspace.urlName}
+            />
+          </Tabs.Panel>
+        </Tabs>
+      ) : (
+        <SavedPageContent page={page} folder={folder} workspace={workspace} />
+      )}
     </Paper>
   );
+}
+
+/**
+ * Idle: pen. Editing: publish + revert. Other actions are visual stubs.
+ */
+function PageToolbar(props: {
+  page: MaterialContentNode;
+  editing: boolean;
+  onStartEditing: () => void;
+  onRevert: () => void;
+}) {
+  const { page, editing, onStartEditing, onRevert } = props;
+
+  return (
+    <Group gap="xs" wrap="nowrap" justify="space-between">
+      <Group gap="xs" wrap="nowrap">
+        {editing ? (
+          <>
+            <Tooltip label="Julkaise muutokset">
+              <ActionIcon
+                variant="subtle"
+                aria-label="Julkaise muutokset"
+                disabled
+              >
+                <IconUpload size={16} />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Peru muutokset">
+              <ActionIcon
+                variant="subtle"
+                aria-label="Peru muutokset"
+                onClick={onRevert}
+              >
+                <IconArrowBackUp size={16} />
+              </ActionIcon>
+            </Tooltip>
+          </>
+        ) : (
+          <Tooltip label="Aloita muokkaus">
+            <ActionIcon
+              variant="subtle"
+              aria-label="Aloita muokkaus"
+              onClick={onStartEditing}
+            >
+              <IconPencil size={16} />
+            </ActionIcon>
+          </Tooltip>
+        )}
+        <ActionIcon variant="subtle" aria-label="Kopioi" disabled>
+          <IconEye size={16} />
+        </ActionIcon>
+        <Group gap={4} wrap="nowrap">
+          <IconLock size={16} />
+          <Text size="sm">{restrictionLabel(page.viewRestrict)}</Text>
+        </Group>
+        <Text size="sm">{pageTypeLabel(page.assignmentType)}</Text>
+      </Group>
+      <ActionIcon variant="subtle" color="red" aria-label="Poista" disabled>
+        <IconTrash size={16} />
+      </ActionIcon>
+    </Group>
+  );
+}
+
+/**
+ * View-restriction label for the idle/editing toolbar.
+ * @param viewRestrict - Node viewRestrict
+ */
+function restrictionLabel(
+  viewRestrict: MaterialContentNode["viewRestrict"]
+): string {
+  switch (viewRestrict) {
+    case MaterialViewRestriction.LoggedIn:
+      return "Kirjautuneille";
+    case MaterialViewRestriction.WorkspaceMembers:
+      return "Jäsenille";
+    default:
+      return "Kaikille";
+  }
+}
+
+/**
+ * Page-type label for the toolbar.
+ * @param assignmentType - Node assignment type
+ */
+function pageTypeLabel(
+  assignmentType: MaterialContentNode["assignmentType"]
+): string {
+  switch (assignmentType) {
+    case "EXERCISE":
+      return "Harjoitustehtävä";
+    case "EVALUATED":
+      return "Arvioitava tehtävä";
+    case "JOURNAL":
+      return "Oppimispäiväkirja";
+    case "INTERIM_EVALUATION":
+      return "Välipalautetehtävä";
+    default:
+      return "Teoriasivu";
+  }
 }
