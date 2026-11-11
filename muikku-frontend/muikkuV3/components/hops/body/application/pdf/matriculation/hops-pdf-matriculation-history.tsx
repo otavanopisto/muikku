@@ -62,13 +62,13 @@ const HopsPdfHistoryGradeLegend = () => {
 
   return (
     <View wrap={false} style={styles.gradeLegend}>
-      <Text style={styles.gradeLegendTitle}>
-        {t("labels.grades", { ns: "hops_new" })}
-      </Text>
       {items.map((item) => (
-        <View key={item.code || item.name} style={styles.gradeLegendRow}>
+        <View key={item.code || item.name} style={styles.gradeLegendItem}>
           {item.code ? (
-            <Text style={styles.gradeLegendCode}>{item.code}</Text>
+            <>
+              <Text style={styles.gradeLegendCode}>{item.code}</Text>
+              <Text style={styles.gradeLegendCode}>=</Text>
+            </>
           ) : null}
           <Text style={styles.gradeLegendName}>{item.name}</Text>
         </View>
@@ -156,11 +156,10 @@ const HopsPdfMatriculationHistory = (
       <PdfGuideText>
         {t("content.matriculationHistoryGuides2", { ns: "hops_new" })}
       </PdfGuideText>
+      <HopsPdfHistoryGradeLegend />
       {results.map((result) => (
         <HopsPdfHistoryResultCard key={result.subjectCode} result={result} />
       ))}
-
-      <HopsPdfHistoryGradeLegend />
     </Page>
   );
 };

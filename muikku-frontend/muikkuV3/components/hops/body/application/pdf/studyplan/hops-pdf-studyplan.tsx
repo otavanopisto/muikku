@@ -181,11 +181,14 @@ const HopsPdfStudyPlanCourseCard = (props: HopsPdfStudyPlanCourseCardProps) => {
     ns: "common",
   });
   return (
-    <View wrap={false}>
-      <Text style={styles.periodItem}>{title}</Text>
-      <Text style={styles.periodItemSecondary}>{typeLabel}</Text>
+    <View wrap={false} style={styles.periodItem}>
+      <View style={styles.periodItemHeader}>
+        <Text style={styles.periodItemTitle}>{title}</Text>
+        <Text style={styles.periodItemType}>{typeLabel}</Text>
+      </View>
+
       {dates.map((dateLine) => (
-        <Text key={dateLine} style={styles.periodItemSecondary}>
+        <Text key={dateLine} style={styles.periodItemDate}>
           {dateLine}
         </Text>
       ))}

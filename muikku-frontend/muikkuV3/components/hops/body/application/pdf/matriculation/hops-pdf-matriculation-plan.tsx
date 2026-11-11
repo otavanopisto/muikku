@@ -45,7 +45,9 @@ const HopsPdfMatriculationPlan = (props: HopsPdfMatriculationPlanProps) => {
       ) : (
         <View>
           <PdfInfoField
-            label={t("content.matriculationPlanTarget", { ns: "hops_new" })}
+            label={
+              t("content.matriculationPlanTarget", { ns: "hops_new" }) + ":"
+            }
             value={
               plan.goalMatriculationExam
                 ? t("labels.yes", { ns: "common" })
@@ -59,23 +61,25 @@ const HopsPdfMatriculationPlan = (props: HopsPdfMatriculationPlanProps) => {
           {plannedSubjects.length > 0 ? (
             <View style={styles.table}>
               <View style={styles.tableRow} wrap={false}>
-                <Text style={styles.tableHeaderCell}>
+                <Text style={styles.tableHeaderCellMain}>
                   {t("labels.matriculationSubject", { ns: "hops_new" })}
                 </Text>
-                <Text style={styles.tableHeaderCell}>
+                <Text style={styles.tableHeaderCellAside}>
                   {t("labels.matriculationExamTerm", { ns: "hops_new" })}
                 </Text>
               </View>
               {plannedSubjects.map((subject, index) => (
                 <View
                   key={`${subject.subject}-${index}`}
-                  style={styles.tableRow}
+                  style={
+                    index % 2 === 0 ? styles.tableRowOdd : styles.tableRowEven
+                  }
                   wrap={false}
                 >
-                  <Text style={styles.tableCell}>
+                  <Text style={styles.tableCellMain}>
                     {formatMatriculationSubjectName(t, subject.subject)}
                   </Text>
-                  <Text style={styles.tableCell}>
+                  <Text style={styles.tableCellAside}>
                     {formatMatriculationTerm(t, subject.term, subject.year)}
                   </Text>
                 </View>

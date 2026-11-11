@@ -53,7 +53,7 @@ const HopsPdfEnrollmentCard = (props: HopsPdfEnrollmentCardProps) => {
         t("content.matriculationEnrollmentDone", {
           ns: "hops_new",
           term: term.toLowerCase(),
-        })
+        }) + ":"
       ),
       value: formatPdfDate(exam.enrollment?.enrollmentDate),
     },

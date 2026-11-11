@@ -133,8 +133,9 @@ export const PdfScaleLegend = () => {
   return (
     <View wrap={false} style={styles.gradeLegend}>
       {levels.map((level) => (
-        <View key={level} style={styles.gradeLegendRow}>
+        <View key={level} style={styles.gradeLegendItem}>
           <Text style={styles.gradeLegendCode}>{level}</Text>
+          <Text style={styles.gradeLegendCode}>=</Text>
           <Text style={styles.gradeLegendName}>
             {t(`labels.hopsFormSelfAssessmentLevel${level}`, {
               ns: "hops_new",

@@ -93,10 +93,10 @@ const HopsPdfBackgroundCompulsory = (
       {languageRows.length > 0 ? (
         <View style={styles.table}>
           <View style={styles.tableRow} wrap={false}>
-            <Text style={styles.tableHeaderCell}>
+            <Text style={styles.tableHeaderCellMain}>
               {t("labels.hopsCompulsoryLanguageTableLang", { ns: "hops_new" })}
             </Text>
-            <Text style={styles.tableHeaderCell}>
+            <Text style={styles.tableHeaderCellAside}>
               {t("labels.hopsCompulsoryPreviousLanguageExperience", {
                 ns: "hops_new",
               })}
@@ -108,8 +108,8 @@ const HopsPdfBackgroundCompulsory = (
               style={styles.tableRow}
               wrap={false}
             >
-              <Text style={styles.tableCell}>{language.name}</Text>
-              <Text style={styles.tableCell}>
+              <Text style={styles.tableCellMain}>{language.name}</Text>
+              <Text style={styles.tableCellAside}>
                 {formatLanguageGrade(t, language.grade)}
               </Text>
             </View>
@@ -122,6 +122,9 @@ const HopsPdfBackgroundCompulsory = (
       <PdfSectionTitle>
         {t("labels.hopsCompulsorySelfAssessmentTitle1", { ns: "hops_new" })}
       </PdfSectionTitle>
+
+      <PdfScaleLegend />
+
       <PdfScaleRow
         label={t("labels.hopsCompulsoryByReadingMaterials", { ns: "hops_new" })}
         value={form.byReadingMaterials}
@@ -163,7 +166,6 @@ const HopsPdfBackgroundCompulsory = (
         value={form.byWatchingOrDoingExamples}
       />
 
-      <PdfScaleLegend />
       <PdfInfoField
         label={t("labels.hopsCompulsorySomeOtherWay", { ns: "hops_new" })}
         value={form.someOtherWay}
@@ -193,6 +195,9 @@ const HopsPdfBackgroundCompulsory = (
       <PdfSectionTitle>
         {t("labels.hopsCompulsorySelfAssessmentTitle3", { ns: "hops_new" })}
       </PdfSectionTitle>
+
+      <PdfScaleLegend />
+
       <PdfScaleRow
         label={t("labels.hopsCompulsoryLikeStudying", { ns: "hops_new" })}
         value={form.likeStudying}
@@ -246,7 +251,6 @@ const HopsPdfBackgroundCompulsory = (
         value={form.canUseBasicComputerFunctionalities}
       />
 
-      <PdfScaleLegend />
       <PdfInfoField
         label={t("labels.hopsCompulsorySelfImageSomethingElse", {
           ns: "hops_new",

@@ -102,6 +102,7 @@ const HopsPdfBackgroundSecondary = (props: HopsPdfBackgroundSecondaryProps) => {
       <PdfSectionTitle>
         {t("labels.hopsSecondarySelfAssessmentTitle1", { ns: "hops_new" })}
       </PdfSectionTitle>
+      <PdfScaleLegend />
       <PdfScaleRow
         label={t("labels.hopsSecondaryPositiveAttitude", { ns: "hops_new" })}
         value={form.positiveAttitude}
@@ -145,7 +146,6 @@ const HopsPdfBackgroundSecondary = (props: HopsPdfBackgroundSecondaryProps) => {
         value={form.independentLearningSkills}
       />
 
-      <PdfScaleLegend />
       <PdfInfoField
         label={t("labels.hopsSecondaryMoreAboutSelfAssessment", {
           ns: "hops_new",
