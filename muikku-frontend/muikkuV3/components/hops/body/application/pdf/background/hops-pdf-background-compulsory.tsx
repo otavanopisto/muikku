@@ -181,7 +181,7 @@ const HopsPdfBackgroundCompulsory = (
           </Text>
         ))
       ) : (
-        <Text style={styles.empty}>-</Text>
+        <Text style={styles.listItem}>-</Text>
       )}
       {form.studySupportSomethingElse ? (
         <PdfInfoField
