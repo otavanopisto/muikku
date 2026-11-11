@@ -15,6 +15,8 @@ import {
 } from "~/generated/client";
 import {
   clearMaterialPageDraftAtom,
+  isPageDraftPublishable,
+  materialPageDraftAtom,
   materialPageDraftUiAtom,
   patchMaterialPageDraftAtom,
   resolvedPageDraft,
@@ -154,25 +156,38 @@ function PageToolbar(props: {
   onRevert: () => void;
 }) {
   const { page, editing, onStartEditing, onRevert } = props;
+  const draftAtom = useMemo(
+    () => materialPageDraftAtom(page.workspaceMaterialId),
+    [page.workspaceMaterialId]
+  );
+  const draft = useAtomValue(draftAtom);
+  const canPublish = isPageDraftPublishable(page, draft);
 
   return (
     <Group gap="xs" wrap="nowrap" justify="space-between">
       <Group gap="xs" wrap="nowrap">
         {editing ? (
           <>
-            <Tooltip label="Julkaise muutokset">
+            <Tooltip
+              label={
+                canPublish ? "Julkaise muutokset" : "Ei julkaistavia muutoksia"
+              }
+            >
               <ActionIcon
                 variant="subtle"
                 aria-label="Julkaise muutokset"
-                disabled
+                disabled={!canPublish}
               >
                 <IconUpload size={16} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip label="Peru muutokset">
+            <Tooltip
+              label={canPublish ? "Peru muutokset" : "Ei peruttavia muutoksia"}
+            >
               <ActionIcon
                 variant="subtle"
                 aria-label="Peru muutokset"
+                disabled={!canPublish}
                 onClick={onRevert}
               >
                 <IconArrowBackUp size={16} />

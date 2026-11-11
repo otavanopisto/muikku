@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { selectAtom } from "jotai/utils";
+import { isEqual, pick } from "lodash";
 import type { Language, MaterialContentNode } from "~/generated/client";
 
 /**
@@ -66,6 +67,40 @@ export function resolvedPageDraft(
 ): MaterialContentNode {
   if (!draft) return page;
   return { ...page, ...draft };
+}
+
+const PUBLISH_FIELDS: (keyof MaterialContentNode)[] = [
+  "html",
+  "title",
+  "extraInfo",
+  "titleLanguage",
+  "license",
+  "ai",
+  "maxPoints",
+] as const;
+
+/**
+ * True when the draft has at least one publishable field that differs from the saved node.
+ * @param page - Query-cache node
+ * @param draft - In-memory patch
+ */
+export function isPageDraftPublishable(
+  page: MaterialContentNode,
+  draft: MaterialPageDraft | undefined
+): boolean {
+  if (!draft) return false;
+  const saved = pick(page, PUBLISH_FIELDS);
+  const next = { ...saved, ...pick(draft, PUBLISH_FIELDS) };
+  return !isEqual(saved, next);
+}
+
+/**
+ * Full draft for one page, including html. For toolbar dirty-check only.
+ */
+export function materialPageDraftAtom(workspaceMaterialId: number | undefined) {
+  return selectAtom(materialPageDraftsAtom, (drafts) =>
+    workspaceMaterialId != null ? drafts[workspaceMaterialId] : undefined
+  );
 }
 
 /**
