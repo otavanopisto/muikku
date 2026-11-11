@@ -32,7 +32,7 @@ export const frontpageAnnouncementsDataAtom = atom(
   (get) => get(frontpageAnnouncementsQueryAtom).data
 );
 
-export const toggleAnnouncementRead = atom(
+export const toggleAnnouncementReadAtom = atom(
   null,
   async (_get, _set, announcementId: number) => {
     try {
@@ -74,7 +74,7 @@ export const toggleAnnouncementRead = atom(
   }
 );
 
-export const toggleAnnouncementPinned = atom(
+export const toggleAnnouncementPinnedAtom = atom(
   null,
   async (_get, _set, announcementId: number) => {
     try {

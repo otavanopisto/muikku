@@ -17,6 +17,10 @@ export const FRONTPAGE_ANNOUNCEMENTS_QUERY_KEY = [
   "frontpage",
   "announcements",
 ] as const;
+// Absences query keys
+export const FRONTPAGE_ABSENCES_QUERY_KEY = ["frontpage", "absences"] as const;
+
+// Hops query keys
 export const STUDENT_COURSE_MATRIX_QUERY_KEY = [
   "hops",
   "studentCourseMatrix",
@@ -25,9 +29,10 @@ export const WORKSPACE_SUGGESTIONS_QUERY_KEY = [
   "hops",
   "workspaceSuggestions",
 ] as const;
-
-// Absences query keys
-export const FRONTPAGE_ABSENCES_QUERY_KEY = ["frontpage", "absences"] as const;
+export const STUDENT_STUDY_ACTIVITY_QUERY_KEY = [
+  "hops",
+  "studentStudyActivity",
+] as const;
 
 // Tasks query keys
 export const FRONTPAGE_TASKS_QUERY_KEY = ["frontpage", "tasks"] as const;

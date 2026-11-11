@@ -4,8 +4,10 @@ import { getHopsApi } from "~/api";
 import { userAtom } from "./auth";
 import {
   STUDENT_COURSE_MATRIX_QUERY_KEY,
+  STUDENT_STUDY_ACTIVITY_QUERY_KEY,
   WORKSPACE_SUGGESTIONS_QUERY_KEY,
 } from "src/queryClient";
+import { handleApiError } from "./helpers/error";
 
 const hopsApi = getHopsApi();
 
@@ -17,13 +19,17 @@ export const studentCourseMatrixAtomWithQuery = atomWithQuery((get) => {
     queryKey: [...STUDENT_COURSE_MATRIX_QUERY_KEY, studentIdentifier],
     enabled: !!studentIdentifier,
     queryFn: async () => {
-      if (!studentIdentifier || !educationTypeCode) {
-        throw new Error("Student identifier is required");
+      try {
+        if (!studentIdentifier || !educationTypeCode) {
+          throw new Error("Student identifier is required");
+        }
+        return hopsApi.getStudentCourseMatrix({
+          studentIdentifier,
+          educationTypeCode,
+        });
+      } catch (error) {
+        handleApiError(error, "Failed to get student course matrix");
       }
-      return hopsApi.getStudentCourseMatrix({
-        studentIdentifier,
-        educationTypeCode,
-      });
     },
   };
 });
@@ -36,26 +42,50 @@ export const wokspaceSuggestionsQueryAtom = atomWithQuery((get) => {
     queryKey: WORKSPACE_SUGGESTIONS_QUERY_KEY,
     enabled: !!userEntityId && !!subjects,
     queryFn: async () => {
-      if (!userEntityId || !subjects) {
-        throw new Error("User entity ID and subjects are required");
-      }
-      const courses = subjects.flatMap((subject) =>
-        subject.modules.map((courseModule) => ({
-          subjectCode: subject.code,
-          courseNumber: courseModule.courseNumber,
-        }))
-      );
+      try {
+        if (!userEntityId || !subjects) {
+          throw new Error("User entity ID and subjects are required");
+        }
+        const courses = subjects.flatMap((subject) =>
+          subject.modules.map((courseModule) => ({
+            subjectCode: subject.code,
+            courseNumber: courseModule.courseNumber,
+          }))
+        );
 
-      const suggestions = await Promise.all(
-        courses.map((course) =>
-          hopsApi.listWorkspaceSuggestions({
-            subject: course.subjectCode,
-            courseNumber: course.courseNumber,
-            userEntityId,
-          })
-        )
-      );
-      return suggestions.flat();
+        const suggestions = await Promise.all(
+          courses.map((course) =>
+            hopsApi.listWorkspaceSuggestions({
+              subject: course.subjectCode,
+              courseNumber: course.courseNumber,
+              userEntityId,
+            })
+          )
+        );
+        return suggestions.flat();
+      } catch (error) {
+        handleApiError(error, "Failed to get workspace suggestions");
+      }
+    },
+  };
+});
+
+export const studentStudyActivityQueryAtom = atomWithQuery((get) => {
+  const { identifier: studentIdentifier } = get(userAtom) ?? {};
+  return {
+    queryKey: STUDENT_STUDY_ACTIVITY_QUERY_KEY,
+    enabled: !!studentIdentifier,
+    queryFn: async () => {
+      try {
+        if (!studentIdentifier) {
+          throw new Error(
+            "Student identifier missing in studentActivityQueryAtom"
+          );
+        }
+        return hopsApi.getStudyActivity({ studentIdentifier });
+      } catch (error) {
+        handleApiError(error, "Failed to get student study activity");
+      }
     },
   };
 });
@@ -66,4 +96,8 @@ export const studentCourseMatrixDataAtom = atom(
 
 export const wokspaceSuggestionsDataAtom = atom(
   (get) => get(wokspaceSuggestionsQueryAtom).data
+);
+
+export const studentStudyActivityDataAtom = atom(
+  (get) => get(studentStudyActivityQueryAtom).data
 );

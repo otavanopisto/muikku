@@ -1,52 +1,70 @@
-import { Stack } from "@mantine/core";
-import { useAtomValue } from "jotai";
-import {
-  wokspaceSuggestionsDataAtom,
-  studentCourseMatrixDataAtom,
-} from "~/src/atoms/hops";
+import { Stack, Button, Group } from "@mantine/core";
 import { Empty } from "src/components/Empty";
 import Panel from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
+import { useNextCourseSuggestions } from "~/src/hooks/use-next-course-suggestions";
+import PromptDialog from "~/src/components/PromptDialog/PromptDialog";
+import { useState } from "react";
 /**
- * Workspaces
- * @returns
+ * Suggestions
+ *
+ * Displays the next course suggestions for the student.
+ *
+ * If the student has not signed up for the course, a prompt dialog is displayed
+ * asking the student to sign up for the course.
+ *
+ * If the student has signed up for the course, the course is displayed in a button
+ * that opens the course in a new tab.
+ * @returns Suggestions panel
  */
 export function Suggestions() {
-  const suggestions = useAtomValue(wokspaceSuggestionsDataAtom);
-  const matrix = useAtomValue(studentCourseMatrixDataAtom);
   const { t } = useTranslation("workspaces");
-  if (suggestions === undefined && matrix === undefined) {
-    return <Empty title="No absences found" />;
-  }
-  /*   const generateAbsenceDates = (absence: MuikkuEvent) => (
-    <Group>
-      <Text>{localize.date(absence.start, "DD.MM.YYYY")}</Text>
-      <IconArrowNarrowRight color="gray" />
-      <Text>{localize.date(absence.end, "DD.MM.YYYY")}</Text>
-    </Group>
-  );
- */
-  /*   const getAbsenceState = (absence: MuikkuEvent): PanelItemBadge => {
-    const reason =
-      absence.properties?.find((property) => property.name === "ABSENCE_REASON")
-        ?.value ?? "NO_REASON";
 
-    return {
-      label: t(`reasons.${reason}`, { ns: "events" }),
-      state: reason === "NO_REASON" ? "warning" : "success",
-    };
-  }; */
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+  const { nextCourseSuggestions, signUpForCourse } = useNextCourseSuggestions();
+  if (nextCourseSuggestions.length === 0) {
+    return <Empty title="No suggestions found" />;
+  }
+
+  const handleSignUpForCourse = (courseId: number) => {
+    void signUpForCourse(courseId, "");
+    setSelectedCourseId(null);
+  };
+
   return (
     <Panel title={t("label")}>
       <Stack>
-        {suggestions?.map((suggestion) => (
+        {nextCourseSuggestions?.map((suggestion) => (
           <Panel.Item
-            title={suggestion.name}
-            key={suggestion.id}
-            itemId={suggestion.id}
-          />
+            title={suggestion.courseName}
+            key={suggestion.courseId}
+            itemId={suggestion.courseId}
+          >
+            <Group>
+              <Button
+                onClick={() => {
+                  setSelectedCourseId(suggestion.courseId);
+                }}
+              >
+                {t("actions.signUp")}
+              </Button>
+              {suggestion?.url && (
+                <Button component="a" href={suggestion.url} target="_blank">
+                  {t("actions.view")}
+                </Button>
+              )}
+            </Group>
+          </Panel.Item>
         ))}
       </Stack>
+      <PromptDialog
+        opened={selectedCourseId !== null}
+        onConfirm={() => handleSignUpForCourse(selectedCourseId ?? 0)}
+        title={t("labels.signUpPrompt")}
+        description={t("content.signUpPrompt")}
+        onCancel={() => setSelectedCourseId(null)}
+        onClose={() => setSelectedCourseId(null)}
+      />
     </Panel>
   );
 }

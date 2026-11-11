@@ -3,7 +3,7 @@ import { MantineProvider } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { brandIdAtom } from "../atoms/theme";
 import { brandRegistry } from "src/theme/brands";
-
+import { Notifications } from "@mantine/notifications";
 /**
  * ThemedApp component that provides the MantineProvider with the appropriate theme and cssVariablesResolver.
  * @param children - The children to render.
@@ -19,6 +19,7 @@ export function ThemedApp({ children }: { children: React.ReactNode }) {
       cssVariablesResolver={brand.cssVariablesResolver}
       defaultColorScheme="light"
     >
+      <Notifications />
       {children}
     </MantineProvider>
   );

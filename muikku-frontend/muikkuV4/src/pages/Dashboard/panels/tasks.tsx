@@ -135,21 +135,18 @@ export default function Tasks() {
                 {getStatusUpdateLocale(task)}
               </Button>
               {isCreator(task.creator) && (
-                <>
-                  <Button onClick={() => setEditingTask(task)}>Edit</Button>
-
-                  <EditTask
-                    task={editingTask}
-                    opened={editingTask !== null}
-                    onClose={() => setEditingTask(null)}
-                    onSave={handleEditTask}
-                  />
-                </>
+                <Button onClick={() => setEditingTask(task)}>Edit</Button>
               )}
             </Group>
           </Panel.AccordionItem>
         ))}
       </Accordion>
+      <EditTask
+        task={editingTask}
+        opened={editingTask !== null}
+        onClose={() => setEditingTask(null)}
+        onSave={handleEditTask}
+      />
     </Panel>
   );
 }

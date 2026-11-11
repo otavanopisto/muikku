@@ -6,8 +6,8 @@ import Panel from "~/src/components/Panel/Panel";
 import { IconSpeakerphone, IconPin } from "@tabler/icons-react";
 import { localize } from "~/src/locales/i18n";
 import {
-  toggleAnnouncementRead,
-  toggleAnnouncementPinned,
+  toggleAnnouncementReadAtom,
+  toggleAnnouncementPinnedAtom,
 } from "src/atoms/announcements";
 import { useSetAtom } from "jotai";
 import type { Announcement } from "~/generated/client";
@@ -20,8 +20,8 @@ import { useTranslation } from "react-i18next";
 export function Announcements() {
   const announcements = useAtomValue(frontpageAnnouncementsDataAtom);
   const { t } = useTranslation(["announcements", "common"]);
-  const setToggleRead = useSetAtom(toggleAnnouncementRead);
-  const setPinned = useSetAtom(toggleAnnouncementPinned);
+  const setToggleRead = useSetAtom(toggleAnnouncementReadAtom);
+  const setPinned = useSetAtom(toggleAnnouncementPinnedAtom);
 
   if (!announcements?.announcements) {
     return <Empty title="No announcements found" />;
@@ -43,14 +43,13 @@ export function Announcements() {
         label: t(`actions.${pinnedState}`, {
           ns: "announcements",
         }),
-        action: (announcementId: number) => handleSetPinned(announcementId),
+        action: () => handleSetPinned(announcement.id),
       },
       {
         label: t(`actions.${readState}`, {
           ns: "announcements",
         }),
-        action: (announcementId: number) =>
-          handleMarkAsReadToggle(announcementId),
+        action: () => handleMarkAsReadToggle(announcement.id),
       },
     ];
   };
