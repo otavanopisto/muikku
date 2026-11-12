@@ -1,25 +1,13 @@
 .split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  column-gap: 0;
-  min-height: 100%;
-}
-
-.header,
-.cell {
-  min-width: 0;
-  padding: var(--mantine-spacing-md);
-}
-
-.split {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: start;
+  align-content: start;
   column-gap: 0;
   min-height: 100%;
 }
+
 .split::after {
   content: "";
   position: absolute;
@@ -29,11 +17,13 @@
   background: var(--mantine-color-default-border);
   pointer-events: none;
 }
+
 .header,
 .cell {
   min-width: 0;
   padding: var(--mantine-spacing-md);
 }
+
 .plusRow {
   display: flex;
   justify-content: center;
