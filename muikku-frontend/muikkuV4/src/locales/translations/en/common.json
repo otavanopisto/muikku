@@ -1,0 +1,13 @@
+{
+  "labels": {
+    "studies": "Studies",
+    "continueStudies": "Continue studies: {{location}}"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "confirm": "Save"
+  },
+  "errors": {
+    "userIdentifierRequired": "User identifier is missing. Please try again later."
+  }
+}

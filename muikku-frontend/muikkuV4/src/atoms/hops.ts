@@ -8,8 +8,10 @@ import {
   WORKSPACE_SUGGESTIONS_QUERY_KEY,
 } from "src/queryClient";
 import { handleApiError } from "./helpers/error";
+import i18n from "~/src/locales/i18n";
 
 const hopsApi = getHopsApi();
+const { t } = i18n;
 
 export const studentCourseMatrixAtomWithQuery = atomWithQuery((get) => {
   const user = get(userAtom);
@@ -28,7 +30,10 @@ export const studentCourseMatrixAtomWithQuery = atomWithQuery((get) => {
           educationTypeCode,
         });
       } catch (error) {
-        handleApiError(error, "Failed to get student course matrix");
+        handleApiError(
+          error,
+          t("errors.loadStudentCourseMatrix", { ns: "hops" })
+        );
       }
     },
   };
@@ -64,7 +69,7 @@ export const wokspaceSuggestionsQueryAtom = atomWithQuery((get) => {
         );
         return suggestions.flat();
       } catch (error) {
-        handleApiError(error, "Failed to get workspace suggestions");
+        handleApiError(error, t("errors.loadSuggestions", { ns: "hops" }));
       }
     },
   };
@@ -84,7 +89,7 @@ export const studentStudyActivityQueryAtom = atomWithQuery((get) => {
         }
         return hopsApi.getStudyActivity({ studentIdentifier });
       } catch (error) {
-        handleApiError(error, "Failed to get student study activity");
+        handleApiError(error, t("errors.loadStudyActivity", { ns: "hops" }));
       }
     },
   };

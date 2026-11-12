@@ -18,6 +18,8 @@ interface PromptDialogProps {
   onCancel: () => void;
   opened: boolean;
   onClose: () => void;
+  confirmLabel?: string;
+  cancelLabel?: string;
 }
 
 /**
@@ -26,14 +28,25 @@ interface PromptDialogProps {
  * @returns PromptDialog component
  */
 export default function PromptDialog(props: PromptDialogProps) {
-  const { title, description, onConfirm, onCancel, opened, onClose } = props;
+  const {
+    title,
+    description,
+    onConfirm,
+    onCancel,
+    opened,
+    onClose,
+    confirmLabel,
+    cancelLabel,
+  } = props;
   const { t } = useTranslation("common");
   return (
     <Modal opened={opened} onClose={onClose} title={title} centered>
       <Text>{description}</Text>
       <Group>
-        <Button onClick={onCancel}>{t("actions.cancel")}</Button>
-        <Button onClick={onConfirm}>{t("actions.confirm")}</Button>
+        <Button onClick={onCancel}>{cancelLabel ?? t("actions.cancel")}</Button>
+        <Button onClick={onConfirm}>
+          {confirmLabel ?? t("actions.confirm")}
+        </Button>
       </Group>
     </Modal>
   );

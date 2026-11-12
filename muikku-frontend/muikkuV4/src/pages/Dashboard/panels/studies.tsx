@@ -23,8 +23,10 @@ export function Workspaces() {
         {lastWorkspaces.map((workspace) => (
           <Fragment key={workspace.workspaceId}>
             <Title order={3} mb="md">
-              Jatka opintoja: {workspace.workspaceName} -{" "}
-              {workspace.materialName}
+              {t("labels.continueStudies", {
+                location:
+                  workspace.workspaceName + " - " + workspace.materialName,
+              })}
             </Title>
             <Button
               key={workspace.workspaceId}

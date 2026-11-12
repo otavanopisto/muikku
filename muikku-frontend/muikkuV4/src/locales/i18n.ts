@@ -1,7 +1,5 @@
 import * as i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import * as en from "./translations/en.json";
-import * as fi from "./translations/fi.json";
 import dayjs from "dayjs";
 import "dayjs/locale/fi";
 import "dayjs/locale/en";
@@ -10,6 +8,7 @@ import timezone from "dayjs/plugin/timezone";
 import relativeTime from "dayjs/plugin/relativeTime";
 import calendar from "dayjs/plugin/calendar";
 import duration from "dayjs/plugin/duration";
+import { resources } from "./resources";
 
 // Extend dayjs with plugins
 dayjs.extend(utc);
@@ -17,11 +16,6 @@ dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 dayjs.extend(calendar);
 dayjs.extend(duration);
-
-export const resources = {
-  en,
-  fi,
-} as const;
 
 export const availableLanguages = Object.keys(resources);
 export const defaultNS = "common";

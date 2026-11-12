@@ -1,0 +1,21 @@
+{
+  "label": "Tiedotteet",
+  "actions": {
+    "pin": "Kiinnitä tiedote",
+    "unpin": "Poista kiinnitys",
+    "setRead": "Aseta luetuksi",
+    "setUnread": "Aseta lukemattomaksi"
+  },
+  "labels": {},
+  "state": {
+    "PINNED": "Kiinnitetty",
+    "UNPINNED": "Kiinnittämätön",
+    "READ": "Luettu",
+    "UNREAD": "Lukematon"
+  },
+  "errors": {
+    "load": "Tiedotteiden lataus epäonnistui. Yritä uudelleen myöhemmin.",
+    "toggleRead": "Tiedotteen luettavuuden vaihtaminen epäonnistui. Yritä uudelleen myöhemmin.",
+    "togglePin": "Tiedotteen kiinnityksen vaihtaminen epäonnistui. Yritä uudelleen myöhemmin."
+  }
+}

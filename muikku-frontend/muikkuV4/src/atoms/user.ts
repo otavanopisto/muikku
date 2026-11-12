@@ -1,7 +1,10 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
-import { getUserApi, isMApiError } from "~/api";
+import { getUserApi } from "~/api";
+import i18n from "~/src/locales/i18n";
+import { handleApiError } from "./helpers/error";
 
+const { t } = i18n;
 const userApi = getUserApi();
 
 /**
@@ -37,25 +40,24 @@ const isWorkspaceMaterialReference = (
 /** Query atom for user last workspaces */
 export const lastWorkspacesQueryAtom = atomWithQuery(() => ({
   queryKey: ["lastWorkspaces"],
-  queryFn: async (): Promise<WorkspaceMaterialReferenceType[]> => {
+  queryFn: async () => {
     try {
       const property = (await userApi.getUserProperty({
         key: "last-workspaces",
       })) as unknown;
       if (!isUserProperty(property)) {
-        throw new Error("Failed to load user property");
+        throw new Error(t("errors.notValidUserProperty", { ns: "user" }));
       }
       const parsed = JSON.parse(property.value) as unknown;
       if (
         !Array.isArray(parsed) ||
         !parsed.every(isWorkspaceMaterialReference)
       ) {
-        throw new Error("Failed to load user property");
+        throw new Error(t("errors.unrecognizedUserProperty", { ns: "user" }));
       }
       return parsed;
     } catch (err) {
-      if (!isMApiError(err)) throw err;
-      throw new Error("Failed to load user property");
+      handleApiError(err, t("errors.loadUserProperty", { ns: "user" }));
     }
   },
   staleTime: Infinity,

@@ -1,0 +1,18 @@
+{
+  "label": "Opintotehtävät",
+  "actions": {
+    "approve": "Hyväksy",
+    "send": "Lähetä"
+  },
+  "states": {
+    "APPROVED": "Valmis",
+    "APPROVAL_PENDING": "Odottaa hyväksyntää",
+    "ONGOING": "Kesken"
+  },
+  "errors": {
+    "load": "Opintotehtävien lataus epäonnistui. Yritä uudelleen myöhemmin.",
+    "taskIdRequired": "Tehtävän tunniste puuttuu. Yritä uudelleen myöhemmin.",
+    "updateTask": "Opintotehtävää ei voitu päivittää. Yritä uudelleen myöhemmin.",
+    "updateTaskStatus": "Opintotehtävän tilaa ei voitu päivittää. Yritä uudelleen myöhemmin."
+  }
+}

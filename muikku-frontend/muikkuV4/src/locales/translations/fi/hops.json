@@ -1,0 +1,8 @@
+{
+  "label": "HOPS",
+  "errors": {
+    "loadStudentCourseMatrix": "Kurssimatriisin lataus epäonnistui. Yritä uudelleen.",
+    "loadStudyActivity": "Opiskelutapahtumien lataus epäonnistui. Yritä uudelleen.",
+    "loadSuggestions": "Ehdotettujen kurssien lataus epäonnistui. Yritä uudelleen."
+  }
+}

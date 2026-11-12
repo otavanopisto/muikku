@@ -1,0 +1,21 @@
+{
+  "label": "Announcements",
+  "actions": {
+    "pin": "Pin announcement",
+    "unpin": "Unpin announcement",
+    "setRead": "Mark as read",
+    "setUnread": "Mark as unread"
+  },
+  "labels": {},
+  "state": {
+    "PINNED": "Pinned",
+    "UNPINNED": "Unpinned",
+    "READ": "Read",
+    "UNREAD": "Unread"
+  },
+  "errors": {
+    "load": "Failed to load announcements. Please try again later.",
+    "toggleRead": "Failed to change the announcement read state. Please try again later.",
+    "togglePin": "Failed to change the announcement pin. Please try again later."
+  }
+}

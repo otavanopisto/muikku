@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { userAtom } from "./auth";
-import { getNotesApi, isMApiError, isResponseError } from "~/api";
+import { getNotesApi } from "~/api";
 import type {
   UpdateNoteReceiverRequest,
   UpdateNoteRequest,
@@ -9,7 +9,10 @@ import type {
   Note,
 } from "~/generated/client";
 import { FRONTPAGE_TASKS_QUERY_KEY, queryClient } from "~/src/queryClient";
+import i18n from "~/src/locales/i18n";
+import { handleApiError } from "./helpers/error";
 
+const { t } = i18n;
 const notesApi = getNotesApi();
 
 const recipientQueryFunction = async (
@@ -29,9 +32,7 @@ const recipientQueryFunction = async (
     }
     return notes;
   } catch (error) {
-    if (!isMApiError(error)) throw error;
-    if (isResponseError(error)) throw new Error(error.message);
-    throw new Error("Failed to load notes ");
+    handleApiError(error, t("errors.load", { ns: "tasks" }));
   }
 };
 
@@ -39,11 +40,17 @@ export const frontpageTasksRecipientQueryAtom = atomWithQuery((get) => {
   const userId = get(userAtom)?.id;
 
   if (!userId) {
-    throw new Error("User ID is required");
+    throw new Error(t("errors.userIdentifierRequired"));
   }
   return {
     queryKey: [...FRONTPAGE_TASKS_QUERY_KEY, userId],
-    queryFn: () => recipientQueryFunction(userId, "ONGOING"),
+    queryFn: async () => {
+      try {
+        return await recipientQueryFunction(userId, "ONGOING");
+      } catch (error) {
+        handleApiError(error, t("errors.load", { ns: "tasks" }));
+      }
+    },
   };
 });
 
@@ -59,7 +66,7 @@ export const updateFrontpageTaskStatusAtom = atom(
       };
 
       if (!task.id) {
-        throw new Error("Task ID is required");
+        throw new Error(t("errors.taskIdRequired", { ns: "tasks" }));
       }
 
       const recipient = await notesApi.updateNoteReceiver({
@@ -91,9 +98,7 @@ export const updateFrontpageTaskStatusAtom = atom(
         }
       );
     } catch (error) {
-      if (!isMApiError(error)) throw error;
-      if (isResponseError(error)) throw new Error(error.message);
-      throw new Error("Failed to update task status");
+      handleApiError(error, t("errors.updateTaskStatus", { ns: "tasks" }));
     }
   }
 );
@@ -121,9 +126,7 @@ export const updateFrontpageTaskAtom = atom(
         }
       );
     } catch (error) {
-      if (!isMApiError(error)) throw error;
-      if (isResponseError(error)) throw new Error(error.message);
-      throw new Error("Failed to update task");
+      handleApiError(error, t("errors.updateTask", { ns: "tasks" }));
     }
   }
 );

@@ -1,0 +1,6 @@
+{
+  "label": "Messages",
+  "errors": {
+    "load": "Failed to load messages. Please try again later."
+  }
+}

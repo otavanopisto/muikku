@@ -1,0 +1,8 @@
+{
+  "label": "HOPS",
+  "errors": {
+    "loadStudentCourseMatrix": "Failed to load the course matrix. Please try again.",
+    "loadStudyActivity": "Failed to load study activity. Please try again.",
+    "loadSuggestions": "Failed to load suggested courses. Please try again."
+  }
+}

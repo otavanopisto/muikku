@@ -4,9 +4,11 @@ import { userAtom } from "./auth";
 import { getEventsApi, isMApiError, isResponseError } from "~/api";
 import { ListEventsTypeEnum } from "~/generated/client";
 import { FRONTPAGE_ABSENCES_QUERY_KEY } from "~/src/queryClient";
+import i18n from "~/src/locales/i18n";
+import { handleApiError } from "./helpers/error";
 
 const eventsApi = getEventsApi();
-
+const { t } = i18n;
 const absencesStartDate = new Date();
 absencesStartDate.setMonth(absencesStartDate.getMonth() - 12);
 const absencesEndDate = new Date();
@@ -30,9 +32,10 @@ export const absencesQueryAtom = atomWithQuery((get) => {
           end: absencesEndDate,
         });
       } catch (error) {
-        if (!isMApiError(error)) throw error;
-        if (isResponseError(error)) throw new Error(error.message);
-        throw new Error("Failed to load absences");
+        handleApiError(
+          error,
+          t("errors.load", { ns: "events", context: "absences" })
+        );
       }
     },
   };

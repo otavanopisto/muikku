@@ -1,0 +1,18 @@
+{
+  "label": "Study tasks",
+  "actions": {
+    "approve": "Approve",
+    "send": "Send"
+  },
+  "states": {
+    "APPROVED": "Done",
+    "APPROVAL_PENDING": "Waiting for approval",
+    "ONGOING": "In progress"
+  },
+  "errors": {
+    "load": "Failed to load study tasks. Please try again later.",
+    "taskIdRequired": "Task identifier is missing. Please try again later.",
+    "updateTask": "The study task could not be updated. Please try again later.",
+    "updateTaskStatus": "The study task status could not be updated. Please try again later."
+  }
+}

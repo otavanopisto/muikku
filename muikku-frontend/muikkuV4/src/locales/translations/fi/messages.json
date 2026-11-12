@@ -1,0 +1,6 @@
+{
+  "label": "Viestit",
+  "errors": {
+    "load": "Viestien lataus epäonnistui. Yritä uudelleen myöhemmin."
+  }
+}

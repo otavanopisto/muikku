@@ -149,7 +149,7 @@ const getBulletByEntryType = (type: ActivityLogType) => {
  */
 export function Activities() {
   const activities = useAtomValue(userActivityLogsDataAtom);
-  const { t } = useTranslation("activities");
+  const { t } = useTranslation("activityLogs");
   const [pageIndex, setPageIndex] = useState(1);
 
   if (activities === undefined) {

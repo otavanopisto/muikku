@@ -1,13 +1,16 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
-import { getAnnouncerApi, isMApiError, isResponseError } from "~/api";
+import { getAnnouncerApi } from "~/api";
 import type { GetAnnouncementsRequest } from "~/generated/client";
 import {
   queryClient,
   FRONTPAGE_ANNOUNCEMENTS_QUERY_KEY,
 } from "src/queryClient";
+import i18n from "~/src/locales/i18n";
+import { handleApiError } from "./helpers/error";
 
 const announcerApi = getAnnouncerApi();
+const { t } = i18n;
 
 export const frontpageAnnouncementsQueryAtom = atomWithQuery(() => {
   const params: GetAnnouncementsRequest = {
@@ -20,9 +23,7 @@ export const frontpageAnnouncementsQueryAtom = atomWithQuery(() => {
       try {
         return await announcerApi.getAnnouncements(params);
       } catch (error) {
-        if (!isMApiError(error)) throw error;
-        if (isResponseError(error)) throw new Error(error.message);
-        throw new Error("Failed to get announcements");
+        handleApiError(error, t("errors.load", { ns: "announcements" }));
       }
     },
   };
@@ -67,9 +68,7 @@ export const toggleAnnouncementReadAtom = atom(
           currentAnnouncements.unreadCount + (announcementUnreadState ? -1 : 1),
       });
     } catch (error) {
-      if (!isMApiError(error)) throw error;
-      if (isResponseError(error)) throw new Error(error.message);
-      throw new Error("Failed to toggle announcement read");
+      handleApiError(error, t("errors.toggleRead", { ns: "announcements" }));
     }
   }
 );
@@ -97,9 +96,7 @@ export const toggleAnnouncementPinnedAtom = atom(
         ),
       });
     } catch (error) {
-      if (!isMApiError(error)) throw error;
-      if (isResponseError(error)) throw new Error(error.message);
-      throw new Error("Failed to set announcement pinned");
+      handleApiError(error, t("errors.togglePin", { ns: "announcements" }));
     }
   }
 );

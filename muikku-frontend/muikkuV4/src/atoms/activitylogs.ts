@@ -4,9 +4,11 @@ import { getActivitylogsApi } from "~/api";
 import type { ActivityLogEntry, ActivityLogHash } from "~/generated/client";
 import { localize } from "~/src/locales/i18n";
 import { userAtom } from "./auth";
+import i18n from "~/src/locales/i18n";
+import { handleApiError } from "./helpers/error";
 
 const activitylogsApi = getActivitylogsApi();
-
+const { t } = i18n;
 export type DatedActivityLogEntry = Omit<ActivityLogEntry, "timestamp"> & {
   timestamp: Date;
 };
@@ -61,17 +63,21 @@ export const userActivityLogsQueryAtom = atomWithQuery((get) => {
       to.toISOString(),
     ],
     queryFn: async () => {
-      if (!userIdentifier) {
-        throw new Error("User ID is required");
+      try {
+        if (!userIdentifier) {
+          throw new Error(t("errors.userIdentifierRequired"));
+        }
+
+        const result = await activitylogsApi.getUserActivityLogs({
+          userIdentifier,
+          from,
+          to,
+        });
+
+        return withDateTimestamps(result);
+      } catch (error) {
+        handleApiError(error, t("errors.load", { ns: "activityLogs" }));
       }
-
-      const result = await activitylogsApi.getUserActivityLogs({
-        userIdentifier,
-        from,
-        to,
-      });
-
-      return withDateTimestamps(result);
     },
   };
 });
