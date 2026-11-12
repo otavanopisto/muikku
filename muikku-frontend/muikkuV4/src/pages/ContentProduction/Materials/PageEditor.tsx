@@ -7,6 +7,7 @@ import {
   IconPencil,
   IconTrash,
   IconUpload,
+  IconX,
 } from "@tabler/icons-react";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -29,6 +30,7 @@ import { PageMetadataTab } from "./PageMetadataTab";
 import { PageAttachmentsTab } from "./PageAttachmentsTab";
 import type { Editor } from "@tiptap/core";
 import { publishMaterialPageAtom } from "~/src/atoms/publishMaterialPage";
+import { ConfirmDialog } from "~/src/components/Dialogs/ConfirmDialog/ConfirmDialog";
 
 /**
  * Props for one page on the authoring column.
@@ -94,6 +96,14 @@ export function PageEditor(props: PageEditorProps) {
   }, [page.workspaceMaterialId, page.html, clearDraft]);
 
   /**
+   * Handle stop editing.
+   */
+  const handleStopEditing = useCallback(() => {
+    handleRevert();
+    setEditing(false);
+  }, [handleRevert]);
+
+  /**
    * Handle editor ready.
    * @param instance - Editor instance
    */
@@ -138,6 +148,7 @@ export function PageEditor(props: PageEditorProps) {
         editing={editing}
         publishing={publishing}
         onStartEditing={() => setEditing(true)}
+        onStopEditing={handleStopEditing}
         onRevert={handleRevert}
         onPublish={() => void handlePublish()}
       />
@@ -182,11 +193,22 @@ function PageToolbar(props: {
   editing: boolean;
   publishing: boolean;
   onStartEditing: () => void;
+  onStopEditing: () => void;
   onRevert: () => void;
   onPublish: () => void;
 }) {
-  const { page, editing, publishing, onStartEditing, onRevert, onPublish } =
-    props;
+  const {
+    page,
+    editing,
+    publishing,
+    onStartEditing,
+    onStopEditing,
+    onRevert,
+    onPublish,
+  } = props;
+
+  const [confirmClose, setConfirmClose] = useState(false);
+
   const draftAtom = useMemo(
     () => materialPageDraftAtom(page.workspaceMaterialId),
     [page.workspaceMaterialId]
@@ -194,62 +216,106 @@ function PageToolbar(props: {
   const draft = useAtomValue(draftAtom);
   const canPublish = isPageDraftPublishable(page, draft);
 
+  /**
+   * Handle stop editing click.
+   */
+  const handleStopEditingClick = useCallback(() => {
+    if (canPublish) {
+      setConfirmClose(true);
+      return;
+    }
+    onStopEditing();
+  }, [canPublish, onStopEditing]);
+
   return (
-    <Group gap="xs" wrap="nowrap" justify="space-between">
-      <Group gap="xs" wrap="nowrap">
-        {editing ? (
-          <>
-            <Tooltip
-              label={
-                canPublish ? "Julkaise muutokset" : "Ei julkaistavia muutoksia"
-              }
-            >
+    <>
+      <Group gap="xs" wrap="nowrap" justify="space-between">
+        <Group gap="xs" wrap="nowrap">
+          {editing ? (
+            <>
+              <Tooltip
+                label={
+                  canPublish
+                    ? "Julkaise muutokset"
+                    : "Ei julkaistavia muutoksia"
+                }
+              >
+                <ActionIcon
+                  variant="subtle"
+                  aria-label="Julkaise muutokset"
+                  disabled={!canPublish || publishing}
+                  onClick={onPublish}
+                >
+                  <IconUpload size={16} />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip
+                label={
+                  canPublish ? "Peru muutokset" : "Ei peruttavia muutoksia"
+                }
+              >
+                <ActionIcon
+                  variant="subtle"
+                  aria-label="Peru muutokset"
+                  disabled={!canPublish}
+                  onClick={onRevert}
+                >
+                  <IconArrowBackUp size={16} />
+                </ActionIcon>
+              </Tooltip>
+
+              <Tooltip label="Lopeta muokkaus">
+                <ActionIcon
+                  variant="subtle"
+                  aria-label="Lopeta muokkaus"
+                  disabled={publishing}
+                  onClick={handleStopEditingClick}
+                >
+                  <IconX size={16} />
+                </ActionIcon>
+              </Tooltip>
+            </>
+          ) : (
+            <Tooltip label="Aloita muokkaus">
               <ActionIcon
                 variant="subtle"
-                aria-label="Julkaise muutokset"
-                disabled={!canPublish || publishing}
-                onClick={onPublish}
+                aria-label="Aloita muokkaus"
+                onClick={onStartEditing}
               >
-                <IconUpload size={16} />
+                <IconPencil size={16} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip
-              label={canPublish ? "Peru muutokset" : "Ei peruttavia muutoksia"}
-            >
-              <ActionIcon
-                variant="subtle"
-                aria-label="Peru muutokset"
-                disabled={!canPublish}
-                onClick={onRevert}
-              >
-                <IconArrowBackUp size={16} />
-              </ActionIcon>
-            </Tooltip>
-          </>
-        ) : (
-          <Tooltip label="Aloita muokkaus">
-            <ActionIcon
-              variant="subtle"
-              aria-label="Aloita muokkaus"
-              onClick={onStartEditing}
-            >
-              <IconPencil size={16} />
-            </ActionIcon>
-          </Tooltip>
-        )}
-        <ActionIcon variant="subtle" aria-label="Kopioi" disabled>
-          <IconEye size={16} />
-        </ActionIcon>
-        <Group gap={4} wrap="nowrap">
-          <IconLock size={16} />
-          <Text size="sm">{restrictionLabel(page.viewRestrict)}</Text>
+          )}
+          <ActionIcon variant="subtle" aria-label="Kopioi" disabled>
+            <IconEye size={16} />
+          </ActionIcon>
+          <Group gap={4} wrap="nowrap">
+            <IconLock size={16} />
+            <Text size="sm">{restrictionLabel(page.viewRestrict)}</Text>
+          </Group>
+          <Text size="sm">{pageTypeLabel(page.assignmentType)}</Text>
         </Group>
-        <Text size="sm">{pageTypeLabel(page.assignmentType)}</Text>
+        <ActionIcon variant="subtle" color="red" aria-label="Poista" disabled>
+          <IconTrash size={16} />
+        </ActionIcon>
       </Group>
-      <ActionIcon variant="subtle" color="red" aria-label="Poista" disabled>
-        <IconTrash size={16} />
-      </ActionIcon>
-    </Group>
+
+      <ConfirmDialog
+        opened={confirmClose}
+        title="Julkaisemattomat muutokset"
+        size="md"
+        cancelLabel="Jatka muokkausta"
+        confirmLabel="Lopeta tallentamatta"
+        onCancel={() => setConfirmClose(false)}
+        onConfirm={() => {
+          setConfirmClose(false);
+          onStopEditing();
+        }}
+      >
+        Sivulla on julkaisemattomia muutoksia. Jos lopetat muokkauksen,
+        muutokset häviävät.
+      </ConfirmDialog>
+    </>
   );
 }
 
