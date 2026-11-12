@@ -1,7 +1,11 @@
 import { atom } from "jotai";
 import { selectAtom } from "jotai/utils";
 import { isEqual, pick } from "lodash";
-import type { Language, MaterialContentNode } from "~/generated/client";
+import type {
+  Language,
+  MaterialContentNode,
+  MaterialProducer,
+} from "~/generated/client";
 
 /**
  * Unsaved page fields. Missing keys mean “use the static node”.
@@ -14,6 +18,7 @@ export type MaterialPageDraft = Partial<{
   license: string;
   ai: MaterialContentNode["ai"];
   maxPoints: number;
+  producers: MaterialProducer[];
 }>;
 
 /**
@@ -77,6 +82,7 @@ const PUBLISH_FIELDS: (keyof MaterialContentNode)[] = [
   "license",
   "ai",
   "maxPoints",
+  "producers",
 ] as const;
 
 /**

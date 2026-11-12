@@ -5,6 +5,7 @@ import type {
   MaterialContentNode,
 } from "~/generated/client";
 import type { MaterialPageDraft } from "~/src/atoms/workspaceContentDrafts";
+import { LicenseSelector } from "./LicenseSelector";
 
 /**
  * Tiedot: metadata draft fields.
@@ -20,12 +21,9 @@ export function PageMetadataTab(props: {
       <Text size="sm" c="dimmed">
         Tuottajat kytketään myöhemmin.
       </Text>
-      <TextInput
-        label="Lisenssi"
+      <LicenseSelector
         value={page.license ?? ""}
-        onChange={(event) =>
-          onPatch({ license: event.currentTarget.value ?? "" })
-        }
+        onChange={(license) => onPatch({ license })}
       />
       <TextInput
         label="Lisätiedot"

@@ -28,6 +28,7 @@ import { PageContentTab } from "./PageContentTab";
 import { PageMetadataTab } from "./PageMetadataTab";
 import { PageAttachmentsTab } from "./PageAttachmentsTab";
 import type { Editor } from "@tiptap/core";
+import { publishMaterialPageAtom } from "~/src/atoms/publishMaterialPage";
 
 /**
  * Props for one page on the authoring column.
@@ -52,12 +53,37 @@ export function PageEditor(props: PageEditorProps) {
   const draft = useAtomValue(draftAtom);
   const patchDraft = useSetAtom(patchMaterialPageDraftAtom);
   const clearDraft = useSetAtom(clearMaterialPageDraftAtom);
+  const publishPage = useSetAtom(publishMaterialPageAtom);
+  const [publishing, setPublishing] = useState(false);
   const draftPage = resolvedPageDraft(page, draft);
+
+  /**
+   * Handle publish.
+   */
+  const handlePublish = useCallback(async () => {
+    if (page.workspaceMaterialId == null || publishing) return;
+    const instance = editorRef.current;
+    let htmlFromEditor: string | undefined;
+    if (instance && !instance.isDestroyed) {
+      instance.commands.disableSourceMode();
+      htmlFromEditor = instance.getText().trim() ? instance.getHTML() : "";
+    }
+    setPublishing(true);
+    try {
+      await publishPage({ page, htmlFromEditor });
+    } catch (err) {
+      window.alert(
+        err instanceof Error ? err.message : "Julkaisu epäonnistui."
+      );
+    } finally {
+      setPublishing(false);
+    }
+  }, [page, publishPage, publishing]);
 
   /**
    * Restore saved html on the live editor, then drop the in-memory draft.
    */
-  function handleRevert() {
+  const handleRevert = useCallback(() => {
     if (page.workspaceMaterialId == null) return;
     const instance = editorRef.current;
     if (instance && !instance.isDestroyed) {
@@ -65,7 +91,7 @@ export function PageEditor(props: PageEditorProps) {
       instance.commands.setContent(page.html ?? "", { emitUpdate: false });
     }
     clearDraft(page.workspaceMaterialId);
-  }
+  }, [page.workspaceMaterialId, page.html, clearDraft]);
 
   /**
    * Handle editor ready.
@@ -110,8 +136,10 @@ export function PageEditor(props: PageEditorProps) {
       <PageToolbar
         page={page}
         editing={editing}
+        publishing={publishing}
         onStartEditing={() => setEditing(true)}
         onRevert={handleRevert}
+        onPublish={() => void handlePublish()}
       />
       {editing ? (
         <Tabs defaultValue="content" mt="sm">
@@ -152,10 +180,13 @@ export function PageEditor(props: PageEditorProps) {
 function PageToolbar(props: {
   page: MaterialContentNode;
   editing: boolean;
+  publishing: boolean;
   onStartEditing: () => void;
   onRevert: () => void;
+  onPublish: () => void;
 }) {
-  const { page, editing, onStartEditing, onRevert } = props;
+  const { page, editing, publishing, onStartEditing, onRevert, onPublish } =
+    props;
   const draftAtom = useMemo(
     () => materialPageDraftAtom(page.workspaceMaterialId),
     [page.workspaceMaterialId]
@@ -176,7 +207,8 @@ function PageToolbar(props: {
               <ActionIcon
                 variant="subtle"
                 aria-label="Julkaise muutokset"
-                disabled={!canPublish}
+                disabled={!canPublish || publishing}
+                onClick={onPublish}
               >
                 <IconUpload size={16} />
               </ActionIcon>
