@@ -61,7 +61,7 @@ const HopsPdfMatriculationEligibility = (
       <Text style={styles.pageTitle}>
         {t("labels.matriculationParticipation", { ns: "hops_new" })}
       </Text>
-      <View>
+      <View style={styles.section}>
         <PdfSectionTitle>
           {t("labels.matriculationParticipation", {
             ns: "hops_new",
@@ -80,7 +80,7 @@ const HopsPdfMatriculationEligibility = (
         {!eligibility ? (
           <Text style={styles.empty}>-</Text>
         ) : (
-          <View>
+          <View style={styles.eligibilityRowsContainer}>
             <PdfEligibilityRow
               eligible={eligibility.credits >= eligibility.creditsRequired}
               description={t("content.matriculationAbistatusEligibility1", {
@@ -106,18 +106,26 @@ const HopsPdfMatriculationEligibility = (
         <PdfGuideText>
           {t("content.matriculationEligibilityGuides4", { ns: "hops_new" })}
         </PdfGuideText>
-        {abistatusRows.map((subject) => (
-          <PdfEligibilityRow
-            key={subject.code}
-            eligible={subject.abistatusOk}
-            label={formatMatriculationSubjectName(t, subject.code)}
-            description={t("content.matriculationEligibility", {
-              ns: "hops_new",
-              acceptedCount: subject.doneCredits,
-              requiredCount: subject.requiredCredits,
-            })}
-          />
-        ))}
+        {abistatusRows.length === 0 ? (
+          <Text style={styles.empty}>-</Text>
+        ) : (
+          <View style={styles.eligibilityRowsContainer}>
+            {abistatusRows.map((subject) => (
+              <PdfEligibilityRow
+                key={subject.code}
+                eligible={subject.abistatusOk}
+                label={formatMatriculationSubjectName(t, subject.code)}
+                description={t("content.matriculationEligibility", {
+                  ns: "hops_new",
+                  acceptedCount: subject.doneCredits,
+                  requiredCount: subject.requiredCredits,
+                })}
+              />
+            ))}
+          </View>
+        )}
+      </View>
+      <View style={styles.section}>
         <PdfSectionTitle>
           {t("labels.matriculationParticipation", {
             ns: "hops_new",
@@ -130,23 +138,25 @@ const HopsPdfMatriculationEligibility = (
         {subjectsWithEligibility.length === 0 ? (
           <Text style={styles.empty}>-</Text>
         ) : (
-          subjectsWithEligibility.map((subjectEligibility) => (
-            <PdfEligibilityRow
-              key={subjectEligibility.subject.code}
-              eligible={subjectEligibility.eligible}
-              label={formatMatriculationSubjectName(
-                t,
-                subjectEligibility.subject.code
-              )}
-              description={t("content.matriculationEligibility", {
-                ns: "hops_new",
-                acceptedCount:
-                  subjectEligibility.passingGradeCourseCreditPoints,
-                requiredCount:
-                  subjectEligibility.requiredPassingGradeCourseCreditPoints,
-              })}
-            />
-          ))
+          <View style={styles.eligibilityRowsContainer}>
+            {subjectsWithEligibility.map((subjectEligibility) => (
+              <PdfEligibilityRow
+                key={subjectEligibility.subject.code}
+                eligible={subjectEligibility.eligible}
+                label={formatMatriculationSubjectName(
+                  t,
+                  subjectEligibility.subject.code
+                )}
+                description={t("content.matriculationEligibility", {
+                  ns: "hops_new",
+                  acceptedCount:
+                    subjectEligibility.passingGradeCourseCreditPoints,
+                  requiredCount:
+                    subjectEligibility.requiredPassingGradeCourseCreditPoints,
+                })}
+              />
+            ))}
+          </View>
         )}
       </View>
     </Page>

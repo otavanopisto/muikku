@@ -118,7 +118,7 @@ const HopsPdfHistoryResultCard = (props: HopsPdfHistoryResultCardProps) => {
               {formatPdfDate(gradeResult.gradeDate)}
             </Text>
             <Text style={styles.enrollmentCardValue}>
-              {`${t("labels.grade", { ns: "hops_new" })} ${formatMatriculationExamGrade(t, gradeResult.grade)}${points ? `  ${points}` : ""}`}
+              {`${t("labels.grade", { ns: "hops_new" })} ${formatMatriculationExamGrade(t, gradeResult.grade)}${points ? `,  ${points}` : ""}`}
             </Text>
           </View>
         );

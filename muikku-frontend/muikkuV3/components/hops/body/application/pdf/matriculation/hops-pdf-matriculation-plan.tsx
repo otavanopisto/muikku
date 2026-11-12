@@ -45,9 +45,7 @@ const HopsPdfMatriculationPlan = (props: HopsPdfMatriculationPlanProps) => {
       ) : (
         <View>
           <PdfInfoField
-            label={
-              t("content.matriculationPlanTarget", { ns: "hops_new" }) + ":"
-            }
+            label={t("content.matriculationPlanTarget", { ns: "hops_new" })}
             value={
               plan.goalMatriculationExam
                 ? t("labels.yes", { ns: "common" })

@@ -78,22 +78,31 @@ const HopsPdfDocument = (props: HopsPdfDocumentProps) => {
   const pageHeader = (
     <View style={styles.header} fixed>
       <View style={styles.headerImageContainer}>
-        <Image
-          src="/gfx/pedagogy_form_logo_header.png"
-          style={styles.headerImage}
-        />
+        {educationTypeCode === "lukio" ? (
+          <Image src="/gfx/logo_nettilukio.png" style={styles.headerImage} />
+        ) : (
+          <Image
+            src="/gfx/logo_nettiperuskoulu.png"
+            style={styles.headerImage}
+          />
+        )}
       </View>
       <View style={styles.headerInfoContainer}>
         <View style={styles.headerInfoContainerMain}>
           <Text style={styles.headerTitle}>
-            {t("labels.hopsPdfDialogTitle", { ns: "hops_new" })}
+            {educationTypeCode === "lukio"
+              ? t("labels.hopsPdfDialogTitle", {
+                  ns: "hops_new",
+                  context: "lukio",
+                })
+              : t("labels.hopsPdfDialogTitle", {
+                  ns: "hops_new",
+                  context: "peruskoulu",
+                })}
           </Text>
         </View>
         <View style={styles.headerInfoContainerAside}>
           <View style={styles.headerInfoContainerAsidePrimary}>
-            <Text style={styles.headerSubtitle}>
-              {t("labels.hopsPdfConfidential", { ns: "hops_new" })}
-            </Text>
             <Text style={styles.headerSubtitle}>
               {moment().format("D.M.YYYY")}
             </Text>

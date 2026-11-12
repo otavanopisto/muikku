@@ -214,13 +214,15 @@ const HopsPdfStudyPlanNoteCard = (props: HopsPdfStudyPlanNoteCardProps) => {
   const dateStr = formatItemDate(new Date(item.startDate));
 
   return (
-    <View wrap={false}>
-      <Text style={styles.periodItem}>{item.title}</Text>
+    <View wrap={false} style={styles.periodItem}>
+      <View style={styles.periodItemHeader}>
+        <Text style={styles.periodItemTitle}>{item.title}</Text>
+      </View>
 
       <Text style={styles.periodItemSecondary}>
         {item.content?.trim() ? item.content : "-"}
       </Text>
-      <Text style={styles.periodItemSecondary}>{dateStr}</Text>
+      <Text style={styles.periodItemDate}>{dateStr}</Text>
     </View>
   );
 };

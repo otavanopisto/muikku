@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     color: "#000000",
+    alignItems: "center",
     display: "flex",
     flexDirection: "row",
     flexWrap: "nowrap",
@@ -87,8 +88,12 @@ export const styles = StyleSheet.create({
     textAlign: "right",
     width: "100%",
   },
+  section: {
+    borderBottom: "1px solid #b3b2b2",
+    paddingBottom: 10,
+  },
   pageTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: "Helvetica",
     marginVertical: 10,
     textTransform: "uppercase",
@@ -111,23 +116,29 @@ export const styles = StyleSheet.create({
   infoFieldValue: {
     fontSize: 12,
     fontFamily: "Helvetica",
-    marginLeft: 70,
   },
   empty: {
     fontSize: 12,
     fontFamily: "Helvetica",
   },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: "Helvetica-Bold",
     marginTop: 16,
     marginBottom: 4,
+  },
+  scaleRowContainer: {
+    marginVertical: 10,
+    display: "flex",
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    width: "100%",
+    gap: 5,
   },
   scaleRow: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "nowrap",
-    marginVertical: 4,
     width: "100%",
   },
   scaleLabel: {
@@ -224,17 +235,12 @@ export const styles = StyleSheet.create({
   listItem: {
     fontSize: 12,
     fontFamily: "Helvetica",
-    marginLeft: 70,
+
     marginVertical: 1,
-  },
-  groupedBlock: {
-    marginVertical: 8,
-    paddingBottom: 8,
-    borderBottom: "1px solid #b3b2b2",
   },
   periodBlock: {
     marginTop: 10,
-    paddingBottom: 8,
+    paddingBottom: 10,
     borderBottom: "1px solid #b3b2b2",
   },
   periodMonthTitle: {
@@ -246,6 +252,11 @@ export const styles = StyleSheet.create({
   periodItem: {
     marginTop: 10,
     marginBottom: 10,
+    display: "flex",
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    width: "100%",
+    gap: 5,
   },
   periodItemHeader: {
     display: "flex",
@@ -258,13 +269,10 @@ export const styles = StyleSheet.create({
   periodItemTitle: {
     fontSize: 12,
     fontFamily: "Helvetica",
-    marginVertical: 2,
   },
   periodItemSecondary: {
     fontSize: 11,
     fontFamily: "Helvetica",
-    borderRadius: 5,
-    padding: 5,
   },
   periodItemType: {
     fontSize: 10,
@@ -283,6 +291,13 @@ export const styles = StyleSheet.create({
     fontFamily: "Helvetica",
     borderRadius: 5,
     color: "#707070",
+  },
+  eligibilityRowsContainer: {
+    marginVertical: 6,
+    display: "flex",
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    width: "100%",
   },
   eligibilityRow: {
     display: "flex",
@@ -354,7 +369,7 @@ export const styles = StyleSheet.create({
     flexBasis: "auto",
   },
   gradeLegend: {
-    marginTop: 5,
+    marginTop: 10,
     marginBottom: 5,
     borderRadius: 5,
     display: "flex",
