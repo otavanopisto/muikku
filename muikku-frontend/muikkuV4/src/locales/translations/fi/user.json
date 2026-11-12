@@ -1,0 +1,7 @@
+{
+  "errors": {
+    "loadUserProperty": "Käyttäjäominaisuuden lataus epäonnistui. Yritä uudelleen.",
+    "notValidUserProperty": "Käyttäjäominaisuus ei ole kelvollinen. Yritä uudelleen.",
+    "unrecognizedUserProperty": "Tunnistamaton käyttäjäominaisuus. Yritä uudelleen."
+  }
+}

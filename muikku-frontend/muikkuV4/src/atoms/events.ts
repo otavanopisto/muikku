@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
 import { userAtom } from "./auth";
-import { getEventsApi, isMApiError, isResponseError } from "~/api";
+import { getEventsApi } from "~/api";
 import { ListEventsTypeEnum } from "~/generated/client";
 import { FRONTPAGE_ABSENCES_QUERY_KEY } from "~/src/queryClient";
 import i18n from "~/src/locales/i18n";

@@ -206,7 +206,7 @@ function PanelItem(props: PanelItemProps) {
         icons={icons}
       />
       {children && <Box>{children}</Box>}
-      {date && <Text c={panelItemTextColors(unseen).textColor}>{date}</Text>}
+      {date && <Box c={panelItemTextColors(unseen).textColor}>{date}</Box>}{" "}
     </Paper>
   );
 }

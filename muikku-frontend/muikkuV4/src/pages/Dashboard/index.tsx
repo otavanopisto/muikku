@@ -17,7 +17,7 @@ import { userAtom } from "src/atoms/auth";
 import { brandIdAtom } from "src/atoms/theme";
 import { PageLayout } from "src/layouts/PageLayout/PageLayout";
 import { DashboardActions } from "./ActionBar/ActionBar";
-import { panels } from "./model/panels";
+import { panels } from "./catalog/panels";
 import SortablePanel from "./SortablePanel/SortablePanel";
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
@@ -30,11 +30,13 @@ export function Dashboard() {
   const [brandId, setBrandId] = useAtom(brandIdAtom);
   const { setColorScheme } = useMantineColorScheme({ keepTransitions: true });
   const computed = useComputedColorScheme("dark");
-
   const [localStoragePanelIds, setLocalStoragePanelIds] = useLocalStorage({
     key: "dashboard-panels",
     defaultValue: "1",
   });
+
+  if (!user) return null;
+
   const userPanelIds = localStoragePanelIds
     ? localStoragePanelIds.split(",").map((id: string) => parseInt(id))
     : [];
@@ -76,6 +78,7 @@ export function Dashboard() {
   return (
     <PageLayout>
       <DashboardActions
+        user={user}
         userPanelIds={userPanelIds}
         onItemClick={handlePanelClick}
       />

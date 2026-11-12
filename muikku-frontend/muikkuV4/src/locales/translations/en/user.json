@@ -1,0 +1,7 @@
+{
+  "errors": {
+    "loadUserProperty": "Failed to load the user property. Please try again.",
+    "notValidUserProperty": "The user property is not valid. Please try again.",
+    "unrecognizedUserProperty": "Unrecognized user property. Please try again."
+  }
+}

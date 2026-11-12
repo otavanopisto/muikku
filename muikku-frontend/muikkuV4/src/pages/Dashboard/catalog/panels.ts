@@ -5,6 +5,11 @@ import { Absences } from "../panels/absences";
 import Tasks from "../panels/tasks";
 import Activities from "../panels/activities";
 import { Suggestions } from "../panels/suggestions";
+import { Role } from "~/generated/client";
+
+/**
+ * Panel interface
+ */
 export interface Panel {
   id: number;
   title: string;
@@ -13,6 +18,7 @@ export interface Panel {
   mandatory: boolean;
   color: string;
   component: React.ComponentType | null;
+  access?: Role[];
 }
 
 /** Dashboard panels */
@@ -23,6 +29,7 @@ export const panels: Panel[] = [
     description: "",
     icon: null,
     mandatory: false,
+    access: [Role.Student],
     color: "blue",
     component: Workspaces,
   },
@@ -50,6 +57,7 @@ export const panels: Panel[] = [
     description: "",
     icon: null,
     mandatory: false,
+    access: [Role.Student],
     color: "teal",
     component: Suggestions,
   },
@@ -68,6 +76,7 @@ export const panels: Panel[] = [
     description: "",
     icon: null,
     mandatory: false,
+    access: [Role.Student],
     color: "teal",
     component: Absences,
   },
@@ -77,6 +86,7 @@ export const panels: Panel[] = [
     description: "",
     icon: null,
     mandatory: false,
+    access: [Role.Student],
     color: "teal",
     component: Tasks,
   },

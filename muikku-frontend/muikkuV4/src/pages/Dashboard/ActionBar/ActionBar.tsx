@@ -1,14 +1,16 @@
 import { IconDotsVertical } from "@tabler/icons-react";
 import { Menu, Group, ActionIcon } from "@mantine/core";
-import { panels } from "../model/panels";
+import { panels } from "../catalog/panels";
 import { useState } from "react";
 import { useInputState } from "@mantine/hooks";
 import classes from "./ActionBar.module.css";
-
+import useActionBarItems from "./hooks/useActionBarItems";
+import type { User } from "~/src/services/auth";
 /**
  * Dashboard actions
  * Dashboard view actions consisting of mantine Group component */
 interface DashboardActionsProps {
+  user: User;
   onItemClick: (panelId: number) => void;
   userPanelIds: number[];
 }
@@ -18,9 +20,10 @@ interface DashboardActionsProps {
  * @returns - DashboardActions component
  */
 export function DashboardActions(props: DashboardActionsProps) {
+  const actionBarItems = useActionBarItems({ user: props.user });
   const { onItemClick, userPanelIds } = props;
   const [filterValue, setFilterValue] = useInputState("");
-  const [filteredPanels, setFilteredPanels] = useState(panels);
+  const [filteredPanels, setFilteredPanels] = useState(actionBarItems);
 
   const onFilterChange = (value: string) => {
     setFilterValue(value);
