@@ -6,6 +6,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -33,5 +34,5 @@
 
     //"types": ["jquery"]
   },
-  "include": ["src", "api", "generated"]
+  "include": ["src", "api"]
 }
