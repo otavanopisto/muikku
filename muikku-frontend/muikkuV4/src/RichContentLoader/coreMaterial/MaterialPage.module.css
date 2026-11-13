@@ -109,3 +109,24 @@
 .label {
   font-weight: 600;
 }
+
+.select {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: var(--mantine-radius-sm);
+  background: transparent;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.select:hover:not(:disabled) {
+  background: var(--mantine-color-default-hover);
+}
+.select:disabled {
+  cursor: default;
+  opacity: 0.6;
+}

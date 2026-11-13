@@ -19,6 +19,9 @@ export type MaterialPageDraft = Partial<{
   ai: MaterialContentNode["ai"];
   maxPoints: number;
   producers: MaterialProducer[];
+  assignmentType: MaterialContentNode["assignmentType"];
+  viewRestrict: MaterialContentNode["viewRestrict"];
+  correctAnswers: MaterialContentNode["correctAnswers"];
 }>;
 
 /**
@@ -83,6 +86,9 @@ const PUBLISH_FIELDS: (keyof MaterialContentNode)[] = [
   "ai",
   "maxPoints",
   "producers",
+  "assignmentType",
+  "viewRestrict",
+  "correctAnswers",
 ] as const;
 
 /**
@@ -126,6 +132,9 @@ export function materialPageDraftUiAtom(
         a?.titleLanguage === b?.titleLanguage &&
         a?.license === b?.license &&
         a?.ai === b?.ai &&
-        a?.maxPoints === b?.maxPoints)
+        a?.maxPoints === b?.maxPoints &&
+        a?.assignmentType === b?.assignmentType &&
+        a?.viewRestrict === b?.viewRestrict &&
+        a?.correctAnswers === b?.correctAnswers)
   );
 }

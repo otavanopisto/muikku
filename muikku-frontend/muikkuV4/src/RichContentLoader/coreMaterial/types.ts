@@ -34,6 +34,7 @@ export interface MaterialEditingConfig {
   canRestrictView?: boolean;
   canCopy?: boolean;
   canChangePageType?: boolean;
+  canChangeExerciseType?: boolean;
   canAddAttachments?: boolean;
   canEditContent?: boolean;
   canSetTitle?: boolean;

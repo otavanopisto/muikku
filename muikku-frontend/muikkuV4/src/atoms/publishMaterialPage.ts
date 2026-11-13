@@ -28,6 +28,8 @@ const WORKSPACE_MATERIAL_FIELDS = [
   "maxPoints",
   "ai",
   "extraInfo",
+  "assignmentType",
+  "correctAnswers",
 ] as const satisfies readonly (keyof MaterialPageDraft)[];
 
 /**
@@ -148,8 +150,8 @@ export const publishMaterialPageAtom = atom(
               parentId: saved.parentId,
               nextSiblingId: saved.nextSiblingId,
               hidden: saved.hidden,
-              assignmentType: saved.assignmentType,
-              correctAnswers: saved.correctAnswers,
+              assignmentType: next.assignmentType,
+              correctAnswers: next.correctAnswers,
               path: saved.path,
               title: next.title,
               titleLanguage: next.titleLanguage,
@@ -163,19 +165,26 @@ export const publishMaterialPageAtom = atom(
         cachePatch.maxPoints = next.maxPoints;
         cachePatch.ai = next.ai;
         cachePatch.extraInfo = next.extraInfo;
+        cachePatch.assignmentType = next.assignmentType;
+        cachePatch.correctAnswers = next.correctAnswers;
         if (updated.path) cachePatch.path = updated.path;
       }
 
-      if (draft?.license !== undefined && draft.license !== saved.license) {
+      if (
+        (draft?.license !== undefined && draft.license !== saved.license) ||
+        (draft?.viewRestrict !== undefined &&
+          draft.viewRestrict !== saved.viewRestrict)
+      ) {
         await materialsApi.updateMaterial({
           materialId,
           body: {
             id: materialId,
             license: next.license,
-            viewRestrict: saved.viewRestrict,
+            viewRestrict: next.viewRestrict,
           },
         });
         cachePatch.license = next.license;
+        cachePatch.viewRestrict = next.viewRestrict;
       }
 
       if (

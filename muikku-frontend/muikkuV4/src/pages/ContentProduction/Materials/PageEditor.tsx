@@ -152,6 +152,9 @@ export function PageEditor(props: PageEditorProps) {
           canAddAttachments: true,
           canSetLicense: true,
           canSetProducers: true,
+          canRestrictView: true,
+          canChangePageType: true,
+          canChangeExerciseType: true,
         },
         handlers: {
           onEdit: () => setEditing(true),

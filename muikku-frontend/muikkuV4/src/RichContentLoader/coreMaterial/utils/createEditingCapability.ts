@@ -23,6 +23,7 @@ export function createEditingCapability(
   const canRestrictView = config.canRestrictView ?? false;
   const canCopy = config.canCopy ?? false;
   const canChangePageType = config.canChangePageType ?? false;
+  const canChangeExerciseType = config.canChangeExerciseType ?? false;
   const canSetLicense = config.canSetLicense ?? false;
   const canSetProducers = config.canSetProducers ?? false;
   const canAddAttachments = config.canAddAttachments ?? false;
@@ -42,6 +43,7 @@ export function createEditingCapability(
     canRestrictView,
     canCopy,
     canChangePageType,
+    canChangeExerciseType,
     canSetLicense,
     canSetProducers,
     canAddAttachments,
