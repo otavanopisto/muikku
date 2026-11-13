@@ -1,11 +1,9 @@
 import { IconDotsVertical } from "@tabler/icons-react";
 import { Menu, Group, ActionIcon } from "@mantine/core";
-import { panels } from "../catalog/panels";
-import { useState } from "react";
-import { useInputState } from "@mantine/hooks";
 import classes from "./ActionBar.module.css";
-import useActionBarItems from "./hooks/useActionBarItems";
 import type { User } from "~/src/services/auth";
+import useActionBarItems from "./hooks/useActionBarItems";
+import { useMemo, useState } from "react";
 /**
  * Dashboard actions
  * Dashboard view actions consisting of mantine Group component */
@@ -20,19 +18,18 @@ interface DashboardActionsProps {
  * @returns - DashboardActions component
  */
 export function DashboardActions(props: DashboardActionsProps) {
-  const actionBarItems = useActionBarItems({ user: props.user });
+  const [filterValue, setFilterValue] = useState("");
+  const items = useActionBarItems();
+
   const { onItemClick, userPanelIds } = props;
-  const [filterValue, setFilterValue] = useInputState("");
-  const [filteredPanels, setFilteredPanels] = useState(actionBarItems);
 
-  const onFilterChange = (value: string) => {
-    setFilterValue(value);
-    const filteredPanels = panels.filter((panel) =>
-      panel.title.toLowerCase().includes(value.toLowerCase())
-    );
-
-    setFilteredPanels(filteredPanels);
-  };
+  const filteredItems = useMemo(
+    () =>
+      items.filter((panel) =>
+        panel.title.toLowerCase().includes(filterValue.toLowerCase())
+      ),
+    [items, filterValue]
+  );
 
   return (
     <Group justify="flex-end" mb="md">
@@ -46,10 +43,10 @@ export function DashboardActions(props: DashboardActionsProps) {
           <Menu.Search
             placeholder="Search panels"
             value={filterValue}
-            onChange={(event) => onFilterChange(event.target.value)}
+            onChange={(event) => setFilterValue(event.currentTarget.value)}
           />
           <Menu.Divider />
-          {filteredPanels.map((panel) => (
+          {filteredItems.map((panel) => (
             <Menu.Item
               className={userPanelIds.includes(panel.id) ? classes.active : ""}
               onClick={() => onItemClick(panel.id)}

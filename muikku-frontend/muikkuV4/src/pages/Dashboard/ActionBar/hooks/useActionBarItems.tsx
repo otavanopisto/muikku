@@ -1,25 +1,18 @@
-import type { Role } from "~/generated/client";
-import { useMemo } from "react";
 import { panels } from "~/src/pages/Dashboard/catalog/panels";
-import type { User } from "~/src/services/auth";
+import { useAtomValue } from "jotai";
+import { userAtom } from "~/src/atoms/auth";
 
-interface useActionBarItemsProps {
-  user: User;
-}
+const useActionBarItems = () => {
+  const user = useAtomValue(userAtom);
 
-const useActionBarItems = (props: useActionBarItemsProps) => {
-  const { user } = props;
+  if (!user) {
+    return [];
+  }
 
-  const items = useMemo(
-    () =>
-      panels.filter((panel) => {
-        if (!panel.access) return true;
-        return user.roles.some((role) => panel.access?.includes(role));
-      }),
-    [user]
-  );
-
-  return items;
+  return panels.filter((panel) => {
+    if (!panel.access) return true;
+    return user.roles.some((role) => panel.access?.includes(role));
+  });
 };
 
 export default useActionBarItems;
