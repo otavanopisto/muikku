@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { MaterialPageDraft } from "~/src/atoms/workspaceContentDrafts";
 import type { RichContentProcessingContext } from "../core/types";
 import type {
   MaterialAnswerSnapshot,
@@ -8,6 +9,7 @@ import type {
   MaterialContentNode,
   WorkspaceMaterial,
 } from "~/generated/client";
+import type { Editor } from "@tiptap/core";
 
 /**
  * Optional material editing/authoring capability.
@@ -17,23 +19,28 @@ import type {
  * (same role as V3 editing config when starting the material editor).
  */
 export interface MaterialEditingConfig {
-  /** Master switch for editing chrome */
   enabled: boolean;
+  /** In-place editor open. Student and preview omit this (false/undefined). */
+  active?: boolean;
+  publishing?: boolean;
+  /** Last-saved html. TipTap initial content; do not pass draft html. */
+  savedHtml?: string;
+  /** Last-saved node. Toolbar dirty-check; context.material may already be the draft. */
+  savedPage?: MaterialContentNode;
   canDelete?: boolean;
   canHide?: boolean;
-  disablePlugins?: boolean;
   canPublish?: boolean;
   canRevert?: boolean;
   canRestrictView?: boolean;
   canCopy?: boolean;
   canChangePageType?: boolean;
-  canChangeExerciseType?: boolean;
-  canSetLicense?: boolean;
-  canSetProducers?: boolean;
   canAddAttachments?: boolean;
   canEditContent?: boolean;
   canSetTitle?: boolean;
+  canSetLicense?: boolean;
+  canSetProducers?: boolean;
 }
+
 /**
  * Context passed to editing actions (toolbar → parent).
  * Includes the resolved editing settings used as editor baseline.
@@ -50,6 +57,13 @@ export interface MaterialEditingActionContext {
  */
 export interface MaterialEditingHandlers {
   onEdit?: (ctx: MaterialEditingActionContext) => void;
+  onStopEditing?: (ctx: MaterialEditingActionContext) => void;
+  onPublish?: (ctx: MaterialEditingActionContext) => void;
+  onRevert?: (ctx: MaterialEditingActionContext) => void;
+  onTitleChange?: (title: string) => void;
+  onHtmlChange?: (html: string) => void;
+  onPatch?: (patch: MaterialPageDraft) => void;
+  onEditorReady?: (editor: Editor | null) => void;
   onToggleHidden?: (ctx: MaterialEditingActionContext) => void;
   onCopyPage?: (ctx: MaterialEditingActionContext) => void;
 }

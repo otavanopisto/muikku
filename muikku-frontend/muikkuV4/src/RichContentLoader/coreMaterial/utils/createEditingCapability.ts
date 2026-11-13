@@ -18,13 +18,11 @@ export function createEditingCapability(
 
   const canDelete = config.canDelete ?? false;
   const canHide = config.canHide ?? false;
-  const disablePlugins = config.disablePlugins ?? false;
   const canPublish = config.canPublish ?? false;
   const canRevert = config.canRevert ?? false;
   const canRestrictView = config.canRestrictView ?? false;
   const canCopy = config.canCopy ?? false;
   const canChangePageType = config.canChangePageType ?? false;
-  const canChangeExerciseType = config.canChangeExerciseType ?? false;
   const canSetLicense = config.canSetLicense ?? false;
   const canSetProducers = config.canSetProducers ?? false;
   const canAddAttachments = config.canAddAttachments ?? false;
@@ -33,21 +31,30 @@ export function createEditingCapability(
 
   return {
     enabled: true,
+    active: config.active ?? false,
+    publishing: config.publishing ?? false,
+    savedHtml: config.savedHtml,
+    savedPage: config.savedPage,
     canDelete,
     canHide,
-    disablePlugins,
     canPublish,
     canRevert,
     canRestrictView,
     canCopy,
     canChangePageType,
-    canChangeExerciseType,
     canSetLicense,
     canSetProducers,
     canAddAttachments,
     canEditContent,
     canSetTitle,
     onEdit: canEditContent ? handlers?.onEdit : undefined,
+    onStopEditing: handlers?.onStopEditing,
+    onPublish: canPublish ? handlers?.onPublish : undefined,
+    onRevert: canRevert ? handlers?.onRevert : undefined,
+    onTitleChange: canSetTitle ? handlers?.onTitleChange : undefined,
+    onHtmlChange: canEditContent ? handlers?.onHtmlChange : undefined,
+    onPatch: handlers?.onPatch,
+    onEditorReady: canEditContent ? handlers?.onEditorReady : undefined,
     onToggleHidden: canHide ? handlers?.onToggleHidden : undefined,
     onCopyPage: canCopy ? handlers?.onCopyPage : undefined,
   };

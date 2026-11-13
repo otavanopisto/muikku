@@ -1,0 +1,111 @@
+.page {
+  overflow: hidden;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-body);
+}
+
+.toolbar {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  background: var(--mantine-color-default);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.tabsList {
+  background: var(--mantine-color-default);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.tab {
+  font-weight: 600;
+  color: var(--mantine-color-dimmed);
+}
+
+.tab[data-active] {
+  color: var(--mantine-color-teal-filled);
+  border-color: var(--mantine-color-teal-filled);
+}
+
+.titleBar {
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  background: var(--mantine-color-default);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.titleInput {
+  width: 100%;
+  font-size: var(--mantine-h3-font-size);
+  font-weight: 700;
+  line-height: var(--mantine-h3-line-height);
+}
+
+.panel {
+  padding: var(--mantine-spacing-md);
+}
+
+.panelEditor {
+  padding: 0;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+  white-space: nowrap;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--mantine-h3-font-size);
+  font-weight: 700;
+  line-height: var(--mantine-h3-line-height);
+}
+
+.page :global(.material-page__title) {
+  margin: 0;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  font-size: var(--mantine-h3-font-size);
+  font-weight: 700;
+  line-height: var(--mantine-h3-line-height);
+  background: var(--mantine-color-default);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.page:global(.material-page--exercise) :global(.material-page__title),
+.page:global(.material-page--assignment) :global(.material-page__title),
+.page:global(.material-page--journal) :global(.material-page__title),
+.page:global(.material-page--interim-evaluation)
+  :global(.material-page__title) {
+  padding-inline-start: var(--mantine-spacing-sm);
+  border-inline-start: 4px solid var(--mantine-color-pink-6);
+}
+
+.page:global(.material-page--assignment) :global(.material-page__title) {
+  border-inline-start-color: var(--mantine-color-violet-6);
+}
+
+.page:global(.material-page--journal) :global(.material-page__title) {
+  border-inline-start-color: var(--mantine-color-blue-6);
+}
+
+.page:global(.material-page--interim-evaluation)
+  :global(.material-page__title) {
+  border-inline-start-color: var(--mantine-color-orange-6);
+}
+
+.footer {
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  border-top: 1px solid var(--mantine-color-default-border);
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em;
+}
+.label {
+  font-weight: 600;
+}

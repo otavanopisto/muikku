@@ -31,6 +31,9 @@ export interface MaterialLoaderContainerProps {
     config?: Partial<MaterialEditingConfig>;
     handlers?: MaterialEditingHandlers;
   };
+  style?: React.CSSProperties;
+  /** Student TOC highlight. */
+  flash?: boolean;
   children: ReactNode;
   updateAssignmentState?: (
     newState: MaterialCompositeReplyStateType,

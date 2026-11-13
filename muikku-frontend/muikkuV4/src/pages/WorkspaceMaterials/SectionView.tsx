@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Group,
-  Image,
-  Paper,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Avatar, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import type { MaterialContentNode } from "~/generated/client";
 import { MaterialLoader } from "src/RichContentLoader/";
@@ -170,35 +161,38 @@ function SectionPage(props: {
     workspaceCompositeReplyAtomFamily(page.workspaceMaterialId ?? -1)
   );
 
+  if (!repliesReady) {
+    return (
+      <div
+        id={
+          page.workspaceMaterialId != null
+            ? `p-${page.workspaceMaterialId}`
+            : undefined
+        }
+        className={classes.page}
+        style={{ minHeight }}
+      />
+    );
+  }
+
   return (
-    <Paper
+    <MaterialLoader
       id={
         page.workspaceMaterialId != null
           ? `p-${page.workspaceMaterialId}`
           : undefined
       }
       className={classes.page}
-      data-flash={active || undefined}
-      p="lg"
-      radius="md"
-      withBorder
-      shadow="xs"
-      mih={minHeight}
-    >
-      <Box mih={minHeight - 48}>
-        {repliesReady ? (
-          <MaterialLoader
-            material={page}
-            workspace={workspace}
-            folder={folder ?? undefined}
-            compositeReplies={reply}
-            config={{
-              enableButtons: true,
-              answerable: user?.loggedIn ?? false,
-            }}
-          />
-        ) : null}
-      </Box>
-    </Paper>
+      style={{ minHeight }}
+      flash={active}
+      material={page}
+      workspace={workspace}
+      folder={folder ?? undefined}
+      compositeReplies={reply}
+      config={{
+        enableButtons: true,
+        answerable: user?.loggedIn ?? false,
+      }}
+    />
   );
 }
