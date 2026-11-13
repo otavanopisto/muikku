@@ -130,7 +130,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");
       sleep(1000);
       waitAndClick(".env-dialog__actions .button--dialog-execute");
-      waitUntilElementGoesAway(".env-dialog__actions", 10);
+      waitForNotPresent(".env-dialog__actions", 10);
       waitAndClick(".application-panel__toolbar .react-select-override .react-select-override__control");
       waitUntilCountOfElements(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option", 3);
       assertText(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option:nth-child(3) .react-select-override__option-label", "Test area");

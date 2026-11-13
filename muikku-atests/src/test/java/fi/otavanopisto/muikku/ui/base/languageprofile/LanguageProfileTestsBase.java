@@ -1,38 +1,18 @@
 package fi.otavanopisto.muikku.ui.base.languageprofile;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.hash.Hashing;
-
-import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
-import fi.otavanopisto.muikku.atests.CeeposPaymentConfirmationRestModel;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
-import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
@@ -46,14 +26,11 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
-import fi.otavanopisto.pyramus.rest.model.Curriculum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021;
-import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
-import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityRestModel;
 
 public class LanguageProfileTestsBase extends AbstractUITest {
   
