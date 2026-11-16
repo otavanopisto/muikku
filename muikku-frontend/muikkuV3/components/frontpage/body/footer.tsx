@@ -86,47 +86,6 @@ class FrontpageFooter extends React.Component<WithTranslation> {
             />
           </div>
         </div>
-        <div className="footer__container--plagscan">
-          <div className="footer__item footer__item--plagscan">
-            <a
-              href="https://www.plagscan.com"
-              className="link link--plagscan-logo"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src="/gfx/plagscan-logo-white.png" alt="Plagscan logo" />
-              <span className="visually-hidden">
-                {this.props.t("wcag.externalLink")}
-              </span>
-              <span
-                role="presentation"
-                className="external-link-indicator icon-external-link"
-              />
-            </a>
-            <span className="footer__item--plagscan-text">
-              {this.props.t("content.plagScan", { ns: "frontPage" })}
-            </span>
-            <a
-              href="https://drive.google.com/file/d/1IDQWdh2N1EoaJe60uS1m9tyY5znaohzz/view?usp=sharing"
-              target="_blank"
-              className="link link--plagscan-privacy-policy"
-              rel="noreferrer"
-            >
-              (
-              {this.props.t("labels.privacyPolicy", {
-                ns: "frontPage",
-              })}
-              <span className="visually-hidden">
-                {this.props.t("wcag.externalLink")}
-              </span>
-              <span
-                role="presentation"
-                className="external-link-indicator icon-external-link"
-              />
-              ).
-            </a>
-          </div>
-        </div>
       </footer>
     );
   }
