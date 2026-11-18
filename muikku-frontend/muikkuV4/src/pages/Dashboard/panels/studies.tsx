@@ -2,10 +2,11 @@ import { Title, Button, Stack } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { lastWorkspacesDataAtom } from "src/atoms/user";
 import { Link } from "react-router";
-import { Empty } from "src/components/Empty";
+import { Empty } from "~/src/components/Empty/empty";
 import { Fragment } from "react";
 import Panel from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
+import styles from "./panels.module.css";
 
 /**
  * Workspaces
@@ -13,16 +14,16 @@ import { useTranslation } from "react-i18next";
  */
 export function Workspaces() {
   const lastWorkspaces = useAtomValue(lastWorkspacesDataAtom);
-  const { t } = useTranslation(["common", "studies"]);
+  const { t } = useTranslation(["workspaces", "common"]);
   if (lastWorkspaces.length === 0) {
-    return <Empty title="No workspaces found" />;
+    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
   return (
     <Panel title={t("labels.studies")}>
       <Stack>
         {lastWorkspaces.map((workspace) => (
           <Fragment key={workspace.workspaceId}>
-            <Title order={3} mb="md">
+            <Title order={3} className={styles.studiesTitle}>
               {t("labels.continueStudies", {
                 location:
                   workspace.workspaceName + " - " + workspace.materialName,

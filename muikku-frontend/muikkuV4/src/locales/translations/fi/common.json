@@ -1,11 +1,13 @@
 {
-  "labels": {
-    "studies": "Opinnot",
-    "continueStudies": "Jatka opintoja: {{location}}"
-  },
   "actions": {
     "cancel": "Peruuta",
     "confirm": "Tallenna"
+  },
+  "labels": {
+    "continueStudies": "Jatka opintoja: {{location}}",
+    "pinned": "Kiinnitetty",
+    "pinnedToSelf": "Kiinnitetty itselle",
+    "studies": "Opinnot"
   },
   "errors": {
     "userIdentifierRequired": "Käyttäjän tunniste puuttuu. Yritä uudelleen myöhemmin."

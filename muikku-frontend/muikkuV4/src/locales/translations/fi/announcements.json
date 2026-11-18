@@ -1,12 +1,17 @@
 {
   "label": "Tiedotteet",
+  "labels": {
+    "empty": "Ei tiedotteita"
+  },
+  "content": {
+    "empty": "Tiedotteita ei löytynyt"
+  },
   "actions": {
     "pin": "Kiinnitä tiedote",
     "unpin": "Poista kiinnitys",
     "setRead": "Aseta luetuksi",
     "setUnread": "Aseta lukemattomaksi"
   },
-  "labels": {},
   "state": {
     "PINNED": "Kiinnitetty",
     "UNPINNED": "Kiinnittämätön",

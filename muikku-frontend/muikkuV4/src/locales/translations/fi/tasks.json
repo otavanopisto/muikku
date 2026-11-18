@@ -4,6 +4,12 @@
     "approve": "Hyväksy",
     "send": "Lähetä"
   },
+  "content": {
+    "empty": "Opintotehtäviä ei löytynyt"
+  },
+  "labels": {
+    "empty": "Ei opintotehtäviä"
+  },
   "states": {
     "APPROVED": "Valmis",
     "APPROVAL_PENDING": "Odottaa hyväksyntää",

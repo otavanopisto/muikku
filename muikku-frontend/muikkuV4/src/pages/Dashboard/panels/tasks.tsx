@@ -1,7 +1,7 @@
 import { Accordion, Text, Button } from "@mantine/core";
 
 import { useAtomValue, useSetAtom } from "jotai";
-import { Empty } from "src/components/Empty";
+import { Empty } from "~/src/components/Empty/empty";
 import Panel, {
   type PanelItemBadge,
   type PanelItemVariant,
@@ -39,7 +39,7 @@ export default function Tasks() {
   const { t } = useTranslation("tasks");
 
   if (tasks === undefined || tasks.length === 0) {
-    return <Empty title="No Tasks found" />;
+    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
   const userId = user?.id;
   const isCreator = (creatorId: number) => creatorId === userId;

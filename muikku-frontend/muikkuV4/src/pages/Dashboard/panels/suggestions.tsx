@@ -1,5 +1,5 @@
 import { Stack, Button, Group } from "@mantine/core";
-import { Empty } from "src/components/Empty";
+import { Empty } from "~/src/components/Empty/empty";
 import Panel from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
 import { useNextCourseSuggestions } from "~/src/hooks/use-next-course-suggestions";
@@ -22,8 +22,11 @@ export function Suggestions() {
 
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
   const { nextCourseSuggestions, signUpForCourse } = useNextCourseSuggestions();
-  if (nextCourseSuggestions.length === 0) {
-    return <Empty title="No suggestions found" />;
+  if (
+    nextCourseSuggestions === undefined ||
+    nextCourseSuggestions.length === 0
+  ) {
+    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
 
   const handleSignUpForCourse = (courseId: number) => {

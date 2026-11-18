@@ -1,5 +1,11 @@
 {
   "label": "Opintotapahtumat",
+  "labels": {
+    "empty": "Ei opintotapahtumia"
+  },
+  "content": {
+    "empty": "Opintotapahtumia ei löytynyt"
+  },
   "types": {
     "EVALUATION_REQUESTED": "Arviointipyyntö lähetetty",
     "EVALUATION_GOTINCOMPLETED": "Arvioitu täydennettäväksi",

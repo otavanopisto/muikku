@@ -36,10 +36,10 @@ export default function Panel(props: PanelProps) {
   const { title, icon, countIndicator, indicatorTooltip, children } = props;
   return (
     <Paper className={styles.panel}>
-      <Box pb="md" className={styles.panelHeader}>
-        <Box className={styles.panelTitle}>
+      <Box className={styles.header}>
+        <Box className={styles.title}>
           {icon && (
-            <ThemeIcon variant="filled" mr="sm" size="lg">
+            <ThemeIcon className={styles.icon} variant="filled" size="lg">
               {icon}
             </ThemeIcon>
           )}
@@ -72,7 +72,8 @@ export type PanelItemState = "warning" | "success" | "info";
 
 export type PanelItemBadge = {
   label: string;
-  state: PanelItemState;
+  state?: PanelItemState;
+  color?: string;
 };
 
 /**
@@ -81,10 +82,10 @@ export type PanelItemBadge = {
  * @returns - The text colors for the item
  */
 function panelItemTextColors(unseen: boolean | undefined) {
-  const seen = unseen === false;
+  const viewed = unseen === false;
   return {
-    titleColor: seen ? "panelSeenTitleText" : "panelTitleText",
-    textColor: seen ? "panelSeenContentText" : "panelContentText",
+    titleColor: viewed ? "panelSeenTitleText" : "panelTitleText",
+    textColor: viewed ? "panelSeenContentText" : "panelContentText",
   } as const;
 }
 
@@ -125,35 +126,40 @@ function PanelItemHeader(props: PanelItemHeaderProps) {
       </Menu.Dropdown>
     </Menu>
   );
+
   return (
     <>
       <Title
         c={panelItemTextColors(unseen).titleColor}
         order={4}
-        className={styles.panelItemTitle}
+        className={styles.itemTitle}
       >
-        <Box className={styles.panelItemTitleContent}>
-          {icons}
+        <Box className={styles.itemTitleContent}>
+          {icons && <Group className={styles.itemTitleGroup}>{icons}</Group>}
           {title}
         </Box>
         {itemActions && <Group>{actions}</Group>}
       </Title>
       {badges && (
-        <Box className={styles.panelItemVariant}>
+        <Box>
           {Array.isArray(badges) ? (
             badges.map((badge) => (
               <Badge
+                className={styles.badge}
                 tt="none"
-                key={badge.label + badge.state}
-                variant="outline
-            "
-                color={badge.state}
+                key={badge.label}
+                variant="outline"
+                color={badge.state ?? badge.color}
               >
                 {badge.label}
               </Badge>
             ))
           ) : (
-            <Badge tt="none" variant="outline" color={badges.state}>
+            <Badge
+              tt="none"
+              variant="outline"
+              color={badges.state ?? badges.color}
+            >
               {badges.label}
             </Badge>
           )}
@@ -196,7 +202,12 @@ function PanelItem(props: PanelItemProps) {
   } = props;
 
   return (
-    <Paper variant={variant ?? "panel-item"} p="sm" key={itemId} withBorder>
+    <Paper
+      className={styles.item}
+      variant={variant ?? "panel-item"}
+      key={itemId}
+      withBorder
+    >
       <PanelItemHeader
         title={title}
         itemId={itemId}
@@ -221,7 +232,12 @@ function PanelAccordionItem(props: PanelItemProps) {
     props;
   return (
     <Accordion.Item value={title}>
-      <Paper variant={variant ?? "panel-item"} key={itemId} mb="md" withBorder>
+      <Paper
+        className={styles.accordionItem}
+        variant={variant ?? "panel-item"}
+        key={itemId}
+        withBorder
+      >
         <Accordion.Control>
           <PanelItemHeader
             title={title}
@@ -230,7 +246,7 @@ function PanelAccordionItem(props: PanelItemProps) {
             badges={badges}
             icons={icons}
           />
-          <Text c={panelItemTextColors(unseen).textColor}>{date}</Text>
+          <Box c={panelItemTextColors(unseen).textColor}>{date}</Box>
         </Accordion.Control>
         <Accordion.Panel>{children}</Accordion.Panel>
       </Paper>

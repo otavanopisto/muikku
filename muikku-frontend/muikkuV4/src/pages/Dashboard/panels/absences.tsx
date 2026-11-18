@@ -1,7 +1,7 @@
 import { Text, Stack } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { absencesDataAtom } from "~/src/atoms/events";
-import { Empty } from "src/components/Empty";
+import { Empty } from "~/src/components/Empty/empty";
 import Panel, { type PanelItemBadge } from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
 import type { MuikkuEvent } from "~/generated/client";
@@ -15,8 +15,14 @@ import { IconArrowNarrowRight } from "@tabler/icons-react";
 export function Absences() {
   const absences = useAtomValue(absencesDataAtom);
   const { t } = useTranslation("events");
-  if (absences === undefined) {
-    return <Empty title="No absences found" />;
+
+  if (absences === undefined || absences.length === 0) {
+    return (
+      <Empty
+        title={t("labels.empty", { context: "absences" })}
+        description={t("content.empty", { context: "absences" })}
+      />
+    );
   }
   const generateAbsenceDates = (absence: MuikkuEvent) => (
     <Group>

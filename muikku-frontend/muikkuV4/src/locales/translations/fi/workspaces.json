@@ -1,5 +1,10 @@
 {
   "label": "Kurssit",
   "label_suggestions": "Ehdotetut kurssit",
-  "labels": {}
+  "labels": {
+    "empty": "Ei kursseja"
+  },
+  "content": {
+    "empty": "Kursseja ei löytynyt"
+  }
 }

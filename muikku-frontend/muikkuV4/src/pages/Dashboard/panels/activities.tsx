@@ -2,7 +2,7 @@
 import Panel from "~/src/components/Panel/Panel";
 import { userActivityLogsDataAtom } from "~/src/atoms/activitylogs";
 import { useAtomValue } from "jotai";
-import { Empty } from "src/components/Empty";
+import { Empty } from "~/src/components/Empty/empty";
 import type { DatedActivityLogHash } from "~/src/atoms/activitylogs";
 import { useTranslation } from "react-i18next";
 import { ActivityLogType } from "~/generated/client";
@@ -153,13 +153,13 @@ export function Activities() {
   const [pageIndex, setPageIndex] = useState(1);
 
   if (activities === undefined) {
-    return <Empty title="No activities found" />;
+    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
 
   const entries = activityEntries(activities);
 
   if (entries.length === 0) {
-    return <Empty title="No activities found" />;
+    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
   const maxItems = 10;
   const entrycount = entries.length;

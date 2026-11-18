@@ -1,5 +1,11 @@
 {
   "label": "Viestit",
+  "labels": {
+    "empty": "Ei viestejä"
+  },
+  "content": {
+    "empty": "Viestejä ei löytynyt"
+  },
   "errors": {
     "load": "Viestien lataus epäonnistui. Yritä uudelleen myöhemmin."
   }

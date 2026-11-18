@@ -1,9 +1,9 @@
 import { Stack, Tooltip, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageAnnouncementsDataAtom } from "src/atoms/announcements";
-import { Empty } from "src/components/Empty";
-import Panel from "~/src/components/Panel/Panel";
-import { IconSpeakerphone, IconPin } from "@tabler/icons-react";
+import { Empty } from "~/src/components/Empty/empty";
+import Panel, { type PanelItemBadge } from "~/src/components/Panel/Panel";
+import { IconPin } from "@tabler/icons-react";
 import { localize } from "~/src/locales/i18n";
 import {
   toggleAnnouncementReadAtom,
@@ -12,6 +12,18 @@ import {
 import { useSetAtom } from "jotai";
 import type { Announcement } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+
+/**
+ * Converts a packed RGB integer into a CSS hex color.
+ * @param color - Packed RGB integer from the API
+ * @returns Hex color string
+ */
+function colorIntToHex(color: number) {
+  const channel = (shift: number) =>
+    ((color >> shift) & 255).toString(16).padStart(2, "0");
+
+  return `#${channel(16)}${channel(8)}${channel(0)}`;
+}
 
 /**
  * Workspaces
@@ -23,8 +35,11 @@ export function Announcements() {
   const setToggleRead = useSetAtom(toggleAnnouncementReadAtom);
   const setPinned = useSetAtom(toggleAnnouncementPinnedAtom);
 
-  if (!announcements?.announcements) {
-    return <Empty title="No announcements found" />;
+  if (
+    !announcements?.announcements ||
+    announcements.announcements.length === 0
+  ) {
+    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
 
   const handleMarkAsReadToggle = (announcementId: number) => {
@@ -55,25 +70,40 @@ export function Announcements() {
   };
 
   const generateAnnouncementIcons = (announcement: Announcement) => (
-    <Group gap="0">
+    <>
       {announcement.pinned && (
-        <Tooltip label="Pinned">
+        <Tooltip label={t("labels.pinned")}>
           <IconPin color="pink" />
         </Tooltip>
       )}
       {announcement.pinnedToSelf && (
-        <Tooltip label="Pinned to self" mr="xs">
+        <Tooltip label={t("labels.pinnedToSelf")}>
           <IconPin color="orange" />
         </Tooltip>
       )}
-    </Group>
+    </>
   );
+
+  const generateAnnouncementBadges = (
+    announcement: Announcement
+  ): PanelItemBadge[] => {
+    const workSpaceBadges = announcement.workspaces.map((workspace) => ({
+      label: workspace.name,
+      color: "blue.4",
+    }));
+
+    const categoriesBadges = announcement.categories.map((category) => ({
+      label: category.category,
+      color: colorIntToHex(category.color),
+    }));
+
+    return [...workSpaceBadges, ...categoriesBadges];
+  };
 
   return (
     <Panel
       countIndicator={announcements?.unreadCount}
       indicatorTooltip="Unread count"
-      icon={<IconSpeakerphone />}
       title={t("label")}
     >
       <Stack>
@@ -82,9 +112,14 @@ export function Announcements() {
             itemId={announcement.id}
             key={announcement.id}
             title={announcement.caption}
+            badges={generateAnnouncementBadges(announcement)}
             date={localize.date(announcement.created, "DD.MM.YYYY")}
             unseen={announcement.unread}
-            icons={generateAnnouncementIcons(announcement)}
+            icons={
+              announcement.pinned || announcement.pinnedToSelf
+                ? generateAnnouncementIcons(announcement)
+                : undefined
+            }
             itemActions={generateAnnouncementActions(announcement)}
           />
         ))}

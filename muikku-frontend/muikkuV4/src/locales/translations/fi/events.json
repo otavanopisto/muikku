@@ -1,7 +1,14 @@
 {
   "label": "Tapahtumat",
   "label_absences": "Poissaolot",
-  "labels": {},
+  "labels": {
+    "empty": "Ei tapahtumia",
+    "empty_absences": "Ei poissaoloja"
+  },
+  "content": {
+    "empty": "Tapahtumia ei löytynyt",
+    "empty_absences": "Poissaoloja ei löytynyt"
+  },
   "types": {
     "ASSIGNMENTS_UNDONE": "Tehtävät tekemättä",
     "EXAM": "Koe",
