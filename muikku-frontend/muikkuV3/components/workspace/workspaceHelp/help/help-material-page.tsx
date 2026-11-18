@@ -136,7 +136,7 @@ class WorkspaceMaterial extends React.Component<
             })}
             deAriaGroupDescription={this.props.t(
               "wcag.interactiveGroupInstructions",
-              { ns: "materials" }
+              { ns: "materials", context: "page" }
             )}
             answerable={this.props.status.loggedIn}
             readOnly={!this.props.status.loggedIn}

@@ -773,16 +773,22 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           id={`s-${section.workspaceMaterialId}`}
           role="group"
           aria-label={section.title}
-          aria-describedby={`help-chapter-${section.workspaceMaterialId}-group-description`}
           tabIndex={0}
           data-de-aria-group="dynamic"
           data-de-aria-key="c"
         >
           <span
-            id={`help-chapter-${section.workspaceMaterialId}-group-description`}
-            className="visually-hidden"
+            data-de-aria-group-enter-indicator="top-end"
+            role="tooltip"
+            aria-label={t("wcag.interactiveGroupInstructions", {
+              ns: "materials",
+              context: "chapter",
+            })}
           >
-            {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+            {t("wcag.interactiveGroupInstructions", {
+              ns: "materials",
+              context: "chapter",
+            })}
           </span>
           <div
             id={"s-" + section.workspaceMaterialId}

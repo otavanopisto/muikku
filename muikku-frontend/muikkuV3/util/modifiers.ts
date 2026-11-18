@@ -418,6 +418,8 @@ const translations: any = {
   "data-de-aria-action": "data-de-aria-action",
   "data-de-aria-group": "data-de-aria-group",
   "data-de-aria-group-exit": "data-de-aria-group-exit",
+  "data-de-aria-group-enter-indicator": "data-de-aria-group-enter-indicator",
+  "aria-label": "aria-label",
   "data-de-aria-horizontal-alignment": "data-de-aria-horizontal-alignment",
   "data-de-aria-vertical-alignment": "data-de-aria-vertical-alignment",
   "data-de-aria-offset-x": "data-de-aria-offset-x",

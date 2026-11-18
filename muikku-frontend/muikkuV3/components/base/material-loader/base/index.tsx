@@ -267,11 +267,32 @@ function preprocessor(
       if (hasLinks) {
         this.setAttribute("data-de-aria-group", "dynamic");
         this.setAttribute("data-de-aria-key", "p");
+
+        // Capture the readable paragraph text before adding helper children so
+        // their text does not leak into the generated labels.
+        const paragraphText = (this.textContent || "").trim();
+
+        const enterLabel = t
+          ? t("wcag.interactiveGroupInstructions", {
+              ns: "materials",
+              context: "paragraph",
+            })
+          : "Press Enter or Space to select the links in this paragraph.";
+        const enterIndicator = document.createElement("span");
+        enterIndicator.setAttribute(
+          "data-de-aria-group-enter-indicator",
+          "top-end"
+        );
+        enterIndicator.setAttribute("role", "tooltip");
+        enterIndicator.setAttribute("aria-label", enterLabel);
+        enterIndicator.textContent = enterLabel;
+        this.insertBefore(enterIndicator, this.firstChild);
+
         const exitBtn = document.createElement("button");
         exitBtn.setAttribute("data-de-aria-group-exit", "");
         exitBtn.setAttribute("data-de-aria-key", "esc");
         exitBtn.setAttribute("tabindex", "0");
-        const labelText = (this.textContent || "").trim().slice(0, 80).trim();
+        const labelText = paragraphText.slice(0, 80).trim();
         const label = t
           ? t("wcag.exitInteractiveGroup", {
               ns: "materials",

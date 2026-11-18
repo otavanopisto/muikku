@@ -184,3 +184,81 @@
     right: auto;
     left: 0.6vh;
 }
+
+/* ===== Group enter indicator (outside the focused group) ===== */
+
+/* The parent group must establish positioning (relative, absolute, fixed, or sticky).
+   The enter indicator is shown while the group has focus but before it becomes active,
+   so the positioning context has to exist at all times, not only when active. */
+[data-de-aria-group="dynamic"]:not([data-de-aria-group-active]) {
+    position: relative;
+}
+
+[data-de-aria-group-enter-indicator] {
+    display: none;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: 100%;
+    min-height: 3vh;
+    height: auto;
+    padding: 0.6vh 0.9vh;
+    gap: 0.6vh;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.65);
+    color: #ffffff;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+    border-radius: 0.6vh;
+    border: 0.15vh solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0.3vh 1vh rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 1.6vh;
+    pointer-events: none;
+    user-select: none;
+    z-index: 99999;
+}
+
+[data-de-aria-group]:focus-visible > [data-de-aria-group-enter-indicator="top-start"],
+[data-de-aria-group]:focus-visible > [data-de-aria-group-enter-indicator="top-end"],
+[data-de-aria-group]:focus-visible > [data-de-aria-group-enter-indicator="bottom-start"],
+[data-de-aria-group]:focus-visible > [data-de-aria-group-enter-indicator="bottom-end"] {
+    display: flex;
+}
+
+[data-de-aria-group-enter-indicator="top-start"],
+[data-de-aria-group-enter-indicator="top-end"] {
+    top: auto;
+    bottom: calc(100% + 0.6vh);
+}
+
+[data-de-aria-group-enter-indicator="bottom-start"],
+[data-de-aria-group-enter-indicator="bottom-end"] {
+    top: calc(100% + 0.6vh);
+    bottom: auto;
+}
+
+/* Logical insets follow the indicator's inherited direction, including nested dir overrides. */
+[data-de-aria-group-enter-indicator="top-start"],
+[data-de-aria-group-enter-indicator="bottom-start"] {
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+}
+
+[data-de-aria-group-enter-indicator="top-end"],
+[data-de-aria-group-enter-indicator="bottom-end"] {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+}
+
+[data-de-aria-group-enter-indicator]::before {
+    content: "\21B5";
+    flex-shrink: 0;
+    font-size: 1.8vh;
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    color: #ffffff;
+    text-shadow: 0 0.1vh 0.2vh rgba(0, 0, 0, 0.8);
+}

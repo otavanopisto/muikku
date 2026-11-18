@@ -692,17 +692,26 @@ class WorkspaceMaterials extends React.Component<
           scrollMarginTop: this.state.defaultOffset + "px",
         }}
         role="group"
-        aria-label={section.title}
-        aria-describedby={`chapter-${section.workspaceMaterialId}-group-description`}
+        aria-label={section.title + ": " + t("wcag.interactiveGroupInstructions", {
+          ns: "materials",
+          context: "chapter",
+        })}
         tabIndex={0}
         data-de-aria-group="dynamic"
         data-de-aria-key="c"
       >
         <span
-          id={`chapter-${section.workspaceMaterialId}-group-description`}
-          className="visually-hidden"
+          data-de-aria-group-enter-indicator="top-end"
+          role="tooltip"
+          aria-label={t("wcag.interactiveGroupInstructions", {
+            ns: "materials",
+            context: "chapter",
+          })}
         >
-          {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+          {t("wcag.interactiveGroupInstructions", {
+            ns: "materials",
+            context: "chapter",
+          })}
         </span>
         {/*TOP OF THE CHAPTER*/}
         <h2 className="content-panel__chapter-title">
@@ -736,17 +745,26 @@ class WorkspaceMaterials extends React.Component<
           <article
             className="material-page"
             role="group"
-            aria-label={section.title}
-            aria-describedby={`exam-page-${section.workspaceMaterialId}-group-description`}
+            aria-label={section.title + ": " + t("wcag.interactiveGroupInstructions", {
+              ns: "materials",
+              context: "page",
+            })}
             tabIndex={0}
             data-de-aria-group="dynamic"
             data-de-aria-key="p"
           >
             <span
-              id={`exam-page-${section.workspaceMaterialId}-group-description`}
-              className="visually-hidden"
+              data-de-aria-group-enter-indicator="top-end"
+              role="tooltip"
+              aria-label={t("wcag.interactiveGroupInstructions", {
+                ns: "materials",
+                context: "page",
+              })}
             >
-              {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+              {t("wcag.interactiveGroupInstructions", {
+                ns: "materials",
+                context: "page",
+              })}
             </span>
             <div className="material-page__content-wrapper">
               <div className="material-page__content rich-text">
@@ -1161,17 +1179,26 @@ class WorkspaceMaterials extends React.Component<
             scrollMarginTop: this.state.defaultOffset + "px",
           }}
           role="group"
-          aria-label={section.title}
-          aria-describedby={`chapter-${section.workspaceMaterialId}-group-description`}
+          aria-label={section.title + ": " + t("wcag.interactiveGroupInstructions", {
+            ns: "materials",
+            context: "chapter",
+          })}
           tabIndex={0}
           data-de-aria-group="dynamic"
           data-de-aria-key="c"
         >
           <span
-            id={`chapter-${section.workspaceMaterialId}-group-description`}
-            className="visually-hidden"
+            data-de-aria-group-enter-indicator="top-end"
+            role="tooltip"
+            aria-label={t("wcag.interactiveGroupInstructions", {
+              ns: "materials",
+              context: "chapter",
+            })}
           >
-            {t("wcag.interactiveGroupInstructions", { ns: "materials" })}
+            {t("wcag.interactiveGroupInstructions", {
+              ns: "materials",
+              context: "chapter",
+            })}
           </span>
           {/*TOP OF THE CHAPTER*/}
           <h2

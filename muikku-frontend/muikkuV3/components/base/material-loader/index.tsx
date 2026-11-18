@@ -855,19 +855,13 @@ class MaterialLoader extends React.Component<
       );
     }
 
-    const deAriaGroupDescriptionId =
-      this.props.deAriaGroupLabel && this.props.deAriaGroupDescription
-        ? `material-${this.props.material.workspaceMaterialId}-group-description`
-        : undefined;
-
     return (
       <article
         className={className}
         ref={this.rootRef}
         id={this.props.id}
         role={this.props.deAriaGroupLabel ? "group" : undefined}
-        aria-label={this.props.deAriaGroupLabel}
-        aria-describedby={deAriaGroupDescriptionId}
+        aria-label={this.props.deAriaGroupLabel ? this.props.deAriaGroupLabel + (this.props.deAriaGroupDescription ? ": " + this.props.deAriaGroupDescription : "") : undefined}
         tabIndex={this.props.deAriaGroupLabel ? 0 : undefined}
         data-de-aria-group={this.props.deAriaGroupLabel ? "dynamic" : undefined}
         data-de-aria-key={
@@ -876,9 +870,15 @@ class MaterialLoader extends React.Component<
             : undefined
         }
       >
-        {deAriaGroupDescriptionId ? (
-          <span id={deAriaGroupDescriptionId} className="visually-hidden">
-            {this.props.deAriaGroupDescription}
+        {this.props.deAriaGroupLabel ? (
+          <span
+            data-de-aria-group-enter-indicator="top-end"
+            role="tooltip"
+            aria-label={
+              this.props.deAriaGroupDescription || this.props.deAriaGroupLabel
+            }
+          >
+            {this.props.deAriaGroupDescription || this.props.deAriaGroupLabel}
           </span>
         ) : null}
         {content}
