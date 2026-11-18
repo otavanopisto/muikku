@@ -1,6 +1,9 @@
 import { Text, Stack } from "@mantine/core";
 import { useAtomValue } from "jotai";
-import { absencesDataAtom } from "~/src/atoms/events";
+import {
+  unResolvedAbsencesDataAtom,
+  absencesDataAtom,
+} from "~/src/atoms/events";
 import { Empty } from "~/src/components/Empty/empty";
 import Panel, { type PanelItemBadge } from "~/src/components/Panel/Panel";
 import { useTranslation } from "react-i18next";
@@ -13,7 +16,7 @@ import { IconArrowNarrowRight } from "@tabler/icons-react";
  * @returns
  */
 export function Absences() {
-  const absences = useAtomValue(absencesDataAtom);
+  const absences = useAtomValue(unResolvedAbsencesDataAtom);
   const { t } = useTranslation("events");
 
   if (absences === undefined || absences.length === 0) {

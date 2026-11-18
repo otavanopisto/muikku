@@ -42,3 +42,12 @@ export const absencesQueryAtom = atomWithQuery((get) => {
 });
 
 export const absencesDataAtom = atom((get) => get(absencesQueryAtom).data);
+export const unResolvedAbsencesDataAtom = atom((get) =>
+  get(absencesQueryAtom).data?.filter(
+    (absence) =>
+      (absence.properties?.length ?? -1) === 0 ||
+      absence.properties?.some(
+        (property) => !(property.name === "ABSENCE_REASON")
+      )
+  )
+);

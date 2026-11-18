@@ -1,4 +1,4 @@
-import { Stack, Tooltip, Group } from "@mantine/core";
+import { Stack, Tooltip } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { frontpageAnnouncementsDataAtom } from "src/atoms/announcements";
 import { Empty } from "~/src/components/Empty/empty";
