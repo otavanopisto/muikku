@@ -18,7 +18,7 @@ public class RestCatchSchoolDataExceptionsInterceptor implements Serializable {
   public Object aroundInvoke(InvocationContext invocationContext) throws Exception {
     try {
       return invocationContext.proceed();
-    } catch (SchoolDataBridgeUnauthorizedException ex) {
+    } catch (SchoolDataBridgeForbiddenException ex) {
       return Response.status(Status.FORBIDDEN).build();
     } catch (SchoolDataBridgeException ex) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();

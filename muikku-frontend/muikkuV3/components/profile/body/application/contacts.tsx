@@ -7,14 +7,14 @@ import GuardianContact from "~/components/records/body/application/summary/guard
 import OtherContact from "~/components/records/body/application/summary/other-contact";
 
 /**
- * Guardians component props.
+ * Contacts component props.
  */
-interface GuardiansProps {}
+interface ContactsProps {}
 
 /**
  * Renders the student's guardians list.
  */
-const Guardians: React.FC<GuardiansProps> = () => {
+const Contacts: React.FC<ContactsProps> = () => {
   const { t } = useTranslation();
 
   const { guardians, others } = useSelector(
@@ -25,7 +25,7 @@ const Guardians: React.FC<GuardiansProps> = () => {
   if (!profile || !status.profile) {
     return null;
   }
-  if (profile.location !== "guardians") {
+  if (profile.location !== "contacts") {
     return null;
   }
 
@@ -69,4 +69,4 @@ const Guardians: React.FC<GuardiansProps> = () => {
   );
 };
 
-export default Guardians;
+export default Contacts;

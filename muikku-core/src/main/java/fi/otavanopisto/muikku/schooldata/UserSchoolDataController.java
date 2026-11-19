@@ -351,7 +351,7 @@ public class UserSchoolDataController {
     String postalCode,
     String city,
     String country
-  ) throws SchoolDataBridgeUnauthorizedException {
+  ) throws SchoolDataBridgeForbiddenException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(addressIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", addressIdentifier.getDataSource()));
@@ -440,7 +440,7 @@ public class UserSchoolDataController {
     return Collections.unmodifiableList(result);
   }
 
-  public String findUsername(User user) throws SchoolDataBridgeUnauthorizedException {
+  public String findUsername(User user) throws SchoolDataBridgeForbiddenException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
@@ -448,7 +448,7 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).findUsername(user.getIdentifier());
   }
 
-  public void updateUserCredentials(User user, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeUnauthorizedException {
+  public void updateUserCredentials(User user, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeForbiddenException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
@@ -456,7 +456,7 @@ public class UserSchoolDataController {
     getUserBridge(schoolDataSource).updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
   }
 
-  public String requestCredentialReset(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
+  public String requestCredentialReset(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeForbiddenException {
     return getUserBridge(schoolDataSource).requestCredentialReset(email);
   }
 

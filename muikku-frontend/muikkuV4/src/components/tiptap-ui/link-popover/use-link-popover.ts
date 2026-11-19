@@ -197,39 +197,21 @@ export function useLinkState(props: {
 }) {
   const { editor: providedEditor, hideWhenUnavailable = false } = props;
 
-  const { editor, selected } = useTiptapEditorV2({
+  const { selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canSet: canSetLink(editor),
-      isActive: isLinkActive(editor),
+    selector: ({ editor: instance }) => ({
+      canSet: canSetLink(instance),
+      isActive: isLinkActive(instance),
+      isVisible: shouldShowLinkButton({
+        editor: instance,
+        hideWhenUnavailable,
+      }),
     }),
   });
 
   const canSet = selected?.canSet ?? false;
   const isActive = selected?.isActive ?? false;
-
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(
-        shouldShowLinkButton({
-          editor,
-          hideWhenUnavailable,
-        })
-      );
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable]);
+  const isVisible = selected?.isVisible ?? false;
 
   return {
     isVisible,

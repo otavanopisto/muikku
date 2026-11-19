@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";
+import Absences from "./application/absences";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import {
@@ -41,7 +42,8 @@ type StudiesTab =
   | "CURRENT_RECORD"
   | "SUMMARY"
   | "STUDY_INFO"
-  | "PEDAGOGY_FORM";
+  | "PEDAGOGY_FORM"
+  | "ABSENCES";
 
 /**
  * StudiesApplicationState
@@ -93,6 +95,12 @@ class StudiesApplication extends React.Component<
       case "records":
         this.setState({
           activeTab: "RECORDS",
+        });
+        break;
+
+      case "absences":
+        this.setState({
+          activeTab: "ABSENCES",
         });
         break;
 
@@ -166,6 +174,17 @@ class StudiesApplication extends React.Component<
         component: (
           <ApplicationPanelBody modifier="tabs">
             <Records />
+          </ApplicationPanelBody>
+        ),
+      },
+      {
+        id: "ABSENCES",
+        name: t("labels.absences", { ns: "events" }),
+        hash: "absences",
+        type: "absences",
+        component: (
+          <ApplicationPanelBody modifier="tabs">
+            <Absences />
           </ApplicationPanelBody>
         ),
       },

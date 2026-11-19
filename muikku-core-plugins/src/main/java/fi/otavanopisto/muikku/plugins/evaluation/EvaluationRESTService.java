@@ -79,6 +79,7 @@ import fi.otavanopisto.muikku.plugins.material.dao.QueryFieldDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
@@ -213,6 +214,9 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private EvaluationDeleteController evaluationDeleteController;
+  
+  @Inject
+  private MaterialDeleteController materialDeleteController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
@@ -1847,7 +1851,8 @@ public class EvaluationRESTService extends PluginRESTService {
     
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
       WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-      if (reply == null && payload.getLocked()) {
+      // #7842: Only create a reply for assignments that aren't hidden and don't belong to an exam
+      if (reply == null && payload.getLocked() && !workspaceMaterial.getHidden() && !workspaceMaterial.isExamAssignment()) {
         reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.UNANSWERED, userEntity, true);
       }
       else if (reply != null && reply.getLocked() != payload.getLocked()) {
@@ -1855,7 +1860,14 @@ public class EvaluationRESTService extends PluginRESTService {
          // Don't lock pages that have been marked incomplete
          continue;
        }
-       reply = workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, payload.getLocked());
+       // #7842: If unlocking an unanswered reply, just delete it because it was originally created
+       // just because the page was once marked locked but the student has never touched it at all
+       if (!payload.getLocked() && reply.getState() == WorkspaceMaterialReplyState.UNANSWERED) {
+         materialDeleteController.deleteWorkspaceMaterialReply(reply);
+       }
+       else {
+         reply = workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, payload.getLocked());
+       }
       }
     }
 

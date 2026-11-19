@@ -43,8 +43,12 @@ export const DivBoxPresetButton = forwardRef<
     },
     ref
   ) => {
-    const { editor } = useTiptapEditorV2({
+    const { editor, selected } = useTiptapEditorV2({
       editor: providedEditor,
+      selector: ({ editor: instance }) => ({
+        isDisabled: !canUseDivBox(instance),
+        isActive: getCurrentDivBoxPreset(instance) === styleName,
+      }),
     });
 
     /**
@@ -56,13 +60,8 @@ export const DivBoxPresetButton = forwardRef<
       editor.commands.setDivBoxPreset(styleName);
     };
 
-    if (!editor?.isEditable) {
-      return null;
-    }
-
-    const currentPreset = getCurrentDivBoxPreset(editor);
-    const isActive = currentPreset === styleName;
-    const isDisabled = !canUseDivBox(editor);
+    const isActive = selected?.isActive ?? false;
+    const isDisabled = selected?.isDisabled ?? false;
 
     return (
       <Button

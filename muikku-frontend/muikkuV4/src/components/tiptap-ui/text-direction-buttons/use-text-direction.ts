@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
 import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
@@ -119,36 +119,16 @@ export function useTextDirection(config: UseTextDirectionConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canSetTextDirection: canSetTextDirection(editor, direction),
-      isTextDirectionActive: isTextDirectionActive(editor, direction),
+    selector: ({ editor: instance }) => ({
+      canSetTextDirection: canSetTextDirection(instance, direction),
+      isTextDirectionActive: isTextDirectionActive(instance, direction),
+      isVisible: shouldShowButton({
+        editor: instance,
+        hideWhenUnavailable,
+        direction,
+      }),
     }),
   });
-  const [isVisible, setIsVisible] = useState(true);
-
-  const canChange = selected?.canSetTextDirection ?? false;
-  const isActive = selected?.isTextDirectionActive ?? false;
-
-  useEffect(() => {
-    if (!editor) return;
-
-    /**
-     * handleSelectionUpdate handles the selection update
-     * @returns void
-     */
-    const handleSelectionUpdate = () => {
-      setIsVisible(
-        shouldShowButton({ editor, direction, hideWhenUnavailable })
-      );
-    };
-
-    handleSelectionUpdate();
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable, direction]);
 
   /**
    * handleChange handles the change of the text direction
@@ -163,9 +143,9 @@ export function useTextDirection(config: UseTextDirectionConfig) {
   }, [editor, direction, onChanged]);
 
   return {
-    isVisible,
-    isActive,
-    canChange,
+    isVisible: selected?.isVisible ?? false,
+    isActive: selected?.isTextDirectionActive ?? false,
+    canChange: selected?.canSetTextDirection ?? false,
     handleChange,
     label: textDirectionLabels[direction],
     Icon: textDirectionIcons[direction],

@@ -208,8 +208,8 @@ export function LangDropdownMenu({
           variant="ghost"
           role="button"
           tabIndex={-1}
-          disabled={!(selected?.canToggle ?? true)}
-          data-disabled={!(selected?.canToggle ?? true)}
+          disabled={!(selected?.canToggle ?? true) || !editor?.isEditable}
+          data-disabled={!(selected?.canToggle ?? true) || !editor?.isEditable}
           data-active-state={selectedLangCode ? "on" : "off"}
           aria-label="Language"
           tooltip="Language"

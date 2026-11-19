@@ -14,8 +14,10 @@ import { OPEN_EVENT } from "./MuikkuOrganizerFieldExtension";
 /**
  * The Muikku organizer field button props interface.
  */
-export interface MuikkuOrganizerFieldButtonProps
-  extends Omit<ButtonProps, "type"> {
+export interface MuikkuOrganizerFieldButtonProps extends Omit<
+  ButtonProps,
+  "type"
+> {
   editor?: Editor | null;
 }
 
@@ -30,11 +32,13 @@ export const MuikkuOrganizerFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuOrganizerField"),
+    selector: ({ editor: instance }) => ({
+      isDisabled: !instance.isEditable,
+      isActive: instance.isActive("muikkuOrganizerField"),
     }),
   });
   const isActive = selected?.isActive ?? false;
+  const isDisabled = selected?.isDisabled ?? false;
   const [open, setOpen] = useState(false);
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
@@ -53,8 +57,6 @@ export const MuikkuOrganizerFieldButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -66,6 +68,8 @@ export const MuikkuOrganizerFieldButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={isDisabled}
+        data-disabled={isDisabled}
         {...buttonProps}
       >
         Ryhmittelykenttä

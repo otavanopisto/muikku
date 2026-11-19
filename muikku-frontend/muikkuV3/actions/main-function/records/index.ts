@@ -130,6 +130,17 @@ const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
   };
 
 /**
+ * setLocationToAbsencesInTranscriptOfRecords
+ */
+const setLocationToAbsencesInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
+  function setLocationToAbsencesInTranscriptOfRecords() {
+    return {
+      type: "UPDATE_RECORDS_LOCATION",
+      payload: <TranscriptOfRecordLocationType>"absences",
+    };
+  };
+
+/**
  * updateTranscriptOfRecordsFiles
  */
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
@@ -157,5 +168,6 @@ export {
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
   setLocationToPedagogyFormInTranscriptOfRecords,
+  setLocationToAbsencesInTranscriptOfRecords,
   updateTranscriptOfRecordsFiles,
 };

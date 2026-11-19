@@ -172,7 +172,11 @@ function buildElementsFromHtml(
   // IMPORTANT: use ALL top-level nodes, not just $dom[0].
   const roots = $dom.toArray() as HTMLElement[];
   injectHtmlAnnotations(roots, highlights || []);
-  return preprocessor($dom, t).toArray() as HTMLElement[];
+  return preprocessor($dom, t)
+    .toArray()
+    .filter(
+      (node: Node) => node.nodeType === Node.ELEMENT_NODE
+    ) as HTMLElement[];
 }
 
 /**

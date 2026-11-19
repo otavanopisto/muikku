@@ -76,7 +76,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     ArrayList<Long> announcementWorkspaceIds = new ArrayList<Long>();
     announcementWorkspaceIds.add(workspace.getId());
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, announcementWorkspaceIds);
+    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(2015, 10, 12), date(2035, 10, 12), false, true, null, announcementWorkspaceIds);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".item-list__announcement-caption",20, 1000);
@@ -114,7 +114,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
     
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(2015, 10, 12), date(2035, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder
@@ -147,7 +147,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
    
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(2015, 10, 12), date(2035, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder
@@ -182,7 +182,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     
     mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
    
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(2015, 10, 12), date(2035, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder
@@ -211,7 +211,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
    
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(135, 10, 12), false, true, null, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(2015, 10, 12), date(2035, 10, 12), false, true, null, null);
     updateAnnouncementWorkspace(announcementId, workspace.getId());
     logout();
     mockBuilder

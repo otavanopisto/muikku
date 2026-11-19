@@ -1,42 +1,113 @@
-import { Title, Text, Paper, Burger, Box } from "@mantine/core";
-import { useParams } from "react-router";
-import { useAtomValue } from "jotai";
+import { Box, Text, Textarea } from "@mantine/core";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useOutletContext, useParams } from "react-router";
+import { useAtomValue, useSetAtom } from "jotai";
 import { workspaceInfoAtom } from "src/atoms/workspace";
-import { PageLayout } from "src/layouts";
-import { useRootAside } from "~/src/layouts/helpers/useRootAside";
-import { useAppLayout } from "~/src/hooks/useAppLayout";
+import { WorkspaceContentLayout } from "src/layouts";
+import {
+  workspaceMaterialContentNodesAsyncStateAtom,
+  workspaceMaterialContentNodesAtom,
+  workspaceMaterialContentNodesEnabledAtom,
+} from "src/atoms/workspaceContent";
+import { Toc } from "./Toc";
+import {
+  resolveMaterialLocation,
+  workspaceMaterialsHref,
+} from "./materialLoaction";
+import { SectionView } from "./SectionView";
+import { MaterialsHeaderEnd, MaterialsHeaderStart } from "./MaterialsHeader";
 
 /**
- * WorkspaceMaterials - Workspace materials page
+ * WorkspaceMaterials - Materials dialog content.
  */
 export function WorkspaceMaterials() {
-  const { workspaceUrlName } = useParams();
+  const { workspaceUrlName, "*": splat = "" } = useParams();
+  const navigate = useNavigate();
+  const { onClose } = useOutletContext<{ onClose: () => void }>();
   const workspaceInfo = useAtomValue(workspaceInfoAtom);
-  const { asideOpened, toggleAside } = useAppLayout();
-  useRootAside({
-    component: <div>Hello Materials</div>,
-  });
+  const setMaterialsEnabled = useSetAtom(
+    workspaceMaterialContentNodesEnabledAtom
+  );
+  const nodes = useAtomValue(workspaceMaterialContentNodesAtom);
+  const asyncState = useAtomValue(workspaceMaterialContentNodesAsyncStateAtom);
+
+  const location = useMemo(
+    () => resolveMaterialLocation(nodes, splat),
+    [nodes, splat]
+  );
+
+  useEffect(() => {
+    setMaterialsEnabled(true);
+  }, [setMaterialsEnabled]);
+
+  useEffect(() => {
+    if (asyncState !== "ready") return;
+    if (splat !== "") return;
+    if (!workspaceUrlName || !location.defaultPath) return;
+    void navigate(
+      workspaceMaterialsHref(workspaceUrlName, location.defaultPath),
+      { replace: true }
+    );
+  }, [asyncState, splat, workspaceUrlName, location.defaultPath, navigate]);
+
+  const toc =
+    asyncState === "loading" ? (
+      <Text size="sm" c="dimmed">
+        Ladataan...
+      </Text>
+    ) : asyncState === "error" ? (
+      <Text size="sm" c="red">
+        Sisällysluettelon lataus epäonnistui.
+      </Text>
+    ) : (
+      <Toc nodes={nodes} />
+    );
+
+  let main: React.ReactNode;
+  if (asyncState === "loading" || location.status === "empty") {
+    main = (
+      <Text size="sm" c="dimmed">
+        Ladataan...
+      </Text>
+    );
+  } else if (location.status === "not-found") {
+    main = (
+      <Text size="sm" c="red">
+        Sivua ei löytynyt.
+      </Text>
+    );
+  } else {
+    main = (
+      <SectionView
+        section={location.section}
+        pages={location.pages}
+        page={location.page}
+        workspace={
+          workspaceInfo
+            ? { id: workspaceInfo.id, urlName: workspaceInfo.urlName }
+            : null
+        }
+      />
+    );
+  }
+
   return (
-    <PageLayout title="Workspace Materials">
-      <Box hiddenFrom="md">
-        <Burger
-          opened={asideOpened}
-          onClick={toggleAside}
-          size="sm"
-          aria-label="Toggle navigation"
+    <WorkspaceContentLayout
+      title={`${workspaceInfo?.name ?? workspaceUrlName} – Materiaalit`}
+      closeLabel="Takaisin"
+      onClose={onClose}
+      headerStart={<MaterialsHeaderStart />}
+      headerEnd={<MaterialsHeaderEnd />}
+      toc={toc}
+      aside={
+        <Textarea
+          placeholder="Kirjoita muistiinpanoja..."
+          minRows={8}
+          autosize
         />
-      </Box>
-      <Paper p="xl" withBorder>
-        <Title order={1} mb="md">
-          Workspace Materials
-        </Title>
-        <Text size="lg" c="dimmed" mb="md">
-          This is the materials page for your workspace.
-        </Text>
-        <Text size="md">
-          <b>Workspace:</b> {workspaceInfo?.name ?? workspaceUrlName}
-        </Text>
-      </Paper>
-    </PageLayout>
+      }
+    >
+      <Box p="md">{main}</Box>
+    </WorkspaceContentLayout>
   );
 }

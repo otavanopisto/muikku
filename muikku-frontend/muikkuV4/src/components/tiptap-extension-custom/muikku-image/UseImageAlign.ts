@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 
 import { useTiptapEditorV2 } from "@/hooks/use-tiptap-editor-v2";
@@ -129,27 +129,19 @@ export function useImageAlign(config: UseImageAlignConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      canAlign: canSetImageAlign(editor),
-      isActive: isImageAlignActive(editor, align),
+    selector: ({ editor: instance }) => ({
+      canAlign: canSetImageAlign(instance),
+      isActive: isImageAlignActive(instance, align),
+      isVisible: shouldShowImageAlignButton({
+        editor: instance,
+        hideWhenUnavailable,
+      }),
     }),
   });
 
-  const [isVisible, setIsVisible] = useState(true);
   const canAlign = selected?.canAlign ?? false;
   const isActive = selected?.isActive ?? false;
-
-  useEffect(() => {
-    if (!editor) return;
-    const tick = () => {
-      setIsVisible(shouldShowImageAlignButton({ editor, hideWhenUnavailable }));
-    };
-    tick();
-    editor.on("selectionUpdate", tick);
-    return () => {
-      editor.off("selectionUpdate", tick);
-    };
-  }, [editor, hideWhenUnavailable]);
+  const isVisible = selected?.isVisible ?? false;
 
   /**
    * The handleAlign function.

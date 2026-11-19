@@ -28,13 +28,20 @@ export const MuikkuAnchorButton = forwardRef<
   HTMLButtonElement,
   MuikkuAnchorButtonProps
 >(({ editor: providedEditor, children, ...buttonProps }, ref) => {
-  const { editor } = useTiptapEditorV2({ editor: providedEditor });
+  const { editor, selected } = useTiptapEditorV2({
+    editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canUse: !!instance.isEditable,
+    }),
+  });
   const [open, setOpen] = useState(false);
 
   // Sets up a listener to open the anchor modal when the anchor settings modal is opened
   useCallbackOnEvent(OPEN_MUIKKU_ANCHOR_SETTINGS_MODAL_EVENT, () =>
     setOpen(true)
   );
+
+  const canUse = selected?.canUse ?? false;
 
   /**
    * The handleOpenClick function.
@@ -50,8 +57,6 @@ export const MuikkuAnchorButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -63,6 +68,8 @@ export const MuikkuAnchorButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={!canUse}
+        data-disabled={!canUse}
         {...buttonProps}
       >
         {/* Use any icon you want; emoji keeps it simple */}

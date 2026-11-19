@@ -23,6 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
+import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
@@ -184,7 +185,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          TestUtilities.getAppUrl() + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
     
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
@@ -212,7 +213,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          TestUtilities.getAppUrl() + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
@@ -240,7 +241,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          TestUtilities.getAppUrl() + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
