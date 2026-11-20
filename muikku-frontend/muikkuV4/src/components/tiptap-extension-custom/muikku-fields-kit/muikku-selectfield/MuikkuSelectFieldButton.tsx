@@ -15,8 +15,10 @@ import { OPEN_EVENT } from "./MuikkuSelectFieldExtension";
 /**
  * The Muikku select field button props interface.
  */
-export interface MuikkuSelectFieldButtonProps
-  extends Omit<ButtonProps, "type"> {
+export interface MuikkuSelectFieldButtonProps extends Omit<
+  ButtonProps,
+  "type"
+> {
   editor?: Editor | null;
 }
 
@@ -31,12 +33,13 @@ export const MuikkuSelectFieldButton = forwardRef<
 >(({ editor: providedEditor, ...buttonProps }, ref) => {
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("muikkuSelectionField"),
+    selector: ({ editor: instance }) => ({
+      isDisabled: !instance.isEditable,
+      isActive: instance.isActive("muikkuSelectionField"),
     }),
   });
   const isActive = selected?.isActive ?? false;
-
+  const isDisabled = selected?.isDisabled ?? false;
   const [open, setOpen] = useState(false);
 
   useCallbackOnEvent(OPEN_EVENT, () => setOpen(true));
@@ -55,8 +58,6 @@ export const MuikkuSelectFieldButton = forwardRef<
     setOpen(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -68,6 +69,8 @@ export const MuikkuSelectFieldButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={isDisabled}
+        data-disabled={isDisabled}
         {...buttonProps}
       >
         Valintakenttä

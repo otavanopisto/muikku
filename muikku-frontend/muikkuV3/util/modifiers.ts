@@ -499,6 +499,9 @@ export function HTMLtoReactComponent(
   if (element.nodeType === 3) {
     return element.textContent;
   }
+  if (element.nodeType === 8 || !element.tagName) {
+    return null;
+  }
 
   let tagname = element.tagName.toLowerCase();
   const matchingRule = rules.find((r) =>
@@ -538,6 +541,9 @@ export function HTMLtoReactComponent(
     : true;
   const children = shouldProcessChildren
     ? Array.from(element.childNodes).map((node, index) => {
+        if (node.nodeType === Node.COMMENT_NODE) {
+          return null;
+        }
         if (node instanceof HTMLElement) {
           return HTMLtoReactComponent(node, rules, index);
         }

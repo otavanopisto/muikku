@@ -403,17 +403,20 @@
   },
   "profile": {
     "actions": {
+      "add_vacationPeriod": "Lisää lomajakso",
+      "remove_vacationPeriod": "Poista lomajakso",
       "test": "Testaa URL"
     },
     "content": {
       "appointmentCalendar": "Voit laittaa tähän linkin ajanvarauskalenteriisi. Linkki näkyy yhteystiedoissasi kursseilla ja opiskelijan Opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testauspainikkeesta.",
       "changePassword": "Ole hyvä ja syötä alla olevat tiedot",
       "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
+      "instructions": "<p>Voit lisätä yhden tai useamman loma-ajan. Merkitse jokaiseen lomaan alku- ja loppupäivä. Valitse yhden päivän poissaoloissa molempiin kenttiin sama päivä. Harkitse kuitenkin, onko yhden päivän poissaoloja tarpeen ilmoittaa.</p>",
       "removing": "Oletko varma, että haluat poistaa kuvan profiilistasi?",
       "sliceAuthorization1": "Käytössä on Slice.fi, joka digitaalinen opiskelijakortti ja opiskelijaetupalvelu. Vastaamalla kyllä, annat meille luvan toimittaa palvelulle seuraavat tiedot: nimi, sähköpostiosoite, syntymäaika, opinto-oikeuden tai opintojen päättymispäivä.",
       "sliceAuthorization2": "Saat kortin käyttöösi lataamalla puhelimeesi Slice.fi-sovelluksen. Palvelun käyttö vaatii vahvan tunnistautumisen esimerkiksi pankkitunnuksien avulla.",
       "nick": "Henkilökunnan jäsenet näkevät oikean nimesi. Muut opiskelijat näkevät vain asettamasi nimimerkin.",
-      "vacationAutoReply": " Automaattinen lomaviesti on aktiivisena vain, jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle yhteydenottajalle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
+      "vacationAutoReply": "Automaattinen lomaviesti on aktiivisena vain, jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle yhteydenottajalle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
       "whatsAppIntegration": "Saat Whatsapp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa (esim. +358 40 123 4567). Yhteystietoihisi ilmestyy Whatsapp-painike, jota klikkaamalla Whatsapp Web -sovellus aukeaa."
     },
     "labels": {
@@ -435,6 +438,7 @@
       "profileImage": "Profiilikuva",
       "remove": "Poista profiilin kuva",
       "studentCardAuthorizationTitle": "Digitaalinen opiskelijakortti",
+      "vacationPeriod": "Loma-aika {{index}}",
       "vacationSettings": "Loma-asetukset",
       "vacationAutoReply": "Lomaviesti käytössä",
       "whatsappIntegration_off": "Whatsapp-integraatio pois päältä",
@@ -443,7 +447,8 @@
       "worklist": "Työlista"
     },
     "notifications": {
-      "loadError": "Profiilikuvan lataus epäonnistui"
+      "loadError": "Profiilikuvan lataus epäonnistui",
+      "overlappingVacationPeriods": "Loma-ajat eivät voi olla päällekkäin"
     }
   },
   "worklist": {

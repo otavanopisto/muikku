@@ -24,9 +24,14 @@ export const MathEquationButton = forwardRef<
   HTMLButtonElement,
   MathEquationButtonProps
 >(({ editor: providedEditor, text = "∑", ...props }, ref) => {
-  const { editor } = useTiptapEditorV2({
+  const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canUse: !!instance.isEditable,
+    }),
   });
+
+  const canUse = selected?.canUse ?? false;
 
   /**
    * Handles the click event of the MathEquationButton component.
@@ -40,10 +45,6 @@ export const MathEquationButton = forwardRef<
     });
   };
 
-  if (!editor?.isEditable) {
-    return null;
-  }
-
   return (
     <Button
       type="button"
@@ -54,6 +55,8 @@ export const MathEquationButton = forwardRef<
       tooltip="Insert math equation"
       onClick={handleClick}
       ref={ref}
+      disabled={!canUse}
+      data-disabled={!canUse}
       {...props}
     >
       <span className="tiptap-button-icon">{text}</span>

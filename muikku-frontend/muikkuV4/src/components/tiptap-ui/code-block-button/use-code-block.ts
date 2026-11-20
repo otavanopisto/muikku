@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { type Editor } from "@tiptap/react";
 import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 
@@ -239,29 +239,17 @@ export function useCodeBlock(config?: UseCodeBlockConfig) {
 
   const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
-    selector: ({ editor }) => ({
-      isActive: editor.isActive("codeBlock"),
-      canToggle: canToggle(editor),
+    selector: ({ editor: instance }) => ({
+      isActive: instance.isActive("codeBlock"),
+      canToggle: canToggle(instance),
+      isVisible: shouldShowButton({ editor: instance, hideWhenUnavailable }),
     }),
   });
-  const [isVisible, setIsVisible] = useState<boolean>(true);
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleSelectionUpdate = () => {
-      setIsVisible(shouldShowButton({ editor, hideWhenUnavailable }));
-    };
-
-    handleSelectionUpdate();
-
-    editor.on("selectionUpdate", handleSelectionUpdate);
-
-    return () => {
-      editor.off("selectionUpdate", handleSelectionUpdate);
-    };
-  }, [editor, hideWhenUnavailable]);
-
+  /**
+   * handleToggle handles the toggle code block action
+   * @returns true if the code block is toggled, false otherwise
+   */
   const handleToggle = useCallback(() => {
     if (!editor) return false;
 
@@ -273,10 +261,10 @@ export function useCodeBlock(config?: UseCodeBlockConfig) {
   }, [editor, onToggled]);
 
   return {
-    isVisible,
+    isVisible: selected?.isVisible ?? false,
     isActive: selected?.isActive ?? false,
-    handleToggle,
     canToggle: selected?.canToggle ?? false,
+    handleToggle,
     label: "Code Block",
     shortcutKeys: CODE_BLOCK_SHORTCUT_KEY,
     Icon: CodeBlockIcon,

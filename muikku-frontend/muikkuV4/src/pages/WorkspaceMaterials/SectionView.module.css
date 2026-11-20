@@ -1,0 +1,52 @@
+@keyframes page-flash {
+  0% {
+    background-color: var(--mantine-color-yellow-1);
+    box-shadow: 0 0 0 3px var(--mantine-color-yellow-4);
+  }
+  100% {
+    background-color: var(--mantine-color-body);
+    box-shadow: none;
+  }
+}
+
+.workspace {
+  scroll-margin-top: var(--mantine-spacing-md);
+}
+
+.page {
+  scroll-margin-top: var(--mantine-spacing-md);
+}
+
+.page[data-flash] {
+  animation: page-flash 1.1s ease-out;
+}
+
+.page :global(.material-page__title) {
+  margin-bottom: var(--mantine-spacing-md);
+  font-size: var(--mantine-h3-font-size);
+  line-height: var(--mantine-h3-line-height);
+}
+
+.page :global(.material-page--exercise) :global(.material-page__title),
+.page :global(.material-page--assignment) :global(.material-page__title),
+.page :global(.material-page--journal) :global(.material-page__title),
+.page
+  :global(.material-page--interim-evaluation)
+  :global(.material-page__title) {
+  padding-inline-start: var(--mantine-spacing-sm);
+  border-inline-start: 4px solid var(--mantine-color-pink-6);
+}
+
+.page :global(.material-page--assignment) :global(.material-page__title) {
+  border-inline-start-color: var(--mantine-color-violet-6);
+}
+
+.page :global(.material-page--journal) :global(.material-page__title) {
+  border-inline-start-color: var(--mantine-color-blue-6);
+}
+
+.page
+  :global(.material-page--interim-evaluation)
+  :global(.material-page__title) {
+  border-inline-start-color: var(--mantine-color-orange-6);
+}

@@ -745,7 +745,7 @@ class WorkspaceMaterials extends React.Component<
       return null;
     }
     return (
-      <span className="material-page__title-notebook-action">
+      <span className="material-page__title-notebook-action rs_skip_always">
         <Dropdown
           openByHover
           content={

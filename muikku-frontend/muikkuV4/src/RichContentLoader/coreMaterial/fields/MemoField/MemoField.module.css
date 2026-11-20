@@ -1,0 +1,42 @@
+.wrapper {
+  display: block;
+  position: relative;
+}
+
+.readonly {
+  min-height: 4.5rem;
+  padding: 8px 12px;
+  border: 1px solid var(--mantine-color-gray-4);
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-body);
+}
+
+.counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}
+
+.counter[data-limit] {
+  color: var(--mantine-color-red-6);
+}
+
+.example {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-green-7);
+}
+
+.snapshots {
+  margin-top: 12px;
+}
+
+.snapshotBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}

@@ -33,9 +33,9 @@ export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
   ({ editor: providedEditor, ...buttonProps }, _ref) => {
     const { editor, selected } = useTiptapEditorV2({
       editor: providedEditor,
-      selector: ({ editor }) => ({
-        canUseDivBox: canUseDivBox(editor),
-        currentPreset: getCurrentDivBoxPreset(editor),
+      selector: ({ editor: instance }) => ({
+        canUseDivBox: canUseDivBox(instance),
+        currentPreset: getCurrentDivBoxPreset(instance),
       }),
     });
     const [open, setOpen] = React.useState(false);
@@ -47,10 +47,11 @@ export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
       setOpen(false);
     };
 
-    if (!editor?.isEditable) return null;
+    //if (!editor?.isEditable) return null;
 
     const currentPreset = selected?.currentPreset ?? undefined;
-    const isDisabled = !(selected?.canUseDivBox ?? false);
+    const isDisabled =
+      !(selected?.canUseDivBox ?? false) || !editor?.isEditable;
 
     return (
       <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -66,6 +67,7 @@ export const DivBoxSelect = React.forwardRef<HTMLDivElement, DivBoxSelectProps>(
             aria-haspopup="true"
             tooltip="Box style"
             disabled={isDisabled}
+            data-disabled={isDisabled}
             {...buttonProps}
           >
             {currentPreset ?? "Ei asetettu"}

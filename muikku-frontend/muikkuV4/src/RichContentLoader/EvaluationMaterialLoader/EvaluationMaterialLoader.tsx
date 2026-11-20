@@ -4,12 +4,10 @@ import type {
   WorkspaceMaterial,
 } from "~/generated/client";
 import type { MaterialLoaderConfig, Workspace } from "../coreMaterial";
-import {
-  MaterialLoaderAssessment,
-  MaterialLoaderContent,
-  MaterialLoaderTitle,
-} from "~/src/materials/MaterialLoader";
 import { EvaluationMaterialLoaderContainer } from "./EvaluationMaterialLoaderContainer";
+import { MaterialContent } from "../coreMaterial/MaterialContent";
+import { MaterialAssessment } from "../coreMaterial/MaterialAssessment";
+import { MaterialTitle } from "../coreMaterial/MaterialTitle";
 
 /**
  * Props for EvaluationMaterialLoader
@@ -36,10 +34,10 @@ export function EvaluationMaterialLoader(props: EvaluationMaterialLoaderProps) {
   return (
     <EvaluationMaterialLoaderContainer {...props}>
       <div>
-        <MaterialLoaderTitle />
-        <MaterialLoaderContent />
+        <MaterialTitle />
+        <MaterialContent />
         <div className="material-page__de-floater" />
-        <MaterialLoaderAssessment />
+        <MaterialAssessment />
       </div>
     </EvaluationMaterialLoaderContainer>
   );

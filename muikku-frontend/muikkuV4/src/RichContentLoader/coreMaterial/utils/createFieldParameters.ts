@@ -74,12 +74,9 @@ export function createFieldParameters(
   }
 
   return {
-    content: content,
-    readOnly: context.readOnly,
+    content,
     initialValue,
-    onChange: context.onValueChange,
     invisible: context.invisible,
-    userId: 0,
   };
 }
 

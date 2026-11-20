@@ -46,13 +46,11 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivitySubject;
 import fi.otavanopisto.pyramus.rest.model.CourseModule;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
-import fi.otavanopisto.pyramus.rest.model.Curriculum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemRestModel;
 import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityItemState;
-import fi.otavanopisto.pyramus.rest.model.hops.StudyActivityRestModel;
 
 public class GuiderTestsBase extends AbstractUITest {
   
@@ -656,7 +654,7 @@ public class GuiderTestsBase extends AbstractUITest {
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
-        waitUntilElementGoesAway(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order", (long) 10);
+        waitForNotPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order", 10);
         assertPresent(".icon-cart-plus");
       }finally {
         deleteUserGroupUsers();
@@ -883,8 +881,8 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".notes .notes__item .notes__item-header", "Task from guider.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       assertText(".notes .notes__item .notes__item-author", "Admin Person");
-      waitAndClick(".notes .notes__item .icon-more_vert");
-      waitAndClick(".dropdown__container-item");
+      waitAndClickAndConfirm(".notes .notes__item .icon-more_vert", ".dropdown.visible .dropdown__container-item", 3, 1000);
+      waitAndClick(".dropdown.visible .dropdown__container-item");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       logout();
       mockBuilder.mockLogin(admin);
@@ -893,8 +891,8 @@ public class GuiderTestsBase extends AbstractUITest {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
       assertText(".notes .notes__item .notes__item-status.notes__item-status--pending", "Pending");
-      waitAndClick(".notes .notes__item .icon-more_vert");
-      waitAndClick(".dropdown__container-item:first-child");
+      waitAndClickAndConfirm(".notes .notes__item .icon-more_vert", ".dropdown.visible .dropdown__container-item", 3, 1000);
+      waitAndClick(".dropdown.visible .dropdown__container-item:first-child");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
       waitAndClick(".notes .notes__item .icon-trash");

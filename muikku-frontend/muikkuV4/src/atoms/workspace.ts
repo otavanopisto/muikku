@@ -1,15 +1,23 @@
 import { atom } from "jotai";
 import { atomWithQuery } from "jotai-tanstack-query";
-import { getWorkspaceApi, getCoursepickerApi, isMApiError } from "~/api";
-import type { WorkspaceBasicInfo } from "~/generated/client";
+import {
+  getWorkspaceApi,
+  getCoursepickerApi,
+  isMApiError,
+  getEvaluationApi,
+} from "~/api";
+import type { WorkspaceActivity, WorkspaceBasicInfo } from "~/generated/client";
 import {
   queryClient,
   workspaceBasicInfoQueryKey,
   workspaceCanSignupQueryKey,
+  workspaceStudentActivityQueryKey,
 } from "src/queryClient";
+import { userAtom } from "./auth";
 
 const workspaceApi = getWorkspaceApi();
 const coursepickerApi = getCoursepickerApi();
+const evaluationApi = getEvaluationApi();
 
 /** Active workspace urlName — set from workspaceInit before ensureQueryData. */
 export const currentWorkspaceUrlNameAtom = atom<string | null>(null);
@@ -73,4 +81,37 @@ export const workspaceCanSignupQueryAtom = atomWithQuery((get) => {
 /** Can user signup to workspace atom */
 export const canUserSignupToWorkspaceAtom = atom(
   (get) => get(workspaceCanSignupQueryAtom).data ?? null
+);
+
+/** Workspace student activity query atom */
+export const workspaceStudentActivityQueryAtom = atomWithQuery((get) => {
+  const workspaceId = get(workspaceIdAtom);
+  const { id, identifier } = get(userAtom) ?? {};
+
+  return {
+    queryKey: workspaceStudentActivityQueryKey(workspaceId ?? -1, id ?? -1),
+    queryFn: async (): Promise<WorkspaceActivity> => {
+      if (workspaceId == null || id == null || identifier == null) {
+        throw new Error("Workspace id and user id are required");
+      }
+      try {
+        return await evaluationApi.getWorkspaceStudentActivity({
+          workspaceId,
+          studentEntityId: identifier,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) throw err;
+        throw new Error("Failed to load workspace student activity");
+      }
+    },
+    enabled: workspaceId != null && id != null && identifier != null,
+    staleTime: Infinity,
+    refetchOnMount: false,
+    retry: false,
+  };
+});
+
+/** Workspace student activity */
+export const workspaceStudentActivityAtom = atom(
+  (get) => get(workspaceStudentActivityQueryAtom).data ?? null
 );

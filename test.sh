@@ -11,7 +11,7 @@ if [ "$BUILD" == "true" ] ; then
   echo "-------------------------"
   echo "Building war"
   echo "-------------------------"
-  mvn clean install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,atests-plugin,elastic-search-plugin,evaluation-plugin,developer-tools,timed-notifications-plugin,matriculation-plugin
+  mvn clean install -Pdummy-mail-plugin,pyramus-plugins,atests-plugin,elastic-search-plugin,evaluation-plugin,developer-tools,timed-notifications-plugin,matriculation-plugin
 fi;
 
 echo "-------------------------"

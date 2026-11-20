@@ -148,7 +148,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
         
         waitAndClick(".application-list__item-header--course");
-        waitForContent(".workspace-assessment__literal .workspace-assessment__literal-data", 5);
+        waitUntilHasText(".workspace-assessment__literal .workspace-assessment__literal-data");
         assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         archiveUserByEmail(student.getEmail());
@@ -438,9 +438,9 @@ public class ToRTestsBase extends AbstractUITest {
       assertText(".notes .notes__item .notes__item-header", "Task for myself.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
 //    "more actions" vertical menu
-      waitAndClick(".notes .notes__item .icon-more_vert");
+      waitAndClickAndConfirm(".notes .notes__item .icon-more_vert", ".dropdown.visible .dropdown__container-item", 3, 1000);
 //    Mark as done link
-      waitAndClick(".dropdown__container-item");
+      waitAndClick(".dropdown.visible .dropdown__container-item");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
       

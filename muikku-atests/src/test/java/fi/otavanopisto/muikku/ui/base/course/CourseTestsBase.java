@@ -425,13 +425,13 @@ public class CourseTestsBase extends AbstractUITest {
         .build();
     try {
       navigate("/profile#vacation", false);
-      waitForPresent("input#profileVacationStart");
-      sendKeys("input#profileVacationStart", "21.12.2010");
-      tabOutOfElement("input#profileVacationStart");
+      waitForPresent("input#profileVacationStart-0");
+      sendKeys("input#profileVacationStart-0", "21.12.2010");
+      tabOutOfElement("input#profileVacationStart-0");
       waitAndClick(".application-panel__content-header");
-      waitForPresent("input#profileVacationEnd");
-      sendKeys("input#profileVacationEnd", "21.12.2030");
-      tabOutOfElement("input#profileVacationEnd");
+      waitForPresent("input#profileVacationEnd-0");
+      sendKeys("input#profileVacationEnd-0", "21.12.2030");
+      tabOutOfElement("input#profileVacationEnd-0");
       waitAndClick(".application-panel__content-header");
       waitAndClick("#profileVacationAutoReply");
       waitAndSendKeys("#profileVacationAutoReplySubject", "Lomalla");

@@ -49,7 +49,8 @@ export type TranscriptOfRecordLocationType =
   | "summary"
   | "yo"
   | "info"
-  | "pedagogy-form";
+  | "pedagogy-form"
+  | "absences";
 
 /**
  * initialState

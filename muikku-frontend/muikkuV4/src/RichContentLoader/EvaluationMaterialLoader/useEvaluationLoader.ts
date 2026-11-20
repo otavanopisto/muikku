@@ -88,9 +88,8 @@ export function useEvaluationMaterialsLoader(
       workspace,
       compositeReplies,
       invisible: false,
-      snapshots: snapshotCapability,
     }),
-    [material, workspace, compositeReplies, snapshotCapability]
+    [material, workspace, compositeReplies]
   );
 
   // Create processing rules

@@ -1,0 +1,142 @@
+.wrapper {
+  display: block;
+  position: relative;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.poolTitle,
+.categoryTitle {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.term,
+.placed,
+.missing {
+  display: inline-flex;
+  list-style: none;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0 8px;
+  border: 2px solid var(--mantine-color-blue-4);
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-body);
+}
+
+.term {
+  cursor: grab;
+}
+
+.term[data-in-use] {
+  opacity: 0.55;
+}
+
+.term[data-selected] {
+  background: var(--mantine-color-blue-6);
+  border-color: var(--mantine-color-blue-6);
+  color: var(--mantine-color-white);
+}
+
+.term[data-dragging] {
+  opacity: 0.4;
+}
+
+.placed {
+  cursor: grab;
+}
+.placed[data-dragging] {
+  opacity: 0.4;
+}
+.field[data-readonly] .placed {
+  cursor: default;
+}
+
+.missing {
+  border-style: dashed;
+  border-color: var(--mantine-color-green-6);
+  color: var(--mantine-color-green-7);
+}
+
+.handle,
+.remove {
+  display: inline-flex;
+  color: var(--mantine-color-blue-4);
+  padding-right: 6px;
+}
+
+.remove {
+  cursor: pointer;
+  padding: 0 0 0 6px;
+  border: 0;
+  background: transparent;
+}
+
+.category {
+  list-style: none;
+  flex: 1 1 calc(50% - 8px);
+  min-width: 220px;
+  border: 2px solid var(--mantine-color-blue-4);
+  border-radius: var(--mantine-radius-sm);
+  padding: 8px;
+  min-height: 120px;
+}
+
+.category[data-drop-target] {
+  background: var(--mantine-color-blue-0);
+  border-color: var(--mantine-color-blue-6);
+}
+
+.category[data-state="correct"] {
+  border-color: var(--mantine-color-green-6);
+}
+
+.category[data-state="incorrect"] {
+  border-color: var(--mantine-color-red-6);
+}
+
+.placed[data-state="correct"] {
+  border-color: var(--mantine-color-green-6);
+}
+
+.placed[data-state="incorrect"] {
+  border-color: var(--mantine-color-red-6);
+}
+
+.categoryTerms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  min-height: 72px;
+}
+
+.field[data-readonly] .term {
+  cursor: not-allowed;
+}
+
+.label {
+  padding: 6px 4px;
+}

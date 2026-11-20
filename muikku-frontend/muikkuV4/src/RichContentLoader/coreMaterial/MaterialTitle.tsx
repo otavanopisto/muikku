@@ -1,3 +1,4 @@
+import { Title } from "@mantine/core";
 import { useMaterialContentContext } from "./MaterialContentProvider";
 
 /**
@@ -10,5 +11,9 @@ export function MaterialTitle() {
     return null;
   }
 
-  return <h1 className="material-page__title">{material.title}</h1>;
+  return (
+    <Title order={2} className="material-page__title">
+      {material.title}
+    </Title>
+  );
 }

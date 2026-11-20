@@ -29,13 +29,18 @@ export const ImageAddButton = forwardRef<
   ImageAddButtonProps
 >((props, ref) => {
   const { editor: providedEditor, disabled, ...buttonProps } = props;
-  const { editor } = useTiptapEditorV2({
+  const { editor, selected } = useTiptapEditorV2({
     editor: providedEditor,
+    selector: ({ editor: instance }) => ({
+      canUse: !!instance.isEditable,
+    }),
   });
 
   const [opened, setOpened] = useState(false);
 
   useCallbackOnEvent(OPEN_IMAGE_PROPERTIES_MODAL_EVENT, () => setOpened(true));
+
+  const canUse = selected?.canUse ?? false;
 
   /**
    * The handleOpen function.
@@ -53,8 +58,6 @@ export const ImageAddButton = forwardRef<
     setOpened(false);
   };
 
-  if (!editor?.isEditable) return null;
-
   return (
     <>
       <Button
@@ -66,6 +69,8 @@ export const ImageAddButton = forwardRef<
         tabIndex={-1}
         role="button"
         ref={ref}
+        disabled={!canUse}
+        data-disabled={!canUse}
         {...buttonProps}
       >
         Lisää kuva
