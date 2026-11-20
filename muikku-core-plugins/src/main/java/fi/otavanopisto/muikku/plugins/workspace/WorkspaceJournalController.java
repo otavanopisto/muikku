@@ -9,8 +9,10 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalCommentDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalCommentRecipientDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalEntryDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalCommentRecipient;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 
 public class WorkspaceJournalController {
@@ -20,6 +22,9 @@ public class WorkspaceJournalController {
 
   @Inject
   private WorkspaceJournalCommentDAO workspaceJournalCommentDAO;
+  
+  @Inject
+  private WorkspaceJournalCommentRecipientDAO workspaceJournalCommentRecipientDAO;
 
   public WorkspaceJournalEntry createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String materialFieldReplyIdentifier, String title) {
     return workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), materialFieldReplyIdentifier, Boolean.FALSE);
@@ -93,4 +98,23 @@ public class WorkspaceJournalController {
     return workspaceJournalCommentDAO.countByJournalEntryAndArchived(journalEntry, Boolean.FALSE);
   }
   
+  public WorkspaceJournalCommentRecipient findRecipientByCommentAndUser(WorkspaceJournalComment comment, Long userEntityId) {
+    return workspaceJournalCommentRecipientDAO.findByCommentAndUserEntityId(comment, userEntityId);
+  }
+  
+  public WorkspaceJournalCommentRecipient createCommentRecipient(WorkspaceJournalComment comment, Long userEntityId, Date readDate) {
+    return workspaceJournalCommentRecipientDAO.create(comment, userEntityId, readDate);
+  }
+  
+  public WorkspaceJournalCommentRecipient updateCommentRecipient(WorkspaceJournalCommentRecipient recipient, Date readDate) {
+    return workspaceJournalCommentRecipientDAO.update(recipient, readDate);
+  }
+  
+  public long countUnreadByJournalEntryAndUserEntity(WorkspaceJournalEntry journalEntry, UserEntity userEntity) {
+    return workspaceJournalCommentRecipientDAO.countUnreadByJournalEntryAndUserEntity(journalEntry, userEntity);
+  }
+  
+  public long countUnreadCommentsForUser(WorkspaceEntity workspaceEntity, Collection<UserEntity> students, UserEntity user) {
+    return workspaceJournalCommentRecipientDAO.countUnreadByStudentsAndUserEntity(workspaceEntity, students, user);
+  }
 }

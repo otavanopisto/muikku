@@ -121,6 +121,7 @@ import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOExceptio
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalCommentRecipient;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -139,6 +140,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRecipientRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
@@ -3382,6 +3384,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceJournalComment> comments = orderCommentTree(workspaceJournalController.listCommentsByJournalEntry(journalEntry));
     List<WorkspaceJournalCommentRESTModel> result = new ArrayList<>();
     for (WorkspaceJournalComment comment : comments) {
+      // Mark comment also as read
+      boolean unread = workspaceJournalController.findRecipientByCommentAndUser(comment, sessionController.getLoggedUserEntity().getId()) == null;
+      if (unread) {
+        workspaceJournalController.createCommentRecipient(comment, sessionController.getLoggedUserEntity().getId(), new Date());
+      }
       result.add(toRestModel(workspaceEntity, comment));
     }
     return Response.ok(result).build();
@@ -3476,6 +3483,40 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceJournalComment comment = workspaceJournalController.updateComment(journalComment, payload.getComment());
     return Response.ok(toRestModel(workspaceEntity, comment)).build();
   }
+  
+  @PUT
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments/{JOURNALCOMMENTID}/markAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markJournalEntryCommentAsRead(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId,
+      @PathParam("JOURNALCOMMENTID") Long journalCommentId) {
+    
+    WorkspaceJournalComment comment = workspaceJournalController.findCommentById(journalCommentId);
+    
+    if (comment == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid journalCommentId").build();
+    }
+    
+    WorkspaceJournalCommentRecipient commentRecipient = workspaceJournalController.findRecipientByCommentAndUser(comment, sessionController.getLoggedUserEntity().getId());
+    
+    if (commentRecipient == null) {
+      commentRecipient = workspaceJournalController.createCommentRecipient(comment, workspaceEntityId, new Date());
+    } else { // mark as unread if announcement recipient exists
+      commentRecipient = workspaceJournalController.updateCommentRecipient(commentRecipient, commentRecipient.getReadDate() != null ? null : new Date());
+    }
+    
+    WorkspaceJournalCommentRecipientRESTModel restModel = new WorkspaceJournalCommentRecipientRESTModel();
+    
+    if (commentRecipient != null) {
+      restModel.setCommentId(commentRecipient.getComment().getId());
+      restModel.setReadDate(commentRecipient.getReadDate());
+      restModel.setUserEntityId(commentRecipient.getUserEntityId());
+      restModel.setId(commentRecipient.getId());
+    }
+
+    return Response
+        .ok(restModel)
+        .build();
+  }
 
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments/{JOURNALCOMMENTID}")
@@ -3519,6 +3560,47 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     workspaceJournalController.archiveComment(journalComment);
     return Response.noContent().build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/journal/unreadCommentsCount")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response countUnreadJournalCommentsByWorkspace(@PathParam("WORKSPACEID") Long workspaceEntityId) {
+
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    boolean isStudent = userEntityController.isStudent(userEntity);
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    Set<UserEntity> students = new HashSet<>();
+
+    if (isStudent) {
+      // Students can only see their own journal comments
+      students.add(userEntity);
+    } else {
+      // Staff must have permission to list all journal entries
+      boolean canListAllEntries = sessionController.hasWorkspacePermission(
+          MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+
+      if (!canListAllEntries) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
+      // Get active students in the current workspace
+      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
+
+      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+        students.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+      }
+    }
+
+    // Count unread comments for the workspace
+    Long unreadCount = workspaceJournalController.countUnreadCommentsForUser(workspaceEntity, students, userEntity);
+
+    return Response.ok(unreadCount).build();
   }
 
   @GET
@@ -4060,6 +4142,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
     result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
+    result.setUnreadCommentCount(workspaceJournalController.countUnreadByJournalEntryAndUserEntity(workspaceJournalEntry, sessionController.getLoggedUserEntity()));
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
