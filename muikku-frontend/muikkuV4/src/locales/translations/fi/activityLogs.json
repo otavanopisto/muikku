@@ -1,7 +1,8 @@
 {
   "label": "Opintotapahtumat",
   "labels": {
-    "empty": "Ei opintotapahtumia"
+    "empty": "Ei opintotapahtumia",
+    "eventCount": "{{count}} tapahtumaa"
   },
   "content": {
     "empty": "Opintotapahtumia ei löytynyt"

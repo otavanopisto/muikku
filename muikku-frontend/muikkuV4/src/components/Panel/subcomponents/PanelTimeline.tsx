@@ -1,11 +1,14 @@
-import { Text, Timeline } from "@mantine/core";
+import { Timeline } from "@mantine/core";
 import { localize } from "~/src/locales/i18n";
 
-type PanelTimelineItem = {
-  label: string;
+export type PanelTimelineItem = {
+  title: React.ReactNode;
   type: string;
   timestamp: Date;
   bullet?: React.ReactNode;
+  alternate?: boolean;
+  opposite?: React.ReactNode;
+  subtitle?: React.ReactNode;
 };
 
 /**
@@ -16,6 +19,7 @@ interface PanelTimelineProps {
   items: PanelTimelineItem[];
 }
 
+// Used elsewhere too, needs to be in utils
 const isToday = (timestamp: Date) =>
   localize
     .getLocalizedDayjs(timestamp)
@@ -40,12 +44,14 @@ export function PanelTimeline(props: PanelTimelineProps) {
 
         return (
           <Timeline.Item
-            key={`${item.type}-${item.timestamp.toISOString()}`}
-            title={item.label}
+            key={`${item.type}-${item.timestamp.toISOString()}-${String(item.alternate)}`}
+            title={item.title}
             bullet={item.bullet}
+            alternate={item.alternate}
+            opposite={item.opposite}
             {...activeProps}
           >
-            <Text>{localize.date(item.timestamp, "DD.MM.YYYY HH:mm")}</Text>
+            {item.subtitle}
           </Timeline.Item>
         );
       })}

@@ -1,5 +1,8 @@
 {
   "label": "Study activities",
+  "labels": {
+    "todayCount": "{{count}} today"
+  },
   "types": {
     "EVALUATION_REQUESTED": "Evaluation request sent",
     "EVALUATION_GOTINCOMPLETED": "Evaluated as incomplete",

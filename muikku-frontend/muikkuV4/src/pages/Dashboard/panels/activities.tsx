@@ -1,10 +1,8 @@
 // activities panel uses Panel component and uses userActivityLogsDataAtom as data source
 import Panel from "~/src/components/Panel/Panel";
-import { userActivityLogsDataAtom } from "~/src/atoms/activitylogs";
-import { useAtomValue } from "jotai";
 import { Empty } from "~/src/components/Empty/empty";
-import type { DatedActivityLogHash } from "~/src/atoms/activitylogs";
 import { useTranslation } from "react-i18next";
+import useTimelineEvents from "~/src/pages/Dashboard/hooks/use-timeline-events";
 import { ActivityLogType } from "~/generated/client";
 import {
   IconBell,
@@ -26,11 +24,6 @@ import {
 } from "@tabler/icons-react";
 import { ThemeIcon, Pagination } from "@mantine/core";
 import { useState } from "react";
-
-const activityEntries = (logs: DatedActivityLogHash) =>
-  Object.values(logs)
-    .flat()
-    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
 const getBulletByEntryType = (type: ActivityLogType) => {
   switch (type) {
@@ -148,23 +141,16 @@ const getBulletByEntryType = (type: ActivityLogType) => {
  * @returns Activity panel
  */
 export function Activities() {
-  const activities = useAtomValue(userActivityLogsDataAtom);
+  const events = useTimelineEvents();
   const { t } = useTranslation("activityLogs");
   const [pageIndex, setPageIndex] = useState(1);
 
-  if (activities === undefined) {
-    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
-  }
-
-  const entries = activityEntries(activities);
-
-  if (entries.length === 0) {
+  if (events.length === 0) {
     return <Empty title={t("labels.empty")} description={t("content.empty")} />;
   }
   const maxItems = 10;
-  const entrycount = entries.length;
-  const page = Math.ceil(entrycount / maxItems);
-  const pageItems = entries.slice(
+  const page = Math.ceil(events.length / maxItems);
+  const pageItems = events.slice(
     (pageIndex - 1) * maxItems,
     pageIndex * maxItems
   );
@@ -172,11 +158,14 @@ export function Activities() {
   return (
     <Panel title={t("label")}>
       <Panel.Timeline
-        items={pageItems.map((entry) => ({
-          label: t(`types.${entry.type}`),
-          bullet: getBulletByEntryType(entry.type),
-          type: entry.type,
-          timestamp: entry.timestamp,
+        items={pageItems.map((event) => ({
+          title: event.title,
+          subtitle: event.subtitle,
+          bullet: getBulletByEntryType(event.type),
+          alternate: event.alternate,
+          opposite: event.opposite,
+          type: event.type,
+          timestamp: event.timestamp,
         }))}
       />
       <Pagination value={pageIndex} total={page} onChange={setPageIndex} />

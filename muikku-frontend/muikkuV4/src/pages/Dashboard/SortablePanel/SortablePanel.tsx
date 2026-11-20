@@ -1,6 +1,9 @@
 import { useSortable } from "@dnd-kit/react/sortable";
 import { Grid } from "@mantine/core";
 
+/**
+ * Props for a sortable panel
+ */
 export interface SortablePanelProps {
   id: number;
   index: number;
