@@ -6,9 +6,9 @@ import { localize } from "~/src/locales/i18n";
 import { userAtom } from "./auth";
 import i18n from "~/src/locales/i18n";
 import { handleApiError } from "./helpers/error";
-
 const activitylogsApi = getActivitylogsApi();
 const { t } = i18n;
+
 export type DatedActivityLogEntry = Omit<ActivityLogEntry, "timestamp"> & {
   timestamp: Date;
 };

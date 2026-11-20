@@ -17,7 +17,7 @@ import { useState } from "react";
  * that opens the course in a new tab.
  * @returns Suggestions panel
  */
-export function Suggestions() {
+export default function Suggestions() {
   const { t } = useTranslation("workspaces");
 
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
@@ -71,5 +71,3 @@ export function Suggestions() {
     </Panel>
   );
 }
-
-export default Suggestions;

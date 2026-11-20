@@ -12,7 +12,7 @@ import styles from "./panels.module.css";
  * Workspaces
  * @returns
  */
-export function Workspaces() {
+export default function Workspaces() {
   const lastWorkspaces = useAtomValue(lastWorkspacesDataAtom);
   const { t } = useTranslation(["workspaces", "common"]);
   if (lastWorkspaces.length === 0) {

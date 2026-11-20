@@ -1,10 +1,10 @@
-import { Workspaces } from "../panels/studies";
-import { Announcements } from "../panels/announcements";
-import { Messages } from "../panels/messages";
-import { Absences } from "../panels/absences";
+import Workspaces from "../panels/studies";
+import Announcements from "../panels/announcements";
+import Messages from "../panels/messages";
+import Absences from "../panels/absences";
 import Tasks from "../panels/tasks";
 import Activities from "../panels/activities";
-import { Suggestions } from "../panels/suggestions";
+import Suggestions from "../panels/suggestions";
 import { Role } from "~/generated/client";
 
 /**

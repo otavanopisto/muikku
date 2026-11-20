@@ -4,6 +4,8 @@ import { Empty } from "~/src/components/Empty/empty";
 import { useTranslation } from "react-i18next";
 import useTimelineEvents from "~/src/pages/Dashboard/hooks/use-timeline-events";
 import { ActivityLogType } from "~/generated/client";
+import styles from "./panels.module.css";
+import { Box } from "@mantine/core";
 import {
   IconBell,
   IconCalendarTime,
@@ -140,7 +142,7 @@ const getBulletByEntryType = (type: ActivityLogType) => {
  * Dashboard activity log list
  * @returns Activity panel
  */
-export function Activities() {
+export default function Activities() {
   const events = useTimelineEvents();
   const { t } = useTranslation("activityLogs");
   const [pageIndex, setPageIndex] = useState(1);
@@ -168,9 +170,9 @@ export function Activities() {
           timestamp: event.timestamp,
         }))}
       />
-      <Pagination value={pageIndex} total={page} onChange={setPageIndex} />
+      <Box className={styles.timelineFooter}>
+        <Pagination value={pageIndex} total={page} onChange={setPageIndex} />
+      </Box>
     </Panel>
   );
 }
-
-export default Activities;

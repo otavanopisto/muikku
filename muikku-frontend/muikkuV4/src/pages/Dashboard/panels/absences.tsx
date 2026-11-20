@@ -15,7 +15,7 @@ import { IconArrowNarrowRight } from "@tabler/icons-react";
  * Workspaces
  * @returns
  */
-export function Absences() {
+export default function Absences() {
   const absences = useAtomValue(unResolvedAbsencesDataAtom);
   const { t } = useTranslation("events");
 

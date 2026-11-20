@@ -1,6 +1,6 @@
 import { Timeline } from "@mantine/core";
 import { localize } from "~/src/locales/i18n";
-
+import styles from "./subcomponents.module.css";
 export type PanelTimelineItem = {
   title: React.ReactNode;
   type: string;
@@ -34,7 +34,7 @@ export function PanelTimeline(props: PanelTimelineProps) {
   const { items } = props;
 
   return (
-    <Timeline>
+    <Timeline className={styles.timeline}>
       {items.map((item, index) => {
         const nextItem = items[index + 1];
         const activeProps = {

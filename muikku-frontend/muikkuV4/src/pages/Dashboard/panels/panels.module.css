@@ -1,3 +1,9 @@
 .studies-title {
   margin-bottom: var(--mantine-spacing-md);
 }
+
+.timelineFooter {
+  margin-top: var(--mantine-spacing-md);
+  display: flex;
+  justify-content: center;
+}

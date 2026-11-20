@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
  * Workspaces
  * @returns
  */
-export function Messages() {
+export default function Messages() {
   const messages = useAtomValue(frontpageCommunicatorThreadsDataAtom);
   const { t } = useTranslation("messages");
 

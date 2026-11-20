@@ -29,7 +29,7 @@ function colorIntToHex(color: number) {
  * Workspaces
  * @returns
  */
-export function Announcements() {
+export default function Announcements() {
   const announcements = useAtomValue(frontpageAnnouncementsDataAtom);
   const { t } = useTranslation(["announcements", "common"]);
   const setToggleRead = useSetAtom(toggleAnnouncementReadAtom);
