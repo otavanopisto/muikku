@@ -103,7 +103,7 @@ export default function Announcements() {
   return (
     <Panel
       countIndicator={announcements?.unreadCount}
-      indicatorTooltip="Unread count"
+      indicatorTooltip={t("labels.unreadCount")}
       title={t("label")}
     >
       <Stack>

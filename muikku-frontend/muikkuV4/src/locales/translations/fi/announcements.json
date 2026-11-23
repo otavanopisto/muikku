@@ -1,7 +1,8 @@
 {
   "label": "Tiedotteet",
   "labels": {
-    "empty": "Ei tiedotteita"
+    "empty": "Ei tiedotteita",
+    "unreadCount": "Lukemattomia tiedotteita"
   },
   "content": {
     "empty": "Tiedotteita ei löytynyt"

@@ -12,7 +12,7 @@ export type PanelItemBadge = {
  */
 export interface PanelMenuItem {
   label: string;
-  action: (id: number | string) => void;
+  action: (id?: number | string) => void;
   icon?: React.ReactNode;
 }
 

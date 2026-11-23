@@ -59,10 +59,11 @@ export default function Tasks() {
     </Group>
   );
 
-  const getTaskStates = (task: Note): PanelItemBadge | undefined => {
+  const getTaskStates = (task: Note): PanelItemBadge[] | undefined => {
     const currentRecipient = task.recipients.find(
       (recipient) => recipient.recipientId === userId
     );
+    const badges: PanelItemBadge[] = [];
 
     const taskState = (status: NoteStatusType) => {
       switch (status) {
@@ -76,12 +77,27 @@ export default function Tasks() {
           return undefined;
       }
     };
+    const isOverdue = task.dueDate
+      ? localize
+          .getLocalizedDayjs(task.dueDate)
+          .isBefore(localize.getLocalizedDayjs(), "day")
+      : false;
+
+    if (isOverdue) {
+      badges.push({
+        label: t("states.OVERDUE"),
+        state: "warning",
+      });
+    }
+
     if (currentRecipient) {
-      return {
+      badges.push({
         label: t(`states.${currentRecipient.status}`),
         state: taskState(currentRecipient.status) ?? "warning",
-      };
+      });
     }
+
+    return badges;
   };
   const getStatusUpdateLocale = (task: Note) =>
     isCreator(task.creator) ? t("actions.approve") : t("actions.send");
