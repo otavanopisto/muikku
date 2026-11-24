@@ -1,7 +1,9 @@
 {
   "labels": {
     "studies": "Studies",
-    "continueStudies": "Continue studies: {{location}}"
+    "continueStudies": "Continue studies: {{location}}",
+    "pinned": "Pinned",
+    "pinnedToSelf": "Pinned for you"
   },
   "actions": {
     "cancel": "Cancel",

@@ -1,5 +1,10 @@
 {
   "label": "Courses",
   "label_suggestions": "Suggested courses",
-  "labels": {}
+  "labels": {
+    "empty": "No courses"
+  },
+  "content": {
+    "empty": "No courses were found"
+  }
 }

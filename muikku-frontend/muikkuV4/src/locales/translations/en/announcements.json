@@ -6,7 +6,13 @@
     "setRead": "Mark as read",
     "setUnread": "Mark as unread"
   },
-  "labels": {},
+  "labels": {
+    "empty": "No announcements",
+    "unreadCount": "Unread announcements"
+  },
+  "content": {
+    "empty": "No announcements were found"
+  },
   "state": {
     "PINNED": "Pinned",
     "UNPINNED": "Unpinned",

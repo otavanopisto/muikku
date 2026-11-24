@@ -1,7 +1,11 @@
 {
   "label": "Study activities",
   "labels": {
-    "todayCount": "{{count}} today"
+    "empty": "No study activities",
+    "eventCount": "{{count}} events"
+  },
+  "content": {
+    "empty": "No study activities were found"
   },
   "types": {
     "EVALUATION_REQUESTED": "Evaluation request sent",

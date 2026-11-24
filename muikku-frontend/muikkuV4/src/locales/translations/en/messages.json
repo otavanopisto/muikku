@@ -1,5 +1,11 @@
 {
   "label": "Messages",
+  "labels": {
+    "empty": "No messages"
+  },
+  "content": {
+    "empty": "No messages were found"
+  },
   "errors": {
     "load": "Failed to load messages. Please try again later."
   }

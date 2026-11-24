@@ -1,7 +1,14 @@
 {
   "label": "Events",
   "label_absences": "Absences",
-  "labels": {},
+  "labels": {
+    "empty": "No events",
+    "empty_absences": "No absences"
+  },
+  "content": {
+    "empty": "No events were found",
+    "empty_absences": "No absences were found"
+  },
   "types": {
     "ASSIGNMENTS_UNDONE": "Assignments not done",
     "EXAM": "Exam",

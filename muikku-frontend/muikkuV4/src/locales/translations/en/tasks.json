@@ -4,10 +4,17 @@
     "approve": "Approve",
     "send": "Send"
   },
+  "content": {
+    "empty": "No study tasks were found"
+  },
+  "labels": {
+    "empty": "No study tasks"
+  },
   "states": {
     "APPROVED": "Done",
     "APPROVAL_PENDING": "Waiting for approval",
-    "ONGOING": "In progress"
+    "ONGOING": "In progress",
+    "OVERDUE": "Overdue"
   },
   "errors": {
     "load": "Failed to load study tasks. Please try again later.",
