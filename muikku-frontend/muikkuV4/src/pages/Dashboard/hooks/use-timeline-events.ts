@@ -119,7 +119,7 @@ export const buildTimelineEvents = (
   });
 
   const otherEvents = Object.entries(logs).flatMap(([key, entries]) => {
-    if (key === "general" || !Array.isArray(entries)) {
+    if (key === "general") {
       return otherGeneralEvents.map((entry) =>
         toEvent(entry, true, titleFor(entry), oppositeFor(entry))
       );
