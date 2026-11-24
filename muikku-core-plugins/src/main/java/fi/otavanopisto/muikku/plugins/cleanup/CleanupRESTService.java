@@ -30,6 +30,9 @@ public class CleanupRESTService {
 
   @Inject
   private CleanupAnswersJob answersJob;
+
+  @Inject
+  private CleanupAnswersJob activityJob;
   
   @Inject
   private CleanupJournalJob journalJob;
@@ -50,6 +53,11 @@ public class CleanupRESTService {
         systemSettingsController.getSetting(CleanupAnswersJob.SETTING_ENABLED),
         systemSettingsController.getSetting(CleanupAnswersJob.SETTING_USER),
         systemSettingsController.getSetting(CleanupAnswersJob.SETTING_BATCH)));
+
+    sb.append(String.format("Activity enabled %s userEntityId %s batch size %s\n",
+        systemSettingsController.getSetting(CleanupActivityJob.SETTING_ENABLED),
+        systemSettingsController.getSetting(CleanupActivityJob.SETTING_USER),
+        systemSettingsController.getSetting(CleanupActivityJob.SETTING_BATCH)));
 
     sb.append(String.format("Evaluations enabled %s userEntityId %s batch size %s\n",
         systemSettingsController.getSetting(CleanupEvaluationsJob.SETTING_ENABLED),
@@ -101,6 +109,29 @@ public class CleanupRESTService {
     if (userEntityId != null && userEntityId >= 0) {
       sb.append(String.format("Answers cleanup userEntityId changed to %d\n", userEntityId));
       answersJob.changeUserEntityId(userEntityId);
+    }
+    return Response.ok(sb.toString()).build();
+  }
+
+  @GET
+  @Path("/activity")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response activity(@QueryParam("batch") Integer batchSize, @QueryParam("enabled") Boolean enabled, @QueryParam("userEntityId") Long userEntityId) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    StringBuffer sb = new StringBuffer();
+    if (batchSize != null && batchSize > 0) {
+      sb.append(String.format("Activity cleanup batch size changed to %d\n", batchSize));
+      activityJob.changeBatchSize(batchSize);
+    }
+    if (enabled != null) {
+      sb.append(String.format("Activity cleanup enabled changed to %b\n", enabled));
+      activityJob.toggleEnabled(enabled);
+    }
+    if (userEntityId != null && userEntityId >= 0) {
+      sb.append(String.format("Activity cleanup userEntityId changed to %d\n", userEntityId));
+      activityJob.changeUserEntityId(userEntityId);
     }
     return Response.ok(sb.toString()).build();
   }

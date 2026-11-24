@@ -26,9 +26,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
  */
 public abstract class CleanupJob {
   
-  // TODO CleanupEvaluationJob (WorkspaceNodeEvaluation + WorkspaceNodeEvaluationAudioClip)
-  // TODO CleanupActivityJob (ActivityLog)
-
   @Inject
   private UserEntityDAO userEntityDAO;
 
