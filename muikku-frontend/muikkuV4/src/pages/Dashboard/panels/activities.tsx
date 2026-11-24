@@ -24,8 +24,10 @@ import {
   IconSendOff,
   IconUserExclamation,
 } from "@tabler/icons-react";
-import { ThemeIcon, Pagination } from "@mantine/core";
+import { ThemeIcon, Pagination, Menu } from "@mantine/core";
 import { useState } from "react";
+
+const activityLogTypes = Object.values(ActivityLogType);
 
 const getBulletByEntryType = (type: ActivityLogType) => {
   switch (type) {
@@ -143,13 +145,10 @@ const getBulletByEntryType = (type: ActivityLogType) => {
  * @returns Activity panel
  */
 export default function Activities() {
-  const events = useTimelineEvents();
+  const { events, filters, setFilters } = useTimelineEvents();
   const { t } = useTranslation("activityLogs");
   const [pageIndex, setPageIndex] = useState(1);
 
-  if (events.length === 0) {
-    return <Empty title={t("labels.empty")} description={t("content.empty")} />;
-  }
   const maxItems = 10;
   const page = Math.ceil(events.length / maxItems);
   const pageItems = events.slice(
@@ -157,22 +156,51 @@ export default function Activities() {
     pageIndex * maxItems
   );
 
+  const dropdownActions = (
+    <Menu.CheckboxGroup
+      value={filters}
+      onChange={(value) =>
+        setFilters(
+          value.filter((type): type is ActivityLogType =>
+            activityLogTypes.includes(type as ActivityLogType)
+          )
+        )
+      }
+    >
+      {activityLogTypes.map((type) => (
+        <Menu.CheckboxItem key={type} value={type}>
+          {t(`types.${type}`)}
+        </Menu.CheckboxItem>
+      ))}
+    </Menu.CheckboxGroup>
+  );
+
   return (
-    <Panel title={t("label")}>
-      <Panel.Timeline
-        items={pageItems.map((event) => ({
-          title: event.title,
-          subtitle: event.subtitle,
-          bullet: getBulletByEntryType(event.type),
-          alternate: event.alternate,
-          opposite: event.opposite,
-          type: event.type,
-          timestamp: event.timestamp,
-        }))}
-      />
-      <Box className={styles.timelineFooter}>
-        <Pagination value={pageIndex} total={page} onChange={setPageIndex} />
-      </Box>
+    <Panel panelDropdownActions={dropdownActions} title={t("label")}>
+      {events.length === 0 ? (
+        <Empty title={t("labels.empty")} description={t("content.empty")} />
+      ) : (
+        <>
+          <Panel.Timeline
+            items={pageItems.map((event) => ({
+              title: event.title,
+              subtitle: event.subtitle,
+              bullet: getBulletByEntryType(event.type),
+              alternate: event.alternate,
+              opposite: event.opposite,
+              type: event.type,
+              timestamp: event.timestamp,
+            }))}
+          />
+          <Box className={styles.timelineFooter}>
+            <Pagination
+              value={pageIndex}
+              total={page}
+              onChange={setPageIndex}
+            />
+          </Box>
+        </>
+      )}
     </Panel>
   );
 }

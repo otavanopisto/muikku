@@ -7,6 +7,7 @@ import { useAtomValue } from "jotai";
 import { ActivityLogType } from "~/generated/client";
 import { localize } from "~/src/locales/i18n";
 import { useTranslation } from "react-i18next";
+import { useMemo, useState } from "react";
 
 export type TimelineEvent = {
   title: string;
@@ -47,6 +48,21 @@ const getTimelineTimeFormat = (timestamp: Date) => {
   return isToday(timestamp) ? "HH:mm" : "DD.MM.YYYY HH:mm";
 };
 
+const filterActivityLogs = (
+  logs: DatedActivityLogHash,
+  filters: ActivityLogType[]
+): DatedActivityLogHash => {
+  const filtered: DatedActivityLogHash = { general: [] };
+
+  for (const [key, entries] of Object.entries(logs)) {
+    filtered[key] = entries.filter(
+      (entry) => filters.length === 0 || filters.includes(entry.type)
+    );
+  }
+
+  return filtered;
+};
+
 /**
  * Turns activity log entries into timeline events.
  * General entries are collapsed to the newest event of each day.
@@ -73,6 +89,7 @@ export const buildTimelineEvents = (
     if (!stackedTypes.has(entry.type)) {
       continue;
     }
+
     const key = `${entry.type}|${dayKey(entry.timestamp)}`;
     const group = stackedByTypeAndDay.get(key);
     if (group) {
@@ -107,6 +124,7 @@ export const buildTimelineEvents = (
         toEvent(entry, true, titleFor(entry), oppositeFor(entry))
       );
     }
+
     return entries.map((entry) =>
       toEvent(entry, true, titleFor(entry), oppositeFor(entry))
     );
@@ -124,18 +142,34 @@ export const buildTimelineEvents = (
 const useTimelineEvents = () => {
   const activities = useAtomValue(userActivityLogsDataAtom);
   const { t } = useTranslation("activityLogs");
+  const [filters, setFilters] = useState<ActivityLogType[]>([]);
 
-  if (!activities) {
-    return [];
-  }
+  const filteredLogs = useMemo(() => {
+    if (!activities) {
+      return undefined;
+    }
+    return filterActivityLogs(activities, filters);
+  }, [activities, filters]);
 
-  return buildTimelineEvents(
-    activities,
-    (entry) => t(`types.${entry.type}`),
-    (entry) =>
-      localize.date(entry.timestamp, getTimelineTimeFormat(entry.timestamp)),
-    (count) => t("labels.eventCount", { count })
-  );
+  const events = useMemo(() => {
+    if (!filteredLogs) {
+      return [];
+    }
+
+    return buildTimelineEvents(
+      filteredLogs,
+      (entry) => t(`types.${entry.type}`),
+      (entry) =>
+        localize.date(entry.timestamp, getTimelineTimeFormat(entry.timestamp)),
+      (count) => t("labels.eventCount", { count })
+    );
+  }, [filteredLogs, t]);
+
+  return {
+    events,
+    filters,
+    setFilters,
+  };
 };
 
 export default useTimelineEvents;
