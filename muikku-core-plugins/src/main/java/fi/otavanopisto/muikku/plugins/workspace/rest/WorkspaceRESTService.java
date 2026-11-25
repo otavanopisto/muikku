@@ -1574,6 +1574,10 @@ public class WorkspaceRESTService extends PluginRESTService {
           }
           UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
           boolean hasImage = userEntity != null && userEntityFileController.hasProfilePicture(userEntity);
+          String studyProgrammeName = elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString();
+          if (StringUtils.isNotBlank(studyProgrammeName) && elasticUser.get("studyEndDate") != null) {
+            studyProgrammeName = String.format("%s*", studyProgrammeName);
+          }
           workspaceStudents.add(new WorkspaceStudentRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
@@ -1581,7 +1585,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               String.valueOf(elasticUser.get("firstName")),
               elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
               String.valueOf(elasticUser.get("lastName")),
-              elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+              studyProgrammeName,
               hasImage,
               activeUserIds.contains(workspaceUserEntity.getId()),
               pedagogyController.isPublished(userEntity.getId()),
