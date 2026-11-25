@@ -160,7 +160,8 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
       </div>
 
       <div className="pedagogy-form__toolbar-secondary">
-        {toolbarLogic.canTogglePDF ? (
+        {toolbarLogic.canTogglePDF ||
+        toolbarLogic.canToggleImplementedActionsPdf ? (
           <Button
             buttonModifiers={["info"]}
             disabled={loading}
@@ -219,15 +220,30 @@ export const usePedagogyToolbarLogic = () => {
     // Check if there are changes to the main form
     const hasMainFormChanges = changedFields.length > 0;
 
+    // Can show full form PDF if:
+    // 1. User role is SPECIAL_ED_TEACHER
+    // 2. Form exists
+    // 3. Edit is not active
+    const canTogglePDF =
+      userRole === "SPECIAL_ED_TEACHER" && pedagogyFormExists && !editIsActive;
+
     return {
       // Can show PDF if:
       // 1. User role is SPECIAL_ED_TEACHER
       // 2. Form exists (either pedagogyForm or formData)
       // 3. Edit is not active
-      canTogglePDF:
-        userRole === "SPECIAL_ED_TEACHER" &&
-        pedagogyFormExists &&
+      canTogglePDF,
+
+      // Can show implemented actions PDF if:
+      // 1. Full form PDF is not available
+      // 2. User is staff (toolbar is already hidden for student/parent)
+      // 3. Edit is not active
+      canToggleImplementedActionsPdf:
+        !canTogglePDF &&
+        userRole !== "STUDENT" &&
+        userRole !== "STUDENT_PARENT" &&
         !editIsActive,
+
       // If form doesn't exist and user role is SPECIAL_ED_TEACHER, show activate button
       canActivateForm:
         !pedagogyFormExists &&
