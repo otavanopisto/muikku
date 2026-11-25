@@ -121,7 +121,6 @@ import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOExceptio
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalCommentRecipient;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -140,7 +139,6 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRecipientRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
@@ -3484,40 +3482,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(toRestModel(workspaceEntity, comment)).build();
   }
   
-  @PUT
-  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments/{JOURNALCOMMENTID}/markAsRead")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response markJournalEntryCommentAsRead(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId,
-      @PathParam("JOURNALCOMMENTID") Long journalCommentId) {
-    
-    WorkspaceJournalComment comment = workspaceJournalController.findCommentById(journalCommentId);
-    
-    if (comment == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid journalCommentId").build();
-    }
-    
-    WorkspaceJournalCommentRecipient commentRecipient = workspaceJournalController.findRecipientByCommentAndUser(comment, sessionController.getLoggedUserEntity().getId());
-    
-    if (commentRecipient == null) {
-      commentRecipient = workspaceJournalController.createCommentRecipient(comment, workspaceEntityId, new Date());
-    } else { // mark as unread if announcement recipient exists
-      commentRecipient = workspaceJournalController.updateCommentRecipient(commentRecipient, commentRecipient.getReadDate() != null ? null : new Date());
-    }
-    
-    WorkspaceJournalCommentRecipientRESTModel restModel = new WorkspaceJournalCommentRecipientRESTModel();
-    
-    if (commentRecipient != null) {
-      restModel.setCommentId(commentRecipient.getComment().getId());
-      restModel.setReadDate(commentRecipient.getReadDate());
-      restModel.setUserEntityId(commentRecipient.getUserEntityId());
-      restModel.setId(commentRecipient.getId());
-    }
-
-    return Response
-        .ok(restModel)
-        .build();
-  }
-
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments/{JOURNALCOMMENTID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
