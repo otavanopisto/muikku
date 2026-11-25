@@ -229,7 +229,6 @@ class GuiderToolbar extends React.Component<
         <ApplicationPanelToolbarActionsMain>
           <NewMessage
             extraNamespace="guider"
-            refreshInitialSelectedItemsOnOpen
             onRecipientChange={this.onContactsChange}
             initialSelectedItems={turnSelectedUsersToContacts(
               this.props.guider.selectedStudents,
