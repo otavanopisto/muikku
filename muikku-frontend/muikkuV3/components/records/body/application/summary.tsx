@@ -243,6 +243,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     groupAdvisor,
                     studyAdvisor,
                     properties,
+                    specialEducationTeacher,
                   } = counselor;
                   const councelorActions = (
                     <>
@@ -302,6 +303,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                       phone={properties["profile-phone"]}
                       groupAdvisor={groupAdvisor}
                       studyAdvisor={studyAdvisor}
+                      specialEducationTeacher={specialEducationTeacher}
                       vacationStart={properties["profile-vacation-start"]}
                       vacationEnd={properties["profile-vacation-end"]}
                     />
