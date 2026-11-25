@@ -35,13 +35,6 @@ public class WorkspaceJournalCommentRecipientDAO extends CorePluginsDAO<Workspac
     return persist(commentRecipient);
  }
   
-  public WorkspaceJournalCommentRecipient update(WorkspaceJournalCommentRecipient commentRecipient, Date readDate) {
-    
-    commentRecipient.setReadDate(readDate);
-    
-    return persist(commentRecipient);
- }
-  
   public List<WorkspaceJournalCommentRecipient> listByUser(Long userEntityId){
     EntityManager entityManager = getEntityManager();
     

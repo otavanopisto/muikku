@@ -106,10 +106,6 @@ public class WorkspaceJournalController {
     return workspaceJournalCommentRecipientDAO.create(comment, userEntityId, readDate);
   }
   
-  public WorkspaceJournalCommentRecipient updateCommentRecipient(WorkspaceJournalCommentRecipient recipient, Date readDate) {
-    return workspaceJournalCommentRecipientDAO.update(recipient, readDate);
-  }
-  
   public long countUnreadByJournalEntryAndUserEntity(WorkspaceJournalEntry journalEntry, UserEntity userEntity) {
     return workspaceJournalCommentRecipientDAO.countUnreadByJournalEntryAndUserEntity(journalEntry, userEntity);
   }
