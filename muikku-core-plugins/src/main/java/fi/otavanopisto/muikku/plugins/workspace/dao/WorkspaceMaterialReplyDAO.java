@@ -70,6 +70,20 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
    
     return entityManager.createQuery(criteria).getSingleResult();
   }
+  
+  public List<Long> listIdsByUserEntityId(Long userEntityId) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceMaterialReply> root = criteria.from(WorkspaceMaterialReply.class);
+    criteria.select(root.get(WorkspaceMaterialReply_.id));
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.userEntityId), userEntityId)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   public List<WorkspaceMaterialReply> listByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
     EntityManager entityManager = getEntityManager();

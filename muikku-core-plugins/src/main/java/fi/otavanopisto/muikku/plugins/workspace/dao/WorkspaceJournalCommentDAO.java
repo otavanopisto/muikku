@@ -33,6 +33,18 @@ public class WorkspaceJournalCommentDAO extends CorePluginsDAO<WorkspaceJournalC
     return persist(journalComment);
   }
 
+  public List<WorkspaceJournalComment> listByJournalEntry(WorkspaceJournalEntry journalEntry) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalComment> criteria = criteriaBuilder.createQuery(WorkspaceJournalComment.class);
+    Root<WorkspaceJournalComment> root = criteria.from(WorkspaceJournalComment.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceJournalComment_.journalEntry), journalEntry)
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<WorkspaceJournalComment> listByJournalEntryAndArchived(WorkspaceJournalEntry journalEntry, Boolean archived) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -78,6 +90,10 @@ public class WorkspaceJournalCommentDAO extends CorePluginsDAO<WorkspaceJournalC
   public WorkspaceJournalComment archive(WorkspaceJournalComment journalComment) {
     journalComment.setArchived(Boolean.TRUE);
     return persist(journalComment);
+  }
+  
+  public void delete(WorkspaceJournalComment comment) {
+    super.delete(comment);
   }
 
 }
