@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+   <sql>
+     create table WorkspaceJournalCommentRecipient (
+       id bigint not null auto_increment,
+        readDate datetime,
+        userEntityId bigint not null,
+        comment_id bigint not null,
+        primary key (id)
+    );
+   </sql>
+   <sql>
+    alter table WorkspaceJournalCommentRecipient add constraint UK5fpl6sovoqrw13m8ca75nlp3s unique (userEntityId, comment_id);
+   </sql>
+   <sql>
+    alter table WorkspaceJournalCommentRecipient 
+       add constraint FKobt08ciiuavte8enrxew37ijg 
+       foreign key (comment_id) 
+       references WorkspaceJournalComment (id);
+   </sql>
+</update>
