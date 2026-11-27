@@ -1574,6 +1574,11 @@ public class WorkspaceRESTService extends PluginRESTService {
           }
           UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
           boolean hasImage = userEntity != null && userEntityFileController.hasProfilePicture(userEntity);
+          Date studyEndDate = getDateResult(elasticUser.get("studyEndDate"));
+          String studyProgrammeName = elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString();
+          if (StringUtils.isNotBlank(studyProgrammeName) && studyEndDate != null && studyEndDate.before(new Date())) {
+            studyProgrammeName = String.format("%s*", studyProgrammeName);
+          }
           workspaceStudents.add(new WorkspaceStudentRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
@@ -1581,7 +1586,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               String.valueOf(elasticUser.get("firstName")),
               elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
               String.valueOf(elasticUser.get("lastName")),
-              elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+              studyProgrammeName,
               hasImage,
               activeUserIds.contains(workspaceUserEntity.getId()),
               pedagogyController.isPublished(userEntity.getId()),
@@ -4127,4 +4132,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     return null;
   }
+
+  private Date getDateResult(Object value) {
+    Date date = null;
+    if (value instanceof Long) {
+      date = new Date((Long) value);
+    }
+    else if (value instanceof Double) {
+      // seconds to ms
+      date = new Date(((Double) value).longValue() * 1000);
+    }
+    return date;
+  }
+
 }

@@ -9,6 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -135,7 +136,12 @@ public class UserEntityController implements Serializable {
                 }
               }
             }
-            return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"), (String) match.get("nickName"), (String) match.get("studyProgrammeName"));
+            Date studyEndDate = getDateResult(match.get("studyEndDate"));
+            String studyProgrammeName = (String) match.get("studyProgrammeName");
+            if (StringUtils.isNotBlank(studyProgrammeName) && studyEndDate != null && studyEndDate.before(new Date())) {
+              studyProgrammeName = String.format("%s*", studyProgrammeName);
+            }
+            return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"), (String) match.get("nickName"), studyProgrammeName);
           }
         }
       }
@@ -673,6 +679,18 @@ public class UserEntityController implements Serializable {
     }
 
     return null;
+  }
+
+  private Date getDateResult(Object value) {
+    Date date = null;
+    if (value instanceof Long) {
+      date = new Date((Long) value);
+    }
+    else if (value instanceof Double) {
+      // seconds to ms
+      date = new Date(((Double) value).longValue() * 1000);
+    }
+    return date;
   }
 
 }
